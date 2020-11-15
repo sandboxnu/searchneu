@@ -4,15 +4,19 @@
  */
 
 import _ from 'lodash';
+import { Course, Section } from '@prisma/client';
 import prisma from './prisma';
 import elastic, { Elastic } from './elastic';
 import HydrateSerializer from './database/serializers/hydrateSerializer';
+import HydrateCourseSerializer from './database/serializers/hydrateCourseSerializer';
 import macros from './macros';
 import {
   EsQuery, QueryNode, ExistsQuery, TermsQuery, TermQuery, LeafQuery, MATCH_ALL_QUERY, RangeQuery,
   EsFilterStruct, EsAggFilterStruct, FilterInput, FilterPrelude, AggFilterPrelude, SortInfo, Range,
-  SearchResults, PartialResults, EsResultBody, EsMultiResult,
+  SearchResults, SingleSearchResult, PartialResults, EsResultBody, EsMultiResult, AggResults,
 } from './search_types';
+
+type CourseWithSections = Course & { sections: Section[] };
 
 class Searcher {
   elastic: Elastic;
@@ -25,12 +29,15 @@ class Searcher {
 
   AGG_RES_SIZE: number;
 
+  COURSE_CODE_PATTERN: RegExp;
+
   constructor() {
     this.elastic = elastic;
     this.subjects = null;
     this.filters = Searcher.generateFilters();
     this.aggFilters = _.pickBy<EsFilterStruct, EsAggFilterStruct>(this.filters, (f): f is EsAggFilterStruct => f.agg !== false);
     this.AGG_RES_SIZE = 1000;
+    this.COURSE_CODE_PATTERN = /^\s*([a-zA-Z]{2,4})\s*(\d{4})?\s*$/i;
   }
 
   static generateFilters(): FilterPrelude {
@@ -137,10 +144,8 @@ class Searcher {
     return validFilters;
   }
 
-  getFields(query: string): string[] {
-    // if we know that the query is of the format of a course code, we want to do a very targeted query against subject and classId: otherwise, do a regular query.
-    const courseCodePattern: RegExp = /^\s*([a-zA-Z]{2,4})\s*(\d{4})?\s*$/i;
-    let fields = [
+  getFields(): string[] {
+    return [
       'class.name^2', // Boost by 2
       'class.name.autocomplete',
       'class.subject^4',
@@ -151,21 +156,13 @@ class Searcher {
       'employee.emails',
       'employee.phone',
     ];
-
-    const patternResults = query.match(courseCodePattern);
-    if (patternResults && (this.getSubjects()).has(patternResults[1].toUpperCase())) {
-      // after the first result, all of the following results should be of the same subject, e.g. it's weird to get ENGL2500 as the second or third result for CS2500
-      fields = ['class.subject^10', 'class.classId'];
-    }
-
-    return fields;
   }
 
   /**
    * Get elasticsearch query
    */
   generateQuery(query: string, termId: string, userFilters: FilterInput, min: number, max: number, aggregation: string = ''): EsQuery {
-    const fields: string[] = this.getFields(query);
+    const fields: string[] = this.getFields();
     // text query from the main search box
     const matchTextQuery: LeafQuery = query.length > 0
       ? {
@@ -246,6 +243,29 @@ class Searcher {
     };
   }
 
+  async getOneSearchResult(subject: string, classId: string, termId: string) : Promise<SingleSearchResult> {
+    const start = Date.now();
+    const result = await prisma.course.findOne({ where: { uniqueCourseProps: { classId, subject, termId } }, include: { sections: true } });
+    const serializer = new HydrateCourseSerializer();
+    let results = result ? await serializer.bulkSerialize([result]) : {};
+    results = Object.values(results); // necessary because results looks like { some_class_id: { class: { ... }} and we want [{ class: { ...}}]
+    return {
+      results,
+      resultCount: result === null ? 0 : 1,
+      took: 0,
+      hydrateDuration: Date.now() - start,
+      aggregations: result ? this.getSingleResultAggs(result) : { nupath: [], subject: [], classType: [] },
+    };
+  }
+
+  getSingleResultAggs(result: CourseWithSections) : AggResults {
+    return {
+      nupath: result.nupath.map((val) => { return { value: val, count: 1 } }),
+      subject: [{ value: result.subject, count: 1 }],
+      classType: [{ value: result.sections[0].classType, count: 1 }],
+    };
+  }
+
   /**
    * Search for classes and employees
    * @param  {string}  query  The search to query for
@@ -256,20 +276,28 @@ class Searcher {
   async search(query: string, termId: string, min: number, max: number, filters: FilterInput = {}): Promise<SearchResults> {
     await this.initializeSubjects();
     const start = Date.now();
-    // this can be re-written in a way that's less bad
-    const {
-      output, resultCount, took, aggregations,
-    } = await this.getSearchResults(query, termId, min, max, filters);
+    let results; let resultCount; let hydrateDuration; let took; let aggregations;
 
-    const startHydrate = Date.now();
-    const results = await (new HydrateSerializer()).bulkSerialize(output);
-
+    // if we know that the query is of the format of a course code, we want to return only one result
+    const patternResults = query.match(this.COURSE_CODE_PATTERN);
+    const subject = patternResults ? patternResults[1].toUpperCase() : '';
+    if (patternResults && macros.isNumeric(patternResults[2]) && (this.getSubjects()).has(subject)) {
+      ({
+        results, resultCount, took, hydrateDuration, aggregations,
+      } = await this.getOneSearchResult(subject, patternResults[2], termId));
+    } else {
+      const searchResults = await this.getSearchResults(query, termId, min, max, filters);
+      ({ resultCount, took, aggregations } = searchResults);
+      const startHydrate = Date.now();
+      results = await (new HydrateSerializer()).bulkSerialize(searchResults.output);
+      hydrateDuration = Date.now() - startHydrate;
+    }
     return {
       searchContent: results,
       resultCount,
       took: {
         total: Date.now() - start,
-        hydrate: Date.now() - startHydrate,
+        hydrate: hydrateDuration,
         es: took,
       },
       aggregations,

@@ -178,6 +178,12 @@ These are all stored hierarchically:  Sections are a part of a class, classes ar
  
   // The crn of the section itself
   crn: "30362"
+
+  // True if the section is online
+  online: false,
+
+  // The campus the section is taught at. This will be 'Online' if the online property is true.
+  campus: "Boston"
 }
 ```
 

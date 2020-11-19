@@ -128,7 +128,8 @@ minIndex=0&maxIndex=5
         "termId": "201810",
         "host": "neu.edu",
         "subject": "CS",
-        "classId": "2511"
+        "classId": "2511",
+        "campus": "Boston"
     },
     {
         "seatsCapacity": 45,
@@ -159,7 +160,8 @@ minIndex=0&maxIndex=5
         "termId": "201810",
         "host": "neu.edu",
         "subject": "CS",
-        "classId": "2511"
+        "classId": "2511",
+        "campus": "Boston"
     },
     {
         "seatsCapacity": 50,
@@ -190,7 +192,8 @@ minIndex=0&maxIndex=5
         "termId": "201810",
         "host": "neu.edu",
         "subject": "CS",
-        "classId": "2511"
+        "classId": "2511",
+        "campus": "Boston"
     },
     {
         "seatsCapacity": 50,
@@ -221,7 +224,8 @@ minIndex=0&maxIndex=5
         "termId": "201810",
         "host": "neu.edu",
         "subject": "CS",
-        "classId": "2511"
+        "classId": "2511",
+        "campus": "Boston"
     }]
 }]
 ```

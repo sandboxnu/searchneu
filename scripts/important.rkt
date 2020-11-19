@@ -1,3 +1,3 @@
 #lang racket
 
-(+ 2 2)
+(equal? (+ 2 2) 5)

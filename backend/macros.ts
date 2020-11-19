@@ -88,6 +88,14 @@ class Macros extends commonMacros {
   // For iterating over every letter in a couple different places in the code.
   static ALPHABET = 'maqwertyuiopsdfghjklzxcvbn';
 
+  private static rollbar: Rollbar =
+  Macros.PROD
+    && new Rollbar({
+      accessToken: Macros.getEnvVariable('rollbarPostServerItemToken'),
+      captureUncaught: true,
+      captureUnhandledRejections: true,
+    });
+
   static getAllEnvVariables(): EnvVars {
     if (envVariables) {
       return envVariables;
@@ -172,13 +180,11 @@ class Macros extends commonMacros {
   }
 
   static getRollbar() {
-    const rollbarKey = Macros.getEnvVariable('rollbarPostServerItemToken');
-
-    if (Macros.PROD && !rollbarKey) {
+    if (Macros.PROD && !this.rollbar) {
       console.error("Don't have rollbar so not logging error in prod?"); // eslint-disable-line no-console
     }
 
-    return Rollbar.init({ accessToken: rollbarKey });
+    return this.rollbar;
   }
 
   // Takes an array of a bunch of thigs to log to rollbar
@@ -204,6 +210,8 @@ class Macros extends commonMacros {
         break;
       }
     }
+    // eslint-disable-next-line no-console
+    console.log('sending to rollbar', possibleError, args);
 
     if (possibleError) {
       // The arguments can come in any order. Any errors should be logged separately.
@@ -261,7 +269,7 @@ class Macros extends commonMacros {
 
         // If running on AWS, tell rollbar about the error so rollbar sends off an email.
       } else {
-        this.logRollbarError(args, true);
+        this.logRollbarError(args, false);
       }
     }
   }
@@ -277,20 +285,5 @@ class Macros extends commonMacros {
 }
 
 Macros.verbose('Starting in verbose mode.');
-
-async function handleUncaught(err: Error) {
-  // Don't use the macros.log, because if that crashes it would run into an infinite loop
-  console.log('Error: An unhandledRejection occurred.'); // eslint-disable-line no-console
-  console.log(`Rejection Stack Trace: ${err.stack}`); // eslint-disable-line no-console
-  Macros.error(err.stack);
-}
-
-let addedRejectionHandler: boolean;
-// Sometimes it helps debugging to enable this test mode too.
-if (Macros.PROD && !addedRejectionHandler) {
-  addedRejectionHandler = true;
-  process.on('unhandledRejection', handleUncaught);
-  process.on('uncaughtException', handleUncaught);
-}
 
 export default Macros;

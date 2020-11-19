@@ -63,7 +63,7 @@ class Updater {
   constructor() {
     this.COURSE_MODEL = 'course';
     this.SECTION_MODEL = 'section';
-    this.SEM_TO_UPDATE = '202110';
+    this.SEM_TO_UPDATE = '202130';
   }
 
   // TODO must call this in server
@@ -93,10 +93,6 @@ class Updater {
 
     const classHashes: string[] = Object.keys(classHashToUsers);
     const sectionHashes: string[] = Object.keys(sectionHashToUsers);
-
-    if (classHashes.length === 0 && sectionHashes.length === 0) {
-      return;
-    }
 
     macros.log('watching classes ', classHashes.length);
 

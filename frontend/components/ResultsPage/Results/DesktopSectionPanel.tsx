@@ -72,7 +72,7 @@ function DesktopSectionPanel({ section, showNotificationSwitches } : DesktopSect
           : getMeetings(section)}
       </td>
       <td>
-        Boston
+        {section.campus}
       </td>
       <td>
         <span className={ getSeatsClass() }>

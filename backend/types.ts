@@ -82,6 +82,7 @@ export interface Section {
   waitCapacity: number,
   waitRemaining: number,
   online: boolean,
+  campus: string,
   honors: boolean,
   url: string,
   profs: string[],

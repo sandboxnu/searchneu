@@ -15,8 +15,8 @@ describe('sectionParser', () => {
     expect(cs2500Section.honors).toBeFalsy();
   });
 
-  it('should detect online', () => {
-    expect(chem2311Section.online).toBeTruthy();
-    expect(cs2500Section.online).toBeFalsy();
+  it('should detect campus', () => {
+    expect(chem2311Section.campus).toBe('Online');
+    expect(cs2500Section.campus).toBe('Boston');
   });
 });

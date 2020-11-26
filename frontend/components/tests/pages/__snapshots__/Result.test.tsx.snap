@@ -54,7 +54,6 @@ exports[`should render a section 1`] = `
             },
             "classType": Array [],
             "nupath": Array [],
-            "online": false,
             "subject": Array [],
           }
         }

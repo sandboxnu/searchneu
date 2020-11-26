@@ -43,7 +43,6 @@ Object {
       "where": "TBA",
     },
   ],
-  "online": true,
   "profs": Array [
     "Oyindasola Oyelaran",
   ],
@@ -93,7 +92,6 @@ Object {
       "where": "East Village 024",
     },
   ],
-  "online": false,
   "profs": Array [
     "Alan Mislove",
   ],

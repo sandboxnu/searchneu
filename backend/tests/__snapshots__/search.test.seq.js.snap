@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`searcher generateMQuery generates aggs with online filters applied 1`] = `
+exports[`searcher generateMQuery generates aggs with campus filters applied 1`] = `
 Array [
   Object {
     "aggregations": undefined,
@@ -14,11 +14,6 @@ Array [
                 "bool": Object {
                   "must": Array [
                     Object {
-                      "term": Object {
-                        "sections.online": true,
-                      },
-                    },
-                    Object {
                       "exists": Object {
                         "field": "sections",
                       },
@@ -26,6 +21,14 @@ Array [
                     Object {
                       "term": Object {
                         "class.termId": "202030",
+                      },
+                    },
+                    Object {
+                      "terms": Object {
+                        "sections.campus.keyword": Array [
+                          "Online",
+                          "Boston",
+                        ],
                       },
                     },
                   ],
@@ -83,11 +86,6 @@ Array [
                 "bool": Object {
                   "must": Array [
                     Object {
-                      "term": Object {
-                        "sections.online": true,
-                      },
-                    },
-                    Object {
                       "exists": Object {
                         "field": "sections",
                       },
@@ -95,6 +93,14 @@ Array [
                     Object {
                       "term": Object {
                         "class.termId": "202030",
+                      },
+                    },
+                    Object {
+                      "terms": Object {
+                        "sections.campus.keyword": Array [
+                          "Online",
+                          "Boston",
+                        ],
                       },
                     },
                   ],
@@ -152,11 +158,6 @@ Array [
                 "bool": Object {
                   "must": Array [
                     Object {
-                      "term": Object {
-                        "sections.online": true,
-                      },
-                    },
-                    Object {
                       "exists": Object {
                         "field": "sections",
                       },
@@ -164,6 +165,14 @@ Array [
                     Object {
                       "term": Object {
                         "class.termId": "202030",
+                      },
+                    },
+                    Object {
+                      "terms": Object {
+                        "sections.campus.keyword": Array [
+                          "Online",
+                          "Boston",
+                        ],
                       },
                     },
                   ],
@@ -221,10 +230,77 @@ Array [
                 "bool": Object {
                   "must": Array [
                     Object {
-                      "term": Object {
-                        "sections.online": true,
+                      "exists": Object {
+                        "field": "sections",
                       },
                     },
+                    Object {
+                      "term": Object {
+                        "class.termId": "202030",
+                      },
+                    },
+                    Object {
+                      "terms": Object {
+                        "sections.campus.keyword": Array [
+                          "Online",
+                          "Boston",
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+        "must": Object {
+          "multi_match": Object {
+            "fields": Array [
+              "class.name^2",
+              "class.name.autocomplete",
+              "class.subject^4",
+              "class.classId^3",
+              "sections.profs",
+              "sections.crn",
+              "employee.name^2",
+              "employee.emails",
+              "employee.phone",
+            ],
+            "query": "fundies",
+            "type": "most_fields",
+          },
+        },
+      },
+    },
+    "size": 0,
+    "sort": Array [
+      "_score",
+      Object {
+        "class.classId.keyword": Object {
+          "order": "asc",
+          "unmapped_type": "keyword",
+        },
+      },
+    ],
+  },
+  Object {
+    "aggregations": Object {
+      "campus": Object {
+        "terms": Object {
+          "field": "sections.campus.keyword",
+          "size": 1000,
+        },
+      },
+    },
+    "from": 0,
+    "query": Object {
+      "bool": Object {
+        "filter": Object {
+          "bool": Object {
+            "should": Array [
+              Object {
+                "bool": Object {
+                  "must": Array [
                     Object {
                       "exists": Object {
                         "field": "sections",
@@ -236,6 +312,11 @@ Array [
                       },
                     },
                   ],
+                },
+              },
+              Object {
+                "term": Object {
+                  "type": "employee",
                 },
               },
             ],
@@ -481,6 +562,75 @@ Array [
       "classType": Object {
         "terms": Object {
           "field": "sections.classType.keyword",
+          "size": 1000,
+        },
+      },
+    },
+    "from": 0,
+    "query": Object {
+      "bool": Object {
+        "filter": Object {
+          "bool": Object {
+            "should": Array [
+              Object {
+                "bool": Object {
+                  "must": Array [
+                    Object {
+                      "exists": Object {
+                        "field": "sections",
+                      },
+                    },
+                    Object {
+                      "term": Object {
+                        "class.termId": "202030",
+                      },
+                    },
+                  ],
+                },
+              },
+              Object {
+                "term": Object {
+                  "type": "employee",
+                },
+              },
+            ],
+          },
+        },
+        "must": Object {
+          "multi_match": Object {
+            "fields": Array [
+              "class.name^2",
+              "class.name.autocomplete",
+              "class.subject^4",
+              "class.classId^3",
+              "sections.profs",
+              "sections.crn",
+              "employee.name^2",
+              "employee.emails",
+              "employee.phone",
+            ],
+            "query": "fundies",
+            "type": "most_fields",
+          },
+        },
+      },
+    },
+    "size": 0,
+    "sort": Array [
+      "_score",
+      Object {
+        "class.classId.keyword": Object {
+          "order": "asc",
+          "unmapped_type": "keyword",
+        },
+      },
+    ],
+  },
+  Object {
+    "aggregations": Object {
+      "campus": Object {
+        "terms": Object {
+          "field": "sections.campus.keyword",
           "size": 1000,
         },
       },

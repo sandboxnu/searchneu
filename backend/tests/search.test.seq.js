@@ -11,8 +11,8 @@ describe('searcher', () => {
       expect(searcher.generateMQuery('fundies', '202030', 0, 10, {})).toMatchSnapshot();
     });
 
-    it('generates aggs with online filters applied', () => {
-      expect(searcher.generateMQuery('fundies', '202030', 0, 10, { online: true })).toMatchSnapshot();
+    it('generates aggs with campus filters applied', () => {
+      expect(searcher.generateMQuery('fundies', '202030', 0, 10, { campus: ['Online', 'Boston'] })).toMatchSnapshot();
     });
   });
 
@@ -34,6 +34,7 @@ describe('searcher', () => {
         college: 'GS Col of Arts',
         subject: 'CS',
         online: false,
+        campus: ['Boston'],
         classType: ['Lecture'],
         inValidFilterKey: '',
       };
@@ -44,7 +45,7 @@ describe('searcher', () => {
       const validFilters = {
         nupath: ['NU Core/NUpath Adv Writ Dscpl', 'NUpath Interpreting Culture'],
         subject: ['ENGW', 'ARTG', 'CS'],
-        online: true,
+        campus: ['Boston'],
         classType: ['Lecture'],
       };
       expect(searcher.validateFilters(validFilters)).toMatchObject(validFilters);
@@ -94,6 +95,7 @@ describe('searcher', () => {
           seatsCapacity: 80,
           seatsRemaining: 0,
           classType: 'Lecture',
+          campus: 'Seattle, WA',
         },
       });
       await prisma.section.create({
@@ -103,6 +105,7 @@ describe('searcher', () => {
           seatsCapacity: 40,
           seatsRemaining: 0,
           classType: 'Lecture',
+          campus: 'Boston',
         },
       });
     });

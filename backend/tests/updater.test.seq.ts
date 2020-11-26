@@ -99,7 +99,7 @@ describe('Updater', () => {
   };
 
   const defaultSectionProps = {
-    online: false, honors: false, url: 'url', profs: [], meetings: [],
+    campus: 'Boston', honors: false, url: 'url', profs: [], meetings: [],
   };
 
   const FUNDIES_ONE: CourseType = {

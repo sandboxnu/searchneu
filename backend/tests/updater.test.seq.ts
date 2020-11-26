@@ -135,7 +135,6 @@ describe('Updater', () => {
     seatsRemaining: 1,
     waitCapacity: 0,
     waitRemaining: 0,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };
@@ -149,7 +148,6 @@ describe('Updater', () => {
     seatsRemaining: 5,
     waitCapacity: 10,
     waitRemaining: 5,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };
@@ -163,7 +161,6 @@ describe('Updater', () => {
     seatsRemaining: 0,
     waitCapacity: 10,
     waitRemaining: 3,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };
@@ -177,7 +174,6 @@ describe('Updater', () => {
     seatsRemaining: 1,
     waitCapacity: 0,
     waitRemaining: 0,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };
@@ -191,7 +187,6 @@ describe('Updater', () => {
     seatsRemaining: 10,
     waitCapacity: 0,
     waitRemaining: 0,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };
@@ -205,7 +200,6 @@ describe('Updater', () => {
     seatsRemaining: 25,
     waitCapacity: 0,
     waitRemaining: 0,
-    campus: 'Boston',
     ...defaultClassProps,
     ...defaultSectionProps,
   };

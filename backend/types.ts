@@ -81,7 +81,6 @@ export interface Section {
   seatsRemaining: number,
   waitCapacity: number,
   waitRemaining: number,
-  online: boolean,
   campus: string,
   honors: boolean,
   url: string,

@@ -75,11 +75,6 @@ class Searcher {
       return { terms: { 'class.subject.keyword': selectedSubjects } };
     };
 
-    // note that { online: false } is never in filters
-    const getOnlineFilter = (selectedOnlineOption: boolean): TermQuery => {
-      return { term: { 'sections.online': selectedOnlineOption } };
-    };
-
     const getClassTypeFilter = (selectedClassTypes: string[]): TermsQuery => {
       return { terms: { 'sections.classType.keyword': selectedClassTypes } };
     };
@@ -99,7 +94,6 @@ class Searcher {
     return {
       nupath: { validate: isStringArray, create: getNUpathFilter, agg: 'class.nupath.keyword' },
       subject: { validate: isStringArray, create: getSubjectFilter, agg: 'class.subject.keyword' },
-      online: { validate: isTrue, create: getOnlineFilter, agg: false },
       classType: { validate: isStringArray, create: getClassTypeFilter, agg: 'sections.classType.keyword' },
       sectionsAvailable: { validate: isTrue, create: getSectionsAvailableFilter, agg: false },
       classIdRange: { validate: isRange, create: getRangeFilter, agg: false },

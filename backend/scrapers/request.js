@@ -75,6 +75,9 @@ const separateReqPools = {
   // Usually takes just under 1 hr at 1k sockets and the same timeouts.
   // Took around 20 min with timeouts set to 100ms and 150ms and 100 sockets.
   'wl11gp.neu.edu':  { maxSockets: 100, keepAlive: true, maxFreeSockets: 100 },
+
+  // Increase the number of sockets for Banner v9
+  'nubanner.neu.edu': { maxSockets: 100, keepAlive: true, maxFreeSockets: 100 },
 };
 
 // Enable the DNS cache. This module replaces the .lookup method on the built in dns module to cache lookups.

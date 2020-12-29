@@ -25,6 +25,7 @@ class TermParser {
     const subjectTable = await getSubjectDescriptions(termId);
     const sections = await this.parseSections(termId);
     const courseIdentifiers = {};
+
     sections.forEach((section) => {
       const subject = section.subject;
       const classId = section.classId;
@@ -35,18 +36,7 @@ class TermParser {
 
     const classes = await pMap(Object.values(courseIdentifiers), ({ subject, classId }) => {
       return ClassParser.parseClass(termId, subject, classId);
-    }, { concurrency: 500 });
-    const refsPerCourse = classes.map((c) => ClassParser.getAllCourseRefs(c));
-    const courseRefs = Object.assign({}, ...refsPerCourse);
-    await pMap(Object.keys(courseRefs), async (ref) => {
-      if (!(ref in courseIdentifiers)) {
-        const { subject, classId } = courseRefs[ref];
-        const referredClass = await ClassParser.parseClass(termId, subject, classId);
-        if (referredClass) {
-          classes.push(referredClass);
-        }
-      }
-    }, { concurrency: 500 });
+    }, { concurrency: 100 });
 
     macros.log(`scraped ${classes.length} classes and ${sections.length} sections`);
     return { classes, sections, subjects: subjectTable };

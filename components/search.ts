@@ -101,6 +101,7 @@ class Search {
           termId: termId,
           minIndex: String(existingTermCount),
           maxIndex: String(termCount),
+          apiVersion: String(apiVersion),
           filters: stringFilters,
         }).toString()
     ).toString();

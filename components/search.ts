@@ -94,7 +94,7 @@ class Search {
     macros.log('Requesting terms ', existingTermCount, 'to', termCount);
 
     const url = new URL(
-      'https://searchneu.com/search' +
+      'https://searchneu.com/search?' +
         new URLSearchParams({
           // TODO: is this how we're gonna access the api in the future?
           query: query,

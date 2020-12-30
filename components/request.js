@@ -3,8 +3,6 @@
  * See the license file in the root folder for details.
  */
 
-import URI from 'urijs';
-
 import retry from 'async-retry';
 import macros from './macros';
 
@@ -93,7 +91,7 @@ class Request {
       }
 
       // Add the session token to the request.
-      const url = new URI(config.url);
+      const url = new URL(config.url);
       xmlhttp.open(config.method, url.toString(), true);
 
       if (config.method === 'POST') {

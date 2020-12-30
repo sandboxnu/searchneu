@@ -4,7 +4,6 @@
  */
 
 import _ from 'lodash';
-import URI from 'urijs';
 import macros from './macros';
 import request from './request';
 import {
@@ -94,17 +93,17 @@ class Search {
     // If we got here, we need to hit the network.
     macros.log('Requesting terms ', existingTermCount, 'to', termCount);
 
-    const url = new URI('https://searchneu.com/search')
-      .query({
-        // TODO: is this how we're gonna access the api in the future?
-        query: query,
-        termId: termId,
-        minIndex: existingTermCount,
-        maxIndex: termCount,
-        apiVersion: apiVersion,
-        filters: stringFilters,
-      })
-      .toString();
+    const url = new URL(
+      'https://searchneu.com/search' +
+        new URLSearchParams({
+          // TODO: is this how we're gonna access the api in the future?
+          query: query,
+          termId: termId,
+          minIndex: String(existingTermCount),
+          maxIndex: String(termCount),
+          filters: stringFilters,
+        }).toString()
+    ).toString();
 
     // gets results
     const startTime = Date.now();

@@ -1,0 +1,36 @@
+query getClassPageInfo($subject: String!, $classId: String!) {
+  class(subject: $subject, classId: $classId) {
+    name
+    subject
+    classId
+    latestOccurrence {
+      desc
+      prereqs
+      coreqs
+      prereqsFor
+      optPrereqsFor
+      maxCredits
+      minCredits
+      classAttributes
+      url
+      lastUpdateTime
+      nupath
+      host
+    }
+    allOccurrences {
+      termId
+      sections {
+        classType
+        crn
+        seatsCapacity
+        seatsRemaining
+        waitCapacity
+        waitRemaining
+        campus
+        profs
+        meetings
+        lastUpdateTime
+      }
+    }
+  }
+}

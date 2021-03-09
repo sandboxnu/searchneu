@@ -197,6 +197,59 @@ export enum CacheControlScope {
   Private = 'PRIVATE',
 }
 
+export type GetClassPageInfoQueryVariables = Exact<{
+  subject: Scalars['String'];
+  classId: Scalars['String'];
+}>;
+
+export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
+  class?: Maybe<
+    { __typename?: 'Class' } & Pick<Class, 'name' | 'subject' | 'classId'> & {
+        latestOccurrence?: Maybe<
+          { __typename?: 'ClassOccurrence' } & Pick<
+            ClassOccurrence,
+            | 'desc'
+            | 'prereqs'
+            | 'coreqs'
+            | 'prereqsFor'
+            | 'optPrereqsFor'
+            | 'maxCredits'
+            | 'minCredits'
+            | 'classAttributes'
+            | 'url'
+            | 'lastUpdateTime'
+            | 'nupath'
+            | 'host'
+          >
+        >;
+        allOccurrences: Array<
+          Maybe<
+            { __typename?: 'ClassOccurrence' } & Pick<
+              ClassOccurrence,
+              'termId'
+            > & {
+                sections: Array<
+                  { __typename?: 'Section' } & Pick<
+                    Section,
+                    | 'classType'
+                    | 'crn'
+                    | 'seatsCapacity'
+                    | 'seatsRemaining'
+                    | 'waitCapacity'
+                    | 'waitRemaining'
+                    | 'campus'
+                    | 'profs'
+                    | 'meetings'
+                    | 'lastUpdateTime'
+                  >
+                >;
+              }
+          >
+        >;
+      }
+  >;
+};
+
 export type SearchResultsQueryVariables = Exact<{
   termId: Scalars['Int'];
   query?: Maybe<Scalars['String']>;
@@ -341,6 +394,44 @@ export type GetPagesForSitemapQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export const GetClassPageInfoDocument = gql`
+  query getClassPageInfo($subject: String!, $classId: String!) {
+    class(subject: $subject, classId: $classId) {
+      name
+      subject
+      classId
+      latestOccurrence {
+        desc
+        prereqs
+        coreqs
+        prereqsFor
+        optPrereqsFor
+        maxCredits
+        minCredits
+        classAttributes
+        url
+        lastUpdateTime
+        nupath
+        host
+      }
+      allOccurrences {
+        termId
+        sections {
+          classType
+          crn
+          seatsCapacity
+          seatsRemaining
+          waitCapacity
+          waitRemaining
+          campus
+          profs
+          meetings
+          lastUpdateTime
+        }
+      }
+    }
+  }
+`;
 export const SearchResultsDocument = gql`
   query searchResults(
     $termId: Int!
@@ -476,6 +567,18 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper
 ) {
   return {
+    getClassPageInfo(
+      variables: GetClassPageInfoQueryVariables,
+      requestHeaders?: Headers
+    ): Promise<GetClassPageInfoQuery> {
+      return withWrapper(() =>
+        client.request<GetClassPageInfoQuery>(
+          print(GetClassPageInfoDocument),
+          variables,
+          requestHeaders
+        )
+      );
+    },
     searchResults(
       variables: SearchResultsQueryVariables,
       requestHeaders?: Headers

@@ -45,6 +45,9 @@ async function generateSitemap(): Promise<string> {
         items.add(
           `${campus}/${termId}/search/${encodeURIComponent(course.name)}`
         );
+        //items.add(
+        //  `${campus}/${termId}/classPage/${course.subject}${course.classId}`
+        //);
       }
     });
   }

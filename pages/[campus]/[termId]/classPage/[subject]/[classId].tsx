@@ -28,9 +28,6 @@ export default function Page() {
   const subject = router.query.subject as string;
   const classId = router.query.classId as string;
 
-  console.log(router);
-  console.log(campus);
-
   const setSearchQuery = (q: string): void => {
     router.push(
       `/${campus}/${termId}/search/${encodeURIComponent(q)}${

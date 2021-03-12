@@ -4,18 +4,11 @@
  */
 import _ from 'lodash';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useCallback } from 'react';
+import React, { ReactElement } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
-import {
-  getAllCampusDropdownOptions,
-  getRoundedTerm,
-  getTermDropdownOptionsForCampus,
-} from '../../../../components/global';
-import FilterButton from '../../../../components/icons/FilterButton.svg';
-import Logo from '../../../../components/icons/Logo';
+import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
 import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
@@ -29,18 +22,12 @@ import {
 } from '../../../../components/ResultsPage/filters';
 import MobileSearchOverlay from '../../../../components/ResultsPage/MobileSearchOverlay';
 import ResultsLoader from '../../../../components/ResultsPage/ResultsLoader';
-import SearchBar from '../../../../components/ResultsPage/SearchBar';
-import SearchDropdown from '../../../../components/ResultsPage/SearchDropdown';
-import useAtTop from '../../../../components/ResultsPage/useAtTop';
 import useSearch, {
   SearchParams,
 } from '../../../../components/ResultsPage/useSearch';
-import { Campus, EMPTY_FILTER_OPTIONS } from '../../../../components/types';
-import { campusToColor } from '../../../../utils/campusToColor';
-import Link from 'next/link';
+import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 export default function Results(): ReactElement | null {
-  const atTop = useAtTop();
   const router = useRouter();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
   const query = (router.query.query as string) || '';
@@ -48,7 +35,6 @@ export default function Results(): ReactElement | null {
   const campus = router.query.campus as string;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
-  const allCampuses = getAllCampusDropdownOptions();
 
   const setSearchQuery = (q: string): void => {
     router.push(
@@ -57,16 +43,6 @@ export default function Results(): ReactElement | null {
       }`
     );
   };
-  const setTermAndCampus = useCallback(
-    (t: string, newCampus: string) => {
-      router.push(
-        `/${newCampus}/${t}/search/${encodeURIComponent(query)} ${
-          window.location.search
-        }`
-      );
-    },
-    [router, query]
-  );
 
   const filters: FilterSelection = _.merge(
     {},
@@ -103,89 +79,12 @@ export default function Results(): ReactElement | null {
 
   return (
     <div>
-      <Head>
-        <title>Search NEU - {query}</title>
-      </Head>
-      <div className={`Results_Header ${atTop ? 'Results_Header-top' : ''}`}>
-        <Link href={`/${campus}/${termId}`}>
-          <a className="Results__Logo--wrapper">
-            <Logo
-              className="Results__Logo"
-              aria-label="logo"
-              campus={campus as Campus}
-            />
-          </a>
-        </Link>
-        <div className="Results__spacer" />
-        {macros.isMobile && (
-          <div className="Results__mobileSearchFilterWrapper">
-            <div className="Results__searchwrapper">
-              <SearchBar
-                onSearch={setSearchQuery}
-                query={query}
-                buttonColor={campusToColor[campus]}
-              />
-            </div>
-            <FilterButton
-              className="Results__filterButton"
-              aria-label="filter-button"
-              onClick={() => {
-                if (macros.isMobile) {
-                  setShowOverlay(true);
-                }
-              }}
-            />
-          </div>
-        )}
-        {!macros.isMobile && (
-          <div className="Results__searchwrapper">
-            <SearchBar
-              onSearch={setSearchQuery}
-              query={query}
-              buttonColor={campusToColor[campus]}
-            />
-          </div>
-        )}
-        <div className="Breadcrumb_Container">
-          <div className="Breadcrumb_Container__dropDownContainer">
-            <SearchDropdown
-              options={allCampuses}
-              value={campus}
-              placeholder="Select a campus"
-              onChange={(nextCampus) => {
-                setTermAndCampus(
-                  getRoundedTerm(nextCampus as Campus, termId),
-                  nextCampus
-                );
-              }}
-              className="searchDropdown"
-              compact={false}
-            />
-          </div>
-          <span className="Breadcrumb_Container__slash">/</span>
-          <div className="Breadcrumb_Container__dropDownContainer">
-            <SearchDropdown
-              options={getTermDropdownOptionsForCampus(
-                Campus[campus.toUpperCase()]
-              )}
-              value={termId}
-              placeholder="Select a term"
-              onChange={(nextTermString) => {
-                setTermAndCampus(nextTermString, campus);
-              }}
-              className="searchDropdown"
-              compact={false}
-              key={campus}
-            />
-          </div>
-        </div>
-        {/*<Icon
-          name="setting"
-          size="large"
-          className="Notifications_Settings"
-          onClick={() => router.push('/notifications_settings')}
-        />*/}
-      </div>
+      <Header
+        router={router}
+        title={`Search NEU - ${query}`}
+        searchData={searchData}
+      ></Header>
+
       {!macros.isMobile && <FeedbackModal />}
       <div className="Results_Container">
         {!macros.isMobile && (

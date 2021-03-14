@@ -64,19 +64,6 @@ export default function Results(): ReactElement | null {
 
   const filtersAreSet: boolean = areFiltersSet(filters);
 
-  if (showOverlay && macros.isMobile) {
-    return (
-      <MobileSearchOverlay
-        query={query}
-        filterSelection={filters}
-        filterOptions={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
-        setFilterPills={setQParams}
-        setQuery={(q: string) => setSearchQuery(q)}
-        onExecute={() => setShowOverlay(false)}
-      />
-    );
-  }
-
   return (
     <div>
       <Header

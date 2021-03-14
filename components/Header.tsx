@@ -9,23 +9,23 @@ import {
   getRoundedTerm,
   getTermDropdownOptionsForCampus,
 } from '../components/global';
+import FilterButton from '../components/icons/FilterButton.svg';
+import Logo from '../components/icons/Logo';
+import macros from '../components/macros';
 import {
   DEFAULT_FILTER_SELECTION,
   FilterSelection,
   QUERY_PARAM_ENCODERS,
 } from '../components/ResultsPage/filters';
-import FilterButton from '../components/icons/FilterButton.svg';
-import Logo from '../components/icons/Logo';
-import macros from '../components/macros';
 import SearchBar from '../components/ResultsPage/SearchBar';
 import SearchDropdown from '../components/ResultsPage/SearchDropdown';
+import useAtTop from '../components/ResultsPage/useAtTop';
 import {
   Campus,
   EMPTY_FILTER_OPTIONS,
   SearchResult,
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
-import useAtTop from '../components/ResultsPage/useAtTop';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 
 type HeaderProps = {
@@ -63,7 +63,7 @@ export default function Header({
   const setTermAndCampus = useCallback(
     (t: string, newCampus: string) => {
       router.push(
-        `/${newCampus}/${t}/search/${encodeURIComponent(query)} ${
+        `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
           window.location.search
         }`
       );
@@ -79,7 +79,6 @@ export default function Header({
         filterSelection={filters}
         filterOptions={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
         setFilterPills={setQParams}
-        setQuery={(q: string) => setSearchQuery(q)}
         onExecute={() => setShowOverlay(false)}
       />
     );

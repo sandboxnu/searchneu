@@ -7,7 +7,6 @@ import { areFiltersSet, FilterOptions, FilterSelection } from './filters';
 
 /**
  * setFilterPills sets the selected filters
- * setQuery sets the search query from the searchbar
  * onExecute indicates the query should be run and we should return to the results page
  * onClose indicates the user wants to close the overlay and return to wherever we were before
  * filterSelection is the list of selected filters
@@ -16,7 +15,6 @@ import { areFiltersSet, FilterOptions, FilterSelection } from './filters';
  */
 interface MobileSearchOverlayProps {
   setFilterPills: (f: FilterSelection) => void;
-  setQuery: (q: string) => void;
   onExecute: () => void;
   filterSelection: FilterSelection;
   filterOptions: FilterOptions;
@@ -25,7 +23,6 @@ interface MobileSearchOverlayProps {
 
 export default function MobileSearchOverlay({
   setFilterPills,
-  setQuery,
   filterSelection,
   filterOptions,
   query,
@@ -49,7 +46,6 @@ export default function MobileSearchOverlay({
         document.activeElement.blur();
       }
     }
-    setQuery(controlledQuery);
     onExecute();
   };
   return (

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
-import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
+import { useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
 import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
@@ -20,7 +20,6 @@ import {
   FilterSelection,
   QUERY_PARAM_ENCODERS,
 } from '../../../../components/ResultsPage/filters';
-import MobileSearchOverlay from '../../../../components/ResultsPage/MobileSearchOverlay';
 import ResultsLoader from '../../../../components/ResultsPage/ResultsLoader';
 import useSearch, {
   SearchParams,
@@ -29,20 +28,10 @@ import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 export default function Results(): ReactElement | null {
   const router = useRouter();
-  const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
-  const campus = router.query.campus as string;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
-
-  const setSearchQuery = (q: string): void => {
-    router.push(
-      `/${campus}/${termId}/search/${encodeURIComponent(q)}${
-        window.location.search
-      }`
-    );
-  };
 
   const filters: FilterSelection = _.merge(
     {},

@@ -96,6 +96,8 @@ export type ClassOccurrence = {
   nupath: Array<Scalars['String']>;
   sections: Array<Section>;
   host: Scalars['String'];
+  feeAmount?: Maybe<Scalars['Int']>;
+  feeDescription?: Maybe<Scalars['String']>;
 };
 
 export type Section = {
@@ -271,6 +273,8 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
                   | 'classAttributes'
                   | 'url'
                   | 'lastUpdateTime'
+                  | 'feeAmount'
+                  | 'feeDescription'
                 > & { type: 'ClassOccurrence' } & {
                     sections: Array<
                       { __typename?: 'Section' } & Pick<
@@ -424,6 +428,8 @@ export const SearchResultsDocument = gql`
           classAttributes
           url
           lastUpdateTime
+          feeAmount
+          feeDescription
           sections {
             campus
             classId

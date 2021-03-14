@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import Header from '../../../../../components/Header';
+import PageContent from '../../../../../components/ClassPage/PageContent';
 
 export default function Page() {
   const router = useRouter();
@@ -12,10 +13,19 @@ export default function Page() {
 
   if (!termId || !campus) return null;
   return (
-    <Header
-      router={router}
-      title={`${subject}${classId}`}
-      searchData={null}
-    ></Header>
+    <div>
+      <Header
+        router={router}
+        title={`${subject}${classId}`}
+        searchData={null}
+      ></Header>
+
+      <PageContent
+        termId={termId}
+        campus={campus}
+        subject={subject}
+        classId={classId}
+      />
+    </div>
   );
 }

@@ -1,0 +1,33 @@
+.pageContent {
+  margin-left: 10.49%;
+  margin-top: 154px;
+
+  .backToResults {
+    height: 38px;
+    font-size: 17px;
+  }
+
+  .title {
+    height: 155px;
+    top: 209px;
+    margin-top: 17px;
+    line-height: 48px;
+    display: flex;
+    align-items: center;
+
+    .titleItems {
+      display: flex;
+      flex-direction: column;
+
+      .classCode {
+        font-size: 40px;
+        font-weight: 700;
+      }
+
+      .className {
+        font-size: 38px;
+        font-weight: 400;
+      }
+    }
+  }
+}

@@ -18,24 +18,14 @@ interface MobileSearchOverlayProps {
   onExecute: () => void;
   filterSelection: FilterSelection;
   filterOptions: FilterOptions;
-  query: string;
 }
 
 export default function MobileSearchOverlay({
   setFilterPills,
   filterSelection,
   filterOptions,
-  query,
   onExecute,
 }: MobileSearchOverlayProps): ReactElement {
-  // controlledQuery represents what's typed into the searchbar - even BEFORE enter is hit
-  const [controlledQuery, setControlledQuery] = useState(query);
-
-  // Keep the controlledQuery in sync with the query prop (eg. browser popState)
-  useEffect(() => {
-    setControlledQuery(query);
-  }, [query]);
-
   // Hide keyboard and execute search
   const search = (): void => {
     if (macros.isMobile) {

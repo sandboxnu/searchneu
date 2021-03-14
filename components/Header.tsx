@@ -60,13 +60,13 @@ export default function Header({
       }`
     );
   };
+  // Now excluding query filter params when term/campus change
   const setTermAndCampus = useCallback(
     (t: string, newCampus: string) => {
-      router.push(
-        `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
-          window.location.search
-        }`
-      );
+      const paths = window.location.pathname.split('/');
+      paths[1] = newCampus;
+      paths[2] = t;
+      router.push(paths.join('/'));
     },
     [router, query]
   );
@@ -75,7 +75,6 @@ export default function Header({
   if (showOverlay && macros.isMobile) {
     return (
       <MobileSearchOverlay
-        query={query}
         filterSelection={filters}
         filterOptions={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
         setFilterPills={setQParams}

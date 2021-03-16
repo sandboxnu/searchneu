@@ -35,7 +35,7 @@ export default function RangeFilter({
               setControlledInput({
                 min: macros.isNumeric(event.target.value)
                   ? Number(event.target.value)
-                  : null,
+                  : '',
                 max: controlledInput.max,
               })
             }
@@ -52,7 +52,7 @@ export default function RangeFilter({
                 min: controlledInput.min,
                 max: macros.isNumeric(event.target.value)
                   ? Number(event.target.value)
-                  : null,
+                  : '',
               })
             }
           />

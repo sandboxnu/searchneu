@@ -19,11 +19,7 @@ function FilterPanel({
   return (
     <div className="FilterPanel">
       {FILTERS_IN_ORDER.map(({ key, display, category }, index) => {
-        let aFilter;
-        aFilter = selected[key];
-        if (key === 'classIdRange') {
-          aFilter = { min: null, max: null };
-        }
+        const aFilter = selected[key];
         const setActiveFilter = (a): void => setActive({ [key]: a });
         return (
           <React.Fragment key={index}>

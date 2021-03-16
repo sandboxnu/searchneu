@@ -251,10 +251,10 @@ exports[`should render a section 1`] = `
                     </div>
                     <div className=\\"RangeFilter__input\\">
                       <div className=\\"RangeFilter__range-min\\">
-                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Min\\" value={{...}} onChange={[Function: onChange]} />
+                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Min\\" value=\\"\\" onChange={[Function: onChange]} />
                       </div>
                       <div className=\\"RangeFilter__range-max\\">
-                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Max\\" value={{...}} onChange={[Function: onChange]} />
+                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Max\\" value=\\"\\" onChange={[Function: onChange]} />
                       </div>
                       <div role=\\"button\\" tabIndex={0} className=\\"RangeFilter__apply-input\\" onClick={[Function: onClick]}>
                         <p>

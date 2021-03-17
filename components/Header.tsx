@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
@@ -47,11 +47,7 @@ export default function Header({
   const campus = router.query.campus as string;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
-  const filters: FilterSelection = _.merge(
-    {},
-    DEFAULT_FILTER_SELECTION,
-    qParams
-  );
+  const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
 
   const setSearchQuery = (q: string): void => {
     router.push(

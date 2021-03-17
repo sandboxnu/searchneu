@@ -5,6 +5,12 @@
   .backToResults {
     height: 38px;
     font-size: 17px;
+    cursor: pointer;
+    color: #009fda;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .title {

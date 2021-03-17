@@ -1,32 +1,33 @@
+import { NextRouter, useRouter } from 'next/router';
 import React from 'react';
+import { GetClassPageInfoQuery } from '../../generated/graphql';
 
 type PageContentProps = {
-  termId: string;
-  campus: string;
   subject: string;
   classId: string;
+  classPageInfo: GetClassPageInfoQuery;
 };
 
 export default function PageContent({
-  termId,
-  campus,
   subject,
   classId,
+  classPageInfo,
 }: PageContentProps) {
+  const router = useRouter();
+
   return (
     <div className="pageContent">
-      {/* TODO: make this link take the user back to the search results page */}
-      <a className="backToResults" href="">
+      <span className="backToResults" onClick={() => router.back()}>
         Back to Search Results
-      </a>
-
-      <div className="title">
-        <div className="titleItems">
-          <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
-          {/* TODO: get the actual class name */}
-          <h2 className="className">{`Class Name`}</h2>
+      </span>
+      {classPageInfo && (
+        <div className="title">
+          <div className="titleItems">
+            <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
+            <h2 className="className">{classPageInfo.class.name}</h2>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

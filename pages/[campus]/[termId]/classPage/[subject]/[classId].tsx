@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import Header from '../../../../../../components/Header';
-import PageContent from '../../../../../../components/ClassPage/PageContent';
-import { gqlClient } from '../../../../../../utils/courseAPIClient';
-import { GetClassPageInfoQuery } from '../../../../../../generated/graphql';
+import PageContent from '../../../../../components/ClassPage/PageContent';
+import Header from '../../../../../components/Header';
+import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
+import { gqlClient } from '../../../../../utils/courseAPIClient';
 
 export default function Page() {
   const router = useRouter();
@@ -12,7 +12,6 @@ export default function Page() {
   const campus = router.query.campus as string;
   const subject = router.query.subject as string;
   const classId = router.query.classId as string;
-  const query = (router.query.query as string) || '';
 
   if (!termId || !campus) return null;
 

@@ -92,10 +92,13 @@ export type ClassOccurrence = {
   minCredits?: Maybe<Scalars['Int']>;
   classAttributes: Array<Scalars['String']>;
   url: Scalars['String'];
+  prettyUrl?: Maybe<Scalars['String']>;
   lastUpdateTime?: Maybe<Scalars['Float']>;
   nupath: Array<Scalars['String']>;
   sections: Array<Section>;
   host: Scalars['String'];
+  feeAmount?: Maybe<Scalars['Int']>;
+  feeDescription?: Maybe<Scalars['String']>;
 };
 
 export type Section = {
@@ -217,6 +220,7 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
             | 'minCredits'
             | 'classAttributes'
             | 'url'
+            | 'prettyUrl'
             | 'lastUpdateTime'
             | 'nupath'
             | 'host'
@@ -323,6 +327,7 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
                   | 'minCredits'
                   | 'classAttributes'
                   | 'url'
+                  | 'prettyUrl'
                   | 'lastUpdateTime'
                 > & { type: 'ClassOccurrence' } & {
                     sections: Array<
@@ -410,6 +415,7 @@ export const GetClassPageInfoDocument = gql`
         minCredits
         classAttributes
         url
+        prettyUrl
         lastUpdateTime
         nupath
         host
@@ -514,6 +520,7 @@ export const SearchResultsDocument = gql`
           minCredits
           classAttributes
           url
+          prettyUrl
           lastUpdateTime
           sections {
             campus

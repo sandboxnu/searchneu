@@ -1,14 +1,11 @@
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { Markup } from 'interweave';
 import { cloneDeep } from 'lodash';
 import dynamic from 'next/dynamic';
 import React, { ReactElement, useMemo, useState } from 'react';
 import useUser from '../../../utils/useUser';
-import { notMostRecentTerm } from '../../global';
+import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
-import IconGlobe from '../../icons/IconGlobe';
 import Keys from '../../Keys';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
@@ -21,15 +18,9 @@ const SignUpForNotifications = dynamic(
   { ssr: false }
 );
 
-dayjs.extend(relativeTime);
-
 interface SearchResultProps {
   course: Course;
 }
-
-const getLastUpdateString = (course: Course): string => {
-  return course.lastUpdateTime ? dayjs(course.lastUpdateTime).fromNow() : null;
-};
 
 const sortSections = (sections: Section[]): Section[] => {
   const sortedSections = cloneDeep(sections);
@@ -71,17 +62,11 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
           <span className="SearchResult__header--classTitle">
             {course.subject} {course.classId}: {course.name}
           </span>
-          <div className="SearchResult__header--sub">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              data-tip={`View on ${course.host}`}
-              href={course.prettyUrl}
-            >
-              <IconGlobe />
-            </a>
-            <span>{`Updated ${getLastUpdateString(course)}`}</span>
-          </div>
+          <LastUpdated
+            host={course.host}
+            prettyUrl={course.prettyUrl}
+            lastUpdateTime={course.lastUpdateTime}
+          ></LastUpdated>
         </div>
         <span className="SearchResult__header--creditString">
           {creditsString()}
@@ -213,11 +198,11 @@ export function MobileSearchResult({
         <div className="MobileSearchResult__panel">
           <div className="MobileSearchResult__panel--mainContainer">
             <div className="MobileSearchResult__panel--infoStrings">
-              <a
-                href={course.prettyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >{`Updated ${getLastUpdateString(course)}`}</a>
+              <LastUpdatedMobile
+                host={course.host}
+                prettyUrl={course.prettyUrl}
+                lastUpdateTime={course.lastUpdateTime}
+              ></LastUpdatedMobile>
               <span>{creditsString()}</span>
             </div>
             <div

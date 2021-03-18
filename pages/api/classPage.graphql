@@ -13,6 +13,7 @@ query getClassPageInfo($subject: String!, $classId: String!) {
       minCredits
       classAttributes
       url
+      prettyUrl
       lastUpdateTime
       nupath
       host

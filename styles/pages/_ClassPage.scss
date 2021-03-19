@@ -1,6 +1,7 @@
 .pageContent {
   margin-left: 10.49%;
   margin-top: 154px;
+  width: 80vw;
 
   .backToResults {
     height: 38px;
@@ -35,5 +36,10 @@
         font-weight: 400;
       }
     }
+  }
+
+  .horizontalLine {
+    background-color: #979797;
+    height: 1px;
   }
 }

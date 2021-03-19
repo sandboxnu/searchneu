@@ -1,4 +1,4 @@
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { LastUpdated } from '../common/LastUpdated';
@@ -21,21 +21,42 @@ export default function PageContent({
       <span className="backToResults" onClick={() => router.back()}>
         Back to Search Results
       </span>
-      {classPageInfo && (
-        <div className="title">
-          <div className="titleItems">
-            <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
-            <h2 className="className">{classPageInfo.class.name}</h2>
-            <LastUpdated
-              host={classPageInfo.class.latestOccurrence.host}
-              prettyUrl={classPageInfo.class.latestOccurrence.prettyUrl}
-              lastUpdateTime={
-                classPageInfo.class.latestOccurrence.lastUpdateTime
-              }
-            ></LastUpdated>
+      {classPageInfo &&
+        (classPageInfo.class ? (
+          <div className="classPageInfoContent">
+            {getClassPageInfoHeader(subject, classId, classPageInfo)}
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
+            <div className="horizontalLine" />
           </div>
-        </div>
-      )}
+        ) : (
+          <p>This class page does not exist :(</p>
+        ))}
     </div>
+  );
+}
+
+function getClassPageInfoHeader(subject, classId, classPageInfo) {
+  return (
+    <>
+      <div className="title">
+        <div className="titleItems">
+          <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
+          <h2 className="className">{classPageInfo.class.name}</h2>
+          <LastUpdated
+            host={classPageInfo.class.latestOccurrence.host}
+            prettyUrl={classPageInfo.class.latestOccurrence.prettyUrl}
+            lastUpdateTime={classPageInfo.class.latestOccurrence.lastUpdateTime}
+          ></LastUpdated>
+        </div>
+      </div>
+      <div className="credits">
+        <h2>{classPageInfo.class.latestOccurrence.minCredits} Credits</h2>
+      </div>
+    </>
   );
 }

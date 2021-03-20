@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement } from 'react';
 import IconGlobe from '../icons/IconGlobe';
 
 dayjs.extend(relativeTime);
@@ -19,7 +19,6 @@ export function LastUpdated({
   const getLastUpdateString = (lastUpdateTime: number): string => {
     return lastUpdateTime ? dayjs(lastUpdateTime).fromNow() : null;
   };
-  console.log(prettyUrl);
 
   return (
     <div className="SearchResult__header--sub">

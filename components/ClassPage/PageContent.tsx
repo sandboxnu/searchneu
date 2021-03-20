@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
+import { CreditsDisplay } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 
 type PageContentProps = {
@@ -54,9 +55,11 @@ function getClassPageInfoHeader(subject, classId, classPageInfo) {
           ></LastUpdated>
         </div>
       </div>
-      <div className="credits">
-        <h2>{classPageInfo.class.latestOccurrence.minCredits} Credits</h2>
-      </div>
+
+      <CreditsDisplay
+        maxCredits={classPageInfo.class.latestOccurrence.maxCredits}
+        minCredits={classPageInfo.class.latestOccurrence.minCredits}
+      ></CreditsDisplay>
     </>
   );
 }

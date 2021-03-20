@@ -3,6 +3,10 @@ import { cloneDeep } from 'lodash';
 import dynamic from 'next/dynamic';
 import React, { ReactElement, useMemo, useState } from 'react';
 import useUser from '../../../utils/useUser';
+import {
+  CreditsDisplay,
+  CreditsDisplayMobile,
+} from '../../common/CreditsDisplay';
 import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
@@ -39,7 +43,7 @@ const sortSections = (sections: Section[]): Section[] => {
 
 export function SearchResult({ course }: SearchResultProps): ReactElement {
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
-  const { optionalDisplay, creditsString } = useResultDetail(course);
+  const { optionalDisplay } = useResultDetail(course);
 
   const { user } = useUser();
   const userIsWatchingClass = user?.followedCourses?.includes(
@@ -68,9 +72,10 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             lastUpdateTime={course.lastUpdateTime}
           ></LastUpdated>
         </div>
-        <span className="SearchResult__header--creditString">
-          {creditsString()}
-        </span>
+        <CreditsDisplay
+          maxCredits={course.maxCredits}
+          minCredits={course.minCredits}
+        ></CreditsDisplay>
       </div>
       <div className="SearchResult__panel">
         <Markup content={course.desc} />
@@ -164,7 +169,7 @@ export function MobileSearchResult({
     sortedSections
   );
 
-  const { optionalDisplay, creditsString } = useResultDetail(course);
+  const { optionalDisplay } = useResultDetail(course);
 
   const renderNUPaths = (): ReactElement => (
     // eslint-disable-next-line react/prop-types
@@ -203,7 +208,10 @@ export function MobileSearchResult({
                 prettyUrl={course.prettyUrl}
                 lastUpdateTime={course.lastUpdateTime}
               ></LastUpdatedMobile>
-              <span>{creditsString()}</span>
+              <CreditsDisplayMobile
+                maxCredits={course.maxCredits}
+                minCredits={course.minCredits}
+              ></CreditsDisplayMobile>
             </div>
             <div
               className={

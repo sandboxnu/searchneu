@@ -10,7 +10,7 @@ export default function Page() {
 
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
-  const subject = router.query.subject as string;
+  const subject = ((router.query.subject as string) || '').toUpperCase();
   const classId = router.query.classId as string;
 
   if (!termId || !campus) return null;

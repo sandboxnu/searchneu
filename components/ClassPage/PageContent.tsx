@@ -1,35 +1,53 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import { CreditsDisplay } from '../common/CreditsDisplay';
+import {
+  creditsDescription,
+  CreditsDisplay,
+  creditsNumericDisplay,
+} from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
 import { Campus } from '../types';
 
 type PageContentProps = {
+  subject: string;
+  classId: string;
+  classPageInfo: GetClassPageInfoQuery;
+  isCoreq: boolean;
+};
+
+type ClassPageInfoProp = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
 export default function PageContent({
+  subject,
+  classId,
   classPageInfo,
+  isCoreq,
 }: PageContentProps): ReactElement {
   const router = useRouter();
 
   return (
     <div className="pageContent">
-      <span className="backToResults" onClick={() => router.back()}>
-        Back to Search Results
-      </span>
+      {isCoreq ? (
+        <h2 className="coreqHeader">
+          COREQUISITES for
+          <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
+        </h2>
+      ) : (
+        <div className="backToResults" onClick={() => router.back()}>
+          Back to Search Results
+        </div>
+      )}
+
       {classPageInfo &&
         (classPageInfo.class ? (
           <div className="classPageInfoContent">
-            <ClassPageInfoHeader
-              classPageInfo={classPageInfo}
-            ></ClassPageInfoHeader>
+            <ClassPageInfoHeader classPageInfo={classPageInfo} />
             <div className="horizontalLine" />
-            <ClassPageInfoBody
-              classPageInfo={classPageInfo}
-            ></ClassPageInfoBody>
+            <ClassPageInfoBody classPageInfo={classPageInfo} />
             <div className="horizontalLine" />
             <div className="horizontalLine" />
             <div className="horizontalLine" />
@@ -46,32 +64,43 @@ export default function PageContent({
 
 function ClassPageInfoHeader({
   classPageInfo,
-}: PageContentProps): ReactElement {
+}: ClassPageInfoProp): ReactElement {
+  const { subject, name, classId, latestOccurrence } = classPageInfo.class;
   return (
     <>
       <div className="title">
         <div className="titleItems">
-          <h1 className="classCode">{`${classPageInfo.class.subject.toUpperCase()}${
-            classPageInfo.class.classId
-          }`}</h1>
-          <h2 className="className">{classPageInfo.class.name}</h2>
-          <LastUpdated
-            host={classPageInfo.class.latestOccurrence.host}
-            prettyUrl={classPageInfo.class.latestOccurrence.prettyUrl}
-            lastUpdateTime={classPageInfo.class.latestOccurrence.lastUpdateTime}
-          ></LastUpdated>
+          <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
+          <h2 className="className">{name}</h2>
         </div>
       </div>
-
-      <CreditsDisplay
-        maxCredits={classPageInfo.class.latestOccurrence.maxCredits}
-        minCredits={classPageInfo.class.latestOccurrence.minCredits}
-      ></CreditsDisplay>
+      <div className="flex justify-space-between">
+        <LastUpdated
+          host={latestOccurrence.host}
+          prettyUrl={latestOccurrence.prettyUrl}
+          lastUpdateTime={latestOccurrence.lastUpdateTime}
+          iconHeight="24"
+          iconWidth="24"
+          className="classPageLastUpdated"
+        />
+        <div className="creditsDisplay">
+          <span className="creditsNumericDisplay">
+            {creditsNumericDisplay(
+              latestOccurrence.maxCredits,
+              latestOccurrence.minCredits
+            )}
+          </span>
+          <br></br>
+          <span className="creditsDescriptionDisplay">
+            {creditsDescription(latestOccurrence.maxCredits)}
+          </span>
+        </div>
+      </div>
     </>
   );
 }
 
-function ClassPageInfoBody({ classPageInfo }: PageContentProps): ReactElement {
+function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   return (
     <div className="classPageBody">
       <div className="classPageBodyLeft">
@@ -84,17 +113,17 @@ function ClassPageInfoBody({ classPageInfo }: PageContentProps): ReactElement {
           body={getCourseLevel(
             classPageInfo.class.latestOccurrence.termId.toString()
           )}
-        ></HeaderBody>
+        />
       </div>
       <div className="classPageBodyRight">
         <HeaderBody
           header="RECENT PROFESSORS"
           body={getProfessors(classPageInfo, 7).join(', ')}
-        ></HeaderBody>
+        />
         <HeaderBody
           header="RECENT SEMESTERS"
           body={getRecentSemesterNames(classPageInfo).join(', ')}
-        ></HeaderBody>
+        />
       </div>
     </div>
   );

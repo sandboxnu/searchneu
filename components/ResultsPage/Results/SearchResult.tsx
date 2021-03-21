@@ -70,7 +70,8 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             host={course.host}
             prettyUrl={course.prettyUrl}
             lastUpdateTime={course.lastUpdateTime}
-          ></LastUpdated>
+            className="SearchResult__header--sub"
+          />
         </div>
         <CreditsDisplay
           maxCredits={course.maxCredits}
@@ -207,11 +208,11 @@ export function MobileSearchResult({
                 host={course.host}
                 prettyUrl={course.prettyUrl}
                 lastUpdateTime={course.lastUpdateTime}
-              ></LastUpdatedMobile>
+              />
               <CreditsDisplayMobile
                 maxCredits={course.maxCredits}
                 minCredits={course.minCredits}
-              ></CreditsDisplayMobile>
+              />
             </div>
             <div
               className={

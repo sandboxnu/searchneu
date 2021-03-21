@@ -9,26 +9,32 @@ interface LastUpdatedProps {
   host: string;
   prettyUrl: string;
   lastUpdateTime: number;
+  iconHeight?: string;
+  iconWidth?: string;
+  className?: string;
+}
+
+export function getLastUpdateString(lastUpdateTime: number): string {
+  return lastUpdateTime ? dayjs(lastUpdateTime).fromNow() : null;
 }
 
 export function LastUpdated({
   host,
   prettyUrl,
   lastUpdateTime,
+  iconHeight,
+  iconWidth,
+  className,
 }: LastUpdatedProps): ReactElement {
-  const getLastUpdateString = (lastUpdateTime: number): string => {
-    return lastUpdateTime ? dayjs(lastUpdateTime).fromNow() : null;
-  };
-
   return (
-    <div className="SearchResult__header--sub">
+    <div className={className ? className : ''}>
       <a
         target="_blank"
         rel="noopener noreferrer"
         data-tip={`View on ${host}`}
         href={prettyUrl}
       >
-        <IconGlobe />
+        <IconGlobe height={iconHeight} width={iconWidth} />
       </a>
       <span>{`Updated ${getLastUpdateString(lastUpdateTime)}`}</span>
     </div>
@@ -39,10 +45,6 @@ export function LastUpdatedMobile({
   prettyUrl,
   lastUpdateTime,
 }: LastUpdatedProps): ReactElement {
-  const getLastUpdateString = (lastUpdateTime: number): string => {
-    return lastUpdateTime ? dayjs(lastUpdateTime).fromNow() : null;
-  };
-
   return (
     <a
       href={prettyUrl}

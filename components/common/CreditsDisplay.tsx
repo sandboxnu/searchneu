@@ -5,12 +5,23 @@ interface CreditsDisplayProps {
   minCredits: number;
 }
 
-const creditsString = (maxCredits: number, minCredits: number) => {
-  const creditDescriptor =
-    maxCredits > 1 || maxCredits === 0 ? 'CREDITS' : 'CREDIT';
+export function creditsDescription(maxCredits: number): string {
+  return maxCredits > 1 || maxCredits === 0 ? 'CREDITS' : 'CREDIT';
+}
+
+export function creditsNumericDisplay(
+  maxCredits: number,
+  minCredits: number
+): string {
   return maxCredits === minCredits
-    ? `${maxCredits} ${creditDescriptor}`
-    : `${minCredits}-${maxCredits} ${creditDescriptor}`;
+    ? `${maxCredits}`
+    : `${minCredits}-${maxCredits}`;
+}
+
+export const creditsString = (maxCredits: number, minCredits: number) => {
+  return `${creditsNumericDisplay(maxCredits, minCredits)} ${creditsDescription(
+    maxCredits
+  )}`;
 };
 
 export function CreditsDisplay({

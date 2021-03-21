@@ -49,9 +49,20 @@ export default function Page() {
         searchData={null}
       />
 
-      <PageContent classPageInfo={classPageInfo} />
+      <PageContent
+        subject={subject}
+        classId={classId}
+        classPageInfo={classPageInfo}
+        isCoreq={false}
+      />
       {coreqInfo.map((info, index) => (
-        <PageContent key={index} classPageInfo={info} />
+        <PageContent
+          key={index}
+          subject={subject}
+          classId={classId}
+          classPageInfo={info}
+          isCoreq={true}
+        />
       ))}
     </div>
   );

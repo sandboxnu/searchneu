@@ -1,7 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import pMap from 'p-map';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
+import { CompositeReq, CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 
@@ -18,13 +20,25 @@ export default function Page() {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
+  const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
 
   useEffect(() => {
     loadClassPageInfo();
   }, []);
 
   const loadClassPageInfo = async () => {
-    setClassPageInfo(await gqlClient.getClassPageInfo({ subject, classId }));
+    const classPage = await gqlClient.getClassPageInfo({ subject, classId });
+    // assume coreq values will never be nested
+    const coreqs: CourseReq[] = classPage.class.latestOccurrence.coreqs.values;
+
+    const coreqInfoArray = await pMap(coreqs, async (coreqVal) => {
+      return await gqlClient.getClassPageInfo({
+        subject: coreqVal.subject,
+        classId: coreqVal.classId,
+      });
+    });
+    setClassPageInfo(classPage);
+    setCoreqInfo(coreqInfoArray);
   };
 
   return (
@@ -35,11 +49,10 @@ export default function Page() {
         searchData={null}
       />
 
-      <PageContent
-        subject={subject}
-        classId={classId}
-        classPageInfo={classPageInfo}
-      />
+      <PageContent classPageInfo={classPageInfo} />
+      {coreqInfo.map((info, index) => (
+        <PageContent key={index} classPageInfo={info} />
+      ))}
     </div>
   );
 }

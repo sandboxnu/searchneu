@@ -17,6 +17,7 @@ query getClassPageInfo($subject: String!, $classId: String!) {
       lastUpdateTime
       nupath
       host
+      termId
     }
     allOccurrences {
       termId

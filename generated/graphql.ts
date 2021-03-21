@@ -224,6 +224,7 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
             | 'lastUpdateTime'
             | 'nupath'
             | 'host'
+            | 'termId'
           >
         >;
         allOccurrences: Array<
@@ -419,6 +420,7 @@ export const GetClassPageInfoDocument = gql`
         lastUpdateTime
         nupath
         host
+        termId
       }
       allOccurrences {
         termId

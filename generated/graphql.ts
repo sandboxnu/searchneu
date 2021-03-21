@@ -222,6 +222,7 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
             | 'url'
             | 'prettyUrl'
             | 'lastUpdateTime'
+            | 'feeAmount'
             | 'nupath'
             | 'host'
             | 'termId'
@@ -418,6 +419,7 @@ export const GetClassPageInfoDocument = gql`
         url
         prettyUrl
         lastUpdateTime
+        feeAmount
         nupath
         host
         termId

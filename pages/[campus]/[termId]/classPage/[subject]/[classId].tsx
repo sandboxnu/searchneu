@@ -29,7 +29,9 @@ export default function Page() {
   const loadClassPageInfo = async () => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
     // assume coreq values will never be nested
-    const coreqs: CourseReq[] = classPage.class.latestOccurrence.coreqs.values;
+    const coreqs: CourseReq[] = classPage.class
+      ? classPage.class.latestOccurrence.coreqs.values
+      : [];
 
     const coreqInfoArray = await pMap(coreqs, async (coreqVal) => {
       return await gqlClient.getClassPageInfo({

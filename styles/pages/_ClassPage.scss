@@ -54,6 +54,10 @@
     height: 1px;
   }
 
+  .verticalLine {
+    border-left: 1px solid #979797;
+  }
+
   .flex {
     display: flex;
   }
@@ -81,10 +85,47 @@
     }
   }
 
+  .classPageInfoHeader {
+    margin-bottom: 10px;
+  }
+
   .classPageBody {
+    margin-top: 60px;
+    margin-bottom: 60px;
+
     .classPageHeader {
       font-size: 22px;
       font-weight: 500;
+    }
+
+    .classPageBodyLeft {
+      width: 45%;
+    }
+
+    .classPageBodyRight {
+      width: 45%;
+    }
+
+    .headerBodyGroup {
+      margin-bottom: 60px;
+      p {
+        font-size: 16px;
+      }
+    }
+
+    .lg-text p {
+      font-size: 20px;
+    }
+
+    .avgSeatsFilled,
+    .avgSeatsAvail,
+    .avgNumSections,
+    .courseFees {
+      width: 50%;
+    }
+
+    .emptyCourseFee p {
+      color: #969696;
     }
   }
 }

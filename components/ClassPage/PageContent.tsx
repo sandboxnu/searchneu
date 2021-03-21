@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { mean } from 'lodash';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import {
   creditsDescription,
@@ -67,7 +68,7 @@ function ClassPageInfoHeader({
 }: ClassPageInfoProp): ReactElement {
   const { subject, name, classId, latestOccurrence } = classPageInfo.class;
   return (
-    <>
+    <div className="classPageInfoHeader">
       <div className="title">
         <div className="titleItems">
           <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
@@ -79,8 +80,8 @@ function ClassPageInfoHeader({
           host={latestOccurrence.host}
           prettyUrl={latestOccurrence.prettyUrl}
           lastUpdateTime={latestOccurrence.lastUpdateTime}
-          iconHeight="24"
-          iconWidth="24"
+          iconHeight="14"
+          iconWidth="14"
           className="classPageLastUpdated"
         />
         <div className="creditsDisplay">
@@ -96,25 +97,22 @@ function ClassPageInfoHeader({
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
 function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
+  const latestOccurrence = classPageInfo.class.latestOccurrence;
   return (
-    <div className="classPageBody">
+    <div className="classPageBody flex justify-space-between">
       <div className="classPageBodyLeft">
-        <HeaderBody
-          header="COURSE DESCRIPTION"
-          body={classPageInfo.class.latestOccurrence.desc}
-        />
+        <HeaderBody header="COURSE DESCRIPTION" body={latestOccurrence.desc} />
         <HeaderBody
           header="COURSE LEVEL"
-          body={getCourseLevel(
-            classPageInfo.class.latestOccurrence.termId.toString()
-          )}
+          body={getCourseLevel(latestOccurrence.termId.toString())}
         />
       </div>
+      <div className="verticalLine" />
       <div className="classPageBodyRight">
         <HeaderBody
           header="RECENT PROFESSORS"
@@ -124,17 +122,51 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
           header="RECENT SEMESTERS"
           body={getRecentSemesterNames(classPageInfo).join(', ')}
         />
+        <div className="flex justify-space-between">
+          <HeaderBody
+            className="lg-text avgSeatsFilled"
+            header="AVG SEATS FILLED"
+            body={`${Math.round(mean(seatsFilled(classPageInfo)))}`}
+          />
+          <HeaderBody
+            className="lg-text avgSeatsAvail"
+            header="AVG SEATS AVAILABLE"
+            body={`${Math.round(mean(seatsAvailable(classPageInfo)))}`}
+          />
+        </div>
+        <div className="flex justify-space-between">
+          <HeaderBody
+            className="lg-text avgNumSections"
+            header="AVG # SECTIONS"
+            body={`${Math.round(mean(numberOfSections(classPageInfo)))}`}
+          />
+          <HeaderBody
+            className={`lg-text courseFees ${
+              latestOccurrence.feeAmount ? '' : 'emptyCourseFee'
+            } `}
+            header="COURSE FEES"
+            body={
+              latestOccurrence.feeAmount
+                ? `$${latestOccurrence.feeAmount.toLocaleString()}`
+                : 'None'
+            }
+          />{' '}
+        </div>
       </div>
     </div>
   );
 }
 
-function HeaderBody({ header, body }: Record<string, string>): ReactElement {
+function HeaderBody({
+  header,
+  body,
+  className,
+}: Record<string, string>): ReactElement {
   return (
-    <>
+    <div className={`headerBodyGroup ${className ? className : ''}`}>
       <h4 className="classPageHeader">{header}</h4>
       <p>{body}</p>
-    </>
+    </div>
   );
 }
 
@@ -173,4 +205,30 @@ function getRecentSemesterNames(
     const termId = occurrence.termId.toString();
     return `${getSeason(termId)} ${getYear(termId)}`;
   });
+}
+
+function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
+  // TODO: should we filter out sections with seat capacity 9999?
+  return classPageInfo.class.allOccurrences
+    .map((occurrence) =>
+      occurrence.sections.map(
+        (section) => section.seatsCapacity - section.seatsRemaining
+      )
+    )
+    .flat();
+}
+
+function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
+  // TODO: should we filter out sections with seat capacity 9999?
+  return classPageInfo.class.allOccurrences
+    .map((occurrence) =>
+      occurrence.sections.map((section) => section.seatsCapacity)
+    )
+    .flat();
+}
+
+function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
+  return classPageInfo.class.allOccurrences.map(
+    (occurrence) => occurrence.sections.length
+  );
 }

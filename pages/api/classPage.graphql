@@ -15,6 +15,7 @@ query getClassPageInfo($subject: String!, $classId: String!) {
       url
       prettyUrl
       lastUpdateTime
+      feeAmount
       nupath
       host
       termId

@@ -80,8 +80,8 @@ function ClassPageInfoHeader({
           host={latestOccurrence.host}
           prettyUrl={latestOccurrence.prettyUrl}
           lastUpdateTime={latestOccurrence.lastUpdateTime}
-          iconHeight="14"
-          iconWidth="14"
+          iconHeight="25"
+          iconWidth="24"
           className="classPageLastUpdated"
         />
         <div className="creditsDisplay">

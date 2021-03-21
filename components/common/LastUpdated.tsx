@@ -33,10 +33,13 @@ export function LastUpdated({
         rel="noopener noreferrer"
         data-tip={`View on ${host}`}
         href={prettyUrl}
+        className="bannerPageLink"
       >
         <IconGlobe height={iconHeight} width={iconWidth} />
       </a>
-      <span>{`Updated ${getLastUpdateString(lastUpdateTime)}`}</span>
+      <span className="updatedText">{`Updated ${getLastUpdateString(
+        lastUpdateTime
+      )}`}</span>
     </div>
   );
 }

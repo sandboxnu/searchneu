@@ -1,10 +1,9 @@
+import { mean } from 'lodash';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
-import { mean } from 'lodash';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import {
   creditsDescription,
-  CreditsDisplay,
   creditsNumericDisplay,
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
@@ -116,7 +115,7 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
       <div className="classPageBodyRight">
         <HeaderBody
           header="RECENT PROFESSORS"
-          body={getProfessors(classPageInfo, 7).join(', ')}
+          body={getProfessors(classPageInfo, 10).join(', ')}
         />
         <HeaderBody
           header="RECENT SEMESTERS"

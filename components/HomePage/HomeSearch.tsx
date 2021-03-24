@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
-import { getTermDropdownOptionsForCampus } from '../global';
+import { getRoundedTerm, getTermInfoForCampus } from '../global';
 import IconGradcap from '../icons/IconGradcap';
 import IconScale from '../icons/IconScale';
 import IconTie from '../icons/IconTie';
@@ -10,18 +11,11 @@ import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
 
 interface HomeSearchProps {
-  setTermId: (s: string) => void;
   termId: string;
   campus: Campus;
-  setCampus: (c: Campus) => void;
 }
 
-const HomeSearch = ({
-  setTermId,
-  termId,
-  campus,
-  setCampus,
-}: HomeSearchProps): ReactElement => {
+const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   const router = useRouter();
   return (
     <div className="HomeSearch">
@@ -30,57 +24,49 @@ const HomeSearch = ({
           type="radio"
           id="campusSelectorNeu"
           name="CampusSelector"
-          checked={campus == Campus.NEU}
-          onChange={() => setCampus(Campus.NEU)}
+          defaultChecked={campus == Campus.NEU}
         />
-        <label
-          className="HomeSearch__campusSelector--neu"
-          htmlFor="campusSelectorNeu"
-        >
-          <IconGradcap />
-          <span>NEU</span>
-        </label>
+        <Link href={`/${Campus.NEU}/${getRoundedTerm(Campus.NEU, termId)}`}>
+          <label
+            className="HomeSearch__campusSelector--neu"
+            htmlFor="campusSelectorNeu"
+          >
+            <IconGradcap />
+            <span>NEU</span>
+          </label>
+        </Link>
         <input
           type="radio"
           id="campusSelectorCps"
           name="CampusSelector"
-          checked={campus == Campus.CPS}
-          onChange={() => setCampus(Campus.CPS)}
+          defaultChecked={campus == Campus.CPS}
         />
-        <label
-          className="HomeSearch__campusSelector--cps"
-          htmlFor="campusSelectorCps"
-        >
-          <IconTie />
-          <span>CPS</span>
-        </label>
+        <Link href={`/${Campus.CPS}/${getRoundedTerm(Campus.CPS, termId)}`}>
+          <label
+            className="HomeSearch__campusSelector--cps"
+            htmlFor="campusSelectorCps"
+          >
+            <IconTie />
+            <span>CPS</span>
+          </label>
+        </Link>
         <input
           type="radio"
           id="campusSelectorLaw"
           name="CampusSelector"
-          checked={campus == Campus.LAW}
-          onChange={() => setCampus(Campus.LAW)}
+          defaultChecked={campus == Campus.LAW}
         />
-        <label
-          className="HomeSearch__campusSelector--law"
-          htmlFor="campusSelectorLaw"
-        >
-          <IconScale />
-          <span>Law</span>
-        </label>
+        <Link href={`/${Campus.LAW}/${getRoundedTerm(Campus.LAW, termId)}`}>
+          <label
+            className="HomeSearch__campusSelector--law"
+            htmlFor="campusSelectorLaw"
+          >
+            <IconScale />
+            <span>Law</span>
+          </label>
+        </Link>
       </div>
       <div className="HomeSearch__searchBar">
-        <div className="HomeSearch__searchBar--dropdown">
-          <SearchDropdown
-            options={getTermDropdownOptionsForCampus(campus)}
-            value={termId}
-            placeholder="Fall 2020"
-            onChange={setTermId}
-            className="searchDropdown"
-            compact={false}
-            key={campus}
-          />
-        </div>
         <div className="HomeSearch__searchBar--input">
           <SearchBar
             onSearch={(q) => {
@@ -88,6 +74,19 @@ const HomeSearch = ({
             }}
             query=""
             buttonColor={campusToColor[campus]}
+          />
+        </div>
+        <div className="HomeSearch__searchBar--dropdown">
+          <SearchDropdown
+            options={getTermInfoForCampus(campus).map((terminfo) => ({
+              text: terminfo.text,
+              value: terminfo.value,
+              link: `/${campus}/${terminfo.value}`,
+            }))}
+            value={termId}
+            className="searchDropdown"
+            compact={false}
+            key={campus}
           />
         </div>
       </div>

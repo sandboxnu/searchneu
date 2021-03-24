@@ -219,7 +219,7 @@ export default function useResultDetail(
       aClass.maxCredits > 1 || aClass.maxCredits === 0 ? 'CREDITS' : 'CREDIT';
     return aClass.maxCredits === aClass.minCredits
       ? `${aClass.maxCredits} ${creditDescriptor}`
-      : `${aClass.maxCredits}-${aClass.maxCredits} ${creditDescriptor}`;
+      : `${aClass.minCredits}-${aClass.maxCredits} ${creditDescriptor}`;
   };
 
   return {

@@ -1,8 +1,15 @@
 import _ from 'lodash';
-import { DropdownItemProps } from 'semantic-ui-react';
 import { Campus } from './types';
 
-export const neuTermDropdownOptions: DropdownItemProps[] = [
+/** Information about a term */
+interface TermInfo {
+  /** Display text */
+  text: string;
+  /** Term ID */
+  value: string;
+}
+
+export const neuTerms: TermInfo[] = [
   { text: 'Summer II 2021', value: '202160' },
   { text: 'Summer Full 2021', value: '202150' },
   { text: 'Summer I 2021', value: '202140' },
@@ -11,9 +18,9 @@ export const neuTermDropdownOptions: DropdownItemProps[] = [
   { text: 'Summer I 2020', value: '202040' },
   { text: 'Summer Full 2020', value: '202050' },
   { text: 'Summer II 2020', value: '202060' },
-];
+].map((o) => ({ ...o, href: `/NEU/${o.value}` }));
 // spring 2021 CPS semester
-export const cpsTermDropdownOptions: DropdownItemProps[] = [
+export const cpsTerms: TermInfo[] = [
   { text: 'Summer 2021 Semester', value: '202154' },
   { text: 'Summer 2021 Quarter', value: '202155' },
   { text: 'Spring 2021 Semester ', value: '202134' },
@@ -23,9 +30,9 @@ export const cpsTermDropdownOptions: DropdownItemProps[] = [
   { text: 'Fall 2020 Quarter', value: '202115' },
   { text: 'Summer 2020 Semester', value: '202054' },
   { text: 'Summer 2020 Quarter', value: '202055' },
-];
+].map((o) => ({ ...o, href: `/CPS/${o.value}` }));
 
-export const lawTermDropdownOptions: DropdownItemProps[] = [
+export const lawTerms: TermInfo[] = [
   { text: 'Summer 2021 Semester', value: '202152' },
   { text: 'Summer 2021 Quarter', value: '202158' },
   { text: 'Spring 2021 Semester', value: '202132' },
@@ -35,28 +42,16 @@ export const lawTermDropdownOptions: DropdownItemProps[] = [
   { text: 'Fall 2020 Quarter', value: '202118' },
   { text: 'Summer 2020 Semester', value: '202052' },
   { text: 'Summer 2020 Quarter', value: '202058' },
-];
+].map((o) => ({ ...o, href: `/LAW/${o.value}` }));
 
-export const campusDropdownOptions: DropdownItemProps[] = [
-  { text: 'NEU', value: 'NEU' },
-  { text: 'CPS', value: 'CPS' },
-  { text: 'Law', value: 'LAW' },
-];
-
-export function getAllCampusDropdownOptions(): DropdownItemProps[] {
-  return campusDropdownOptions;
-}
-
-export function getTermDropdownOptionsForCampus(
-  c: Campus
-): DropdownItemProps[] {
+export function getTermInfoForCampus(c: Campus): TermInfo[] {
   switch (c) {
     case Campus.NEU:
-      return neuTermDropdownOptions;
+      return neuTerms;
     case Campus.CPS:
-      return cpsTermDropdownOptions;
+      return cpsTerms;
     case Campus.LAW:
-      return lawTermDropdownOptions;
+      return lawTerms;
     default:
       return [];
   }
@@ -65,11 +60,11 @@ export function getTermDropdownOptionsForCampus(
 export function getLatestTerm(c: Campus): string {
   switch (c) {
     case Campus.NEU:
-      return neuTermDropdownOptions[0].value as string;
+      return neuTerms[0].value as string;
     case Campus.CPS:
-      return cpsTermDropdownOptions[0].value as string;
+      return cpsTerms[0].value as string;
     case Campus.LAW:
-      return lawTermDropdownOptions[0].value as string;
+      return lawTerms[0].value as string;
     default:
       return '';
   }
@@ -91,10 +86,10 @@ export function getCampusByLastDigit(t: string): Campus {
 }
 
 export function greaterTermExists(
-  dropdownOptions: DropdownItemProps[],
+  terminfos: TermInfo[],
   termId: number
 ): boolean {
-  return _.some(dropdownOptions, (option) => {
+  return _.some(terminfos, (option) => {
     const diff = Number(option.value) - termId;
     return diff > 0 && diff % 10 === 0;
   });
@@ -105,11 +100,11 @@ export function notMostRecentTerm(termId: string): boolean {
   const termIdNum = Number(termId);
   switch (campus) {
     case Campus.NEU:
-      return greaterTermExists(neuTermDropdownOptions, termIdNum);
+      return greaterTermExists(neuTerms, termIdNum);
     case Campus.CPS:
-      return greaterTermExists(cpsTermDropdownOptions, termIdNum);
+      return greaterTermExists(cpsTerms, termIdNum);
     case Campus.LAW:
-      return greaterTermExists(lawTermDropdownOptions, termIdNum);
+      return greaterTermExists(lawTerms, termIdNum);
     default:
       throw new Error('Unrecognized campus type.');
   }
@@ -121,8 +116,8 @@ function getSecondToLastDigit(s: string): string {
 
 function tryGetMatchingSecondToLastDigitOption(
   secondToLast: string,
-  options: DropdownItemProps[]
-): DropdownItemProps | undefined {
+  options: TermInfo[]
+): TermInfo | undefined {
   for (const option of options) {
     const secondToLastOfOption = getSecondToLastDigit(option.value as string);
     if (secondToLast === secondToLastOfOption) {
@@ -140,7 +135,7 @@ export function getRoundedTerm(nextCampus: Campus, prevTerm: string): string {
   const secondToLast = getSecondToLastDigit(prevTerm);
 
   // know the options of the new campus
-  const options = getTermDropdownOptionsForCampus(nextCampus);
+  const options = getTermInfoForCampus(nextCampus);
 
   // search in there for the value where the second to last digit
   const result = tryGetMatchingSecondToLastDigitOption(secondToLast, options);
@@ -160,16 +155,11 @@ export function getRoundedTerm(nextCampus: Campus, prevTerm: string): string {
 // Get the name version of a term id
 export function getTermName(termId: string): string {
   // gather all termId to term name mappings
-  const allTermMappings = [
-    ...neuTermDropdownOptions,
-    ...cpsTermDropdownOptions,
-    ...lawTermDropdownOptions,
-  ];
+  const allTermMappings = [...neuTerms, ...cpsTerms, ...lawTerms];
   // return first instance of the termId matching a termId in a id-name mapping
-  const termName: Record<string, string> = allTermMappings.find(
-    (termMapping: Record<string, string>): boolean =>
-      termMapping['value'] === termId
+  const termName: TermInfo = allTermMappings.find(
+    (termMapping: TermInfo): boolean => termMapping.value === termId
   );
 
-  return termName && termName['text'];
+  return termName && termName.text;
 }

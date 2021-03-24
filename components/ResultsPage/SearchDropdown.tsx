@@ -1,34 +1,43 @@
+import Link from 'next/link';
 import React, { ReactElement } from 'react';
-import { Dropdown, DropdownItemProps } from 'semantic-ui-react';
+import { Dropdown, Menu } from 'semantic-ui-react';
 
-interface DropdownProps {
-  options: DropdownItemProps[];
+interface ItemProps {
+  text: string;
   value: string;
-  placeholder: string;
-  onChange: (t: string) => void;
+  link: string;
+}
+interface DropdownProps {
+  options: ItemProps[];
+  value: string;
   className: string;
   compact: boolean;
 }
 
 function SearchDropdown({
   options,
-  value,
-  placeholder,
-  onChange,
+  value: currentValue,
   className = 'searchDropdown',
   compact = false,
 }: DropdownProps): ReactElement {
+  const currentText = options.find((o) => o.value == currentValue).text;
   return (
     <Dropdown
-      selection
       fluid
       compact={compact}
-      value={value}
-      placeholder={placeholder}
-      className={`${className} ${compact ? `${className}--compact` : ''}`}
-      options={options}
-      onChange={(e, data) => onChange(data.value as string)}
-    />
+      text={currentText}
+      className={`selection ${className} ${
+        compact ? `${className}--compact` : ''
+      }`}
+    >
+      <Dropdown.Menu>
+        {options.map(({ text, value, link }) => (
+          <Link key={value} href={link}>
+            <Dropdown.Item selected={currentValue == value} text={text} />
+          </Link>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }
 

@@ -11,7 +11,7 @@ import Results from '../../../pages/[campus]/[termId]/search/[query]';
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
-    query: { campus: 'NEU', termId: '202030', query: 'cs' },
+    query: { campus: 'NEU', termId: '202160', query: 'cs' },
   }),
   useQueryParam: () => false,
 }));

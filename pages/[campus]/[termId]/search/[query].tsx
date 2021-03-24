@@ -26,8 +26,6 @@ import useSearch, {
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
-const isWindow = typeof window !== 'undefined';
-
 export default function Results(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';

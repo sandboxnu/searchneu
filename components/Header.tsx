@@ -54,22 +54,14 @@ export default function Header({
       }`
     );
   };
-  // Now excluding query filter params when term/campus change
-  // const setTermAndCampus = useCallback(
-  //   (t: string, newCampus: string) => {
-  //     const paths = window.location.pathname.split('/');
-  //     paths[1] = newCampus;
-  //     paths[2] = t;
-  //     router.push(paths.join('/'));
-  //   },
-  //   [router, query]
-  // );
 
   const termAndCampusToURL = useCallback(
-    (t: string, newCampus: string) =>
-      `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
-        isWindow && window.location.search
-      }`,
+    (t: string, newCampus: string) => {
+      const paths = window.location.pathname.split('/');
+      paths[1] = newCampus;
+      paths[2] = t;
+      return `${paths.join('/')}${isWindow && window.location.search}`;
+    },
     [query]
   );
 

@@ -8,13 +8,15 @@ import {
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
-import { Campus } from '../types';
+import { Campus, PrereqType } from '../types';
+import { ClassPageOptionalDisplay } from '../../pages/[campus]/[termId]/classPage/[subject]/[classId]';
 
 type PageContentProps = {
   subject: string;
   classId: string;
   classPageInfo: GetClassPageInfoQuery;
   isCoreq: boolean;
+  optionalDisplay: ClassPageOptionalDisplay;
 };
 
 type ClassPageInfoProp = {
@@ -26,6 +28,7 @@ export default function PageContent({
   classId,
   classPageInfo,
   isCoreq,
+  optionalDisplay,
 }: PageContentProps): ReactElement {
   const router = useRouter();
 
@@ -49,6 +52,10 @@ export default function PageContent({
             <div className="horizontalLine" />
             <ClassPageInfoBody classPageInfo={classPageInfo} />
             <div className="horizontalLine" />
+            <ClassPageReqsBody
+              classPageInfo={classPageInfo}
+              optionalDisplay={optionalDisplay}
+            />
             <div className="horizontalLine" />
             <div className="horizontalLine" />
             <div className="horizontalLine" />
@@ -156,6 +163,28 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   );
 }
 
+function ClassPageReqsBody({ classPageInfo, optionalDisplay }) {
+  const latestOccurrence = classPageInfo.class.latestOccurrence;
+  return (
+    <div>
+      <HeaderBody
+        header="NUPATHS"
+        body={latestOccurrence.nupath.map((nupath) => (
+          <div>{nupath}</div>
+        ))}
+      />
+      <HeaderBody
+        header="PREREQUISITES"
+        body={optionalDisplay(PrereqType.PREREQ)}
+      />
+      <HeaderBody header="COREQUISITES" />
+      <HeaderBody header="LINK" />
+      <HeaderBody header="PREREQUISITE for" />
+      <HeaderBody header="Optional PREREQUISITE for" />
+    </div>
+  );
+}
+
 function HeaderBody({
   header,
   body,
@@ -230,4 +259,14 @@ function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
   return classPageInfo.class.allOccurrences.map(
     (occurrence) => occurrence.sections.length
   );
+}
+
+function castAsCourseReqs(course) {
+  return {
+    ...course,
+    prereqs: course.prereqs,
+    coreqs: course.coreqs,
+    optPrereqsFor: course.optPrereqsFor,
+    prereqsFor: course.prereqsFor,
+  };
 }

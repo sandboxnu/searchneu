@@ -1,11 +1,18 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import pMap from 'p-map';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
-import { CompositeReq, CourseReq } from '../../../../../components/types';
+import { CourseReq, PrereqType } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
+import useResultDetail, {
+  OptionalDisplay,
+} from '../../../../../components/ResultsPage/Results/useResultDetail';
+
+export type ClassPageOptionalDisplay = (
+  PreqreqType: PrereqType
+) => ReactElement | ReactElement[];
 
 export default function Page() {
   const router = useRouter();
@@ -21,6 +28,10 @@ export default function Page() {
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
+  const [
+    optionalDisplay,
+    setOptionalDisplay,
+  ] = useState<ClassPageOptionalDisplay>((p) => <></>);
 
   useEffect(() => {
     loadClassPageInfo();
@@ -39,8 +50,15 @@ export default function Page() {
         classId: coreqVal.classId,
       });
     });
+
     setClassPageInfo(classPage);
     setCoreqInfo(coreqInfoArray);
+    const CourseReqs = castAsCourseReqs(classPage.class.latestOccurrence);
+    const rawOptionalDisplay = useResultDetail(CourseReqs).optionalDisplay;
+    const optionalDisplayFunc = (preqreqType: PrereqType) =>
+      rawOptionalDisplay(preqreqType, CourseReqs);
+    console.log(optionalDisplayFunc);
+    setOptionalDisplay(optionalDisplayFunc);
   };
 
   return (
@@ -56,6 +74,7 @@ export default function Page() {
         classId={classId}
         classPageInfo={classPageInfo}
         isCoreq={false}
+        optionalDisplay={optionalDisplay}
       />
       {coreqInfo.map((info, index) => (
         <PageContent
@@ -68,4 +87,14 @@ export default function Page() {
       ))}
     </div>
   );
+}
+
+function castAsCourseReqs(course) {
+  return {
+    ...course,
+    prereqs: course.prereqs,
+    coreqs: course.coreqs,
+    optPrereqsFor: course.optPrereqsFor,
+    prereqsFor: course.prereqsFor,
+  };
 }

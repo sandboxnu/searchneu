@@ -3,16 +3,28 @@ import React, { ReactElement } from 'react';
 import macros from '../../macros';
 import {
   CompositeReq,
-  Course,
   CourseReq,
   PrereqType,
   Requisite,
+  ReqFor,
 } from '../../types';
 
+export interface CourseReqs {
+  termId: string | number;
+  prereqsFor: ReqFor;
+  optPrereqsFor: ReqFor;
+  prereqs: CompositeReq;
+  coreqs: CompositeReq;
+}
+export type OptionalDisplay = (
+  PreqreqType: PrereqType,
+  Course: CourseReqs
+) => ReactElement | ReactElement[];
+
 export default function useResultDetail(
-  aClass: Course
+  aClass: CourseReqs
 ): {
-  optionalDisplay: (PreqreqType, Course) => ReactElement | ReactElement[];
+  optionalDisplay: OptionalDisplay;
 } {
   const router = useRouter();
   const onReqClick = (reqType, childBranch, event, searchQuery): void => {
@@ -57,7 +69,7 @@ export default function useResultDetail(
   };
 
   const getReqsStringHelper = (
-    requisite: Course | CompositeReq,
+    requisite: CourseReqs | CompositeReq,
     reqType: PrereqType,
     childNodes: Requisite[]
   ): ReactElement | ReactElement[] => {
@@ -185,7 +197,7 @@ export default function useResultDetail(
   // returns an array made to be rendered by react to display the prereqs
   const getReqsString = (
     reqType: PrereqType,
-    course: Course
+    course: CourseReqs
   ): ReactElement | ReactElement[] => {
     let childNodes: Requisite[];
 
@@ -206,7 +218,7 @@ export default function useResultDetail(
 
   const optionalDisplay = (
     prereqType: PrereqType,
-    course: Course
+    course: CourseReqs
   ): ReactElement | ReactElement[] => {
     const data = getReqsString(prereqType, course);
 

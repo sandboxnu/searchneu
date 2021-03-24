@@ -15,7 +15,8 @@
     "style": "yarn prettier --write . --ignore-path .gitignore",
     "lint": "yarn eslint --ignore-path .gitignore --ext .js,.jsx,.ts,.tsx .",
     "test:api": "jest --projects tests/pages/api/utils --testPathPattern",
-    "generate:graphql": "graphql-codegen -r dotenv/config --config codegen.yml dotenv_config_path=.env.development"
+    "generate:graphql": "graphql-codegen -r dotenv/config --config codegen.yml dotenv_config_path=.env.development",
+    "generate:graphql:fullstack": "NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000 yarn run generate:graphql"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.12.12",

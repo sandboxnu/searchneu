@@ -72,7 +72,7 @@ const post: NextApiHandler = withUser((userId, user) =>
 
         await sendFBMessage(
           user.fbMessengerId,
-          `You've subscribed for notifications to ${courseInfo.classByHash.subject} ${courseInfo.classByHash.classId}. We'll send you a message when new sections of are offered`
+          `You've subscribed for notifications to ${courseInfo.classByHash.subject} ${courseInfo.classByHash.classId}. We'll send you a message if new sections are offered.`
         );
       }
 
@@ -89,7 +89,7 @@ const post: NextApiHandler = withUser((userId, user) =>
 
         await sendFBMessage(
           user.fbMessengerId,
-          `You've subscribed for notifications to ${sectionInfo.sectionByHash.subject} ${sectionInfo.sectionByHash.classId}, section ${sectionInfo.sectionByHash.crn}! We'll send you a message when seats open up`
+          `You've subscribed for notifications to ${sectionInfo.sectionByHash.subject} ${sectionInfo.sectionByHash.classId}, section ${sectionInfo.sectionByHash.crn}! We'll send you a message if seats open up.`
         );
       }
       res.status(201).end();

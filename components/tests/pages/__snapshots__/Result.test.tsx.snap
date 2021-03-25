@@ -105,6 +105,15 @@ exports[`should render a section 1`] = `
                             </Icon>
                             <DropdownMenu className=\\"\\">
                               <div className=\\"menu transition\\">
+                                <Link href=\\"/NEU/202210/search/cs\\">
+                                  <DropdownItem selected={false} text=\\"Fall 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
+                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
+                                      <span className=\\"text\\">
+                                        Fall 2021
+                                      </span>
+                                    </div>
+                                  </DropdownItem>
+                                </Link>
                                 <Link href=\\"/NEU/202160/search/cs\\">
                                   <DropdownItem selected={true} text=\\"Summer II 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
@@ -273,10 +282,10 @@ exports[`should render a section 1`] = `
                     </div>
                     <div className=\\"RangeFilter__input\\">
                       <div className=\\"RangeFilter__range-min\\">
-                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Min\\" value=\\"\\" onChange={[Function: onChange]} />
+                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Min\\" value={[undefined]} onChange={[Function: onChange]} />
                       </div>
                       <div className=\\"RangeFilter__range-max\\">
-                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Max\\" value=\\"\\" onChange={[Function: onChange]} />
+                        <input type=\\"number\\" className=\\"RangeFilter__input-box\\" placeholder=\\"Max\\" value={[undefined]} onChange={[Function: onChange]} />
                       </div>
                       <div role=\\"button\\" tabIndex={0} className=\\"RangeFilter__apply-input\\" onClick={[Function: onClick]}>
                         <p>

@@ -10,6 +10,7 @@ interface TermInfo {
 }
 
 export const neuTerms: TermInfo[] = [
+  { text: 'Fall 2021', value: '202210' },
   { text: 'Summer II 2021', value: '202160' },
   { text: 'Summer Full 2021', value: '202150' },
   { text: 'Summer I 2021', value: '202140' },

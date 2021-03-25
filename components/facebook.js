@@ -168,12 +168,15 @@ class Facebook {
     } else if (e.event === 'opt_in') {
       macros.log('Opt in was clicked!', e);
 
+      let alreadyLoggedIn = false;
+
       const setIntervalID = setInterval(async () => {
         let loginResponse;
         try {
           loginResponse = await axios.post('/api/user/login');
 
-          if (loginResponse.status === 200) {
+          if (!alreadyLoggedIn && loginResponse.status === 200) {
+            alreadyLoggedIn = true;
             // User is now authenticated with Facebook.
             // Download any potential user data from the backend.
             await axios.post('/api/subscription', {

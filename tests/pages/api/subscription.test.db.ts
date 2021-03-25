@@ -9,6 +9,8 @@ import {
 
 jest.mock('jsonwebtoken');
 
+// TODO: mock graphQL fetch
+
 let mockUser: User;
 const subscriptionHandler: NextApiHandler = SubscriptionHandler.default;
 const [

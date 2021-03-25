@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { pull } from 'lodash';
+import { without } from 'lodash';
 import useSWR from 'swr';
 import Keys from '../components/Keys';
 import macros from '../components/macros';
@@ -15,6 +15,7 @@ type UseUserReturn = {
   subscribeToCourse: (course: Course) => Promise<void>;
   subscribeToSection: (section: Section) => Promise<void>;
   unsubscribeFromSection: (section: Section) => Promise<void>;
+  unsubscribeFromCourse: (course: Course) => Promise<void>;
 };
 
 export default function useUser(): UseUserReturn {
@@ -30,6 +31,8 @@ export default function useUser(): UseUserReturn {
     }
   );
 
+  const { followedSections = [], followedCourses = [] } = user || {};
+
   const subscribeToCourseUsingHash = async (
     courseHash: string
   ): Promise<void> => {
@@ -42,12 +45,55 @@ export default function useUser(): UseUserReturn {
 
   const subscribeToCourse = async (course: Course): Promise<void> => {
     const courseHash = Keys.getClassHash(course);
-    if (user?.followedCourses?.includes(courseHash)) {
+    if (followedCourses.includes(courseHash)) {
       macros.error('user already watching class?', courseHash, user);
       return;
     }
 
+    mutate(
+      { followedSections, followedCourses: [...followedCourses, courseHash] },
+      false
+    );
     await subscribeToCourseUsingHash(courseHash);
+    mutate();
+  };
+
+  const unsubscribeFromCourse = async (course: Course): Promise<void> => {
+    const courseHash = Keys.getClassHash(course);
+
+    if (!followedCourses.includes(courseHash)) {
+      macros.error("removed course that doesn't exist on user?", course, user);
+      return;
+    }
+
+    const sectionHashes = course.sections.map((section) =>
+      Keys.getSectionHash(section)
+    );
+
+    const body: DeleteSubscriptionBody = {
+      courseHash: courseHash,
+      sectionHashes: sectionHashes,
+    };
+
+    macros.log('Unsubscribing from course', user, courseHash, body);
+
+    mutate(
+      {
+        followedCourses: without(followedCourses, courseHash),
+        followedSections: without(followedSections, ...sectionHashes),
+      },
+      false
+    );
+
+    await axios.delete('/api/subscription', {
+      headers: {
+        Authorization: '', // TODO: Figure out this stuff whenever the backend gets fixed.
+      },
+      data: {
+        ...body,
+      },
+    });
+
     mutate();
   };
 
@@ -58,7 +104,7 @@ export default function useUser(): UseUserReturn {
     }
     const sectionHash = Keys.getSectionHash(section);
 
-    if (user?.followedSections?.includes(sectionHash)) {
+    if (followedSections.includes(sectionHash)) {
       macros.error('user already watching section?', section, user);
       return;
     }
@@ -69,12 +115,19 @@ export default function useUser(): UseUserReturn {
       sectionHash,
     };
 
-    if (!user?.followedCourses?.includes(courseHash)) {
+    if (!followedCourses.includes(courseHash)) {
       await subscribeToCourseUsingHash(courseHash);
     }
 
     macros.log('Adding section to user', user, sectionHash, body);
 
+    mutate(
+      {
+        followedCourses: [...followedCourses, courseHash],
+        followedSections: [...followedSections, sectionHash],
+      },
+      false
+    );
     await axios.post('/api/subscription', body);
 
     mutate();
@@ -83,7 +136,7 @@ export default function useUser(): UseUserReturn {
   const unsubscribeFromSection = async (section: Section): Promise<void> => {
     const sectionHash = Keys.getSectionHash(section);
 
-    if (!user?.followedSections?.includes(sectionHash)) {
+    if (!followedSections.includes(sectionHash)) {
       macros.error(
         "removed section that doesn't exist on user?",
         section,
@@ -92,12 +145,17 @@ export default function useUser(): UseUserReturn {
       return;
     }
 
-    pull(user?.followedSections, sectionHash);
-
     const body: DeleteSubscriptionBody = {
       sectionHash: sectionHash,
     };
 
+    mutate(
+      {
+        followedCourses,
+        followedSections: without(user?.followedSections, sectionHash),
+      },
+      false
+    );
     await axios.delete('/api/subscription', {
       headers: {
         Authorization: '', // TODO: Figure out this stuff whenever the backend gets fixed.
@@ -115,5 +173,6 @@ export default function useUser(): UseUserReturn {
     subscribeToCourse,
     subscribeToSection,
     unsubscribeFromSection,
+    unsubscribeFromCourse,
   };
 }

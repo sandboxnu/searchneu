@@ -9,6 +9,7 @@ export default async function sendFBMessage(
 ): Promise<void> {
   const token = process.env.FB_ACCESS_TOKEN;
 
+  console.log('tryna send message with token', token);
   const response = await axios.post(
     'https://graph.facebook.com/v2.6/me/messages',
     {

@@ -92,10 +92,13 @@ export type ClassOccurrence = {
   minCredits?: Maybe<Scalars['Int']>;
   classAttributes: Array<Scalars['String']>;
   url: Scalars['String'];
+  prettyUrl?: Maybe<Scalars['String']>;
   lastUpdateTime?: Maybe<Scalars['Float']>;
   nupath: Array<Scalars['String']>;
   sections: Array<Section>;
   host: Scalars['String'];
+  feeAmount?: Maybe<Scalars['Int']>;
+  feeDescription?: Maybe<Scalars['String']>;
 };
 
 export type Section = {
@@ -196,6 +199,19 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE',
 }
+
+export type GetCourseInfoByHashQueryVariables = Exact<{
+  hash: Scalars['String'];
+}>;
+
+export type GetCourseInfoByHashQuery = { __typename?: 'Query' } & {
+  classByHash?: Maybe<
+    { __typename?: 'ClassOccurrence' } & Pick<
+      ClassOccurrence,
+      'subject' | 'classId'
+    >
+  >;
+};
 
 export type GetClassPageInfoQueryVariables = Exact<{
   subject: Scalars['String'];
@@ -370,6 +386,16 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type GetSectionInfoByHashQueryVariables = Exact<{
+  hash: Scalars['String'];
+}>;
+
+export type GetSectionInfoByHashQuery = { __typename?: 'Query' } & {
+  sectionByHash?: Maybe<
+    { __typename?: 'Section' } & Pick<Section, 'subject' | 'classId' | 'crn'>
+  >;
+};
+
 export type GetPagesForSitemapQueryVariables = Exact<{
   termId: Scalars['Int'];
   offset: Scalars['Int'];
@@ -394,6 +420,14 @@ export type GetPagesForSitemapQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export const GetCourseInfoByHashDocument = gql`
+  query getCourseInfoByHash($hash: String!) {
+    classByHash(hash: $hash) {
+      subject
+      classId
+    }
+  }
+`;
 export const GetClassPageInfoDocument = gql`
   query getClassPageInfo($subject: String!, $classId: String!) {
     class(subject: $subject, classId: $classId) {
@@ -538,6 +572,15 @@ export const SearchResultsDocument = gql`
     }
   }
 `;
+export const GetSectionInfoByHashDocument = gql`
+  query getSectionInfoByHash($hash: String!) {
+    sectionByHash(hash: $hash) {
+      subject
+      classId
+      crn
+    }
+  }
+`;
 export const GetPagesForSitemapDocument = gql`
   query getPagesForSitemap($termId: Int!, $offset: Int!) {
     search(termId: $termId, offset: $offset, first: 1000) {
@@ -567,6 +610,18 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper
 ) {
   return {
+    getCourseInfoByHash(
+      variables: GetCourseInfoByHashQueryVariables,
+      requestHeaders?: Headers
+    ): Promise<GetCourseInfoByHashQuery> {
+      return withWrapper(() =>
+        client.request<GetCourseInfoByHashQuery>(
+          print(GetCourseInfoByHashDocument),
+          variables,
+          requestHeaders
+        )
+      );
+    },
     getClassPageInfo(
       variables: GetClassPageInfoQueryVariables,
       requestHeaders?: Headers
@@ -586,6 +641,18 @@ export function getSdk(
       return withWrapper(() =>
         client.request<SearchResultsQuery>(
           print(SearchResultsDocument),
+          variables,
+          requestHeaders
+        )
+      );
+    },
+    getSectionInfoByHash(
+      variables: GetSectionInfoByHashQueryVariables,
+      requestHeaders?: Headers
+    ): Promise<GetSectionInfoByHashQuery> {
+      return withWrapper(() =>
+        client.request<GetSectionInfoByHashQuery>(
+          print(GetSectionInfoByHashDocument),
           variables,
           requestHeaders
         )

@@ -2,7 +2,7 @@
 
 If the GraphQL endpoint exposed by production `course-catalog-api` supports the query you want to make, you just have to:
 
-1. Create a `.graphql` file somewhere in the project and write your GraphQL query (or edit an existing `.graphql` file to modify an existing query)
+1. Create a `.graphql` file somewhere in the project (it can be anywhere but we'd suggest the in `pages/api`) and write your GraphQL query (or edit an existing `.graphql` file to modify an existing query).
 2. Run `yarn generate:graphql` to auto-generate types -- this will hit the production endpoint `https://api.searchneu.com`
    - running `yarn dev` also works since it runs the `generate:graphql` command
 3. In your code, you can use `gqlClient` from `utils/courseAPIClient` to make the GraphQL query by doing something like

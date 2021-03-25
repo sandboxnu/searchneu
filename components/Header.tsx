@@ -59,7 +59,7 @@ export default function Header({
     (t: string, newCampus: string) => {
       return termAndCampusToURL(t, newCampus, query);
     },
-    [query]
+    [query, termAndCampusToURL]
   );
 
   if (!termId || !campus) return null;

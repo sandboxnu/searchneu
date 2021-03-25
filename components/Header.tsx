@@ -28,14 +28,14 @@ type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
+  termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
 };
-
-const isWindow = typeof window !== 'undefined';
 
 export default function Header({
   router,
   title,
   searchData,
+  termAndCampusToURL,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
@@ -55,12 +55,9 @@ export default function Header({
     );
   };
 
-  const termAndCampusToURL = useCallback(
+  const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
-      const paths = window.location.pathname.split('/');
-      paths[1] = newCampus;
-      paths[2] = t;
-      return `${paths.join('/')}${isWindow && window.location.search}`;
+      return termAndCampusToURL(t, newCampus, query);
     },
     [query]
   );
@@ -127,7 +124,7 @@ export default function Header({
               options={Object.keys(Campus).map((c: Campus) => ({
                 text: c,
                 value: c,
-                link: termAndCampusToURL(getRoundedTerm(c, termId), c),
+                link: termAndCampusToURLCallback(getRoundedTerm(c, termId), c),
               }))}
               value={campus}
               className="searchDropdown"
@@ -141,7 +138,7 @@ export default function Header({
                 (terminfo) => ({
                   text: terminfo.text,
                   value: terminfo.value,
-                  link: termAndCampusToURL(terminfo.value, campus),
+                  link: termAndCampusToURLCallback(terminfo.value, campus),
                 })
               )}
               value={termId}

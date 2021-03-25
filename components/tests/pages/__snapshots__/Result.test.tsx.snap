@@ -5,7 +5,7 @@ exports[`should render a section 1`] = `
   <LocationProvider stringifyOptions={[undefined]} history={{...}} location={{...}}>
     <Results>
       <div>
-        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]}>
+        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]}>
           <div>
             <Head>
               <_default reduceComponentsToState={[Function: reduceComponents]} headManager={{...}} inAmpMode={false} />
@@ -51,7 +51,7 @@ exports[`should render a section 1`] = `
                             </Icon>
                             <DropdownMenu className=\\"\\">
                               <div className=\\"menu transition\\">
-                                <Link href=\\"/NEU/202160\\">
+                                <Link href=\\"/NEU/202160/search/cs\\">
                                   <DropdownItem selected={true} text=\\"NEU\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -60,7 +60,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/CPS/202154\\">
+                                <Link href=\\"/CPS/202154/search/cs\\">
                                   <DropdownItem selected={false} text=\\"CPS\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -69,7 +69,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/LAW/202152\\">
+                                <Link href=\\"/LAW/202152/search/cs\\">
                                   <DropdownItem selected={false} text=\\"LAW\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -105,7 +105,7 @@ exports[`should render a section 1`] = `
                             </Icon>
                             <DropdownMenu className=\\"\\">
                               <div className=\\"menu transition\\">
-                                <Link href=\\"/NEU/202160\\">
+                                <Link href=\\"/NEU/202160/search/cs\\">
                                   <DropdownItem selected={true} text=\\"Summer II 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -114,7 +114,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202150\\">
+                                <Link href=\\"/NEU/202150/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Summer Full 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -123,7 +123,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202140\\">
+                                <Link href=\\"/NEU/202140/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Summer I 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -132,7 +132,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202130\\">
+                                <Link href=\\"/NEU/202130/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Spring 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -141,7 +141,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202110\\">
+                                <Link href=\\"/NEU/202110/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Fall 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -150,7 +150,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202040\\">
+                                <Link href=\\"/NEU/202040/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Summer I 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -159,7 +159,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202050\\">
+                                <Link href=\\"/NEU/202050/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Summer Full 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -168,7 +168,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/NEU/202060\\">
+                                <Link href=\\"/NEU/202060/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Summer II 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">

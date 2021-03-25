@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { ReactElement } from 'react';
-import { Dropdown, Menu } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 
 interface ItemProps {
   text: string;

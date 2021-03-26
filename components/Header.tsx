@@ -4,11 +4,7 @@ import Link from 'next/link';
 import { NextRouter } from 'next/router';
 import React, { ReactElement, useCallback } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
-import {
-  getAllCampusDropdownOptions,
-  getRoundedTerm,
-  getTermDropdownOptionsForCampus,
-} from '../components/global';
+import { getRoundedTerm, getTermInfoForCampus } from '../components/global';
 import FilterButton from '../components/icons/FilterButton.svg';
 import Logo from '../components/icons/Logo';
 import macros from '../components/macros';
@@ -32,12 +28,14 @@ type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
+  termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
 };
 
 export default function Header({
   router,
   title,
   searchData,
+  termAndCampusToURL,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
@@ -56,15 +54,12 @@ export default function Header({
       }`
     );
   };
-  // Now excluding query filter params when term/campus change
-  const setTermAndCampus = useCallback(
+
+  const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
-      const paths = window.location.pathname.split('/');
-      paths[1] = newCampus;
-      paths[2] = t;
-      router.push(paths.join('/'));
+      return termAndCampusToURL(t, newCampus, query);
     },
-    [router, query]
+    [query, termAndCampusToURL]
   );
 
   if (!termId || !campus) return null;
@@ -126,15 +121,12 @@ export default function Header({
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={getAllCampusDropdownOptions()}
+              options={Object.keys(Campus).map((c: Campus) => ({
+                text: c,
+                value: c,
+                link: termAndCampusToURLCallback(getRoundedTerm(c, termId), c),
+              }))}
               value={campus}
-              placeholder="Select a campus"
-              onChange={(nextCampus) => {
-                setTermAndCampus(
-                  getRoundedTerm(nextCampus as Campus, termId),
-                  nextCampus
-                );
-              }}
               className="searchDropdown"
               compact={false}
             />
@@ -142,14 +134,14 @@ export default function Header({
           <span className="Breadcrumb_Container__slash">/</span>
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={getTermDropdownOptionsForCampus(
-                Campus[campus.toUpperCase()]
+              options={getTermInfoForCampus(Campus[campus.toUpperCase()]).map(
+                (terminfo) => ({
+                  text: terminfo.text,
+                  value: terminfo.value,
+                  link: termAndCampusToURLCallback(terminfo.value, campus),
+                })
               )}
               value={termId}
-              placeholder="Select a term"
-              onChange={(nextTermString) => {
-                setTermAndCampus(nextTermString, campus);
-              }}
               className="searchDropdown"
               compact={false}
               key={campus}

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import pMap from 'p-map';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
@@ -7,7 +7,7 @@ import { CompositeReq, CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 
-export default function Page() {
+export default function Page(): ReactElement {
   const router = useRouter();
 
   const termId = router.query.termId as string;
@@ -16,6 +16,10 @@ export default function Page() {
   const classId = router.query.classId as string;
 
   if (!termId || !campus) return null;
+
+  const termAndCampusToURL = (t: string, newCampus: string): string => {
+    return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
+  };
 
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
@@ -49,6 +53,7 @@ export default function Page() {
         router={router}
         title={`${subject}${classId}`}
         searchData={null}
+        termAndCampusToURL={termAndCampusToURL}
       />
 
       <PageContent

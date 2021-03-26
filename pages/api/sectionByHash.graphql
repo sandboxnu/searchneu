@@ -1,0 +1,7 @@
+query getSectionInfoByHash($hash: String!) {
+  sectionByHash(hash: $hash) {
+    subject
+    classId
+    crn
+  }
+}

@@ -37,6 +37,10 @@ module.exports = withPlugins(
           source: '/sitemap.xml',
           destination: '/api/sitemap.xml',
         },
+        {
+          source: '/graphql',
+          destination: 'https://api.searchneu.com',
+        },
       ];
     },
   }

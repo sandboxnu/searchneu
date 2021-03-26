@@ -59,6 +59,10 @@ export default function useSearch({
   filters,
 }: SearchParams): UseSearchReturn {
   const getKey = (pageIndex: number): string => {
+    if (!termId) {
+      // don't make the request until data is good
+      return null;
+    }
     const nonDefaultFilters = pickBy(
       filters,
       (v, k: keyof FilterSelection) => !isEqual(v, DEFAULT_FILTER_SELECTION[k])

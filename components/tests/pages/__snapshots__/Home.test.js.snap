@@ -23,7 +23,7 @@ exports[`should render a section 1`] = `
     <div className=\\"ui center spacing aligned icon header topHeader\\">
       <div className=\\"centerTextContainer\\">
         <Logo className=\\"logo\\" aria-label=\\"logo\\" campus=\\"NEU\\" />
-        <HomeSearch setTermId={[Function: setTermId]} termId=\\"202160\\" campus=\\"NEU\\" setCampus={[Function: setCampus]} />
+        <HomeSearch termId=\\"202160\\" campus=\\"NEU\\" />
         <ExploratorySearchButton termId=\\"202160\\" campus=\\"NEU\\" />
       </div>
       <Husky className=\\"husky\\" campus=\\"NEU\\" aria-label=\\"husky\\" />

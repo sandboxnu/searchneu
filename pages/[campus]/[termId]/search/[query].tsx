@@ -10,9 +10,8 @@ import React, { ReactElement, useCallback } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
 import {
-  getAllCampusDropdownOptions,
   getRoundedTerm,
-  getTermDropdownOptionsForCampus,
+  getTermInfoForCampus,
 } from '../../../../components/global';
 import FilterButton from '../../../../components/icons/FilterButton.svg';
 import Logo from '../../../../components/icons/Logo';
@@ -39,6 +38,8 @@ import { Campus, EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 import { campusToColor } from '../../../../utils/campusToColor';
 import Link from 'next/link';
 
+const isWindow = typeof window !== 'undefined';
+
 export default function Results(): ReactElement | null {
   const atTop = useAtTop();
   const router = useRouter();
@@ -48,7 +49,6 @@ export default function Results(): ReactElement | null {
   const campus = router.query.campus as string;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
-  const allCampuses = getAllCampusDropdownOptions();
 
   const setSearchQuery = (q: string): void => {
     router.push(
@@ -57,15 +57,12 @@ export default function Results(): ReactElement | null {
       }`
     );
   };
-  const setTermAndCampus = useCallback(
-    (t: string, newCampus: string) => {
-      router.push(
-        `/${newCampus}/${t}/search/${encodeURIComponent(query)} ${
-          window.location.search
-        }`
-      );
-    },
-    [router, query]
+  const termAndCampusToURL = useCallback(
+    (t: string, newCampus: string) =>
+      `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
+        isWindow && window.location.search
+      }`,
+    [query]
   );
 
   const filters: FilterSelection = _.merge(
@@ -149,15 +146,12 @@ export default function Results(): ReactElement | null {
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={allCampuses}
+              options={Object.keys(Campus).map((c: Campus) => ({
+                text: c,
+                value: c,
+                link: termAndCampusToURL(getRoundedTerm(c, termId), c),
+              }))}
               value={campus}
-              placeholder="Select a campus"
-              onChange={(nextCampus) => {
-                setTermAndCampus(
-                  getRoundedTerm(nextCampus as Campus, termId),
-                  nextCampus
-                );
-              }}
               className="searchDropdown"
               compact={false}
             />
@@ -165,14 +159,14 @@ export default function Results(): ReactElement | null {
           <span className="Breadcrumb_Container__slash">/</span>
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={getTermDropdownOptionsForCampus(
-                Campus[campus.toUpperCase()]
+              options={getTermInfoForCampus(Campus[campus.toUpperCase()]).map(
+                (terminfo) => ({
+                  text: terminfo.text,
+                  value: terminfo.value,
+                  link: termAndCampusToURL(terminfo.value, campus),
+                })
               )}
               value={termId}
-              placeholder="Select a term"
-              onChange={(nextTermString) => {
-                setTermAndCampus(nextTermString, campus);
-              }}
               className="searchDropdown"
               compact={false}
               key={campus}
@@ -222,10 +216,3 @@ export default function Results(): ReactElement | null {
     </div>
   );
 }
-
-// this prevents Next js static optimization so we don't have a second search query sent to the backend
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {},
-  };
-};

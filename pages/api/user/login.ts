@@ -42,7 +42,7 @@ async function post(req: NextApiRequest, res: NextApiResponse): Promise<void> {
     return;
   }
   setCookie(res, 'authToken', await signAuthToken(loginSession.userId), {
-    path: '/api/',
+    path: '/',
     maxAge: AUTH_TOKEN_EXPIRATION_IN_SECONDS * 1000,
   });
   res.status(200).end();

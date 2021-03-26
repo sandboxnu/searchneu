@@ -107,16 +107,21 @@ async function post(req: NextApiRequest, res: NextApiResponse): Promise<void> {
     rawBody,
     req.headers['x-hub-signature'] as string
   );
-  console.log(body);
+
+  // Keep this here for now
+  console.log(JSON.stringify(body, null, 2), 'isValid: ', isValid);
+  console.log(req.headers['x-hub-signature'] as string);
   if (isValid) {
     try {
-      body.entry[0].messaging.map((event) => {
-        if (event.optin) {
-          handleMessengerButtonClick(event);
-        } else if (event.message) {
-          handleMessage(event);
-        }
-      });
+      await Promise.all(
+        body.entry[0].messaging.map(async (event) => {
+          if (event.optin) {
+            await handleMessengerButtonClick(event);
+          } else if (event.message) {
+            await handleMessage(event);
+          }
+        })
+      );
     } finally {
       res.status(200).end();
     }
@@ -149,6 +154,10 @@ async function handleMessengerButtonClick(event: FBOptinEvent): Promise<void> {
     if (!user) {
       //make new user
       user = await createNewUser(fbMessengerId);
+      await sendFBMessage(
+        fbMessengerId,
+        `Yo! 👋😃😆 Thanks for signing up for notifications ${user.firstName}! `
+      );
     }
     session.userId = user.id;
     await prisma.facebookLoginSessions.update({
@@ -194,7 +203,7 @@ async function handleMessage(event: FBMessageEvent): Promise<void> {
   });
 
   if (!doesUserExist) {
-    sendFBMessage(
+    await sendFBMessage(
       senderId,
       "Yo! 👋😃😆 I'm the Search NEU bot. I will notify you when seats open up in classes that are full. Sign up on https://searchneu.com!"
     );
@@ -231,7 +240,7 @@ async function unsubscribeSender(senderId: string): Promise<void> {
     },
   });
 
-  sendFBMessage(
+  await sendFBMessage(
     senderId,
     "You've been unsubscribed from everything! Free free to re-subscribe to updates on https://searchneu.com"
   );

@@ -1,14 +1,28 @@
-import { IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import { NextApiHandler } from 'next';
+import sendFBMessage from '../../utils/api/notifyer';
 import { prisma } from '../../utils/api/prisma';
 import withUser from '../../utils/api/withUser';
 import withValidatedBody from '../../utils/api/withValidatedBody';
+import { gqlClient } from '../../utils/courseAPIClient';
 
 class SubscriptionBody {
   @ValidateIf((o) => o.sectionHash === undefined)
   @IsString()
   @IsNotEmpty()
   courseHash?: string;
+
+  @ValidateIf((o) => o.sectionHash === undefined && o.courseHash)
+  @IsArray()
+  @IsNotEmpty()
+  @IsOptional()
+  sectionHashes?: string[];
 
   @ValidateIf((o) => o.courseHash === undefined)
   @IsString()
@@ -34,6 +48,7 @@ export default async function handler(req, res): Promise<void> {
  * subscribe to course or section
  */
 
+// TODO: TEST THE NEW NOTIF MESSAGESA
 const post: NextApiHandler = withUser((userId, user) =>
   withValidatedBody(
     PostSubscriptionBody,
@@ -51,12 +66,14 @@ const post: NextApiHandler = withUser((userId, user) =>
           where: { userId_courseHash: { courseHash, userId } },
         });
 
-        // TODO: ask backend people to be able to query for a class's class code based on course hash and verify the course hash exists
-        //const splitHash = courseHash.split('/');
-        //sendFBMessage(
-        //      `Successfully signed up for notifications if sections are added to ${classCode}!`
-        //  );
-        // https://github.com/sandboxnu/searchneu/blob/dba43a7616262040f36552817ed84c03b417073b/backend/routes/webhook.ts
+        const courseInfo = await gqlClient.getCourseInfoByHash({
+          hash: courseHash,
+        });
+
+        await sendFBMessage(
+          user.fbMessengerId,
+          `You've subscribed for notifications to ${courseInfo.classByHash.subject} ${courseInfo.classByHash.classId}. We'll send you a message if new sections are offered.`
+        );
       }
 
       if (sectionHash) {
@@ -65,6 +82,15 @@ const post: NextApiHandler = withUser((userId, user) =>
           update: {},
           where: { userId_sectionHash: { sectionHash, userId } },
         });
+
+        const sectionInfo = await gqlClient.getSectionInfoByHash({
+          hash: sectionHash,
+        });
+
+        await sendFBMessage(
+          user.fbMessengerId,
+          `You've subscribed for notifications to ${sectionInfo.sectionByHash.subject} ${sectionInfo.sectionByHash.classId}, section ${sectionInfo.sectionByHash.crn}! We'll send you a message if seats open up.`
+        );
       }
       res.status(201).end();
     }
@@ -93,6 +119,26 @@ const del: NextApiHandler = withUser((userId, user) =>
             courseHash: body.courseHash,
           },
         });
+
+        if (body.sectionHashes) {
+          for (const sectionHash of body.sectionHashes) {
+            await prisma.followedSection.deleteMany({
+              where: {
+                userId: userId,
+                sectionHash: sectionHash,
+              },
+            });
+          }
+        }
+
+        const courseInfo = await gqlClient.getCourseInfoByHash({
+          hash: body.courseHash,
+        });
+
+        await sendFBMessage(
+          user.fbMessengerId,
+          `Unsubscribed from notifications for course ${courseInfo.classByHash.subject} ${courseInfo.classByHash.classId}`
+        );
       }
 
       if (body.sectionHash) {
@@ -102,6 +148,15 @@ const del: NextApiHandler = withUser((userId, user) =>
             sectionHash: body.sectionHash,
           },
         });
+
+        const sectionInfo = await gqlClient.getSectionInfoByHash({
+          hash: body.sectionHash,
+        });
+
+        await sendFBMessage(
+          user.fbMessengerId,
+          `Unsubscribed from notifications for ${sectionInfo.sectionByHash.subject} ${sectionInfo.sectionByHash.classId}, section ${sectionInfo.sectionByHash.crn}`
+        );
       }
       res.status(200).end();
     }

@@ -70,7 +70,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  // TODO: validate from course catalog api
+  res.status(404).end();
+  return;
+
+  // SUPER TODO: validate from course catalog api
   if (req.method === 'POST') {
     await post(req, res);
   } else {

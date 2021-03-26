@@ -26,6 +26,8 @@ import useSearch, {
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
+const isWindow = typeof window !== 'undefined';
+
 export default function Results(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';
@@ -53,12 +55,23 @@ export default function Results(): ReactElement | null {
 
   const filtersAreSet: boolean = areFiltersSet(filters);
 
+  const termAndCampusToURL = (
+    t: string,
+    newCampus: string,
+    query: string
+  ): string => {
+    return `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
+      isWindow && window.location.search
+    }`;
+  };
+
   return (
     <div>
       <Header
         router={router}
         title={`Search NEU - ${query}`}
         searchData={searchData}
+        termAndCampusToURL={termAndCampusToURL}
       ></Header>
 
       {!macros.isMobile && <FeedbackModal />}
@@ -97,10 +110,3 @@ export default function Results(): ReactElement | null {
     </div>
   );
 }
-
-// this prevents Next js static optimization so we don't have a second search query sent to the backend
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {},
-  };
-};

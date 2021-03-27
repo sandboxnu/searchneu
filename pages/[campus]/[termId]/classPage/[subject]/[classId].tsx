@@ -13,7 +13,7 @@ export default function Page(): ReactElement {
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
   const subject = ((router.query.subject as string) || '').toUpperCase();
-  const classId = router.query.classId as string;
+  const classId = (router.query.classId as string) || '';
 
   const termAndCampusToURL = (t: string, newCampus: string): string => {
     return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;

@@ -24,10 +24,6 @@ export default function Page(): ReactElement {
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
 
-  useEffect(() => {
-    loadClassPageInfo();
-  }, []);
-
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
     // assume coreq values will never be nested
@@ -44,6 +40,10 @@ export default function Page(): ReactElement {
     setClassPageInfo(classPage);
     setCoreqInfo(coreqInfoArray);
   };
+
+  useEffect(() => {
+    loadClassPageInfo();
+  }, [subject, classId]);
 
   if (!termId || !campus) return null;
   return (

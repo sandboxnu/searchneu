@@ -45,7 +45,7 @@ export default function Page(): ReactElement {
     loadClassPageInfo();
   }, [subject, classId]);
 
-  if (!termId || !campus || !subject || !classId) return null;
+  if (!termId || !campus) return null;
   return (
     <div>
       <Header
@@ -54,13 +54,14 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
       />
-
-      <PageContent
-        subject={subject}
-        classId={classId}
-        classPageInfo={classPageInfo}
-        isCoreq={false}
-      />
+      {subject && classId && (
+        <PageContent
+          subject={subject}
+          classId={classId}
+          classPageInfo={classPageInfo}
+          isCoreq={false}
+        />
+      )}
       {coreqInfo.map((info, index) => (
         <PageContent
           key={index}

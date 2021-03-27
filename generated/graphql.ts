@@ -344,6 +344,8 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
                   | 'url'
                   | 'prettyUrl'
                   | 'lastUpdateTime'
+                  | 'feeAmount'
+                  | 'feeDescription'
                 > & { type: 'ClassOccurrence' } & {
                     sections: Array<
                       { __typename?: 'Section' } & Pick<
@@ -557,6 +559,8 @@ export const SearchResultsDocument = gql`
           url
           prettyUrl
           lastUpdateTime
+          feeAmount
+          feeDescription
           sections {
             campus
             classId

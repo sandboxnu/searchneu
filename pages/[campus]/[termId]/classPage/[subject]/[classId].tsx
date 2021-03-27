@@ -8,6 +8,11 @@ import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 
 export default function Page(): ReactElement {
+  const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
+    null
+  );
+  const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
+
   const router = useRouter();
 
   const termId = router.query.termId as string;
@@ -18,11 +23,6 @@ export default function Page(): ReactElement {
   const termAndCampusToURL = (t: string, newCampus: string): string => {
     return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
   };
-
-  const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
-    null
-  );
-  const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
 
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
@@ -45,7 +45,7 @@ export default function Page(): ReactElement {
     loadClassPageInfo();
   }, [subject, classId]);
 
-  if (!termId || !campus) return null;
+  if (!termId || !campus || !subject || !classId) return null;
   return (
     <div>
       <Header

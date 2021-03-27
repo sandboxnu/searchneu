@@ -54,14 +54,12 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
       />
-      {subject && classId && (
-        <PageContent
-          subject={subject}
-          classId={classId}
-          classPageInfo={classPageInfo}
-          isCoreq={false}
-        />
-      )}
+      <PageContent
+        subject={subject}
+        classId={classId}
+        classPageInfo={classPageInfo}
+        isCoreq={false}
+      />
       {coreqInfo.map((info, index) => (
         <PageContent
           key={index}

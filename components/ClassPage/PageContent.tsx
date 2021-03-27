@@ -41,23 +41,19 @@ export default function PageContent({
           Back to Search Results
         </div>
       )}
-
-      {classPageInfo &&
-        (classPageInfo.class ? (
-          <div className="classPageInfoContent">
-            <ClassPageInfoHeader classPageInfo={classPageInfo} />
-            <div className="horizontalLine" />
-            <ClassPageInfoBody classPageInfo={classPageInfo} />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-          </div>
-        ) : (
-          <p>This class page does not exist :(</p>
-        ))}
+      {classPageInfo && classPageInfo.class && (
+        <div className="classPageInfoContent">
+          <ClassPageInfoHeader classPageInfo={classPageInfo} />
+          <div className="horizontalLine" />
+          <ClassPageInfoBody classPageInfo={classPageInfo} />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+        </div>
+      )}
     </div>
   );
 }

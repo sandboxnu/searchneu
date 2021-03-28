@@ -3,27 +3,15 @@ import pMap from 'p-map';
 import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
-import { CourseReq, PrereqType } from '../../../../../components/types';
+import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
-import useResultDetail, {
-  OptionalDisplay,
-} from '../../../../../components/ResultsPage/Results/useResultDetail';
-
-export type ClassPageOptionalDisplay = (
-  PreqreqType: PrereqType
-) => ReactElement | ReactElement[];
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
-
-  const [
-    optionalDisplay,
-    setOptionalDisplay,
-  ] = useState<ClassPageOptionalDisplay>((p) => <></>);
 
   const router = useRouter();
 
@@ -56,12 +44,6 @@ export default function Page(): ReactElement {
 
     setClassPageInfo(classPage);
     setCoreqInfo(coreqInfoArray);
-    const CourseReqs = castAsCourseReqs(classPage.class.latestOccurrence);
-    const rawOptionalDisplay = useResultDetail(CourseReqs).optionalDisplay;
-    const optionalDisplayFunc = (preqreqType: PrereqType) =>
-      rawOptionalDisplay(preqreqType, CourseReqs);
-    console.log(optionalDisplayFunc);
-    setOptionalDisplay(optionalDisplayFunc);
   };
 
   useEffect(() => {
@@ -82,7 +64,6 @@ export default function Page(): ReactElement {
         classId={classId}
         classPageInfo={classPageInfo}
         isCoreq={false}
-        optionalDisplay={optionalDisplay}
       />
       {coreqInfo.map((info, index) => (
         <PageContent
@@ -91,19 +72,8 @@ export default function Page(): ReactElement {
           classId={classId}
           classPageInfo={info}
           isCoreq={true}
-          optionalDisplay={optionalDisplay}
         />
       ))}
     </div>
   );
-}
-
-function castAsCourseReqs(course) {
-  return {
-    ...course,
-    prereqs: course.prereqs,
-    coreqs: course.coreqs,
-    optPrereqsFor: course.optPrereqsFor,
-    prereqsFor: course.prereqsFor,
-  };
 }

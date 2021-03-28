@@ -8,15 +8,14 @@ import {
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
+import useResultDetail from '../ResultsPage/Results/useResultDetail';
 import { Campus, PrereqType } from '../types';
-import { ClassPageOptionalDisplay } from '../../pages/[campus]/[termId]/classPage/[subject]/[classId]';
 
 type PageContentProps = {
   subject: string;
   classId: string;
   classPageInfo: GetClassPageInfoQuery;
   isCoreq: boolean;
-  optionalDisplay: ClassPageOptionalDisplay;
 };
 
 type ClassPageInfoProp = {
@@ -28,7 +27,6 @@ export default function PageContent({
   classId,
   classPageInfo,
   isCoreq,
-  optionalDisplay,
 }: PageContentProps): ReactElement {
   const router = useRouter();
 
@@ -51,10 +49,7 @@ export default function PageContent({
           <div className="horizontalLine" />
           <ClassPageInfoBody classPageInfo={classPageInfo} />
           <div className="horizontalLine" />
-          <ClassPageReqsBody
-            classPageInfo={classPageInfo}
-            optionalDisplay={optionalDisplay}
-          />
+          <ClassPageReqsBody classPageInfo={classPageInfo} />
           <div className="horizontalLine" />
           <div className="horizontalLine" />
           <div className="horizontalLine" />
@@ -160,8 +155,11 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   );
 }
 
-function ClassPageReqsBody({ classPageInfo, optionalDisplay }) {
+function ClassPageReqsBody({ classPageInfo }) {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
+  const rawOptionalDisplay = useResultDetail(latestOccurrence).optionalDisplay;
+  const optionalDisplayFunc = (preqreqType: PrereqType) =>
+    rawOptionalDisplay(preqreqType, latestOccurrence);
   return (
     <div>
       <HeaderBody
@@ -170,14 +168,24 @@ function ClassPageReqsBody({ classPageInfo, optionalDisplay }) {
           <div>{nupath}</div>
         ))}
       />
-      <HeaderBody
-        header="PREREQUISITES"
-        body={optionalDisplay(PrereqType.PREREQ)}
-      />
-      <HeaderBody header="COREQUISITES" />
+
+      <div className={`headerBodyGroup `}>
+        <h4 className="classPageHeader">PREREQUISITES</h4>
+        {optionalDisplayFunc(PrereqType.PREREQ)}
+      </div>
+      <div className={`headerBodyGroup `}>
+        <h4 className="classPageHeader">COREQUISITES</h4>
+        {optionalDisplayFunc(PrereqType.COREQ)}
+      </div>
       <HeaderBody header="LINK" />
-      <HeaderBody header="PREREQUISITE for" />
-      <HeaderBody header="Optional PREREQUISITE for" />
+      <div className={`headerBodyGroup `}>
+        <h4 className="classPageHeader">PREREQUISITE for</h4>
+        {optionalDisplayFunc(PrereqType.PREREQ_FOR)}
+      </div>
+      <div className={`headerBodyGroup `}>
+        <h4 className="classPageHeader">Optional PREREQUISITE for</h4>
+        {optionalDisplayFunc(PrereqType.OPT_PREREQ_FOR)}
+      </div>
     </div>
   );
 }
@@ -262,14 +270,4 @@ function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
   return classPageInfo.class.allOccurrences.map(
     (occurrence) => occurrence.sections.length
   );
-}
-
-function castAsCourseReqs(course) {
-  return {
-    ...course,
-    prereqs: course.prereqs,
-    coreqs: course.coreqs,
-    optPrereqsFor: course.optPrereqsFor,
-    prereqsFor: course.prereqsFor,
-  };
 }

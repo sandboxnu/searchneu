@@ -277,8 +277,8 @@ function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
 function castAsCourseReqs(course): CourseReqs {
   return {
     ...course,
-    prereqs: course.prereqs || { values: [] },
-    coreqs: course.coreqs || { values: [] },
+    prereqs: course.prereqs || { type: 'and', values: [] },
+    coreqs: course.coreqs || { tupe: 'and', values: [] },
     optPrereqsFor: course.optPrereqsFor || [],
     prereqsFor: course.prereqsFor || [],
   };

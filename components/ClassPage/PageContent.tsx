@@ -161,7 +161,7 @@ function ClassPageReqsBody({ classPageInfo }) {
   const optionalDisplayFunc = (preqreqType: PrereqType) =>
     rawOptionalDisplay(preqreqType, latestOccurrence);
   return (
-    <div>
+    <div className="classPageReqsBody">
       <HeaderBody
         header="NUPATHS"
         body={latestOccurrence.nupath.map((nupath) => (

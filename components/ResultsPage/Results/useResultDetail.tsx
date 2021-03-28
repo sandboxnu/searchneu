@@ -27,9 +27,9 @@ export default function useResultDetail(
   optionalDisplay: OptionalDisplay;
 } {
   const router = useRouter();
-  const onReqClick = (reqType, childBranch, event, searchQuery): void => {
+  const onReqClick = (reqType, childBranch, event, subject, classId): void => {
     router.push(
-      `/${router.query.campus}/${router.query.termId}/search/${searchQuery}`
+      `/${router.query.campus}/${router.query.termId}/classPage/${subject}/${classId}`
     );
 
     // Create the React element and add it to retVal
@@ -122,7 +122,8 @@ export default function useResultDetail(
                 reqType,
                 childBranch,
                 event,
-                childBranch.subject + childBranch.classId
+                childBranch.subject,
+                childBranch.classId
               );
             }}
           >

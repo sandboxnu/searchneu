@@ -91,7 +91,8 @@
     margin-bottom: 10px;
   }
 
-  .classPageBody {
+  .classPageBody,
+  .classPageReqsBody {
     margin-top: 60px;
     margin-bottom: 60px;
 
@@ -110,7 +111,8 @@
 
     .headerBodyGroup {
       margin-bottom: 60px;
-      p {
+      p,
+      a {
         font-size: 16px;
       }
     }

@@ -81,6 +81,8 @@ query searchResults(
         url
         prettyUrl
         lastUpdateTime
+        feeAmount
+        feeDescription
         sections {
           campus
           classId

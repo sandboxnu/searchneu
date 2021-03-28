@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
 import pMap from 'p-map';
+import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
 import { CourseReq, PrereqType } from '../../../../../components/types';
@@ -15,33 +15,32 @@ export type ClassPageOptionalDisplay = (
 ) => ReactElement | ReactElement[];
 
 export default function Page(): ReactElement {
-  const router = useRouter();
-
-  const termId = router.query.termId as string;
-  const campus = router.query.campus as string;
-  const subject = ((router.query.subject as string) || '').toUpperCase();
-  const classId = router.query.classId as string;
-
-  if (!termId || !campus) return null;
-
-  const termAndCampusToURL = (t: string, newCampus: string): string => {
-    return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
-  };
-
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
+
   const [
     optionalDisplay,
     setOptionalDisplay,
   ] = useState<ClassPageOptionalDisplay>((p) => <></>);
 
+  const router = useRouter();
+
+  const termId = router.query.termId as string;
+  const campus = router.query.campus as string;
+  const subject = ((router.query.subject as string) || '').toUpperCase();
+  const classId = (router.query.classId as string) || '';
+
+  const termAndCampusToURL = (t: string, newCampus: string): string => {
+    return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
+  };
+
   useEffect(() => {
     loadClassPageInfo();
   }, []);
 
-  const loadClassPageInfo = async () => {
+  const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
     // assume coreq values will never be nested
     const coreqs: CourseReq[] = classPage.class
@@ -65,6 +64,11 @@ export default function Page(): ReactElement {
     setOptionalDisplay(optionalDisplayFunc);
   };
 
+  useEffect(() => {
+    loadClassPageInfo();
+  }, [subject, classId]);
+
+  if (!termId || !campus) return null;
   return (
     <div>
       <Header
@@ -73,7 +77,6 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
       />
-
       <PageContent
         subject={subject}
         classId={classId}
@@ -88,6 +91,7 @@ export default function Page(): ReactElement {
           classId={classId}
           classPageInfo={info}
           isCoreq={true}
+          optionalDisplay={optionalDisplay}
         />
       ))}
     </div>

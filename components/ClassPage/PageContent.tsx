@@ -45,26 +45,23 @@ export default function PageContent({
         </div>
       )}
 
-      {classPageInfo &&
-        (classPageInfo.class ? (
-          <div className="classPageInfoContent">
-            <ClassPageInfoHeader classPageInfo={classPageInfo} />
-            <div className="horizontalLine" />
-            <ClassPageInfoBody classPageInfo={classPageInfo} />
-            <div className="horizontalLine" />
-            <ClassPageReqsBody
-              classPageInfo={classPageInfo}
-              optionalDisplay={optionalDisplay}
-            />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-            <div className="horizontalLine" />
-          </div>
-        ) : (
-          <p>This class page does not exist :(</p>
-        ))}
+      {classPageInfo && classPageInfo.class && (
+        <div className="classPageInfoContent">
+          <ClassPageInfoHeader classPageInfo={classPageInfo} />
+          <div className="horizontalLine" />
+          <ClassPageInfoBody classPageInfo={classPageInfo} />
+          <div className="horizontalLine" />
+          <ClassPageReqsBody
+            classPageInfo={classPageInfo}
+            optionalDisplay={optionalDisplay}
+          />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+          <div className="horizontalLine" />
+        </div>
+      )}
     </div>
   );
 }
@@ -126,7 +123,7 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
         />
         <HeaderBody
           header="RECENT SEMESTERS"
-          body={getRecentSemesterNames(classPageInfo).join(', ')}
+          body={getRecentSemesterNames(classPageInfo, 6).join(', ')}
         />
         <div className="flex justify-space-between">
           <HeaderBody
@@ -227,32 +224,38 @@ function getProfessors(
 }
 
 function getRecentSemesterNames(
-  classPageInfo: GetClassPageInfoQuery
+  classPageInfo: GetClassPageInfoQuery,
+  limit: number
 ): string[] {
-  return classPageInfo.class.allOccurrences.map((occurrence) => {
+  const allSemesters = classPageInfo.class.allOccurrences.map((occurrence) => {
     const termId = occurrence.termId.toString();
     return `${getSeason(termId)} ${getYear(termId)}`;
   });
+  return allSemesters.slice(0, Math.min(limit, allSemesters.length));
 }
 
 function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
-  // TODO: should we filter out sections with seat capacity 9999?
-  return classPageInfo.class.allOccurrences
-    .map((occurrence) =>
-      occurrence.sections.map(
-        (section) => section.seatsCapacity - section.seatsRemaining
-      )
-    )
-    .flat();
+  return getValidSections(classPageInfo).map(
+    (section) => section.seatsCapacity - section.seatsRemaining
+  );
 }
 
 function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
-  // TODO: should we filter out sections with seat capacity 9999?
-  return classPageInfo.class.allOccurrences
-    .map((occurrence) =>
-      occurrence.sections.map((section) => section.seatsCapacity)
-    )
+  return getValidSections(classPageInfo).map(
+    (section) => section.seatsCapacity
+  );
+}
+
+// if there's at least one section with seatCapacity < 9999,
+// returns sections excluding those with seatCapacity = 9999
+function getValidSections(classPageInfo: GetClassPageInfoQuery) {
+  let allSections = classPageInfo.class.allOccurrences
+    .map((occurrence) => occurrence.sections)
     .flat();
+  if (allSections.find((section) => section.seatsCapacity < 9999)) {
+    allSections = allSections.filter((section) => section.seatsCapacity < 9999);
+  }
+  return allSections;
 }
 
 function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {

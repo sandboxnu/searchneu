@@ -32,6 +32,7 @@ export default function useResultDetail(
       `/${router.query.campus}/${router.query.termId}/classPage/${subject}/${classId}`
     );
 
+    // QUESTION: why are we making a custom event and dispatching it??
     // Create the React element and add it to retVal
     const searchEvent = new CustomEvent(macros.searchEvent, {
       detail: `${childBranch.subject} ${childBranch.classId}`,

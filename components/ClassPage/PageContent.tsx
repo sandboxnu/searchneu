@@ -8,7 +8,9 @@ import {
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
-import useResultDetail from '../ResultsPage/Results/useResultDetail';
+import useResultDetail, {
+  CourseReqs,
+} from '../ResultsPage/Results/useResultDetail';
 import { Campus, PrereqType } from '../types';
 
 type PageContentProps = {
@@ -155,20 +157,20 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   );
 }
 
-function ClassPageReqsBody({ classPageInfo }) {
+function ClassPageReqsBody({ classPageInfo }: ClassPageInfoProp) {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
-  const rawOptionalDisplay = useResultDetail(latestOccurrence).optionalDisplay;
+  const courseReqs = castAsCourseReqs(latestOccurrence);
+  const rawOptionalDisplay = useResultDetail(courseReqs).optionalDisplay;
   const optionalDisplayFunc = (preqreqType: PrereqType) =>
-    rawOptionalDisplay(preqreqType, latestOccurrence);
+    rawOptionalDisplay(preqreqType, courseReqs);
   return (
     <div className="classPageReqsBody">
-      <HeaderBody
-        header="NUPATHS"
-        body={latestOccurrence.nupath.map((nupath) => (
-          <div>{nupath}</div>
+      <div className={`headerBodyGroup `}>
+        <h4 className="classPageHeader">NUPATHS</h4>
+        {latestOccurrence.nupath.map((nupath, index) => (
+          <div key={index}>{nupath}</div>
         ))}
-      />
-
+      </div>
       <div className={`headerBodyGroup `}>
         <h4 className="classPageHeader">PREREQUISITES</h4>
         {optionalDisplayFunc(PrereqType.PREREQ)}
@@ -270,4 +272,14 @@ function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
   return classPageInfo.class.allOccurrences.map(
     (occurrence) => occurrence.sections.length
   );
+}
+
+function castAsCourseReqs(course): CourseReqs {
+  return {
+    ...course,
+    prereqs: course.prereqs || { values: [] },
+    coreqs: course.coreqs || { values: [] },
+    optPrereqsFor: course.optPrereqsFor || [],
+    prereqsFor: course.prereqsFor || [],
+  };
 }

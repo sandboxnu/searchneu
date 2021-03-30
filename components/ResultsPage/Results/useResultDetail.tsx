@@ -16,6 +16,7 @@ export interface CourseReqs {
   prereqs: CompositeReq;
   coreqs: CompositeReq;
 }
+
 export type OptionalDisplay = (
   PreqreqType: PrereqType,
   Course: CourseReqs

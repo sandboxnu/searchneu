@@ -1,4 +1,5 @@
 import { mean } from 'lodash';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
@@ -14,6 +15,8 @@ import useResultDetail, {
 import { Campus, PrereqType } from '../types';
 
 type PageContentProps = {
+  termId: string;
+  campus: string;
   subject: string;
   classId: string;
   classPageInfo: GetClassPageInfoQuery;
@@ -25,6 +28,8 @@ type ClassPageInfoProp = {
 };
 
 export default function PageContent({
+  termId,
+  campus,
   subject,
   classId,
   classPageInfo,
@@ -51,7 +56,11 @@ export default function PageContent({
           <div className="horizontalLine" />
           <ClassPageInfoBody classPageInfo={classPageInfo} />
           <div className="horizontalLine" />
-          <ClassPageReqsBody classPageInfo={classPageInfo} />
+          <ClassPageReqsBody
+            termId={termId}
+            campus={campus}
+            classPageInfo={classPageInfo}
+          />
           <div className="horizontalLine" />
           <div className="horizontalLine" />
           <div className="horizontalLine" />
@@ -157,7 +166,17 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   );
 }
 
-function ClassPageReqsBody({ classPageInfo }: ClassPageInfoProp) {
+type ClassPageReqsBodyProps = {
+  termId: string;
+  campus: string;
+  classPageInfo: GetClassPageInfoQuery;
+};
+
+function ClassPageReqsBody({
+  termId,
+  campus,
+  classPageInfo,
+}: ClassPageReqsBodyProps) {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
   const courseReqs = castAsCourseReqs(latestOccurrence);
   const rawOptionalDisplay = useResultDetail(courseReqs).optionalDisplay;
@@ -165,28 +184,62 @@ function ClassPageReqsBody({ classPageInfo }: ClassPageInfoProp) {
     rawOptionalDisplay(preqreqType, courseReqs);
   return (
     <div className="classPageReqsBody">
-      <div className={`headerBodyGroup `}>
-        <h4 className="classPageHeader">NUPATHS</h4>
-        {latestOccurrence.nupath.map((nupath, index) => (
-          <div key={index}>{nupath}</div>
-        ))}
+      <div className="flex justify-space-between">
+        <div className={`headerBodyGroup nupaths`}>
+          <h4 className="classPageHeader">NUPATHS</h4>
+          {latestOccurrence.nupath.map((nupath, index) => (
+            <p key={index}>{nupath}</p>
+          ))}
+        </div>
+        <div className={`headerBodyGroup prereqs`}>
+          <h4 className="classPageHeader">PREREQUISITES</h4>
+          {optionalDisplayFunc(PrereqType.PREREQ)}
+        </div>
+        <div className={`headerBodyGroup coreqs`}>
+          <h4 className="classPageHeader">COREQUISITES</h4>
+          {latestOccurrence.coreqs.values.map((value) => {
+            return (
+              <div key={value.subject + value.classId}>
+                <Link
+                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                >{`${value.subject} ${value.classId}`}</Link>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div className={`headerBodyGroup `}>
-        <h4 className="classPageHeader">PREREQUISITES</h4>
-        {optionalDisplayFunc(PrereqType.PREREQ)}
-      </div>
-      <div className={`headerBodyGroup `}>
-        <h4 className="classPageHeader">COREQUISITES</h4>
-        {optionalDisplayFunc(PrereqType.COREQ)}
-      </div>
-      <HeaderBody header="LINK" />
-      <div className={`headerBodyGroup `}>
-        <h4 className="classPageHeader">PREREQUISITE for</h4>
-        {optionalDisplayFunc(PrereqType.PREREQ_FOR)}
-      </div>
-      <div className={`headerBodyGroup `}>
-        <h4 className="classPageHeader">Optional PREREQUISITE for</h4>
-        {optionalDisplayFunc(PrereqType.OPT_PREREQ_FOR)}
+      <div className="flex justify-space-between">
+        <div className={`headerBodyGroup link`}>
+          <h4 className="classPageHeader">LINK</h4>
+          <Link href={latestOccurrence.prettyUrl}>
+            Click here to view this course on the Northeastern website.
+          </Link>
+        </div>
+
+        <div className={`headerBodyGroup prereqsFor`}>
+          <h4 className="classPageHeader">PREREQUISITE for</h4>
+          {latestOccurrence.prereqsFor.values.map((value) => {
+            return (
+              <div key={value.subject + value.classId}>
+                <Link
+                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                >{`${value.subject} ${value.classId}`}</Link>
+              </div>
+            );
+          })}
+        </div>
+        <div className={`headerBodyGroup optPrereqsFor`}>
+          <h4 className="classPageHeader">Optional PREREQUISITE for</h4>
+          {latestOccurrence.optPrereqsFor.values.map((value) => {
+            return (
+              <div key={value.subject + value.classId}>
+                <Link
+                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                >{`${value.subject} ${value.classId}`}</Link>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

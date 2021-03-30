@@ -99,6 +99,7 @@
     .classPageHeader {
       font-size: 22px;
       font-weight: 500;
+      margin-bottom: 16px;
     }
 
     .classPageBodyLeft {
@@ -111,8 +112,7 @@
 
     .headerBodyGroup {
       margin-bottom: 60px;
-      p,
-      a {
+      p {
         font-size: 16px;
       }
     }
@@ -130,6 +130,21 @@
 
     .emptyCourseFee p {
       color: #969696;
+    }
+  }
+  .classPageReqsBody .flex .nupaths,
+  .prereqs,
+  .coreqs,
+  .link,
+  .prereqsFor,
+  .optPrereqsFor {
+    width: 30%;
+    a,
+    p,
+    span {
+      font-size: 18px;
+      line-height: 30px;
+      margin: 0;
     }
   }
 }

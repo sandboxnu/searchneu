@@ -24,10 +24,6 @@ export default function Page(): ReactElement {
     return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
   };
 
-  useEffect(() => {
-    loadClassPageInfo();
-  }, []);
-
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
     // assume coreq values will never be nested

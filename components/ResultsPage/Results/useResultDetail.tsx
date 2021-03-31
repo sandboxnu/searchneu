@@ -22,6 +22,17 @@ export type OptionalDisplay = (
   Course: CourseReqs
 ) => ReactElement | ReactElement[];
 
+export const isCompositeReq = (
+  variableToCheck: any
+): variableToCheck is CompositeReq =>
+  (variableToCheck as CompositeReq).type === 'and' ||
+  (variableToCheck as CompositeReq).type === 'or';
+
+export const isCourseReq = (
+  variableToCheck: any
+): variableToCheck is CourseReq =>
+  (variableToCheck as CourseReq).classId !== undefined;
+
 export default function useResultDetail(
   aClass: CourseReqs
 ): {
@@ -82,15 +93,6 @@ export default function useResultDetail(
     // This is because there is no need to show (eg. CS 2500 and CS 2500 (hon)) in the same group
     // because only the subject and the classId are going to be shown.
     const processedSubjectClassIds = {};
-
-    const isCompositeReq = (
-      variableToCheck: any
-    ): variableToCheck is CompositeReq =>
-      (variableToCheck as CompositeReq).type === 'and' ||
-      (variableToCheck as CompositeReq).type === 'or';
-
-    const isCourseReq = (variableToCheck: any): variableToCheck is CourseReq =>
-      (variableToCheck as CourseReq).classId !== undefined;
 
     childNodes.forEach((childBranch) => {
       if (!isCourseReq(childBranch) && !isCompositeReq(childBranch)) {

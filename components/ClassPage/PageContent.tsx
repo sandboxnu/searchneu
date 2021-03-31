@@ -9,10 +9,8 @@ import {
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
-import useResultDetail, {
-  CourseReqs,
-} from '../ResultsPage/Results/useResultDetail';
-import { Campus, PrereqType } from '../types';
+import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
+import { Campus, CompositeReq, CourseReq, Requisite } from '../types';
 
 type PageContentProps = {
   termId: string;
@@ -176,12 +174,9 @@ function ClassPageReqsBody({
   termId,
   campus,
   classPageInfo,
-}: ClassPageReqsBodyProps) {
+}: ClassPageReqsBodyProps): ReactElement {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
-  const courseReqs = castAsCourseReqs(latestOccurrence);
-  const rawOptionalDisplay = useResultDetail(courseReqs).optionalDisplay;
-  const optionalDisplayFunc = (preqreqType: PrereqType) =>
-    rawOptionalDisplay(preqreqType, courseReqs);
+
   return (
     <div className="classPageReqsBody">
       <div className="flex justify-space-between">
@@ -193,7 +188,13 @@ function ClassPageReqsBody({
         </div>
         <div className={`headerBodyGroup prereqs`}>
           <h4 className="classPageHeader">PREREQUISITES</h4>
-          {optionalDisplayFunc(PrereqType.PREREQ)}
+          <span>Must Take</span>
+          <PrereqsDisplay
+            termId={termId}
+            campus={campus}
+            prereqs={classPageInfo.class.latestOccurrence.prereqs}
+            indents={0}
+          ></PrereqsDisplay>
         </div>
         <div className={`headerBodyGroup coreqs`}>
           <h4 className="classPageHeader">COREQUISITES</h4>
@@ -327,12 +328,66 @@ function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
   );
 }
 
-function castAsCourseReqs(course): CourseReqs {
-  return {
-    ...course,
-    prereqs: course.prereqs || { type: 'and', values: [] },
-    coreqs: course.coreqs || { tupe: 'and', values: [] },
-    optPrereqsFor: course.optPrereqsFor || [],
-    prereqsFor: course.prereqsFor || [],
-  };
+type PrereqsDisplayProps = {
+  termId: string;
+  campus: string;
+  prereqs: Requisite;
+  indents: number;
+};
+
+function PrereqsDisplay({
+  termId,
+  campus,
+  prereqs,
+  indents,
+}: PrereqsDisplayProps): ReactElement {
+  if (isCompositeReq(prereqs)) {
+    const prereq: CompositeReq = prereqs as CompositeReq;
+    if (prereq.values.length === 0) {
+      return <span>None</span>;
+    } else if (prereq.values.length === 1) {
+      return (
+        <PrereqsDisplay
+          termId={termId}
+          campus={campus}
+          prereqs={prereq.values[0]}
+          indents={indents}
+        ></PrereqsDisplay>
+      );
+    } else {
+      return (
+        <div className="prereqsDisplay">
+          {Array(indents)
+            .fill(0)
+            .map((val, index) => (
+              <span key={index}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            ))}
+          <span>{prereq.type === 'and' ? 'Each of :' : 'One of :'}</span>
+          {prereq.values.map((value, index) => (
+            <PrereqsDisplay
+              key={index}
+              termId={termId}
+              campus={campus}
+              prereqs={value}
+              indents={indents + 1}
+            ></PrereqsDisplay>
+          ))}
+        </div>
+      );
+    }
+  } else {
+    const prereq: CourseReq = prereqs as CourseReq;
+    return (
+      <div key={prereq.subject + prereq.classId}>
+        {Array(indents)
+          .fill(0)
+          .map((val, index) => (
+            <span key={index}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          ))}
+        <Link
+          href={`/${campus}/${termId}/classPage/${prereq.subject}/${prereq.classId}`}
+        >{`${prereq.subject} ${prereq.classId}`}</Link>
+      </div>
+    );
+  }
 }

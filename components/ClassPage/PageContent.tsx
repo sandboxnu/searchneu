@@ -11,6 +11,7 @@ import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
 import { CompositeReq, CourseReq, Requisite } from '../types';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import PageContentService from './PageContentService';
+import RequisiteTree from '../../components/icons/requisites_tree.svg';
 
 type PageContentProps = {
   termId: string;
@@ -198,15 +199,17 @@ function ClassPageReqsBody({
   return (
     <div className="classPageReqsBody">
       <div className="flex justify-space-between">
-        <div className={`headerBodyGroup nupaths`}>
+        <div className="headerBodyGroup nupaths">
           <h4 className="classPageHeader">NUPATHS</h4>
           {latestOccurrence.nupath.map((nupath, index) => (
             <p key={index}>{nupath}</p>
           ))}
         </div>
-        <div className={`headerBodyGroup prereqs`}>
-          <h4 className="classPageHeader">PREREQUISITES</h4>
-          <span>Must Take</span>
+        <div className="headerBodyGroup prereqs">
+          <h4 className="classPageHeader">
+            PREREQUISITES <RequisiteTree />
+          </h4>
+          <span>Must Take </span>
           <PrereqsDisplay
             termId={termId}
             campus={campus}
@@ -214,7 +217,7 @@ function ClassPageReqsBody({
             indents={0}
           ></PrereqsDisplay>
         </div>
-        <div className={`headerBodyGroup coreqs`}>
+        <div className="headerBodyGroup coreqs">
           <h4 className="classPageHeader">COREQUISITES</h4>
           {latestOccurrence.coreqs.values.map((value) => {
             return (
@@ -228,27 +231,38 @@ function ClassPageReqsBody({
         </div>
       </div>
       <div className="flex justify-space-between">
-        <div className={`headerBodyGroup link`}>
+        <div className="headerBodyGroup link">
           <h4 className="classPageHeader">LINK</h4>
           <Link href={latestOccurrence.prettyUrl}>
             Click here to view this course on the Northeastern website.
           </Link>
         </div>
 
-        <div className={`headerBodyGroup prereqsFor`}>
-          <h4 className="classPageHeader">PREREQUISITE for</h4>
-          {latestOccurrence.prereqsFor.values.map((value) => {
-            return (
-              <div key={value.subject + value.classId}>
-                <Link
-                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                >{`${value.subject} ${value.classId}`}</Link>
-              </div>
-            );
-          })}
+        <div className="headerBodyGroup prereqsFor">
+          <h4 className="classPageHeader">
+            PREREQUISITE for <RequisiteTree />
+          </h4>
+          <div className="prereqsForItemContainer">
+            <div className="prereqsForScroll">
+              {latestOccurrence.prereqsFor.values.map((value) => {
+                return (
+                  <div
+                    className="prereqsForItem"
+                    key={value.subject + value.classId}
+                  >
+                    <Link
+                      href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                    >{`${value.subject} ${value.classId}`}</Link>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        <div className={`headerBodyGroup optPrereqsFor`}>
-          <h4 className="classPageHeader">Optional PREREQUISITE for</h4>
+        <div className="headerBodyGroup optPrereqsFor">
+          <h4 className="classPageHeader">
+            Optional PREREQUISITE for <RequisiteTree />
+          </h4>
           {latestOccurrence.optPrereqsFor.values.map((value) => {
             return (
               <div key={value.subject + value.classId}>

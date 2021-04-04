@@ -1,12 +1,12 @@
 import { Type } from 'class-transformer';
 import { IsDefined, IsNumber, IsString, ValidateNested } from 'class-validator';
+import * as httpSignature from 'http-signature';
 import { keyBy } from 'lodash';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import 'reflect-metadata';
 import sendFBMessage from '../../utils/api/notifyer';
 import { prisma } from '../../utils/api/prisma';
 import withValidatedBody from '../../utils/api/withValidatedBody';
-import * as httpSignature from 'http-signature';
 
 // messages are at
 // https://github.com/sandboxnu/searchneu/blob/4bd3c470d5221ab9eaafb418951d1b6d4326ed25/backend/updater.ts
@@ -71,14 +71,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const parsed = httpSignature.parseRequest(req);
-  if (
-    req.method === 'POST' &&
-    httpSignature.verifySignature(parsed, process.env.WEBHOOK_PUB_KEY)
-  ) {
-    await post(req, res);
-  } else {
-    res.status(404).end();
+  try {
+    const parsed = httpSignature.parseRequest(req);
+    if (
+      req.method === 'POST' &&
+      httpSignature.verifySignature(parsed, process.env.WEBHOOK_PUB_KEY)
+    ) {
+      await post(req, res);
+    } else {
+      res.status(404).end();
+    }
+  } catch (e) {
+    // httpSignature failed to parse request or verify the signature
+    console.error(e);
+    res.status(401).end();
   }
 }
 

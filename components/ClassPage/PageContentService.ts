@@ -2,13 +2,13 @@ import { getCampusByLastDigit, getSeason, getYear } from '../global';
 import { Campus } from '../types';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 
-function getCourseLevel(termId: string): string {
+export function getCourseLevel(termId: string): string {
   const termIdLastDigit = termId.charAt(termId.length - 1);
   const campus = getCampusByLastDigit(termIdLastDigit);
   return campus === Campus.NEU ? 'Undergraduate' : 'Graduate';
 }
 
-function getProfessors(
+export function getProfessors(
   classPageInfo: GetClassPageInfoQuery,
   limit: number
 ): string[] {
@@ -30,7 +30,7 @@ function getProfessors(
   }
 }
 
-function getRecentSemesterNames(
+export function getRecentSemesterNames(
   classPageInfo: GetClassPageInfoQuery,
   limit: number
 ): string[] {
@@ -41,34 +41,25 @@ function getRecentSemesterNames(
   return allSemesters.slice(0, Math.min(limit, allSemesters.length));
 }
 
-function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
+export function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
   return getValidSections(classPageInfo).map(
     (section) => section.seatsCapacity - section.seatsRemaining
   );
 }
 
-function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
+export function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
   return getValidSections(classPageInfo).map(
     (section) => section.seatsCapacity
   );
 }
 
-function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
+export function numberOfSections(
+  classPageInfo: GetClassPageInfoQuery
+): number[] {
   return classPageInfo.class.allOccurrences.map(
     (occurrence) => occurrence.sections.length
   );
 }
-
-const PageContentService = {
-  getCourseLevel,
-  getProfessors,
-  getRecentSemesterNames,
-  seatsFilled,
-  seatsAvailable,
-  numberOfSections,
-};
-
-export default PageContentService;
 
 // Private Functions
 

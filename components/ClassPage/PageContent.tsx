@@ -10,7 +10,14 @@ import { LastUpdated } from '../common/LastUpdated';
 import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
 import { CompositeReq, CourseReq, Requisite } from '../types';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import PageContentService from './PageContentService';
+import {
+  getCourseLevel,
+  getProfessors,
+  getRecentSemesterNames,
+  numberOfSections,
+  seatsAvailable,
+  seatsFilled,
+} from './PageContentService';
 import RequisiteTree from '../../components/icons/requisites_tree.svg';
 
 type PageContentProps = {
@@ -130,47 +137,36 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
         <HeaderBody header="COURSE DESCRIPTION" body={latestOccurrence.desc} />
         <HeaderBody
           header="COURSE LEVEL"
-          body={PageContentService.getCourseLevel(
-            latestOccurrence.termId.toString()
-          )}
+          body={getCourseLevel(latestOccurrence.termId.toString())}
         />
       </div>
       <div className="verticalLine" />
       <div className="classPageBodyRight">
         <HeaderBody
           header="RECENT PROFESSORS"
-          body={PageContentService.getProfessors(classPageInfo, 10).join(', ')}
+          body={getProfessors(classPageInfo, 10).join(', ')}
         />
         <HeaderBody
           header="RECENT SEMESTERS"
-          body={PageContentService.getRecentSemesterNames(
-            classPageInfo,
-            6
-          ).join(', ')}
+          body={getRecentSemesterNames(classPageInfo, 6).join(', ')}
         />
         <div className="flex justify-space-between">
           <HeaderBody
             className="lg-text avgSeatsFilled"
             header="AVG SEATS FILLED"
-            body={`${Math.round(
-              mean(PageContentService.seatsFilled(classPageInfo))
-            )}`}
+            body={`${Math.round(mean(seatsFilled(classPageInfo)))}`}
           />
           <HeaderBody
             className="lg-text avgSeatsAvail"
             header="AVG SEATS AVAILABLE"
-            body={`${Math.round(
-              mean(PageContentService.seatsAvailable(classPageInfo))
-            )}`}
+            body={`${Math.round(mean(seatsAvailable(classPageInfo)))}`}
           />
         </div>
         <div className="flex justify-space-between">
           <HeaderBody
             className="lg-text avgNumSections"
             header="AVG # SECTIONS"
-            body={`${Math.round(
-              mean(PageContentService.numberOfSections(classPageInfo))
-            )}`}
+            body={`${Math.round(mean(numberOfSections(classPageInfo)))}`}
           />
           <HeaderBody
             className={`lg-text courseFees ${

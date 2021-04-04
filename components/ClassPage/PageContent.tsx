@@ -205,25 +205,35 @@ function ClassPageReqsBody({
           <h4 className="classPageHeader">
             PREREQUISITES <RequisiteTree />
           </h4>
-          <span>Must Take </span>
-          <PrereqsDisplay
-            termId={termId}
-            campus={campus}
-            prereqs={classPageInfo.class.latestOccurrence.prereqs}
-            indents={0}
-          ></PrereqsDisplay>
+          {latestOccurrence.prereqs.values.length === 0 ? (
+            <span className="noReqs">None</span>
+          ) : (
+            <>
+              <span>Must Take </span>
+              <PrereqsDisplay
+                termId={termId}
+                campus={campus}
+                prereqs={latestOccurrence.prereqs}
+                indents={0}
+              ></PrereqsDisplay>
+            </>
+          )}
         </div>
         <div className="headerBodyGroup coreqs">
           <h4 className="classPageHeader">COREQUISITES</h4>
-          {latestOccurrence.coreqs.values.map((value) => {
-            return (
-              <div key={value.subject + value.classId}>
-                <Link
-                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                >{`${value.subject} ${value.classId}`}</Link>
-              </div>
-            );
-          })}
+          {latestOccurrence.coreqs.values.length === 0 ? (
+            <span className="noReqs">None</span>
+          ) : (
+            latestOccurrence.coreqs.values.map((value) => {
+              return (
+                <div key={value.subject + value.classId}>
+                  <Link
+                    href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                  >{`${value.subject} ${value.classId}`}</Link>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
       <div className="flex justify-space-between">
@@ -238,36 +248,44 @@ function ClassPageReqsBody({
           <h4 className="classPageHeader">
             PREREQUISITE for <RequisiteTree />
           </h4>
-          <div className="prereqsForItemContainer">
-            <div className="prereqsForScroll">
-              {latestOccurrence.prereqsFor.values.map((value) => {
-                return (
-                  <div
-                    className="prereqsForItem"
-                    key={value.subject + value.classId}
-                  >
-                    <Link
-                      href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                    >{`${value.subject} ${value.classId}`}</Link>
-                  </div>
-                );
-              })}
+          {latestOccurrence.prereqsFor.values.length === 0 ? (
+            <span className="noReqs">None</span>
+          ) : (
+            <div className="prereqsForItemContainer">
+              <div className="prereqsForScroll">
+                {latestOccurrence.prereqsFor.values.map((value) => {
+                  return (
+                    <div
+                      className="prereqsForItem"
+                      key={value.subject + value.classId}
+                    >
+                      <Link
+                        href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                      >{`${value.subject} ${value.classId}`}</Link>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="headerBodyGroup optPrereqsFor">
           <h4 className="classPageHeader">
             Optional PREREQUISITE for <RequisiteTree />
           </h4>
-          {latestOccurrence.optPrereqsFor.values.map((value) => {
-            return (
-              <div key={value.subject + value.classId}>
-                <Link
-                  href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                >{`${value.subject} ${value.classId}`}</Link>
-              </div>
-            );
-          })}
+          {latestOccurrence.optPrereqsFor.values.length === 0 ? (
+            <span className="noReqs">None</span>
+          ) : (
+            latestOccurrence.optPrereqsFor.values.map((value) => {
+              return (
+                <div key={value.subject + value.classId}>
+                  <Link
+                    href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                  >{`${value.subject} ${value.classId}`}</Link>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

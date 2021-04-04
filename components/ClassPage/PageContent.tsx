@@ -251,7 +251,13 @@ function ClassPageReqsBody({
           {latestOccurrence.prereqsFor.values.length === 0 ? (
             <span className="noReqs">None</span>
           ) : (
-            <div className="prereqsForItemContainer">
+            <div
+              className={`prereqsForItemContainer ${
+                latestOccurrence.prereqsFor.values.length > 3
+                  ? 'showScroll'
+                  : ''
+              }`}
+            >
               <div className="prereqsForScroll">
                 {latestOccurrence.prereqsFor.values.map((value) => {
                   return (

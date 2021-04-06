@@ -7,6 +7,7 @@ import 'reflect-metadata';
 import sendFBMessage from '../../utils/api/notifyer';
 import { prisma } from '../../utils/api/prisma';
 import withValidatedBody from '../../utils/api/withValidatedBody';
+import macros from '../../components/macros';
 
 // messages are at
 // https://github.com/sandboxnu/searchneu/blob/4bd3c470d5221ab9eaafb418951d1b6d4326ed25/backend/updater.ts
@@ -81,7 +82,7 @@ export default async function handler(
     }
   } catch (e) {
     // httpSignature failed to parse request or verify the signature
-    console.error(e);
+    macros.error(e);
     res.status(401).end();
   }
 }

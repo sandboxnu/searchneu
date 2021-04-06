@@ -71,15 +71,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
+  if (req.method !== 'POST') return res.status(404).end();
   try {
     const parsed = httpSignature.parseRequest(req);
-    if (
-      req.method === 'POST' &&
-      httpSignature.verifySignature(parsed, process.env.WEBHOOK_PUB_KEY)
-    ) {
+    if (httpSignature.verifySignature(parsed, process.env.WEBHOOK_PUB_KEY)) {
       await post(req, res);
     } else {
-      res.status(404).end();
+      res.status(401).end();
     }
   } catch (e) {
     // httpSignature failed to parse request or verify the signature

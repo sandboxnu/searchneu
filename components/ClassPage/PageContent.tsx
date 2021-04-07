@@ -2,14 +2,12 @@ import { mean } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
-import {
-  creditsDescription,
-  creditsNumericDisplay,
-} from '../common/CreditsDisplay';
-import { LastUpdated } from '../common/LastUpdated';
+import RequisiteTree from '../../components/icons/requisites_tree.svg';
+import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
 import { CompositeReq, CourseReq, Requisite } from '../types';
-import { GetClassPageInfoQuery } from '../../generated/graphql';
+import { HeaderBody } from './HeaderBody';
+import { PageContentHeader } from './PageContentHeader';
 import {
   getCourseLevel,
   getProfessors,
@@ -18,7 +16,6 @@ import {
   seatsAvailable,
   seatsFilled,
 } from './PageContentService';
-import RequisiteTree from '../../components/icons/requisites_tree.svg';
 
 type PageContentProps = {
   termId: string;
@@ -71,7 +68,7 @@ export default function PageContent({
 
       {classPageInfo && classPageInfo.class && (
         <div className="classPageInfoContent">
-          <ClassPageInfoHeader classPageInfo={classPageInfo} />
+          <PageContentHeader classPageInfo={classPageInfo} />
           <div className="horizontalLine" />
           <ClassPageInfoBody classPageInfo={classPageInfo} />
           <div className="horizontalLine" />
@@ -91,82 +88,47 @@ export default function PageContent({
   );
 }
 
-function ClassPageInfoHeader({
-  classPageInfo,
-}: ClassPageInfoProp): ReactElement {
-  const { subject, name, classId, latestOccurrence } = classPageInfo.class;
-  return (
-    <div className="classPageInfoHeader">
-      <div className="title">
-        <div className="titleItems">
-          <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>
-          <h2 className="className">{name}</h2>
-        </div>
-      </div>
-      <div className="flex justify-space-between">
-        <LastUpdated
-          host={latestOccurrence.host}
-          prettyUrl={latestOccurrence.prettyUrl}
-          lastUpdateTime={latestOccurrence.lastUpdateTime}
-          iconHeight="25"
-          iconWidth="24"
-          className="classPageLastUpdated"
-        />
-        <div className="creditsDisplay">
-          <span className="creditsNumericDisplay">
-            {creditsNumericDisplay(
-              latestOccurrence.maxCredits,
-              latestOccurrence.minCredits
-            )}
-          </span>
-          <br></br>
-          <span className="creditsDescriptionDisplay">
-            {creditsDescription(latestOccurrence.maxCredits)}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
   return (
     <div className="classPageBody flex justify-space-between">
       <div className="classPageBodyLeft">
-        <HeaderBody header="COURSE DESCRIPTION" body={latestOccurrence.desc} />
+        <HeaderBody
+          header="COURSE DESCRIPTION"
+          body={<p>{latestOccurrence.desc}</p>}
+        />
         <HeaderBody
           header="COURSE LEVEL"
-          body={getCourseLevel(latestOccurrence.termId.toString())}
+          body={<p>{getCourseLevel(latestOccurrence.termId.toString())}</p>}
         />
       </div>
       <div className="verticalLine" />
       <div className="classPageBodyRight">
         <HeaderBody
           header="RECENT PROFESSORS"
-          body={getProfessors(classPageInfo, 10).join(', ')}
+          body={<p>{getProfessors(classPageInfo, 10).join(', ')}</p>}
         />
         <HeaderBody
           header="RECENT SEMESTERS"
-          body={getRecentSemesterNames(classPageInfo, 6).join(', ')}
+          body={<p>{getRecentSemesterNames(classPageInfo, 6).join(', ')}</p>}
         />
         <div className="flex justify-space-between">
           <HeaderBody
             className="lg-text avgSeatsFilled"
             header="AVG SEATS FILLED"
-            body={`${Math.round(mean(seatsFilled(classPageInfo)))}`}
+            body={<p>{Math.round(mean(seatsFilled(classPageInfo)))}</p>}
           />
           <HeaderBody
             className="lg-text avgSeatsAvail"
             header="AVG SEATS AVAILABLE"
-            body={`${Math.round(mean(seatsAvailable(classPageInfo)))}`}
+            body={<p>{Math.round(mean(seatsAvailable(classPageInfo)))}</p>}
           />
         </div>
         <div className="flex justify-space-between">
           <HeaderBody
             className="lg-text avgNumSections"
             header="AVG # SECTIONS"
-            body={`${Math.round(mean(numberOfSections(classPageInfo)))}`}
+            body={<p>{Math.round(mean(numberOfSections(classPageInfo)))}</p>}
           />
           <HeaderBody
             className={`lg-text courseFees ${
@@ -174,11 +136,13 @@ function ClassPageInfoBody({ classPageInfo }: ClassPageInfoProp): ReactElement {
             } `}
             header="COURSE FEES"
             body={
-              latestOccurrence.feeAmount
-                ? `$${latestOccurrence.feeAmount.toLocaleString()}`
-                : 'None'
+              <p>
+                {latestOccurrence.feeAmount
+                  ? `$${latestOccurrence.feeAmount.toLocaleString()}`
+                  : 'None'}
+              </p>
             }
-          />{' '}
+          />
         </div>
       </div>
     </div>
@@ -195,118 +159,126 @@ function ClassPageReqsBody({
   return (
     <div className="classPageReqsBody">
       <div className="flex justify-space-between">
-        <div className="headerBodyGroup nupaths">
-          <h4 className="classPageHeader">NUPATHS</h4>
-          {latestOccurrence.nupath.map((nupath, index) => (
+        <HeaderBody
+          header="NUPATHS"
+          className="nupaths"
+          body={latestOccurrence.nupath.map((nupath, index) => (
             <p key={index}>{nupath}</p>
           ))}
-        </div>
-        <div className="headerBodyGroup prereqs">
-          <h4 className="classPageHeader">
-            PREREQUISITES <RequisiteTree />
-          </h4>
-          {latestOccurrence.prereqs.values.length === 0 ? (
-            <span className="noReqs">None</span>
-          ) : (
+        />
+        <HeaderBody
+          header={
             <>
-              <span>Must Take </span>
-              <PrereqsDisplay
-                termId={termId}
-                campus={campus}
-                prereqs={latestOccurrence.prereqs}
-                indents={0}
-              ></PrereqsDisplay>
+              PREREQUISITES <RequisiteTree />
             </>
-          )}
-        </div>
-        <div className="headerBodyGroup coreqs">
-          <h4 className="classPageHeader">COREQUISITES</h4>
-          {latestOccurrence.coreqs.values.length === 0 ? (
-            <span className="noReqs">None</span>
-          ) : (
-            latestOccurrence.coreqs.values.map((value) => {
-              return (
-                <div key={value.subject + value.classId}>
-                  <Link
-                    href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                  >{`${value.subject} ${value.classId}`}</Link>
-                </div>
-              );
-            })
-          )}
-        </div>
+          }
+          className="prereqs"
+          body={
+            latestOccurrence.prereqs.values.length === 0 ? (
+              <span className="noReqs">None</span>
+            ) : (
+              <>
+                <span>Must Take </span>
+                <PrereqsDisplay
+                  termId={termId}
+                  campus={campus}
+                  prereqs={latestOccurrence.prereqs}
+                  indents={0}
+                ></PrereqsDisplay>
+              </>
+            )
+          }
+        />
+        <HeaderBody
+          header="COREQUISITES"
+          className="coreqs"
+          body={
+            latestOccurrence.coreqs.values.length === 0 ? (
+              <span className="noReqs">None</span>
+            ) : (
+              latestOccurrence.coreqs.values.map((value) => {
+                return (
+                  <div key={value.subject + value.classId}>
+                    <Link
+                      href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                    >{`${value.subject} ${value.classId}`}</Link>
+                  </div>
+                );
+              })
+            )
+          }
+        />
       </div>
       <div className="flex justify-space-between">
-        <div className="headerBodyGroup link">
-          <h4 className="classPageHeader">LINK</h4>
-          <Link href={latestOccurrence.prettyUrl}>
-            Click here to view this course on the Northeastern website.
-          </Link>
-        </div>
-
-        <div className="headerBodyGroup prereqsFor">
-          <h4 className="classPageHeader">
-            PREREQUISITE for <RequisiteTree />
-          </h4>
-          {latestOccurrence.prereqsFor.values.length === 0 ? (
-            <span className="noReqs">None</span>
-          ) : (
-            <div
-              className={`prereqsForItemContainer ${
-                latestOccurrence.prereqsFor.values.length > 3
-                  ? 'showScroll'
-                  : ''
-              }`}
-            >
-              <div className="prereqsForScroll">
-                {latestOccurrence.prereqsFor.values.map((value) => {
-                  return (
-                    <div
-                      className="prereqsForItem"
-                      key={value.subject + value.classId}
-                    >
-                      <Link
-                        href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                      >{`${value.subject} ${value.classId}`}</Link>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="headerBodyGroup optPrereqsFor">
-          <h4 className="classPageHeader">
-            Optional PREREQUISITE for <RequisiteTree />
-          </h4>
-          {latestOccurrence.optPrereqsFor.values.length === 0 ? (
-            <span className="noReqs">None</span>
-          ) : (
-            latestOccurrence.optPrereqsFor.values.map((value) => {
-              return (
-                <div key={value.subject + value.classId}>
-                  <Link
-                    href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                  >{`${value.subject} ${value.classId}`}</Link>
+        <HeaderBody
+          header="LINK"
+          className="link"
+          body={
+            <Link href={latestOccurrence.prettyUrl}>
+              Click here to view this course on the Northeastern website.
+            </Link>
+          }
+        />
+        <HeaderBody
+          header={
+            <>
+              PREREQUISITE for <RequisiteTree />
+            </>
+          }
+          className="prereqsFor"
+          body={
+            latestOccurrence.prereqsFor.values.length === 0 ? (
+              <span className="noReqs">None</span>
+            ) : (
+              <div
+                className={`prereqsForItemContainer ${
+                  latestOccurrence.prereqsFor.values.length > 3
+                    ? 'showScroll'
+                    : ''
+                }`}
+              >
+                <div className="prereqsForScroll">
+                  {latestOccurrence.prereqsFor.values.map((value) => {
+                    return (
+                      <div
+                        className="prereqsForItem"
+                        key={value.subject + value.classId}
+                      >
+                        <Link
+                          href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                        >{`${value.subject} ${value.classId}`}</Link>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })
-          )}
-        </div>
+              </div>
+            )
+          }
+        />
+        <HeaderBody
+          header={
+            <>
+              Optional PREREQUISITE for <RequisiteTree />
+            </>
+          }
+          className="optPrereqsFor"
+          body={
+            latestOccurrence.optPrereqsFor.values.length === 0 ? (
+              <span className="noReqs">None</span>
+            ) : (
+              latestOccurrence.optPrereqsFor.values.map((value) => {
+                return (
+                  <div key={value.subject + value.classId}>
+                    <Link
+                      href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                    >{`${value.subject} ${value.classId}`}</Link>
+                  </div>
+                );
+              })
+            )
+          }
+        />
       </div>
-    </div>
-  );
-}
-
-function HeaderBody({
-  header,
-  body,
-  className,
-}: Record<string, string>): ReactElement {
-  return (
-    <div className={`headerBodyGroup ${className ? className : ''}`}>
-      <h4 className="classPageHeader">{header}</h4>
-      <p>{body}</p>
     </div>
   );
 }

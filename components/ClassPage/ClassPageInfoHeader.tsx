@@ -6,16 +6,16 @@ import {
 } from '../common/CreditsDisplay';
 import { LastUpdated } from '../common/LastUpdated';
 
-type PageContentHeaderProps = {
+type ClassPageInfoHeaderProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-export function PageContentHeader({
+export default function ClassPageInfoHeader({
   classPageInfo,
-}: PageContentHeaderProps): ReactElement {
+}: ClassPageInfoHeaderProps): ReactElement {
   const { subject, name, classId, latestOccurrence } = classPageInfo.class;
   return (
-    <div className="pageContentHeader">
+    <div className="classPageInfoHeader">
       <div className="title">
         <div className="titleItems">
           <h1 className="classCode">{`${subject.toUpperCase()}${classId}`}</h1>

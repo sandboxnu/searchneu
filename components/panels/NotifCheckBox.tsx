@@ -8,6 +8,7 @@ import React, { ReactElement, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import useUser from '../../utils/useUser';
 import IconCheckMark from '../icons/IconCheckmark';
+import Tooltip from '../Tooltip';
 import Keys from '../Keys';
 import macros from '../macros';
 import { Section } from '../types';
@@ -42,6 +43,7 @@ export default function NotifCheckBox({
         className="inlineBlock"
       >
         <Icon name="info circle" className="myIcon" />
+        <Tooltip text={'There are still seats remaining for this section'} />
       </div>
     );
   }
@@ -77,6 +79,7 @@ export default function NotifCheckBox({
           </label>
         </div>
       )}
+      <Tooltip text={'Sign up for notifications for this section'} />
     </div>
   );
 }

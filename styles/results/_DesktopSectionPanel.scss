@@ -55,5 +55,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .inlineBlock {
+      cursor: pointer;
+      &:hover .tooltip {
+        display: block;
+      }
+    }
   }
 }

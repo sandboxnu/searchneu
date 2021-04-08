@@ -64,6 +64,8 @@ export function DesktopSectionPanel({
 }: SectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(section);
 
+  showNotificationSwitches = true;
+
   const getUniqueTimes = (times: DayjsTuple[]): DayjsTuple[] => {
     const seenTimes = new Set();
     return times.reduce((acc, t) => {

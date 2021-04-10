@@ -204,7 +204,7 @@ function PrereqsDisplay({
               <span>{prereq.type === 'and' ? 'Each of' : 'One of'}</span>
               <ul>
                 {prereq.values.map((value, index) => (
-                  <li>
+                  <li key={index}>
                     <PrereqsDisplay
                       key={index}
                       termId={termId}
@@ -221,7 +221,7 @@ function PrereqsDisplay({
               <span>{prereq.type === 'and' ? 'Each of' : 'One of'}</span>
               <ul>
                 {prereq.values.map((value, index) => (
-                  <li>
+                  <li key={index}>
                     <PrereqsDisplay
                       key={index}
                       termId={termId}

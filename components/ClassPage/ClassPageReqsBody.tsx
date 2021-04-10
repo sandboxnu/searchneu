@@ -101,17 +101,17 @@ export default function ClassPageReqsBody({
               <span className="noReqs">None</span>
             ) : (
               <div
-                className={`prereqsForItemContainer ${
+                className={`reqItemsContainer ${
                   latestOccurrence.prereqsFor.values.length > 3
                     ? 'showScroll'
                     : ''
                 }`}
               >
-                <div className="prereqsForScroll">
+                <div className="reqItemsScroll">
                   {latestOccurrence.prereqsFor.values.map((value) => {
                     return (
                       <div
-                        className="prereqsForItem"
+                        className="reqItem"
                         key={value.subject + value.classId}
                       >
                         <Link
@@ -125,7 +125,44 @@ export default function ClassPageReqsBody({
             )
           }
         />
+
         <HeaderBody
+          header={
+            <>
+              Optional PREREQUISITE for <RequisiteTree />
+            </>
+          }
+          className="optPrereqsFor"
+          body={
+            latestOccurrence.optPrereqsFor.values.length === 0 ? (
+              <span className="noReqs">None</span>
+            ) : (
+              <div
+                className={`reqItemsContainer ${
+                  latestOccurrence.optPrereqsFor.values.length > 3
+                    ? 'showScroll'
+                    : ''
+                }`}
+              >
+                <div className="reqItemsScroll">
+                  {latestOccurrence.optPrereqsFor.values.map((value) => {
+                    return (
+                      <div
+                        className="reqItem"
+                        key={value.subject + value.classId}
+                      >
+                        <Link
+                          href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
+                        >{`${value.subject} ${value.classId}`}</Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )
+          }
+        />
+        {/* <HeaderBody
           header={
             <>
               Optional PREREQUISITE for <RequisiteTree />
@@ -147,7 +184,7 @@ export default function ClassPageReqsBody({
               })
             )
           }
-        />
+        /> */}
       </div>
     </div>
   );

@@ -124,6 +124,13 @@
       font-size: 20px;
     }
 
+    .prereqsDisplay {
+      ul > li {
+        margin-left: 20px;
+        line-height: 30px;
+      }
+    }
+
     .avgSeatsFilled,
     .avgSeatsAvail,
     .avgNumSections,

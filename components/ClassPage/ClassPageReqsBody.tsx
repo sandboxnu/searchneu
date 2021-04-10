@@ -16,7 +16,7 @@ type PrereqsDisplayProps = {
   termId: string;
   campus: string;
   prereqs: Requisite;
-  indents: number;
+  level: number;
 };
 
 export default function ClassPageReqsBody({
@@ -54,13 +54,17 @@ export default function ClassPageReqsBody({
               <span className="noReqs">None</span>
             ) : (
               <>
-                <span>Must Take </span>
-                <PrereqsDisplay
-                  termId={termId}
-                  campus={campus}
-                  prereqs={latestOccurrence.prereqs}
-                  indents={0}
-                ></PrereqsDisplay>
+                <div>
+                  <span>Must Take </span>
+                </div>
+                <div className="prereqsDisplay">
+                  <PrereqsDisplay
+                    termId={termId}
+                    campus={campus}
+                    prereqs={latestOccurrence.prereqs}
+                    level={0}
+                  ></PrereqsDisplay>
+                </div>
               </>
             )
           }
@@ -168,29 +172,6 @@ export default function ClassPageReqsBody({
             )
           }
         />
-        {/* <HeaderBody
-          header={
-            <>
-              Optional PREREQUISITE for <RequisiteTree />
-            </>
-          }
-          className="optPrereqsFor"
-          body={
-            latestOccurrence.optPrereqsFor.values.length === 0 ? (
-              <span className="noReqs">None</span>
-            ) : (
-              latestOccurrence.optPrereqsFor.values.map((value) => {
-                return (
-                  <div key={value.subject + value.classId}>
-                    <Link
-                      href={`/${campus}/${termId}/classPage/${value.subject}/${value.classId}`}
-                    >{`${value.subject} ${value.classId}`}</Link>
-                  </div>
-                );
-              })
-            )
-          }
-        /> */}
       </div>
     </div>
   );
@@ -200,7 +181,7 @@ function PrereqsDisplay({
   termId,
   campus,
   prereqs,
-  indents,
+  level,
 }: PrereqsDisplayProps): ReactElement {
   if (isCompositeReq(prereqs)) {
     const prereq: CompositeReq = prereqs as CompositeReq;
@@ -212,43 +193,58 @@ function PrereqsDisplay({
           termId={termId}
           campus={campus}
           prereqs={prereq.values[0]}
-          indents={indents}
+          level={level}
         ></PrereqsDisplay>
       );
     } else {
       return (
-        <div className="prereqsDisplay">
-          {Array(indents)
-            .fill(0)
-            .map((val, index) => (
-              <span key={index}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            ))}
-          <span>{prereq.type === 'and' ? 'Each of :' : 'One of :'}</span>
-          {prereq.values.map((value, index) => (
-            <PrereqsDisplay
-              key={index}
-              termId={termId}
-              campus={campus}
-              prereqs={value}
-              indents={indents + 1}
-            ></PrereqsDisplay>
-          ))}
-        </div>
+        <>
+          {level > 0 ? (
+            <li>
+              <span>{prereq.type === 'and' ? 'Each of' : 'One of'}</span>
+              <ul>
+                {prereq.values.map((value, index) => (
+                  <li>
+                    <PrereqsDisplay
+                      key={index}
+                      termId={termId}
+                      campus={campus}
+                      prereqs={value}
+                      level={level + 1}
+                    ></PrereqsDisplay>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <>
+              <span>{prereq.type === 'and' ? 'Each of' : 'One of'}</span>
+              <ul>
+                {prereq.values.map((value, index) => (
+                  <li>
+                    <PrereqsDisplay
+                      key={index}
+                      termId={termId}
+                      campus={campus}
+                      prereqs={value}
+                      level={level + 1}
+                    ></PrereqsDisplay>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
       );
     }
   } else {
     const prereq: CourseReq = prereqs as CourseReq;
     return (
-      <div key={prereq.subject + prereq.classId}>
-        {Array(indents)
-          .fill(0)
-          .map((val, index) => (
-            <span key={index}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          ))}
+      <li key={prereq.subject + prereq.classId}>
         <Link
           href={`/${campus}/${termId}/classPage/${prereq.subject}/${prereq.classId}`}
         >{`${prereq.subject} ${prereq.classId}`}</Link>
-      </div>
+      </li>
     );
   }
 }

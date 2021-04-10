@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
+
+.four04-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.four04-title-text {
+  font-family: Montserrat Alternates;
+  font-size: 50px;
+  font-weight: 700;
+  color: #e63946;
+  margin-bottom: 100px;
+}
+
+.four04-return-button {
+  margin-top: 50px;
+  font-family: Lato;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 20px 40px;
+  color: #e63946;
+  border: 1px solid #e63946;
+  border-radius: 28px;
+  transition: color, background-color 0.15s linear;
+  &:hover {
+    background-color: #e63946;
+    color: white;
+    cursor: pointer;
+  }
+}

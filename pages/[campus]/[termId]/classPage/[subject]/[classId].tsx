@@ -37,7 +37,6 @@ export default function Page(): ReactElement {
         classId: coreqVal.classId,
       });
     });
-
     setClassPageInfo(classPage);
     setCoreqInfo(coreqInfoArray);
   };

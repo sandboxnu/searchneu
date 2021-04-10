@@ -36,7 +36,6 @@ export default function PageContent({
           Back to Search Results
         </div>
       )}
-
       {classPageInfo && classPageInfo.class && (
         <div className="classPageInfoContent">
           <ClassPageInfoHeader classPageInfo={classPageInfo} />

@@ -101,6 +101,7 @@ export default function useSearch({
   const returnedData = data && {
     filterOptions: data[0].filterOptions,
     results: data.map((d) => d.results).flat(),
+    hasNextPage: data[0].hasNextPage,
   };
 
   return {
@@ -115,6 +116,7 @@ function transformGraphQLToSearchResult(
   const transformedResults: SearchResult = {
     results: [],
     filterOptions: graphqlResults.search.filterOptions as FilterOptions,
+    hasNextPage: graphqlResults.search.pageInfo.hasNextPage,
   };
   transformedResults.results = graphqlResults.search.nodes.map((node) => {
     if (node.type === 'ClassOccurrence') {

@@ -32,9 +32,15 @@ export default function ClassPageReqsBody({
         <HeaderBody
           header="NUPATHS"
           className="nupaths"
-          body={latestOccurrence.nupath.map((nupath, index) => (
-            <p key={index}>{nupath}</p>
-          ))}
+          body={
+            latestOccurrence.nupath.length === 0 ? (
+              <span className="noNUPaths">None</span>
+            ) : (
+              latestOccurrence.nupath.map((nupath, index) => (
+                <p key={index}>{nupath}</p>
+              ))
+            )
+          }
         />
         <HeaderBody
           header={

@@ -62,7 +62,7 @@ export interface Course {
   termId: string;
   desc: string;
   name: string;
-  prettyUrl: string;
+  url: string;
   classId: string;
   subject: string;
   lastUpdateTime: number;

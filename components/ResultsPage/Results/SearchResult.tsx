@@ -13,6 +13,7 @@ import Keys from '../../Keys';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
+import Tooltip, { TooltipDirection } from '../../Tooltip';
 import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
 
@@ -49,6 +50,7 @@ const sortSections = (sections: Section[]): Section[] => {
 export function SearchResult({ course }: SearchResultProps): ReactElement {
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { optionalDisplay, creditsString } = useResultDetail(course);
+  console.log('course', course);
 
   const { user } = useUser();
   const userIsWatchingClass = user?.followedCourses?.includes(
@@ -76,10 +78,14 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
               target="_blank"
               rel="noopener noreferrer"
               data-tip={`View on ${course.host}`}
-              href={course.prettyUrl}
+              href={course.url}
             >
               <IconGlobe />
             </a>
+            <Tooltip
+              text={'View this course on Banner.'}
+              direction={TooltipDirection.Up}
+            />
             <span>{`Updated ${getLastUpdateString(course)}`}</span>
           </div>
         </div>

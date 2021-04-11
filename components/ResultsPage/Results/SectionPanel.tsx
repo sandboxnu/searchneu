@@ -62,7 +62,10 @@ export function DesktopSectionPanel({
   section,
   showNotificationSwitches,
 }: SectionPanelProps): ReactElement {
-  const { getSeatsClass } = useSectionPanelDetail(section);
+  const { getSeatsClass } = useSectionPanelDetail(
+    section.seatsRemaining,
+    section.seatsCapacity
+  );
 
   const getUniqueTimes = (times: DayjsTuple[]): DayjsTuple[] => {
     const seenTimes = new Set();
@@ -151,7 +154,10 @@ export function MobileSectionPanel({
   section,
   showNotificationSwitches,
 }: SectionPanelProps): ReactElement {
-  const { getSeatsClass } = useSectionPanelDetail(section);
+  const { getSeatsClass } = useSectionPanelDetail(
+    section.seatsRemaining,
+    section.seatsCapacity
+  );
 
   const groupedTimesAndDays = (times: DayjsTuple[]): Map<string, string[]> => {
     const daysOfWeek = ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'];

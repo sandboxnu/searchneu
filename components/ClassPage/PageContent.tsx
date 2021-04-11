@@ -33,7 +33,7 @@ export default function PageContent({
     );
   }
   return (
-    <div className="pageContent">
+    <div className={`pageContent ${isCoreq ? 'coreqPageContent' : ''}`}>
       {isCoreq ? (
         <h2 className="coreqHeader">
           COREQUISITES for

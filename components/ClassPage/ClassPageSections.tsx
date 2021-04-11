@@ -2,15 +2,31 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
 import { CompositeReq, CourseReq, Requisite } from '../types';
 import { HeaderBody } from './HeaderBody';
-import { GetClassPageInfoQuery } from '../../generated/graphql';
+import { GetClassPageInfoQuery, Section } from '../../generated/graphql';
 import { getSeason, getYear } from '../global';
 import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
 import { sortBy, uniq } from 'lodash';
 import { Dropdown } from 'semantic-ui-react';
+import IconGlobe from '../icons/IconGlobe';
+import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 
 type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
+
+type ClassPageSection = { __typename?: 'Section' } & Pick<
+  Section,
+  | 'classType'
+  | 'crn'
+  | 'seatsCapacity'
+  | 'seatsRemaining'
+  | 'waitCapacity'
+  | 'waitRemaining'
+  | 'campus'
+  | 'profs'
+  | 'meetings'
+  | 'lastUpdateTime'
+>;
 
 export default function ClassPageSections({
   classPageInfo,
@@ -19,6 +35,7 @@ export default function ClassPageSections({
   const [currTermIndex, setCurrTermIndex] = useState(0);
   const [sectionCampuses, setSectionCampuses] = useState([]);
   const [selectedCampus, setSelectedCampus] = useState('');
+  const [sections, setSections] = useState<ClassPageSection[]>([]);
 
   useEffect(() => {
     setSectionCampuses(getCampusOptions(currTermIndex, classPageInfo));
@@ -27,6 +44,14 @@ export default function ClassPageSections({
   useEffect(() => {
     setSelectedCampus(sectionCampuses[0]);
   }, [sectionCampuses]);
+
+  useEffect(() => {
+    setSections(
+      classPageInfo.class.allOccurrences[currTermIndex].sections.filter(
+        (section) => section.campus === selectedCampus
+      )
+    );
+  }, [currTermIndex, selectedCampus]);
 
   return (
     <div className="classPageSections">
@@ -56,6 +81,11 @@ export default function ClassPageSections({
           setCurrTermIndex={setCurrTermIndex}
           classPageInfo={classPageInfo}
         />
+      </div>
+      <div className="sectionCards flex flex-wrap justify-space-between">
+        {sections.map((section) => (
+          <SectionCard key={section.crn} section={section} />
+        ))}
       </div>
     </div>
   );
@@ -119,6 +149,27 @@ function TermNav({
           fill={rightNavDisabled(currTermIndex) ? '#969696' : '#000000'}
         />
       </span>
+    </div>
+  );
+}
+
+type SectionCardProps = {
+  section: ClassPageSection;
+};
+function SectionCard({ section }: SectionCardProps): ReactElement {
+  const { getSeatsClass } = useSectionPanelDetail(
+    section.seatsRemaining,
+    section.seatsCapacity
+  );
+  return (
+    <div className="sectionCard">
+      <div className="sectionCardProfs">{section.profs.join(', ')}</div>
+      <div className="sectionCRN">
+        <IconGlobe /> {section.crn}
+      </div>
+      <div className={`seatsAvailable ${getSeatsClass()}`}>
+        {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+      </div>
     </div>
   );
 }

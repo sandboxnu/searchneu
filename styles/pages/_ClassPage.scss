@@ -1,8 +1,12 @@
 .pageContent {
   margin-left: 10.49%;
   margin-top: 150px;
+  padding-bottom: 120px;
   width: 80vw;
   color: black;
+  &.coreqPageContent {
+    margin-top: 0px;
+  }
 
   .backToResults {
     height: 38px;
@@ -60,6 +64,10 @@
 
   .flex {
     display: flex;
+  }
+
+  .flex-wrap {
+    flex-wrap: wrap;
   }
 
   .justify-space-between {
@@ -181,6 +189,10 @@
     margin-top: 60px;
     margin-bottom: 60px;
 
+    .sectionsNav {
+      margin-bottom: 60px;
+    }
+
     .campusNav,
     .termNav {
       font-size: 26px;
@@ -213,6 +225,34 @@
           color: #636363;
           margin-top: 8px;
           margin-bottom: 8px;
+        }
+      }
+    }
+
+    .sectionCard {
+      width: 48%;
+      font-size: 18px;
+      margin-bottom: 60px;
+
+      .sectionCardProfs {
+        margin-bottom: 14px;
+      }
+
+      .sectionCRN {
+        margin: 24px 0;
+      }
+
+      .seatsAvailable {
+        &.green {
+          color: #27ae34;
+        }
+
+        &.yellow {
+          color: #ffbf3d;
+        }
+
+        &.red {
+          color: #d41b2c;
         }
       }
     }

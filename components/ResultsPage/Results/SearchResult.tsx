@@ -84,7 +84,7 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             </a>
             <Tooltip
               text={'View this course on Banner.'}
-              direction={TooltipDirection.Up}
+              direction={TooltipDirection.Down}
             />
             <span>{`Updated ${getLastUpdateString(course)}`}</span>
           </div>

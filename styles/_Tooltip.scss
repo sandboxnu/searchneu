@@ -8,7 +8,7 @@
   pointer-events: none;
 
   &__arrow {
-    &--UP {
+    &--DOWN {
       position: absolute;
       width: 0;
       height: 0;
@@ -18,7 +18,14 @@
       top: -4px;
     }
 
-    &--DOWN {
+    &--UP {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #505050;
+      top: -4px;
     }
   }
 }

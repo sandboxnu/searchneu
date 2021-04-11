@@ -1,16 +1,13 @@
+import dayjs from 'dayjs';
+import { partition, sortBy, uniq, uniqWith } from 'lodash';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
-import { CompositeReq, CourseReq, Requisite } from '../types';
-import { HeaderBody } from './HeaderBody';
+import { Dropdown } from 'semantic-ui-react';
 import { GetClassPageInfoQuery, Section } from '../../generated/graphql';
 import { getSeason, getYear } from '../global';
-import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
-import { sortBy, uniq } from 'lodash';
-import { Dropdown } from 'semantic-ui-react';
 import IconGlobe from '../icons/IconGlobe';
+import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
-import { partition } from 'lodash';
-import dayjs from 'dayjs';
+import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
 
 type ClassPageSectionsProps = {
@@ -176,10 +173,25 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
       <div className="sectionCRN">
         <IconGlobe /> {section.crn}
       </div>
-      {console.log(splitMeetingsAndExamTimes(section.meetings))}
-      {finalExamMeeting.map((meeting) => {
+      {classMeetings.map((meeting, index) => {
         return (
-          <div>
+          <div
+            key={`meeting${index}`}
+            className="flex justify-space-between flex-wrap courseMeeting"
+          >
+            <WeekdayBoxes meetingDays={getDaysOfWeekAsBooleans(meeting)} />
+            <div>{displayCourseMeetingTimes(meeting)}</div>
+            <div>{meeting.where}</div>
+          </div>
+        );
+      })}
+
+      <div className={`seatsAvailable ${getSeatsClass()}`}>
+        {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+      </div>
+      {finalExamMeeting.map((meeting, index) => {
+        return (
+          <div key={`finalExam${index}`}>
             {`Final Exam: 
             ${displayFinalExamDate(meeting)} | 
             ${displayFinalExamTimes(meeting)} | 
@@ -187,15 +199,30 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
           </div>
         );
       })}
-      <div className={`seatsAvailable ${getSeatsClass()}`}>
-        {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
-      </div>
     </div>
   );
 }
 
 function splitMeetingsAndExamTimes(meetings) {
   return partition(meetings, (meeting) => meeting.type !== 'Final Exam');
+}
+
+function displayCourseMeetingTimes(courseMeeting): string {
+  const meetingTimes = getGroupedByTimeOfDay(courseMeeting.times);
+  return meetingTimes.length === 0
+    ? 'TBA'
+    : uniqWith(meetingTimes, (time1, time2) => {
+        return (
+          time1.start.format('h:mm') === time2.start.format('h:mm') &&
+          time1.end.format('h:mm A') === time2.end.format('h:mm A')
+        );
+      })
+        .map((meetingTime) => {
+          return `${meetingTime.start.format('h:mm')}–${meetingTime.end.format(
+            'h:mm A'
+          )}`;
+        })
+        .join(', ');
 }
 
 function displayFinalExamDate(finalExamMeeting): string {
@@ -211,4 +238,13 @@ function displayFinalExamTimes(finalExamMeeting): string {
     : `${meetingTimes[0].start.format('h:mm')}–${meetingTimes[0].end.format(
         'h:mm A'
       )}`;
+}
+
+function getDaysOfWeekAsBooleans(meeting): boolean[] {
+  const retVal = [false, false, false, false, false, false, false];
+
+  Object.keys(meeting.times).forEach((key) => {
+    retVal[key] = true;
+  });
+  return retVal;
 }

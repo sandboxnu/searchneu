@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import ClassPageInfoHeader from './ClassPageInfoHeader';
 import ClassPageInfoBody from './ClassPageInfoBody';
+import ClassPageInfoHeader from './ClassPageInfoHeader';
 import ClassPageReqsBody from './ClassPageReqsBody';
 import ClassPageSections from './ClassPageSections';
 

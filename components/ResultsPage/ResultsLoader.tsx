@@ -25,7 +25,7 @@ interface ResultsLoaderProps {
   hasNextPage: boolean;
 }
 
-const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
+export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
   const timeMoments = [];
 
   if (times) {

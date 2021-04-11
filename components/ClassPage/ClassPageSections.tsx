@@ -9,6 +9,9 @@ import { sortBy, uniq } from 'lodash';
 import { Dropdown } from 'semantic-ui-react';
 import IconGlobe from '../icons/IconGlobe';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
+import { partition } from 'lodash';
+import dayjs from 'dayjs';
+import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
 
 type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
@@ -153,13 +156,19 @@ function TermNav({
   );
 }
 
+const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+
 type SectionCardProps = {
   section: ClassPageSection;
 };
+
 function SectionCard({ section }: SectionCardProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
+  );
+  const [classMeetings, finalExamMeeting] = splitMeetingsAndExamTimes(
+    section.meetings
   );
   return (
     <div className="sectionCard">
@@ -167,9 +176,39 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
       <div className="sectionCRN">
         <IconGlobe /> {section.crn}
       </div>
+      {console.log(splitMeetingsAndExamTimes(section.meetings))}
+      {finalExamMeeting.map((meeting) => {
+        return (
+          <div>
+            {`Final Exam: 
+            ${displayFinalExamDate(meeting)} | 
+            ${displayFinalExamTimes(meeting)} | 
+            ${meeting.where}`}
+          </div>
+        );
+      })}
       <div className={`seatsAvailable ${getSeatsClass()}`}>
         {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
       </div>
     </div>
   );
+}
+
+function splitMeetingsAndExamTimes(meetings) {
+  return partition(meetings, (meeting) => meeting.type !== 'Final Exam');
+}
+
+function displayFinalExamDate(finalExamMeeting): string {
+  return dayjs((finalExamMeeting.startDate + 1) * DAY_IN_MILLISECONDS).format(
+    'ddd M/D'
+  );
+}
+
+function displayFinalExamTimes(finalExamMeeting): string {
+  const meetingTimes = getGroupedByTimeOfDay(finalExamMeeting.times);
+  return meetingTimes.length === 0
+    ? 'TBA'
+    : `${meetingTimes[0].start.format('h:mm')}–${meetingTimes[0].end.format(
+        'h:mm a'
+      )}`;
 }

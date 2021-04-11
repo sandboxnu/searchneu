@@ -160,6 +160,7 @@
       }
     }
   }
+
   .classPageReqsBody .flex .nupaths,
   .prereqs,
   .coreqs,
@@ -173,6 +174,47 @@
       font-size: 18px;
       line-height: 30px;
       margin: 0;
+    }
+  }
+
+  .classPageSections {
+    margin-top: 60px;
+    margin-bottom: 60px;
+
+    .campusNav,
+    .termNav {
+      font-size: 26px;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+    .navArrow {
+      padding: 8px;
+      cursor: pointer;
+      &.disabled {
+        cursor: default;
+      }
+    }
+
+    .sectionsCampusDropdown {
+      .divider.text {
+        text-decoration: underline;
+      }
+      .dropdown.icon {
+        margin: 0 0 0 12px;
+      }
+      .sectionsCampusDropdownMenu {
+        margin-top: 10px;
+      }
+
+      .sectionsCampusOption.item {
+        padding: 28px !important;
+        span {
+          font-size: 22px;
+          color: #636363;
+          margin-top: 8px;
+          margin-bottom: 8px;
+        }
+      }
     }
   }
 }

@@ -209,6 +209,6 @@ function displayFinalExamTimes(finalExamMeeting): string {
   return meetingTimes.length === 0
     ? 'TBA'
     : `${meetingTimes[0].start.format('h:mm')}–${meetingTimes[0].end.format(
-        'h:mm a'
+        'h:mm A'
       )}`;
 }

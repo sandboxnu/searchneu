@@ -6,6 +6,7 @@
   display: none;
   position: absolute;
   pointer-events: none;
+  background: #338ef1;
 
   &__arrow {
     &--DOWN {
@@ -24,7 +25,7 @@
       height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
-      border-top: 5px solid #505050;
+      border-top: 5px solid #338ef1;
       top: -4px;
     }
   }

@@ -74,10 +74,37 @@
     align-items: center;
     justify-content: center;
 
-    .inlineBlock {
+    .infoIcon {
       cursor: pointer;
+      position: relative;
       &:hover .tooltip {
         display: block;
+        top: -30px;
+        right: -20px;
+        background: #338ef1;
+        white-space: nowrap;
+        & > div {
+          border-color: #338ef1 transparent transparent transparent;
+          right: 29px;
+          top: 24px;
+        }
+      }
+    }
+
+    .signUpSwitch {
+      cursor: pointer;
+      position: relative;
+      &:hover .tooltip {
+        display: block;
+        bottom: 30px;
+        right: -14px;
+        background: #338ef1;
+        white-space: nowrap;
+        & > div {
+          border-color: #338ef1 transparent transparent transparent;
+          right: 29px;
+          top: 24px;
+        }
       }
     }
   }

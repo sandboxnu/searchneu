@@ -76,6 +76,10 @@ export default async function handler(
   try {
     const parsed = httpSignature.parseRequest(req);
     if (httpSignature.verifySignature(parsed, process.env.WEBHOOK_PUB_KEY)) {
+      macros.log(
+        'Successfully verified updater request at ',
+        new Date().toString()
+      );
       await post(req, res);
     } else {
       res.status(401).end();

@@ -12,7 +12,7 @@ type TooltipProps = {
 
 export default function Tooltip({ text, direction }: TooltipProps) {
   return (
-    <div className={`tooltip`}>
+    <div className={'tooltip'}>
       {text}
       <div className={`tooltip__arrow--${direction}`} />
     </div>

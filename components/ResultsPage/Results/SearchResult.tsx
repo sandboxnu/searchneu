@@ -50,7 +50,6 @@ const sortSections = (sections: Section[]): Section[] => {
 export function SearchResult({ course }: SearchResultProps): ReactElement {
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { optionalDisplay, creditsString } = useResultDetail(course);
-  console.log('course', course);
 
   const { user } = useUser();
   const userIsWatchingClass = user?.followedCourses?.includes(

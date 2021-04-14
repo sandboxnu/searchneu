@@ -14,7 +14,6 @@ import Keys from '../../Keys';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
-import Tooltip, { TooltipDirection } from '../../Tooltip';
 import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
 

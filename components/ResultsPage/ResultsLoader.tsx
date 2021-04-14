@@ -22,6 +22,7 @@ const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 interface ResultsLoaderProps {
   results: SearchItem[];
   loadMore: () => void;
+  hasNextPage: boolean;
 }
 
 const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -94,12 +95,13 @@ const getFormattedSections = (sections: any): Section[] => {
 function ResultsLoader({
   results,
   loadMore,
+  hasNextPage,
 }: ResultsLoaderProps): ReactElement {
   return (
     <InfiniteScroll
       dataLength={results.length}
       next={loadMore}
-      hasMore
+      hasMore={hasNextPage}
       loader={null}
     >
       <div className="five column row">

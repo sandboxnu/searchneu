@@ -1,0 +1,133 @@
+.pageContent {
+  margin-left: 10.49%;
+  margin-top: 150px;
+  width: 80vw;
+  color: black;
+
+  .backToResults {
+    height: 38px;
+    font-size: 17px;
+    cursor: pointer;
+    color: #009fda;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .title {
+    height: 155px;
+    margin-top: 17px;
+    line-height: 48px;
+    display: flex;
+    align-items: center;
+
+    .titleItems {
+      display: flex;
+      flex-direction: column;
+
+      .classCode {
+        font-size: 40px;
+        font-weight: 700;
+      }
+
+      .className {
+        font-size: 38px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .coreqHeader {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 400;
+    font-style: normal;
+
+    .coreqHeaderCourse {
+      font-style: italic;
+    }
+  }
+
+  .horizontalLine {
+    background-color: #979797;
+    height: 1px;
+  }
+
+  .verticalLine {
+    border-left: 1px solid #979797;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .justify-space-between {
+    justify-content: space-between;
+  }
+
+  .classPageLastUpdated {
+    font-size: 17px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+  }
+
+  .creditsDisplay {
+    text-align: center;
+
+    .creditsNumericDisplay {
+      font-size: 36px;
+      line-height: 42px;
+      font-weight: 400;
+    }
+
+    .creditsDescriptionDisplay {
+      font-size: 18px;
+    }
+  }
+
+  .classPageInfoHeader {
+    margin-bottom: 10px;
+  }
+
+  .classPageBody {
+    margin-top: 60px;
+    margin-bottom: 60px;
+
+    .classPageHeader {
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .classPageBodyLeft {
+      width: 45%;
+    }
+
+    .classPageBodyRight {
+      width: 45%;
+    }
+
+    .headerBodyGroup {
+      margin-bottom: 60px;
+      p {
+        font-size: 16px;
+      }
+    }
+
+    .lg-text p {
+      font-size: 20px;
+    }
+
+    .avgSeatsFilled,
+    .avgSeatsAvail,
+    .avgNumSections,
+    .courseFees {
+      width: 50%;
+    }
+
+    .emptyCourseFee p {
+      color: #969696;
+    }
+  }
+}

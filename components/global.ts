@@ -164,3 +164,29 @@ export function getTermName(termId: string): string {
 
   return termName && termName.text;
 }
+
+export function getSeason(termId: string): string {
+  const seasonDigit = getSecondToLastDigit(termId);
+  const seasonDigitMap = {
+    '1': 'Fall',
+    '2': 'Winter',
+    '3': 'Spring',
+    '4': 'Summer I',
+    '5': 'Summer Full',
+    '6': 'Summer II',
+  };
+  if (!seasonDigitMap[seasonDigit]) throw new Error('unexpected season digit');
+  else return seasonDigitMap[seasonDigit];
+}
+
+// returns the year the term occurs in
+// ex: 202110 is Fall 2020 not Fall 2021
+export function getYear(termId: string): number {
+  const givenYear: number = parseInt(termId.substr(0, 4));
+  const season = getSeason(termId);
+  if (season === 'Fall' || season === 'Winter') {
+    return givenYear - 1;
+  } else {
+    return givenYear;
+  }
+}

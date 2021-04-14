@@ -79,6 +79,7 @@ query searchResults(
         minCredits
         classAttributes
         url
+        prettyUrl
         lastUpdateTime
         feeAmount
         feeDescription

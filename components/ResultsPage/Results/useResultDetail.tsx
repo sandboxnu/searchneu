@@ -13,7 +13,6 @@ export default function useResultDetail(
   aClass: Course
 ): {
   optionalDisplay: (PreqreqType, Course) => ReactElement | ReactElement[];
-  creditsString: () => string;
 } {
   const router = useRouter();
   const onReqClick = (reqType, childBranch, event, searchQuery): void => {
@@ -214,16 +213,7 @@ export default function useResultDetail(
     return data;
   };
 
-  const creditsString = (): string => {
-    const creditDescriptor =
-      aClass.maxCredits > 1 || aClass.maxCredits === 0 ? 'CREDITS' : 'CREDIT';
-    return aClass.maxCredits === aClass.minCredits
-      ? `${aClass.maxCredits} ${creditDescriptor}`
-      : `${aClass.minCredits}-${aClass.maxCredits} ${creditDescriptor}`;
-  };
-
   return {
     optionalDisplay,
-    creditsString,
   };
 }

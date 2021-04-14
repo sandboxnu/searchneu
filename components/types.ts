@@ -103,6 +103,7 @@ export interface Meeting {
 export interface SearchResult {
   results: SearchItem[];
   filterOptions: FilterOptions;
+  hasNextPage: boolean;
 }
 
 export type CourseResult = {
@@ -122,6 +123,7 @@ export function BLANK_SEARCH_RESULT(): SearchResult {
       classType: [],
       campus: [],
     },
+    hasNextPage: false,
   };
 }
 

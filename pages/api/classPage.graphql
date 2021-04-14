@@ -13,9 +13,12 @@ query getClassPageInfo($subject: String!, $classId: String!) {
       minCredits
       classAttributes
       url
+      prettyUrl
       lastUpdateTime
+      feeAmount
       nupath
       host
+      termId
     }
     allOccurrences {
       termId

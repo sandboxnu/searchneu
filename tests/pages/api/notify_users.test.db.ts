@@ -1,5 +1,6 @@
 import { NextApiHandler } from 'next';
 import { mocked } from 'ts-jest/utils';
+import * as httpSignature from 'http-signature';
 import * as NotifyUsersHandler from '../../../pages/api/notify_users';
 import sendFBMessage from '../../../utils/api/notifyer';
 import { prisma } from '../../../utils/api/prisma';
@@ -18,6 +19,8 @@ const [testNotifyUsersHandler, _] = testHandlerFactory(notifyUsersHandler);
 describe('/api/notify_users', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    httpSignature.parseRequest = jest.fn();
+    httpSignature.verifySignature = jest.fn().mockReturnValue(true);
     await prisma.followedSection.deleteMany({});
     await prisma.followedCourse.deleteMany({});
     await prisma.user.deleteMany({});
@@ -80,6 +83,97 @@ describe('/api/notify_users', () => {
   });
 
   it404sOnInvalidHTTPMethods(notifyUsersHandler, ['POST']);
+
+  it("Doesn't send a notification if request authorization is incorrect", async () => {
+    httpSignature.verifySignature = jest.fn().mockReturnValue(false);
+    await testNotifyUsersHandler(async ({ fetch }) => {
+      const response = await fetch({
+        method: 'POST',
+        body: JSON.stringify({
+          updatedCourses: [
+            {
+              courseId: '3650',
+              subject: 'CS',
+              termId: '202130',
+              numberOfSectionsAdded: 1,
+              campus: 'NEU',
+              courseHash: 'neu.edu/202130/CS/3650',
+            },
+          ],
+          updatedSections: [],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(401);
+
+      expect(mocked(sendFBMessage).mock.calls.length).toEqual(0);
+    });
+  });
+
+  it("Doesn't send a notification if request cannot be parsed by httpSignature", async () => {
+    httpSignature.parseRequest = jest.fn().mockImplementation(() => {
+      throw new Error('mock unable to parse request');
+    });
+    await testNotifyUsersHandler(async ({ fetch }) => {
+      const response = await fetch({
+        method: 'POST',
+        body: JSON.stringify({
+          updatedCourses: [
+            {
+              courseId: '3650',
+              subject: 'CS',
+              termId: '202130',
+              numberOfSectionsAdded: 1,
+              campus: 'NEU',
+              courseHash: 'neu.edu/202130/CS/3650',
+            },
+          ],
+          updatedSections: [],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(401);
+
+      expect(mocked(sendFBMessage).mock.calls.length).toEqual(0);
+    });
+  });
+
+  it("Doesn't send a notification if request cannot be verified by httpSignature", async () => {
+    httpSignature.verifySignature = jest.fn().mockImplementation(() => {
+      throw new Error('mock unable to verify signature');
+    });
+    await testNotifyUsersHandler(async ({ fetch }) => {
+      const response = await fetch({
+        method: 'POST',
+        body: JSON.stringify({
+          updatedCourses: [
+            {
+              courseId: '3650',
+              subject: 'CS',
+              termId: '202130',
+              numberOfSectionsAdded: 1,
+              campus: 'NEU',
+              courseHash: 'neu.edu/202130/CS/3650',
+            },
+          ],
+          updatedSections: [],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(401);
+
+      expect(mocked(sendFBMessage).mock.calls.length).toEqual(0);
+    });
+  });
 
   it('sends messages to everyone subscribed to CS 4500', async () => {
     await testNotifyUsersHandler(async ({ fetch }) => {

@@ -101,7 +101,11 @@ export default function Results(): ReactElement | null {
             />
           )}
           {searchData && searchData.results.length > 0 && (
-            <ResultsLoader results={searchData.results} loadMore={loadMore} />
+            <ResultsLoader
+              results={searchData.results}
+              loadMore={loadMore}
+              hasNextPage={searchData.hasNextPage}
+            />
           )}
           <Footer />
         </div>

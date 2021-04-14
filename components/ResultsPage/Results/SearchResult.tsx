@@ -206,7 +206,7 @@ export function MobileSearchResult({
             <div className="MobileSearchResult__panel--infoStrings">
               <LastUpdatedMobile
                 host={course.host}
-                prettyUrl={course.prettyUrl}
+                prettyUrl={course.url}
                 lastUpdateTime={course.lastUpdateTime}
               />
               <CreditsDisplayMobile

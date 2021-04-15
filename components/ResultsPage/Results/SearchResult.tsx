@@ -68,7 +68,7 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
           </span>
           <LastUpdated
             host={course.host}
-            prettyUrl={course.url}
+            prettyUrl={course.prettyUrl}
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
@@ -206,7 +206,7 @@ export function MobileSearchResult({
             <div className="MobileSearchResult__panel--infoStrings">
               <LastUpdatedMobile
                 host={course.host}
-                prettyUrl={course.url}
+                prettyUrl={course.prettyUrl}
                 lastUpdateTime={course.lastUpdateTime}
               />
               <CreditsDisplayMobile

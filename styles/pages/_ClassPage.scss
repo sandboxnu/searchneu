@@ -229,10 +229,15 @@
       }
     }
 
+    .sectionCards .horizontalLine {
+      margin: 50px 0px;
+    }
+
     .sectionCard {
-      width: 48%;
+      width: 45%;
       font-size: 18px;
-      margin-bottom: 60px;
+      margin-top: 30px;
+      margin-bottom: 30px;
 
       .sectionCardProfs {
         margin-bottom: 14px;

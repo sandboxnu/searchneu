@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { partition, sortBy, uniq, uniqWith } from 'lodash';
+import { partition, sortBy, uniq, uniqWith, chunk } from 'lodash';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { GetClassPageInfoQuery, Section } from '../../generated/graphql';
@@ -82,10 +82,29 @@ export default function ClassPageSections({
           classPageInfo={classPageInfo}
         />
       </div>
-      <div className="sectionCards flex flex-wrap justify-space-between">
-        {sections.map((section) => (
-          <SectionCard key={section.crn} section={section} />
-        ))}
+      <div className="sectionCards">
+        {chunk(sections, 2).map((sectionPair, chunkIndex) => {
+          return (
+            <div key={`sectionCardRow${chunkIndex}`}>
+              {chunkIndex > 0 && <div className="horizontalLine" />}
+              <div className="flex flex-wrap justify-space-between">
+                <SectionCard
+                  key={sectionPair[0].crn}
+                  section={sectionPair[0]}
+                />
+                {sectionPair.length === 2 && (
+                  <>
+                    <div className="verticalLine" />
+                    <SectionCard
+                      key={sectionPair[1].crn}
+                      section={sectionPair[1]}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

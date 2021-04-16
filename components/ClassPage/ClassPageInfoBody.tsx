@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { getCampusByLastDigit, getSeason, getYear } from '../global';
 import { Campus } from '../types';
-import { HeaderBody } from './HeaderBody';
+import HeaderBody from './HeaderBody';
 
 type ClassPageInfoProp = {
   classPageInfo: GetClassPageInfoQuery;

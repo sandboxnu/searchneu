@@ -1,0 +1,32 @@
+.tooltip {
+  color: #fafafb;
+  font-size: 11px;
+  border-radius: 2px;
+  padding: 3px 7px;
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  background: #338ef1;
+
+  &__arrow {
+    &--DOWN {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid #505050;
+      top: -4px;
+    }
+
+    &--UP {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #338ef1;
+      top: -4px;
+    }
+  }
+}

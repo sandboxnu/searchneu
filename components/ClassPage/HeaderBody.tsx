@@ -6,7 +6,7 @@ type HeaderBodyProps = {
   className?: string;
 };
 
-export function HeaderBody({
+export default function HeaderBody({
   header,
   body,
   className,

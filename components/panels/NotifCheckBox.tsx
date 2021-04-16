@@ -8,6 +8,7 @@ import React, { ReactElement, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import useUser from '../../utils/useUser';
 import IconCheckMark from '../icons/IconCheckmark';
+import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
 import macros from '../macros';
 import { Section } from '../types';
@@ -39,18 +40,19 @@ export default function NotifCheckBox({
       <div
         style={{ color: '#d3d3d3' }}
         data-tip="There are still seats remaining for this section"
-        className="inlineBlock"
+        className="infoIcon"
       >
         <Icon name="info circle" className="myIcon" />
+        <Tooltip
+          text={'There are still seats remaining for this section'}
+          direction={TooltipDirection.Up}
+        />
       </div>
     );
   }
 
   return (
-    <div
-      data-tip="Sign up for notifications for this section"
-      className="inlineBlock"
-    >
+    <div className="signUpSwitch">
       {macros.isMobile ? (
         <div
           className={
@@ -77,6 +79,14 @@ export default function NotifCheckBox({
           </label>
         </div>
       )}
+      <Tooltip
+        text={
+          checked
+            ? 'Unsubscribe from notifications for this section.'
+            : 'Subscribe to notifications for this section'
+        }
+        direction={TooltipDirection.Up}
+      />
     </div>
   );
 }

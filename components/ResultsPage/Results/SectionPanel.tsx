@@ -5,6 +5,7 @@ import Keys from '../../Keys';
 import { DayjsTuple, DayOfWeek, Meeting, Section } from '../../types';
 import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
+import Tooltip, { TooltipDirection } from '../../Tooltip';
 
 const NotifCheckBox = dynamic(() => import('../../panels/NotifCheckBox'), {
   ssr: false,
@@ -121,6 +122,10 @@ export function DesktopSectionPanel({
         <a href={section.url} target="_blank" rel="noopener noreferrer">
           {section.crn}
         </a>
+        <Tooltip
+          text={'View this section on Banner.'}
+          direction={TooltipDirection.Up}
+        />
       </td>
       <td>{getProfs(section).join(', ')}</td>
       <td>

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React, { ReactElement } from 'react';
+import Tooltip, { TooltipDirection } from '../Tooltip';
 import IconGlobe from '../icons/IconGlobe';
 
 dayjs.extend(relativeTime);
@@ -37,6 +38,10 @@ export function LastUpdated({
       >
         <IconGlobe height={iconHeight} width={iconWidth} />
       </a>
+      <Tooltip
+        text={'View this course on Banner.'}
+        direction={TooltipDirection.Down}
+      />
       <span className="updatedText">{`Updated ${getLastUpdateString(
         lastUpdateTime
       )}`}</span>

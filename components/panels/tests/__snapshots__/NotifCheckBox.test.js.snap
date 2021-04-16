@@ -1,23 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`render the default notification checkbox 1`] = `
-"<div data-tip=\\"Sign up for notifications for this section\\" className=\\"inlineBlock\\">
+"<div className=\\"signUpSwitch\\">
   <div className=\\"notifSwitch\\">
     <input checked={[undefined]} onChange={[Function: onCheckboxClick]} className=\\"notif-switch-checkbox\\" id=\\"notifSwitch-1\\" type=\\"checkbox\\" />
     <label className=\\"notif-switch-label\\" htmlFor=\\"notifSwitch-1\\">
       <span className=\\"notif-switch-button\\" />
     </label>
   </div>
+  <Tooltip text=\\"Subscribe to notifications for this section\\" direction=\\"UP\\" />
 </div>"
 `;
 
 exports[`render the read only notification checkbox 1`] = `
-"<div data-tip=\\"Sign up for notifications for this section\\" className=\\"inlineBlock\\">
+"<div className=\\"signUpSwitch\\">
   <div className=\\"notifSwitch\\">
     <input checked={[undefined]} onChange={[Function: onCheckboxClick]} className=\\"notif-switch-checkbox\\" id=\\"notifSwitch-2\\" type=\\"checkbox\\" />
     <label className=\\"notif-switch-label\\" htmlFor=\\"notifSwitch-2\\">
       <span className=\\"notif-switch-button\\" />
     </label>
   </div>
+  <Tooltip text=\\"Subscribe to notifications for this section\\" direction=\\"UP\\" />
 </div>"
 `;

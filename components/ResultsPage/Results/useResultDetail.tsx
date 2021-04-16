@@ -23,13 +23,13 @@ export type OptionalDisplay = (
 ) => ReactElement | ReactElement[];
 
 export const isCompositeReq = (
-  variableToCheck: any
+  variableToCheck: unknown
 ): variableToCheck is CompositeReq =>
   (variableToCheck as CompositeReq).type === 'and' ||
   (variableToCheck as CompositeReq).type === 'or';
 
 export const isCourseReq = (
-  variableToCheck: any
+  variableToCheck: unknown
 ): variableToCheck is CourseReq =>
   (variableToCheck as CourseReq).classId !== undefined;
 
@@ -41,7 +41,9 @@ export default function useResultDetail(
   const router = useRouter();
   const onReqClick = (reqType, childBranch, event, subject, classId): void => {
     router.push(
-      `/${router.query.campus}/${router.query.termId}/classPage/${subject}/${classId}`
+      `/${router.query.campus}/${router.query.termId}/search/${
+        subject + classId
+      }`
     );
 
     // QUESTION: why are we making a custom event and dispatching it??

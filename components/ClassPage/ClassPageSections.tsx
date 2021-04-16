@@ -9,11 +9,14 @@ import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
+import SectionsTermNav from './SectionsTermNav';
 
 type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
+// copied over from generated GraphQL
+// TODO: is there a better way to get this type?
 type ClassPageSection = { __typename?: 'Section' } & Pick<
   Section,
   | 'classType'
@@ -31,7 +34,6 @@ type ClassPageSection = { __typename?: 'Section' } & Pick<
 export default function ClassPageSections({
   classPageInfo,
 }: ClassPageSectionsProps): ReactElement {
-  const allOccurrences = classPageInfo.class.allOccurrences;
   const [currTermIndex, setCurrTermIndex] = useState(0);
   const [sectionCampuses, setSectionCampuses] = useState([]);
   const [selectedCampus, setSelectedCampus] = useState('');
@@ -76,7 +78,7 @@ export default function ClassPageSections({
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <TermNav
+        <SectionsTermNav
           currTermIndex={currTermIndex}
           setCurrTermIndex={setCurrTermIndex}
           classPageInfo={classPageInfo}
@@ -120,55 +122,6 @@ function getCampusOptions(
         (section) => section.campus
       )
     )
-  );
-}
-
-type termNavProps = {
-  currTermIndex: number;
-  setCurrTermIndex: (number) => void;
-  classPageInfo: GetClassPageInfoQuery;
-};
-
-function TermNav({
-  currTermIndex,
-  setCurrTermIndex,
-  classPageInfo,
-}: termNavProps): ReactElement {
-  const allOccurrences = classPageInfo.class.allOccurrences;
-  const currTermId = allOccurrences[currTermIndex].termId;
-  const leftNavDisabled = (termIndex) =>
-    termIndex === allOccurrences.length - 1;
-  const rightNavDisabled = (termIndex) => termIndex === 0;
-  return (
-    <div className="termNav">
-      <span
-        onClick={() =>
-          setCurrTermIndex(
-            Math.min(currTermIndex + 1, allOccurrences.length - 1)
-          )
-        }
-        className={`navArrow ${
-          leftNavDisabled(currTermIndex) ? 'disabled' : ''
-        }`}
-      >
-        <LeftNavArrow
-          fill={leftNavDisabled(currTermIndex) ? '#969696' : '#000000'}
-        />
-      </span>
-      {`${getSeason(`${currTermId}`)} ${getYear(
-        `${currTermId}`
-      )}`.toUpperCase()}
-      <span
-        onClick={() => setCurrTermIndex(Math.max(currTermIndex - 1, 0))}
-        className={`navArrow ${
-          rightNavDisabled(currTermIndex) ? 'disabled' : ''
-        }`}
-      >
-        <RightNavArrow
-          fill={rightNavDisabled(currTermIndex) ? '#969696' : '#000000'}
-        />
-      </span>
-    </div>
   );
 }
 

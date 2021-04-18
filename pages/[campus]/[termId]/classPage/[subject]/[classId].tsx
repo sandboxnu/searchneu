@@ -6,6 +6,7 @@ import Header from '../../../../../components/Header';
 import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
+import macros from '../../../../../components/macros';
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
@@ -54,25 +55,31 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
       />
-      <PageContent
-        termId={termId}
-        campus={campus}
-        subject={subject}
-        classId={classId}
-        classPageInfo={classPageInfo}
-        isCoreq={false}
-      />
-      {coreqInfo.map((info, index) => (
-        <PageContent
-          key={index}
-          termId={termId}
-          campus={campus}
-          subject={subject}
-          classId={classId}
-          classPageInfo={info}
-          isCoreq={true}
-        />
-      ))}
+      {macros.isMobile ? (
+        <h3 style={{ margin: '20px' }}>Mobile designs coming soon!</h3>
+      ) : (
+        <>
+          <PageContent
+            termId={termId}
+            campus={campus}
+            subject={subject}
+            classId={classId}
+            classPageInfo={classPageInfo}
+            isCoreq={false}
+          />
+          {coreqInfo.map((info, index) => (
+            <PageContent
+              key={index}
+              termId={termId}
+              campus={campus}
+              subject={subject}
+              classId={classId}
+              classPageInfo={info}
+              isCoreq={true}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }

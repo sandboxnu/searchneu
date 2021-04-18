@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import pMap from 'p-map';
 import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
@@ -20,13 +20,15 @@ export default function Page(): ReactElement {
   const campus = router.query.campus as string;
   const subject = ((router.query.subject as string) || '').toUpperCase();
   const classId = (router.query.classId as string) || '';
-
   const termAndCampusToURL = (t: string, newCampus: string): string => {
     return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
   };
 
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
+    if ((subject || classId) && !classPage.class) {
+      Router.push('/404');
+    }
     // assume coreq values will never be nested
     const coreqs: CourseReq[] = classPage.class
       ? classPage.class.latestOccurrence.coreqs.values

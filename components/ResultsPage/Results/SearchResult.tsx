@@ -1,6 +1,7 @@
 import { Markup } from 'interweave';
 import { cloneDeep } from 'lodash';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo, useState } from 'react';
 import useUser from '../../../utils/useUser';
 import {
@@ -10,6 +11,7 @@ import {
 import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
+import IconNotepad from '../../icons/IconNotepad';
 import Keys from '../../Keys';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
@@ -42,6 +44,9 @@ const sortSections = (sections: Section[]): Section[] => {
 };
 
 export function SearchResult({ course }: SearchResultProps): ReactElement {
+  const router = useRouter();
+  const termId = router.query.termId as string;
+  const campus = router.query.campus as string;
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { optionalDisplay } = useResultDetail(course);
 
@@ -103,6 +108,19 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             )}
           </div>
           <div className="SearchResult__panel--right">
+            <div
+              onClick={() =>
+                router.push(
+                  `/${campus}/${termId}/classPage/${course.subject}/${course.classId}`
+                )
+              }
+            >
+              <div className="view-more-info-container">
+                <IconNotepad className="notepad-icon" />
+                <span>View more info for this class</span>
+              </div>
+            </div>
+
             <SignUpForNotifications course={course} />
           </div>
         </div>

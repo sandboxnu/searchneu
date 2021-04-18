@@ -7,6 +7,7 @@ import IconGlobe from '../icons/IconGlobe';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
+import { MeetingType } from '../types';
 import SectionsTermNav from './SectionsTermNav';
 
 type ClassPageSectionsProps = {
@@ -150,7 +151,10 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
             key={`meeting${index}`}
             className="flex justify-space-between flex-wrap courseMeeting"
           >
-            <WeekdayBoxes meetingDays={getDaysOfWeekAsBooleans(meeting)} />
+            <WeekdayBoxes
+              meetingDays={getDaysOfWeekAsBooleans(meeting)}
+              meetingType={meeting.type}
+            />
             <div>{displayCourseMeetingTimes(meeting)}</div>
             <div>{meeting.where}</div>
           </div>
@@ -175,7 +179,10 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
 }
 
 function splitMeetingsAndExamTimes(meetings) {
-  return partition(meetings, (meeting) => meeting.type !== 'Final Exam');
+  return partition(
+    meetings,
+    (meeting) => meeting.type !== MeetingType.FINAL_EXAM
+  );
 }
 
 function displayCourseMeetingTimes(courseMeeting): string {

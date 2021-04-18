@@ -17,11 +17,20 @@
     color: #979797;
     border: 0.5px solid #979797;
 
-    &--checked {
+    &--checked-class {
       display: block;
       width: 18px;
       height: 18px;
       background: #a5c0dd;
+      color: #000;
+      border: 0.5px solid #979797;
+    }
+
+    &--checked-final {
+      display: block;
+      width: 18px;
+      height: 18px;
+      background: #b0dda5;
       color: #000;
       border: 0.5px solid #979797;
     }

@@ -97,6 +97,12 @@ export interface Meeting {
   startDate: Dayjs;
   endDate: Dayjs;
   times: DayjsTuple[];
+  type: MeetingType;
+}
+
+export enum MeetingType {
+  CLASS = 'Class',
+  FINAL_EXAM = 'Final Exam',
 }
 
 // ======= Search Results ========

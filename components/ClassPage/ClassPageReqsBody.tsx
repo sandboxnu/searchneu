@@ -12,13 +12,6 @@ type ClassPageReqsBodyProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-type PrereqsDisplayProps = {
-  termId: string;
-  campus: string;
-  prereqs: Requisite;
-  level: number;
-};
-
 export default function ClassPageReqsBody({
   termId,
   campus,

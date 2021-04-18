@@ -18,7 +18,10 @@ export function creditsNumericDisplay(
     : `${minCredits}-${maxCredits}`;
 }
 
-export const creditsString = (maxCredits: number, minCredits: number) => {
+export const creditsString = (
+  maxCredits: number,
+  minCredits: number
+): string => {
   return `${creditsNumericDisplay(maxCredits, minCredits)} ${creditsDescription(
     maxCredits
   )}`;

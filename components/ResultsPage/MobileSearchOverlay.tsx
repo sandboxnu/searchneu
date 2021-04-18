@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
 import IconClose from '../icons/IconClose';
 import macros from '../macros';
 import FilterPanel from './FilterPanel';

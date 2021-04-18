@@ -16,9 +16,9 @@ export default function SectionsTermNav({
 }: sectionsTermNavProps): ReactElement {
   const allOccurrences = classPageInfo.class.allOccurrences;
   const currTermId = allOccurrences[currTermIndex].termId;
-  const leftNavDisabled = (termIndex) =>
+  const leftNavDisabled = (termIndex): boolean =>
     termIndex === allOccurrences.length - 1;
-  const rightNavDisabled = (termIndex) => termIndex === 0;
+  const rightNavDisabled = (termIndex): boolean => termIndex === 0;
   return (
     <div className="termNav">
       <span

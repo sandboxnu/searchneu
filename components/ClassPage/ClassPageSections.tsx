@@ -1,11 +1,9 @@
 import dayjs from 'dayjs';
-import { partition, sortBy, uniq, uniqWith, chunk } from 'lodash';
+import { chunk, partition, sortBy, uniq, uniqWith } from 'lodash';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { GetClassPageInfoQuery, Section } from '../../generated/graphql';
-import { getSeason, getYear } from '../global';
 import IconGlobe from '../icons/IconGlobe';
-import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
@@ -41,7 +39,7 @@ export default function ClassPageSections({
 
   useEffect(() => {
     setSectionCampuses(getCampusOptions(currTermIndex, classPageInfo));
-  }, [currTermIndex]);
+  }, [currTermIndex, classPageInfo]);
 
   useEffect(() => {
     setSelectedCampus(sectionCampuses[0]);
@@ -53,7 +51,7 @@ export default function ClassPageSections({
         (section) => section.campus === selectedCampus
       )
     );
-  }, [currTermIndex, selectedCampus]);
+  }, [currTermIndex, selectedCampus, classPageInfo]);
 
   return (
     <div className="classPageSections">
@@ -73,6 +71,7 @@ export default function ClassPageSections({
                   text={campus.toUpperCase() + ' CAMPUS'}
                   selected={campus === selectedCampus}
                   onClick={() => setSelectedCampus(campus)}
+                  key={campus}
                 ></Dropdown.Item>
               ))}
             </Dropdown.Menu>

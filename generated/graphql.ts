@@ -81,7 +81,7 @@ export type ClassOccurrence = {
   __typename?: 'ClassOccurrence';
   name: Scalars['String'];
   subject: Scalars['String'];
-  classId: Scalars['Int'];
+  classId: Scalars['String'];
   termId: Scalars['Int'];
   desc: Scalars['String'];
   prereqs?: Maybe<Scalars['JSON']>;

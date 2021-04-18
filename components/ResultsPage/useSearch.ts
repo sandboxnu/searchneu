@@ -125,7 +125,6 @@ function transformGraphQLToSearchResult(
         class: {
           ...node,
           termId: node.termId.toString(),
-          classId: node.classId.toString(),
         },
         type: 'class',
       };

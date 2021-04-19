@@ -1,10 +1,15 @@
 import React, { ReactElement } from 'react';
+import { MeetingType } from '../../types';
 
 interface WeekdayBoxesProps {
   meetingDays: boolean[];
+  meetingType: MeetingType;
 }
 
-function WeekdayBoxes({ meetingDays }: WeekdayBoxesProps): ReactElement {
+function WeekdayBoxes({
+  meetingDays,
+  meetingType,
+}: WeekdayBoxesProps): ReactElement {
   const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
@@ -14,7 +19,13 @@ function WeekdayBoxes({ meetingDays }: WeekdayBoxesProps): ReactElement {
           // eslint-disable-next-line react/no-array-index-key
           <span
             key={index}
-            className={`WeekdayBoxes__box${box ? '--checked' : ''}`}
+            className={`WeekdayBoxes__box${
+              box
+                ? meetingType === MeetingType.CLASS
+                  ? '--checked-class'
+                  : '--checked-final'
+                : ''
+            }`}
           >
             {days[index]}
           </span>

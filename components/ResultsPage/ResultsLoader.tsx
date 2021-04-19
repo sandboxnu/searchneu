@@ -82,6 +82,7 @@ const getFormattedSections = (sections: any): Section[] => {
         startDate: dayjs((meeting.startDate + 1) * DAY_IN_MILLISECONDS),
         endDate: dayjs((meeting.endDate + 1) * DAY_IN_MILLISECONDS),
         times: getGroupedByTimeOfDay(meeting.times),
+        type: meeting.type,
       });
     });
 

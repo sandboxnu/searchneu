@@ -125,7 +125,7 @@ export function DesktopSectionPanel({
 
   const getMeetings = (s: Section): ReactElement[] => {
     // Class meeting times should always come before Final Exam times
-    s.meetings.sort((a, b) => (a.type === MeetingType.CLASS ? -1 : 1));
+    s.meetings.sort((a) => (a.type === MeetingType.CLASS ? -1 : 1));
     return s.meetings.map((m) => {
       const meetingDays = Array(7).fill(false);
       meetingDays.forEach((d, index) => {

@@ -193,7 +193,11 @@ export function MobileSectionPanel({
   };
 
   const getMeetings = (s: Section): ReactElement[][] => {
-    return s.meetings.map((m) =>
+    // Mobile only displays class times, no final exams
+    const classMeetings = s.meetings.filter(
+      (m) => m.type === MeetingType.CLASS
+    );
+    return classMeetings.map((m) =>
       Array.from(groupedTimesAndDays(m.times)).map(([time, days]) => (
         <>
           <span className="MobileSectionPanel__meetings--time">
@@ -222,7 +226,10 @@ export function MobileSectionPanel({
       </div>
       <div className="MobileSectionPanel__secondRow">
         {!section.online && (
-          <WeekdayBoxes meetingDays={getDaysOfWeekAsBooleans(section)} />
+          <WeekdayBoxes
+            meetingDays={getDaysOfWeekAsBooleans(section)}
+            meetingType={MeetingType.CLASS}
+          />
         )}
       </div>
       <div className="MobileSectionPanel__meetings">

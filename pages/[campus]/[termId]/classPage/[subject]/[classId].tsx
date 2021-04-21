@@ -1,4 +1,4 @@
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import pMap from 'p-map';
 import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
@@ -27,7 +27,7 @@ export default function Page(): ReactElement {
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
     if ((subject || classId) && !classPage.class) {
-      Router.push('/404');
+      router.push('/404');
     }
     // assume coreq values will never be nested
     const coreqs: CourseReq[] = classPage.class

@@ -58,7 +58,7 @@ export default function Page(): ReactElement {
         termAndCampusToURL={termAndCampusToURL}
       />
       {macros.isMobile ? (
-        <h3 style={{ margin: '20px' }}>Mobile designs coming soon!</h3>
+        <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>
       ) : (
         <>
           <PageContent

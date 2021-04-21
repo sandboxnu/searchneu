@@ -7,7 +7,7 @@ import IconGlobe from '../icons/IconGlobe';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
-import { MeetingType } from '../types';
+import { MeetingType, Meeting } from '../types';
 import SectionsTermNav from './SectionsTermNav';
 
 type ClassPageSectionsProps = {
@@ -178,7 +178,11 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
   );
 }
 
-function splitMeetingsAndExamTimes(meetings) {
+type SectionMeeting = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number]['meetings'];
+
+function splitMeetingsAndExamTimes(
+  meetings: SectionMeeting
+): [SectionMeeting, SectionMeeting] {
   return partition(
     meetings,
     (meeting) => meeting.type !== MeetingType.FINAL_EXAM

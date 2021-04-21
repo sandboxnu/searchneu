@@ -2,7 +2,6 @@ import Link from 'next/link';
 import React, { ReactElement } from 'react';
 import RequisiteTree from '../../components/icons/requisites_tree.svg';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import { Requisite } from '../types';
 import PrereqsDisplay from './PrereqsDisplay';
 import HeaderBody from './HeaderBody';
 

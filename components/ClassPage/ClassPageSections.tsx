@@ -14,21 +14,7 @@ type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-// copied over from generated GraphQL
-// TODO: is there a better way to get this type?
-type ClassPageSection = { __typename?: 'Section' } & Pick<
-  Section,
-  | 'classType'
-  | 'crn'
-  | 'seatsCapacity'
-  | 'seatsRemaining'
-  | 'waitCapacity'
-  | 'waitRemaining'
-  | 'campus'
-  | 'profs'
-  | 'meetings'
-  | 'lastUpdateTime'
->;
+type ClassPageSection = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
 
 export default function ClassPageSections({
   classPageInfo,

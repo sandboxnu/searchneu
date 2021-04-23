@@ -23,7 +23,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         <Link href={`/${Campus.NEU}/${getRoundedTerm(Campus.NEU, termId)}`}>
           <label
             className={
-              'HomeSearch__campusSelector--neu' +
+              'HomeSearch__campusSelector--item --neu' +
               (campus === Campus.NEU ? ' --checked' : '')
             }
             htmlFor="campusSelectorNeu"
@@ -35,7 +35,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         <Link href={`/${Campus.CPS}/${getRoundedTerm(Campus.CPS, termId)}`}>
           <label
             className={
-              'HomeSearch__campusSelector--cps' +
+              'HomeSearch__campusSelector--item --cps' +
               (campus === Campus.CPS ? ' --checked' : '')
             }
             htmlFor="campusSelectorCps"
@@ -47,7 +47,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         <Link href={`/${Campus.LAW}/${getRoundedTerm(Campus.LAW, termId)}`}>
           <label
             className={
-              'HomeSearch__campusSelector--law' +
+              'HomeSearch__campusSelector--item --law' +
               (campus === Campus.LAW ? ' --checked' : '')
             }
             htmlFor="campusSelectorLaw"

@@ -16,15 +16,7 @@
     align-items: center;
     padding-left: 32px;
 
-    & > input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      height: 16px;
-      width: 16px;
-    }
-
-    &--neu {
+    &--item {
       pointer-events: initial;
       display: flex;
       align-items: center;
@@ -35,48 +27,30 @@
       font-size: 16px;
       background: rgba(0, 0, 0, 0);
       cursor: pointer;
-      margin-right: 16px;
 
-      &.--checked {
-        padding-top: 4px;
-        border-bottom: 4px solid #e63946;
+      &.--neu {
+        margin-right: 16px;
+
+        &.--checked {
+          padding-top: 4px;
+          border-bottom: 4px solid #e63946;
+        }
       }
-    }
 
-    &--cps {
-      pointer-events: initial;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      color: #4c4c4c;
-      width: 80px;
-      height: 100%;
-      font-size: 16px;
-      background: rgba(0, 0, 0, 0);
-      cursor: pointer;
-      margin-right: 16px;
+      &.--cps {
+        margin-right: 16px;
 
-      &.--checked {
-        padding-top: 4px;
-        border-bottom: 4px solid #ff9f1c;
+        &.--checked {
+          padding-top: 4px;
+          border-bottom: 4px solid #ff9f1c;
+        }
       }
-    }
 
-    &--law {
-      pointer-events: initial;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      color: #4c4c4c;
-      width: 80px;
-      height: 100%;
-      font-size: 16px;
-      background: rgba(0, 0, 0, 0);
-      cursor: pointer;
-
-      &.--checked {
-        padding-top: 4px;
-        border-bottom: 4px solid #457b9d;
+      &.--law {
+        &.--checked {
+          padding-top: 4px;
+          border-bottom: 4px solid #457b9d;
+        }
       }
     }
   }

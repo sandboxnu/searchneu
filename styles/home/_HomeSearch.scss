@@ -36,6 +36,11 @@
       background: rgba(0, 0, 0, 0);
       cursor: pointer;
       margin-right: 16px;
+
+      &.--checked {
+        padding-top: 4px;
+        border-bottom: 4px solid #e63946;
+      }
     }
 
     &--cps {
@@ -50,6 +55,11 @@
       background: rgba(0, 0, 0, 0);
       cursor: pointer;
       margin-right: 16px;
+
+      &.--checked {
+        padding-top: 4px;
+        border-bottom: 4px solid #ff9f1c;
+      }
     }
 
     &--law {
@@ -63,21 +73,11 @@
       font-size: 16px;
       background: rgba(0, 0, 0, 0);
       cursor: pointer;
-    }
 
-    & > input:checked + .HomeSearch__campusSelector--neu {
-      padding-top: 4px;
-      border-bottom: 4px solid #e63946;
-    }
-
-    & > input:checked + .HomeSearch__campusSelector--cps {
-      padding-top: 4px;
-      border-bottom: 4px solid #ff9f1c;
-    }
-
-    & > input:checked + .HomeSearch__campusSelector--law {
-      padding-top: 4px;
-      border-bottom: 4px solid #457b9d;
+      &.--checked {
+        padding-top: 4px;
+        border-bottom: 4px solid #457b9d;
+      }
     }
   }
 

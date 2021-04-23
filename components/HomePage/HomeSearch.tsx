@@ -20,12 +20,6 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   return (
     <div className="HomeSearch">
       <div className="HomeSearch__campusSelector">
-        <input
-          type="radio"
-          id="campusSelectorNeu"
-          name="CampusSelector"
-          defaultChecked={campus == Campus.NEU}
-        />
         <Link href={`/${Campus.NEU}/${getRoundedTerm(Campus.NEU, termId)}`}>
           <label
             className={
@@ -38,12 +32,6 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>NEU</span>
           </label>
         </Link>
-        <input
-          type="radio"
-          id="campusSelectorCps"
-          name="CampusSelector"
-          defaultChecked={campus == Campus.CPS}
-        />
         <Link href={`/${Campus.CPS}/${getRoundedTerm(Campus.CPS, termId)}`}>
           <label
             className={
@@ -56,12 +44,6 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>CPS</span>
           </label>
         </Link>
-        <input
-          type="radio"
-          id="campusSelectorLaw"
-          name="CampusSelector"
-          defaultChecked={campus == Campus.LAW}
-        />
         <Link href={`/${Campus.LAW}/${getRoundedTerm(Campus.LAW, termId)}`}>
           <label
             className={

@@ -223,6 +223,7 @@ export default function SignUpForNotifications({
     content = (
       <Button
         basic
+        disabled
         onClick={onSubscribeToggleChange}
         content="Get notified when sections are added!"
         className="notificationButton"
@@ -257,6 +258,16 @@ export default function SignUpForNotifications({
       onClick: () => setShowAdblockModal(false),
     },
   ];
+
+  // TODO: Remove this after notifications are re-enabled
+  content = (
+    <Button
+      basic
+      disabled
+      content="The notification feature is temporarily disabled"
+      className="notificationButton"
+    />
+  );
 
   return (
     <div className="sign-up-for-notifications-container">

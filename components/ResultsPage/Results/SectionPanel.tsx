@@ -69,6 +69,9 @@ export function DesktopSectionPanel({
   section,
   showNotificationSwitches,
 }: SectionPanelProps): ReactElement {
+  // TODO: remove when notifications is fixed
+  showNotificationSwitches = false;
+
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -178,6 +181,9 @@ export function MobileSectionPanel({
   section,
   showNotificationSwitches,
 }: SectionPanelProps): ReactElement {
+  // TODO: remove when notifications is fixed
+  showNotificationSwitches = false;
+
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity

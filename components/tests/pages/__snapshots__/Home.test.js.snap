@@ -2,6 +2,7 @@
 
 exports[`should render a section 1`] = `
 "<div className=\\"home-container\\">
+  <AlertBanner alertLevel=\\"error\\" alertMessage=\\"Due to a technical issue with our notification pathway through Facebook, notifications have been temporarily disabled. We\\\\'re working on a new notification flow, and apologize for any inconvenience.\\" />
   <Head>
     <title>
       Search NEU - 

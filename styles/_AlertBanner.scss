@@ -1,0 +1,35 @@
+.alertBanner {
+  z-index: 100000;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  filter: drop-shadow(3px 1px 4px grey);
+  padding: 15px 15px 15px 15px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__back {
+    height: 15px;
+    width: 15px;
+    float: right;
+  }
+
+  &__back:hover {
+    cursor: pointer;
+  }
+}
+
+.errorBanner {
+  background-color: rgb(253, 236, 234);
+  color: rgb(97, 26, 21);
+}
+.warningBanner {
+  background-color: rgb(255, 244, 229);
+  color: rgb(102, 60, 0);
+}
+.infoBanner {
+  background-color: rgb(232, 244, 253);
+  color: rgb(13, 60, 97);
+}

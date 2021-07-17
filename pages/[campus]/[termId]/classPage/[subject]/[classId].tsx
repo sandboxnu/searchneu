@@ -9,9 +9,8 @@ import { gqlClient } from '../../../../../utils/courseAPIClient';
 import macros from '../../../../../components/macros';
 
 export default function Page(): ReactElement {
-  const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
-    null
-  );
+  const [classPageInfo, setClassPageInfo] =
+    useState<GetClassPageInfoQuery>(null);
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
 
   const router = useRouter();

@@ -13,9 +13,8 @@ import {
 jest.mock('axios');
 jest.mock('jsonwebtoken');
 const webhookHandler: NextApiHandler = WebhookHandler.default;
-const [testWebhookHandler, testWebhookHandlerAsUser] = testHandlerFactory(
-  webhookHandler
-);
+const [testWebhookHandler, testWebhookHandlerAsUser] =
+  testHandlerFactory(webhookHandler);
 
 describe('/api/webhook', () => {
   beforeEach(async () => {

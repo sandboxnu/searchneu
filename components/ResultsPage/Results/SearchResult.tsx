@@ -55,9 +55,8 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
     Keys.getClassHash(course)
   );
 
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
-  );
+  const { showAll, setShowAll, renderedSections, hideShowAll } =
+    useShowAll(sortedSections);
 
   const feeString =
     course.feeDescription && course.feeAmount
@@ -184,9 +183,8 @@ export function MobileSearchResult({
     Keys.getClassHash(course)
   );
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
-  );
+  const { showAll, setShowAll, renderedSections, hideShowAll } =
+    useShowAll(sortedSections);
 
   const { optionalDisplay } = useResultDetail(course);
 

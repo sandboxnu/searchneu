@@ -13,10 +13,8 @@ jest.mock('jsonwebtoken');
 
 let mockUser: User;
 const subscriptionHandler: NextApiHandler = SubscriptionHandler.default;
-const [
-  testSubscriptionHandler,
-  testSubscriptionHandlerAsUser,
-] = testHandlerFactory(subscriptionHandler);
+const [testSubscriptionHandler, testSubscriptionHandlerAsUser] =
+  testHandlerFactory(subscriptionHandler);
 
 describe('/api/subscription', () => {
   beforeEach(async () => {

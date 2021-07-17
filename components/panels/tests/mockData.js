@@ -14,8 +14,7 @@ const sectionsForcs0210 = [
     waitCapacity: 50,
     waitRemaining: 2,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=19389',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=19389',
     crn: '19389',
     profs: ['TBA'],
     meetings: [
@@ -115,8 +114,7 @@ const sectionsForcs0210 = [
 const cs0210 = {
   lastUpdateTime: 1511131673768,
   name: 'Introduction to Search',
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=0210&schd_in=%',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=0210&schd_in=%',
   crns: ['19389'],
   honors: false,
   maxCredits: 49,
@@ -185,8 +183,7 @@ const cs0210 = {
     ],
   },
   minCredits: 1,
-  desc:
-    'Offers students an opportunity to learn and practice how to search in large amounts of unstructured data. Covers basic concepts in search, retrieval models, indexing, querying and ranking, and evaluation. This is a limited engagement course. 1.800 Continuing Education Units 1.800 Lecture hours',
+  desc: 'Offers students an opportunity to learn and practice how to search in large amounts of unstructured data. Covers basic concepts in search, retrieval models, indexing, querying and ranking, and evaluation. This is a limited engagement course. 1.800 Continuing Education Units 1.800 Lecture hours',
   classId: '0210',
   prettyUrl:
     'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in=201810&subj_code_in=CS&crse_numb_in=0210',
@@ -203,8 +200,7 @@ const sectionsForCS1210 = [
     waitCapacity: 0,
     waitRemaining: 0,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=13502',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=13502',
     crn: '13502',
     profs: ['Jennifer Anne Shire'],
     meetings: [
@@ -235,8 +231,7 @@ const sectionsForCS1210 = [
     waitCapacity: 0,
     waitRemaining: 0,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=13503',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=13503',
     crn: '13503',
     profs: ['Melissa Anne Irgens Peikin'],
     meetings: [
@@ -267,8 +262,7 @@ const sectionsForCS1210 = [
     waitCapacity: 0,
     waitRemaining: 0,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14386',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14386',
     crn: '14386',
     profs: ['Yasmil Montes'],
     meetings: [
@@ -299,8 +293,7 @@ const sectionsForCS1210 = [
     waitCapacity: 0,
     waitRemaining: 0,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14404',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14404',
     crn: '14404',
     profs: ['Jennifer Anne Shire'],
     meetings: [
@@ -331,8 +324,7 @@ const sectionsForCS1210 = [
     waitCapacity: 0,
     waitRemaining: 0,
     online: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14404',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=14404',
     crn: '14405',
     profs: ['Jennifer Anne Shire'],
     meetings: [
@@ -362,14 +354,12 @@ const sectionsForCS1210 = [
 const cs1210 = {
   lastUpdateTime: 1511131674191,
   name: 'Computer Science/Information Science Overview 2: Co-op Preparation',
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=1210&schd_in=%',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=1210&schd_in=%',
   crns: ['13502', '13503', '14386', '14404', '14405'],
   honors: false,
   maxCredits: 1,
   minCredits: 1,
-  desc:
-    'Continues the preparation of students for careers in the computing and information fields by discussing co-op and co-op processes. Offers students an opportunity to prepare a professional résumé; practice proper interviewing techniques; explore current job opportunities; learn how to engage in the job and referral process; and to understand co-op policies, procedures, and expectations. Discusses professional behavior and ethical issues in the workplace. 1.000 Lecture hours',
+  desc: 'Continues the preparation of students for careers in the computing and information fields by discussing co-op and co-op processes. Offers students an opportunity to prepare a professional résumé; practice proper interviewing techniques; explore current job opportunities; learn how to engage in the job and referral process; and to understand co-op policies, procedures, and expectations. Discusses professional behavior and ethical issues in the workplace. 1.000 Lecture hours',
   classId: '1210',
   prettyUrl:
     'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in=201810&subj_code_in=CS&crse_numb_in=1210',
@@ -385,8 +375,7 @@ const WMNS4520section = {
   waitCapacity: 0,
   waitRemaining: 0,
   online: false,
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=17445',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=201810&crn_in=17445',
   crn: '17445',
   profs: ['Christopher S. Chambers'],
   meetings: [
@@ -452,8 +441,7 @@ const razzaq = {
 const cs9999 = {
   lastUpdateTime: 1511131674191,
   name: 'Some class that has error prereqs',
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=1210&schd_in=%',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=201810&subj_in=CS&crse_in=1210&schd_in=%',
   crns: [],
   honors: false,
   maxCredits: 1,
@@ -479,8 +467,7 @@ const probStatsSectionConfig = {
   classType: 'Lecture',
   online: false,
   honors: false,
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202030&crn_in=30270',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202030&crn_in=30270',
   crn: '30270',
   meetings: [
     {
@@ -556,8 +543,7 @@ const probStatsConfig2 = {
   classType: 'Lecture',
   online: false,
   honors: false,
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202030&crn_in=30240',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202030&crn_in=30240',
   crn: '30240',
   meetings: [
     {
@@ -664,11 +650,9 @@ const cs2500Config = {
   id: 'neu.edu/202110/CS/2500',
   maxCredits: 4,
   minCredits: 4,
-  desc:
-    'Introduces the fundamental ideas of computing and the principles of programming. Discusses a systematic approach to word problems, including analytic reading, synthesis, goal setting, planning, plan execution, and testing. Presents several models of computing, starting from nothing more than expression evaluation in the spirit of high school algebra. No prior programming experience is assumed; therefore, suitable for freshman students, majors and nonmajors alike who wish to explore the intellectual ideas in the discipline.',
+  desc: 'Introduces the fundamental ideas of computing and the principles of programming. Discusses a systematic approach to word problems, including analytic reading, synthesis, goal setting, planning, plan execution, and testing. Presents several models of computing, starting from nothing more than expression evaluation in the spirit of high school algebra. No prior programming experience is assumed; therefore, suitable for freshman students, majors and nonmajors alike who wish to explore the intellectual ideas in the discipline.',
   classId: '2500',
-  url:
-    'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=202110&subj_in=CS&crse_in=2500&schd_in=%',
+  url: 'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=202110&subj_in=CS&crse_in=2500&schd_in=%',
   prettyUrl:
     'https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in=202110&subj_code_in=CS&crse_numb_in=2500',
   name: 'Fundamentals of Computer Science 1',
@@ -761,8 +745,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=10431',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=10431',
     crn: '10431',
     meetings: [
       {
@@ -808,8 +791,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=10430',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=10430',
     crn: '10430',
     meetings: [
       {
@@ -855,8 +837,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=11171',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=11171',
     crn: '11171',
     meetings: [
       {
@@ -902,8 +883,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=11911',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=11911',
     crn: '11911',
     meetings: [
       {
@@ -949,8 +929,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12205',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12205',
     crn: '12205',
     meetings: [
       {
@@ -996,8 +975,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12206',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12206',
     crn: '12206',
     meetings: [
       {
@@ -1043,8 +1021,7 @@ const course2500Sections = [
     classType: 'Lecture',
     online: false,
     honors: false,
-    url:
-      'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12207',
+    url: 'https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202110&crn_in=12207',
     crn: '12207',
     meetings: [
       {

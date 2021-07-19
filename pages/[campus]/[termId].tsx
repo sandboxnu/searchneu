@@ -15,6 +15,7 @@ import Boston from '../../components/icons/boston.svg';
 import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import macros from '../../components/macros';
+import AlertBanner from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 
 export default function Home(): ReactElement {
@@ -42,6 +43,11 @@ export default function Home(): ReactElement {
 
   return (
     <div className={containerClassnames}>
+      {/*TODO: remove when notification is fixed */}
+      <AlertBanner
+        alertLevel="error"
+        alertMessage="Due to a technical issue with our notification pathway through Facebook, notifications have been temporarily disabled. We're working on a new notification flow, and apologize for any inconvenience."
+      />
       <Head>
         <title>Search NEU - {campus} </title>
       </Head>

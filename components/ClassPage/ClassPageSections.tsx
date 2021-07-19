@@ -14,7 +14,8 @@ type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-type ClassPageSection = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
+type ClassPageSection =
+  GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
 
 export default function ClassPageSections({
   classPageInfo,
@@ -164,7 +165,8 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
   );
 }
 
-type SectionMeeting = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number]['meetings'];
+type SectionMeeting =
+  GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number]['meetings'];
 
 function splitMeetingsAndExamTimes(
   meetings: SectionMeeting

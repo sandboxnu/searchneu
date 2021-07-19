@@ -33,9 +33,7 @@ export const isCourseReq = (
 ): variableToCheck is CourseReq =>
   (variableToCheck as CourseReq).classId !== undefined;
 
-export default function useResultDetail(
-  aClass: CourseReqs
-): {
+export default function useResultDetail(aClass: CourseReqs): {
   optionalDisplay: OptionalDisplay;
 } {
   const router = useRouter();
@@ -110,9 +108,8 @@ export default function useResultDetail(
         ) {
           return;
         }
-        processedSubjectClassIds[
-          childBranch.subject + childBranch.classId
-        ] = true;
+        processedSubjectClassIds[childBranch.subject + childBranch.classId] =
+          true;
 
         // When adding support for right click-> open in new tab, we might also be able to fix the jsx-a11y/anchor-is-valid errors.
         // They are disabled for now.

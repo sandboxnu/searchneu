@@ -19,7 +19,11 @@ type UseUserReturn = {
 };
 
 export default function useUser(): UseUserReturn {
-  const { data: user, error, mutate } = useSWR(
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR(
     `/api/user`,
     async (): Promise<GetUserResponse> => (await axios.get('/api/user')).data,
     {

@@ -28,9 +28,10 @@ export default function PageContent({
   // TODO: hacky front-end solution because for some reason allOccurrences includes
   // termIds where there are no sections. This should probably be fixed on the backend.
   if (classPageInfo && classPageInfo.class) {
-    classPageInfo.class.allOccurrences = classPageInfo.class.allOccurrences.filter(
-      (occurrence) => occurrence.sections.length > 0
-    );
+    classPageInfo.class.allOccurrences =
+      classPageInfo.class.allOccurrences.filter(
+        (occurrence) => occurrence.sections.length > 0
+      );
   }
   return (
     <div className={`pageContent ${isCoreq ? 'coreqPageContent' : ''}`}>

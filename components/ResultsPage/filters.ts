@@ -124,10 +124,8 @@ export const QUERY_PARAM_ENCODERS: Record<
   keyof FilterSpecs,
   QueryParamConfig<any, any>
 > = mapValues(FILTER_SPECS, (spec) => ENCODERS_FOR_CAT[spec.category]);
-export const DEFAULT_FILTER_SELECTION: FilterSelection = mapValues<FilterSelection>(
-  FILTER_SPECS,
-  (spec) => spec.default
-);
+export const DEFAULT_FILTER_SELECTION: FilterSelection =
+  mapValues<FilterSelection>(FILTER_SPECS, (spec) => spec.default);
 export const FILTERS_BY_CATEGORY: Record<
   FilterCategory,
   Partial<FilterSpecs>

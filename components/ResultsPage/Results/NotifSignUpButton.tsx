@@ -1,0 +1,14 @@
+import React, { ReactElement } from 'react';
+import { Button } from 'antd';
+
+interface NotifSignUpButtonProps {
+  onNotifSignUp: () => void;
+}
+
+export default function NotifSignUpButton({
+  onNotifSignUp,
+}: NotifSignUpButtonProps): ReactElement {
+  return (
+    <Button onClick={onNotifSignUp}>Get notified when a seat opens up!</Button>
+  );
+}

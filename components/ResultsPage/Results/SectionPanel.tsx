@@ -12,11 +12,10 @@ import {
 import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
 import Tooltip, { TooltipDirection } from '../../Tooltip';
-
-const NotifCheckBox = dynamic(() => import('../../panels/NotifCheckBox'), {
-  ssr: false,
-});
-
+import NotifCheckBox from '../../panels/NotifCheckBox';
+import NotifSignUpButton from './NotifSignUpButton';
+import { useState } from 'react';
+import { Modal, Input, Typography } from 'antd';
 interface SectionPanelProps {
   section: Section;
   showNotificationSwitches: boolean;
@@ -69,9 +68,8 @@ export function DesktopSectionPanel({
   section,
   showNotificationSwitches,
 }: SectionPanelProps): ReactElement {
-  // TODO: remove when notifications is fixed
-  showNotificationSwitches = false;
-
+  const [showModal, setShowModal] = useState(false);
+  const [modalPhoneNumber, setModalPhoneNumber] = useState('');
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -141,6 +139,28 @@ export function DesktopSectionPanel({
     });
   };
 
+  const onNotifSignUp = (): void => {
+    setShowModal(true);
+  };
+
+  const onModalOk = (): void => {
+    console.log(
+      `=== TODO: Check phone # valid, Send verify text to ${modalPhoneNumber}, keep modal open and wait for response ===`
+    );
+    setShowModal(false);
+  };
+
+  const onModalCancel = (): void => {
+    setShowModal(false);
+  };
+
+  const onPhoneChange = (value: any): void => {
+    const reg = /^\d*$/;
+    if (!isNaN(value) && reg.test(value)) {
+      setModalPhoneNumber(value);
+    }
+  };
+
   return (
     <tr className="DesktopSectionPanel" key={Keys.getSectionHash(section)}>
       <td>
@@ -166,13 +186,24 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      {showNotificationSwitches && (
-        <td>
-          <div className="DesktopSectionPanel__notifs">
-            <NotifCheckBox section={section} />
-          </div>
-        </td>
-      )}
+      <td>
+        <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+      </td>
+      <Modal
+        visible={showModal}
+        title="Sign up for SMS notifications!"
+        onOk={onModalOk}
+        onCancel={onModalCancel}
+      >
+        <Typography.Text>Enter your phone #:</Typography.Text>
+        <br />
+        <Input
+          placeholder="1234567890"
+          maxLength={10}
+          value={modalPhoneNumber}
+          onChange={({ target }) => onPhoneChange(target.value)}
+        />
+      </Modal>
     </tr>
   );
 }

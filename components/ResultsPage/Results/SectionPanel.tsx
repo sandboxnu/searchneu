@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import React, { ReactElement } from 'react';
 import IconGlobe from '../../icons/IconGlobe';
 import Keys from '../../Keys';
@@ -15,7 +14,11 @@ import Tooltip, { TooltipDirection } from '../../Tooltip';
 import NotifCheckBox from '../../panels/NotifCheckBox';
 import NotifSignUpButton from './NotifSignUpButton';
 import { useState } from 'react';
-import { Modal, Input, Typography } from 'antd';
+import { Modal, Input, Typography, Button } from 'antd';
+import io from 'socket.io-client';
+
+const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+
 interface SectionPanelProps {
   section: Section;
   showNotificationSwitches: boolean;
@@ -70,6 +73,10 @@ export function DesktopSectionPanel({
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [modalPhoneNumber, setModalPhoneNumber] = useState('');
+  const [modalTimeoutMessage, setModalTimeoutMessage] = useState('');
+  const [modalSubmitted, setModalSubmitted] = useState(false);
+  const [modalResendDisabled, setModalResendDisabled] = useState(false);
+
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -143,15 +150,29 @@ export function DesktopSectionPanel({
     setShowModal(true);
   };
 
-  const onModalOk = (): void => {
-    console.log(
-      `=== TODO: Check phone # valid, Send verify text to ${modalPhoneNumber}, keep modal open and wait for response ===`
-    );
-    setShowModal(false);
+  const onModalSubmit = (): void => {
+    setModalResendDisabled(true);
+    setTimeout(() => setModalResendDisabled(false), 30 * 1000);
+    setModalTimeoutMessage('');
+
+    if (!modalSubmitted) setModalSubmitted(true);
+
+    const socket = io('http://192.168.1.185:8080');
+    // const socket = io(`${ENDPOINT}:8080`);
+    socket.emit('phone', modalPhoneNumber);
+    setTimeout(() => {
+      socket.close();
+      setModalTimeoutMessage(
+        "Verification request timed out, click 'Resend' to resend verification text."
+      );
+    }, 5 * 60 * 1000);
   };
 
   const onModalCancel = (): void => {
     setShowModal(false);
+    setModalResendDisabled(false);
+    setModalTimeoutMessage('');
+    setModalSubmitted(false);
   };
 
   const onPhoneChange = (value: any): void => {
@@ -192,8 +213,19 @@ export function DesktopSectionPanel({
       <Modal
         visible={showModal}
         title="Sign up for SMS notifications!"
-        onOk={onModalOk}
         onCancel={onModalCancel}
+        footer={[
+          <Button
+            key="send"
+            onClick={onModalSubmit}
+            type="primary"
+            disabled={modalResendDisabled}
+          >
+            {modalSubmitted
+              ? 'Resend Verification Text'
+              : 'Send Verification Text'}
+          </Button>,
+        ]}
       >
         <Typography.Text>Enter your phone #:</Typography.Text>
         <br />
@@ -203,6 +235,16 @@ export function DesktopSectionPanel({
           value={modalPhoneNumber}
           onChange={({ target }) => onPhoneChange(target.value)}
         />
+        {modalSubmitted && (
+          <span>
+            We sent a text to {modalPhoneNumber}, please reply VERIFY within 5
+            minutes to verify your phone number.
+          </span>
+        )}
+        <br />
+        {modalTimeoutMessage && (
+          <span style={{ color: 'red' }}>{modalTimeoutMessage}</span>
+        )}
       </Modal>
     </tr>
   );

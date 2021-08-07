@@ -15,7 +15,8 @@ import NotifCheckBox from '../../panels/NotifCheckBox';
 import NotifSignUpButton from './NotifSignUpButton';
 import { useState } from 'react';
 import { Modal, Input, Typography, Button } from 'antd';
-import io from 'socket.io-client';
+import axios from 'axios';
+import { BarLoader } from 'react-spinners';
 
 const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
 
@@ -73,9 +74,11 @@ export function DesktopSectionPanel({
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [modalPhoneNumber, setModalPhoneNumber] = useState('');
-  const [modalTimeoutMessage, setModalTimeoutMessage] = useState('');
   const [modalSubmitted, setModalSubmitted] = useState(false);
   const [modalResendDisabled, setModalResendDisabled] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalResponseMessage, setModalResponseMessage] = useState('');
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -150,28 +153,38 @@ export function DesktopSectionPanel({
     setShowModal(true);
   };
 
-  const onModalSubmit = (): void => {
+  const onPhoneNumberSubmit = (): void => {
     setModalResendDisabled(true);
     setTimeout(() => setModalResendDisabled(false), 30 * 1000);
-    setModalTimeoutMessage('');
 
     if (!modalSubmitted) setModalSubmitted(true);
 
-    const socket = io('http://192.168.1.185:8080');
-    // const socket = io(`${ENDPOINT}:8080`);
-    socket.emit('phone', modalPhoneNumber);
-    setTimeout(() => {
-      socket.close();
-      setModalTimeoutMessage(
-        "Verification request timed out, click 'Resend' to resend verification text."
-      );
-    }, 5 * 60 * 1000);
+    axios.post(`http://localhost:8080/sms/signup`, {
+      phoneNumber: `+1${modalPhoneNumber}`,
+    });
+  };
+
+  const onVerificationCodeSubmit = (): void => {
+    setModalLoading(true);
+    setModalResponseMessage('');
+    axios
+      .post(`http://localhost:8080/sms/verify`, {
+        phoneNumber: `+1${modalPhoneNumber}`,
+        verificationCode,
+      })
+      .then(({ data }) => {
+        setModalLoading(false);
+        if (data.success) {
+          setModalResponseMessage('Yay!');
+        } else {
+          setModalResponseMessage(data.message);
+        }
+      });
   };
 
   const onModalCancel = (): void => {
     setShowModal(false);
     setModalResendDisabled(false);
-    setModalTimeoutMessage('');
     setModalSubmitted(false);
   };
 
@@ -179,6 +192,13 @@ export function DesktopSectionPanel({
     const reg = /^\d*$/;
     if (!isNaN(value) && reg.test(value)) {
       setModalPhoneNumber(value);
+    }
+  };
+
+  const onVerificationCodeChange = (value: any): void => {
+    const reg = /^\d*$/;
+    if (!isNaN(value) && reg.test(value)) {
+      setVerificationCode(value);
     }
   };
 
@@ -216,14 +236,21 @@ export function DesktopSectionPanel({
         onCancel={onModalCancel}
         footer={[
           <Button
-            key="send"
-            onClick={onModalSubmit}
-            type="primary"
+            key="send code"
+            onClick={onPhoneNumberSubmit}
             disabled={modalResendDisabled}
           >
             {modalSubmitted
               ? 'Resend Verification Text'
               : 'Send Verification Text'}
+          </Button>,
+          <Button
+            key="enter code"
+            type="primary"
+            onClick={onVerificationCodeSubmit}
+            disabled={!modalSubmitted}
+          >
+            Enter Code
           </Button>,
         ]}
       >
@@ -236,15 +263,28 @@ export function DesktopSectionPanel({
           onChange={({ target }) => onPhoneChange(target.value)}
         />
         {modalSubmitted && (
-          <span>
-            We sent a text to {modalPhoneNumber}, please reply VERIFY within 5
-            minutes to verify your phone number.
-          </span>
+          <>
+            <span>Verification code sent to {modalPhoneNumber}</span>
+            <br />
+            <br />
+            <span>Enter verification code below:</span>
+            <Input
+              placeholder="123456"
+              maxLength={6}
+              value={verificationCode}
+              onChange={({ target }) => onVerificationCodeChange(target.value)}
+            />
+          </>
         )}
         <br />
-        {modalTimeoutMessage && (
-          <span style={{ color: 'red' }}>{modalTimeoutMessage}</span>
-        )}
+        <br />
+        <BarLoader
+          css="display: block"
+          loading={modalLoading}
+          width={'100%'}
+          color={'#E63946'}
+        />
+        {modalResponseMessage && <span>Error: {modalResponseMessage}</span>}
       </Modal>
     </tr>
   );

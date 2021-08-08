@@ -178,13 +178,15 @@ export function DesktopSectionPanel({
       })
       .then(({ status, data }) => {
         setModalLoading(false);
-        if (status === 200) {
-          setShowModal(false);
-          cookies.set('SearchNEU JWT', data.token, { path: '/' });
-          router.reload();
-        } else {
-          setModalResponseMessage(data.message);
-        }
+        setShowModal(false);
+        cookies.set('SearchNEU JWT', data.token, { path: '/' });
+        router.reload();
+      })
+      .catch((error) => {
+        setModalLoading(false);
+        setModalResponseMessage(
+          'Error: Please try again or request a new verification code.'
+        );
       });
   };
 

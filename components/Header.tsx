@@ -23,6 +23,11 @@ import {
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
+import Cookies from 'universal-cookie';
+import jwt_decode from 'jwt-decode';
+import { Button } from 'antd';
+
+const cookies = new Cookies();
 
 type HeaderProps = {
   router: NextRouter;
@@ -46,6 +51,17 @@ export default function Header({
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
+
+  const token = cookies.get('SearchNEU JWT');
+  let phoneNumber: string;
+  if (token) {
+    phoneNumber = (jwt_decode(token) as any).phoneNumber;
+  }
+
+  const onSignOut = () => {
+    cookies.remove('SearchNEU JWT', { path: '/' });
+    router.reload();
+  };
 
   const setSearchQuery = (q: string): void => {
     router.push(
@@ -148,6 +164,16 @@ export default function Header({
             />
           </div>
         </div>
+        {phoneNumber && (
+          <>
+            <div className="User_Header">{phoneNumber}</div>
+            <div className="User_SignOut">
+              <Button danger onClick={onSignOut}>
+                Sign Out
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

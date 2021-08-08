@@ -41,6 +41,7 @@
     "is-mobile": "^2.2.2",
     "jest-svg-transformer": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.20",
     "mock-local-storage": "^1.1.15",
     "next": "10.0.4",
@@ -59,6 +60,7 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
     "swr": "^0.3.11",
+    "universal-cookie": "^4.0.4",
     "use-deep-compare-effect": "^1.6.1",
     "use-query-params": "^1.1.9",
     "uuid": "^8.3.2"

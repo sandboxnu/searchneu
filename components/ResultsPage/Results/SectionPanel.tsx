@@ -17,8 +17,11 @@ import { useState } from 'react';
 import { Modal, Input, Typography, Button } from 'antd';
 import axios from 'axios';
 import { BarLoader } from 'react-spinners';
+import Cookies from 'universal-cookie';
+import { useRouter } from 'next/router';
 
 const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+const cookies = new Cookies();
 
 interface SectionPanelProps {
   section: Section;
@@ -79,6 +82,7 @@ export function DesktopSectionPanel({
   const [verificationCode, setVerificationCode] = useState('');
   const [modalLoading, setModalLoading] = useState(false);
   const [modalResponseMessage, setModalResponseMessage] = useState('');
+  const router = useRouter();
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -172,10 +176,12 @@ export function DesktopSectionPanel({
         phoneNumber: `+1${modalPhoneNumber}`,
         verificationCode,
       })
-      .then(({ data }) => {
+      .then(({ status, data }) => {
         setModalLoading(false);
-        if (data.success) {
-          setModalResponseMessage('Yay!');
+        if (status === 200) {
+          setShowModal(false);
+          cookies.set('SearchNEU JWT', data.token, { path: '/' });
+          router.reload();
         } else {
           setModalResponseMessage(data.message);
         }
@@ -241,7 +247,7 @@ export function DesktopSectionPanel({
             disabled={modalResendDisabled}
           >
             {modalSubmitted
-              ? 'Resend Verification Text'
+              ? 'Send New Verification Text'
               : 'Send Verification Text'}
           </Button>,
           <Button

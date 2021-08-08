@@ -173,3 +173,13 @@ $SIDEBAR_WIDTH: 268px;
   justify-content: flex-end;
   float: right;
 }
+
+.User_Header {
+  flex: 1;
+  text-align: right;
+  margin-left: 30px;
+}
+
+.User_SignOut {
+  margin: 0px 10px;
+}

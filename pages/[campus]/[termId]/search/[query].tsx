@@ -25,6 +25,12 @@ import useSearch, {
   SearchParams,
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
+import Cookies from 'universal-cookie';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
+
+const cookies = new Cookies();
 
 const isWindow = typeof window !== 'undefined';
 
@@ -32,6 +38,7 @@ export default function Results(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
+  const [userInfo, setUserInfo] = useState(null);
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
 
@@ -45,6 +52,27 @@ export default function Results(): ReactElement | null {
     termId,
     query,
     filters,
+  };
+
+  useEffect(() => {
+    const token = cookies.get('SearchNEU JWT');
+    if (token) {
+      axios.get(`http://localhost:8080/user/${token}`).then(({ data }) => {
+        setUserInfo(data);
+      });
+    }
+  }, []);
+
+  const onSignOut = () => {
+    cookies.remove('SearchNEU JWT', { path: '/' });
+    setUserInfo(null);
+  };
+
+  const onSignIn = (token: string) => {
+    cookies.set('SearchNEU JWT', token, { path: '/' });
+    axios.get(`http://localhost:8080/user/${token}`).then(({ data }) => {
+      setUserInfo(data);
+    });
   };
 
   const { searchData, loadMore } = useSearch(searchParams);
@@ -72,6 +100,8 @@ export default function Results(): ReactElement | null {
         title={`Search NEU - ${query}`}
         searchData={searchData}
         termAndCampusToURL={termAndCampusToURL}
+        userInfo={userInfo}
+        onSignOut={onSignOut}
       ></Header>
 
       {!macros.isMobile && <FeedbackModal />}
@@ -105,6 +135,8 @@ export default function Results(): ReactElement | null {
               results={searchData.results}
               loadMore={loadMore}
               hasNextPage={searchData.hasNextPage}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
             />
           )}
           <Footer />

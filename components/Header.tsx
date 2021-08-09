@@ -23,24 +23,30 @@ import {
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
-import Cookies from 'universal-cookie';
-import jwt_decode from 'jwt-decode';
 import { Button } from 'antd';
-
-const cookies = new Cookies();
 
 type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
+  userInfo: UserInfo;
+  onSignOut: () => void;
 };
+
+export interface UserInfo {
+  phoneNumber: string;
+  courseIds: string[];
+  sectionIds: string[];
+}
 
 export default function Header({
   router,
   title,
   searchData,
   termAndCampusToURL,
+  userInfo,
+  onSignOut,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
@@ -51,17 +57,6 @@ export default function Header({
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
-
-  const token = cookies.get('SearchNEU JWT');
-  let phoneNumber: string;
-  if (token) {
-    phoneNumber = (jwt_decode(token) as any).phoneNumber;
-  }
-
-  const onSignOut = () => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    router.reload();
-  };
 
   const setSearchQuery = (q: string): void => {
     router.push(
@@ -164,9 +159,9 @@ export default function Header({
             />
           </div>
         </div>
-        {phoneNumber && (
+        {userInfo && (
           <>
-            <div className="User_Header">{phoneNumber}</div>
+            <div className="User_Header">{userInfo.phoneNumber}</div>
             <div className="User_SignOut">
               <Button danger onClick={onSignOut}>
                 Sign Out

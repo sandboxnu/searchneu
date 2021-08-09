@@ -9,6 +9,7 @@ import {
   CreditsDisplayMobile,
 } from '../../common/CreditsDisplay';
 import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
+import { UserInfo } from '../../Header';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconNotepad from '../../icons/IconNotepad';
@@ -26,6 +27,8 @@ const SignUpForNotifications = dynamic(
 
 interface SearchResultProps {
   course: Course;
+  userInfo: UserInfo;
+  onSignIn: (token: string) => void;
 }
 
 const sortSections = (sections: Section[]): Section[] => {
@@ -43,7 +46,11 @@ const sortSections = (sections: Section[]): Section[] => {
   return sortedSections;
 };
 
-export function SearchResult({ course }: SearchResultProps): ReactElement {
+export function SearchResult({
+  course,
+  userInfo,
+  onSignIn,
+}: SearchResultProps): ReactElement {
   const router = useRouter();
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
@@ -146,6 +153,8 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
               key={section.crn}
               section={section}
               showNotificationSwitches={userIsWatchingClass}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
             />
           ))}
         </tbody>

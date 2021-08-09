@@ -19,11 +19,19 @@ import axios from 'axios';
 import { BarLoader } from 'react-spinners';
 import Cookies from 'universal-cookie';
 import { useRouter } from 'next/router';
+import { UserInfo } from '../../Header';
 
 const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
 const cookies = new Cookies();
 
 interface SectionPanelProps {
+  section: Section;
+  showNotificationSwitches: boolean;
+  userInfo: UserInfo;
+  onSignIn: (token: string) => void;
+}
+
+interface MobileSectionPanelProps {
   section: Section;
   showNotificationSwitches: boolean;
 }
@@ -74,6 +82,8 @@ const getDaysOfWeekAsBooleans = (section: Section): boolean[] => {
 export function DesktopSectionPanel({
   section,
   showNotificationSwitches,
+  userInfo,
+  onSignIn,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [modalPhoneNumber, setModalPhoneNumber] = useState('');
@@ -82,7 +92,6 @@ export function DesktopSectionPanel({
   const [verificationCode, setVerificationCode] = useState('');
   const [modalLoading, setModalLoading] = useState(false);
   const [modalResponseMessage, setModalResponseMessage] = useState('');
-  const router = useRouter();
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -179,8 +188,7 @@ export function DesktopSectionPanel({
       .then(({ status, data }) => {
         setModalLoading(false);
         setShowModal(false);
-        cookies.set('SearchNEU JWT', data.token, { path: '/' });
-        router.reload();
+        onSignIn(data.token);
       })
       .catch((error) => {
         setModalLoading(false);
@@ -236,7 +244,15 @@ export function DesktopSectionPanel({
         </span>
       </td>
       <td>
-        <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+        {userInfo ? (
+          <td>
+            <div className="DesktopSectionPanel__notifs">
+              <NotifCheckBox section={section} />
+            </div>
+          </td>
+        ) : (
+          <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+        )}
       </td>
       <Modal
         visible={showModal}
@@ -292,7 +308,7 @@ export function DesktopSectionPanel({
           width={'100%'}
           color={'#E63946'}
         />
-        {modalResponseMessage && <span>Error: {modalResponseMessage}</span>}
+        {modalResponseMessage && <span>{modalResponseMessage}</span>}
       </Modal>
     </tr>
   );
@@ -301,7 +317,7 @@ export function DesktopSectionPanel({
 export function MobileSectionPanel({
   section,
   showNotificationSwitches,
-}: SectionPanelProps): ReactElement {
+}: MobileSectionPanelProps): ReactElement {
   // TODO: remove when notifications is fixed
   showNotificationSwitches = false;
 

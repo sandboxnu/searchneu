@@ -29,6 +29,7 @@ interface SearchResultProps {
   course: Course;
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }
 
 const sortSections = (sections: Section[]): Section[] => {
@@ -50,6 +51,7 @@ export function SearchResult({
   course,
   userInfo,
   onSignIn,
+  fetchUserInfo,
 }: SearchResultProps): ReactElement {
   const router = useRouter();
   const termId = router.query.termId as string;
@@ -155,6 +157,7 @@ export function SearchResult({
               showNotificationSwitches={userIsWatchingClass}
               userInfo={userInfo}
               onSignIn={onSignIn}
+              fetchUserInfo={fetchUserInfo}
             />
           ))}
         </tbody>

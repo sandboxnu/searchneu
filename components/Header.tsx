@@ -35,6 +35,7 @@ type HeaderProps = {
 };
 
 export interface UserInfo {
+  token: string;
   phoneNumber: string;
   courseIds: string[];
   sectionIds: string[];

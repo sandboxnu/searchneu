@@ -55,12 +55,7 @@ export default function Results(): ReactElement | null {
   };
 
   useEffect(() => {
-    const token = cookies.get('SearchNEU JWT');
-    if (token) {
-      axios.get(`http://localhost:8080/user/${token}`).then(({ data }) => {
-        setUserInfo(data);
-      });
-    }
+    fetchUserInfo();
   }, []);
 
   const onSignOut = () => {
@@ -70,9 +65,18 @@ export default function Results(): ReactElement | null {
 
   const onSignIn = (token: string) => {
     cookies.set('SearchNEU JWT', token, { path: '/' });
-    axios.get(`http://localhost:8080/user/${token}`).then(({ data }) => {
-      setUserInfo(data);
-    });
+    fetchUserInfo();
+  };
+
+  const fetchUserInfo = () => {
+    const token = cookies.get('SearchNEU JWT');
+    if (token) {
+      axios
+        .get(`http://localhost:8080/user/subscriptions/${token}`)
+        .then(({ data }) => {
+          setUserInfo({ token, ...data });
+        });
+    }
   };
 
   const { searchData, loadMore } = useSearch(searchParams);
@@ -137,6 +141,7 @@ export default function Results(): ReactElement | null {
               hasNextPage={searchData.hasNextPage}
               userInfo={userInfo}
               onSignIn={onSignIn}
+              fetchUserInfo={fetchUserInfo}
             />
           )}
           <Footer />

@@ -18,7 +18,6 @@ import { Modal, Input, Typography, Button } from 'antd';
 import axios from 'axios';
 import { BarLoader } from 'react-spinners';
 import Cookies from 'universal-cookie';
-import { useRouter } from 'next/router';
 import { UserInfo } from '../../Header';
 
 const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
@@ -29,6 +28,7 @@ interface SectionPanelProps {
   showNotificationSwitches: boolean;
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }
 
 interface MobileSectionPanelProps {
@@ -84,6 +84,7 @@ export function DesktopSectionPanel({
   showNotificationSwitches,
   userInfo,
   onSignIn,
+  fetchUserInfo,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [modalPhoneNumber, setModalPhoneNumber] = useState('');
@@ -218,6 +219,9 @@ export function DesktopSectionPanel({
     }
   };
 
+  const checked =
+    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
+
   return (
     <tr className="DesktopSectionPanel" key={Keys.getSectionHash(section)}>
       <td>
@@ -247,7 +251,12 @@ export function DesktopSectionPanel({
         {userInfo ? (
           <td>
             <div className="DesktopSectionPanel__notifs">
-              <NotifCheckBox section={section} />
+              <NotifCheckBox
+                section={section}
+                checked={checked}
+                userInfo={userInfo}
+                fetchUserInfo={fetchUserInfo}
+              />
             </div>
           </td>
         ) : (
@@ -371,7 +380,14 @@ export function MobileSectionPanel({
           </a>
           <span>{section.crn}</span>
         </div>
-        {showNotificationSwitches && <NotifCheckBox section={section} />}
+        {showNotificationSwitches && (
+          <NotifCheckBox
+            section={section}
+            checked={false}
+            userInfo={null}
+            fetchUserInfo={null}
+          />
+        )}
       </div>
       <div className="MobileSectionPanel__secondRow">
         {!section.online && (

@@ -26,6 +26,7 @@ interface ResultsLoaderProps {
   hasNextPage: boolean;
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -102,6 +103,7 @@ function ResultsLoader({
   hasNextPage,
   userInfo,
   onSignIn,
+  fetchUserInfo,
 }: ResultsLoaderProps): ReactElement {
   return (
     <InfiniteScroll
@@ -125,6 +127,7 @@ function ResultsLoader({
                   result={result}
                   userInfo={userInfo}
                   onSignIn={onSignIn}
+                  fetchUserInfo={fetchUserInfo}
                 />
               );
             })}
@@ -140,10 +143,12 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
   result,
   userInfo,
   onSignIn,
+  fetchUserInfo,
 }: {
   result: SearchItem;
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }) {
   if (result.type === 'class') {
     const course = result.class;
@@ -154,9 +159,15 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
         course={course}
         userInfo={userInfo}
         onSignIn={onSignIn}
+        fetchUserInfo={fetchUserInfo}
       />
     ) : (
-      <SearchResult course={course} userInfo={userInfo} onSignIn={onSignIn} />
+      <SearchResult
+        course={course}
+        userInfo={userInfo}
+        onSignIn={onSignIn}
+        fetchUserInfo={fetchUserInfo}
+      />
     );
   }
 

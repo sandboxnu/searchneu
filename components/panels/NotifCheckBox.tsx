@@ -12,13 +12,21 @@ import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
 import macros from '../macros';
 import { Section } from '../types';
+import axios from 'axios';
+import { UserInfo } from '../Header';
 
 type NotifCheckBoxProps = {
   section: Section;
+  checked: boolean;
+  userInfo: UserInfo;
+  fetchUserInfo: () => void;
 };
 
 export default function NotifCheckBox({
   section,
+  checked,
+  userInfo,
+  fetchUserInfo,
 }: NotifCheckBoxProps): ReactElement {
   // const { user, subscribeToSection, unsubscribeFromSection } = useUser();
 
@@ -26,14 +34,27 @@ export default function NotifCheckBox({
   //   Keys.getSectionHash(section)
   // );
 
-  const checked = false;
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   function onCheckboxClick(): void {
     if (checked) {
-      // unsubscribeFromSection(section);
+      axios
+        .delete('http://localhost:8080/user/subscriptions', {
+          data: {
+            token: userInfo.token,
+            sectionIds: [Keys.getSectionHash(section)],
+            courseIds: [],
+          },
+        })
+        .then(() => fetchUserInfo());
     } else {
-      // subscribeToSection(section);
+      axios
+        .put('http://localhost:8080/user/subscriptions', {
+          token: userInfo.token,
+          sectionIds: [Keys.getSectionHash(section)],
+          courseIds: [],
+        })
+        .then(() => fetchUserInfo());
     }
   }
 

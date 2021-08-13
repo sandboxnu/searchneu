@@ -33,6 +33,7 @@
 # Checklist
 
 - [x] Filled out PR template :wink:
+- [ ] Approved by designers
 - [ ] Is passing linting checks
 - [ ] Is passing tsc
 - [ ] Is passing existing tests

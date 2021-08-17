@@ -17,11 +17,7 @@ import { useState } from 'react';
 import { Modal, Input, Typography, Button } from 'antd';
 import axios from 'axios';
 import { BarLoader } from 'react-spinners';
-import Cookies from 'universal-cookie';
 import { UserInfo } from '../../Header';
-
-const ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
-const cookies = new Cookies();
 
 interface SectionPanelProps {
   section: Section;
@@ -87,11 +83,16 @@ export function DesktopSectionPanel({
   fetchUserInfo,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
+  const [modalCountryCode, setModalCountryCode] = useState('1');
   const [modalPhoneNumber, setModalPhoneNumber] = useState('');
   const [modalSubmitted, setModalSubmitted] = useState(false);
   const [modalResendDisabled, setModalResendDisabled] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [modalLoading, setModalLoading] = useState(false);
+  const [
+    modalPhoneValidationMessage,
+    setModalPhoneValidationMessage,
+  ] = useState('');
   const [modalResponseMessage, setModalResponseMessage] = useState('');
 
   const { getSeatsClass } = useSectionPanelDetail(
@@ -168,14 +169,21 @@ export function DesktopSectionPanel({
   };
 
   const onPhoneNumberSubmit = (): void => {
-    setModalResendDisabled(true);
-    setTimeout(() => setModalResendDisabled(false), 30 * 1000);
-
-    if (!modalSubmitted) setModalSubmitted(true);
-
-    axios.post(`http://localhost:8080/sms/signup`, {
-      phoneNumber: `+1${modalPhoneNumber}`,
-    });
+    axios
+      .post(`http://localhost:8080/sms/signup`, {
+        phoneNumber: `+${modalCountryCode}${modalPhoneNumber}`,
+      })
+      .then(() => {
+        setModalPhoneValidationMessage('');
+        if (!modalSubmitted) setModalSubmitted(true);
+        setModalResendDisabled(true);
+        setTimeout(() => setModalResendDisabled(false), 30 * 1000);
+      })
+      .catch((error) => {
+        setModalPhoneValidationMessage(
+          'Unable to send text, please check that your phone number is formatted correctly'
+        );
+      });
   };
 
   const onVerificationCodeSubmit = (): void => {
@@ -183,7 +191,7 @@ export function DesktopSectionPanel({
     setModalResponseMessage('');
     axios
       .post(`http://localhost:8080/sms/verify`, {
-        phoneNumber: `+1${modalPhoneNumber}`,
+        phoneNumber: `+${modalCountryCode}${modalPhoneNumber}`,
         verificationCode,
       })
       .then(({ status, data }) => {
@@ -203,6 +211,13 @@ export function DesktopSectionPanel({
     setShowModal(false);
     setModalResendDisabled(false);
     setModalSubmitted(false);
+  };
+
+  const onCountryCodeChange = (value: any): void => {
+    const reg = /^\d*$/;
+    if (!isNaN(value) && reg.test(value)) {
+      setModalCountryCode(value);
+    }
   };
 
   const onPhoneChange = (value: any): void => {
@@ -289,15 +304,30 @@ export function DesktopSectionPanel({
       >
         <Typography.Text>Enter your phone #:</Typography.Text>
         <br />
-        <Input
-          placeholder="1234567890"
-          maxLength={10}
-          value={modalPhoneNumber}
-          onChange={({ target }) => onPhoneChange(target.value)}
-        />
+        <Input.Group compact>
+          <Input
+            style={{ width: '15%' }}
+            prefix="+"
+            value={modalCountryCode}
+            onChange={({ target }) => onCountryCodeChange(target.value)}
+          />
+          <Input
+            style={{ width: '85%' }}
+            placeholder="1234567890"
+            maxLength={10}
+            value={modalPhoneNumber}
+            onChange={({ target }) => onPhoneChange(target.value)}
+          />
+        </Input.Group>
+        {modalPhoneValidationMessage && (
+          <span style={{ color: 'red' }}>{modalPhoneValidationMessage}</span>
+        )}
         {modalSubmitted && (
           <>
-            <span>Verification code sent to {modalPhoneNumber}</span>
+            <span>
+              Verification code sent to +{modalCountryCode}
+              {modalPhoneNumber}
+            </span>
             <br />
             <br />
             <span>Enter verification code below:</span>

@@ -1,0 +1,12 @@
+# This file is used to render banner alerts on the front page of search
+# To add an alert, add a new entry at the top level, preferrably with a descriptive name for the alert
+# Then, add key-value pair entries to that object, text, alertLevel, isVisible, and optional link. Example:
+# notificationsAlert:
+#   text: "Due to a technical issue with our notification pathway through Facebook, notifications have been temporarily disabled. We're working on a new notification flow, and apologize for any inconvenience."
+#   alertLevel: "error"
+#   link: "https://www.w3schools.com"
+# For more info, check out the AlertBanner.tsx file
+---
+notificationsAlert:
+  text: 'Due to a technical issue, Facebook notifications have been temporarily disabled.'
+  alertLevel: 'error'

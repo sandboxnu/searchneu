@@ -25,6 +25,7 @@ interface SectionPanelProps {
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
+  showNotificationSignup: boolean;
 }
 
 interface MobileSectionPanelProps {
@@ -81,6 +82,7 @@ export function DesktopSectionPanel({
   userInfo,
   onSignIn,
   fetchUserInfo,
+  showNotificationSignup,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [modalCountryCode, setModalCountryCode] = useState('1');
@@ -262,22 +264,24 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      <td>
-        {userInfo ? (
+      {userInfo ? (
+        <td>
+          <div className="DesktopSectionPanel__notifs">
+            <NotifCheckBox
+              section={section}
+              checked={checked}
+              userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
+            />
+          </div>
+        </td>
+      ) : (
+        showNotificationSignup && (
           <td>
-            <div className="DesktopSectionPanel__notifs">
-              <NotifCheckBox
-                section={section}
-                checked={checked}
-                userInfo={userInfo}
-                fetchUserInfo={fetchUserInfo}
-              />
-            </div>
+            <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
           </td>
-        ) : (
-          <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-        )}
-      </td>
+        )
+      )}
       <Modal
         visible={showModal}
         title="Sign up for SMS notifications!"

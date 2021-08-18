@@ -73,6 +73,12 @@ export function SearchResult({
       ? `${course.feeDescription} - $${course.feeAmount.toLocaleString()}`
       : null;
 
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
+
   return (
     <div className="SearchResult">
       <div className="SearchResult__header">
@@ -158,6 +164,7 @@ export function SearchResult({
               userInfo={userInfo}
               onSignIn={onSignIn}
               fetchUserInfo={fetchUserInfo}
+              showNotificationSignup={hasAtLeastOneSectionFull()}
             />
           ))}
         </tbody>

@@ -14,10 +14,8 @@ import Tooltip, { TooltipDirection } from '../../Tooltip';
 import NotifCheckBox from '../../panels/NotifCheckBox';
 import NotifSignUpButton from './NotifSignUpButton';
 import { useState } from 'react';
-import { Modal, Input, Typography, Button } from 'antd';
-import axios from 'axios';
-import { BarLoader } from 'react-spinners';
 import { UserInfo } from '../../Header';
+import { PhoneModal } from '../../PhoneModal';
 
 interface SectionPanelProps {
   section: Section;
@@ -85,17 +83,6 @@ export function DesktopSectionPanel({
   showNotificationSignup,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
-  const [modalCountryCode, setModalCountryCode] = useState('1');
-  const [modalPhoneNumber, setModalPhoneNumber] = useState('');
-  const [modalSubmitted, setModalSubmitted] = useState(false);
-  const [modalResendDisabled, setModalResendDisabled] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
-  const [modalLoading, setModalLoading] = useState(false);
-  const [
-    modalPhoneValidationMessage,
-    setModalPhoneValidationMessage,
-  ] = useState('');
-  const [modalResponseMessage, setModalResponseMessage] = useState('');
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -170,70 +157,8 @@ export function DesktopSectionPanel({
     setShowModal(true);
   };
 
-  const onPhoneNumberSubmit = (): void => {
-    axios
-      .post(`http://localhost:8080/sms/signup`, {
-        phoneNumber: `+${modalCountryCode}${modalPhoneNumber}`,
-      })
-      .then(() => {
-        setModalPhoneValidationMessage('');
-        if (!modalSubmitted) setModalSubmitted(true);
-        setModalResendDisabled(true);
-        setTimeout(() => setModalResendDisabled(false), 30 * 1000);
-      })
-      .catch((error) => {
-        setModalPhoneValidationMessage(
-          'Unable to send text, please check that your phone number is formatted correctly'
-        );
-      });
-  };
-
-  const onVerificationCodeSubmit = (): void => {
-    setModalLoading(true);
-    setModalResponseMessage('');
-    axios
-      .post(`http://localhost:8080/sms/verify`, {
-        phoneNumber: `+${modalCountryCode}${modalPhoneNumber}`,
-        verificationCode,
-      })
-      .then(({ status, data }) => {
-        setModalLoading(false);
-        setShowModal(false);
-        onSignIn(data.token);
-      })
-      .catch((error) => {
-        setModalLoading(false);
-        setModalResponseMessage(
-          'Error: Please try again or request a new verification code.'
-        );
-      });
-  };
-
   const onModalCancel = (): void => {
     setShowModal(false);
-    setModalResendDisabled(false);
-    setModalSubmitted(false);
-  };
-
-  const onCountryCodeChange = (value: any): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
-      setModalCountryCode(value);
-    }
-  };
-
-  const onPhoneChange = (value: any): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
-      setModalPhoneNumber(value);
-    }
-  };
-
-  const onVerificationCodeChange = (value: any): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
-      setVerificationCode(value);
-    }
   };
 
   const checked =
@@ -282,77 +207,12 @@ export function DesktopSectionPanel({
           </td>
         )
       )}
-      <Modal
+      <PhoneModal
         visible={showModal}
-        title="Sign up for SMS notifications!"
         onCancel={onModalCancel}
-        footer={[
-          <Button
-            key="send code"
-            onClick={onPhoneNumberSubmit}
-            disabled={modalResendDisabled}
-          >
-            {modalSubmitted
-              ? 'Send New Verification Text'
-              : 'Send Verification Text'}
-          </Button>,
-          <Button
-            key="enter code"
-            type="primary"
-            onClick={onVerificationCodeSubmit}
-            disabled={!modalSubmitted}
-          >
-            Enter Code
-          </Button>,
-        ]}
-      >
-        <Typography.Text>Enter your phone #:</Typography.Text>
-        <br />
-        <Input.Group compact>
-          <Input
-            style={{ width: '15%' }}
-            prefix="+"
-            value={modalCountryCode}
-            onChange={({ target }) => onCountryCodeChange(target.value)}
-          />
-          <Input
-            style={{ width: '85%' }}
-            placeholder="1234567890"
-            maxLength={10}
-            value={modalPhoneNumber}
-            onChange={({ target }) => onPhoneChange(target.value)}
-          />
-        </Input.Group>
-        {modalPhoneValidationMessage && (
-          <span style={{ color: 'red' }}>{modalPhoneValidationMessage}</span>
-        )}
-        {modalSubmitted && (
-          <>
-            <span>
-              Verification code sent to +{modalCountryCode}
-              {modalPhoneNumber}
-            </span>
-            <br />
-            <br />
-            <span>Enter verification code below:</span>
-            <Input
-              placeholder="123456"
-              maxLength={6}
-              value={verificationCode}
-              onChange={({ target }) => onVerificationCodeChange(target.value)}
-            />
-          </>
-        )}
-        <br />
-        <br />
-        <BarLoader
-          css="display: block"
-          loading={modalLoading}
-          width={'100%'}
-          color={'#E63946'}
-        />
-        {modalResponseMessage && <span>{modalResponseMessage}</span>}
-      </Modal>
+        onSignIn={onSignIn}
+        onSuccess={() => setShowModal(false)}
+      />
     </tr>
   );
 }

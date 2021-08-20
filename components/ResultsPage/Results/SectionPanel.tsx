@@ -12,19 +12,16 @@ import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
 import Tooltip, { TooltipDirection } from '../../Tooltip';
 import SectionCheckBox from '../../panels/SectionCheckBox';
-import { useState } from 'react';
 import { UserInfo } from '../../Header';
 
 interface SectionPanelProps {
   section: Section;
-  showNotificationSwitches: boolean;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
 }
 
 interface MobileSectionPanelProps {
   section: Section;
-  showNotificationSwitches: boolean;
 }
 
 const meetsOnDay = (meeting: Meeting, dayIndex: DayOfWeek): boolean => {
@@ -72,12 +69,9 @@ const getDaysOfWeekAsBooleans = (section: Section): boolean[] => {
 
 export function DesktopSectionPanel({
   section,
-  showNotificationSwitches,
   userInfo,
   fetchUserInfo,
 }: SectionPanelProps): ReactElement {
-  const [showModal, setShowModal] = useState(false);
-
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -147,10 +141,6 @@ export function DesktopSectionPanel({
     });
   };
 
-  const onNotifSignUp = (): void => {
-    setShowModal(true);
-  };
-
   const checked =
     userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
 
@@ -197,10 +187,9 @@ export function DesktopSectionPanel({
 
 export function MobileSectionPanel({
   section,
-  showNotificationSwitches,
 }: MobileSectionPanelProps): ReactElement {
   // TODO: remove when notifications is fixed
-  showNotificationSwitches = false;
+  const showNotificationSwitches = false;
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,

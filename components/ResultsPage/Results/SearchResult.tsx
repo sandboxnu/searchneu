@@ -1,6 +1,5 @@
 import { Markup } from 'interweave';
 import { cloneDeep } from 'lodash';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo, useState } from 'react';
 import useUser from '../../../utils/useUser';
@@ -14,17 +13,12 @@ import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconNotepad from '../../icons/IconNotepad';
 import Keys from '../../Keys';
+import SignUpForNotifications from '../../SignUpForNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
 import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
-
-const SignUpForNotifications = dynamic(
-  () => import('../../SignUpForNotifications'),
-  { ssr: false }
-);
-
 interface SearchResultProps {
   course: Course;
   userInfo: UserInfo;
@@ -136,7 +130,13 @@ export function SearchResult({
               </div>
             </div>
 
-            <SignUpForNotifications course={course} />
+            <SignUpForNotifications
+              course={course}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
+              showNotificationSignup={hasAtLeastOneSectionFull()}
+              fetchUserInfo={fetchUserInfo}
+            />
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@ export function SearchResult({
             <th> Meetings </th>
             <th> Campus </th>
             <th> Seats </th>
-            {userIsWatchingClass && <th> Notifications </th>}
+            {userInfo && <th> Notifications </th>}
           </tr>
         </thead>
         <tbody>
@@ -162,9 +162,7 @@ export function SearchResult({
               section={section}
               showNotificationSwitches={userIsWatchingClass}
               userInfo={userInfo}
-              onSignIn={onSignIn}
               fetchUserInfo={fetchUserInfo}
-              showNotificationSignup={hasAtLeastOneSectionFull()}
             />
           ))}
         </tbody>
@@ -192,6 +190,9 @@ export function SearchResult({
 
 export function MobileSearchResult({
   course,
+  userInfo,
+  onSignIn,
+  fetchUserInfo,
 }: SearchResultProps): ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -287,7 +288,13 @@ export function MobileSearchResult({
               renderChildren={() => optionalDisplay(PrereqType.COREQ, course)}
             />
             <div className="MobileSearchResult__panel--notifContainer">
-              <SignUpForNotifications course={course} />
+              <SignUpForNotifications
+                course={course}
+                userInfo={userInfo}
+                onSignIn={onSignIn}
+                showNotificationSignup={false}
+                fetchUserInfo={fetchUserInfo}
+              />
             </div>
           </div>
           <div className="MobileSearchResult__panel--sections">

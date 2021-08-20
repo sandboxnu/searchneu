@@ -6,7 +6,6 @@
 import { uniqueId } from 'lodash';
 import React, { ReactElement, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
-import useUser from '../../utils/useUser';
 import IconCheckMark from '../icons/IconCheckmark';
 import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
@@ -15,19 +14,19 @@ import { Section } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../Header';
 
-type NotifCheckBoxProps = {
+type SectionCheckBoxProps = {
   section: Section;
   checked: boolean;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
 };
 
-export default function NotifCheckBox({
+export default function SectionCheckBox({
   section,
   checked,
   userInfo,
   fetchUserInfo,
-}: NotifCheckBoxProps): ReactElement {
+}: SectionCheckBoxProps): ReactElement {
   // const { user, subscribeToSection, unsubscribeFromSection } = useUser();
 
   // const checked = user?.followedSections?.includes(

@@ -11,19 +11,15 @@ import {
 import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
 import Tooltip, { TooltipDirection } from '../../Tooltip';
-import NotifCheckBox from '../../panels/NotifCheckBox';
-import NotifSignUpButton from './NotifSignUpButton';
+import SectionCheckBox from '../../panels/SectionCheckBox';
 import { useState } from 'react';
 import { UserInfo } from '../../Header';
-import { PhoneModal } from '../../PhoneModal';
 
 interface SectionPanelProps {
   section: Section;
   showNotificationSwitches: boolean;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
-  showNotificationSignup: boolean;
 }
 
 interface MobileSectionPanelProps {
@@ -78,9 +74,7 @@ export function DesktopSectionPanel({
   section,
   showNotificationSwitches,
   userInfo,
-  onSignIn,
   fetchUserInfo,
-  showNotificationSignup,
 }: SectionPanelProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
 
@@ -157,10 +151,6 @@ export function DesktopSectionPanel({
     setShowModal(true);
   };
 
-  const onModalCancel = (): void => {
-    setShowModal(false);
-  };
-
   const checked =
     userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
 
@@ -189,10 +179,10 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      {userInfo ? (
+      {userInfo && (
         <td>
           <div className="DesktopSectionPanel__notifs">
-            <NotifCheckBox
+            <SectionCheckBox
               section={section}
               checked={checked}
               userInfo={userInfo}
@@ -200,19 +190,7 @@ export function DesktopSectionPanel({
             />
           </div>
         </td>
-      ) : (
-        showNotificationSignup && (
-          <td>
-            <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-          </td>
-        )
       )}
-      <PhoneModal
-        visible={showModal}
-        onCancel={onModalCancel}
-        onSignIn={onSignIn}
-        onSuccess={() => setShowModal(false)}
-      />
     </tr>
   );
 }
@@ -275,7 +253,7 @@ export function MobileSectionPanel({
           <span>{section.crn}</span>
         </div>
         {showNotificationSwitches && (
-          <NotifCheckBox
+          <SectionCheckBox
             section={section}
             checked={false}
             userInfo={null}

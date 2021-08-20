@@ -8,7 +8,5 @@ interface NotifSignUpButtonProps {
 export default function NotifSignUpButton({
   onNotifSignUp,
 }: NotifSignUpButtonProps): ReactElement {
-  return (
-    <Button onClick={onNotifSignUp}>Get notified when a seat opens up!</Button>
-  );
+  return <Button onClick={onNotifSignUp}>Sign up for SMS Notifications</Button>;
 }

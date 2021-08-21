@@ -2,7 +2,6 @@ import { Markup } from 'interweave';
 import { cloneDeep } from 'lodash';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo, useState } from 'react';
-import useUser from '../../../utils/useUser';
 import {
   CreditsDisplay,
   CreditsDisplayMobile,
@@ -12,7 +11,6 @@ import { UserInfo } from '../../Header';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconNotepad from '../../icons/IconNotepad';
-import Keys from '../../Keys';
 import SignUpForNotifications from '../../SignUpForNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';

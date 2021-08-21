@@ -5,7 +5,7 @@ exports[`should render a section 1`] = `
   <LocationProvider stringifyOptions={[undefined]} history={{...}} location={{...}}>
     <Results>
       <div>
-        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]}>
+        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]} userInfo={{...}} onSignOut={[Function: onSignOut]}>
           <div>
             <Head>
               <_default reduceComponentsToState={[Function: reduceComponents]} headManager={{...}} inAmpMode={false} />

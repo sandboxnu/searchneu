@@ -31,17 +31,20 @@ export default function CourseCheckBox({
   function onCheckboxClick(): void {
     if (checked) {
       axios
-        .delete('http://localhost:8080/user/subscriptions', {
-          data: {
-            token: userInfo.token,
-            sectionIds: [],
-            courseIds: [Keys.getClassHash(course)],
-          },
-        })
+        .delete(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
+          {
+            data: {
+              token: userInfo.token,
+              sectionIds: [],
+              courseIds: [Keys.getClassHash(course)],
+            },
+          }
+        )
         .then(() => fetchUserInfo());
     } else {
       axios
-        .put('http://localhost:8080/user/subscriptions', {
+        .put(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
           token: userInfo.token,
           sectionIds: [],
           courseIds: [Keys.getClassHash(course)],

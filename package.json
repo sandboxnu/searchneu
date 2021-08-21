@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n app,codegen \"next dev -p 5000\" \"npm:generate:graphql -- --watch\"",
-    "dev:fullstack": "NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000 yarn run dev",
+    "dev:fullstack": "NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000 NEXT_PUBLIC_NOTIFS_ENDPOINT=http://localhost:8080 yarn run dev",
     "build": "next build",
     "vercel:build": "echo 'TODO: I do not know if this script should be changed/removed due to the notif switch to twilio, since the frontend no longer has any database. - Dillon :) command below:\n' && echo 'DATABASE_URL=\"$NON_POOLED_DATABASE_URL\"; prisma migrate deploy --preview-feature && yarn build'",
     "start": "next start -p 5000",

@@ -27,7 +27,7 @@ export function PhoneModal({
 
   const onPhoneNumberSubmit = (): void => {
     axios
-      .post(`http://localhost:8080/sms/signup`, {
+      .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/signup`, {
         phoneNumber: `+${countryCode}${phoneNumber}`,
       })
       .then(() => {
@@ -47,7 +47,7 @@ export function PhoneModal({
     setLoading(true);
     setResponseMessage('');
     axios
-      .post(`http://localhost:8080/sms/verify`, {
+      .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/verify`, {
         phoneNumber: `+${countryCode}${phoneNumber}`,
         verificationCode,
       })

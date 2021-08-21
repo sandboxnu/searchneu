@@ -38,17 +38,20 @@ export default function SectionCheckBox({
   function onCheckboxClick(): void {
     if (checked) {
       axios
-        .delete('http://localhost:8080/user/subscriptions', {
-          data: {
-            token: userInfo.token,
-            sectionIds: [Keys.getSectionHash(section)],
-            courseIds: [],
-          },
-        })
+        .delete(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
+          {
+            data: {
+              token: userInfo.token,
+              sectionIds: [Keys.getSectionHash(section)],
+              courseIds: [],
+            },
+          }
+        )
         .then(() => fetchUserInfo());
     } else {
       axios
-        .put('http://localhost:8080/user/subscriptions', {
+        .put(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
           token: userInfo.token,
           sectionIds: [Keys.getSectionHash(section)],
           courseIds: [],

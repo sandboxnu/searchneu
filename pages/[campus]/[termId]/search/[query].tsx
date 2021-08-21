@@ -72,7 +72,9 @@ export default function Results(): ReactElement | null {
     const token = cookies.get('SearchNEU JWT');
     if (token) {
       axios
-        .get(`http://localhost:8080/user/subscriptions/${token}`)
+        .get(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
+        )
         .then(({ data }) => {
           setUserInfo({ token, ...data });
         });

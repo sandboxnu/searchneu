@@ -41,7 +41,11 @@
     border-right: none;
   }
 
-  &__box--checked:nth-child(even) {
+  &__box--checked-class:nth-child(even) {
+    border-left: none;
+    border-right: none;
+  }
+  &__box--checked-final:nth-child(even) {
     border-left: none;
     border-right: none;
   }

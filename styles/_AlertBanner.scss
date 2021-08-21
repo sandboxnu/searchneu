@@ -1,19 +1,20 @@
-.alertBanner {
+.alertBannerContainer {
   z-index: 100000;
-  position: fixed;
-  bottom: 0px;
+  top: 0px;
   width: 100%;
+}
+
+.alertBanner {
   filter: drop-shadow(3px 1px 4px grey);
   padding: 15px 15px 15px 15px;
+  text-align: center;
   font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
   &__back {
     height: 15px;
     width: 15px;
     float: right;
+    margin-right: 30px;
   }
 
   &__back:hover {

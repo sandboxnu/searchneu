@@ -3,28 +3,33 @@ import IconClose from '../icons/IconClose';
 
 type AlertLevel = 'error' | 'warning' | 'info';
 
-type AlertBannerProps = {
+export type AlertBannerData = {
+  text: string;
   alertLevel: AlertLevel;
-  alertMessage: string;
+  link?: string;
 };
 
-export default function AlertBanner({
-  alertLevel,
-  alertMessage,
-}: AlertBannerProps) {
-  const [isBannerOpen, setIsBannerOpen] = useState(true);
+type AlertBannerProps = {
+  alertBannerData: AlertBannerData;
+};
 
-  const closeBanner = () => setIsBannerOpen(false);
+export default function AlertBanner({ alertBannerData }: AlertBannerProps) {
+  const [isVisible, setIsVisible] = useState(true);
 
   return (
-    isBannerOpen && (
-      <div className={`alertBanner ${alertLevel}Banner`}>
-        {alertMessage}
+    isVisible && (
+      <div className={`alertBanner ${alertBannerData.alertLevel}Banner`}>
+        <span>
+          {alertBannerData.text}
+          {alertBannerData.link && (
+            <a href={alertBannerData.link}> Learn More.</a>
+          )}
+        </span>
         <div
           className="alertBanner__back"
           role="button"
           tabIndex={0}
-          onClick={closeBanner}
+          onClick={() => setIsVisible(false)}
         >
           <IconClose fill="#808080" />
         </div>

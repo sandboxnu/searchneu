@@ -158,13 +158,3 @@ export enum Campus {
   CPS = 'CPS',
   LAW = 'LAW',
 }
-
-export interface User {
-  facebookMessengerId: string;
-  facebookPageId: string;
-  firstName: string;
-  lastName: string;
-  loginKeys: string[];
-  watchingClasses: string[];
-  watchingSections: string[];
-}

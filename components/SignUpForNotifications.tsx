@@ -11,11 +11,6 @@ import { PhoneModal } from './PhoneModal';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import { Course } from './types';
 
-// This file is responsible for the Sign Up for notifications flow.
-// First, this will render a button that will say something along the lines of "Get notified when...!"
-// Then, if that button is clicked, the Facebook Send To Messenger button will be rendered.
-// (This Send To Messenger button is not rendered initially because it requires that an iframe is added and 10+ http requests are made for each time it is rendered)
-
 type SignUpForNotificationsProps = {
   course: Course;
   userInfo: UserInfo;

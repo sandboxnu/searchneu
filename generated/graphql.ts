@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { print } from 'graphql';
+import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -22,6 +22,113 @@ export type Scalars = {
   JSONObject: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
+};
+
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE',
+}
+
+export type Class = {
+  __typename?: 'Class';
+  name: Scalars['String'];
+  subject: Scalars['String'];
+  classId: Scalars['String'];
+  occurrence?: Maybe<ClassOccurrence>;
+  latestOccurrence?: Maybe<ClassOccurrence>;
+  allOccurrences: Array<Maybe<ClassOccurrence>>;
+};
+
+export type ClassOccurrenceArgs = {
+  termId: Scalars['String'];
+};
+
+export type ClassOccurrence = {
+  __typename?: 'ClassOccurrence';
+  name: Scalars['String'];
+  subject: Scalars['String'];
+  classId: Scalars['String'];
+  termId: Scalars['Int'];
+  desc: Scalars['String'];
+  prereqs?: Maybe<Scalars['JSON']>;
+  coreqs?: Maybe<Scalars['JSON']>;
+  prereqsFor?: Maybe<Scalars['JSON']>;
+  optPrereqsFor?: Maybe<Scalars['JSON']>;
+  maxCredits?: Maybe<Scalars['Int']>;
+  minCredits?: Maybe<Scalars['Int']>;
+  classAttributes: Array<Scalars['String']>;
+  url: Scalars['String'];
+  prettyUrl?: Maybe<Scalars['String']>;
+  lastUpdateTime?: Maybe<Scalars['Float']>;
+  nupath: Array<Scalars['String']>;
+  sections: Array<Section>;
+  host: Scalars['String'];
+  feeAmount?: Maybe<Scalars['Int']>;
+  feeDescription?: Maybe<Scalars['String']>;
+};
+
+export type Employee = {
+  __typename?: 'Employee';
+  name: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  emails: Array<Scalars['String']>;
+  primaryDepartment?: Maybe<Scalars['String']>;
+  primaryRole?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  streetAddress?: Maybe<Scalars['String']>;
+  personalSite?: Maybe<Scalars['String']>;
+  googleScholarId?: Maybe<Scalars['String']>;
+  bigPictureUrl?: Maybe<Scalars['String']>;
+  pic?: Maybe<Scalars['String']>;
+  link?: Maybe<Scalars['String']>;
+  officeRoom?: Maybe<Scalars['String']>;
+};
+
+export type FilterAgg = {
+  __typename?: 'FilterAgg';
+  value: Scalars['String'];
+  count: Scalars['Int'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type FilterOptions = {
+  __typename?: 'FilterOptions';
+  nupath?: Maybe<Array<FilterAgg>>;
+  subject?: Maybe<Array<FilterAgg>>;
+  classType?: Maybe<Array<FilterAgg>>;
+  campus?: Maybe<Array<FilterAgg>>;
+};
+
+export type IntRange = {
+  min: Scalars['Int'];
+  max: Scalars['Int'];
+};
+
+export type Major = {
+  __typename?: 'Major';
+  majorId: Scalars['String'];
+  yearVersion: Scalars['String'];
+  occurrence?: Maybe<MajorOccurrence>;
+  latestOccurrence?: Maybe<MajorOccurrence>;
+};
+
+export type MajorOccurrenceArgs = {
+  year: Scalars['Int'];
+};
+
+export type MajorOccurrence = {
+  __typename?: 'MajorOccurrence';
+  majorId: Scalars['String'];
+  yearVersion: Scalars['String'];
+  spec: Scalars['JSON'];
+  plansOfStudy: Scalars['JSON'];
+};
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  hasNextPage: Scalars['Boolean'];
 };
 
 export type Query = {
@@ -63,42 +170,14 @@ export type QuerySearchArgs = {
   first?: Maybe<Scalars['Int']>;
 };
 
-export type Class = {
-  __typename?: 'Class';
-  name: Scalars['String'];
-  subject: Scalars['String'];
-  classId: Scalars['String'];
-  occurrence?: Maybe<ClassOccurrence>;
-  latestOccurrence?: Maybe<ClassOccurrence>;
-  allOccurrences: Array<Maybe<ClassOccurrence>>;
-};
+export type SearchResultItem = ClassOccurrence | Employee;
 
-export type ClassOccurrenceArgs = {
-  termId: Scalars['String'];
-};
-
-export type ClassOccurrence = {
-  __typename?: 'ClassOccurrence';
-  name: Scalars['String'];
-  subject: Scalars['String'];
-  classId: Scalars['String'];
-  termId: Scalars['Int'];
-  desc: Scalars['String'];
-  prereqs?: Maybe<Scalars['JSON']>;
-  coreqs?: Maybe<Scalars['JSON']>;
-  prereqsFor?: Maybe<Scalars['JSON']>;
-  optPrereqsFor?: Maybe<Scalars['JSON']>;
-  maxCredits?: Maybe<Scalars['Int']>;
-  minCredits?: Maybe<Scalars['Int']>;
-  classAttributes: Array<Scalars['String']>;
-  url: Scalars['String'];
-  prettyUrl?: Maybe<Scalars['String']>;
-  lastUpdateTime?: Maybe<Scalars['Float']>;
-  nupath: Array<Scalars['String']>;
-  sections: Array<Section>;
-  host: Scalars['String'];
-  feeAmount?: Maybe<Scalars['Int']>;
-  feeDescription?: Maybe<Scalars['String']>;
+export type SearchResultItemConnection = {
+  __typename?: 'SearchResultItemConnection';
+  totalCount: Scalars['Int'];
+  pageInfo: PageInfo;
+  nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
+  filterOptions: FilterOptions;
 };
 
 export type Section = {
@@ -120,85 +199,6 @@ export type Section = {
   host: Scalars['String'];
   lastUpdateTime?: Maybe<Scalars['Float']>;
 };
-
-export type Major = {
-  __typename?: 'Major';
-  majorId: Scalars['String'];
-  yearVersion: Scalars['String'];
-  occurrence?: Maybe<MajorOccurrence>;
-  latestOccurrence?: Maybe<MajorOccurrence>;
-};
-
-export type MajorOccurrenceArgs = {
-  year: Scalars['Int'];
-};
-
-export type MajorOccurrence = {
-  __typename?: 'MajorOccurrence';
-  majorId: Scalars['String'];
-  yearVersion: Scalars['String'];
-  spec: Scalars['JSON'];
-  plansOfStudy: Scalars['JSON'];
-};
-
-export type IntRange = {
-  min: Scalars['Int'];
-  max: Scalars['Int'];
-};
-
-export type SearchResultItemConnection = {
-  __typename?: 'SearchResultItemConnection';
-  totalCount: Scalars['Int'];
-  pageInfo: PageInfo;
-  nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
-  filterOptions: FilterOptions;
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  hasNextPage: Scalars['Boolean'];
-};
-
-export type SearchResultItem = ClassOccurrence | Employee;
-
-export type Employee = {
-  __typename?: 'Employee';
-  name: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  emails: Array<Scalars['String']>;
-  primaryDepartment?: Maybe<Scalars['String']>;
-  primaryRole?: Maybe<Scalars['String']>;
-  phone?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  streetAddress?: Maybe<Scalars['String']>;
-  personalSite?: Maybe<Scalars['String']>;
-  googleScholarId?: Maybe<Scalars['String']>;
-  bigPictureUrl?: Maybe<Scalars['String']>;
-  pic?: Maybe<Scalars['String']>;
-  link?: Maybe<Scalars['String']>;
-  officeRoom?: Maybe<Scalars['String']>;
-};
-
-export type FilterOptions = {
-  __typename?: 'FilterOptions';
-  nupath?: Maybe<Array<FilterAgg>>;
-  subject?: Maybe<Array<FilterAgg>>;
-  classType?: Maybe<Array<FilterAgg>>;
-  campus?: Maybe<Array<FilterAgg>>;
-};
-
-export type FilterAgg = {
-  __typename?: 'FilterAgg';
-  value: Scalars['String'];
-  count: Scalars['Int'];
-  description?: Maybe<Scalars['String']>;
-};
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
 
 export type GetCourseInfoByHashQueryVariables = Exact<{
   hash: Scalars['String'];
@@ -614,9 +614,13 @@ export const GetPagesForSitemapDocument = gql`
   }
 `;
 
-export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string
+) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (sdkFunction) => sdkFunction();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+
 export function getSdk(
   client: GraphQLClient,
   withWrapper: SdkFunctionWrapper = defaultWrapper
@@ -624,62 +628,71 @@ export function getSdk(
   return {
     getCourseInfoByHash(
       variables: GetCourseInfoByHashQueryVariables,
-      requestHeaders?: Headers
+      requestHeaders?: Dom.RequestInit['headers']
     ): Promise<GetCourseInfoByHashQuery> {
-      return withWrapper(() =>
-        client.request<GetCourseInfoByHashQuery>(
-          print(GetCourseInfoByHashDocument),
-          variables,
-          requestHeaders
-        )
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetCourseInfoByHashQuery>(
+            GetCourseInfoByHashDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getCourseInfoByHash'
       );
     },
     getClassPageInfo(
       variables: GetClassPageInfoQueryVariables,
-      requestHeaders?: Headers
+      requestHeaders?: Dom.RequestInit['headers']
     ): Promise<GetClassPageInfoQuery> {
-      return withWrapper(() =>
-        client.request<GetClassPageInfoQuery>(
-          print(GetClassPageInfoDocument),
-          variables,
-          requestHeaders
-        )
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetClassPageInfoQuery>(
+            GetClassPageInfoDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getClassPageInfo'
       );
     },
     searchResults(
       variables: SearchResultsQueryVariables,
-      requestHeaders?: Headers
+      requestHeaders?: Dom.RequestInit['headers']
     ): Promise<SearchResultsQuery> {
-      return withWrapper(() =>
-        client.request<SearchResultsQuery>(
-          print(SearchResultsDocument),
-          variables,
-          requestHeaders
-        )
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<SearchResultsQuery>(SearchResultsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'searchResults'
       );
     },
     getSectionInfoByHash(
       variables: GetSectionInfoByHashQueryVariables,
-      requestHeaders?: Headers
+      requestHeaders?: Dom.RequestInit['headers']
     ): Promise<GetSectionInfoByHashQuery> {
-      return withWrapper(() =>
-        client.request<GetSectionInfoByHashQuery>(
-          print(GetSectionInfoByHashDocument),
-          variables,
-          requestHeaders
-        )
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetSectionInfoByHashQuery>(
+            GetSectionInfoByHashDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getSectionInfoByHash'
       );
     },
     getPagesForSitemap(
       variables: GetPagesForSitemapQueryVariables,
-      requestHeaders?: Headers
+      requestHeaders?: Dom.RequestInit['headers']
     ): Promise<GetPagesForSitemapQuery> {
-      return withWrapper(() =>
-        client.request<GetPagesForSitemapQuery>(
-          print(GetPagesForSitemapDocument),
-          variables,
-          requestHeaders
-        )
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GetPagesForSitemapQuery>(
+            GetPagesForSitemapDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPagesForSitemap'
       );
     },
   };

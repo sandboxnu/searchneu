@@ -3,7 +3,6 @@
  * See the license file in the root folder for details.
  */
 import _ from 'lodash';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { useQueryParams } from 'use-query-params';

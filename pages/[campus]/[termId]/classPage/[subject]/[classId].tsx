@@ -7,12 +7,17 @@ import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 import macros from '../../../../../components/macros';
+import Cookies from 'universal-cookie';
+import axios from 'axios';
+
+const cookies = new Cookies();
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
+  const [userInfo, setUserInfo] = useState(null);
 
   const router = useRouter();
 
@@ -45,6 +50,28 @@ export default function Page(): ReactElement {
   };
 
   useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  const onSignOut = () => {
+    cookies.remove('SearchNEU JWT', { path: '/' });
+    setUserInfo(null);
+  };
+
+  const fetchUserInfo = () => {
+    const token = cookies.get('SearchNEU JWT');
+    if (token) {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
+        )
+        .then(({ data }) => {
+          setUserInfo({ token, ...data });
+        });
+    }
+  };
+
+  useEffect(() => {
     loadClassPageInfo();
   }, [subject, classId]);
 
@@ -56,6 +83,8 @@ export default function Page(): ReactElement {
         title={`${subject}${classId}`}
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
+        userInfo={userInfo}
+        onSignOut={onSignOut}
       />
       {macros.isMobile ? (
         <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>

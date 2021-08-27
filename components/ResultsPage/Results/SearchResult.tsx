@@ -51,11 +51,6 @@ export function SearchResult({
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { optionalDisplay } = useResultDetail(course);
 
-  // const { user } = useUser();
-  // const userIsWatchingClass = user?.followedCourses?.includes(
-  //   Keys.getClassHash(course)
-  // );
-
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
   );
@@ -196,10 +191,6 @@ export function MobileSearchResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  // const { user } = useUser();
-  // const userIsWatchingClass = user?.followedCourses?.includes(
-  //   Keys.getClassHash(course)
-  // );
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections

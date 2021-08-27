@@ -27,12 +27,6 @@ export default function SectionCheckBox({
   userInfo,
   fetchUserInfo,
 }: SectionCheckBoxProps): ReactElement {
-  // const { user, subscribeToSection, unsubscribeFromSection } = useUser();
-
-  // const checked = user?.followedSections?.includes(
-  //   Keys.getSectionHash(section)
-  // );
-
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   function onCheckboxClick(): void {

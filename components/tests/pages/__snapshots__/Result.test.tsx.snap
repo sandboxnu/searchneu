@@ -300,7 +300,9 @@ exports[`should render a section 1`] = `
           </div>
           <div className=\\"Results_SidebarSpacer\\" />
           <div className=\\"Results_Main\\">
-            <div style={{...}} />
+            <LoadingContainer>
+              <div style={{...}} />
+            </LoadingContainer>
             <Memo(Footer)>
               <div className=\\"footer\\">
                 <div className=\\"footer ui basic center aligned segment\\">

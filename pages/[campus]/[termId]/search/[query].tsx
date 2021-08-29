@@ -25,6 +25,7 @@ import useSearch, {
   SearchParams,
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
+import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
 
 const isWindow = typeof window !== 'undefined';
 
@@ -92,7 +93,7 @@ export default function Results(): ReactElement | null {
           {filtersAreSet && (
             <FilterPills filters={filters} setFilters={setQParams} />
           )}
-          {!searchData && <div style={{ visibility: 'hidden' }} />}
+          {!searchData && <LoadingContainer />}
           {searchData && searchData.results.length === 0 && (
             <EmptyResultsContainer
               query={query}

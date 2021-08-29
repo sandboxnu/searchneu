@@ -14,7 +14,8 @@
       "@babel/plugin-proposal-decorators",
       {
         "legacy": true
-      }
+      },
+      "@emotion" // needed for react-spinners
     ]
   ]
 }

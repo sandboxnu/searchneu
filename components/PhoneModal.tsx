@@ -2,6 +2,7 @@ import { Button, Input, Modal, Typography } from 'antd';
 import axios from 'axios';
 import React, { ReactElement, useState } from 'react';
 import { BarLoader } from 'react-spinners';
+import macros from './macros';
 
 interface PhoneModalProps {
   visible: boolean;
@@ -25,10 +26,11 @@ export function PhoneModal({
   const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
 
+  // TODO: Use regex check to see if phone number is valid, could be all numbers or dashes and parentheses in the right places. Send message if wrong format, else strip out non-number characters then send to backend.
   const onPhoneNumberSubmit = (): void => {
     axios
       .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/signup`, {
-        phoneNumber: `+${countryCode}${phoneNumber}`,
+        phoneNumber: `+${countryCode}${phoneNumber.split('-').join('')}`,
       })
       .then(() => {
         setPhoneValidationMessage('');
@@ -37,6 +39,7 @@ export function PhoneModal({
         setTimeout(() => setResendDisabled(false), 30 * 1000);
       })
       .catch((error) => {
+        macros.error(error);
         setPhoneValidationMessage(
           'Unable to send text, please check that your phone number is formatted correctly'
         );
@@ -48,15 +51,16 @@ export function PhoneModal({
     setResponseMessage('');
     axios
       .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/verify`, {
-        phoneNumber: `+${countryCode}${phoneNumber}`,
+        phoneNumber: `+${countryCode}${phoneNumber.split('-').join('')}`,
         verificationCode,
       })
-      .then(({ status, data }) => {
+      .then(({ data }) => {
         setLoading(false);
         onSignIn(data.token);
         onSuccess();
       })
       .catch((error) => {
+        macros.error(error);
         setLoading(false);
         setResendDisabled(false);
         setResponseMessage(
@@ -65,23 +69,46 @@ export function PhoneModal({
       });
   };
 
-  const onCountryCodeChange = (value: any): void => {
+  const onCountryCodeChange = (value: string): void => {
     const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
+    if (!isNaN(parseInt(value)) && reg.test(value)) {
       setCountryCode(value);
     }
   };
 
-  const onPhoneChange = (value: any): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
-      setPhoneNumber(value);
+  const onPhoneChange = (value: string): void => {
+    console.log(`Phone number: ${value}`);
+    const reg = /^[\d-]*$/;
+    const val = value.split('-').join('');
+    if (
+      value == '' ||
+      (!isNaN(parseInt(value)) &&
+        reg.test(value) &&
+        checkPhoneNumberDashes(value))
+    ) {
+      if (value == '') {
+        setPhoneNumber(value);
+      } else {
+        if (val.length < 9) {
+          value = val.match(/.{1,3}/g).join('-');
+        }
+        setPhoneNumber(value);
+      }
     }
   };
 
-  const onVerificationCodeChange = (value: any): void => {
+  // checks if the given Phone Number has dashes in the correct places
+  function checkPhoneNumberDashes(value: string): boolean {
+    return (
+      value.indexOf('-') == -1 ||
+      (value.indexOf('-') == 3 &&
+        (value.lastIndexOf('-') == 7 || value.lastIndexOf('-') == 3))
+    );
+  }
+
+  const onVerificationCodeChange = (value: string): void => {
     const reg = /^\d*$/;
-    if (!isNaN(value) && reg.test(value)) {
+    if (!isNaN(parseInt(value)) && reg.test(value)) {
       setVerificationCode(value);
     }
   };
@@ -120,8 +147,8 @@ export function PhoneModal({
         />
         <Input
           style={{ width: '85%' }}
-          placeholder="1234567890"
-          maxLength={10}
+          placeholder={'XXX-XXX-XXXX'}
+          maxLength={12}
           value={phoneNumber}
           onChange={({ target }) => onPhoneChange(target.value)}
         />

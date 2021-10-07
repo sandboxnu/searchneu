@@ -11,7 +11,7 @@ import Keys from '../Keys';
 import macros from '../macros';
 import { Course } from '../types';
 import axios from 'axios';
-import { UserInfo } from '../Header';
+import { UserInfo } from '../../components/types';
 
 type CourseCheckBoxProps = {
   course: Course;

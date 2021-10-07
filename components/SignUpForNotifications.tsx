@@ -4,7 +4,7 @@
  */
 
 import React, { ReactElement, useState } from 'react';
-import { UserInfo } from './Header';
+import { UserInfo } from '../components/types';
 import Keys from './Keys';
 import CourseCheckBox from './panels/CourseCheckBox';
 import { PhoneModal } from './PhoneModal';

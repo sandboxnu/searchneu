@@ -12,7 +12,7 @@ import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
 import Tooltip, { TooltipDirection } from '../../Tooltip';
 import SectionCheckBox from '../../panels/SectionCheckBox';
-import { UserInfo } from '../../Header';
+import { UserInfo } from '../../../components/types';
 
 interface SectionPanelProps {
   section: Section;

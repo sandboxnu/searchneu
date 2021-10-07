@@ -158,3 +158,12 @@ export enum Campus {
   CPS = 'CPS',
   LAW = 'LAW',
 }
+
+// ======= Notifications ========
+
+export interface UserInfo {
+  token: string;
+  phoneNumber: string;
+  courseIds: string[];
+  sectionIds: string[];
+}

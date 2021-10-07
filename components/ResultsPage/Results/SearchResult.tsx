@@ -7,7 +7,7 @@ import {
   CreditsDisplayMobile,
 } from '../../common/CreditsDisplay';
 import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
-import { UserInfo } from '../../Header';
+import { UserInfo } from '../../../components/types';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconNotepad from '../../icons/IconNotepad';

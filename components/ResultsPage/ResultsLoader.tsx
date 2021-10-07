@@ -3,7 +3,6 @@ import utc from 'dayjs/plugin/utc';
 import { cloneDeep, flatten, groupBy, values } from 'lodash';
 import React, { ReactElement } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { UserInfo } from '../Header';
 import Keys from '../Keys';
 import macros from '../macros';
 import EmployeePanel from '../panels/EmployeePanel';
@@ -13,6 +12,7 @@ import {
   SearchItem,
   Section,
   TimeToDayjs,
+  UserInfo,
 } from '../types';
 import { MobileSearchResult, SearchResult } from './Results/SearchResult';
 

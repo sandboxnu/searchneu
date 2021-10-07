@@ -20,6 +20,7 @@ import {
   Campus,
   EMPTY_FILTER_OPTIONS,
   SearchResult,
+  UserInfo,
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
@@ -33,13 +34,6 @@ type HeaderProps = {
   userInfo: UserInfo;
   onSignOut: () => void;
 };
-
-export interface UserInfo {
-  token: string;
-  phoneNumber: string;
-  courseIds: string[];
-  sectionIds: string[];
-}
 
 export default function Header({
   router,

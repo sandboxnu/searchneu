@@ -24,12 +24,16 @@ import useSearch, {
   SearchParams,
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
+<<<<<<< HEAD
 import Cookies from 'universal-cookie';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 
 const cookies = new Cookies();
+=======
+import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
+>>>>>>> 46030bb86066d029b00ec72b4f62a8a3d1d70367
 
 const isWindow = typeof window !== 'undefined';
 
@@ -127,7 +131,7 @@ export default function Results(): ReactElement | null {
           {filtersAreSet && (
             <FilterPills filters={filters} setFilters={setQParams} />
           )}
-          {!searchData && <div style={{ visibility: 'hidden' }} />}
+          {!searchData && <LoadingContainer />}
           {searchData && searchData.results.length === 0 && (
             <EmptyResultsContainer
               query={query}

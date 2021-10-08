@@ -94,6 +94,8 @@ export function PhoneModal({
         }
         setPhoneNumber(value);
       }
+      console.log(value.length);
+      value.length == 12 ? setResendDisabled(false) : setResendDisabled(true);
     }
   };
 

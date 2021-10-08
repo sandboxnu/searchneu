@@ -27,7 +27,7 @@
 
 ---
 
-SearchNEU lets you search easily for classes, professors, and subjects at Northeastern. All the data on the site is scraped from different parts of Northeastern's websites and updated daily. The scrapers themselves run on the Course Catalog API, which is hosted on Amazon Web Services.
+SearchNEU lets you easily search for classes, professors, and subjects at Northeastern. All the data on the site is scraped from different parts of Northeastern's websites and updated daily. The scrapers themselves run on the Course Catalog API, which is hosted on Amazon Web Services.
 
 SearchNEU is maintained by [Sandbox](https://www.sandboxnu.com/), Northeastern's student-led software consultancy.
 

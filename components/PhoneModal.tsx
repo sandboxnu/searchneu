@@ -20,7 +20,7 @@ export function PhoneModal({
   const [countryCode, setCountryCode] = useState('1');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendDisabled, setResendDisabled] = useState(true);
   const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [phoneValidationMessage, setPhoneValidationMessage] = useState('');

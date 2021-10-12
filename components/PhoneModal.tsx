@@ -11,6 +11,8 @@ interface PhoneModalProps {
   onSuccess: () => void;
 }
 
+const PHONEREG = /^\d*$/;
+
 export function PhoneModal({
   visible,
   onCancel,
@@ -25,7 +27,6 @@ export function PhoneModal({
   const [loading, setLoading] = useState(false);
   const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
-  const phoneReg = /^\d*$/;
 
   // TODO: Use regex check to see if phone number is valid, could be all numbers or dashes and parentheses in the right places. Send message if wrong format, else strip out non-number characters then send to backend.
   const onPhoneNumberSubmit = (): void => {
@@ -71,7 +72,7 @@ export function PhoneModal({
   };
 
   const onCountryCodeChange = (value: string): void => {
-    if (phoneReg.test(value)) {
+    if (PHONEREG.test(value)) {
       setCountryCode(value);
     }
     value.length > 0 && phoneNumber.length === 12
@@ -82,7 +83,7 @@ export function PhoneModal({
   // Allows users to only input numbers, the code is inserting the dashes into the phone number.
   const onPhoneChange = (value: string): void => {
     const val = value.split('-').join('');
-    if (phoneReg.test(val)) {
+    if (PHONEREG.test(val)) {
       // If the value is not empty, put in the dashes in the phone number so far.
       if (val.length > 0 && val.length < 9) {
         value = val.match(/.{1,3}/g).join('-');
@@ -95,7 +96,7 @@ export function PhoneModal({
   };
 
   const onVerificationCodeChange = (value: string): void => {
-    if (phoneReg.test(value)) {
+    if (PHONEREG.test(value)) {
       setVerificationCode(value);
     }
   };

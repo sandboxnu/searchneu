@@ -25,6 +25,7 @@ export function PhoneModal({
   const [loading, setLoading] = useState(false);
   const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
+  const phoneReg = /^\d*$/;
 
   // TODO: Use regex check to see if phone number is valid, could be all numbers or dashes and parentheses in the right places. Send message if wrong format, else strip out non-number characters then send to backend.
   const onPhoneNumberSubmit = (): void => {
@@ -70,47 +71,31 @@ export function PhoneModal({
   };
 
   const onCountryCodeChange = (value: string): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(parseInt(value)) && reg.test(value)) {
+    if (phoneReg.test(value)) {
       setCountryCode(value);
     }
+    value.length > 0 && phoneNumber.length === 12
+      ? setResendDisabled(false)
+      : setResendDisabled(true); // checks if the full phone number is valid format
   };
 
+  // Allows users to only input numbers, the code is inserting the dashes into the phone number.
   const onPhoneChange = (value: string): void => {
-    console.log(`Phone number: ${value}`);
-    const reg = /^[\d-]*$/;
     const val = value.split('-').join('');
-    if (
-      value == '' ||
-      (!isNaN(parseInt(value)) &&
-        reg.test(value) &&
-        checkPhoneNumberDashes(value))
-    ) {
-      if (value == '') {
-        setPhoneNumber(value);
-      } else {
-        if (val.length < 9) {
-          value = val.match(/.{1,3}/g).join('-');
-        }
-        setPhoneNumber(value);
+    if (phoneReg.test(val)) {
+      // If the value is not empty, put in the dashes in the phone number so far.
+      if (val.length > 0 && val.length < 9) {
+        value = val.match(/.{1,3}/g).join('-');
       }
-      console.log(value.length);
-      value.length == 12 ? setResendDisabled(false) : setResendDisabled(true);
+      setPhoneNumber(value);
+      countryCode.length > 0 && value.length === 12
+        ? setResendDisabled(false)
+        : setResendDisabled(true); // checks if the full phone number is valid format
     }
   };
 
-  // checks if the given Phone Number has dashes in the correct places
-  function checkPhoneNumberDashes(value: string): boolean {
-    return (
-      value.indexOf('-') == -1 ||
-      (value.indexOf('-') == 3 &&
-        (value.lastIndexOf('-') == 7 || value.lastIndexOf('-') == 3))
-    );
-  }
-
   const onVerificationCodeChange = (value: string): void => {
-    const reg = /^\d*$/;
-    if (!isNaN(parseInt(value)) && reg.test(value)) {
+    if (phoneReg.test(value)) {
       setVerificationCode(value);
     }
   };
@@ -144,6 +129,7 @@ export function PhoneModal({
         <Input
           style={{ width: '15%' }}
           prefix="+"
+          maxLength={3}
           value={countryCode}
           onChange={({ target }) => onCountryCodeChange(target.value)}
         />

@@ -25,6 +25,7 @@ var _rollbarConfig = {
 // End Rollbar Snippet
 `;
 
+// copied and pasted from recording snippet in our Fullstory account
 const fullstoryScript = `
 window['_fs_debug'] = false;
 window['_fs_host'] = 'fullstory.com';

@@ -10,6 +10,7 @@ interface TermInfo {
 }
 
 export const neuTerms: TermInfo[] = [
+  { text: 'Spring 2022', value: '202230' },
   { text: 'Fall 2021', value: '202210' },
   { text: 'Summer II 2021', value: '202160' },
   { text: 'Summer Full 2021', value: '202150' },
@@ -22,6 +23,11 @@ export const neuTerms: TermInfo[] = [
 ].map((o) => ({ ...o, href: `/NEU/${o.value}` }));
 // spring 2021 CPS semester
 export const cpsTerms: TermInfo[] = [
+  { text: 'Spring 2022 Semester', value: '202234' },
+  { text: 'Spring 2022 Quarter', value: '202235' },
+  { text: 'Winter 2022 Quarter', value: '202225' },
+  { text: 'Fall 2022 Semester', value: '202214' },
+  { text: 'Fall 2022 Quarter', value: '202215' },
   { text: 'Summer 2021 Semester', value: '202154' },
   { text: 'Summer 2021 Quarter', value: '202155' },
   { text: 'Spring 2021 Semester ', value: '202134' },
@@ -34,6 +40,11 @@ export const cpsTerms: TermInfo[] = [
 ].map((o) => ({ ...o, href: `/CPS/${o.value}` }));
 
 export const lawTerms: TermInfo[] = [
+  { text: 'Spring 2022 Semester', value: '202232' },
+  { text: 'Spring 2022 Quarter', value: '202238' },
+  { text: 'Winter 2022 Quarter', value: '202228' },
+  { text: 'Fall 2022 Semester', value: '202212' },
+  { text: 'Fall 2022 Quarter', value: '202218' },
   { text: 'Summer 2021 Semester', value: '202152' },
   { text: 'Summer 2021 Quarter', value: '202158' },
   { text: 'Spring 2021 Semester', value: '202132' },

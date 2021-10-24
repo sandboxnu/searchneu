@@ -48,7 +48,7 @@ export type ClassOccurrence = {
   name: Scalars['String'];
   subject: Scalars['String'];
   classId: Scalars['String'];
-  termId: Scalars['Int'];
+  termId: Scalars['String'];
   desc: Scalars['String'];
   prereqs?: Maybe<Scalars['JSON']>;
   coreqs?: Maybe<Scalars['JSON']>;
@@ -159,7 +159,7 @@ export type QueryMajorArgs = {
 };
 
 export type QuerySearchArgs = {
-  termId: Scalars['Int'];
+  termId: Scalars['String'];
   query?: Maybe<Scalars['String']>;
   subject?: Maybe<Array<Scalars['String']>>;
   nupath?: Maybe<Array<Scalars['String']>>;
@@ -270,7 +270,7 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
 };
 
 export type SearchResultsQueryVariables = Exact<{
-  termId: Scalars['Int'];
+  termId: Scalars['String'];
   query?: Maybe<Scalars['String']>;
   offset?: Maybe<Scalars['Int']>;
   first?: Maybe<Scalars['Int']>;
@@ -403,7 +403,7 @@ export type GetSectionInfoByHashQuery = { __typename?: 'Query' } & {
 };
 
 export type GetPagesForSitemapQueryVariables = Exact<{
-  termId: Scalars['Int'];
+  termId: Scalars['String'];
   offset: Scalars['Int'];
 }>;
 
@@ -477,7 +477,7 @@ export const GetClassPageInfoDocument = gql`
 `;
 export const SearchResultsDocument = gql`
   query searchResults(
-    $termId: Int!
+    $termId: String!
     $query: String
     $offset: Int = 0
     $first: Int = 10
@@ -594,7 +594,7 @@ export const GetSectionInfoByHashDocument = gql`
   }
 `;
 export const GetPagesForSitemapDocument = gql`
-  query getPagesForSitemap($termId: Int!, $offset: Int!) {
+  query getPagesForSitemap($termId: String!, $offset: Int!) {
     search(termId: $termId, offset: $offset, first: 1000) {
       pageInfo {
         hasNextPage

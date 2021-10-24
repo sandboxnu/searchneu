@@ -82,7 +82,7 @@ export default function useSearch({
     async (params): Promise<SearchResult> => {
       params = JSON.parse(params);
       const searchResults = await gqlClient.searchResults({
-        termId: parseInt(termId),
+        termId,
         query: params.query,
         offset: parseInt(params.minIndex),
         ...params.filters,

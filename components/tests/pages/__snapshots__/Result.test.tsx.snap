@@ -105,6 +105,15 @@ exports[`should render a section 1`] = `
                             </Icon>
                             <DropdownMenu className=\\"\\">
                               <div className=\\"menu transition\\">
+                                <Link href=\\"/NEU/202230/search/cs\\">
+                                  <DropdownItem selected={false} text=\\"Spring 2022\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
+                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
+                                      <span className=\\"text\\">
+                                        Spring 2022
+                                      </span>
+                                    </div>
+                                  </DropdownItem>
+                                </Link>
                                 <Link href=\\"/NEU/202210/search/cs\\">
                                   <DropdownItem selected={false} text=\\"Fall 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>

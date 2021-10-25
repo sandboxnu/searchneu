@@ -25,9 +25,9 @@ export const neuTerms: TermInfo[] = [
 export const cpsTerms: TermInfo[] = [
   { text: 'Spring 2022 Semester', value: '202234' },
   { text: 'Spring 2022 Quarter', value: '202235' },
-  { text: 'Winter 2022 Quarter', value: '202225' },
-  { text: 'Fall 2022 Semester', value: '202214' },
-  { text: 'Fall 2022 Quarter', value: '202215' },
+  { text: 'Winter 2021 Quarter', value: '202225' },
+  { text: 'Fall 2021 Semester', value: '202214' },
+  { text: 'Fall 2021 Quarter', value: '202215' },
   { text: 'Summer 2021 Semester', value: '202154' },
   { text: 'Summer 2021 Quarter', value: '202155' },
   { text: 'Spring 2021 Semester ', value: '202134' },
@@ -41,10 +41,7 @@ export const cpsTerms: TermInfo[] = [
 
 export const lawTerms: TermInfo[] = [
   { text: 'Spring 2022 Semester', value: '202232' },
-  { text: 'Spring 2022 Quarter', value: '202238' },
-  { text: 'Winter 2022 Quarter', value: '202228' },
-  { text: 'Fall 2022 Semester', value: '202212' },
-  { text: 'Fall 2022 Quarter', value: '202218' },
+  { text: 'Fall 2021 Semester', value: '202212' },
   { text: 'Summer 2021 Semester', value: '202152' },
   { text: 'Summer 2021 Quarter', value: '202158' },
   { text: 'Spring 2021 Semester', value: '202132' },

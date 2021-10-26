@@ -32,7 +32,6 @@ query getClassPageInfo($subject: String!, $classId: String!) {
         campus
         profs
         meetings
-        lastUpdateTime
       }
     }
   }

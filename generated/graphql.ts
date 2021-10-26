@@ -259,7 +259,6 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
                     | 'campus'
                     | 'profs'
                     | 'meetings'
-                    | 'lastUpdateTime'
                   >
                 >;
               }
@@ -469,7 +468,6 @@ export const GetClassPageInfoDocument = gql`
           campus
           profs
           meetings
-          lastUpdateTime
         }
       }
     }

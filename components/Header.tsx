@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm, getTermInfoForCampus } from '../components/global';
 import FilterButton from '../components/icons/FilterButton.svg';
@@ -49,6 +49,34 @@ export default function Header({
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
+
+  // Get the lists of terms asyncronously
+  const [termInfos, setTermInfos] = useState([]);
+  // Get the rounded terms asyncronously
+  const [searchOptions, setSearchOptions] = useState([]);
+
+  useEffect(() => {
+    // Update the lists of terms
+    getTermInfoForCampus(Campus[campus.toUpperCase()])
+      .then((data) =>
+        data.map((terminfo) => ({
+          text: terminfo.text,
+          value: terminfo.value,
+          link: termAndCampusToURLCallback(terminfo.value, campus),
+        }))
+      )
+      .then((data) => setTermInfos(data));
+
+    let campusOptions = Object.keys(Campus).map((c: Campus) =>
+      getRoundedTerm(c, termId).then((term) => ({
+        text: c,
+        value: c,
+        link: termAndCampusToURLCallback(term, c),
+      }))
+    );
+
+    Promise.all(campusOptions).then((data) => setSearchOptions(data));
+  }, []);
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
@@ -127,11 +155,7 @@ export default function Header({
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={Object.keys(Campus).map((c: Campus) => ({
-                text: c,
-                value: c,
-                link: termAndCampusToURLCallback(getRoundedTerm(c, termId), c),
-              }))}
+              options={searchOptions}
               value={campus}
               className="searchDropdown"
               compact={false}
@@ -140,13 +164,7 @@ export default function Header({
           <span className="Breadcrumb_Container__slash">/</span>
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={getTermInfoForCampus(Campus[campus.toUpperCase()]).map(
-                (terminfo) => ({
-                  text: terminfo.text,
-                  value: terminfo.value,
-                  link: termAndCampusToURLCallback(terminfo.value, campus),
-                })
-              )}
+              options={termInfos}
               value={termId}
               className="searchDropdown"
               compact={false}

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
 import { getRoundedTerm, getTermInfoForCampus } from '../global';
 import IconGradcap from '../icons/IconGradcap';
@@ -16,11 +16,40 @@ interface HomeSearchProps {
 }
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
+  // Get the lists of terms asyncronously
+  const [termInfos, setTermInfos] = useState([]);
+  const emptyLinks = {};
+  Object.values(Campus).map((c) => (emptyLinks[c] = ''));
+  const [campusLinks, setCampusLinks] = useState(emptyLinks);
+
+  // Update the lists of terms
+  useEffect(() => {
+    getTermInfoForCampus(campus)
+      .then((data) =>
+        data.map((terminfo) => ({
+          text: terminfo.text,
+          value: terminfo.value,
+          link: `/${campus}/${terminfo.value}`,
+        }))
+      )
+      .then((data) => setTermInfos(data));
+
+    let campusLinksDict = {};
+    let campusLinksTemp = Object.values(Campus).map((c) =>
+      getRoundedTerm(c, termId)
+        .then((term) => `/${c}/${term}`)
+        .then((url) => (campusLinksDict[c] = url))
+    );
+    Promise.all(campusLinksTemp).then((data) =>
+      setCampusLinks(campusLinksDict)
+    );
+  }, [campus]);
+
   const router = useRouter();
   return (
     <div className="HomeSearch">
       <div className="HomeSearch__campusSelector">
-        <Link href={`/${Campus.NEU}/${getRoundedTerm(Campus.NEU, termId)}`}>
+        <Link href={campusLinks[Campus.NEU]}>
           <label
             className={
               'HomeSearch__campusSelector--item --neu' +
@@ -32,7 +61,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>NEU</span>
           </label>
         </Link>
-        <Link href={`/${Campus.CPS}/${getRoundedTerm(Campus.CPS, termId)}`}>
+        <Link href={campusLinks[Campus.CPS]}>
           <label
             className={
               'HomeSearch__campusSelector--item --cps' +
@@ -44,7 +73,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>CPS</span>
           </label>
         </Link>
-        <Link href={`/${Campus.LAW}/${getRoundedTerm(Campus.LAW, termId)}`}>
+        <Link href={campusLinks[Campus.LAW]}>
           <label
             className={
               'HomeSearch__campusSelector--item --law' +
@@ -69,11 +98,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={getTermInfoForCampus(campus).map((terminfo) => ({
-              text: terminfo.text,
-              value: terminfo.value,
-              link: `/${campus}/${terminfo.value}`,
-            }))}
+            options={termInfos}
             value={termId}
             className="searchDropdown"
             compact={false}

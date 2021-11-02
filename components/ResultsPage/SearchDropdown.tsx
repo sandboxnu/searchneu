@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 
 interface ItemProps {
@@ -20,7 +20,9 @@ function SearchDropdown({
   className = 'searchDropdown',
   compact = false,
 }: DropdownProps): ReactElement {
-  const currentText = options.find((o) => o.value == currentValue).text;
+  let curVal = options.find((o) => o.value == currentValue);
+  const currentText = curVal ? curVal.text : '';
+
   return (
     <Dropdown
       fluid

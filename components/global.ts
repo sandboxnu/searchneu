@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import { Campus } from './types';
+import { gqlClient } from '../utils/courseAPIClient';
+import Macros from './abstractMacros';
 
 /** Information about a term */
 interface TermInfo {
@@ -9,74 +11,73 @@ interface TermInfo {
   value: string;
 }
 
-export const neuTerms: TermInfo[] = [
-  { text: 'Spring 2022', value: '202230' },
-  { text: 'Fall 2021', value: '202210' },
-  { text: 'Summer II 2021', value: '202160' },
-  { text: 'Summer Full 2021', value: '202150' },
-  { text: 'Summer I 2021', value: '202140' },
-  { text: 'Spring 2021', value: '202130' },
-  { text: 'Fall 2020', value: '202110' },
-  { text: 'Summer I 2020', value: '202040' },
-  { text: 'Summer Full 2020', value: '202050' },
-  { text: 'Summer II 2020', value: '202060' },
-].map((o) => ({ ...o, href: `/NEU/${o.value}` }));
-// spring 2021 CPS semester
-export const cpsTerms: TermInfo[] = [
-  { text: 'Spring 2022 Semester', value: '202234' },
-  { text: 'Spring 2022 Quarter', value: '202235' },
-  { text: 'Winter 2021 Quarter', value: '202225' },
-  { text: 'Fall 2021 Semester', value: '202214' },
-  { text: 'Fall 2021 Quarter', value: '202215' },
-  { text: 'Summer 2021 Semester', value: '202154' },
-  { text: 'Summer 2021 Quarter', value: '202155' },
-  { text: 'Spring 2021 Semester ', value: '202134' },
-  { text: 'Spring 2021 Quarter', value: '202135' },
-  { text: 'Winter 2020 Quarter', value: '202125' },
-  { text: 'Fall 2020 Semester', value: '202114' },
-  { text: 'Fall 2020 Quarter', value: '202115' },
-  { text: 'Summer 2020 Semester', value: '202054' },
-  { text: 'Summer 2020 Quarter', value: '202055' },
-].map((o) => ({ ...o, href: `/CPS/${o.value}` }));
+function addUrlToTermInfo(url: string, term: TermInfo) {
+  return { ...term, href: `/${url}/${term.value}` };
+}
 
-export const lawTerms: TermInfo[] = [
-  { text: 'Spring 2022 Semester', value: '202232' },
-  { text: 'Fall 2021 Semester', value: '202212' },
-  { text: 'Summer 2021 Semester', value: '202152' },
-  { text: 'Summer 2021 Quarter', value: '202158' },
-  { text: 'Spring 2021 Semester', value: '202132' },
-  { text: 'Spring 2021 Quarter', value: '202138' },
-  { text: 'Winter 2020 Quarter', value: '202128' },
-  { text: 'Fall 2020 Semester', value: '202112' },
-  { text: 'Fall 2020 Quarter', value: '202118' },
-  { text: 'Summer 2020 Semester', value: '202052' },
-  { text: 'Summer 2020 Quarter', value: '202058' },
-].map((o) => ({ ...o, href: `/LAW/${o.value}` }));
+// Only used internally
+let neuTerms: TermInfo[] | null = null;
+let cpsTerms: TermInfo[] | null = null;
+let lawTerms: TermInfo[] | null = null;
 
-export function getTermInfoForCampus(c: Campus): TermInfo[] {
+/**
+ * Queries TermInfos for this campus from the backend
+ */
+async function getTermInfoBackend(c: Campus): Promise<TermInfo[]> {
+  let subCollege: string;
   switch (c) {
     case Campus.NEU:
-      return neuTerms;
+      subCollege = 'None';
+      break;
     case Campus.CPS:
-      return cpsTerms;
+      subCollege = 'CPS';
+      break;
     case Campus.LAW:
-      return lawTerms;
+      subCollege = 'LAW';
+      break;
+  }
+
+  const data = await gqlClient
+    .getTermIDsByCollege({ subCollege: subCollege })
+    .then((res) => res['termInfos']);
+  // Convert to TermInfo
+  let termIds: TermInfo[] = data.map((term) => {
+    return {
+      text: term['text'],
+      value: term['termId'],
+    };
+  });
+
+  // Add the URLs
+  termIds = termIds.map((term) => addUrlToTermInfo(c, term));
+
+  return termIds;
+}
+
+/*
+Queries the TermInfos for this campus from the backend, or returns a cached version if we've already done so.
+
+// TODO - should the cache have a temporary existance? Otherwise, we won't re-hit the backend until the next time the program is resarted.
+*/
+export async function getTermInfoForCampus(c: Campus): Promise<TermInfo[]> {
+  switch (c) {
+    case Campus.NEU:
+      return neuTerms !== null ? neuTerms : getTermInfoBackend(c);
+    case Campus.CPS:
+      return cpsTerms !== null ? cpsTerms : getTermInfoBackend(c);
+    case Campus.LAW:
+      return lawTerms !== null ? lawTerms : getTermInfoBackend(c);
     default:
       return [];
   }
 }
 
-export function getLatestTerm(c: Campus): string {
-  switch (c) {
-    case Campus.NEU:
-      return neuTerms[0].value as string;
-    case Campus.CPS:
-      return cpsTerms[0].value as string;
-    case Campus.LAW:
-      return lawTerms[0].value as string;
-    default:
-      return '';
+export async function getLatestTerm(c: Campus): Promise<string> {
+  let terms = await getTermInfoForCampus(c);
+  if (terms.length > 0) {
+    return terms[0].value as string;
   }
+  return '';
 }
 
 export function getCampusByLastDigit(t: string): Campus {
@@ -104,19 +105,11 @@ export function greaterTermExists(
   });
 }
 
-export function notMostRecentTerm(termId: string): boolean {
+export async function notMostRecentTerm(termId: string): Promise<boolean> {
   const campus = getCampusByLastDigit(termId.charAt(termId.length - 1));
   const termIdNum = Number(termId);
-  switch (campus) {
-    case Campus.NEU:
-      return greaterTermExists(neuTerms, termIdNum);
-    case Campus.CPS:
-      return greaterTermExists(cpsTerms, termIdNum);
-    case Campus.LAW:
-      return greaterTermExists(lawTerms, termIdNum);
-    default:
-      throw new Error('Unrecognized campus type.');
-  }
+
+  return greaterTermExists(await getTermInfoForCampus(campus), termIdNum);
 }
 
 function getSecondToLastDigit(s: string): string {
@@ -138,13 +131,17 @@ function tryGetMatchingSecondToLastDigitOption(
 }
 
 // Get the term within the given campus that is closest to the given term (in a diff campus)
-export function getRoundedTerm(nextCampus: Campus, prevTerm: string): string {
+export async function getRoundedTerm(
+  nextCampus: Campus,
+  prevTerm: string
+): Promise<string> {
   // what's the logic
   // get the second to last digit
+
   const secondToLast = getSecondToLastDigit(prevTerm);
 
   // know the options of the new campus
-  const options = getTermInfoForCampus(nextCampus);
+  const options = await getTermInfoForCampus(nextCampus);
 
   // search in there for the value where the second to last digit
   const result = tryGetMatchingSecondToLastDigitOption(secondToLast, options);
@@ -158,13 +155,18 @@ export function getRoundedTerm(nextCampus: Campus, prevTerm: string): string {
     roundedDownDigit,
     options
   );
-  return result2.value as string;
+  return result2 ? (result2.value as string) : '';
 }
 
 // Get the name version of a term id
-export function getTermName(termId: string): string {
+export async function getTermName(termId: string): Promise<string> {
   // gather all termId to term name mappings
-  const allTermMappings = [...neuTerms, ...cpsTerms, ...lawTerms];
+  const allTermMappings = [
+    ...(await getTermInfoForCampus(Campus.NEU)),
+    ...(await getTermInfoForCampus(Campus.CPS)),
+    ...(await getTermInfoForCampus(Campus.LAW)),
+  ];
+
   // return first instance of the termId matching a termId in a id-name mapping
   const termName: TermInfo = allTermMappings.find(
     (termMapping: TermInfo): boolean => termMapping.value === termId

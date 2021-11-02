@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { getLatestTerm, getTermInfoForCampus } from '../../components/global';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -25,19 +25,28 @@ export default function Home(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
-  const LATEST_TERM = getLatestTerm(campus);
-  const termId = (router.query.termId as string) || LATEST_TERM;
 
-  const AVAILABLE_TERM_IDS = getTermInfoForCampus(campus).map((t) => {
-    return t.value;
-  });
+  const [AVAILABLE_TERM_IDS, setTermIds] = useState([]);
+  const [LATEST_TERM, setLatestTerm] = useState('');
+
+  // Update the lists of terms
+  useEffect(() => {
+    getTermInfoForCampus(campus)
+      .then((data) => data.map((t) => t.value))
+      .then((data) => setTermIds(data));
+
+    // get the latest term
+    getLatestTerm(campus).then((data) => setLatestTerm(data));
+  }, []);
+
+  const termId = (router.query.termId as string) || LATEST_TERM;
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
   // Redirect to latest if we're at an old term
-  if (!AVAILABLE_TERM_IDS.includes(termId)) {
-    router.push(`/${campus}/${LATEST_TERM}`);
-  }
+  // if (!AVAILABLE_TERM_IDS.includes(termId)) {
+  //   router.push(`/${campus}/${LATEST_TERM}`);
+  // }
 
   // On mobile only show the logo and the github corner if there are no results and the search box is not focused (the virtual keyboard is not on the screen).
   let containerClassnames = 'home-container';
@@ -113,11 +122,11 @@ export default function Home(): ReactElement {
 }
 
 // Tells Next what to statically optimize
-export function getStaticPaths(): GetStaticPathsResult {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const result: GetStaticPathsResult = { paths: [], fallback: false };
 
   for (const campus of Object.values(Campus)) {
-    for (const termId of getTermInfoForCampus(campus)) {
+    for (const termId of await getTermInfoForCampus(campus)) {
       result.paths.push({
         params: { campus, termId: termId.value as string },
       });

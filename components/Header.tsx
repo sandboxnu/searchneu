@@ -50,10 +50,9 @@ export default function Header({
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
 
-  // Get the lists of terms asyncronously
+  // Get/set some termID-related variables asyncronously
   const [termInfos, setTermInfos] = useState([]);
-  // Get the rounded terms asyncronously
-  const [searchOptions, setSearchOptions] = useState([]);
+  const [roundedTerms, setRoundedTerms] = useState([]);
 
   useEffect(() => {
     // Update the lists of terms
@@ -66,17 +65,22 @@ export default function Header({
         }))
       )
       .then((data) => setTermInfos(data));
+  }, [campus]);
 
-    let campusOptions = Object.keys(Campus).map((c: Campus) =>
-      getRoundedTerm(c, termId).then((term) => ({
-        text: c,
-        value: c,
-        link: termAndCampusToURLCallback(term, c),
-      }))
-    );
+  useEffect(() => {
+    let campusOptions = Object.keys(Campus)
+      // For each campus, get the rounded term & convert it to the format we need
+      .map((c: Campus) =>
+        getRoundedTerm(c, termId).then((term) => ({
+          text: c,
+          value: c,
+          link: termAndCampusToURLCallback(term, c),
+        }))
+      );
 
-    Promise.all(campusOptions).then((data) => setSearchOptions(data));
-  }, []);
+    // Resolve all of the promises & set
+    Promise.all(campusOptions).then((data) => setRoundedTerms(data));
+  }, [termId]);
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
@@ -155,7 +159,7 @@ export default function Header({
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={searchOptions}
+              options={roundedTerms}
               value={campus}
               className="searchDropdown"
               compact={false}

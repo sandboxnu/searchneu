@@ -26,27 +26,32 @@ export default function Home(): ReactElement {
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
 
-  const [AVAILABLE_TERM_IDS, setTermIds] = useState([]);
-  const [LATEST_TERM, setLatestTerm] = useState('');
+  // This section is a bit of a mess (thanks to some nice async functions)
+  // We use this variable to know when to re-run the useEffect method
+  let termIdFromUrl = (router.query.termId as string) || '';
+  const [termId, setTermId] = useState(termIdFromUrl);
 
-  // Update the lists of terms
+  // Asyncronously update the termID related variables
   useEffect(() => {
+    // We check to make sure this isn't an old term - if it is, we redirect
     getTermInfoForCampus(campus)
-      .then((data) => data.map((t) => t.value))
-      .then((data) => setTermIds(data));
+      .then((avaliable_terms) => avaliable_terms.map((t) => t.value))
+      .then((avaliable_terms) => {
+        // We get the latest term, and use it if there's no term specified in the query string
+        getLatestTerm(campus).then((latest_term) => {
+          // Set the term ID
+          setTermId((router.query.termId as string) || latest_term);
 
-    // get the latest term
-    getLatestTerm(campus).then((data) => setLatestTerm(data));
-  }, []);
-
-  const termId = (router.query.termId as string) || LATEST_TERM;
+          // Now that we have a term ID, we check if it's a valid one
+          // TODO - does this even do anything?? This returns a 404 - https://searchneu.com/NEU/202030
+          if (!avaliable_terms.includes(termId)) {
+            router.push(`/${campus}/${latest_term}`);
+          }
+        });
+      });
+  }, [termIdFromUrl]);
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
-
-  // Redirect to latest if we're at an old term
-  if (!AVAILABLE_TERM_IDS.includes(termId)) {
-    router.push(`/${campus}/${LATEST_TERM}`);
-  }
 
   // On mobile only show the logo and the github corner if there are no results and the search box is not focused (the virtual keyboard is not on the screen).
   let containerClassnames = 'home-container';

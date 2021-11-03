@@ -18,8 +18,13 @@ const ExploratorySearchButton = ({
   const [termName, setTermName] = useState('');
 
   useEffect(() => {
-    getTermName(termId).then((t) => setTermName(t));
-  }, [termId, campus]);
+    getTermName(termId).then((t) => {
+      // Check if there's a matching name
+      if (typeof t !== 'undefined') {
+        setTermName(t);
+      }
+    });
+  }, [campus, termId]);
 
   return (
     <div

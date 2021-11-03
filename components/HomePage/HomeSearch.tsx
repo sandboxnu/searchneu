@@ -17,22 +17,30 @@ interface HomeSearchProps {
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   // Get the lists of terms asyncronously
-  const [termInfos, setTermInfos] = useState([]);
+  const emptyTerms = {};
+  Object.values(Campus).map((c) => (emptyTerms[c] = []));
+  const [termInfos, setTermInfos] = useState(emptyTerms);
+
   const emptyLinks = {};
   Object.values(Campus).map((c) => (emptyLinks[c] = ''));
   const [campusLinks, setCampusLinks] = useState(emptyLinks);
 
   // Update the lists of terms
   useEffect(() => {
-    getTermInfoForCampus(campus)
-      .then((data) =>
-        data.map((terminfo) => ({
-          text: terminfo.text,
-          value: terminfo.value,
-          link: `/${campus}/${terminfo.value}`,
-        }))
-      )
-      .then((data) => setTermInfos(data));
+    let termsDict = {};
+    let termsTemp = Object.values(Campus).map((c) =>
+      getTermInfoForCampus(c)
+        .then((data) =>
+          data.map((terminfo) => ({
+            text: terminfo.text,
+            value: terminfo.value,
+            link: `/${campus}/${terminfo.value}`,
+          }))
+        )
+        .then((data) => (termsDict[c] = data))
+    );
+
+    Promise.all(termsTemp).then((data) => setCampusLinks(termsDict));
 
     let campusLinksDict = {};
     let campusLinksTemp = Object.values(Campus).map((c) =>
@@ -98,7 +106,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={termInfos}
+            options={termInfos[campus]}
             value={termId}
             className="searchDropdown"
             compact={false}

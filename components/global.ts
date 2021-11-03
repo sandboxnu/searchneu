@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { Campus } from './types';
 import { gqlClient } from '../utils/courseAPIClient';
 import Macros from './abstractMacros';
+import { objectTypeSpreadProperty } from '@babel/types';
 
 /** Information about a term */
 interface TermInfo {
@@ -9,21 +10,21 @@ interface TermInfo {
   text: string;
   /** Term ID */
   value: string;
+  href: string;
 }
 
-function addUrlToTermInfo(url: string, term: TermInfo) {
-  return { ...term, href: `/${url}/${term.value}` };
+// This is only used internally to cache the results of our TermID query to the backend
+// This dictionary maps Campus -> (array of termIDs)
+let termInfoCache: Record<string, TermInfo[]> = {};
+for (let c of Object.values(Campus)) {
+  termInfoCache[c] = [];
 }
-
-// Only used internally
-let neuTerms: TermInfo[] | null = null;
-let cpsTerms: TermInfo[] | null = null;
-let lawTerms: TermInfo[] | null = null;
 
 /**
- * Queries TermInfos for this campus from the backend
+ * Queries the backend for information about the terms for the given campus
  */
-async function getTermInfoBackend(c: Campus): Promise<TermInfo[]> {
+async function getTermInfoFromBackend(c: Campus): Promise<TermInfo[]> {
+  // Map the given campus to a string matching the backend schema
   let subCollege: string;
   switch (c) {
     case Campus.NEU:
@@ -37,38 +38,41 @@ async function getTermInfoBackend(c: Campus): Promise<TermInfo[]> {
       break;
   }
 
+  // Grab the data from GQL
   const data = await gqlClient
     .getTermIDsByCollege({ subCollege: subCollege })
     .then((res) => res['termInfos']);
-  // Convert to TermInfo
-  let termIds: TermInfo[] = data.map((term) => {
+
+  // Convert to TermInfo (with the added href attribute)
+  const termIds: TermInfo[] = data.map((term) => {
     return {
       text: term['text'],
       value: term['termId'],
+      href: `/${c}/${term['termId']}`,
     };
   });
-
-  // Add the URLs
-  termIds = termIds.map((term) => addUrlToTermInfo(c, term));
 
   return termIds;
 }
 
-/*
+/**
 Queries the TermInfos for this campus from the backend, or returns a cached version if we've already done so.
 
-// TODO - should the cache have a temporary existance? Otherwise, we won't re-hit the backend until the next time the program is resarted.
+// TODO - Decide how often we should force-rescrape (Otherwise, we won't re-hit the backend until the next time the program is resarted.)
 */
-export async function getTermInfoForCampus(c: Campus): Promise<TermInfo[]> {
-  switch (c) {
-    case Campus.NEU:
-      return neuTerms !== null ? neuTerms : getTermInfoBackend(c);
-    case Campus.CPS:
-      return cpsTerms !== null ? cpsTerms : getTermInfoBackend(c);
-    case Campus.LAW:
-      return lawTerms !== null ? lawTerms : getTermInfoBackend(c);
-    default:
-      return [];
+export async function getTermInfoForCampus(
+  c: Campus,
+  forceFreshQuery: boolean = false
+): Promise<TermInfo[]> {
+  // We try rescraping if we explicitly call it, or if the cached value is empty
+  if (forceFreshQuery || termInfoCache[c].length === 0) {
+    const termIds = await getTermInfoFromBackend(c);
+    termInfoCache[c] = termIds;
+    return termIds;
+  }
+  // return cached value
+  else {
+    return termInfoCache[c];
   }
 }
 
@@ -105,13 +109,6 @@ export function greaterTermExists(
   });
 }
 
-export async function notMostRecentTerm(termId: string): Promise<boolean> {
-  const campus = getCampusByLastDigit(termId.charAt(termId.length - 1));
-  const termIdNum = Number(termId);
-
-  return greaterTermExists(await getTermInfoForCampus(campus), termIdNum);
-}
-
 function getSecondToLastDigit(s: string): string {
   return s.charAt(s.length - 2);
 }
@@ -130,14 +127,12 @@ function tryGetMatchingSecondToLastDigitOption(
   return undefined;
 }
 
-// Get the term within the given campus that is closest to the given term (in a diff campus)
+/** Get the term within the given campus that is closest to the given term (in a diff campus) */
 export async function getRoundedTerm(
   nextCampus: Campus,
   prevTerm: string
 ): Promise<string> {
-  // what's the logic
   // get the second to last digit
-
   const secondToLast = getSecondToLastDigit(prevTerm);
 
   // know the options of the new campus

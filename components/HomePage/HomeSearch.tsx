@@ -17,41 +17,42 @@ interface HomeSearchProps {
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   // Get the lists of terms asyncronously
-  const emptyTerms = {};
-  Object.values(Campus).map((c) => (emptyTerms[c] = []));
-  const [termInfos, setTermInfos] = useState(emptyTerms);
+  const [termInfos, setTermInfos] = useState([]);
 
+  // Ditto, for the Campus links
   const emptyLinks = {};
   Object.values(Campus).map((c) => (emptyLinks[c] = ''));
   const [campusLinks, setCampusLinks] = useState(emptyLinks);
 
-  // Update the lists of terms
+  // Update the lists of terms, done every time we switch campuses
   useEffect(() => {
-    let termsDict = {};
-    let termsTemp = Object.values(Campus).map((c) =>
-      getTermInfoForCampus(c)
-        .then((data) =>
-          data.map((terminfo) => ({
-            text: terminfo.text,
-            value: terminfo.value,
-            link: `/${campus}/${terminfo.value}`,
-          }))
-        )
-        .then((data) => (termsDict[c] = data))
-    );
+    getTermInfoForCampus(campus)
+      .then((data) =>
+        data.map((terminfo) => ({
+          text: terminfo.text,
+          value: terminfo.value,
+          link: `/${campus}/${terminfo.value}`,
+        }))
+      )
+      .then((data) => setTermInfos(data));
+  }, [campus]);
 
-    Promise.all(termsTemp).then((data) => setCampusLinks(termsDict));
-
+  // Update the list of links to each campus
+  useEffect(() => {
     let campusLinksDict = {};
+    // Get the data we need, map it, and insert it into the dictionary
+    // This pattern isn't intuitive, but Promise.all can't resolve on a dictionary object, so we have to work around that
     let campusLinksTemp = Object.values(Campus).map((c) =>
       getRoundedTerm(c, termId)
         .then((term) => `/${c}/${term}`)
         .then((url) => (campusLinksDict[c] = url))
     );
+
     Promise.all(campusLinksTemp).then((data) =>
       setCampusLinks(campusLinksDict)
     );
-  }, [campus]);
+    // Campus links should be updated every time the termID changes
+  }, [termId]);
 
   const router = useRouter();
   return (
@@ -106,7 +107,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={termInfos[campus]}
+            options={termInfos}
             value={termId}
             className="searchDropdown"
             compact={false}

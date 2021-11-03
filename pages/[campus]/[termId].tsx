@@ -44,9 +44,9 @@ export default function Home(): ReactElement {
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
   // Redirect to latest if we're at an old term
-  // if (!AVAILABLE_TERM_IDS.includes(termId)) {
-  //   router.push(`/${campus}/${LATEST_TERM}`);
-  // }
+  if (!AVAILABLE_TERM_IDS.includes(termId)) {
+    router.push(`/${campus}/${LATEST_TERM}`);
+  }
 
   // On mobile only show the logo and the github corner if there are no results and the search box is not focused (the virtual keyboard is not on the screen).
   let containerClassnames = 'home-container';

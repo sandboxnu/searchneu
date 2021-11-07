@@ -6,7 +6,7 @@ import { gqlClient } from '../../utils/courseAPIClient';
 
 // Execute the proc on each search result in the given termId
 async function forEachSearchResult(
-  termId: number,
+  termId: string,
   proc: (item: GetPagesForSitemapQuery['search']['nodes'][0]) => void
 ) {
   let offset = 0;
@@ -30,10 +30,17 @@ async function generateSitemap(): Promise<string> {
   const items: Set<string> = new Set();
 
   // latest terms for each campus
+<<<<<<< HEAD
   let latestTerms: [Campus, number][];
   for (let c of Object.values(Campus)) {
     latestTerms.push([c, Number(await getLatestTerm(c))]);
   }
+=======
+  const latestTerms: [Campus, string][] = Object.values(Campus).map((c) => [
+    c,
+    getLatestTerm(c),
+  ]);
+>>>>>>> dcf438312b29e52aa52e6e242616e80b4ac6a79d
 
   // Add the classes
   for (const [campus, termId] of latestTerms) {
@@ -53,7 +60,7 @@ async function generateSitemap(): Promise<string> {
   }
 
   // Add the employees
-  const latestNEU = Number(await getLatestTerm(Campus.NEU));
+  const latestNEU = await getLatestTerm(Campus.NEU);
   await forEachSearchResult(latestNEU, (employee) => {
     if (employee.__typename === 'Employee') {
       items.add(

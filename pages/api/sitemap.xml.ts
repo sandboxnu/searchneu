@@ -31,7 +31,7 @@ async function generateSitemap(): Promise<string> {
 
   // latest terms for each campus
   let latestTerms: [Campus, string][];
-  for (let c of Object.values(Campus)) {
+  for (const c of Object.values(Campus)) {
     latestTerms.push([c, await getLatestTerm(c)]);
   }
 

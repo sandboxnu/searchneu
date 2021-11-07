@@ -28,7 +28,7 @@ export default function Home(): ReactElement {
 
   // This section is a bit of a mess (thanks to some nice async functions)
   // We use this variable to know when to re-run the useEffect method
-  let termIdFromUrl = (router.query.termId as string) || '';
+  const termIdFromUrl = (router.query.termId as string) || '';
   const [termId, setTermId] = useState(termIdFromUrl);
 
   // Every time the termID changes, we update the list of term IDs, then check if this term ID is a valid one

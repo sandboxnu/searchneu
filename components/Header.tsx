@@ -71,7 +71,7 @@ export default function Header({
   // The list of roundedTerms is updated every time the termID changes
   // Given a termID and a campus, the roundedTerm is term closest to the termID, but for the given campus
   useEffect(() => {
-    let campusOptions = Object.keys(Campus)
+    const campusOptions = Object.keys(Campus)
       // For each campus, get the rounded term & convert it to the format we need
       .map((c: Campus) =>
         getRoundedTerm(c, termId).then((term) => ({

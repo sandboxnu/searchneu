@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import { Campus } from './types';
 import { gqlClient } from '../utils/courseAPIClient';
-import Macros from './abstractMacros';
-import { objectTypeSpreadProperty } from '@babel/types';
 
 /** Information about a term */
 interface TermInfo {
@@ -15,8 +13,8 @@ interface TermInfo {
 
 // This is only used internally to cache the results of our TermID query to the backend
 // This dictionary maps Campus -> (array of termIDs)
-let termInfoCache: Record<string, TermInfo[]> = {};
-for (let c of Object.values(Campus)) {
+const termInfoCache: Record<string, TermInfo[]> = {};
+for (const c of Object.values(Campus)) {
   termInfoCache[c] = [];
 }
 
@@ -62,7 +60,7 @@ Queries the TermInfos for this campus from the backend, or returns a cached vers
 */
 export async function getTermInfoForCampus(
   c: Campus,
-  forceFreshQuery: boolean = false
+  forceFreshQuery = false
 ): Promise<TermInfo[]> {
   // We try rescraping if we explicitly call it, or if the cached value is empty
   if (forceFreshQuery || termInfoCache[c].length === 0) {
@@ -77,7 +75,7 @@ export async function getTermInfoForCampus(
 }
 
 export async function getLatestTerm(c: Campus): Promise<string> {
-  let terms = await getTermInfoForCampus(c);
+  const terms = await getTermInfoForCampus(c);
   if (terms.length > 0) {
     return terms[0].value as string;
   }

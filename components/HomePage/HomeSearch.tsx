@@ -40,10 +40,10 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   // Update the list of links to each campus every time the termID changes
   // Each link depends on the rounded term (the term closest to the main termID, but for a given campus)
   useEffect(() => {
-    let campusLinksDict = {};
+    const campusLinksDict = {};
     // Get the data we need, map it, and insert it into the dictionary
     // This pattern isn't intuitive, but Promise.all can't resolve on a dictionary object, so we have to work around that
-    let campusLinksTemp = Object.values(Campus).map((c) =>
+    const campusLinksTemp = Object.values(Campus).map((c) =>
       getRoundedTerm(c, termId)
         .then((term) => `/${c}/${term}`)
         .then((url) => (campusLinksDict[c] = url))

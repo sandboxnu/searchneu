@@ -41,6 +41,7 @@ export function PhoneModal({
       })
       .catch((error) => {
         macros.error(error);
+        macros.logAmplitudeEvent('Phone Number Failed', { error });
         setPhoneValidationMessage(
           'Unable to send text, please check that your phone number is formatted correctly'
         );
@@ -61,6 +62,9 @@ export function PhoneModal({
         onSuccess();
       })
       .catch((error) => {
+        macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
+          error,
+        });
         macros.error(error);
         setLoading(false);
         setResendDisabled(false);

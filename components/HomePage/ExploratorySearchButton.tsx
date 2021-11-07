@@ -17,6 +17,7 @@ const ExploratorySearchButton = ({
 
   const [termName, setTermName] = useState('');
 
+  // The term name should be updated every time either the campus or the term ID changes
   useEffect(() => {
     getTermName(termId).then((t) => {
       // Check if there's a matching name

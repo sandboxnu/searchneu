@@ -31,7 +31,7 @@ export default function Home(): ReactElement {
   let termIdFromUrl = (router.query.termId as string) || '';
   const [termId, setTermId] = useState(termIdFromUrl);
 
-  // Asyncronously update the termID related variables
+  // Every time the termID changes, we update the list of term IDs, then check if this term ID is a valid one
   useEffect(() => {
     // We check to make sure this isn't an old term - if it is, we redirect
     getTermInfoForCampus(campus)

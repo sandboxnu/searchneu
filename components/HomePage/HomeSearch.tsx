@@ -24,7 +24,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   Object.values(Campus).map((c) => (emptyLinks[c] = ''));
   const [campusLinks, setCampusLinks] = useState(emptyLinks);
 
-  // Update the lists of terms, done every time we switch campuses
+  // Update the lists of terms every time we switch campuses
   useEffect(() => {
     getTermInfoForCampus(campus)
       .then((data) =>
@@ -37,7 +37,8 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
       .then((data) => setTermInfos(data));
   }, [campus]);
 
-  // Update the list of links to each campus
+  // Update the list of links to each campus every time the termID changes
+  // Each link depends on the rounded term (the term closest to the main termID, but for a given campus)
   useEffect(() => {
     let campusLinksDict = {};
     // Get the data we need, map it, and insert it into the dictionary

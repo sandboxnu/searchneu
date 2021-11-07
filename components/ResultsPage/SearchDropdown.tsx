@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 
 interface ItemProps {

@@ -30,17 +30,10 @@ async function generateSitemap(): Promise<string> {
   const items: Set<string> = new Set();
 
   // latest terms for each campus
-<<<<<<< HEAD
-  let latestTerms: [Campus, number][];
+  let latestTerms: [Campus, string][];
   for (let c of Object.values(Campus)) {
-    latestTerms.push([c, Number(await getLatestTerm(c))]);
+    latestTerms.push([c, await getLatestTerm(c)]);
   }
-=======
-  const latestTerms: [Campus, string][] = Object.values(Campus).map((c) => [
-    c,
-    getLatestTerm(c),
-  ]);
->>>>>>> dcf438312b29e52aa52e6e242616e80b4ac6a79d
 
   // Add the classes
   for (const [campus, termId] of latestTerms) {

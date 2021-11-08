@@ -50,6 +50,13 @@ export default function Header({
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
 
+  const termAndCampusToURLCallback = useCallback(
+    (t: string, newCampus: string) => {
+      return termAndCampusToURL(t, newCampus, query);
+    },
+    [query, termAndCampusToURL]
+  );
+
   // Get/set some termID-related variables asyncronously
   const [termInfos, setTermInfos] = useState([]);
   const [roundedTerms, setRoundedTerms] = useState([]);
@@ -95,13 +102,6 @@ export default function Header({
       }`
     );
   };
-
-  const termAndCampusToURLCallback = useCallback(
-    (t: string, newCampus: string) => {
-      return termAndCampusToURL(t, newCampus, query);
-    },
-    [query, termAndCampusToURL]
-  );
 
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {

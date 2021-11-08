@@ -2,7 +2,6 @@ import React, { ReactElement, useState, useEffect } from 'react';
 import { Campus } from '../types';
 import { useRouter } from 'next/router';
 import { getTermName } from '../global';
-import SectionsTermNav from '../ClassPage/SectionsTermNav';
 
 interface ExploratorySearchButtonProps {
   termId: string;

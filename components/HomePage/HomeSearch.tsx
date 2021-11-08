@@ -49,9 +49,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         .then((url) => (campusLinksDict[c] = url))
     );
 
-    Promise.all(campusLinksTemp).then((data) =>
-      setCampusLinks(campusLinksDict)
-    );
+    Promise.all(campusLinksTemp).then(() => setCampusLinks(campusLinksDict));
     // Campus links should be updated every time the termID changes
   }, [termId]);
 

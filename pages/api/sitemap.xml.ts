@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getLatestTerm } from '../../components/global';
+import { getLatestTerm } from '../../components/terms';
 import { Campus } from '../../components/types';
 import { GetPagesForSitemapQuery } from '../../generated/graphql';
 import { gqlClient } from '../../utils/courseAPIClient';
@@ -30,10 +30,9 @@ async function generateSitemap(): Promise<string> {
   const items: Set<string> = new Set();
 
   // latest terms for each campus
-  let latestTerms: [Campus, string][];
-  for (const c of Object.values(Campus)) {
-    latestTerms.push([c, await getLatestTerm(c)]);
-  }
+  const latestTerms: [Campus, string][] = await Promise.all(
+    Object.values(Campus).map((c) => [c, getLatestTerm(c)])
+  )[0];
 
   // Add the classes
   for (const [campus, termId] of latestTerms) {

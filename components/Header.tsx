@@ -2,9 +2,9 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useContext } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
-import { getRoundedTerm, getTermInfoForCampus } from '../components/global';
+import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
 import Logo from '../components/icons/Logo';
 import macros from '../components/macros';
@@ -25,6 +25,7 @@ import {
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import { Button } from 'antd';
+import { termsContext } from './common/TermInfoContext';
 
 type HeaderProps = {
   router: NextRouter;
@@ -57,40 +58,7 @@ export default function Header({
     [query, termAndCampusToURL]
   );
 
-  // Get/set some termID-related variables asyncronously
-  const [termInfos, setTermInfos] = useState([]);
-  const [roundedTerms, setRoundedTerms] = useState([]);
-
-  // The list of termIDs (for the selected campus) is updated every time the campus var changes
-  useEffect(() => {
-    // Update the lists of terms
-    getTermInfoForCampus(Campus[campus.toUpperCase()])
-      .then((data) =>
-        data.map((terminfo) => ({
-          text: terminfo.text,
-          value: terminfo.value,
-          link: termAndCampusToURLCallback(terminfo.value, campus),
-        }))
-      )
-      .then((data) => setTermInfos(data));
-  }, [campus]);
-
-  // The list of roundedTerms is updated every time the termID changes
-  // Given a termID and a campus, the roundedTerm is term closest to the termID, but for the given campus
-  useEffect(() => {
-    const campusOptions = Object.keys(Campus)
-      // For each campus, get the rounded term & convert it to the format we need
-      .map((c: Campus) =>
-        getRoundedTerm(c, termId).then((term) => ({
-          text: c,
-          value: c,
-          link: termAndCampusToURLCallback(term, c),
-        }))
-      );
-
-    // Resolve all of the promises & set
-    Promise.all(campusOptions).then((data) => setRoundedTerms(data));
-  }, [termId]);
+  const termInfos = useContext(termsContext);
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
@@ -162,7 +130,16 @@ export default function Header({
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={roundedTerms}
+              options={Object.keys(Campus).map((c: Campus) => {
+                return {
+                  text: c,
+                  value: c,
+                  link: termAndCampusToURLCallback(
+                    getRoundedTerm(termInfos, c, termId),
+                    c
+                  ),
+                };
+              })}
               value={campus}
               className="searchDropdown"
               compact={false}
@@ -171,7 +148,13 @@ export default function Header({
           <span className="Breadcrumb_Container__slash">/</span>
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown
-              options={termInfos}
+              options={termInfos[campus].map((termInfo) => {
+                return {
+                  text: termInfo.text,
+                  value: termInfo.value,
+                  link: termAndCampusToURLCallback(termInfo.value, campus),
+                };
+              })}
               value={termId}
               className="searchDropdown"
               compact={false}

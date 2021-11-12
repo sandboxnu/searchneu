@@ -30,12 +30,13 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
+import { TermInfoProvider } from '../../../../components/common/TermInfoContext';
 
 const cookies = new Cookies();
 
 const isWindow = typeof window !== 'undefined';
 
-export default function Results(): ReactElement | null {
+function InnerResults(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
@@ -152,5 +153,13 @@ export default function Results(): ReactElement | null {
       </div>
       <div className="botttomPadding" />
     </div>
+  );
+}
+
+export default function Results(): ReactElement | null {
+  return (
+    <TermInfoProvider>
+      <InnerResults></InnerResults>
+    </TermInfoProvider>
   );
 }

@@ -1,7 +1,8 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { Campus } from '../types';
 import { useRouter } from 'next/router';
-import { getTermName } from '../global';
+import { getTermName } from '../terms';
+import { termsContext } from '../common/TermInfoContext';
 
 interface ExploratorySearchButtonProps {
   termId: string;
@@ -14,25 +15,22 @@ const ExploratorySearchButton = ({
 }: ExploratorySearchButtonProps): ReactElement => {
   const router = useRouter();
 
-  const [termName, setTermName] = useState('');
-
-  // The term name should be updated every time either the campus or the term ID changes
-  useEffect(() => {
-    getTermName(termId).then((t) => {
-      // Check if there's a matching name
-      if (typeof t !== 'undefined') {
-        setTermName(t);
-      }
-    });
-  }, [campus, termId]);
+  const termInfos = useContext(termsContext);
+  const termName = getTermName(termInfos, termId);
 
   return (
     <div
       className="searchByFilters"
       onClick={() => router.push(`/${campus}/${termId}/search`)}
     >
-      View all classes for
-      <span className="selectedCampusAndTerm">{` ${campus} ${termName}`}</span>
+      {campus && termName ? (
+        <span>
+          View all classes for{' '}
+          <span className="selectedCampusAndTerm">{` ${campus} ${termName}`}</span>
+        </span>
+      ) : (
+        'Loading...'
+      )}
     </div>
   );
 };

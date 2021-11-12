@@ -6,50 +6,43 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import Footer from '../../components/Footer';
-import { getLatestTerm, getTermInfoForCampus } from '../../components/global';
+import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
 import ExploratorySearchButton from '../../components/HomePage/ExploratorySearchButton';
 import Boston from '../../components/icons/boston.svg';
 import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import macros from '../../components/macros';
+import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import AlertBanner, {
   AlertBannerData,
 } from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
-export default function Home(): ReactElement {
+import {
+  termsContext,
+  TermInfoProvider,
+} from '../../components/common/TermInfoContext';
+
+function InnerHome(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
 
-  // This section is a bit of a mess (thanks to some nice async functions)
-  // We use this variable to know when to re-run the useEffect method
-  const termIdFromUrl = (router.query.termId as string) || '';
-  const [termId, setTermId] = useState(termIdFromUrl);
+  const termInfos = useContext(termsContext);
+  const latestTerm: string =
+    termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
+  const termId = (router.query.termId as string) || latestTerm;
 
-  // Every time the termID changes, we update the list of term IDs, then check if this term ID is a valid one
-  useEffect(() => {
-    // We check to make sure this isn't an old term - if it is, we redirect
-    getTermInfoForCampus(campus)
-      .then((avaliable_terms) => avaliable_terms.map((t) => t.value))
-      .then((avaliable_terms) => {
-        // We get the latest term, and use it if there's no term specified in the query string
-        getLatestTerm(campus).then((latest_term) => {
-          // Set the term ID
-          setTermId((router.query.termId as string) || latest_term);
-
-          // Now that we have a term ID, we check if it's a valid one
-          // TODO - does this even do anything?? This returns a 404 - https://searchneu.com/NEU/202030
-          if (!avaliable_terms.includes(termId)) {
-            router.push(`/${campus}/${latest_term}`);
-          }
-        });
-      });
-  }, [termIdFromUrl]);
+  // Now that we have a term ID, we check if it's a valid one
+  // TODO - does this even do anything?? This returns a 404 - https://searchneu.com/NEU/202030
+  const termIds = termInfos[campus].map((t) => t['value']);
+  if (termIds.length > 0 && !termIds.includes(termId)) {
+    router.push(`/${campus}/${latestTerm}`);
+  }
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
@@ -110,10 +103,16 @@ export default function Home(): ReactElement {
             className="ui center spacing aligned icon header topHeader"
           >
             <div className="centerTextContainer">
-              <Logo className="logo" aria-label="logo" campus={campus} />
-              <HomeSearch termId={termId} campus={campus} />
-              <ExploratorySearchButton termId={termId} campus={campus} />
+              {termInfos[campus].length == 0 && <LoadingContainer />}
+              {termInfos[campus].length > 0 && (
+                <div>
+                  <Logo className="logo" aria-label="logo" campus={campus} />
+                  <HomeSearch termId={termId} campus={campus} />
+                  <ExploratorySearchButton termId={termId} campus={campus} />
+                </div>
+              )}
             </div>
+
             <Husky className="husky" campus={campus} aria-label="husky" />
             <div className="bostonContainer">
               <Boston className="boston" aria-label="logo" />
@@ -126,12 +125,21 @@ export default function Home(): ReactElement {
   );
 }
 
+export default function Home(): ReactElement {
+  return (
+    <TermInfoProvider>
+      <InnerHome></InnerHome>
+    </TermInfoProvider>
+  );
+}
+
 // Tells Next what to statically optimize
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const result: GetStaticPathsResult = { paths: [], fallback: false };
+  const termInfos = await fetchTermInfo();
 
   for (const campus of Object.values(Campus)) {
-    for (const termId of await getTermInfoForCampus(campus)) {
+    for (const termId of termInfos[campus]) {
       result.paths.push({
         params: { campus, termId: termId.value as string },
       });

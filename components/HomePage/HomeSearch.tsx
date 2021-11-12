@@ -1,14 +1,15 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
-import { getRoundedTerm, getTermInfoForCampus } from '../global';
+import { getRoundedTerm } from '../terms';
 import IconGradcap from '../icons/IconGradcap';
 import IconScale from '../icons/IconScale';
 import IconTie from '../icons/IconTie';
 import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
+import { termsContext } from '../common/TermInfoContext';
 
 interface HomeSearchProps {
   termId: string;
@@ -16,48 +17,21 @@ interface HomeSearchProps {
 }
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
-  // Get the lists of terms asyncronously
-  const [termInfos, setTermInfos] = useState([]);
+  const termInfos = useContext(termsContext);
+  const termInfoLinks = termInfos[campus].map((terminfo) => ({
+    text: terminfo.text,
+    value: terminfo.value,
+    link: `/${campus}/${terminfo.value}`,
+  }));
 
-  // Ditto, for the Campus links
-  const emptyLinks = {};
-  Object.values(Campus).map((c) => (emptyLinks[c] = ''));
-  const [campusLinks, setCampusLinks] = useState(emptyLinks);
-
-  // Update the lists of terms every time we switch campuses
-  useEffect(() => {
-    getTermInfoForCampus(campus)
-      .then((data) =>
-        data.map((terminfo) => ({
-          text: terminfo.text,
-          value: terminfo.value,
-          link: `/${campus}/${terminfo.value}`,
-        }))
-      )
-      .then((data) => setTermInfos(data));
-  }, [campus]);
-
-  // Update the list of links to each campus every time the termID changes
-  // Each link depends on the rounded term (the term closest to the main termID, but for a given campus)
-  useEffect(() => {
-    const campusLinksDict = {};
-    // Get the data we need, map it, and insert it into the dictionary
-    // This pattern isn't intuitive, but Promise.all can't resolve on a dictionary object, so we have to work around that
-    const campusLinksTemp = Object.values(Campus).map((c) =>
-      getRoundedTerm(c, termId)
-        .then((term) => `/${c}/${term}`)
-        .then((url) => (campusLinksDict[c] = url))
-    );
-
-    Promise.all(campusLinksTemp).then(() => setCampusLinks(campusLinksDict));
-    // Campus links should be updated every time the termID changes
-  }, [termId]);
+  const campusLink = (c: Campus): string =>
+    `/${c}/${getRoundedTerm(termInfos, c, termId)}`;
 
   const router = useRouter();
   return (
     <div className="HomeSearch">
       <div className="HomeSearch__campusSelector">
-        <Link href={campusLinks[Campus.NEU]}>
+        <Link href={campusLink(Campus.NEU)}>
           <label
             className={
               'HomeSearch__campusSelector--item --neu' +
@@ -69,7 +43,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>NEU</span>
           </label>
         </Link>
-        <Link href={campusLinks[Campus.CPS]}>
+        <Link href={campusLink(Campus.CPS)}>
           <label
             className={
               'HomeSearch__campusSelector--item --cps' +
@@ -81,7 +55,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>CPS</span>
           </label>
         </Link>
-        <Link href={campusLinks[Campus.LAW]}>
+        <Link href={campusLink(Campus.LAW)}>
           <label
             className={
               'HomeSearch__campusSelector--item --law' +
@@ -106,7 +80,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={termInfos}
+            options={termInfoLinks}
             value={termId}
             className="searchDropdown"
             compact={false}

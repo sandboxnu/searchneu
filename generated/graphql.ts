@@ -139,7 +139,7 @@ export type Query = {
   sectionByHash?: Maybe<Section>;
   major?: Maybe<Major>;
   search?: Maybe<SearchResultItemConnection>;
-  termInfos?: Maybe<Array<Maybe<TermInfo>>>;
+  termInfos: Array<TermInfo>;
 };
 
 export type QueryClassArgs = {
@@ -172,7 +172,7 @@ export type QuerySearchArgs = {
 };
 
 export type QueryTermInfosArgs = {
-  subCollege?: Maybe<Scalars['String']>;
+  subCollege: Scalars['String'];
 };
 
 export type SearchResultItem = ClassOccurrence | Employee;
@@ -207,9 +207,9 @@ export type Section = {
 
 export type TermInfo = {
   __typename?: 'TermInfo';
-  termId?: Maybe<Scalars['String']>;
-  subCollege?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
+  termId: Scalars['String'];
+  subCollege: Scalars['String'];
+  text: Scalars['String'];
 };
 
 export type GetCourseInfoByHashQueryVariables = Exact<{
@@ -442,10 +442,8 @@ export type GetTermIDsByCollegeQueryVariables = Exact<{
 }>;
 
 export type GetTermIDsByCollegeQuery = { __typename?: 'Query' } & {
-  termInfos?: Maybe<
-    Array<
-      Maybe<{ __typename?: 'TermInfo' } & Pick<TermInfo, 'text' | 'termId'>>
-    >
+  termInfos: Array<
+    { __typename?: 'TermInfo' } & Pick<TermInfo, 'text' | 'termId'>
   >;
 };
 

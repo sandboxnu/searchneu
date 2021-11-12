@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getLatestTerm } from '../../components/terms';
+import { fetchTermInfo, getLatestTerm } from '../../components/terms';
 import { Campus } from '../../components/types';
 import { GetPagesForSitemapQuery } from '../../generated/graphql';
 import { gqlClient } from '../../utils/courseAPIClient';
@@ -29,9 +29,11 @@ async function generateSitemap(): Promise<string> {
   // The part after the https://searchneu.com/
   const items: Set<string> = new Set();
 
+  const termInfos = await fetchTermInfo();
+
   // latest terms for each campus
   const latestTerms: [Campus, string][] = await Promise.all(
-    Object.values(Campus).map((c) => [c, getLatestTerm(c)])
+    Object.values(Campus).map((c) => [c, getLatestTerm(termInfos, c)])
   )[0];
 
   // Add the classes
@@ -52,7 +54,7 @@ async function generateSitemap(): Promise<string> {
   }
 
   // Add the employees
-  const latestNEU = await getLatestTerm(Campus.NEU);
+  const latestNEU = await getLatestTerm(termInfos, Campus.NEU);
   await forEachSearchResult(latestNEU, (employee) => {
     if (employee.__typename === 'Employee') {
       items.add(

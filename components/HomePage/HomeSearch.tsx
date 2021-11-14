@@ -18,11 +18,6 @@ interface HomeSearchProps {
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
   const termInfos = useContext(termsContext);
-  const termInfoLinks = termInfos[campus].map((terminfo) => ({
-    text: terminfo.text,
-    value: terminfo.value,
-    link: `/${campus}/${terminfo.value}`,
-  }));
 
   const campusLink = (c: Campus): string =>
     `/${c}/${getRoundedTerm(termInfos, c, termId)}`;
@@ -80,7 +75,11 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={termInfoLinks}
+            options={termInfos[campus].map((terminfo) => ({
+              text: terminfo.text,
+              value: terminfo.value,
+              link: `/${campus}/${terminfo.value}`,
+            }))}
             value={termId}
             className="searchDropdown"
             compact={false}

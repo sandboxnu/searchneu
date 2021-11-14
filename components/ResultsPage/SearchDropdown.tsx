@@ -20,9 +20,7 @@ function SearchDropdown({
   className = 'searchDropdown',
   compact = false,
 }: DropdownProps): ReactElement {
-  const curVal = options.find((o) => o.value == currentValue);
-  const currentText = curVal ? curVal.text : '';
-
+  const currentText = options.find((o) => o.value == currentValue).text;
   return (
     <Dropdown
       fluid

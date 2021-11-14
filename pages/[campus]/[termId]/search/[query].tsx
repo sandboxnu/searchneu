@@ -30,7 +30,6 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
-import { TermInfoProvider } from '../../../../utils/TermInfoProvider';
 
 const cookies = new Cookies();
 

@@ -23,13 +23,12 @@ const ExploratorySearchButton = ({
       className="searchByFilters"
       onClick={() => router.push(`/${campus}/${termId}/search`)}
     >
-      {campus && termName ? (
+      {(!campus || !termName) && 'Loading semester data...'}
+      {campus && termName && (
         <span>
-          View all classes for{' '}
+          View all classes for
           <span className="selectedCampusAndTerm">{` ${campus} ${termName}`}</span>
         </span>
-      ) : (
-        'Loading semester data...'
       )}
     </div>
   );

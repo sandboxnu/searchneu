@@ -16,12 +16,16 @@ export interface TermInfo {
  */
 export async function fetchTermInfo(): Promise<{ [key: string]: TermInfo[] }> {
   // Creates a dict of {campus : TermInfo[] }
-  const termInfos = {};
+  const allTermInfos = {};
 
   for (const college of Object.keys(Campus)) {
-    const terms: TermInfo[] = (
+    // Query the TermInfos from the GraphQL client
+    const rawTermInfos = (
       await gqlClient.getTermIDsByCollege({ subCollege: college })
-    )['termInfos'].map((term) => {
+    )['termInfos'];
+
+    // Map the TermInfos to add a link parameter
+    const termInfos: TermInfo[] = rawTermInfos.map((term) => {
       return {
         text: term['text'],
         value: term['termId'],
@@ -29,10 +33,10 @@ export async function fetchTermInfo(): Promise<{ [key: string]: TermInfo[] }> {
       };
     });
 
-    termInfos[college] = terms;
+    allTermInfos[college] = termInfos;
   }
 
-  return termInfos;
+  return allTermInfos;
 }
 
 // Returns the latest (ie. most recent) term for the given campus

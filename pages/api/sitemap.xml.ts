@@ -32,9 +32,10 @@ async function generateSitemap(): Promise<string> {
   const termInfos = await fetchTermInfo();
 
   // latest terms for each campus
-  const latestTerms: [Campus, string][] = await Promise.all(
-    Object.values(Campus).map((c) => [c, getLatestTerm(termInfos, c)])
-  )[0];
+  const latestTerms: [Campus, string][] = Object.values(Campus).map((c) => [
+    c,
+    getLatestTerm(termInfos, c),
+  ]);
 
   // Add the classes
   for (const [campus, termId] of latestTerms) {
@@ -54,7 +55,7 @@ async function generateSitemap(): Promise<string> {
   }
 
   // Add the employees
-  const latestNEU = await getLatestTerm(termInfos, Campus.NEU);
+  const latestNEU = getLatestTerm(termInfos, Campus.NEU);
   await forEachSearchResult(latestNEU, (employee) => {
     if (employee.__typename === 'Employee') {
       items.add(

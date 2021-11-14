@@ -28,18 +28,10 @@ export default function Home(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
-
   const termInfos = useContext(termsContext);
-  const latestTerm: string =
+  const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
-  const termId = (router.query.termId as string) || latestTerm;
-
-  // Now that we have a term ID, we check if it's a valid one
-  // TODO - does this even do anything?? This returns a 404 - https://searchneu.com/NEU/202030
-  const termIds = termInfos[campus].map((t) => t['value']);
-  if (termIds.length > 0 && !termIds.includes(termId)) {
-    router.push(`/${campus}/${latestTerm}`);
-  }
+  const termId = (router.query.termId as string) || LATEST_TERM;
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
@@ -107,7 +99,6 @@ export default function Home(): ReactElement {
               )}
               <ExploratorySearchButton termId={termId} campus={campus} />
             </div>
-
             <Husky className="husky" campus={campus} aria-label="husky" />
             <div className="bostonContainer">
               <Boston className="boston" aria-label="logo" />

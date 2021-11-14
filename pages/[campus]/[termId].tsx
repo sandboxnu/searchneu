@@ -22,12 +22,9 @@ import AlertBanner, {
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
-import {
-  termsContext,
-  TermInfoProvider,
-} from '../../components/common/TermInfoContext';
+import { termsContext } from '../../utils/TermInfoProvider';
 
-function InnerHome(): ReactElement {
+export default function Home(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
@@ -103,14 +100,12 @@ function InnerHome(): ReactElement {
             className="ui center spacing aligned icon header topHeader"
           >
             <div className="centerTextContainer">
+              <Logo className="logo" aria-label="logo" campus={campus} />
               {termInfos[campus].length == 0 && <LoadingContainer />}
               {termInfos[campus].length > 0 && (
-                <div>
-                  <Logo className="logo" aria-label="logo" campus={campus} />
-                  <HomeSearch termId={termId} campus={campus} />
-                  <ExploratorySearchButton termId={termId} campus={campus} />
-                </div>
+                <HomeSearch termId={termId} campus={campus} />
               )}
+              <ExploratorySearchButton termId={termId} campus={campus} />
             </div>
 
             <Husky className="husky" campus={campus} aria-label="husky" />
@@ -122,14 +117,6 @@ function InnerHome(): ReactElement {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function Home(): ReactElement {
-  return (
-    <TermInfoProvider>
-      <InnerHome></InnerHome>
-    </TermInfoProvider>
   );
 }
 

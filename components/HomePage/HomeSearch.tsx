@@ -9,7 +9,7 @@ import IconTie from '../icons/IconTie';
 import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
-import { termsContext } from '../common/TermInfoContext';
+import { termsContext } from '../../utils/TermInfoProvider';
 
 interface HomeSearchProps {
   termId: string;

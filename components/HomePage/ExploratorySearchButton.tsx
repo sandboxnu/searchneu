@@ -2,7 +2,7 @@ import React, { ReactElement, useContext } from 'react';
 import { Campus } from '../types';
 import { useRouter } from 'next/router';
 import { getTermName } from '../terms';
-import { termsContext } from '../common/TermInfoContext';
+import { termsContext } from '../../utils/TermInfoProvider';
 
 interface ExploratorySearchButtonProps {
   termId: string;
@@ -29,7 +29,7 @@ const ExploratorySearchButton = ({
           <span className="selectedCampusAndTerm">{` ${campus} ${termName}`}</span>
         </span>
       ) : (
-        'Loading...'
+        'Loading semester data...'
       )}
     </div>
   );

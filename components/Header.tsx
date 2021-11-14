@@ -25,7 +25,7 @@ import {
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import { Button } from 'antd';
-import { termsContext } from './common/TermInfoContext';
+import { termsContext } from '../utils/TermInfoProvider';
 
 type HeaderProps = {
   router: NextRouter;

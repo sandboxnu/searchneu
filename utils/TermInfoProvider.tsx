@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTermInfo, TermInfo } from '../../components/terms';
-import { Campus } from '../../components/types';
+import { fetchTermInfo, TermInfo } from '../components/terms';
+import { Campus } from '../components/types';
 import PropTypes from 'prop-types';
 
 const emptyTermInfos: { [key: string]: TermInfo[] } = Object.values(

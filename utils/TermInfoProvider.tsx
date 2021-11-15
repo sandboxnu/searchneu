@@ -3,12 +3,11 @@ import { fetchTermInfo, TermInfo } from '../components/terms';
 import { Campus } from '../components/types';
 import PropTypes from 'prop-types';
 
-const emptyTermInfos: { [key: string]: TermInfo[] } = Object.values(
-  Campus
-).reduce((acc, curr) => {
-  acc[curr] = [];
-  return acc;
-}, {});
+const emptyTermInfos: Record<Campus, TermInfo[]> = {
+  [Campus.NEU]: [],
+  [Campus.CPS]: [],
+  [Campus.LAW]: [],
+};
 
 export const termsContext = React.createContext(emptyTermInfos);
 

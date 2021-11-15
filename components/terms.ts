@@ -14,9 +14,13 @@ export interface TermInfo {
 /**
  * Queries the backend for information about the terms for all campuses
  */
-export async function fetchTermInfo(): Promise<{ [key: string]: TermInfo[] }> {
+export async function fetchTermInfo(): Promise<Record<Campus, TermInfo[]>> {
   // Creates a dict of {campus : TermInfo[] }
-  const allTermInfos = {};
+  const allTermInfos = {
+    [Campus.NEU]: [],
+    [Campus.CPS]: [],
+    [Campus.LAW]: [],
+  };
 
   for (const college of Object.keys(Campus)) {
     // Query the TermInfos from the GraphQL client
@@ -41,7 +45,7 @@ export async function fetchTermInfo(): Promise<{ [key: string]: TermInfo[] }> {
 
 // Returns the latest (ie. most recent) term for the given campus
 export function getLatestTerm(
-  termInfos: { [key: string]: TermInfo[] },
+  termInfos: Record<Campus, TermInfo[]>,
   c: Campus
 ): string {
   const campusTerms = termInfos[c];
@@ -96,7 +100,7 @@ function tryGetMatchingSecondToLastDigitOption(
 
 /** Get the term within the given campus that is closest to the given term (in a diff campus) */
 export function getRoundedTerm(
-  termInfos: { [key: string]: TermInfo[] },
+  termInfos: Record<Campus, TermInfo[]>,
   nextCampus: Campus,
   prevTerm: string
 ): string {
@@ -123,7 +127,7 @@ export function getRoundedTerm(
 
 // Get the name version of a term id
 export function getTermName(
-  termInfos: { [key: string]: TermInfo[] },
+  termInfos: Record<Campus, TermInfo[]>,
   termId: string
 ): string {
   // gather all termId to term name mappings

@@ -93,8 +93,9 @@ export default function Home(): ReactElement {
           >
             <div className="centerTextContainer">
               <Logo className="logo" aria-label="logo" campus={campus} />
-              {termInfos[campus].length == 0 && <LoadingContainer />}
-              {termInfos[campus].length > 0 && (
+              {termInfos[campus].length == 0 ? (
+                <LoadingContainer />
+              ) : (
                 <HomeSearch termId={termId} campus={campus} />
               )}
               <ExploratorySearchButton termId={termId} campus={campus} />

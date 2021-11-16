@@ -232,7 +232,7 @@ export function MobileSectionPanel({
     <div className="MobileSectionPanel">
       <div className="MobileSectionPanel__header">
         <span>{getProfs(section).join(', ')}</span>
-        <span>Boston</span>
+        <span>{section.campus}</span>
       </div>
       <div className="MobileSectionPanel__firstRow">
         <div>

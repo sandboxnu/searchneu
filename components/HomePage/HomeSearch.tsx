@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
 import { getRoundedTerm } from '../terms';
 import IconGradcap from '../icons/IconGradcap';
@@ -9,7 +9,7 @@ import IconTie from '../icons/IconTie';
 import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
-import { termsContext } from '../../utils/TermInfoProvider';
+import getTermInfos from '../../utils/TermInfoProvider';
 
 interface HomeSearchProps {
   termId: string;
@@ -17,7 +17,7 @@ interface HomeSearchProps {
 }
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
-  const termInfos = useContext(termsContext);
+  const termInfos = getTermInfos();
 
   const campusLink = (c: Campus): string =>
     `/${c}/${getRoundedTerm(termInfos, c, termId)}`;

@@ -59,17 +59,17 @@ export default function Results(): ReactElement | null {
     fetchUserInfo();
   }, []);
 
-  const onSignOut = () => {
+  const onSignOut = (): void => {
     cookies.remove('SearchNEU JWT', { path: '/' });
     setUserInfo(null);
   };
 
-  const onSignIn = (token: string) => {
+  const onSignIn = (token: string): void => {
     cookies.set('SearchNEU JWT', token, { path: '/' });
     fetchUserInfo();
   };
 
-  const fetchUserInfo = () => {
+  const fetchUserInfo = (): void => {
     const token = cookies.get('SearchNEU JWT');
     if (token) {
       axios

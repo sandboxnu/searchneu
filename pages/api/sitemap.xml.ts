@@ -8,7 +8,7 @@ import { gqlClient } from '../../utils/courseAPIClient';
 async function forEachSearchResult(
   termId: string,
   proc: (item: GetPagesForSitemapQuery['search']['nodes'][0]) => void
-) {
+): Promise<void> {
   let offset = 0;
   let hasNextPage = false;
   do {
@@ -85,7 +85,7 @@ async function generateSitemap(): Promise<string> {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-) {
+): Promise<void> {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/xml');
 

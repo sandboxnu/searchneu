@@ -1,8 +1,8 @@
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement } from 'react';
 import { Campus } from '../types';
 import { useRouter } from 'next/router';
 import { getTermName } from '../terms';
-import { termsContext } from '../../utils/TermInfoProvider';
+import getTermInfos from '../../utils/TermInfoProvider';
 
 interface ExploratorySearchButtonProps {
   termId: string;
@@ -15,7 +15,7 @@ const ExploratorySearchButton = ({
 }: ExploratorySearchButtonProps): ReactElement => {
   const router = useRouter();
 
-  const termInfos = useContext(termsContext);
+  const termInfos = getTermInfos();
   const termName = getTermName(termInfos, termId);
 
   return (

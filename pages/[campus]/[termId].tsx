@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -22,13 +22,13 @@ import AlertBanner, {
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
-import { termsContext } from '../../utils/TermInfoProvider';
+import getTermInfos from '../../utils/TermInfoProvider';
 
 export default function Home(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
-  const termInfos = useContext(termsContext);
+  const termInfos = getTermInfos();
   const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;

@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback, useContext } from 'react';
+import React, { ReactElement, useCallback } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
@@ -25,7 +25,7 @@ import {
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import { Button } from 'antd';
-import { termsContext } from '../utils/TermInfoProvider';
+import getTermInfos from '../utils/TermInfoProvider';
 
 type HeaderProps = {
   router: NextRouter;
@@ -52,7 +52,7 @@ export default function Header({
   const campus = router.query.campus as string;
 
   // Get the TermInfo dict from the app context
-  const termInfos = useContext(termsContext);
+  const termInfos = getTermInfos();
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);

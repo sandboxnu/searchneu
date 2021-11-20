@@ -80,49 +80,29 @@ export function greaterTermExists(
   });
 }
 
-function getSecondToLastDigit(s: string): string {
-  return s.charAt(s.length - 2);
-}
-
-function tryGetMatchingSecondToLastDigitOption(
-  secondToLast: string,
-  options: TermInfo[]
-): TermInfo | undefined {
-  for (const option of options) {
-    const secondToLastOfOption = getSecondToLastDigit(option.value as string);
-    if (secondToLast === secondToLastOfOption) {
-      return option;
-    }
-  }
-
-  return undefined;
-}
-
 /** Get the term within the given campus that is closest to the given term (in a diff campus) */
 export function getRoundedTerm(
   termInfos: Record<Campus, TermInfo[]>,
   nextCampus: Campus,
   prevTerm: string
 ): string {
-  // get the second to last digit
-  const secondToLast = getSecondToLastDigit(prevTerm);
+  const prevterm_int = Number(prevTerm);
 
-  // search in there for the value where the second to last digit
-  const result = tryGetMatchingSecondToLastDigitOption(
-    secondToLast,
-    termInfos[nextCampus]
+  const closestTerm = termInfos[nextCampus].reduce(
+    (prev, current: TermInfo) => {
+      const curterm_int = Number(current.value);
+      const diff = Math.abs(prevterm_int - curterm_int);
+      // Returns the term which is closest to the previous term
+      if (diff < prev['diff']) {
+        return { term_str: current.value, term_int: curterm_int, diff: diff };
+      }
+      return prev;
+      // Initial value (which will always be replaced)
+    },
+    { term_str: '', term_int: '', diff: Number.MAX_SAFE_INTEGER }
   );
 
-  if (result) {
-    return result.value as string;
-  }
-  // here, there was no result with the corresponding digit. so round down and try again.
-  const roundedDownDigit = String(Number(secondToLast) - 1);
-  const result2 = tryGetMatchingSecondToLastDigitOption(
-    roundedDownDigit,
-    termInfos[nextCampus]
-  );
-  return result2 ? (result2.value as string) : '';
+  return closestTerm['term_str'];
 }
 
 // Get the name version of a term id
@@ -147,7 +127,7 @@ export function getTermName(
 }
 
 export function getSeason(termId: string): string {
-  const seasonDigit = getSecondToLastDigit(termId);
+  const seasonDigit = termId.charAt(termId.length - 2);
   const seasonDigitMap = {
     '1': 'Fall',
     '2': 'Winter',

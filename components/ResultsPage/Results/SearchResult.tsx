@@ -247,7 +247,7 @@ export function MobileSearchResult({
                   : 'MobileSearchResult__panel--descriptionHidden'
               }
             >
-              {course.desc}
+              <Markup content={course.desc} />
             </div>
             <div
               className="MobileSearchResult__panel--showMore"

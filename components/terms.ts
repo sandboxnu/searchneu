@@ -86,23 +86,23 @@ export function getRoundedTerm(
   nextCampus: Campus,
   prevTerm: string
 ): string {
-  const prevterm_int = Number(prevTerm);
+  const prevTermInt = Number(prevTerm);
 
   const closestTerm = termInfos[nextCampus].reduce(
     (prev, current: TermInfo) => {
-      const curterm_int = Number(current.value);
-      const diff = Math.abs(prevterm_int - curterm_int);
+      const curTermInt = Number(current.value);
+      const diff = Math.abs(prevTermInt - curTermInt);
       // Returns the term which is closest to the previous term
-      if (diff < prev['diff']) {
-        return { term_str: current.value, term_int: curterm_int, diff: diff };
+      if (diff < prev.diff) {
+        return { termStr: current.value, diff: diff };
       }
       return prev;
       // Initial value (which will always be replaced)
     },
-    { term_str: '', term_int: '', diff: Number.MAX_SAFE_INTEGER }
+    { termStr: '', diff: Number.MAX_SAFE_INTEGER }
   );
 
-  return closestTerm['term_str'];
+  return closestTerm.termStr;
 }
 
 // Get the name version of a term id

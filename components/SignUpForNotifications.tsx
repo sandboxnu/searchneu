@@ -35,6 +35,18 @@ export default function SignUpForNotifications({
     setShowModal(true);
   };
 
+  const seatsLeft = course.sections.reduce((prev, cur) => {
+    if (cur.seatsRemaining > 0) {
+      return prev + 1;
+    }
+    return prev;
+  }, 0);
+
+  const seatsLeftText =
+    seatsLeft === 1
+      ? 'There is 1 section with seats left.'
+      : `There are ${seatsLeft} sections with seats left.`;
+
   return showNotificationSignup ? (
     userInfo ? (
       <div className="DesktopSectionPanel__notifs">
@@ -59,7 +71,7 @@ export default function SignUpForNotifications({
     )
   ) : (
     <div className="allSeatsAvailable">
-      <span>There are seats available in all sections.</span>
+      <span>{seatsLeftText}</span>
     </div>
   );
 }

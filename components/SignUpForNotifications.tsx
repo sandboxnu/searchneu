@@ -35,17 +35,17 @@ export default function SignUpForNotifications({
     setShowModal(true);
   };
 
-  const seatsLeft = course.sections.reduce((prev, cur) => {
+  const numOpenSections = course.sections.reduce((prev, cur) => {
     if (cur.seatsRemaining > 0) {
       return prev + 1;
     }
     return prev;
   }, 0);
 
-  const seatsLeftText =
-    seatsLeft === 1
+  const openSectionsText =
+    numOpenSections === 1
       ? 'There is 1 section with seats left.'
-      : `There are ${seatsLeft} sections with seats left.`;
+      : `There are ${numOpenSections} sections with seats left.`;
 
   return showNotificationSignup ? (
     userInfo ? (
@@ -71,7 +71,7 @@ export default function SignUpForNotifications({
     )
   ) : (
     <div className="allSeatsAvailable">
-      <span>{seatsLeftText}</span>
+      <span>{openSectionsText}</span>
     </div>
   );
 }

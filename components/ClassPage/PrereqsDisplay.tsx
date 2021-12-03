@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import React, { ReactElement } from 'react';
-import { isCompositeReq } from '../ResultsPage/Results/useResultDetail';
-import { CompositeReq, CourseReq, Requisite } from '../types';
+import {
+  isCompositeReq,
+  isCourseReq,
+} from '../ResultsPage/Results/useResultDetail';
+import { CompositeReq, Requisite } from '../types';
 
 type PrereqsDisplayProps = {
   termId: string;
@@ -70,13 +73,18 @@ export default function PrereqsDisplay({
         </>
       );
     }
-  } else {
-    const prereq: CourseReq = prereqs as CourseReq;
+  } else if (isCourseReq(prereqs)) {
     return (
-      <li key={prereq.subject + prereq.classId}>
+      <li key={prereqs.subject + prereqs.classId}>
         <Link
-          href={`/${campus}/${termId}/classPage/${prereq.subject}/${prereq.classId}`}
-        >{`${prereq.subject} ${prereq.classId}`}</Link>
+          href={`/${campus}/${termId}/classPage/${prereqs.subject}/${prereqs.classId}`}
+        >{`${prereqs.subject} ${prereqs.classId}`}</Link>
+      </li>
+    );
+  } else {
+    return (
+      <li key={prereqs}>
+        <span>{prereqs}</span>
       </li>
     );
   }

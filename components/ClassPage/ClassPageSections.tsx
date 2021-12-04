@@ -135,7 +135,7 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
         </a>
         <Tooltip
           text={'View this section on Banner.'}
-          direction={TooltipDirection.Up}
+          direction={TooltipDirection.Down}
         />
       </div>
       {classMeetings.map((meeting, index) => {

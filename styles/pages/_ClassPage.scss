@@ -100,9 +100,7 @@
       background: #338ef1;
       white-space: nowrap;
       & > div {
-        border-color: #338ef1 transparent transparent transparent;
-        right: 29px;
-        top: 24px;
+        border-color: transparent transparent #338ef1 transparent;
       }
     }
   }

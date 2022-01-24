@@ -258,7 +258,7 @@ exports[`should render a section 1`] = `
                   </a>
                 </div>
               </div>
-              <FeedbackModal isFeedback={true} toggleForm={[Function: toggleModal]} feedbackModalOpen={false} isHelpOut={false}>
+              <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
                 <div className=\\"feedback-container\\">
                   <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
                     <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: bound hideMessage]}>

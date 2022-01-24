@@ -58,26 +58,23 @@ class FeedbackModal extends React.Component<Props, State> {
       contact: this.state.contactValue,
     });
 
-    await axios
-      .post(process.env.SLACK_WEBHOOK_SECRET, {
-        text: 'Someone submitted some feedback',
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `Someone submitted some feedback:\n> *Contact*: \`${this.state.contactValue}\`\n> *Message*: ${this.state.messageValue}`,
-            },
+    const data = {
+      text: 'Someone submitted some feedback',
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Someone submitted some feedback:\n > *Contact*: \`${this.state.contactValue}\` \n > *Message*: ${this.state.messageValue}`,
           },
-        ],
-      })
+        },
+      ],
+    };
+
+    await axios
+      .post(process.env.SLACK_WEBHOOK_SECRET, JSON.stringify(data))
       .catch((error) => {
-        macros.error(
-          'Unable to submit feedback',
-          error,
-          this.state.messageValue,
-          this.state.contactValue
-        );
+        macros.error('Unable to submit feedback', error, data);
         alert(
           `Unable to submit feedback - please submit an issue at https://github.com/sandboxnu/searchneu, and include the following error:\n\n${error}`
         );

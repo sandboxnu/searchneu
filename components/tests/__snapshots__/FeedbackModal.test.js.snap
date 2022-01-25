@@ -24,7 +24,7 @@ exports[`should render form is closed 1`] = `
         <Icon name=\\"remove\\" as=\\"i\\" />
         Cancel
       </Button>
-      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} as=\\"button\\">
+      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} disabled={false} as=\\"button\\">
         <Icon name=\\"checkmark\\" as=\\"i\\" />
         Submit
       </Button>
@@ -57,7 +57,7 @@ exports[`should render the form 1`] = `
         <Icon name=\\"remove\\" as=\\"i\\" />
         Cancel
       </Button>
-      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} as=\\"button\\">
+      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} disabled={false} as=\\"button\\">
         <Icon name=\\"checkmark\\" as=\\"i\\" />
         Submit
       </Button>

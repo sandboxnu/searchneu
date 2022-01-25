@@ -58,21 +58,26 @@ class FeedbackModal extends React.Component<Props, State> {
       contact: this.state.contactValue,
     });
 
-    const data = {
+    const contact =
+      this.state.contactValue === ''
+        ? 'No email provided'
+        : this.state.contactValue;
+    const data = JSON.stringify({
       text: 'Someone submitted some feedback',
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Someone submitted some feedback:\n > *Contact*: \`${this.state.contactValue}\` \n > *Message*: ${this.state.messageValue}`,
+            text: `Someone submitted some feedback:\n> *Contact*: \`${contact}\` \n> *Message*: ${this.state.messageValue}`,
           },
         },
       ],
-    };
+    });
 
     await axios
-      .post(process.env.SLACK_WEBHOOK_SECRET, JSON.stringify(data))
+      .post(process.env.SLACK_WEBHOOK_SECRET || '', data)
+      .then((_) => console.log('Sent response' + data))
       .catch((error) => {
         macros.error('Unable to submit feedback', error, data);
         alert(

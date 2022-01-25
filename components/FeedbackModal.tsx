@@ -18,7 +18,7 @@ import {
 } from 'semantic-ui-react';
 
 import macros from './macros';
-import axios from 'axios';
+import postFeedback from '../pages/api/feedback/feedbackApi';
 
 // This file manages the two popups that asks for user information
 // 1. the feedback popup that shows up if you click the feedback button on the bottom of the page
@@ -62,7 +62,8 @@ class FeedbackModal extends React.Component<Props, State> {
       this.state.contactValue === ''
         ? 'No email provided'
         : this.state.contactValue;
-    const data = JSON.stringify({
+
+    const data = {
       text: 'Someone submitted some feedback',
       blocks: [
         {
@@ -73,17 +74,9 @@ class FeedbackModal extends React.Component<Props, State> {
           },
         },
       ],
-    });
+    };
 
-    await axios
-      .post(process.env.SLACK_WEBHOOK_SECRET || '', data)
-      .then((_) => console.log('Sent response' + data))
-      .catch((error) => {
-        macros.error('Unable to submit feedback', error, data);
-        alert(
-          `Unable to submit feedback - please submit an issue at https://github.com/sandboxnu/searchneu, and include the following error:\n\n${error}`
-        );
-      });
+    await postFeedback(process.env.SLACK_WEBHOOK_SECRET, JSON.stringify(data));
 
     this.setState({
       messageVisible: true,

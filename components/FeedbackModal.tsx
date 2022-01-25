@@ -18,7 +18,7 @@ import {
 } from 'semantic-ui-react';
 
 import macros from './macros';
-import postFeedback from '../pages/api/feedback/feedbackApi';
+import axios from 'axios';
 
 // This file manages the two popups that asks for user information
 // 1. the feedback popup that shows up if you click the feedback button on the bottom of the page
@@ -27,6 +27,7 @@ import postFeedback from '../pages/api/feedback/feedbackApi';
 type State = {
   messageValue: string;
   contactValue: string;
+  sending: boolean;
   messageVisible: boolean;
 };
 
@@ -42,6 +43,7 @@ class FeedbackModal extends React.Component<Props, State> {
     this.state = {
       messageValue: '',
       contactValue: '',
+      sending: false,
       messageVisible: false,
     };
 
@@ -52,31 +54,27 @@ class FeedbackModal extends React.Component<Props, State> {
   }
 
   async onSubmit() {
+    this.setState({
+      sending: true,
+    });
     // Send an event to amplitude too, just for redundancy.
     macros.logAmplitudeEvent('Feedback', {
       text: this.state.messageValue,
       contact: this.state.contactValue,
     });
 
-    const contact =
-      this.state.contactValue === ''
-        ? 'No email provided'
-        : this.state.contactValue;
-
-    const data = {
-      text: 'Someone submitted some feedback',
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `Someone submitted some feedback:\n> *Contact*: \`${contact}\` \n> *Message*: ${this.state.messageValue}`,
-          },
-        },
-      ],
-    };
-
-    await postFeedback(process.env.SLACK_WEBHOOK_SECRET, JSON.stringify(data));
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/feedback`, {
+        contact: this.state.contactValue,
+        message: this.state.messageValue,
+      })
+      .then((_) => alert('Sent! :)'))
+      .catch((error) => {
+        macros.error('Unable to submit feedback', error);
+        alert(
+          `Unable to submit feedback - please submit an issue at https://github.com/sandboxnu/searchneu, and include the following error:\n\n${error}`
+        );
+      });
 
     this.setState({
       messageVisible: true,
@@ -181,9 +179,10 @@ class FeedbackModal extends React.Component<Props, State> {
               color="green"
               form="feedbackForm"
               onClick={this.onSubmit}
+              disabled={this.state.sending}
             >
               <Icon name="checkmark" />
-              Submit
+              {this.state.sending ? 'Sending...' : 'Submit'}
             </Button>
           </Modal.Actions>
         </Modal>

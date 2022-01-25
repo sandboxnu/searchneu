@@ -68,7 +68,6 @@ class FeedbackModal extends React.Component<Props, State> {
         contact: this.state.contactValue,
         message: this.state.messageValue,
       })
-      .then((_) => alert('Sent! :)'))
       .catch((error) => {
         macros.error('Unable to submit feedback', error);
         alert(
@@ -77,6 +76,7 @@ class FeedbackModal extends React.Component<Props, State> {
       });
 
     this.setState({
+      sending: false,
       messageVisible: true,
       messageValue: '',
       contactValue: '',
@@ -112,7 +112,7 @@ class FeedbackModal extends React.Component<Props, State> {
 
   render() {
     const transitionStyles = {
-      entering: { opacity: 0 },
+      entering: { opacity: 1 },
       entered: { opacity: 1 },
       exited: { display: 'none', opacity: 0 },
     };

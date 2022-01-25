@@ -118,7 +118,7 @@ class FeedbackModal extends React.Component<Props, State> {
     };
 
     const firstText =
-      "Find a bug in Search NEU? Find a query that doesn't come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it. ";
+      "Find a bug in Search NEU? Find a query that doesn't come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it.";
     const secondBody = [
       <p key="0">
         By default this form is anonymous. Leave your name and/or email if you

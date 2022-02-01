@@ -129,6 +129,7 @@ export function BLANK_SEARCH_RESULT(): SearchResult {
       subject: [],
       classType: [],
       campus: [],
+      honors: [],
     },
     hasNextPage: false,
   };
@@ -140,6 +141,7 @@ export function EMPTY_FILTER_OPTIONS(): FilterOptions {
     subject: [],
     classType: [],
     campus: [],
+    honors: [],
   };
 }
 

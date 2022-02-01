@@ -73,13 +73,13 @@ const CLASSTYPE_SPEC: FilterSpec<'Checkboxes'> = {
   category: FilterCategories.Checkboxes,
   default: [],
   display: 'Class Type',
-  order: 4,
+  order: 5,
 };
 const CLASSIDRANGE_SPEC: FilterSpec<'Range'> = {
   category: FilterCategories.Range,
   default: {},
   display: 'Course Number',
-  order: 5,
+  order: 6,
 };
 const HONORS_SPEC: FilterSpec<'Checkboxes'> = {
   category: FilterCategories.Checkboxes,

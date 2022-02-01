@@ -21,6 +21,7 @@ function FilterPanel({
       {FILTERS_IN_ORDER.map(({ key, display, category }, index) => {
         const aFilter = selected[key];
         const setActiveFilter = (a): void => setActive({ [key]: a });
+        console.log(`OPTIONS[KEY]: ${options[key]}`);
         return (
           <React.Fragment key={index}>
             {category === 'Dropdown' && (

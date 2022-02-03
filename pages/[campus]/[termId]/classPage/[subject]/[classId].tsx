@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import pMap from 'p-map';
 import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
+import MobilePageContent from '../../../../../components/ClassPage/mobile/MobilePageContent';
 import Header from '../../../../../components/Header';
 import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
@@ -87,7 +88,7 @@ export default function Page(): ReactElement {
         onSignOut={onSignOut}
       />
       {macros.isMobile ? (
-        <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>
+        <MobilePageContent />
       ) : (
         <>
           <PageContent

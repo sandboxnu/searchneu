@@ -16,7 +16,7 @@ SearchNEU lets you easily search for classes, professors, and subjects at Northe
 
 SearchNEU is maintained by [Sandbox](https://www.sandboxnu.com/), Northeastern's student-led software consultancy.
 
-### Feedback 🤔📝
+### Feedback 📝🤔
 
 We're curious to hear what you have to say! Feel free to fill out the feedback form in the footer of our [landing page]("https://searchneu.com/NEU") if you have any feedback for us.
 
@@ -28,7 +28,18 @@ You can find the API used by SearchNEU and GraduateNU to get class and professor
 
 SearchNEU was originally created and built in 2017 by [Ryan Hughes](https://github.com/ryanhugh). Thank you Ryan for making SearchNEU what it is!
 
-Special shout out to the following folks for contributing!
+Shout out to our current team of developers and designers 💖
+
+- Andrew Dai <a href="https://github.com/andrewydai"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/andrewydai/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://andrewdai.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Simar Chadha <a href="https://github.com/SimChadha"><img src="./public/images/github.png" alt="Github" width="12px"></a>
+- Adam Koulopoulos <a href="https://github.com/koulopoulos"><img src="./public/images/github.png" alt="Github" width="12px"></a>
+- Sebastian Wittrock <a href="https://github.com/sebwittr"><img src="./public/images/github.png" alt="Github" width="12px"></a>
+- Puneet Johal <a href="https://github.com/puneetjohal"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/puneetjohal/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Diana Steelman <a href="https://www.linkedin.com/in/dianasteelman/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://www.dianasteelman.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Autumn Fung <a href="https://www.linkedin.com/in/autumnfung/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://autumnfung1.wixsite.com/fungsphotos"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+
+And a special thank you to the following folks for contributing!
 
 - [Edward Li](https://github.com/NEUDitao)
 - [Edward Shen](https://github.com/edward-shen)
@@ -42,20 +53,9 @@ Special shout out to the following folks for contributing!
 - [Alex Takayama](https://github.com/bugsalexander)
 - [Emily Pillay](https://github.com/epillay)
 - [Dillon Hammer](https://github.com/dillonhammer)
-- [Kimin Kim](https://github.com/kiminkim724)
-
-And of course, shout out to our current team of developers and designers 💖
-
-- [Andrew Dai](https://github.com/andrewydai)
-- [Zachar Hankewycz](https://github.com/hankewyczz)
-- [Simar Chadha](https://github.com/SimChadha)
-- [Adam Koulopoulos]()
-- [Sebastian Wittrock](https://github.com/sebwittr)
-- [Puneet Johal](https://github.com/puneetjohal)
-- Diana Steelman
-- Autumn Fung
 - [Megan Li](https://github.com/megandouli)
 - [Becca Johnson](https://github.com/beccajohnson17)
+- [Kimin Kim](https://github.com/kiminkim724)
 
 ### License
 

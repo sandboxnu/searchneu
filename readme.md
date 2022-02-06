@@ -42,17 +42,20 @@ Special shout out to the following folks for contributing!
 - [Alex Takayama](https://github.com/bugsalexander)
 - [Emily Pillay](https://github.com/epillay)
 - [Dillon Hammer](https://github.com/dillonhammer)
+- [Kimin Kim](https://github.com/kiminkim724)
 
 And of course, shout out to our current team of developers and designers 💖
 
+- [Andrew Dai](https://github.com/andrewydai)
+- [Zachar Hankewycz](https://github.com/hankewyczz)
+- [Simar Chadha](https://github.com/SimChadha)
+- [Adam Koulopoulos]()
+- [Sebastian Wittrock](https://github.com/sebwittr)
+- [Puneet Johal](https://github.com/puneetjohal)
+- Diana Steelman
+- Autumn Fung
 - [Megan Li](https://github.com/megandouli)
 - [Becca Johnson](https://github.com/beccajohnson17)
-- [Andrew Dai](https://github.com/andrewydai)
-- [Puneet Johal](https://github.com/puneetjohal)
-- [Simar Chadha](https://github.com/SimChadha)
-- [Kimin Kim](https://github.com/kiminkim724)
-- [Zachar Hankewycz](https://github.com/hankewyczz)
-- Diana Steelman
 
 ### License
 

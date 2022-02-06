@@ -8,5 +8,5 @@
 # For more info, check out the AlertBanner.tsx file
 ---
 notificationsAlert:
-  text: 'Due to a technical issue, Facebook notifications have been temporarily disabled.'
-  alertLevel: 'error'
+  text: 'New feature: SMS notifications are now available and have replaced Facebook Messenger notifications :D'
+  alertLevel: 'info'

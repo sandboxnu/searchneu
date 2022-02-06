@@ -1,0 +1,6 @@
+query getTermIDsByCollege($subCollege: String!) {
+  termInfos(subCollege: $subCollege) {
+    text
+    termId
+  }
+}

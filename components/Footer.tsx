@@ -74,11 +74,7 @@ function Footer() {
           </a>
         </div>
       </div>
-      <FeedbackModal
-        isFeedback
-        toggleForm={toggleModal}
-        feedbackModalOpen={modalOpen}
-      />
+      <FeedbackModal toggleForm={toggleModal} feedbackModalOpen={modalOpen} />
     </>
   );
 }

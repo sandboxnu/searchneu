@@ -81,6 +81,30 @@
     align-items: center;
   }
 
+  .classPageLastUpdated > a {
+    &:hover + .tooltip {
+      display: block;
+      margin-top: 70px;
+      margin-left: -5px;
+      background: #505050;
+      & > div {
+        border-color: transparent transparent #505050 transparent;
+        left: 12px;
+      }
+    }
+  }
+
+  .sectionCRN > a {
+    &:hover + .tooltip {
+      display: block;
+      background: #338ef1;
+      white-space: nowrap;
+      & > div {
+        border-color: transparent transparent #338ef1 transparent;
+      }
+    }
+  }
+
   .creditsDisplay {
     text-align: center;
 

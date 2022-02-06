@@ -12,6 +12,7 @@ import {
   SearchItem,
   Section,
   TimeToDayjs,
+  UserInfo,
 } from '../types';
 import { MobileSearchResult, SearchResult } from './Results/SearchResult';
 
@@ -23,6 +24,9 @@ interface ResultsLoaderProps {
   results: SearchItem[];
   loadMore: () => void;
   hasNextPage: boolean;
+  userInfo: UserInfo;
+  onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -97,6 +101,9 @@ function ResultsLoader({
   results,
   loadMore,
   hasNextPage,
+  userInfo,
+  onSignIn,
+  fetchUserInfo,
 }: ResultsLoaderProps): ReactElement {
   return (
     <InfiniteScroll
@@ -118,6 +125,9 @@ function ResultsLoader({
                       : result.employee.id
                   }
                   result={result}
+                  userInfo={userInfo}
+                  onSignIn={onSignIn}
+                  fetchUserInfo={fetchUserInfo}
                 />
               );
             })}
@@ -131,17 +141,33 @@ function ResultsLoader({
 // If the Panels are updated to function components, we can memoize them instead and remove this
 const ResultItemMemoized = React.memo(function ResultItemMemoized({
   result,
+  userInfo,
+  onSignIn,
+  fetchUserInfo,
 }: {
-  result;
+  result: SearchItem;
+  userInfo: UserInfo;
+  onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }) {
   if (result.type === 'class') {
     const course = result.class;
     // TODO: Can we get rid of this clone deep?
     course.sections = getFormattedSections(cloneDeep(result.sections));
     return macros.isMobile ? (
-      <MobileSearchResult course={course} />
+      <MobileSearchResult
+        course={course}
+        userInfo={userInfo}
+        onSignIn={onSignIn}
+        fetchUserInfo={fetchUserInfo}
+      />
     ) : (
-      <SearchResult course={course} />
+      <SearchResult
+        course={course}
+        userInfo={userInfo}
+        onSignIn={onSignIn}
+        fetchUserInfo={fetchUserInfo}
+      />
     );
   }
 

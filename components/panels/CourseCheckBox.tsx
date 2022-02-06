@@ -5,50 +5,52 @@
 
 import { uniqueId } from 'lodash';
 import React, { ReactElement, useState } from 'react';
-import { Icon } from 'semantic-ui-react';
-import useUser from '../../utils/useUser';
 import IconCheckMark from '../icons/IconCheckmark';
 import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
 import macros from '../macros';
-import { Section } from '../types';
+import { Course } from '../types';
+import axios from 'axios';
+import { UserInfo } from '../../components/types';
 
-type NotifCheckBoxProps = {
-  section: Section;
+type CourseCheckBoxProps = {
+  course: Course;
+  checked: boolean;
+  userInfo: UserInfo;
+  fetchUserInfo: () => void;
 };
 
-export default function NotifCheckBox({
-  section,
-}: NotifCheckBoxProps): ReactElement {
-  const { user, subscribeToSection, unsubscribeFromSection } = useUser();
-
-  const checked = user?.followedSections?.includes(
-    Keys.getSectionHash(section)
-  );
+export default function CourseCheckBox({
+  course,
+  checked,
+  userInfo,
+  fetchUserInfo,
+}: CourseCheckBoxProps): ReactElement {
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   function onCheckboxClick(): void {
     if (checked) {
-      unsubscribeFromSection(section);
+      axios
+        .delete(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
+          {
+            data: {
+              token: userInfo.token,
+              sectionIds: [],
+              courseIds: [Keys.getClassHash(course)],
+            },
+          }
+        )
+        .then(() => fetchUserInfo());
     } else {
-      subscribeToSection(section);
+      axios
+        .put(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+          token: userInfo.token,
+          sectionIds: [],
+          courseIds: [Keys.getClassHash(course)],
+        })
+        .then(() => fetchUserInfo());
     }
-  }
-
-  if (section.seatsRemaining > 5) {
-    return (
-      <div
-        style={{ color: '#d3d3d3' }}
-        data-tip="There are still seats remaining for this section"
-        className="infoIcon"
-      >
-        <Icon name="info circle" className="myIcon" />
-        <Tooltip
-          text={'There are still seats remaining for this section'}
-          direction={TooltipDirection.Up}
-        />
-      </div>
-    );
   }
 
   return (
@@ -82,8 +84,8 @@ export default function NotifCheckBox({
       <Tooltip
         text={
           checked
-            ? 'Unsubscribe from notifications for this section.'
-            : 'Subscribe to notifications for this section'
+            ? 'Unsubscribe from notifications for this course.'
+            : 'Subscribe to notifications for this course'
         }
         direction={TooltipDirection.Up}
       />

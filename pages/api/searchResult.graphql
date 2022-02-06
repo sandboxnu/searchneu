@@ -1,5 +1,5 @@
 query searchResults(
-  $termId: Int!
+  $termId: String!
   $query: String
   $offset: Int = 0
   $first: Int = 10

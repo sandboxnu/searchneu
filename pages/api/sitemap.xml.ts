@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getLatestTerm } from '../../components/global';
+import { fetchTermInfo, getLatestTerm } from '../../components/terms';
 import { Campus } from '../../components/types';
 import { GetPagesForSitemapQuery } from '../../generated/graphql';
 import { gqlClient } from '../../utils/courseAPIClient';
 
 // Execute the proc on each search result in the given termId
 async function forEachSearchResult(
-  termId: number,
+  termId: string,
   proc: (item: GetPagesForSitemapQuery['search']['nodes'][0]) => void
-) {
+): Promise<void> {
   let offset = 0;
   let hasNextPage = false;
   do {
@@ -29,10 +29,12 @@ async function generateSitemap(): Promise<string> {
   // The part after the https://searchneu.com/
   const items: Set<string> = new Set();
 
+  const termInfos = await fetchTermInfo();
+
   // latest terms for each campus
-  const latestTerms: [Campus, number][] = Object.values(Campus).map((c) => [
+  const latestTerms: [Campus, string][] = Object.values(Campus).map((c) => [
     c,
-    Number(getLatestTerm(c)),
+    getLatestTerm(termInfos, c),
   ]);
 
   // Add the classes
@@ -53,7 +55,7 @@ async function generateSitemap(): Promise<string> {
   }
 
   // Add the employees
-  const latestNEU = Number(getLatestTerm(Campus.NEU));
+  const latestNEU = getLatestTerm(termInfos, Campus.NEU);
   await forEachSearchResult(latestNEU, (employee) => {
     if (employee.__typename === 'Employee') {
       items.add(
@@ -83,7 +85,7 @@ async function generateSitemap(): Promise<string> {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
-) {
+): Promise<void> {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/xml');
 

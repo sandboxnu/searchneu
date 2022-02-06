@@ -5,7 +5,7 @@ exports[`should render a section 1`] = `
   <LocationProvider stringifyOptions={[undefined]} history={{...}} location={{...}}>
     <Results>
       <div>
-        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]}>
+        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]} userInfo={{...}} onSignOut={[Function: onSignOut]}>
           <div>
             <Head>
               <_default reduceComponentsToState={[Function: reduceComponents]} headManager={{...}} inAmpMode={false} />
@@ -51,7 +51,7 @@ exports[`should render a section 1`] = `
                             </Icon>
                             <DropdownMenu className=\\"\\">
                               <div className=\\"menu transition\\">
-                                <Link href=\\"/NEU/202160/search/cs\\">
+                                <Link href=\\"/NEU//search/cs\\">
                                   <DropdownItem selected={true} text=\\"NEU\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -60,7 +60,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/CPS/202154/search/cs\\">
+                                <Link href=\\"/CPS//search/cs\\">
                                   <DropdownItem selected={false} text=\\"CPS\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -69,7 +69,7 @@ exports[`should render a section 1`] = `
                                     </div>
                                   </DropdownItem>
                                 </Link>
-                                <Link href=\\"/LAW/202152/search/cs\\">
+                                <Link href=\\"/LAW//search/cs\\">
                                   <DropdownItem selected={false} text=\\"LAW\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
                                     <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
                                       <span className=\\"text\\">
@@ -91,102 +91,15 @@ exports[`should render a section 1`] = `
                 </span>
                 <div className=\\"Breadcrumb_Container__dropDownContainer\\">
                   <Memo(SearchDropdown) options={{...}} value=\\"202160\\" className=\\"searchDropdown\\" compact={false}>
-                    <Dropdown fluid={true} compact={false} text=\\"Summer II 2021\\" className=\\"selection searchDropdown \\" additionLabel=\\"Add \\" additionPosition=\\"top\\" closeOnBlur={true} closeOnEscape={true} deburr={false} icon=\\"dropdown\\" minCharacters={1} noResultsMessage=\\"No results found.\\" openOnFocus={true} renderLabel={[Function: renderItemContent]} searchInput=\\"text\\" selectOnBlur={true} selectOnNavigation={true} wrapSelection={true}>
+                    <Dropdown fluid={true} compact={false} text=\\"\\" className=\\"selection searchDropdown \\" additionLabel=\\"Add \\" additionPosition=\\"top\\" closeOnBlur={true} closeOnEscape={true} deburr={false} icon=\\"dropdown\\" minCharacters={1} noResultsMessage=\\"No results found.\\" openOnFocus={true} renderLabel={[Function: renderItemContent]} searchInput=\\"text\\" selectOnBlur={true} selectOnNavigation={true} wrapSelection={true}>
                       <Ref innerRef={{...}}>
                         <RefFindNode innerRef={{...}}>
                           <div role=\\"listbox\\" aria-busy={[undefined]} aria-disabled={[undefined]} aria-expanded={false} aria-multiselectable={[undefined]} className=\\"ui fluid dropdown selection searchDropdown \\" onBlur={[Function (anonymous)]} onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onFocus={[Function (anonymous)]} onChange={[Function (anonymous)]} tabIndex={0}>
-                            <DropdownText className=\\"text\\" content=\\"Summer II 2021\\">
-                              <div aria-atomic={true} aria-live=\\"polite\\" role=\\"alert\\" className=\\"divider text\\">
-                                Summer II 2021
-                              </div>
-                            </DropdownText>
                             <Icon name=\\"dropdown\\" className=\\"\\" onClick={[Function: onClick]} as=\\"i\\">
                               <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"dropdown icon\\" />
                             </Icon>
                             <DropdownMenu className=\\"\\">
-                              <div className=\\"menu transition\\">
-                                <Link href=\\"/NEU/202210/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Fall 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Fall 2021
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202160/search/cs\\">
-                                  <DropdownItem selected={true} text=\\"Summer II 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer II 2021
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202150/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Summer Full 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer Full 2021
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202140/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Summer I 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer I 2021
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202130/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Spring 2021\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Spring 2021
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202110/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Fall 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Fall 2020
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202040/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Summer I 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer I 2020
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202050/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Summer Full 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer Full 2020
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                                <Link href=\\"/NEU/202060/search/cs\\">
-                                  <DropdownItem selected={false} text=\\"Summer II 2020\\" onClick={[Function: onClick]} onMouseEnter={[Function (anonymous)]}>
-                                    <div onMouseEnter={[Function (anonymous)]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        Summer II 2020
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </Link>
-                              </div>
+                              <div className=\\"menu transition\\" />
                             </DropdownMenu>
                           </div>
                         </RefFindNode>
@@ -345,7 +258,7 @@ exports[`should render a section 1`] = `
                   </a>
                 </div>
               </div>
-              <FeedbackModal isFeedback={true} toggleForm={[Function: toggleModal]} feedbackModalOpen={false} isHelpOut={false}>
+              <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
                 <div className=\\"feedback-container\\">
                   <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
                     <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: bound hideMessage]}>

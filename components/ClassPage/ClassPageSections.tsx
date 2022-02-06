@@ -2,13 +2,14 @@ import dayjs from 'dayjs';
 import { chunk, partition, sortBy, uniq, uniqWith } from 'lodash';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
-import { GetClassPageInfoQuery, Section } from '../../generated/graphql';
+import { GetClassPageInfoQuery } from '../../generated/graphql';
 import IconGlobe from '../icons/IconGlobe';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
-import { MeetingType, Meeting } from '../types';
+import { MeetingType } from '../types';
 import SectionsTermNav from './SectionsTermNav';
+import Tooltip, { TooltipDirection } from '../Tooltip';
 
 type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
@@ -129,7 +130,13 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
     <div className="sectionCard">
       <div className="sectionCardProfs">{section.profs.join(', ')}</div>
       <div className="sectionCRN">
-        <IconGlobe /> {section.crn}
+        <a href={section.url} target="_blank" rel="noopener noreferrer">
+          <IconGlobe /> {section.crn}
+        </a>
+        <Tooltip
+          text={'View this section on Banner.'}
+          direction={TooltipDirection.Down}
+        />
       </div>
       {classMeetings.map((meeting, index) => {
         return (

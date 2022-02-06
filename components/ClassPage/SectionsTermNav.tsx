@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import { getSeason, getYear } from '../global';
+import { getSeason, getYear } from '../terms';
 import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
 
 type sectionsTermNavProps = {

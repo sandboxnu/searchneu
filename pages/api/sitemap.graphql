@@ -1,4 +1,4 @@
-query getPagesForSitemap($termId: Int!, $offset: Int!) {
+query getPagesForSitemap($termId: String!, $offset: Int!) {
   search(termId: $termId, offset: $offset, first: 1000) {
     pageInfo {
       hasNextPage

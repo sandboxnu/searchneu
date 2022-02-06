@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import React, { ReactElement } from 'react';
 import IconGlobe from '../../icons/IconGlobe';
 import Keys from '../../Keys';
@@ -12,14 +11,17 @@ import {
 import useSectionPanelDetail from './useSectionPanelDetail';
 import WeekdayBoxes from './WeekdayBoxes';
 import Tooltip, { TooltipDirection } from '../../Tooltip';
-
-const NotifCheckBox = dynamic(() => import('../../panels/NotifCheckBox'), {
-  ssr: false,
-});
+import SectionCheckBox from '../../panels/SectionCheckBox';
+import { UserInfo } from '../../../components/types';
 
 interface SectionPanelProps {
   section: Section;
-  showNotificationSwitches: boolean;
+  userInfo: UserInfo;
+  fetchUserInfo: () => void;
+}
+
+interface MobileSectionPanelProps {
+  section: Section;
 }
 
 const meetsOnDay = (meeting: Meeting, dayIndex: DayOfWeek): boolean => {
@@ -67,11 +69,9 @@ const getDaysOfWeekAsBooleans = (section: Section): boolean[] => {
 
 export function DesktopSectionPanel({
   section,
-  showNotificationSwitches,
+  userInfo,
+  fetchUserInfo,
 }: SectionPanelProps): ReactElement {
-  // TODO: remove when notifications is fixed
-  showNotificationSwitches = false;
-
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -141,6 +141,9 @@ export function DesktopSectionPanel({
     });
   };
 
+  const checked =
+    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
+
   return (
     <tr className="DesktopSectionPanel" key={Keys.getSectionHash(section)}>
       <td>
@@ -151,6 +154,14 @@ export function DesktopSectionPanel({
           text={'View this section on Banner.'}
           direction={TooltipDirection.Up}
         />
+        {section.honors ? (
+          <i>
+            <br />
+            Honors
+          </i>
+        ) : (
+          ''
+        )}
       </td>
       <td>{getProfs(section).join(', ')}</td>
       <td>
@@ -166,10 +177,15 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      {showNotificationSwitches && (
+      {userInfo && (
         <td>
           <div className="DesktopSectionPanel__notifs">
-            <NotifCheckBox section={section} />
+            <SectionCheckBox
+              section={section}
+              checked={checked}
+              userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
+            />
           </div>
         </td>
       )}
@@ -179,10 +195,9 @@ export function DesktopSectionPanel({
 
 export function MobileSectionPanel({
   section,
-  showNotificationSwitches,
-}: SectionPanelProps): ReactElement {
+}: MobileSectionPanelProps): ReactElement {
   // TODO: remove when notifications is fixed
-  showNotificationSwitches = false;
+  const showNotificationSwitches = false;
 
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -225,16 +240,26 @@ export function MobileSectionPanel({
     <div className="MobileSectionPanel">
       <div className="MobileSectionPanel__header">
         <span>{getProfs(section).join(', ')}</span>
-        <span>Boston</span>
+        <span>{section.campus}</span>
       </div>
       <div className="MobileSectionPanel__firstRow">
         <div>
           <a target="_blank" rel="noopener noreferrer" href={section.url}>
             <IconGlobe />
           </a>
-          <span>{section.crn}</span>
+          <span>
+            {section.crn}
+            {section.honors ? <i>&nbsp;&nbsp;&nbsp;Honors</i> : ''}
+          </span>
         </div>
-        {showNotificationSwitches && <NotifCheckBox section={section} />}
+        {showNotificationSwitches && (
+          <SectionCheckBox
+            section={section}
+            checked={false}
+            userInfo={null}
+            fetchUserInfo={null}
+          />
+        )}
       </div>
       <div className="MobileSectionPanel__secondRow">
         {!section.online && (

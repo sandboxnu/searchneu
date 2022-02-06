@@ -1,7 +1,7 @@
 import { mean } from 'lodash';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import { getCampusByLastDigit, getSeason, getYear } from '../global';
+import { getCampusByLastDigit, getSeason, getYear } from '../terms';
 import { Campus } from '../types';
 import HeaderBody from './HeaderBody';
 

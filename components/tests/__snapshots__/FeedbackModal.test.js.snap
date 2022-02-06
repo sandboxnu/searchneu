@@ -6,13 +6,17 @@ exports[`should render form is closed 1`] = `
     [function]
   </Transition>
   <Modal open={false} onClose={[Function: Function]} size=\\"small\\" className=\\"feedback-modal-container\\" centered={true} dimmer={true} closeOnDimmerClick={true} closeOnDocumentClick={false} eventPool=\\"Modal\\">
-    <Header icon=\\"mail\\" content=\\"Get Involved with Search NEU!\\" />
+    <Header icon=\\"mail\\" content=\\"Search NEU Contact Form\\" />
     <ModalContent className=\\"formModalContent\\">
       <Form as=\\"form\\">
         <div className=\\"feedbackParagraph\\">
-          Thanks for your interest! We&#39;d love to have more people help out with the project. We are looking for people for both introductory level roles and leadership roles. There&#39;s a lot of CS stuff (new features, etc) and non-CS stuff (posters, marketing, outreach, etc) that we could work on, so it is no problem at all if you don&#39;t have a lot of experience in CS! Everything is flexible, and we could help you learn some programming along the way if you want to work on the site 🙂. Leave your name and some way we can get in contact (Facebook URL, email, Fortnite username, etc) and someone will reach out!
+          Find a bug in Search NEU? Find a query that doesn&#39;t come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it.
         </div>
         <TextArea name=\\"response\\" form=\\"feedbackForm\\" className=\\"feedbackTextbox\\" onChange={[Function: bound onTextAreaChange]} as=\\"textarea\\" rows={3} />
+        <p>
+          By default this form is anonymous. Leave your name and/or email if you want us to be able to contact you.
+        </p>
+        <Input name=\\"contact\\" form=\\"feedbackForm\\" className=\\"formModalInput\\" onChange={[Function: bound onContactChange]} type=\\"text\\" />
       </Form>
     </ModalContent>
     <ModalActions>
@@ -20,7 +24,7 @@ exports[`should render form is closed 1`] = `
         <Icon name=\\"remove\\" as=\\"i\\" />
         Cancel
       </Button>
-      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} as=\\"button\\">
+      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} disabled={false} as=\\"button\\">
         <Icon name=\\"checkmark\\" as=\\"i\\" />
         Submit
       </Button>
@@ -35,13 +39,17 @@ exports[`should render the form 1`] = `
     [function]
   </Transition>
   <Modal open={true} onClose={[Function: Function]} size=\\"small\\" className=\\"feedback-modal-container\\" centered={true} dimmer={true} closeOnDimmerClick={true} closeOnDocumentClick={false} eventPool=\\"Modal\\">
-    <Header icon=\\"mail\\" content=\\"Get Involved with Search NEU!\\" />
+    <Header icon=\\"mail\\" content=\\"Search NEU Contact Form\\" />
     <ModalContent className=\\"formModalContent\\">
       <Form as=\\"form\\">
         <div className=\\"feedbackParagraph\\">
-          Thanks for your interest! We&#39;d love to have more people help out with the project. We are looking for people for both introductory level roles and leadership roles. There&#39;s a lot of CS stuff (new features, etc) and non-CS stuff (posters, marketing, outreach, etc) that we could work on, so it is no problem at all if you don&#39;t have a lot of experience in CS! Everything is flexible, and we could help you learn some programming along the way if you want to work on the site 🙂. Leave your name and some way we can get in contact (Facebook URL, email, Fortnite username, etc) and someone will reach out!
+          Find a bug in Search NEU? Find a query that doesn&#39;t come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it.
         </div>
         <TextArea name=\\"response\\" form=\\"feedbackForm\\" className=\\"feedbackTextbox\\" onChange={[Function: bound onTextAreaChange]} as=\\"textarea\\" rows={3} />
+        <p>
+          By default this form is anonymous. Leave your name and/or email if you want us to be able to contact you.
+        </p>
+        <Input name=\\"contact\\" form=\\"feedbackForm\\" className=\\"formModalInput\\" onChange={[Function: bound onContactChange]} type=\\"text\\" />
       </Form>
     </ModalContent>
     <ModalActions>
@@ -49,7 +57,7 @@ exports[`should render the form 1`] = `
         <Icon name=\\"remove\\" as=\\"i\\" />
         Cancel
       </Button>
-      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} as=\\"button\\">
+      <Button type=\\"submit\\" color=\\"green\\" form=\\"feedbackForm\\" onClick={[Function: bound onSubmit]} disabled={false} as=\\"button\\">
         <Icon name=\\"checkmark\\" as=\\"i\\" />
         Submit
       </Button>

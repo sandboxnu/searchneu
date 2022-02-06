@@ -139,14 +139,19 @@ export default function useResultDetail(
 
         retVal.push(element);
       } else if (reqType === PrereqType.PREREQ && isCompositeReq(childBranch)) {
-        // Figure out how many unique classIds there are in the prereqs.
-        const allClassIds = {};
+        // Figure out how many unique elements there are in the prereqs.
+        const uniqueElements: Set<string> = new Set();
+
         for (const node of childBranch.values) {
-          if (isCourseReq(node)) allClassIds[node.classId] = true;
+          if (isCourseReq(node)) {
+            uniqueElements.add(`${node.subject}${node.classId}`);
+          } else if (typeof node === 'string') {
+            uniqueElements.add(node);
+          }
         }
 
         // If there is only 1 prereq with a unique classId, don't show the parens.
-        if (Object.keys(allClassIds).length === 1) {
+        if (uniqueElements.size === 1) {
           retVal.push(
             getReqsStringHelper(
               childBranch,

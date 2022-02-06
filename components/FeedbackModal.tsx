@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
 import {
@@ -25,41 +24,28 @@ import axios from 'axios';
 // 1. the feedback popup that shows up if you click the feedback button on the bottom of the page
 // 2. At one point, instead of the typeform, we had a similar popup appear asking if user's were interested
 // These popups display a messge and have a a text box for users to enter data, and then they sent this data to the backend
+type State = {
+  messageValue: string;
+  contactValue: string;
+  sending: boolean;
+  messageVisible: boolean;
+};
 
-class FeedbackModal extends React.Component {
-  // The bool of whether the feedback form should be open or not
-  // needs to be tracked in home.js
-  // because it is set to true when clicking the buttons to open this Modal in Home.js
-  // and is set to false through actions in this component.
-  static propTypes = {
-    toggleForm: PropTypes.func.isRequired,
-    feedbackModalOpen: PropTypes.bool.isRequired,
-    isFeedback: PropTypes.bool,
-    isHelpOut: PropTypes.bool,
-  };
+type Props = {
+  toggleForm: () => void;
+  feedbackModalOpen: boolean;
+};
 
-  static defaultProps = {
-    isFeedback: false,
-    isHelpOut: false,
-  };
-
-  constructor(props) {
+class FeedbackModal extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
-      // The value of the message box.
       messageValue: '',
-
-      // The value of the contact box.
       contactValue: '',
-
-      // Whether the message is visible or not.
+      sending: false,
       messageVisible: false,
     };
-
-    if (!props.isHelpOut && !props.isFeedback) {
-      macros.error('popup has to either be ishelp out or isFeedback');
-    }
 
     this.onTextAreaChange = this.onTextAreaChange.bind(this);
     this.onContactChange = this.onContactChange.bind(this);
@@ -68,27 +54,29 @@ class FeedbackModal extends React.Component {
   }
 
   async onSubmit() {
+    this.setState({
+      sending: true,
+    });
     // Send an event to amplitude too, just for redundancy.
     macros.logAmplitudeEvent('Feedback', {
       text: this.state.messageValue,
       contact: this.state.contactValue,
     });
 
-    const response = await axios.post('https://searchneu.com/feedback', {
-      message: this.state.messageValue,
-      contact: this.state.contactValue,
-    });
-
-    if (response.error) {
-      macros.error(
-        'Unable to submit feedback',
-        response.error,
-        this.state.messageValue,
-        this.state.contactValue
-      );
-    }
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/feedback`, {
+        contact: this.state.contactValue,
+        message: this.state.messageValue,
+      })
+      .catch((error) => {
+        macros.error('Unable to submit feedback', error);
+        alert(
+          `Unable to submit feedback - please submit an issue at https://github.com/sandboxnu/searchneu, and include the following error:\n\n${error}`
+        );
+      });
 
     this.setState({
+      sending: false,
       messageVisible: true,
       messageValue: '',
       contactValue: '',
@@ -124,38 +112,28 @@ class FeedbackModal extends React.Component {
 
   render() {
     const transitionStyles = {
-      entering: { opacity: 0 },
+      entering: { opacity: 1 },
       entered: { opacity: 1 },
       exited: { display: 'none', opacity: 0 },
     };
 
-    let firstText;
-    let secondBody;
-    let header = null;
+    const firstText =
+      "Find a bug in Search NEU? Find a query that doesn't come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it.";
+    const secondBody = [
+      <p key="0">
+        By default this form is anonymous. Leave your name and/or email if you
+        want us to be able to contact you.
+      </p>,
+      <Input
+        name="contact"
+        form="feedbackForm"
+        className="formModalInput"
+        onChange={this.onContactChange}
+        key="1"
+      />,
+    ];
 
-    if (this.props.isFeedback) {
-      firstText =
-        "Find a bug in Search NEU? Find a query that doesn't come up with the results you were looking for? Have an idea for an improvement or just want to say hi? Drop a line below! Feel free to write whatever you want to and someone on the team will read it.";
-      secondBody = [
-        <p key="0">
-          By default this form is anonymous. Leave your name and/or email if you
-          want us to be able to contact you.
-        </p>,
-        <Input
-          name="contact"
-          form="feedbackForm"
-          className="formModalInput"
-          onChange={this.onContactChange}
-          key="1"
-        />,
-      ];
-
-      header = 'Search NEU Feedback';
-    } else {
-      header = 'Get Involved with Search NEU!';
-      firstText =
-        "Thanks for your interest! We'd love to have more people help out with the project. We are looking for people for both introductory level roles and leadership roles. There's a lot of CS stuff (new features, etc) and non-CS stuff (posters, marketing, outreach, etc) that we could work on, so it is no problem at all if you don't have a lot of experience in CS! Everything is flexible, and we could help you learn some programming along the way if you want to work on the site 🙂. Leave your name and some way we can get in contact (Facebook URL, email, Fortnite username, etc) and someone will reach out!";
-    }
+    const header = 'Search NEU Contact Form';
 
     return (
       <div className="feedback-container">
@@ -201,9 +179,10 @@ class FeedbackModal extends React.Component {
               color="green"
               form="feedbackForm"
               onClick={this.onSubmit}
+              disabled={this.state.sending}
             >
               <Icon name="checkmark" />
-              Submit
+              {this.state.sending ? 'Sending...' : 'Submit'}
             </Button>
           </Modal.Actions>
         </Modal>

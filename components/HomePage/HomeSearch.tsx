@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
-import { getRoundedTerm, getTermInfoForCampus } from '../global';
+import { getRoundedTerm } from '../terms';
 import IconGradcap from '../icons/IconGradcap';
 import IconScale from '../icons/IconScale';
 import IconTie from '../icons/IconTie';
 import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
+import getTermInfos from '../../utils/TermInfoProvider';
 
 interface HomeSearchProps {
   termId: string;
@@ -16,11 +17,16 @@ interface HomeSearchProps {
 }
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
+  const termInfos = getTermInfos();
+
+  const campusLink = (c: Campus): string =>
+    `/${c}/${getRoundedTerm(termInfos, c, termId)}`;
+
   const router = useRouter();
   return (
     <div className="HomeSearch">
       <div className="HomeSearch__campusSelector">
-        <Link href={`/${Campus.NEU}/${getRoundedTerm(Campus.NEU, termId)}`}>
+        <Link href={campusLink(Campus.NEU)}>
           <label
             className={
               'HomeSearch__campusSelector--item --neu' +
@@ -32,7 +38,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>NEU</span>
           </label>
         </Link>
-        <Link href={`/${Campus.CPS}/${getRoundedTerm(Campus.CPS, termId)}`}>
+        <Link href={campusLink(Campus.CPS)}>
           <label
             className={
               'HomeSearch__campusSelector--item --cps' +
@@ -44,7 +50,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
             <span>CPS</span>
           </label>
         </Link>
-        <Link href={`/${Campus.LAW}/${getRoundedTerm(Campus.LAW, termId)}`}>
+        <Link href={campusLink(Campus.LAW)}>
           <label
             className={
               'HomeSearch__campusSelector--item --law' +
@@ -69,7 +75,7 @@ const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
         </div>
         <div className="HomeSearch__searchBar--dropdown">
           <SearchDropdown
-            options={getTermInfoForCampus(campus).map((terminfo) => ({
+            options={termInfos[campus].map((terminfo) => ({
               text: terminfo.text,
               value: terminfo.value,
               link: `/${campus}/${terminfo.value}`,

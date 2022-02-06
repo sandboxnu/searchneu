@@ -159,12 +159,11 @@ export enum Campus {
   LAW = 'LAW',
 }
 
-export interface User {
-  facebookMessengerId: string;
-  facebookPageId: string;
-  firstName: string;
-  lastName: string;
-  loginKeys: string[];
-  watchingClasses: string[];
-  watchingSections: string[];
+// ======= Notifications ========
+
+export interface UserInfo {
+  token: string;
+  phoneNumber: string;
+  courseIds: string[];
+  sectionIds: string[];
 }

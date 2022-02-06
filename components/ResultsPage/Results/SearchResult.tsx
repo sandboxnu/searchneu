@@ -1,31 +1,27 @@
 import { Markup } from 'interweave';
 import { cloneDeep } from 'lodash';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo, useState } from 'react';
-import useUser from '../../../utils/useUser';
 import {
   CreditsDisplay,
   CreditsDisplayMobile,
 } from '../../common/CreditsDisplay';
 import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
+import { UserInfo } from '../../../components/types';
 import IconArrow from '../../icons/IconArrow';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconNotepad from '../../icons/IconNotepad';
-import Keys from '../../Keys';
+import SignUpForNotifications from '../../SignUpForNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
 import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
-
-const SignUpForNotifications = dynamic(
-  () => import('../../SignUpForNotifications'),
-  { ssr: false }
-);
-
 interface SearchResultProps {
   course: Course;
+  userInfo: UserInfo;
+  onSignIn: (token: string) => void;
+  fetchUserInfo: () => void;
 }
 
 const sortSections = (sections: Section[]): Section[] => {
@@ -43,17 +39,17 @@ const sortSections = (sections: Section[]): Section[] => {
   return sortedSections;
 };
 
-export function SearchResult({ course }: SearchResultProps): ReactElement {
+export function SearchResult({
+  course,
+  userInfo,
+  onSignIn,
+  fetchUserInfo,
+}: SearchResultProps): ReactElement {
   const router = useRouter();
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { optionalDisplay } = useResultDetail(course);
-
-  const { user } = useUser();
-  const userIsWatchingClass = user?.followedCourses?.includes(
-    Keys.getClassHash(course)
-  );
 
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
@@ -63,6 +59,12 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
     course.feeDescription && course.feeAmount
       ? `${course.feeDescription} - $${course.feeAmount.toLocaleString()}`
       : null;
+
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
 
   return (
     <div className="SearchResult">
@@ -121,7 +123,13 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
               </div>
             </div>
 
-            <SignUpForNotifications course={course} />
+            <SignUpForNotifications
+              course={course}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
+              showNotificationSignup={hasAtLeastOneSectionFull()}
+              fetchUserInfo={fetchUserInfo}
+            />
           </div>
         </div>
       </div>
@@ -137,7 +145,7 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             <th> Meetings </th>
             <th> Campus </th>
             <th> Seats </th>
-            {userIsWatchingClass && <th> Notifications </th>}
+            {userInfo && <th> Notifications </th>}
           </tr>
         </thead>
         <tbody>
@@ -145,7 +153,8 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
             <DesktopSectionPanel
               key={section.crn}
               section={section}
-              showNotificationSwitches={userIsWatchingClass}
+              userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
             />
           ))}
         </tbody>
@@ -173,16 +182,15 @@ export function SearchResult({ course }: SearchResultProps): ReactElement {
 
 export function MobileSearchResult({
   course,
+  userInfo,
+  onSignIn,
+  fetchUserInfo,
 }: SearchResultProps): ReactElement {
   const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const { user } = useUser();
-  const userIsWatchingClass = user?.followedCourses?.includes(
-    Keys.getClassHash(course)
-  );
   const sortedSections = useMemo(() => sortSections(course.sections), [course]);
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
@@ -239,7 +247,7 @@ export function MobileSearchResult({
                   : 'MobileSearchResult__panel--descriptionHidden'
               }
             >
-              {course.desc}
+              <Markup content={course.desc} />
             </div>
             <div
               className="MobileSearchResult__panel--showMore"
@@ -268,16 +276,18 @@ export function MobileSearchResult({
               renderChildren={() => optionalDisplay(PrereqType.COREQ, course)}
             />
             <div className="MobileSearchResult__panel--notifContainer">
-              <SignUpForNotifications course={course} />
+              <SignUpForNotifications
+                course={course}
+                userInfo={userInfo}
+                onSignIn={onSignIn}
+                showNotificationSignup={false}
+                fetchUserInfo={fetchUserInfo}
+              />
             </div>
           </div>
           <div className="MobileSearchResult__panel--sections">
             {renderedSections.map((section) => (
-              <MobileSectionPanel
-                key={section.crn}
-                section={section}
-                showNotificationSwitches={userIsWatchingClass}
-              />
+              <MobileSectionPanel key={section.crn} section={section} />
             ))}
           </div>
           {!hideShowAll && (

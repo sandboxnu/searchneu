@@ -8,36 +8,32 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import Footer from '../../components/Footer';
-import { getLatestTerm, getTermInfoForCampus } from '../../components/global';
+import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
 import ExploratorySearchButton from '../../components/HomePage/ExploratorySearchButton';
 import Boston from '../../components/icons/boston.svg';
 import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import macros from '../../components/macros';
+import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import AlertBanner, {
   AlertBannerData,
 } from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
+import getTermInfos from '../../utils/TermInfoProvider';
+
 export default function Home(): ReactElement {
   const router = useRouter();
 
   const campus = (router.query.campus as Campus) || Campus.NEU;
-  const LATEST_TERM = getLatestTerm(campus);
+  const termInfos = getTermInfos();
+  const LATEST_TERM =
+    termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
 
-  const AVAILABLE_TERM_IDS = getTermInfoForCampus(campus).map((t) => {
-    return t.value;
-  });
-
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
-
-  // Redirect to latest if we're at an old term
-  if (!AVAILABLE_TERM_IDS.includes(termId)) {
-    router.push(`/${campus}/${LATEST_TERM}`);
-  }
 
   // On mobile only show the logo and the github corner if there are no results and the search box is not focused (the virtual keyboard is not on the screen).
   let containerClassnames = 'home-container';
@@ -97,7 +93,11 @@ export default function Home(): ReactElement {
           >
             <div className="centerTextContainer">
               <Logo className="logo" aria-label="logo" campus={campus} />
-              <HomeSearch termId={termId} campus={campus} />
+              {termInfos[campus].length == 0 ? (
+                <LoadingContainer />
+              ) : (
+                <HomeSearch termId={termId} campus={campus} />
+              )}
               <ExploratorySearchButton termId={termId} campus={campus} />
             </div>
             <Husky className="husky" campus={campus} aria-label="husky" />
@@ -113,11 +113,12 @@ export default function Home(): ReactElement {
 }
 
 // Tells Next what to statically optimize
-export function getStaticPaths(): GetStaticPathsResult {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const result: GetStaticPathsResult = { paths: [], fallback: false };
+  const termInfos = await fetchTermInfo();
 
   for (const campus of Object.values(Campus)) {
-    for (const termId of getTermInfoForCampus(campus)) {
+    for (const termId of termInfos[campus]) {
       result.paths.push({
         params: { campus, termId: termId.value as string },
       });

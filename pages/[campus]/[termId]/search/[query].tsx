@@ -100,6 +100,31 @@ export default function Results(): ReactElement | null {
     }`;
   };
 
+  const getTotalResults = (): number => {
+    /* 
+      Using the subject filter here to get the total number of search results because:
+      - the results themselves are loaded 10 at a time
+      - classes don't overlap across subjects
+    */
+    const options = searchData?.filterOptions['subject'] || [];
+    const selected = filters['subject'];
+
+    if (selected.length > 0) {
+      const selectedOptions = options.filter((option) =>
+        selected.includes(option.value)
+      );
+      return selectedOptions.reduce(
+        (total_aggregation, option) => total_aggregation + option.count,
+        0
+      );
+    }
+
+    return options.reduce(
+      (total_aggregation, option) => total_aggregation + option.count,
+      0
+    );
+  };
+
   macros.log(searchData);
 
   return (
@@ -147,6 +172,7 @@ export default function Results(): ReactElement | null {
               userInfo={userInfo}
               onSignIn={onSignIn}
               fetchUserInfo={fetchUserInfo}
+              totalResults={getTotalResults()}
             />
           )}
           <Footer />

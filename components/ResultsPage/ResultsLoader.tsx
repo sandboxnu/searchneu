@@ -27,6 +27,7 @@ interface ResultsLoaderProps {
   userInfo: UserInfo;
   onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
+  totalResults: number;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -104,6 +105,7 @@ function ResultsLoader({
   userInfo,
   onSignIn,
   fetchUserInfo,
+  totalResults,
 }: ResultsLoaderProps): ReactElement {
   return (
     <InfiniteScroll
@@ -112,6 +114,11 @@ function ResultsLoader({
       hasMore={hasNextPage}
       loader={null}
     >
+      <div className="Results_Aggregation">
+        {totalResults === 1
+          ? `${totalResults} result`
+          : `${totalResults} results`}
+      </div>
       <div className="five column row">
         <div className="page-home">
           {results

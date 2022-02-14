@@ -9,6 +9,14 @@
   padding: 15px 15px 15px 15px;
   text-align: center;
   font-size: 15px;
+  width: 100%;
+
+  &__parent {
+    display: flex;
+  }
+  &__text {
+    flex: 5;
+  }
 
   &__back {
     height: 15px;

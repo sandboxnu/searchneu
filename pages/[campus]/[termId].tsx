@@ -35,12 +35,7 @@ export default function Home(): ReactElement {
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
-  // On mobile only show the logo and the github corner if there are no results and the search box is not focused (the virtual keyboard is not on the screen).
   let containerClassnames = 'home-container';
-  // TODO: figure out macros.isMobile + next
-  if (macros.isMobile) {
-    containerClassnames += ' mobileCompact';
-  }
 
   return (
     <div>

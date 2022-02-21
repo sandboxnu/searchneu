@@ -185,4 +185,30 @@
       transform: rotate(-180deg);
     }
   }
+
+  .view-more-info-container {
+    border-radius: 5px;
+    background: #fff;
+    border: 1px solid rgba(79, 79, 79, 0.5);
+    align-items: center;
+    padding: 8px 10px 5px;
+    width: max-content;
+    margin: 27px auto;
+    cursor: pointer;
+    &:hover {
+      background: #fafafa;
+    }
+
+    span {
+      display: inline-block;
+      vertical-align: 5px;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 25px;
+    }
+  }
+  .notepad-icon {
+    margin-right: 8px;
+  }
 }

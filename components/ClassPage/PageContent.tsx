@@ -6,7 +6,7 @@ import ClassPageInfoHeader from './ClassPageInfoHeader';
 import ClassPageReqsBody from './ClassPageReqsBody';
 import ClassPageSections from './ClassPageSections';
 
-type PageContentProps = {
+export type PageContentProps = {
   termId: string;
   campus: string;
   subject: string;

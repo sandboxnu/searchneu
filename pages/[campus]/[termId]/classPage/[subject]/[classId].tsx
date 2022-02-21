@@ -88,7 +88,14 @@ export default function Page(): ReactElement {
         onSignOut={onSignOut}
       />
       {macros.isMobile ? (
-        <MobilePageContent />
+        <MobilePageContent
+          termId={termId}
+          campus={campus}
+          subject={subject}
+          classId={classId}
+          classPageInfo={classPageInfo}
+          isCoreq={false}
+        />
       ) : (
         <>
           <PageContent

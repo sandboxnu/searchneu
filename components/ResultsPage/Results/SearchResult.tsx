@@ -195,6 +195,9 @@ export function MobileSearchResult({
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
   );
+  const router = useRouter();
+  const termId = router.query.termId as string;
+  const campus = router.query.campus as string;
 
   const { optionalDisplay } = useResultDetail(course);
 
@@ -231,7 +234,6 @@ export function MobileSearchResult({
           <div className="MobileSearchResult__panel--mainContainer">
             <div className="MobileSearchResult__panel--infoStrings">
               <LastUpdatedMobile
-                host={course.host}
                 prettyUrl={course.prettyUrl}
                 lastUpdateTime={course.lastUpdateTime}
               />
@@ -275,6 +277,18 @@ export function MobileSearchResult({
               setExpand={setShowCoreq}
               renderChildren={() => optionalDisplay(PrereqType.COREQ, course)}
             />
+            <div
+              onClick={() =>
+                router.push(
+                  `/${campus}/${termId}/classPage/${course.subject}/${course.classId}`
+                )
+              }
+            >
+              <div className="view-more-info-container">
+                <IconNotepad className="notepad-icon" />
+                <span>View more info for this class</span>
+              </div>
+            </div>
             <div className="MobileSearchResult__panel--notifContainer">
               <SignUpForNotifications
                 course={course}

@@ -15,6 +15,11 @@ interface LastUpdatedProps {
   className?: string;
 }
 
+interface LastUpdatedMobileProps {
+  prettyUrl: string;
+  lastUpdateTime: number;
+}
+
 export function getLastUpdateString(lastUpdateTime: number): string {
   return lastUpdateTime ? dayjs(lastUpdateTime).fromNow() : null;
 }
@@ -52,7 +57,7 @@ export function LastUpdated({
 export function LastUpdatedMobile({
   prettyUrl,
   lastUpdateTime,
-}: LastUpdatedProps): ReactElement {
+}: LastUpdatedMobileProps): ReactElement {
   return (
     <a
       href={prettyUrl}

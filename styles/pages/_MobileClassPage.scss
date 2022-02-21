@@ -1,0 +1,137 @@
+.mobilePageContent {
+  font-family: Lato;
+
+  .backToResults {
+    padding: 25px 27px;
+    height: 38px;
+    font-size: 17px;
+    cursor: pointer;
+    color: #009fda;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .classPageContainer {
+    padding: 17px;
+
+    &__header {
+      background: #fafafa;
+      border: 1px solid #dededf;
+      box-sizing: border-box;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 16px 30px;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+
+      &:focus,
+      &:active {
+        outline: none;
+      }
+
+      &--expanded {
+        background: #fafafa;
+        border: 1px solid #dededf;
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25);
+        border-radius: 8px 8px 0 0;
+        border-bottom: none;
+        padding: 16px 30px;
+        display: flex;
+        justify-content: center;
+
+        &:focus,
+        &:active {
+          outline: none;
+        }
+      }
+
+      &--expanded > svg {
+        width: 20px;
+        transform: rotate(90deg);
+        margin-top: 3px;
+      }
+
+      & > svg {
+        width: 20px;
+        margin-top: 3px;
+      }
+
+      &--classTitle {
+        font-style: normal;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 24px;
+        display: flex;
+        align-items: center;
+        color: #505050;
+        margin-left: 15px;
+      }
+    }
+
+    &__panel {
+      background: #fff;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      border-radius: 0 0 8px 8px;
+      border: 1px solid #dededf;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 17px;
+      padding: 39px 27px 25px 27px;
+
+      .updateCreditPanel {
+        display: flex;
+        justify-content: space-between;
+
+        .lastUpdated {
+          font-style: italic;
+          font-size: 14px;
+        }
+      }
+
+      &--descriptionHidden {
+        max-width: 280px;
+        max-height: 34px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 25px;
+
+        &::after {
+          content: '';
+          text-align: right;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 90%;
+          height: 18px;
+          background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 1) 90%
+          );
+        }
+      }
+
+      &--description {
+        max-width: 280px;
+        margin-top: 25px;
+      }
+
+      &--showMore {
+        color: #d41b2c;
+        font-style: italic;
+        text-decoration: underline;
+        display: inline-block;
+        margin-bottom: 45px;
+
+        &:focus,
+        &:active {
+          outline: none;
+        }
+      }
+    }
+  }
+}

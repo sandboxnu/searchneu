@@ -152,6 +152,15 @@ $SIDEBAR_WIDTH: 268px;
   text-align: right;
   padding-right: 14px;
   margin-bottom: -7px;
+
+  &__withFilters {
+    font-style: italic;
+    font-family: Lato;
+    text-align: right;
+    padding-right: 14px;
+    margin-bottom: -7px;
+    margin-top: -22px;
+  }
 }
 
 .Breadcrumb_Container {

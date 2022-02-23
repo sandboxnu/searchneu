@@ -125,6 +125,17 @@ export default function Results(): ReactElement | null {
     );
   };
 
+  const TotalResultsDisplay = (): ReactElement => {
+    const totalResults = getTotalResults();
+    return (
+      <p>
+        {totalResults === 1
+          ? `${totalResults} result`
+          : `${totalResults} results`}
+      </p>
+    );
+  };
+
   macros.log(searchData);
 
   return (
@@ -153,8 +164,17 @@ export default function Results(): ReactElement | null {
           </>
         )}
         <div className="Results_Main">
-          {filtersAreSet && (
-            <FilterPills filters={filters} setFilters={setQParams} />
+          {filtersAreSet ? (
+            <>
+              <FilterPills filters={filters} setFilters={setQParams} />
+              <div className="Results_Aggregation__withFilters">
+                <TotalResultsDisplay />
+              </div>
+            </>
+          ) : (
+            <div className="Results_Aggregation">
+              <TotalResultsDisplay />
+            </div>
           )}
           {!searchData && <LoadingContainer />}
           {searchData && searchData.results.length === 0 && (
@@ -172,7 +192,6 @@ export default function Results(): ReactElement | null {
               userInfo={userInfo}
               onSignIn={onSignIn}
               fetchUserInfo={fetchUserInfo}
-              totalResults={getTotalResults()}
             />
           )}
           <Footer />

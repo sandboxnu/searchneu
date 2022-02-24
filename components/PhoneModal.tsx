@@ -4,6 +4,8 @@ import React, { ReactElement, useState } from 'react';
 import { BarLoader } from 'react-spinners';
 import macros from './macros';
 
+import { createPortal } from 'react-dom';
+
 interface PhoneModalProps {
   visible: boolean;
   onCancel: () => void;
@@ -104,47 +106,118 @@ export function PhoneModal({
     }
   };
 
-  return (
+  React.useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  return createPortal(
+    <>
+      {visible && (
+        <div className="modal-wrapper" onClick={onCancel}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal__body">
+              <span className="modal__header">
+                Sign up for SMS Notifications
+              </span>
+              <div className="modal__input-group --mb-1">
+                <div className="modal__input-box modal__input-box--country-code">
+                  <span className="input-box__prefix">+</span>
+                  <input
+                    style={{ width: Math.max(countryCode.length, 1) + 'ch' }}
+                    maxLength={3}
+                    placeholder={'1'}
+                    value={countryCode}
+                    onChange={({ target }) => onCountryCodeChange(target.value)}
+                    className="modal__input modal__input--country-code"
+                  />
+                </div>
+                <div className="modal__input-box modal__input-box--phone">
+                  <input
+                    placeholder={'(123)-456-7890'}
+                    maxLength={12}
+                    value={phoneNumber}
+                    onChange={({ target }) => onPhoneChange(target.value)}
+                    className="modal__input modal__input--phone"
+                  />
+                </div>
+              </div>
+              <span className="modal__label">
+                We will not share your phone number, it will be used for
+                messaging about class openings only.
+              </span>
+            </div>
+            <div className="modal__footer">
+              <div className="modal__input-group">
+                <button key="cancel" onClick={onCancel} className="modal__btn">
+                  Cancel
+                </button>
+                <button
+                  key="ok"
+                  onClick={onVerificationCodeSubmit}
+                  className="modal__btn modal__btn--primary"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>,
+    /*
     <Modal
+      className='modal'
       visible={visible}
-      title="Sign up for SMS notifications!"
+      title="Sign up for SMS notifications"
       onCancel={onCancel}
-      footer={[
+      footer={<Input.Group compact className="footer-input-group">
         <Button
           key="send code"
           onClick={onPhoneNumberSubmit}
           disabled={resendDisabled}
+          className='button'
         >
-          {submitted ? 'Send New Verification Text' : 'Send Verification Text'}
-        </Button>,
+          Cancel
+        </Button>
         <Button
           key="enter code"
           type="primary"
           onClick={onVerificationCodeSubmit}
           disabled={!submitted}
+          className='button'
         >
-          Enter Code
-        </Button>,
-      ]}
+          Ok
+        </Button>
+      </Input.Group>}
     >
-      <Typography.Text>Enter your phone #:</Typography.Text>
       <br />
-      <Input.Group compact>
+      <Input.Group compact className="input-group">
         <Input
-          style={{ width: '15%' }}
           prefix="+"
           maxLength={3}
           value={countryCode}
           onChange={({ target }) => onCountryCodeChange(target.value)}
+          className='input'
         />
         <Input
-          style={{ width: '85%' }}
-          placeholder={'XXX-XXX-XXXX'}
+          placeholder={'(123)-456-7890'}
           maxLength={12}
           value={phoneNumber}
           onChange={({ target }) => onPhoneChange(target.value)}
+          className='input phone-input'
         />
       </Input.Group>
+      <span className='warning'>We will not share your phone number, it will be used for messaging about class openings only. </span>
       {phoneValidationMessage && (
         <span style={{ color: 'red' }}>{phoneValidationMessage}</span>
       )}
@@ -175,5 +248,7 @@ export function PhoneModal({
       />
       {responseMessage && <span>{responseMessage}</span>}
     </Modal>
+    */
+    document.body
   );
 }

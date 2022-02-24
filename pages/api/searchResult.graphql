@@ -45,6 +45,11 @@ query searchResults(
         count
         description
       }
+      honors {
+        value
+        count
+        description
+      }
     }
     nodes {
       type: __typename

@@ -54,6 +54,7 @@ export default function Results(): ReactElement | null {
     query,
     filters,
   };
+  console.log('SEARCH PARAMS: ' + JSON.stringify(searchParams));
 
   useEffect(() => {
     fetchUserInfo();
@@ -83,6 +84,9 @@ export default function Results(): ReactElement | null {
   };
 
   const { searchData, loadMore } = useSearch(searchParams);
+  console.log(
+    'SEARCH DATA OPTIONS: ' + JSON.stringify(searchData?.filterOptions)
+  );
 
   if (!query && !termId) {
     return null;

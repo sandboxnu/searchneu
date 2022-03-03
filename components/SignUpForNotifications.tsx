@@ -4,12 +4,11 @@
  */
 
 import React, { ReactElement, useState } from 'react';
-import { UserInfo } from '../components/types';
-import Keys from './Keys';
-import CourseCheckBox from './panels/CourseCheckBox';
+import { UserInfo } from '../types';
+import CourseCheckBox from '../panels/CourseCheckBox';
 import { PhoneModal } from './PhoneModal';
-import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import { Course } from './types';
+import NotifSignUpButton from '../ResultsPage/Results/NotifSignUpButton';
+import { Course } from '../types';
 
 type SignUpForNotificationsProps = {
   course: Course;

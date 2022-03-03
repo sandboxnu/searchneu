@@ -1,42 +1,4 @@
-.modal-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  z-index: 999999;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 14px;
-  background: #fafafb;
-  overflow: hidden;
-
-  animation-duration: 0.2s;
-  animation-name: popin;
-  animation-timing-function: ease;
-
-  @keyframes popin {
-    0% {
-      transform: scale(0.95);
-    }
-
-    50% {
-      transform: scale(1.05);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-
+.phone-modal {
   &__body {
     display: flex;
     flex-direction: column;
@@ -68,13 +30,13 @@
 
     button,
     input,
-    .modal__input-box {
+    .phone-modal__input-box {
       float: left;
     }
 
     button:not(:last-child),
     input:not(:last-child),
-    .modal__input-box:not(:last-child) {
+    .phone-modal__input-box:not(:last-child) {
       border-right: none;
     }
 
@@ -105,7 +67,7 @@
     font-family: 'Lato', sans-serif;
     font-size: 1rem;
     padding-left: 0.5rem;
-    cursor: default;
+    cursor: text;
   }
 
   &__input {
@@ -123,8 +85,7 @@
 
     &--country-code {
       color: #505050;
-      padding: 0;
-      padding-right: 0.5rem;
+      padding: 0 0.5rem;
       box-sizing: content-box;
     }
 

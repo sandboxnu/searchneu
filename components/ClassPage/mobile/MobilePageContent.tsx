@@ -1,4 +1,5 @@
 import { Markup } from 'interweave';
+import { mean } from 'lodash';
 import React, { ReactElement, useState } from 'react';
 import { useRouter } from 'next/router';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
@@ -8,6 +9,20 @@ import {
   creditsDescription,
   creditsNumericDisplay,
 } from '../../common/CreditsDisplay';
+import { Campus } from '../../types';
+import IconGradcap from '../../icons/IconGradcap';
+import IconScale from '../../icons/IconScale';
+import IconTie from '../../icons/IconTie';
+import IconDollarSign from '../../icons/IconDollarSign';
+import {
+  numberOfSections,
+  seatsAvailable,
+  seatsFilled,
+} from '../ClassPageInfoBody';
+import Expandable from './MobileClassInfoExpandable';
+import IconGlobe from '../../icons/IconGlobe';
+import IconMessage from '../../icons/IconMessage';
+import SignUpForNotifications from '../../SignUpForNotifications';
 
 export default function MobilePageContent({
   termId,
@@ -82,6 +97,110 @@ export default function MobilePageContent({
                 onClick={() => setShowMore(!showMore)}
               >
                 {showMore ? 'Show less' : 'Show more'}
+              </div>
+
+              <div className="courseLevel">
+                {campus === Campus.NEU ? (
+                  <IconGradcap />
+                ) : campus === Campus.CPS ? (
+                  <IconTie />
+                ) : (
+                  <IconScale />
+                )}
+                <span className="courseLevelText">
+                  {`${
+                    campus === Campus.NEU ? 'Undergraduate' : 'Graduate'
+                  } Course Level`}
+                </span>
+              </div>
+
+              <div className="courseFees">
+                <IconDollarSign />
+                <span className="courseFeesText">
+                  {`Course Fees: ${
+                    classPageInfo.class.latestOccurrence.feeAmount
+                      ? `$${classPageInfo.class.latestOccurrence.feeAmount.toLocaleString()}`
+                      : 'None'
+                  }`}
+                </span>
+              </div>
+
+              <div className="avgInfo">
+                <p>In this course, there is, on average:</p>
+                <ul>
+                  <li>
+                    <b>{Math.round(mean(numberOfSections(classPageInfo)))}</b>{' '}
+                    sections
+                  </li>
+                  <li>
+                    <b>{Math.round(mean(seatsAvailable(classPageInfo)))}</b>{' '}
+                    seats per section
+                  </li>
+                  <li>
+                    <b>{Math.round(mean(seatsFilled(classPageInfo)))}</b> seats
+                    filled, or{' '}
+                    <b>
+                      {(
+                        Math.round(mean(seatsFilled(classPageInfo))) /
+                        Math.round(mean(seatsAvailable(classPageInfo)))
+                      ).toFixed(1)}
+                      %
+                    </b>{' '}
+                    of seats per section filled.
+                  </li>
+                </ul>
+              </div>
+
+              <div className="expandables">
+                <Expandable
+                  title="RECENT PROFESSORS"
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  title="RECENT SEMESTERS OFFERED"
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable title="NUPATHS" classPageInfo={classPageInfo} />
+                <Expandable
+                  title="PREREQUISITES"
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  title="COREQUISITES"
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  title="PREREQUISITE FOR"
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  title="OPTIONAL PREREQUISITE FOR"
+                  classPageInfo={classPageInfo}
+                />
+              </div>
+
+              <div className="bannerButton">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={classPageInfo.class.latestOccurrence.prettyUrl}
+                  className="bannerPageLink"
+                >
+                  <IconGlobe width="22" height="22" className="globe-icon" />
+                  <span>View the course on Banner</span>
+                </a>
+              </div>
+
+              <div className="notifyButton">
+                {/* <SignUpForNotifications
+                  course={classPageInfo.class.latestOccurrence}
+                  userInfo={userInfo}
+                  onSignIn={onSignIn}
+                  showNotificationSignup={false}
+                  fetchUserInfo={fetchUserInfo}
+                /> */}
+                <IconMessage className="message-icon" />
+                <span>Notify me when seats open!</span>
               </div>
             </div>
           )}

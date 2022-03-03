@@ -111,19 +111,21 @@ function getRecentSemesterNames(
   return allSemesters.slice(0, Math.min(limit, allSemesters.length));
 }
 
-function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
+export function seatsFilled(classPageInfo: GetClassPageInfoQuery): number[] {
   return getValidSections(classPageInfo).map(
     (section) => section.seatsCapacity - section.seatsRemaining
   );
 }
 
-function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
+export function seatsAvailable(classPageInfo: GetClassPageInfoQuery): number[] {
   return getValidSections(classPageInfo).map(
     (section) => section.seatsCapacity
   );
 }
 
-function numberOfSections(classPageInfo: GetClassPageInfoQuery): number[] {
+export function numberOfSections(
+  classPageInfo: GetClassPageInfoQuery
+): number[] {
   return classPageInfo.class.allOccurrences.map(
     (occurrence) => occurrence.sections.length
   );

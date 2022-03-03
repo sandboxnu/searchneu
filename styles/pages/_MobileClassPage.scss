@@ -132,6 +132,111 @@
           outline: none;
         }
       }
+
+      .courseLevel {
+        display: flex;
+        .courseLevelText {
+          margin-left: 8px;
+        }
+      }
+
+      .courseFees {
+        display: flex;
+        margin-left: 8px;
+        padding-top: 10px;
+        margin-bottom: 45px;
+        .courseFeesText {
+          margin-left: 18px;
+        }
+      }
+
+      .avgInfo {
+        p {
+          margin-bottom: 0px;
+        }
+        ul {
+          margin-left: 20px;
+          margin-bottom: 45px;
+        }
+      }
+
+      .expandables {
+        margin-bottom: 45px;
+      }
+
+      .bannerButton {
+        display: flex;
+        border-radius: 5px;
+        background: #fff;
+        border: 1px solid rgba(79, 79, 79, 0.5);
+        align-items: center;
+        padding: 12px;
+        padding-right: 20px;
+        margin-bottom: 15px;
+        width: max-content;
+        cursor: pointer;
+        &:hover {
+          background: #fafafa;
+        }
+
+        a {
+          color: black;
+        }
+        .globe-icon {
+          margin-right: 10px;
+        }
+        span {
+          display: inline-block;
+          vertical-align: 5px;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 25px;
+        }
+      }
+
+      .notifyButton {
+        display: flex;
+        border-radius: 5px;
+        background: #fff;
+        border: 1px solid rgba(79, 79, 79, 0.5);
+        align-items: center;
+        padding: 12px;
+        width: max-content;
+        cursor: pointer;
+        &:hover {
+          background: #fafafa;
+        }
+
+        .message-icon {
+          margin-right: 10px;
+        }
+        span {
+          display: inline-block;
+          vertical-align: 5px;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 25px;
+        }
+      }
+    }
+  }
+}
+
+.mobileClassInfoExpandable {
+  font-family: Lato;
+  font-size: 14px;
+  margin-bottom: 21px;
+
+  &__header {
+    .carrot {
+      margin-right: 14px;
+    }
+
+    &--expanded > svg {
+      transform: rotate(90deg);
+      margin-right: 14px;
     }
   }
 }

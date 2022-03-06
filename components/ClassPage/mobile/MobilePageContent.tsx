@@ -114,16 +114,14 @@ export default function MobilePageContent({
                 </span>
               </div>
 
-              <div className="courseFees">
-                <IconDollarSign />
-                <span className="courseFeesText">
-                  {`Course Fees: ${
-                    classPageInfo.class.latestOccurrence.feeAmount
-                      ? `$${classPageInfo.class.latestOccurrence.feeAmount.toLocaleString()}`
-                      : 'None'
-                  }`}
-                </span>
-              </div>
+              {classPageInfo.class.latestOccurrence.feeAmount && (
+                <div className="courseFees">
+                  <IconDollarSign />
+                  <span className="courseFeesText">
+                    {`Course Fees: $${classPageInfo.class.latestOccurrence.feeAmount.toLocaleString()}`}
+                  </span>
+                </div>
+              )}
 
               <div className="avgInfo">
                 <p>In this course, there are, on average:</p>

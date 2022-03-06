@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import { GetClassPageInfoQuery } from '../../../generated/graphql';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
-import { getProfessors } from '../ClassPageInfoBody';
+import { getProfessors, getRecentSemesterNames } from '../ClassPageInfoBody';
 
 export const SupportedInfoTypes = {
   RecentProfessors: 'RECENT PROFESSORS',
@@ -62,6 +62,29 @@ const renderInfo = (
           })}
         </ul>
       );
+
+    case SupportedInfoTypes.RecentSemestersOffered:
+      return (
+        <ul>
+          {getRecentSemesterNames(classPageInfo, 5).map((semester) => {
+            return <li>{semester}</li>;
+          })}
+        </ul>
+      );
+
+    case SupportedInfoTypes.NUPaths:
+      return classPageInfo.class.latestOccurrence.nupath.length === 0 ? (
+        <p>None</p>
+      ) : (
+        <ul>
+          {classPageInfo.class.latestOccurrence.nupath.map((nupath) => {
+            return <li>{nupath}</li>;
+          })}
+        </ul>
+      );
+
+    // TODO: needs a design
+    // case SupportedInfoTypes.Prerequisites:
 
     default:
       return <p>Unable to load more information.</p>;

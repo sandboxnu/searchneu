@@ -100,7 +100,7 @@ export function getProfessors(
   }
 }
 
-function getRecentSemesterNames(
+export function getRecentSemesterNames(
   classPageInfo: GetClassPageInfoQuery,
   limit: number
 ): string[] {

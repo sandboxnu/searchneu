@@ -19,7 +19,7 @@ import {
   seatsAvailable,
   seatsFilled,
 } from '../ClassPageInfoBody';
-import Expandable from './MobileClassInfoExpandable';
+import Expandable, { SupportedInfoTypes } from './MobileClassInfoExpandable';
 import IconGlobe from '../../icons/IconGlobe';
 import IconMessage from '../../icons/IconMessage';
 import SignUpForNotifications from '../../SignUpForNotifications';
@@ -153,28 +153,31 @@ export default function MobilePageContent({
 
               <div className="expandables">
                 <Expandable
-                  title="RECENT PROFESSORS"
+                  type={SupportedInfoTypes.RecentProfessors}
                   classPageInfo={classPageInfo}
                 />
                 <Expandable
-                  title="RECENT SEMESTERS OFFERED"
-                  classPageInfo={classPageInfo}
-                />
-                <Expandable title="NUPATHS" classPageInfo={classPageInfo} />
-                <Expandable
-                  title="PREREQUISITES"
+                  type={SupportedInfoTypes.RecentSemestersOffered}
                   classPageInfo={classPageInfo}
                 />
                 <Expandable
-                  title="COREQUISITES"
+                  type={SupportedInfoTypes.NUPaths}
                   classPageInfo={classPageInfo}
                 />
                 <Expandable
-                  title="PREREQUISITE FOR"
+                  type={SupportedInfoTypes.Prerequisites}
                   classPageInfo={classPageInfo}
                 />
                 <Expandable
-                  title="OPTIONAL PREREQUISITE FOR"
+                  type={SupportedInfoTypes.Corequisites}
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  type={SupportedInfoTypes.PrerequisiteFor}
+                  classPageInfo={classPageInfo}
+                />
+                <Expandable
+                  type={SupportedInfoTypes.OptionalPreresequisiteFor}
                   classPageInfo={classPageInfo}
                 />
               </div>

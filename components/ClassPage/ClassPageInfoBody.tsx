@@ -78,7 +78,7 @@ function getCourseLevel(termId: string): string {
   return campus === Campus.NEU ? 'Undergraduate' : 'Graduate';
 }
 
-function getProfessors(
+export function getProfessors(
   classPageInfo: GetClassPageInfoQuery,
   limit: number
 ): string[] {

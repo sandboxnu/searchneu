@@ -34,7 +34,7 @@ export default function MobilePageContent({
 }: PageContentProps): ReactElement {
   const router = useRouter();
   const [expanded, setExpanded] = useState(true);
-  const [showMore, setShowMore] = useState(false);
+  const [showingMore, setShowMore] = useState(false);
 
   return (
     <div className="mobilePageContent">
@@ -83,7 +83,7 @@ export default function MobilePageContent({
 
               <div
                 className={
-                  showMore
+                  showingMore
                     ? 'classPageContainer__panel--description'
                     : 'classPageContainer__panel--descriptionHidden'
                 }
@@ -94,9 +94,9 @@ export default function MobilePageContent({
                 className="classPageContainer__panel--showMore"
                 role="button"
                 tabIndex={0}
-                onClick={() => setShowMore(!showMore)}
+                onClick={() => setShowMore(!showingMore)}
               >
-                {showMore ? 'Show less' : 'Show more'}
+                {showingMore ? 'Show less' : 'Show more'}
               </div>
 
               <div className="courseLevel">
@@ -141,8 +141,9 @@ export default function MobilePageContent({
                     filled, or{' '}
                     <b>
                       {(
-                        Math.round(mean(seatsFilled(classPageInfo))) /
-                        Math.round(mean(seatsAvailable(classPageInfo)))
+                        (Math.round(mean(seatsFilled(classPageInfo))) /
+                          Math.round(mean(seatsAvailable(classPageInfo)))) *
+                        100
                       ).toFixed(1)}
                       %
                     </b>{' '}

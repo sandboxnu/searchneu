@@ -126,7 +126,7 @@ export default function MobilePageContent({
               </div>
 
               <div className="avgInfo">
-                <p>In this course, there is, on average:</p>
+                <p>In this course, there are, on average:</p>
                 <ul>
                   <li>
                     <b>{Math.round(mean(numberOfSections(classPageInfo)))}</b>{' '}

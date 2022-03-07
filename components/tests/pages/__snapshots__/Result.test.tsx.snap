@@ -213,6 +213,13 @@ exports[`should render a section 1`] = `
           </div>
           <div className=\\"Results_SidebarSpacer\\" />
           <div className=\\"Results_Main\\">
+            <div className=\\"Results_Aggregation\\">
+              <TotalResultsDisplay>
+                <p>
+                  0 results
+                </p>
+              </TotalResultsDisplay>
+            </div>
             <LoadingContainer>
               <div style={{...}} />
             </LoadingContainer>

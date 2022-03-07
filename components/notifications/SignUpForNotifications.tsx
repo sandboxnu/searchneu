@@ -5,8 +5,9 @@
 
 import React, { ReactElement, useState } from 'react';
 import { UserInfo } from '../types';
+import Keys from '../Keys';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import { PhoneModal } from './PhoneModal';
+import SignUpModal from './modal/SignUpModal';
 import NotifSignUpButton from '../ResultsPage/Results/NotifSignUpButton';
 import { Course } from '../types';
 
@@ -49,7 +50,9 @@ export default function SignUpForNotifications({
   return showNotificationSignup ? (
     userInfo ? (
       <div className="DesktopSectionPanel__notifs">
-        Sign up for course-wide notifications:
+        <span className="checkboxLabel">
+          Notify me when new sections are added:
+        </span>
         <CourseCheckBox
           course={course}
           checked={checked}
@@ -60,7 +63,7 @@ export default function SignUpForNotifications({
     ) : (
       <>
         <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-        <PhoneModal
+        <SignUpModal
           visible={showModal}
           onCancel={() => setShowModal(false)}
           onSignIn={onSignIn}

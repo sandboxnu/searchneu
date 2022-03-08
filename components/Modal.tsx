@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Props {
@@ -6,11 +6,13 @@ interface Props {
   onCancel: () => void;
 }
 
-export default function Modal(props: React.PropsWithChildren<Props>) {
+export default function Modal(
+  props: React.PropsWithChildren<Props>
+): ReactElement {
   const { visible, onCancel, children } = props;
 
   React.useEffect(() => {
-    const handleKeyEvent = (event: KeyboardEvent) => {
+    const handleKeyEvent = (event: KeyboardEvent): void => {
       switch (event.key) {
         case 'Escape':
           onCancel();
@@ -23,7 +25,7 @@ export default function Modal(props: React.PropsWithChildren<Props>) {
     document.addEventListener('keydown', handleKeyEvent);
 
     return () => document.removeEventListener('keydown', handleKeyEvent);
-  }, []);
+  }, [onCancel]);
 
   return createPortal(
     <>

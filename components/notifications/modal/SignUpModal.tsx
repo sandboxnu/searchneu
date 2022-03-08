@@ -56,10 +56,33 @@ export default function SignUpModal(props: SignUpModalProps): ReactElement {
 
   // To handle submission of verification code
   useEffect(() => {
+    const onVerificationCodeSubmit = (): void => {
+      setStatus(Status.Loading);
+      axios
+        .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/verify`, {
+          phoneNumber: phoneNumber,
+          verificationCode: verificationCode,
+        })
+        .then(({ data }) => {
+          onSignIn(data.token);
+          setStatus(Status.Succeeded);
+          onSuccess();
+        })
+        .catch((error) => {
+          macros.error(error);
+          macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
+            error,
+          });
+          setResendDisabled(false);
+          setStatus(Status.Failed);
+          setStatusMessage('error - incorrect code');
+        });
+    };
+
     if (verificationCode.length === VERIFICATION_CODE_LENGTH) {
       onVerificationCodeSubmit();
     }
-  }, [verificationCode]);
+  }, [verificationCode, onSignIn, onSuccess, phoneNumber]);
 
   const onPhoneNumberSubmit = (): void => {
     if (isValidPhoneNumber(phoneNumber)) {
@@ -86,29 +109,6 @@ export default function SignUpModal(props: SignUpModalProps): ReactElement {
       setStatus(Status.Failed);
       setStatusMessage('Not a valid phone number');
     }
-  };
-
-  const onVerificationCodeSubmit = (): void => {
-    setStatus(Status.Loading);
-    axios
-      .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/verify`, {
-        phoneNumber: phoneNumber,
-        verificationCode: verificationCode,
-      })
-      .then(({ data }) => {
-        onSignIn(data.token);
-        setStatus(Status.Succeeded);
-        onSuccess();
-      })
-      .catch((error) => {
-        macros.error(error);
-        macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
-          error,
-        });
-        setResendDisabled(false);
-        setStatus(Status.Failed);
-        setStatusMessage('error - incorrect code');
-      });
   };
 
   return (

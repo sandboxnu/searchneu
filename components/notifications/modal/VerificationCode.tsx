@@ -33,20 +33,20 @@ export default function VerificationCode(
     inputRefs.current[verificationCode.length]?.focus();
   }, [verificationCode]);
 
-  const resendVerificationCode = () => {
+  const resendVerificationCode = (): void => {
     if (!isDisabled) {
       setVerificationCode('');
       onResend();
     }
   };
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     if (/[0-9]/.test(event.target.value)) {
       setVerificationCode(verificationCode + event.target.value);
     }
   };
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Backspace') {
       setVerificationCode(verificationCode.slice(0, -1)); // Remove last character
     }

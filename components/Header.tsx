@@ -24,7 +24,6 @@ import {
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
-import { Button } from 'antd';
 import getTermInfos from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 
@@ -75,7 +74,7 @@ export default function Header({
     [query, termAndCampusToURL]
   );
 
-  const toggleMenuDropdown = () => {
+  const toggleMenuDropdown = (): void => {
     setShowMenuDropdown(!showMenuDropdown);
   };
 

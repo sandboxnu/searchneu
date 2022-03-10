@@ -13,12 +13,8 @@ export default function Modal(
 
   React.useEffect(() => {
     const handleKeyEvent = (event: KeyboardEvent): void => {
-      switch (event.key) {
-        case 'Escape':
-          onCancel();
-          break;
-        default:
-          break;
+      if (event.key === 'Escape') {
+        onCancel();
       }
     };
 

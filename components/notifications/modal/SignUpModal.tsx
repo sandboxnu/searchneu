@@ -21,16 +21,6 @@ interface SignUpModalProps {
 }
 
 /**
- * A verification request status state.
- */
-enum Status {
-  Pending,
-  Loading,
-  Failed,
-  Succeeded,
-}
-
-/**
  * A step in the sign-up process associated with a modal screen.
  */
 enum Step {
@@ -47,13 +37,13 @@ export default function SignUpModal({
   const [step, setStep] = useState<Step>(Step.PhoneNumber);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
-  const [status, setStatus] = useState<Status>(Status.Pending);
+  const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
 
   // To reset step status and associated message
   useEffect(() => {
-    setStatus(Status.Pending);
+    setIsLoading(false);
     setStatusMessage('');
   }, [step, visible, phoneNumber, verificationCode]);
 
@@ -66,13 +56,12 @@ export default function SignUpModal({
 
   const onPhoneNumberSubmit = (): void => {
     if (isValidPhoneNumber(phoneNumber)) {
-      setStatus(Status.Loading);
+      setIsLoading(true);
       axios
         .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/signup`, {
           phoneNumber: phoneNumber,
         })
         .then(() => {
-          setStatus(Status.Succeeded);
           setResendDisabled(true);
           setTimeout(() => setResendDisabled(false), 30 * 1000);
           setStep(Step.VerificationCode);
@@ -82,17 +71,18 @@ export default function SignUpModal({
           macros.logAmplitudeEvent('Phone Number Failed', {
             error,
           });
-          setStatus(Status.Failed);
           setStatusMessage('error - failed to register');
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
-      setStatus(Status.Failed);
       setStatusMessage('Not a valid phone number');
     }
   };
 
   const onVerificationCodeSubmit = (): void => {
-    setStatus(Status.Loading);
+    setIsLoading(true);
     axios
       .post(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/sms/verify`, {
         phoneNumber: phoneNumber,
@@ -100,7 +90,6 @@ export default function SignUpModal({
       })
       .then(({ data }) => {
         onSignIn(data.token);
-        setStatus(Status.Succeeded);
         onSuccess();
       })
       .catch((error) => {
@@ -109,15 +98,17 @@ export default function SignUpModal({
           error,
         });
         setResendDisabled(false);
-        setStatus(Status.Failed);
         setStatusMessage('error - incorrect code');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   return (
     <Modal visible={visible} onCancel={onCancel}>
       <div className="phone-modal">
-        {status === Status.Loading && (
+        {isLoading && (
           <div className="phone-modal__spinner">
             <MoonLoader color={'#7fc4c7'} loading={true} size={32} />
           </div>

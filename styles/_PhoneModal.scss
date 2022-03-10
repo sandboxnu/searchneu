@@ -103,7 +103,7 @@
       font-size: 1rem;
       outline: inherit;
 
-      ::placeholder {
+      &::placeholder {
         color: #c4c4c4;
       }
     }

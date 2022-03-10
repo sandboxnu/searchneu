@@ -1,4 +1,5 @@
 import React, { ReactElement, useEffect } from 'react';
+import Tooltip, { TooltipDirection } from '../../Tooltip';
 
 interface VerificationCodeProps {
   onBack: () => void;
@@ -6,6 +7,7 @@ interface VerificationCodeProps {
   verificationCode: string;
   setVerificationCode: React.Dispatch<React.SetStateAction<string>>;
   isDisabled: boolean;
+  disabledMessage?: string;
   phoneNumber: string;
   codeLength: number;
   error?: string;
@@ -20,6 +22,7 @@ export default function VerificationCode({
   phoneNumber,
   codeLength,
   error,
+  disabledMessage,
 }: VerificationCodeProps): ReactElement {
   const inputRefs = React.useRef<HTMLInputElement[]>([]);
 
@@ -82,7 +85,7 @@ export default function VerificationCode({
           className={`phone-modal__link ${isDisabled && '--disabled'}`}
           onClick={resendVerificationCode}
         >
-          resend code
+          {isDisabled ? disabledMessage || '' : 'resend code'}
         </span>
       </div>
     </>

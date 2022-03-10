@@ -219,6 +219,13 @@
 
     &:hover {
       opacity: 0.5;
+
+      .tooltip {
+        display: block;
+        top: 24px;
+        left: -10px;
+        background: #505050;
+      }
     }
 
     &.--disabled {
@@ -229,6 +236,10 @@
 
       &:hover {
         @extend .--disabled;
+      }
+
+      &::before {
+        display: none;
       }
     }
   }

@@ -40,6 +40,7 @@ export default function SignUpModal({
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendDisabledTimeout, setResendDisabledTimeout] = useState(0);
 
   // To reset step status and associated message
   useEffect(() => {
@@ -54,6 +55,24 @@ export default function SignUpModal({
     }
   }, [verificationCode]);
 
+  useEffect(() => {
+    if (resendDisabled) {
+      const countdown = () => {
+        setResendDisabledTimeout(resendDisabledTimeout - 1);
+        console.log(resendDisabledTimeout);
+      };
+
+      const interval = setInterval(countdown, 1000);
+
+      if (resendDisabledTimeout === 0) {
+        clearInterval(interval);
+        setResendDisabled(false);
+      }
+
+      return () => clearInterval(interval);
+    }
+  }, [resendDisabledTimeout]);
+
   const onPhoneNumberSubmit = (): void => {
     if (isValidPhoneNumber(phoneNumber)) {
       setIsLoading(true);
@@ -63,7 +82,7 @@ export default function SignUpModal({
         })
         .then(() => {
           setResendDisabled(true);
-          setTimeout(() => setResendDisabled(false), 30 * 1000);
+          setResendDisabledTimeout(30);
           setStep(Step.VerificationCode);
         })
         .catch((error) => {
@@ -97,7 +116,6 @@ export default function SignUpModal({
         macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
           error,
         });
-        setResendDisabled(false);
         setStatusMessage('error - incorrect code');
       })
       .finally(() => {
@@ -132,6 +150,7 @@ export default function SignUpModal({
                   verificationCode={verificationCode}
                   setVerificationCode={setVerificationCode}
                   isDisabled={resendDisabled}
+                  disabledMessage={`resend in ${resendDisabledTimeout} seconds`}
                   phoneNumber={formatPhoneNumberIntl(phoneNumber)}
                   codeLength={VERIFICATION_CODE_LENGTH}
                   error={statusMessage}

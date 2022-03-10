@@ -90,6 +90,12 @@
       opacity: 1;
       font-size: 1rem;
       margin-left: 0.5rem;
+
+      // fix for react-phone-number-input
+      border-top: 0 solid #505050;
+      border-bottom: 1px solid #505050;
+      border-left: 0 solid #505050;
+      border-right: 1px solid #505050;
     }
 
     .PhoneInputInput {

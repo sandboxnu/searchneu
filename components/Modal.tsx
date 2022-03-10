@@ -1,16 +1,16 @@
 import React, { ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 
-interface Props {
+interface ModalProps {
   visible: boolean;
   onCancel: () => void;
 }
 
-export default function Modal(
-  props: React.PropsWithChildren<Props>
-): ReactElement {
-  const { visible, onCancel, children } = props;
-
+export default function Modal({
+  visible,
+  onCancel,
+  children,
+}: React.PropsWithChildren<ModalProps>): ReactElement {
   React.useEffect(() => {
     const handleKeyEvent = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {

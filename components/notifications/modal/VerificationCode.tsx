@@ -11,21 +11,16 @@ interface VerificationCodeProps {
   error?: string;
 }
 
-export default function VerificationCode(
-  props: VerificationCodeProps
-): ReactElement {
-  const {
-    onBack,
-    onResend,
-    verificationCode,
-    setVerificationCode,
-    isDisabled,
-    phoneNumber,
-    codeLength,
-    error,
-  } = props;
-
-  //
+export default function VerificationCode({
+  onBack,
+  onResend,
+  verificationCode,
+  setVerificationCode,
+  isDisabled,
+  phoneNumber,
+  codeLength,
+  error,
+}: VerificationCodeProps): ReactElement {
   const inputRefs = React.useRef<HTMLInputElement[]>([]);
 
   // To handle input focusing

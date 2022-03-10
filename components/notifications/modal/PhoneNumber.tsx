@@ -2,18 +2,19 @@ import React, { ReactElement } from 'react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 
-interface PhoneInputStepProps {
+interface PhoneNumberProps {
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
   onCancel: () => void;
   onSubmit: () => void;
   error?: string;
 }
 
-export default function PhoneInputStep(
-  props: PhoneInputStepProps
-): ReactElement {
-  const { setPhoneNumber, onCancel, onSubmit, error } = props;
-
+export default function PhonNumber({
+  setPhoneNumber,
+  onCancel,
+  onSubmit,
+  error,
+}: PhoneNumberProps): ReactElement {
   return (
     <>
       <div className="phone-modal__body">

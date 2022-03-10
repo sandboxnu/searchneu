@@ -1,6 +1,6 @@
-import React, { ReactElement } from 'react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import React, { ReactElement } from 'react';
 
 interface PhoneNumberProps {
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;

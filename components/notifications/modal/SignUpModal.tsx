@@ -1,15 +1,15 @@
-import axios from 'axios';
-import React, { ReactElement, useEffect, useState } from 'react';
-import macros from '../../macros';
-import Modal from '../../Modal';
-import PhoneNumber from './PhoneNumber';
-import VerificationCode from './VerificationCode';
 import 'react-phone-number-input/style.css';
 import {
   isValidPhoneNumber,
   formatPhoneNumberIntl,
 } from 'react-phone-number-input';
 import { MoonLoader } from 'react-spinners';
+import axios from 'axios';
+import React, { ReactElement, useEffect, useState } from 'react';
+import macros from '../../macros';
+import Modal from '../../Modal';
+import PhoneNumber from './PhoneNumber';
+import VerificationCode from './VerificationCode';
 
 const VERIFICATION_CODE_LENGTH = 6;
 
@@ -38,9 +38,12 @@ enum Step {
   VerificationCode,
 }
 
-export default function SignUpModal(props: SignUpModalProps): ReactElement {
-  const { visible, onCancel, onSignIn, onSuccess } = props;
-
+export default function SignUpModal({
+  visible,
+  onCancel,
+  onSignIn,
+  onSuccess,
+}: SignUpModalProps): ReactElement {
   const [step, setStep] = useState<Step>(Step.PhoneNumber);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');

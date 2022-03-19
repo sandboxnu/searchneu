@@ -43,7 +43,7 @@ function prepareEmployeeAttributes(
 
     attributes.push(
       <a
-        key="tel"
+        key={employee.phone}
         className="employeePhone"
         role="button"
         tabIndex={0}
@@ -136,7 +136,8 @@ export default function EmployeeResult({
   let secondColumn = [];
 
   if (attributes.length > 2) {
-    const half = Math.ceil(attributes.length / 2);
+    const half = Math.round(attributes.length / 2);
+    console.log(employee.name, half, attributes.length, attributes);
 
     firstColumn = attributes.slice(0, half);
     secondColumn = attributes.slice(half, attributes.length);

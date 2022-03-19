@@ -130,8 +130,8 @@ export default function Results(): ReactElement | null {
     return (
       <p>
         {totalResults === 1
-          ? `${totalResults} result`
-          : `${totalResults} results`}
+          ? `${totalResults} course result`
+          : `${totalResults} course results`}
       </p>
     );
   };

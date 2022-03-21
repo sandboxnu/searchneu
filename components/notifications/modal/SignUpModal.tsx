@@ -55,16 +55,16 @@ export default function SignUpModal({
     }
   }, [verificationCode]);
 
+  // useEffect pattern used for countdown as per:
+  // https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
   useEffect(() => {
     if (resendDisabled) {
-      const countdown = () => {
-        setResendDisabledTimeout(resendDisabledTimeout - 1);
-        console.log(resendDisabledTimeout);
-      };
+      const interval = setInterval(
+        () => setResendDisabledTimeout(resendDisabledTimeout - 1),
+        1000
+      );
 
-      const interval = setInterval(countdown, 1000);
-
-      if (resendDisabledTimeout === 0) {
+      if (resendDisabledTimeout <= 0) {
         clearInterval(interval);
         setResendDisabled(false);
       }

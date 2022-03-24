@@ -1,4 +1,5 @@
 import React from 'react';
+import { render, fireEvent, screen, prettyDOM } from '@testing-library/react';
 import Enzyme, { mount } from 'enzyme';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -42,6 +43,13 @@ describe.only('Home page integration tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
     mockAxios.reset();
+  });
+
+  it('REACT TEST should push a query to the router when executing a searching', () => {
+    render(<Home />);
+    fireEvent.click(screen.getByText(`View all classes for`));
+
+    expect(mockRouterPush).toBeCalledWith(`/${CAMPUS}/${TERM_ID}/search`);
   });
 
   it('should push a query to the router when executing a searching', () => {

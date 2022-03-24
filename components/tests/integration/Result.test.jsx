@@ -1,4 +1,5 @@
 import React from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { QueryParamProvider } from 'use-query-params';
@@ -45,7 +46,7 @@ describe.only('Home page integration tests', () => {
   });
 
   it('should push a query to the router when executing a searching', async () => {
-    const resultsPage = await mount(
+    const resultsPage = await render(
       <QueryParamProvider>
         <Results />
       </QueryParamProvider>

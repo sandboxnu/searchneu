@@ -108,9 +108,12 @@ export default function MobilePageContent({
                   <IconScale />
                 )}
                 <span className="courseLevelText">
-                  {`${
-                    campus === Campus.NEU ? 'Undergraduate' : 'Graduate'
-                  } Course Level`}
+                  {campus === Campus.NEU &&
+                    `${
+                      parseInt(classId) < 5000 ? 'Undergraduate' : 'Graduate'
+                    } Course Level`}
+                  {campus === Campus.CPS && 'College of Professional Studies'}
+                  {campus == Campus.LAW && 'School of Law'}
                 </span>
               </div>
 

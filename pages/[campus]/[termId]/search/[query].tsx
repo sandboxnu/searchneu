@@ -102,7 +102,13 @@ export default function Results(): ReactElement | null {
 
   const TotalResultsDisplay = (): ReactElement => {
     // This has to be a null safe because searchData can be undefined on mount
-    const totalResults = searchData?.totalCount || 0;
+    const totalResults = searchData?.totalCount;
+    if (totalResults === undefined) {
+      // if it is undefined, dont render results
+      return <></>;
+    }
+    // our ES index has a cap of 10,000 results for any search regardless of
+    // pagination. Therefore, if we get the max, we add a + to indicate possibly more.
     let totalResultsStr = '';
     switch (totalResults) {
       case 1:

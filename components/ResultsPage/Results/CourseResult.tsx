@@ -197,7 +197,6 @@ export function MobileCourseResult({
   onSignIn,
   fetchUserInfo,
 }: CourseResultProps): ReactElement {
-  const [expanded, setExpanded] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);

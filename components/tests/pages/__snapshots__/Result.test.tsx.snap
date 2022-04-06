@@ -216,7 +216,7 @@ exports[`should render a section 1`] = `
             <div className=\\"Results_Aggregation\\">
               <TotalResultsDisplay>
                 <p>
-                  0 course results
+                  0 results
                 </p>
               </TotalResultsDisplay>
             </div>

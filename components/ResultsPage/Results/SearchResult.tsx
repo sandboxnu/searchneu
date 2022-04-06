@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
+
 interface SearchResultProps {
   headerLeft: ReactElement;
   headerRight?: ReactElement;

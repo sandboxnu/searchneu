@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import { Button } from 'antd';
 import macros from '../../macros';
+import IconMessage from '../../icons/IconMessage';
 
 interface NotifSignUpButtonProps {
   onNotifSignUp: () => void;
@@ -15,8 +15,9 @@ export default function NotifSignUpButton({
   };
 
   return (
-    <Button onClick={onClickWithAmplitudeHook}>
-      Sign up for SMS Notifications
-    </Button>
+    <div onClick={onClickWithAmplitudeHook} className="button">
+      <IconMessage className="icon" />
+      <span>Notify me when seats open!</span>
+    </div>
   );
 }

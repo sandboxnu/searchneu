@@ -10,7 +10,7 @@ import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import { UserInfo } from '../../types';
 import IconArrow from '../../icons/IconArrow';
 import IconNotepad from '../../icons/IconNotepad';
-import SignUpForNotifications from '../../SignUpForNotifications';
+import SignUpForNotifications from '../../notifications/SignUpForNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';

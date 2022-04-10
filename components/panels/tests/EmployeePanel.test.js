@@ -10,7 +10,7 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import macros from '../../macros';
 
 import mockData from './mockData';
-import EmployeePanel from '../EmployeePanel';
+import EmployeeResult from '../../ResultsPage/Results/EmployeeResult';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -18,7 +18,7 @@ it('should render a desktop employee panel', () => {
   const orig = macros.isMobile;
   macros.isMobile = false;
 
-  const result = shallow(<EmployeePanel employee={mockData.razzaq} />);
+  const result = shallow(<EmployeeResult employee={mockData.razzaq} />);
   expect(result.debug()).toMatchSnapshot();
 
   macros.isMobile = orig;
@@ -28,7 +28,7 @@ it('should render a mobile employee panel', () => {
   const orig = macros.isMobile;
   macros.isMobile = true;
 
-  const result = shallow(<EmployeePanel employee={mockData.razzaq} />);
+  const result = shallow(<EmployeeResult employee={mockData.razzaq} />);
   expect(result.debug()).toMatchSnapshot();
 
   macros.isMobile = orig;

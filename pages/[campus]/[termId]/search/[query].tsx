@@ -100,40 +100,28 @@ export default function Results(): ReactElement | null {
     }`;
   };
 
-  const getTotalResults = (): number => {
-    /* 
-      Using the subject filter here to get the total number of search results because:
-      - the results themselves are loaded 10 at a time
-      - classes don't overlap across subjects
-    */
-    const options = searchData?.filterOptions['subject'] || [];
-    const selected = filters['subject'];
-
-    if (selected.length > 0) {
-      const selectedOptions = options.filter((option) =>
-        selected.includes(option.value)
-      );
-      return selectedOptions.reduce(
-        (total_aggregation, option) => total_aggregation + option.count,
-        0
-      );
-    }
-
-    return options.reduce(
-      (total_aggregation, option) => total_aggregation + option.count,
-      0
-    );
-  };
-
   const TotalResultsDisplay = (): ReactElement => {
-    const totalResults = getTotalResults();
-    return (
-      <p>
-        {totalResults === 1
-          ? `${totalResults} result`
-          : `${totalResults} results`}
-      </p>
-    );
+    // This has to be a null safe because searchData can be undefined on mount
+    const totalResults = searchData?.totalCount;
+    if (totalResults === undefined) {
+      // if it is undefined, dont render results
+      return <></>;
+    }
+    // our ES index has a cap of 10,000 results for any search regardless of
+    // pagination. Therefore, if we get the max, we add a + to indicate possibly more.
+    let totalResultsStr = '';
+    switch (totalResults) {
+      case 1:
+        totalResultsStr = ' result';
+        break;
+      case 10000:
+        totalResultsStr = '+ results';
+        break;
+      default:
+        totalResultsStr = ' results';
+        break;
+    }
+    return <p>{totalResults.toLocaleString('en-US') + totalResultsStr}</p>;
   };
 
   macros.log(searchData);

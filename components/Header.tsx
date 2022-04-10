@@ -107,13 +107,6 @@ export default function Header({
         <div className="Results__spacer" />
         {macros.isMobile && (
           <div className="Results__mobileSearchFilterWrapper">
-            <div className="Results__searchwrapper">
-              <SearchBar
-                onSearch={setSearchQuery}
-                query={query}
-                buttonColor={campusToColor[campus]}
-              />
-            </div>
             <FilterButton
               className="Results__filterButton"
               aria-label="filter-button"
@@ -123,6 +116,32 @@ export default function Header({
                 }
               }}
             />
+            <div className="Results__searchwrapper">
+              <SearchBar
+                onSearch={setSearchQuery}
+                query={query}
+                buttonColor={campusToColor[campus]}
+              />
+            </div>
+            {userInfo && (
+              <>
+                <div className="user-menu">
+                  <div
+                    className="user-menu__icon-wrapper"
+                    onClick={toggleMenuDropdown}
+                  >
+                    <IconUser className="user-menu__icon" />
+                  </div>
+                  {showMenuDropdown && (
+                    <div className="user-menu__dropdown">
+                      <span className="user-menu__item" onClick={onSignOut}>
+                        Sign out of {userInfo.phoneNumber}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
         {!macros.isMobile && (
@@ -165,7 +184,7 @@ export default function Header({
             />
           </div>
         </div>
-        {userInfo && (
+        {!macros.isMobile && userInfo && (
           <>
             <div className="user-menu">
               <div

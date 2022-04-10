@@ -280,14 +280,19 @@ export function MobileSearchResult({
                 course={course}
                 userInfo={userInfo}
                 onSignIn={onSignIn}
-                showNotificationSignup={false}
+                showNotificationSignup={true}
                 fetchUserInfo={fetchUserInfo}
               />
             </div>
           </div>
           <div className="MobileSearchResult__panel--sections">
             {renderedSections.map((section) => (
-              <MobileSectionPanel key={section.crn} section={section} />
+              <MobileSectionPanel
+                key={section.crn}
+                section={section}
+                userInfo={userInfo}
+                fetchUserInfo={fetchUserInfo}
+              />
             ))}
           </div>
           {!hideShowAll && (

@@ -72,32 +72,18 @@ export default function SectionCheckBox({
 
   return (
     <div className="signUpSwitch">
-      {macros.isMobile ? (
-        <div
-          className={
-            checked ? 'notifSubscribeButton--checked' : 'notifSubscribeButton'
-          }
-          role="button"
-          tabIndex={0}
-          onClick={onCheckboxClick}
-        >
-          {checked && <IconCheckMark />}
-          <span>{checked ? 'Subscribed' : 'Subscribe'}</span>
-        </div>
-      ) : (
-        <div className="notifSwitch">
-          <input
-            checked={checked}
-            onChange={onCheckboxClick}
-            className="notif-switch-checkbox"
-            id={notifSwitchId}
-            type="checkbox"
-          />
-          <label className="notif-switch-label" htmlFor={notifSwitchId}>
-            <span className="notif-switch-button" />
-          </label>
-        </div>
-      )}
+      <div className="notifSwitch">
+        <input
+          checked={checked}
+          onChange={onCheckboxClick}
+          className="notif-switch-checkbox"
+          id={notifSwitchId}
+          type="checkbox"
+        />
+        <label className="notif-switch-label" htmlFor={notifSwitchId}>
+          <span className="notif-switch-button" />
+        </label>
+      </div>
       <Tooltip
         text={
           checked

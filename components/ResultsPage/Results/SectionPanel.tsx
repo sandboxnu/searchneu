@@ -22,6 +22,8 @@ interface SectionPanelProps {
 
 interface MobileSectionPanelProps {
   section: Section;
+  userInfo: UserInfo;
+  fetchUserInfo: () => void;
 }
 
 const meetsOnDay = (meeting: Meeting, dayIndex: DayOfWeek): boolean => {
@@ -195,10 +197,9 @@ export function DesktopSectionPanel({
 
 export function MobileSectionPanel({
   section,
+  userInfo,
+  fetchUserInfo,
 }: MobileSectionPanelProps): ReactElement {
-  // TODO: remove when notifications is fixed
-  const showNotificationSwitches = false;
-
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
     section.seatsCapacity
@@ -236,6 +237,9 @@ export function MobileSectionPanel({
     );
   };
 
+  const checked =
+    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
+
   return (
     <div className="MobileSectionPanel">
       <div className="MobileSectionPanel__header">
@@ -252,16 +256,8 @@ export function MobileSectionPanel({
             {section.honors ? <i>&nbsp;&nbsp;&nbsp;Honors</i> : ''}
           </span>
         </div>
-        {showNotificationSwitches && (
-          <SectionCheckBox
-            section={section}
-            checked={false}
-            userInfo={null}
-            fetchUserInfo={null}
-          />
-        )}
       </div>
-      <div className="MobileSectionPanel__secondRow">
+      <div className="MobileSectionPanel__row">
         {!section.online && (
           <WeekdayBoxes
             meetingDays={getDaysOfWeekAsBooleans(section)}
@@ -278,8 +274,18 @@ export function MobileSectionPanel({
           getMeetings(section)
         )}
       </div>
-      <div className={getSeatsClass()}>
-        {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+      <div className="MobileSectionPanel__row">
+        <div className={getSeatsClass()}>
+          {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+        </div>
+        {userInfo && (
+          <SectionCheckBox
+            section={section}
+            checked={checked}
+            userInfo={userInfo}
+            fetchUserInfo={fetchUserInfo}
+          />
+        )}
       </div>
     </div>
   );

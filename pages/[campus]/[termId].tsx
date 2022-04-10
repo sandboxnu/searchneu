@@ -35,7 +35,7 @@ export default function Home(): ReactElement {
 
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
-  let containerClassnames = 'home-container';
+  const containerClassnames = 'home-container';
 
   return (
     <div>

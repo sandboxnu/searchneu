@@ -43,7 +43,11 @@ export default function Results(): ReactElement | null {
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
 
-  var filters: FilterSelection = _.merge({}, DEFAULT_FILTER_SELECTION, qParams);
+  const filters: FilterSelection = _.merge(
+    {},
+    DEFAULT_FILTER_SELECTION,
+    qParams
+  );
 
   const searchParams: SearchParams = {
     termId,

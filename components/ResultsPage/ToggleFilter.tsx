@@ -14,7 +14,7 @@ export default function ToggleFilter({
 }: ToggleFilterProps): ReactElement {
   var isActivated = selected;
 
-  async function setActiveAfterAnimating() {
+  function setActiveAfterAnimating() {
     isActivated = !isActivated;
     var expectedActivationState = isActivated;
     setTimeout(() => {

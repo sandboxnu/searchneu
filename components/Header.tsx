@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
@@ -24,8 +24,8 @@ import {
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
-import { Button } from 'antd';
 import getTermInfos from '../utils/TermInfoProvider';
+import IconUser from './icons/IconUser';
 
 type HeaderProps = {
   router: NextRouter;
@@ -46,6 +46,8 @@ export default function Header({
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
+
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
 
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
@@ -71,6 +73,10 @@ export default function Header({
     },
     [query, termAndCampusToURL]
   );
+
+  const toggleMenuDropdown = (): void => {
+    setShowMenuDropdown(!showMenuDropdown);
+  };
 
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {
@@ -161,11 +167,20 @@ export default function Header({
         </div>
         {userInfo && (
           <>
-            <div className="User_Header">{userInfo.phoneNumber}</div>
-            <div className="User_SignOut">
-              <Button danger onClick={onSignOut}>
-                Sign Out
-              </Button>
+            <div className="user-menu">
+              <div
+                className="user-menu__icon-wrapper"
+                onClick={toggleMenuDropdown}
+              >
+                <IconUser className="user-menu__icon" />
+              </div>
+              {showMenuDropdown && (
+                <div className="user-menu__dropdown">
+                  <span className="user-menu__item" onClick={onSignOut}>
+                    Sign out of {userInfo.phoneNumber}
+                  </span>
+                </div>
+              )}
             </div>
           </>
         )}

@@ -146,6 +146,19 @@ $SIDEBAR_WIDTH: 268px;
   font-size: inherit !important;
 }
 
+.Results_Aggregation {
+  font-style: italic;
+  font-family: Lato;
+  text-align: right;
+  padding-right: 14px;
+  margin-bottom: -7px;
+
+  &__withFilters {
+    @extend .Results_Aggregation;
+    margin-top: -22px;
+  }
+}
+
 .Breadcrumb_Container {
   display: flex;
   flex-direction: row;
@@ -174,10 +187,55 @@ $SIDEBAR_WIDTH: 268px;
   float: right;
 }
 
-.User_Header {
+.user-menu {
+  display: flex;
   flex: 1;
   text-align: right;
-  margin-left: 30px;
+  margin: 0 40px 0 30px;
+  position: relative;
+  justify-content: flex-end;
+
+  &__icon-wrapper {
+    display: flex;
+  }
+
+  &__icon {
+    cursor: pointer;
+  }
+
+  &__dropdown {
+    position: absolute;
+    background: #fff;
+    border-radius: 3px;
+    padding: 12px;
+    bottom: 0;
+    right: -20px;
+    transform: translateY(calc(100% + 4px));
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.25));
+    white-space: nowrap;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      right: 30px;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 4px solid #fff;
+    }
+  }
+
+  &__item {
+    padding: 4px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(196, 196, 196, 0.15);
+    }
+  }
 }
 
 .User_SignOut {

@@ -5,7 +5,7 @@ import React, { ReactElement } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Keys from '../Keys';
 import macros from '../macros';
-import EmployeePanel from '../panels/EmployeePanel';
+import EmployeeResult, { MobileEmployeeResult } from './Results/EmployeeResult';
 import {
   DayjsTuple,
   Meeting,
@@ -14,7 +14,7 @@ import {
   TimeToDayjs,
   UserInfo,
 } from '../types';
-import { MobileSearchResult, SearchResult } from './Results/SearchResult';
+import { MobileCourseResult, CourseResult } from './Results/CourseResult';
 
 dayjs.extend(utc);
 
@@ -155,14 +155,14 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
     // TODO: Can we get rid of this clone deep?
     course.sections = getFormattedSections(cloneDeep(result.sections));
     return macros.isMobile ? (
-      <MobileSearchResult
+      <MobileCourseResult
         course={course}
         userInfo={userInfo}
         onSignIn={onSignIn}
         fetchUserInfo={fetchUserInfo}
       />
     ) : (
-      <SearchResult
+      <CourseResult
         course={course}
         userInfo={userInfo}
         onSignIn={onSignIn}
@@ -172,7 +172,11 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
   }
 
   if (result.type === 'employee') {
-    return <EmployeePanel employee={result.employee} />;
+    return macros.isMobile ? (
+      <MobileEmployeeResult employee={result.employee} />
+    ) : (
+      <EmployeeResult employee={result.employee} />
+    );
   }
 
   macros.log('Unknown type', result.type);

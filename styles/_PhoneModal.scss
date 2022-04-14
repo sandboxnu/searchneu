@@ -1,0 +1,246 @@
+.phone-modal {
+  position: relative;
+
+  &__spinner {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 1);
+    z-index: 99;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    min-width: 340px;
+    gap: 1rem;
+  }
+
+  &__header {
+    font-family: 'Lato', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 25px;
+    color: #7fc4c7;
+    text-align: center;
+
+    &--verification {
+      max-width: 256px;
+      color: #313131;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    font-family: 'Lato', sans-serif;
+
+    &--buttons {
+      min-height: 70px;
+    }
+
+    &--links {
+      justify-content: space-between;
+      padding: 0 32px 32px 32px;
+    }
+  }
+
+  &__phone-input {
+    display: flex;
+    width: 100%;
+
+    :after {
+      content: '';
+      clear: both;
+      display: table;
+    }
+
+    .PhoneInputCountry,
+    .PhoneInputInput {
+      float: left;
+      display: flex;
+      min-height: 100%;
+      border: 1px solid #c4c4c4;
+      background: none;
+      padding: 0.5rem;
+      margin: 0;
+    }
+
+    .PhoneInputCountry {
+      border-right: none;
+    }
+
+    .PhoneInputCountryIcon {
+      background: none !important;
+      box-shadow: none !important;
+    }
+
+    .PhoneInputCountrySelectArrow {
+      color: #505050;
+      opacity: 1;
+      font-size: 1rem;
+      margin-left: 0.5rem;
+
+      // fix for react-phone-number-input
+      border-top: 0 solid #505050;
+      border-bottom: 1px solid #505050;
+      border-left: 0 solid #505050;
+      border-right: 1px solid #505050;
+    }
+
+    .PhoneInputInput {
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      outline: inherit;
+
+      &::placeholder {
+        color: #c4c4c4;
+      }
+    }
+  }
+
+  .phone-modal__verification {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Lato', sans-serif;
+    gap: 0.5rem;
+
+    &-input {
+      max-width: 40px;
+      max-height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      text-align: center;
+      border: 1px solid #c4c4c4;
+      border-radius: 4px;
+      font-size: 20px;
+      line-height: 1;
+      background: #fff;
+
+      &::placeholder {
+        color: #e9e9e9;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__input-group {
+    display: flex;
+    width: 100%;
+
+    button,
+    input,
+    .phone-modal__input-box {
+      float: left;
+    }
+
+    button:not(:last-child),
+    input:not(:last-child),
+    .phone-modal__input-box:not(:last-child) {
+      border-right: none;
+    }
+
+    :after {
+      content: '';
+      clear: both;
+      display: table;
+    }
+  }
+
+  &__btn {
+    flex: 1;
+    height: 100%;
+    border: 1px solid #c4c4c4;
+    border-bottom: none;
+    background: none;
+    color: #c4c4c4;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: inherit;
+
+    &:first-child {
+      border-left: none;
+    }
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &--primary {
+      background: #7fc4c7;
+      color: #fff;
+    }
+  }
+
+  &__label {
+    max-width: 256px;
+    font-size: 0.6rem;
+    line-height: 1.5;
+  }
+
+  &__error {
+    font-size: 0.6rem;
+    line-height: 1.5;
+    color: #e63946;
+    text-align: center;
+  }
+
+  &__link {
+    position: relative;
+    color: #7fc4c7;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      height: 1px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      background: #7fc4c7;
+      display: block;
+      transition: all 0.2s ease;
+    }
+
+    &:hover {
+      opacity: 0.5;
+
+      .tooltip {
+        display: block;
+        top: 24px;
+        left: -10px;
+        background: #505050;
+      }
+    }
+
+    &.--disabled {
+      color: #c4c4c4 !important;
+      cursor: default !important;
+      opacity: 0.5 !important;
+      user-select: none;
+
+      &:hover {
+        @extend .--disabled;
+      }
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+}

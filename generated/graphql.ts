@@ -283,6 +283,7 @@ export type SearchResultsQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
   subject?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   nupath?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  honors?: Maybe<Scalars['Boolean']>;
   campus?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   classType?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   classIdRange?: Maybe<IntRange>;
@@ -508,6 +509,7 @@ export const SearchResultsDocument = gql`
     $first: Int = 10
     $subject: [String!]
     $nupath: [String!]
+    $honors: Boolean
     $campus: [String!]
     $classType: [String!]
     $classIdRange: IntRange
@@ -519,6 +521,7 @@ export const SearchResultsDocument = gql`
       first: $first
       subject: $subject
       nupath: $nupath
+      honors: $honors
       campus: $campus
       classType: $classType
       classIdRange: $classIdRange

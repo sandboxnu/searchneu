@@ -45,16 +45,11 @@ export default function Results(): ReactElement | null {
 
   var filters: FilterSelection = _.merge({}, DEFAULT_FILTER_SELECTION, qParams);
 
-  const oldFilters = filters;
-  filters = processFiltersForQuery(filters);
-
   const searchParams: SearchParams = {
     termId,
     query,
     filters,
   };
-  filters = oldFilters;
-  console.log('SEARCH PARAMS: ' + JSON.stringify(searchParams));
 
   useEffect(() => {
     fetchUserInfo();
@@ -84,9 +79,6 @@ export default function Results(): ReactElement | null {
   };
 
   const { searchData, loadMore } = useSearch(searchParams);
-  console.log(
-    'SEARCH DATA OPTIONS: ' + JSON.stringify(searchData?.filterOptions)
-  );
 
   if (!query && !termId) {
     return null;
@@ -159,23 +151,4 @@ export default function Results(): ReactElement | null {
       <div className="botttomPadding" />
     </div>
   );
-}
-
-function processFiltersForQuery(filters: FilterSelection): FilterSelection {
-  var newFilters = {
-    nupath: filters.nupath,
-    subject: filters.subject,
-    campus: filters.campus,
-    classType: filters.classType,
-    classIdRange: filters.classIdRange,
-    honors: filters.honors,
-  };
-  if (newFilters.honors.length != 0) {
-    if (newFilters.honors[0] === 'Honors Sections') {
-      newFilters.honors = ['true'];
-    } else {
-      newFilters.honors = ['false'];
-    }
-  }
-  return newFilters;
 }

@@ -81,9 +81,9 @@ const CLASSIDRANGE_SPEC: FilterSpec<'Range'> = {
   display: 'Course Number',
   order: 6,
 };
-const HONORS_SPEC: FilterSpec<'Checkboxes'> = {
-  category: FilterCategories.Checkboxes,
-  default: [],
+const HONORS_SPEC: FilterSpec<'Toggle'> = {
+  category: FilterCategories.Toggle,
+  default: false,
   display: 'Honors',
   order: 4,
 };

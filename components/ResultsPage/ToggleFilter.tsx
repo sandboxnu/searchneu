@@ -37,6 +37,7 @@ export default function ToggleFilter({
           onChange={setActiveAfterAnimating}
           id={id}
           defaultChecked={selected}
+          checked={selected}
         />
         <label className="react-switch-label" htmlFor={id}>
           <span className={`react-switch-button`} />

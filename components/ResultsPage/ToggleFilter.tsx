@@ -16,7 +16,7 @@ export default function ToggleFilter({
 
   function setActiveAfterAnimating() {
     isActivated = !isActivated;
-    var expectedActivationState = isActivated;
+    const expectedActivationState = isActivated;
     setTimeout(() => {
       if (expectedActivationState == isActivated) {
         setActive(isActivated);

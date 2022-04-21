@@ -136,8 +136,6 @@ export default function Results(): ReactElement | null {
     );
   };
 
-  macros.log(searchData);
-
   return (
     <div>
       <Header

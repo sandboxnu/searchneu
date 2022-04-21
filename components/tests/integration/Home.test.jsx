@@ -1,11 +1,11 @@
 import React from 'react';
-import { render, fireEvent, screen, prettyDOM } from '@testing-library/react';
 import Enzyme, { mount } from 'enzyme';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { waitForComponentToPaint } from '../util';
 import Home from '../../../pages/[campus]/[termId].tsx';
+import { useRouter } from 'next/router';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -34,6 +34,8 @@ Mock axios using a mock adapter. For some reason I couldn't mock
 with jest while using an outside var (like router push) without issues
 */
 let mockAxios;
+// create a router instance to test mock calls
+const router = useRouter();
 
 describe.only('Home page integration tests', () => {
   beforeEach(() => {
@@ -43,13 +45,6 @@ describe.only('Home page integration tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
     mockAxios.reset();
-  });
-
-  it('REACT TEST should push a query to the router when executing a searching', () => {
-    render(<Home />);
-    fireEvent.click(screen.getByText(`View all classes for`));
-
-    expect(mockRouterPush).toBeCalledWith(`/${CAMPUS}/${TERM_ID}/search`);
   });
 
   it('should push a query to the router when executing a searching', () => {
@@ -62,7 +57,7 @@ describe.only('Home page integration tests', () => {
     searchBarInput.simulate('change', { target: { value: SEARCH_DATA } });
     searchButton.simulate('click');
 
-    expect(mockRouterPush).toBeCalledWith(
+    expect(router.push).toBeCalledWith(
       `/${CAMPUS}/${TERM_ID}/search/${SEARCH_DATA}`
     );
   });
@@ -73,7 +68,7 @@ describe.only('Home page integration tests', () => {
 
     exploratorySearchButton.simulate('click');
 
-    expect(mockRouterPush).toBeCalledWith(`/${CAMPUS}/${TERM_ID}/search`);
+    expect(router.push).toBeCalledWith(`/${CAMPUS}/${TERM_ID}/search`);
   });
 
   it('should send a post request with relevant data on feedback submit', async () => {

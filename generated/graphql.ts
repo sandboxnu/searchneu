@@ -20,14 +20,7 @@ export type Scalars = {
   JSON: any;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
 
 export type Class = {
   __typename?: 'Class';

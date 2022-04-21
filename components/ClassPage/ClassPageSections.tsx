@@ -15,7 +15,7 @@ type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-type ClassPageSection = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
+export type ClassPageSection = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
 
 export default function ClassPageSections({
   classPageInfo,
@@ -99,7 +99,7 @@ export default function ClassPageSections({
   );
 }
 
-function getCampusOptions(
+export function getCampusOptions(
   currTermIndex: number,
   classPageInfo: GetClassPageInfoQuery
 ): string[] {
@@ -173,7 +173,7 @@ function SectionCard({ section }: SectionCardProps): ReactElement {
 
 type SectionMeeting = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number]['meetings'];
 
-function splitMeetingsAndExamTimes(
+export function splitMeetingsAndExamTimes(
   meetings: SectionMeeting
 ): [SectionMeeting, SectionMeeting] {
   return partition(
@@ -182,7 +182,7 @@ function splitMeetingsAndExamTimes(
   );
 }
 
-function displayCourseMeetingTimes(courseMeeting): string {
+export function displayCourseMeetingTimes(courseMeeting): string {
   const meetingTimes = getGroupedByTimeOfDay(courseMeeting.times);
   return meetingTimes.length === 0
     ? 'TBA'
@@ -200,13 +200,13 @@ function displayCourseMeetingTimes(courseMeeting): string {
         .join(', ');
 }
 
-function displayFinalExamDate(finalExamMeeting): string {
+export function displayFinalExamDate(finalExamMeeting): string {
   return dayjs((finalExamMeeting.startDate + 1) * DAY_IN_MILLISECONDS).format(
     'ddd M/D'
   );
 }
 
-function displayFinalExamTimes(finalExamMeeting): string {
+export function displayFinalExamTimes(finalExamMeeting): string {
   const meetingTimes = getGroupedByTimeOfDay(finalExamMeeting.times);
   return meetingTimes.length === 0
     ? 'TBA'
@@ -215,7 +215,7 @@ function displayFinalExamTimes(finalExamMeeting): string {
       )}`;
 }
 
-function getDaysOfWeekAsBooleans(meeting): boolean[] {
+export function getDaysOfWeekAsBooleans(meeting): boolean[] {
   const retVal = [false, false, false, false, false, false, false];
 
   Object.keys(meeting.times).forEach((key) => {

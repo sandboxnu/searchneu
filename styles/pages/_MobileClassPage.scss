@@ -71,153 +71,201 @@
       }
     }
 
-    &__panel {
-      background: #fff;
-      width: 100%;
+    .panel {
+      border: 1px solid #dededf;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
       border-radius: 0 0 8px 8px;
-      border: 1px solid #dededf;
-      font-weight: normal;
-      font-size: 14px;
-      line-height: 17px;
-      padding: 39px 27px 25px 27px;
 
-      .updateCreditPanel {
-        display: flex;
-        justify-content: space-between;
+      &__classInfo {
+        background: #fff;
+        width: 100%;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 17px;
+        padding: 39px 27px 25px 27px;
 
-        .lastUpdated {
+        .updateCreditPanel {
+          display: flex;
+          justify-content: space-between;
+
+          .lastUpdated {
+            font-style: italic;
+            font-size: 14px;
+          }
+        }
+
+        &--descriptionHidden {
+          max-width: 280px;
+          max-height: 34px;
+          overflow: hidden;
+          position: relative;
+          margin-top: 25px;
+
+          &::after {
+            content: '';
+            text-align: right;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 90%;
+            height: 18px;
+            background: linear-gradient(
+              to right,
+              rgba(255, 255, 255, 0),
+              rgba(255, 255, 255, 1) 90%
+            );
+          }
+        }
+
+        &--description {
+          max-width: 280px;
+          margin-top: 25px;
+        }
+
+        &--showMore {
+          color: #d41b2c;
           font-style: italic;
-          font-size: 14px;
+          text-decoration: underline;
+          display: inline-block;
+          margin-bottom: 45px;
+
+          &:focus,
+          &:active {
+            outline: none;
+          }
         }
-      }
 
-      &--descriptionHidden {
-        max-width: 280px;
-        max-height: 34px;
-        overflow: hidden;
-        position: relative;
-        margin-top: 25px;
-
-        &::after {
-          content: '';
-          text-align: right;
-          position: absolute;
-          bottom: 0;
-          right: 0;
-          width: 90%;
-          height: 18px;
-          background: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0),
-            rgba(255, 255, 255, 1) 90%
-          );
+        .courseLevel {
+          display: flex;
+          .courseLevelText {
+            margin-left: 8px;
+          }
         }
-      }
 
-      &--description {
-        max-width: 280px;
-        margin-top: 25px;
-      }
-
-      &--showMore {
-        color: #d41b2c;
-        font-style: italic;
-        text-decoration: underline;
-        display: inline-block;
-        margin-bottom: 45px;
-
-        &:focus,
-        &:active {
-          outline: none;
-        }
-      }
-
-      .courseLevel {
-        display: flex;
-        .courseLevelText {
+        .courseFees {
+          display: flex;
           margin-left: 8px;
+          padding-top: 10px;
+          margin-bottom: 45px;
+          .courseFeesText {
+            margin-left: 18px;
+          }
         }
-      }
 
-      .courseFees {
-        display: flex;
-        margin-left: 8px;
-        padding-top: 10px;
-        margin-bottom: 45px;
-        .courseFeesText {
-          margin-left: 18px;
+        .avgInfo {
+          p {
+            margin-bottom: 0px;
+          }
+          ul {
+            margin-left: 20px;
+            margin-bottom: 45px;
+          }
         }
-      }
 
-      .avgInfo {
-        p {
-          margin-bottom: 0px;
-        }
-        ul {
-          margin-left: 20px;
+        .expandables {
           margin-bottom: 45px;
         }
+
+        .bannerButton {
+          display: flex;
+          border-radius: 5px;
+          background: #fff;
+          border: 1px solid rgba(79, 79, 79, 0.5);
+          align-items: center;
+          padding: 12px;
+          padding-right: 20px;
+          margin-bottom: 15px;
+          width: max-content;
+          cursor: pointer;
+          &:hover {
+            background: #fafafa;
+          }
+
+          a {
+            color: black;
+          }
+          .globe-icon {
+            margin-right: 10px;
+          }
+          span {
+            display: inline-block;
+            vertical-align: 5px;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 25px;
+          }
+        }
+
+        .notifyButton {
+          display: flex;
+          border-radius: 5px;
+          background: #fff;
+          border: 1px solid rgba(79, 79, 79, 0.5);
+          align-items: center;
+          padding: 12px;
+          margin-bottom: 13px;
+          width: max-content;
+          cursor: pointer;
+          &:hover {
+            background: #fafafa;
+          }
+
+          .message-icon {
+            margin-right: 10px;
+          }
+          span {
+            display: inline-block;
+            vertical-align: 5px;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 25px;
+          }
+        }
       }
 
-      .expandables {
-        margin-bottom: 45px;
-      }
+      .sections {
+        background: #fafafb;
+        border-radius: 0 0 8px 8px;
 
-      .bannerButton {
-        display: flex;
-        border-radius: 5px;
-        background: #fff;
-        border: 1px solid rgba(79, 79, 79, 0.5);
-        align-items: center;
-        padding: 12px;
-        padding-right: 20px;
-        margin-bottom: 15px;
-        width: max-content;
-        cursor: pointer;
-        &:hover {
-          background: #fafafa;
-        }
+        &--expanded {
+          padding: 39px 27px 25px 27px;
+          border-top: 1px solid #dededf;
 
-        a {
-          color: black;
-        }
-        .globe-icon {
-          margin-right: 10px;
-        }
-        span {
-          display: inline-block;
-          vertical-align: 5px;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          line-height: 25px;
-        }
-      }
+          .header {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+          }
 
-      .notifyButton {
-        display: flex;
-        border-radius: 5px;
-        background: #fff;
-        border: 1px solid rgba(79, 79, 79, 0.5);
-        align-items: center;
-        padding: 12px;
-        width: max-content;
-        cursor: pointer;
-        &:hover {
-          background: #fafafa;
+          .campus,
+          .semester {
+            margin-top: 30px;
+            p {
+              margin-bottom: 10px;
+            }
+          }
+
+          .horizontalLine {
+            background-color: #dededf;
+            height: 1px;
+          }
         }
 
-        .message-icon {
-          margin-right: 10px;
-        }
-        span {
-          display: inline-block;
-          vertical-align: 5px;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          line-height: 25px;
+        &--toggle {
+          border-top: 1px solid #dededf;
+          padding: 10px 20px;
+          line-height: 1.25;
+          font-size: 13.5px;
+
+          & > b {
+            margin-right: 8px;
+          }
+
+          .arrow-left {
+            transform: rotate(-180deg);
+          }
         }
       }
     }
@@ -247,5 +295,34 @@
     p {
       margin: 10px 20px 21px 20px;
     }
+  }
+}
+
+.mobileSectionCard {
+  margin-top: 45px;
+  font-family: Lato;
+  font-weight: 500;
+
+  .sectionProfCampusFlex {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .sectionProfs {
+      letter-spacing: 1.03px;
+    }
+  }
+
+  .sectionCRN,
+  .sectionMeetings,
+  .WeekdayBoxes,
+  .sectionFinalExam {
+    margin-bottom: 10px;
+  }
+
+  .seatsAvailable {
+    color: #27ae34;
+    font-size: 13;
+    margin-bottom: 41px;
   }
 }

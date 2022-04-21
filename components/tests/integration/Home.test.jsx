@@ -34,7 +34,10 @@ Mock axios using a mock adapter. For some reason I couldn't mock
 with jest while using an outside var (like router push) without issues
 */
 let mockAxios;
-// create a router instance to test mock calls
+// Creating a router instance to test mock calls. There were a lot of issues with using
+// mock instance instantiated above, it works far more consistently importing the module
+// and testing the import. Linting does not like that though
+// eslint-disable-next-line
 const router = useRouter();
 
 describe.only('Home page integration tests', () => {

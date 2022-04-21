@@ -12,7 +12,7 @@ export default function ToggleFilter({
   selected,
   setActive,
 }: ToggleFilterProps): ReactElement {
-  var isActivated = selected;
+  let isActivated = selected;
 
   function setActiveAfterAnimating() {
     isActivated = !isActivated;

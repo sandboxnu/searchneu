@@ -301,23 +301,32 @@ export default function MobilePageContent({
                         className="sectionsSemesterDropdown"
                       >
                         <Dropdown.Menu className="sectionsSemesterDropdownMenu">
-                          {semesters.map((semester) => (
-                            <Dropdown.Item
-                              className={'sectionsSemesterOption'}
-                              value={semester}
-                              text={`${getSeason(`${semester}`)} ${getYear(
-                                `${semester}`
-                              )}`}
-                              selected={semester === termId}
-                              onClick={() => setSelectedSemester(semester)}
-                              key={campus}
-                            ></Dropdown.Item>
-                          ))}
+                          {semesters.map((semester, index) => {
+                            if (
+                              classPageInfo.class.allOccurrences[index].sections
+                                .length
+                            ) {
+                              return (
+                                <Dropdown.Item
+                                  className={'sectionsSemesterOption'}
+                                  value={index}
+                                  text={`${getSeason(`${semester}`)} ${getYear(
+                                    `${semester}`
+                                  )}`}
+                                  selected={semester === termId}
+                                  onClick={() => {
+                                    setSelectedSemester(semester);
+                                    setCurrTermIndex(index);
+                                  }}
+                                  key={campus}
+                                ></Dropdown.Item>
+                              );
+                            }
+                          })}
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>
                     {sections.map((section, index) => {
-                      // TODO check selected term
                       if (section.campus === selectedCampus) {
                         return (
                           <div key={`sectionCard${index}`}>

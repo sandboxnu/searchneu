@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { ClassRange } from './filters';
-import macros from '../macros';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 interface RangeFilterProps {
   title: string;
@@ -15,6 +16,14 @@ export default function RangeFilter({
 }: RangeFilterProps): ReactElement {
   const [controlledInput, setControlledInput] = useState(selected);
 
+  const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000];
+  const courseLabels = courseIDs.map((id) => id.toString());
+
+  let marks = {};
+  courseIDs.forEach((id, index) => {
+    marks[id] = courseLabels[index];
+  });
+
   useEffect(() => {
     setControlledInput(selected);
   }, [selected]);
@@ -25,6 +34,23 @@ export default function RangeFilter({
         <p>{title}</p>
       </div>
       <div className="RangeFilter__input">
+        <Slider
+          range
+          marks={marks}
+          allowCross={false}
+          min={courseIDs.at(0)}
+          max={courseIDs.at(-1)}
+          defaultValue={[courseIDs.at(0), courseIDs.at(-1)]}
+          step={courseIDs.at(0)}
+          onChange={(event: number[]) => {
+            setControlledInput({
+              min: event[0],
+              max: event[1],
+            });
+          }}
+          className="RangeFilter__slider"
+        />
+        {/*
         <div className="RangeFilter__range-min">
           <input
             type="number"
@@ -57,14 +83,15 @@ export default function RangeFilter({
             }
           />
         </div>
+        */}
         <div
           role="button"
           tabIndex={0}
           className="RangeFilter__apply-input"
           onClick={() =>
             setActive({
-              min: controlledInput.min || 0,
-              max: controlledInput.max || 9999,
+              min: controlledInput.min || courseIDs.at(0),
+              max: controlledInput.max || courseIDs.at(-1),
             })
           }
         >

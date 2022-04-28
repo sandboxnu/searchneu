@@ -78,7 +78,7 @@ const CLASSTYPE_SPEC: FilterSpec<'Checkboxes'> = {
 const CLASSIDRANGE_SPEC: FilterSpec<'Range'> = {
   category: FilterCategories.Range,
   default: {},
-  display: 'Course Number',
+  display: 'Course ID Range',
   order: 5,
 };
 export const FILTER_SPECS = {

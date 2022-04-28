@@ -99,11 +99,11 @@
     }
 
     .rc-slider-mark-text-active {
-      font-size: 0.8rem;
+      font-size: 0.6rem;
     }
 
-    .rc-slider-mark-text-active + .rc-slider-mark-text-active {
-      font-size: 0.6rem;
+    .rc-slider-mark-text-active--endpoint {
+      font-size: 0.8rem;
     }
   }
 

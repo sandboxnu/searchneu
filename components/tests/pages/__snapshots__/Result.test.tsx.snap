@@ -186,7 +186,7 @@ exports[`should render a section 1`] = `
                       </p>
                     </div>
                     <div className=\\"toggleSwitch\\">
-                      <input className=\\"react-switch-checkbox\\" type=\\"checkbox\\" onChange={[Function: setActiveAfterAnimating]} id=\\"react-switch-1\\" defaultChecked={false} checked={false} />
+                      <input className=\\"react-switch-checkbox\\" type=\\"checkbox\\" onChange={[Function: onChange]} id=\\"react-switch-1\\" defaultChecked={false} checked={false} />
                       <label className=\\"react-switch-label\\" htmlFor=\\"react-switch-1\\">
                         <span className=\\"react-switch-button\\" />
                       </label>

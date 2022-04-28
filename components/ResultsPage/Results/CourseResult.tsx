@@ -208,6 +208,12 @@ export function MobileCourseResult({
 
   const { optionalDisplay } = useResultDetail(course);
 
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
+
   const renderNUPaths = (): ReactElement => (
     // eslint-disable-next-line react/prop-types
     <div>
@@ -280,7 +286,7 @@ export function MobileCourseResult({
                 course={course}
                 userInfo={userInfo}
                 onSignIn={onSignIn}
-                showNotificationSignup={true}
+                showNotificationSignup={hasAtLeastOneSectionFull()}
                 fetchUserInfo={fetchUserInfo}
               />
             </div>

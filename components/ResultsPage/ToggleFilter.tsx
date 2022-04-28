@@ -12,19 +12,8 @@ export default function ToggleFilter({
   selected,
   setActive,
 }: ToggleFilterProps): ReactElement {
-  let isActivated = selected;
-
-  function setActiveAfterAnimating() {
-    isActivated = !isActivated;
-    const expectedActivationState = isActivated;
-    setTimeout(() => {
-      if (expectedActivationState === isActivated) {
-        setActive(isActivated);
-      }
-    }, 500);
-  }
-
   const [id] = useState(uniqueId('react-switch-'));
+  const onChange = (event) => setActive(event.target.checked);
   return (
     <div className="toggleFilter">
       <div className="filter__title">
@@ -34,7 +23,7 @@ export default function ToggleFilter({
         <input
           className="react-switch-checkbox"
           type="checkbox"
-          onChange={setActiveAfterAnimating}
+          onChange={onChange}
           id={id}
           defaultChecked={selected}
           checked={selected}

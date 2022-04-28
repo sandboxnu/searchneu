@@ -2,7 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
-import _, { filter } from 'lodash';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { useQueryParams } from 'use-query-params';

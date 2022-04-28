@@ -4,7 +4,6 @@ import CheckboxFilter from './CheckboxFilter';
 import DropdownFilter from './DropdownFilter';
 import { FilterOptions, FilterSelection, FILTERS_IN_ORDER } from './filters';
 import RangeFilter from './RangeFilter';
-import type { Option } from './filters';
 import ToggleFilter from './ToggleFilter';
 
 export interface FilterPanelProps {

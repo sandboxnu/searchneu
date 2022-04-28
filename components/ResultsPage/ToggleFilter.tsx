@@ -18,7 +18,7 @@ export default function ToggleFilter({
     isActivated = !isActivated;
     const expectedActivationState = isActivated;
     setTimeout(() => {
-      if (expectedActivationState == isActivated) {
+      if (expectedActivationState === isActivated) {
         setActive(isActivated);
       }
     }, 500);
@@ -40,7 +40,7 @@ export default function ToggleFilter({
           checked={selected}
         />
         <label className="react-switch-label" htmlFor={id}>
-          <span className={`react-switch-button`} />
+          <span className={'react-switch-button'} />
         </label>
       </div>
     </div>

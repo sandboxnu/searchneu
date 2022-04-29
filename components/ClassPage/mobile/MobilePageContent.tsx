@@ -7,10 +7,7 @@ import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconArrow from '../../icons/IconArrow';
 import { PageContentProps } from '../PageContent';
 import { getLastUpdateString } from '../../common/LastUpdated';
-import {
-  creditsDescription,
-  creditsNumericDisplay,
-} from '../../common/CreditsDisplay';
+import { creditsNumericDisplay } from '../../common/CreditsDisplay';
 import { Campus } from '../../types';
 import IconGradcap from '../../icons/IconGradcap';
 import IconScale from '../../icons/IconScale';
@@ -171,14 +168,14 @@ export default function MobilePageContent({
                 </div>
 
                 <div className="courseFees">
-                  <IconDollarSign />
-                  <span className="courseFeesText">
-                    {`Course Fees: ${
-                      classPageInfo.class.latestOccurrence.feeAmount
-                        ? `$${classPageInfo.class.latestOccurrence.feeAmount.toLocaleString()}`
-                        : 'None'
-                    }`}
-                  </span>
+                  {classPageInfo.class.latestOccurrence.feeAmount && (
+                    <>
+                      <IconDollarSign />
+                      <span className="courseFeesText">
+                        {`Course Fees: $${classPageInfo.class.latestOccurrence.feeAmount.toLocaleString()}`}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 <div className="avgInfo">
@@ -208,34 +205,14 @@ export default function MobilePageContent({
                 </div>
 
                 <div className="expandables">
-                  <Expandable
-                    type={SupportedInfoTypes.RecentProfessors}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.RecentSemestersOffered}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.NUPaths}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.Prerequisites}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.Corequisites}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.PrerequisiteFor}
-                    classPageInfo={classPageInfo}
-                  />
-                  <Expandable
-                    type={SupportedInfoTypes.OptionalPreresequisiteFor}
-                    classPageInfo={classPageInfo}
-                  />
+                  {Object.values(SupportedInfoTypes).map((type) => (
+                    <Expandable
+                      type={type}
+                      classPageInfo={classPageInfo}
+                      termId={termId}
+                      campus={campus}
+                    />
+                  ))}
                 </div>
 
                 <div className="bannerButton">
@@ -303,8 +280,8 @@ export default function MobilePageContent({
                         <Dropdown.Menu className="sectionsSemesterDropdownMenu">
                           {semesters.map((semester, index) => {
                             if (
+                              classPageInfo.class.allOccurrences[index] &&
                               classPageInfo.class.allOccurrences[index].sections
-                                .length
                             ) {
                               return (
                                 <Dropdown.Item

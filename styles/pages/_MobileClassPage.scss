@@ -289,11 +289,18 @@
   }
 
   &__panel {
-    ul {
-      margin: 10px 20px 21px 45px;
-    }
+    margin: 10px 20px 21px 45px;
     p {
-      margin: 10px 20px 21px 20px;
+      margin-left: -25px;
+    }
+    .mobilePrereqsDisplay {
+      margin-left: -25px;
+
+      ul > li,
+      ol > li {
+        margin-left: 20px;
+        line-height: 18px;
+      }
     }
   }
 }

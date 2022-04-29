@@ -1,7 +1,9 @@
 import React, { ReactElement, useState } from 'react';
+import Link from 'next/link';
 import { GetClassPageInfoQuery } from '../../../generated/graphql';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import { getProfessors, getRecentSemesterNames } from '../ClassPageInfoBody';
+import MobilePrereqsDisplay from './MobilePrereqsDisplay';
 
 export const SupportedInfoTypes = {
   RecentProfessors: 'RECENT PROFESSORS',
@@ -13,14 +15,18 @@ export const SupportedInfoTypes = {
   OptionalPreresequisiteFor: 'OPTIONAL PREREQUISITE FOR',
 };
 
-export type MobileClassInfoExpandableProps = {
+type MobileClassInfoExpandableProps = {
   type: string;
   classPageInfo: GetClassPageInfoQuery;
+  termId: string;
+  campus: string;
 };
 
 export default function MobileClassInfoExpandable({
   type,
   classPageInfo,
+  termId,
+  campus,
 }: MobileClassInfoExpandableProps): ReactElement {
   const [expanded, setExpanded] = useState(false);
 
@@ -42,7 +48,7 @@ export default function MobileClassInfoExpandable({
 
       {expanded && (
         <div className="mobileClassInfoExpandable__panel">
-          {renderInfo(type, classPageInfo)}
+          {renderInfo(type, classPageInfo, termId, campus)}
         </div>
       )}
     </div>
@@ -51,11 +57,15 @@ export default function MobileClassInfoExpandable({
 
 const renderInfo = (
   type: string,
-  classPageInfo: GetClassPageInfoQuery
+  classPageInfo: GetClassPageInfoQuery,
+  termId: string,
+  campus: string
 ): ReactElement => {
   switch (type) {
     case SupportedInfoTypes.RecentProfessors:
-      return (
+      return getProfessors(classPageInfo, 1).length === 0 ? (
+        <p>None</p>
+      ) : (
         <ul>
           {getProfessors(classPageInfo, 5).map((prof) => {
             return <li>{prof}</li>;
@@ -64,7 +74,9 @@ const renderInfo = (
       );
 
     case SupportedInfoTypes.RecentSemestersOffered:
-      return (
+      return getRecentSemesterNames(classPageInfo, 1).length === 0 ? (
+        <p>None</p>
+      ) : (
         <ul>
           {getRecentSemesterNames(classPageInfo, 5).map((semester) => {
             return <li>{semester}</li>;
@@ -83,8 +95,69 @@ const renderInfo = (
         </ul>
       );
 
-    // TODO: needs a design
-    // case SupportedInfoTypes.Prerequisites:
+    case SupportedInfoTypes.Prerequisites:
+      return (
+        <div className="mobilePrereqsDisplay">
+          <MobilePrereqsDisplay
+            termId={termId}
+            campus={campus}
+            prereqs={classPageInfo.class.latestOccurrence.prereqs}
+            level={0}
+          />
+        </div>
+      );
+
+    case SupportedInfoTypes.Corequisites:
+      return (
+        <div className="mobilePrereqsDisplay">
+          <MobilePrereqsDisplay
+            termId={termId}
+            campus={campus}
+            prereqs={classPageInfo.class.latestOccurrence.coreqs}
+            level={0}
+          />
+        </div>
+      );
+
+    case SupportedInfoTypes.PrerequisiteFor:
+      return classPageInfo.class.latestOccurrence.prereqsFor.values.length ===
+        0 ? (
+        <p>None</p>
+      ) : (
+        <ul>
+          {classPageInfo.class.latestOccurrence.prereqsFor.values.map(
+            (parentClass) => {
+              return (
+                <li>
+                  <Link
+                    href={`/${campus}/${termId}/classPage/${parentClass.subject}/${parentClass.classId}`}
+                  >{`${parentClass.subject} ${parentClass.classId}`}</Link>
+                </li>
+              );
+            }
+          )}
+        </ul>
+      );
+
+    case SupportedInfoTypes.OptionalPreresequisiteFor:
+      return classPageInfo.class.latestOccurrence.optPrereqsFor.values
+        .length === 0 ? (
+        <p>None</p>
+      ) : (
+        <ul>
+          {classPageInfo.class.latestOccurrence.optPrereqsFor.values.map(
+            (parentClass) => {
+              return (
+                <li>
+                  <Link
+                    href={`/${campus}/${termId}/classPage/${parentClass.subject}/${parentClass.classId}`}
+                  >{`${parentClass.subject} ${parentClass.classId}`}</Link>
+                </li>
+              );
+            }
+          )}
+        </ul>
+      );
 
     default:
       return <p>Unable to load more information.</p>;

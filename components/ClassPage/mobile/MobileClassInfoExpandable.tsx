@@ -33,11 +33,7 @@ export default function MobileClassInfoExpandable({
   return (
     <div className="mobileClassInfoExpandable">
       <div
-        className={
-          expanded
-            ? 'mobileClassInfoExpandable__header--expanded'
-            : 'mobileClassInfoExpandable__header'
-        }
+        className={"mobileClassInfoExpandable__header" + (expanded ? "--expanded" : "")}
         role="button"
         tabIndex={0}
         onClick={() => setExpanded(!expanded)}

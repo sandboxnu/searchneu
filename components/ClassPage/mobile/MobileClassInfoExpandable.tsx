@@ -33,7 +33,9 @@ export default function MobileClassInfoExpandable({
   return (
     <div className="mobileClassInfoExpandable">
       <div
-        className={"mobileClassInfoExpandable__header" + (expanded ? "--expanded" : "")}
+        className={
+          'mobileClassInfoExpandable__header' + (expanded ? '--expanded' : '')
+        }
         role="button"
         tabIndex={0}
         onClick={() => setExpanded(!expanded)}
@@ -63,8 +65,8 @@ const renderInfo = (
         <p>None</p>
       ) : (
         <ul>
-          {getProfessors(classPageInfo, 5).map((prof) => {
-            return <li>{prof}</li>;
+          {getProfessors(classPageInfo, 5).map((prof, index) => {
+            return <li key={`prof${index}`}>{prof}</li>;
           })}
         </ul>
       );
@@ -74,8 +76,8 @@ const renderInfo = (
         <p>None</p>
       ) : (
         <ul>
-          {getRecentSemesterNames(classPageInfo, 5).map((semester) => {
-            return <li>{semester}</li>;
+          {getRecentSemesterNames(classPageInfo, 5).map((semester, index) => {
+            return <li key={`sem${index}`}>{semester}</li>;
           })}
         </ul>
       );
@@ -85,8 +87,8 @@ const renderInfo = (
         <p>None</p>
       ) : (
         <ul>
-          {classPageInfo.class.latestOccurrence.nupath.map((nupath) => {
-            return <li>{nupath}</li>;
+          {classPageInfo.class.latestOccurrence.nupath.map((nupath, index) => {
+            return <li key={`nupath${index}`}>{nupath}</li>;
           })}
         </ul>
       );
@@ -122,9 +124,9 @@ const renderInfo = (
       ) : (
         <ul>
           {classPageInfo.class.latestOccurrence.prereqsFor.values.map(
-            (parentClass) => {
+            (parentClass, index) => {
               return (
-                <li>
+                <li key={`prereqFor${index}`}>
                   <Link
                     href={`/${campus}/${termId}/classPage/${parentClass.subject}/${parentClass.classId}`}
                   >{`${parentClass.subject} ${parentClass.classId}`}</Link>
@@ -142,9 +144,9 @@ const renderInfo = (
       ) : (
         <ul>
           {classPageInfo.class.latestOccurrence.optPrereqsFor.values.map(
-            (parentClass) => {
+            (parentClass, index) => {
               return (
-                <li>
+                <li key={`optPrereqFor${index}`}>
                   <Link
                     href={`/${campus}/${termId}/classPage/${parentClass.subject}/${parentClass.classId}`}
                   >{`${parentClass.subject} ${parentClass.classId}`}</Link>

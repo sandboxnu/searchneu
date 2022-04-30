@@ -205,13 +205,15 @@ export default function MobilePageContent({
                 </div>
 
                 <div className="expandables">
-                  {Object.values(SupportedInfoTypes).map((type) => (
-                    <Expandable
-                      type={type}
-                      classPageInfo={classPageInfo}
-                      termId={termId}
-                      campus={campus}
-                    />
+                  {Object.values(SupportedInfoTypes).map((type, index) => (
+                    <div key={`expandable${index}`}>
+                      <Expandable
+                        type={type}
+                        classPageInfo={classPageInfo}
+                        termId={termId}
+                        campus={campus}
+                      />
+                    </div>
                   ))}
                 </div>
 

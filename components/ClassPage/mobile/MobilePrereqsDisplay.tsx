@@ -50,7 +50,14 @@ export default function MobilePrereqsDisplay({
   }
 }
 
-const EachOf = ({ prereq, termId, campus, level }) => {
+type EachOfOneOfProps = {
+  prereq: CompositeReq;
+  termId: string;
+  campus: string;
+  level: number;
+};
+
+const EachOf = ({ prereq, termId, campus, level }: EachOfOneOfProps) => {
   return (
     <>
       <span>Each of the following:</span>
@@ -71,7 +78,7 @@ const EachOf = ({ prereq, termId, campus, level }) => {
   );
 };
 
-const OneOf = ({ prereq, termId, campus, level }) => {
+const OneOf = ({ prereq, termId, campus, level }: EachOfOneOfProps) => {
   return (
     <>
       <span>

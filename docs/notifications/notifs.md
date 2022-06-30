@@ -1,5 +1,7 @@
 # Notifications
 
+?> Note: The **Notifications** documentation from our [backend docs](https://sandboxnu.github.io/course-catalog-api/) has additional details (and setup instructions)
+
 ## End-to-End Signup Flow
 
 - User searches for a class, clicks button on search result to sign up for SMS notifications
@@ -35,10 +37,6 @@
   - JWT_SECRET
 - Frontend:
   - NEXT_PUBLIC_NOTIFS_ENDPOINT
-
-## Sending Notifications
-
-TODO: @Megan
 
 ## TODOs
 

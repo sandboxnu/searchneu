@@ -10,7 +10,7 @@ Here are the 7 steps for a good git commit message, as per [Chris Beam's blog](h
 6. Wrap the body at 72 characters
 7. Use the body to explain what and why vs. how
 
-### Examples:
+### Examples: <!-- {docsify-ignore} -->
 
 _Fix failing CompositePropertySourceTests_<br>
 _Rework @PropertySource early parsing logic_<br>

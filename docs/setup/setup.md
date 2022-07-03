@@ -42,7 +42,7 @@ yarn test --watchAll
 
 # Run all the tests and generate a code coverage report.
 # An overview is shown in the termal and a more detailed report is saved in the coverage directory.
-jest --coverage --watchAll
+yarn jest --coverage --watchAll
 ```
 
 ### Build the code for production

@@ -1,6 +1,12 @@
 Welcome to the SearchNEU documentation!
 
-## Overview
+### What is SearchNEU?
+
+Banner — the site Northeastern uses for its course catalog — is .... less than ideal. It's tedious, requires a login, works poorly on mobile, can be difficult to search with, and has not the best UI/UX.
+
+SearchNEU, created by a student, was designed to help resolve some of these issues. It is a search engine built for easier navigation of class and professor information to help students with course registration. Users can search for and explore all class offerings within a semester, all faculty of the University, sections for each class, and other important information. Additionally, SearchNEU allows students to subscribe to notifications for a class with no remaining seats, to get notified when an opening appears in the class. All of our data is public information we scrape from Northeastern, so you can access any info with a quick search on searchneu.com.
+
+### Tech Overview
 
 **"SearchNEU"**, as a complete application, exists in two parts:
 

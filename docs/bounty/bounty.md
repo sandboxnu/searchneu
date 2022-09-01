@@ -1,6 +1,6 @@
 # Bug Bounty
 
-If you find a security vulnerability on Search NEU I'll buy you a burrito from Amelia's 🌯🎉! Make sure to keep the vulnerability details secret when letting us know about it. A great way to let us know is to email us at sandboxnu@gmail.com or to send Ryan a FB message at [m.me/ryanhughez](https://m.me/ryanhughez).
+If you find a security vulnerability on Search NEU I'll buy you a burrito from Amelia's 🌯🎉! Make sure to keep the vulnerability details secret when letting us know about it. A great way to let us know is to email us at sandboxnu@gmail.com or to use the contact form on the SearchNEU page (at the very bottom of the page). Feel free to do both! (just to make extra sure we get it :)
 
 Security vulnerabilities include:
 

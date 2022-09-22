@@ -5,7 +5,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import MagnifyingGlass from '../icons/magnifying-glass.svg';
 import macros from '../macros';
-
+import SearchInfoIcon from '../common/SearchInfoIcon';
 interface SearchBarProps {
   query: string;
   onSearch: (q: string) => void;
@@ -44,43 +44,48 @@ export default function SearchBar({
   };
 
   return (
-    <div className="searchbar">
-      <input
-        type="search"
-        id="search_id"
-        autoComplete="off"
-        spellCheck="false"
-        // TODO: ahhh what is this lmao // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus={!macros.isMobile}
-        tabIndex={0}
-        className="searchbar__input"
-        size={10}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            search();
+    <>
+      <div className="searchbar">
+        <input
+          type="search"
+          id="search_id"
+          autoComplete="off"
+          spellCheck="false"
+          // TODO: ahhh what is this lmao // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus={!macros.isMobile}
+          tabIndex={0}
+          className="searchbar__input"
+          size={10}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              search();
+            }
+          }}
+          onClick={onClick}
+          onChange={(event) => {
+            setControlledQuery(event.target.value);
+          }}
+          value={controlledQuery}
+          placeholder={
+            !macros.isMobile
+              ? 'Class, professor, course number, "phrase"'
+              : undefined
           }
-        }}
-        onClick={onClick}
-        onChange={(event) => {
-          setControlledQuery(event.target.value);
-        }}
-        value={controlledQuery}
-        placeholder={
-          !macros.isMobile ? 'Class, professor, course number' : undefined
-        }
-      />
-      <div
-        onClick={search}
-        className={`searchbar__button`}
-        role="button"
-        tabIndex={0}
-        style={{ background: buttonColor }}
-      >
-        <MagnifyingGlass
-          aria-label="magnifying glass"
-          className="searchbar__magnifyingGlass"
         />
+        <div
+          onClick={search}
+          className={`searchbar__button`}
+          role="button"
+          tabIndex={0}
+          style={{ background: buttonColor }}
+        >
+          <MagnifyingGlass
+            aria-label="magnifying glass"
+            className="searchbar__magnifyingGlass"
+          />
+        </div>
       </div>
-    </div>
+      <SearchInfoIcon />
+    </>
   );
 }

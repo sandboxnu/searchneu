@@ -67,7 +67,6 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
     &--dropdown {
       border-radius: 5px 0 0 5px;
       height: 46px;
@@ -86,6 +85,7 @@
       border-radius: 0 5px 5px 0;
       height: 46px;
       width: 100%;
+      display: flex;
 
       & > div {
         height: 100%;

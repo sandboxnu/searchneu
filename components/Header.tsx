@@ -7,6 +7,7 @@ import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
 import Logo from '../components/icons/Logo';
+import IconInfo from '../components/icons/info-icon.svg';
 import macros from '../components/macros';
 import {
   DEFAULT_FILTER_SELECTION,
@@ -153,6 +154,7 @@ export default function Header({
             />
           </div>
         )}
+
         <div className="Breadcrumb_Container">
           <div className="Breadcrumb_Container__dropDownContainer">
             <SearchDropdown

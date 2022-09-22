@@ -19,7 +19,7 @@ export default function RangeFilter({
   const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000];
   const courseLabels = courseIDs.map((id) => id.toString());
 
-  let marks = {};
+  const marks = {};
   courseIDs.forEach((id, index) => {
     marks[id] = courseLabels[index];
   });
@@ -38,10 +38,10 @@ export default function RangeFilter({
           range
           marks={marks}
           allowCross={false}
-          min={courseIDs.at(0)}
-          max={courseIDs.at(-1)}
-          defaultValue={[courseIDs.at(0), courseIDs.at(-1)]}
-          step={courseIDs.at(0)}
+          min={courseIDs[0]}
+          max={courseIDs[courseIDs.length - 1]}
+          defaultValue={[courseIDs[0], courseIDs[courseIDs.length - 1]]}
+          step={courseIDs[0]}
           onChange={(event: number[]) => {
             setControlledInput({
               min: event[0],
@@ -50,8 +50,8 @@ export default function RangeFilter({
           }}
           className="RangeFilter__slider"
           value={[
-            controlledInput.min || courseIDs.at(0),
-            controlledInput.max || courseIDs.at(-1),
+            controlledInput.min || courseIDs[0],
+            controlledInput.max || courseIDs[courseIDs.length - 1],
           ]}
         />
         <div
@@ -60,8 +60,8 @@ export default function RangeFilter({
           className="RangeFilter__apply-input"
           onClick={() =>
             setActive({
-              min: controlledInput.min || courseIDs.at(0),
-              max: controlledInput.max || courseIDs.at(-1),
+              min: controlledInput.min || courseIDs[0],
+              max: controlledInput.max || courseIDs[courseIDs.length - 1],
             })
           }
         >

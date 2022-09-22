@@ -16,6 +16,10 @@ SearchNEU lets you easily search for classes, professors, and subjects at Northe
 
 SearchNEU is maintained by [Sandbox](https://www.sandboxnu.com/), Northeastern's student-led software consultancy.
 
+### Documentation
+
+Documentation can be found [here.](https://sandboxnu.github.io/searchneu)
+
 ### Feedback📝🤔
 
 We're curious to hear what you have to say! Feel free to fill out the feedback form in the footer of our [landing page]("https://searchneu.com/NEU") if you have any feedback for us.

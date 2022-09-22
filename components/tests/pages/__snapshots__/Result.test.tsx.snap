@@ -178,6 +178,21 @@ exports[`should render a section 1`] = `
                     </div>
                   </div>
                 </DropdownFilter>
+                <ToggleFilter title=\\"Honors\\" selected={false} setActive={[Function: setActiveFilter]}>
+                  <div className=\\"toggleFilter\\">
+                    <div className=\\"filter__title\\">
+                      <p>
+                        Honors
+                      </p>
+                    </div>
+                    <div className=\\"toggleSwitch\\">
+                      <input className=\\"react-switch-checkbox\\" type=\\"checkbox\\" onChange={[Function: onChange]} id=\\"react-switch-1\\" defaultChecked={false} checked={false} />
+                      <label className=\\"react-switch-label\\" htmlFor=\\"react-switch-1\\">
+                        <span className=\\"react-switch-button\\" />
+                      </label>
+                    </div>
+                  </div>
+                </ToggleFilter>
                 <CheckboxFilter title=\\"Class Type\\" options={{...}} selected={{...}} setActive={[Function: setActiveFilter]}>
                   <div className=\\"CheckboxFilter\\">
                     <span className=\\"CheckboxFilter__title\\">

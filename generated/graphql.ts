@@ -20,14 +20,7 @@ export type Scalars = {
   JSON: any;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
 
 export type Class = {
   __typename?: 'Class';
@@ -99,6 +92,7 @@ export type FilterOptions = {
   subject?: Maybe<Array<FilterAgg>>;
   classType?: Maybe<Array<FilterAgg>>;
   campus?: Maybe<Array<FilterAgg>>;
+  honors?: Maybe<Array<FilterAgg>>;
 };
 
 export type IntRange = {
@@ -167,6 +161,7 @@ export type QuerySearchArgs = {
   campus?: Maybe<Array<Scalars['String']>>;
   classType?: Maybe<Array<Scalars['String']>>;
   classIdRange?: Maybe<IntRange>;
+  honors?: Maybe<Scalars['Boolean']>;
   offset?: Maybe<Scalars['Int']>;
   first?: Maybe<Scalars['Int']>;
 };
@@ -288,6 +283,7 @@ export type SearchResultsQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
   subject?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   nupath?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  honors?: Maybe<Scalars['Boolean']>;
   campus?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   classType?: Maybe<Array<Scalars['String']> | Scalars['String']>;
   classIdRange?: Maybe<IntRange>;
@@ -326,6 +322,14 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
             >
           >;
           campus?: Maybe<
+            Array<
+              { __typename?: 'FilterAgg' } & Pick<
+                FilterAgg,
+                'value' | 'count' | 'description'
+              >
+            >
+          >;
+          honors?: Maybe<
             Array<
               { __typename?: 'FilterAgg' } & Pick<
                 FilterAgg,
@@ -505,6 +509,7 @@ export const SearchResultsDocument = gql`
     $first: Int = 10
     $subject: [String!]
     $nupath: [String!]
+    $honors: Boolean
     $campus: [String!]
     $classType: [String!]
     $classIdRange: IntRange
@@ -516,6 +521,7 @@ export const SearchResultsDocument = gql`
       first: $first
       subject: $subject
       nupath: $nupath
+      honors: $honors
       campus: $campus
       classType: $classType
       classIdRange: $classIdRange
@@ -541,6 +547,11 @@ export const SearchResultsDocument = gql`
           description
         }
         campus {
+          value
+          count
+          description
+        }
+        honors {
           value
           count
           description

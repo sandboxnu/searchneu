@@ -5,7 +5,7 @@
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme, { mount } from 'enzyme';
-import { act } from 'react-dom/test-utils';
+import { waitForComponentToPaint } from '../util';
 import React from 'react';
 import { QueryParamProvider } from 'use-query-params';
 import Results from '../../../pages/[campus]/[termId]/search/[query]';
@@ -25,6 +25,7 @@ it('should render a section', () => {
       <Results />
     </QueryParamProvider>
   );
+  waitForComponentToPaint(result);
 
   expect(result.debug()).toMatchSnapshot();
 });

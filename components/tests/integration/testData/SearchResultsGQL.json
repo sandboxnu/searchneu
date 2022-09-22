@@ -1,0 +1,503 @@
+{
+  "search": {
+    "totalCount": 10000,
+    "pageInfo": {
+      "hasNextPage": true
+    },
+    "filterOptions": {
+      "nupath": [
+        {
+          "value": "Writing Intensive",
+          "count": 163,
+          "description": null
+        }
+      ],
+      "subject": [
+        {
+          "value": "CS",
+          "count": 82,
+          "description": "Computer Science"
+        }
+      ],
+      "classType": [
+        {
+          "value": "Lecture",
+          "count": 1531,
+          "description": null
+        }
+      ],
+      "campus": [
+        {
+          "value": "Boston",
+          "count": 1854,
+          "description": null
+        }
+      ]
+    },
+    "nodes": [
+      {
+        "type": "ClassOccurrence",
+        "name": "Reading in the Field of Study",
+        "subject": "ESLG",
+        "classId": "0045",
+        "termId": "202310",
+        "host": "neu.edu",
+        "desc": "Offers students an opportunity to analyze important issues in their intended field of study while improving their academic reading skills in an interdisciplinary course. Using journal articles and other media, students investigate current theories, trends, practices, and perspectives in their specific field of study.",
+        "nupath": [],
+        "prereqs": {
+          "type": "and",
+          "values": []
+        },
+        "coreqs": {
+          "type": "and",
+          "values": []
+        },
+        "prereqsFor": {
+          "values": []
+        },
+        "optPrereqsFor": {
+          "values": []
+        },
+        "maxCredits": 3,
+        "minCredits": 3,
+        "classAttributes": ["Global Pathways  PB90"],
+        "url": "https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_listcrse?term_in=202310&subj_in=ESLG&crse_in=0045&schd_in=%",
+        "prettyUrl": "https://wl11gp.neu.edu/udcprod8/bwckctlg.p_disp_course_detail?cat_term_in=202310&subj_code_in=ESLG&crse_numb_in=0045",
+        "lastUpdateTime": 1649178228262,
+        "feeAmount": null,
+        "feeDescription": "",
+        "sections": [
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14519",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 54900,
+                      "start": 48900
+                    }
+                  ],
+                  "5": [
+                    {
+                      "end": 54900,
+                      "start": 48900
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14519",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14518",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 41400,
+                      "start": 35400
+                    }
+                  ],
+                  "5": [
+                    {
+                      "end": 41400,
+                      "start": 35400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14518",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14513",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "1": [
+                    {
+                      "end": 43800,
+                      "start": 38400
+                    }
+                  ],
+                  "3": [
+                    {
+                      "end": 43800,
+                      "start": 38400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 15,
+            "seatsRemaining": 15,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14513",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14517",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 44400,
+                      "start": 32400
+                    }
+                  ],
+                  "4": [
+                    {
+                      "end": 44400,
+                      "start": 32400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14517",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14509",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 54600,
+                      "start": 49200
+                    }
+                  ],
+                  "4": [
+                    {
+                      "end": 54600,
+                      "start": 49200
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14509",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14515",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "1": [
+                    {
+                      "end": 54000,
+                      "start": 48600
+                    }
+                  ],
+                  "3": [
+                    {
+                      "end": 54000,
+                      "start": 48600
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14515",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14516",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "1": [
+                    {
+                      "end": 54600,
+                      "start": 49200
+                    }
+                  ],
+                  "3": [
+                    {
+                      "end": 54600,
+                      "start": 49200
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14516",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14510",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 44400,
+                      "start": 39000
+                    }
+                  ],
+                  "4": [
+                    {
+                      "end": 44400,
+                      "start": 39000
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14510",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14511",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "1": [
+                    {
+                      "end": 43800,
+                      "start": 38400
+                    }
+                  ],
+                  "3": [
+                    {
+                      "end": 43800,
+                      "start": 38400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14511",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14512",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "2": [
+                    {
+                      "end": 37800,
+                      "start": 32400
+                    }
+                  ],
+                  "4": [
+                    {
+                      "end": 37800,
+                      "start": 32400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14512",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          },
+          {
+            "campus": "Boston",
+            "classId": "0045",
+            "classType": "Lecture",
+            "crn": "14514",
+            "honors": false,
+            "host": "neu.edu",
+            "lastUpdateTime": 1649178228262,
+            "meetings": [
+              {
+                "type": "Class",
+                "times": {
+                  "1": [
+                    {
+                      "end": 37800,
+                      "start": 32400
+                    }
+                  ],
+                  "3": [
+                    {
+                      "end": 37800,
+                      "start": 32400
+                    }
+                  ]
+                },
+                "where": "TBA",
+                "endDate": 19333,
+                "startDate": 19242
+              }
+            ],
+            "profs": ["Veronika Maliborska"],
+            "seatsCapacity": 18,
+            "seatsRemaining": 18,
+            "subject": "ESLG",
+            "termId": "202310",
+            "url": "https://wl11gp.neu.edu/udcprod8/bwckschd.p_disp_detail_sched?term_in=202310&crn_in=14514",
+            "waitCapacity": 0,
+            "waitRemaining": 0
+          }
+        ]
+      }
+    ]
+  }
+}

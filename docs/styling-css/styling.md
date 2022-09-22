@@ -8,7 +8,7 @@ If you're unfamiliar with Sass, I'd highly recommend checking out their [getting
 
 All our styling files are in `/styles`, and are parallel to the content in `/components`. Partials, `.scss` files whose first character is an underscore `_`, should never affect styles outside that specific file. To resolve this, we must namespace and ecapsulate our styles. Practically, this means that every partial should have one root style, and all styling is nested within that style.
 
-### Exceptions
+## Exceptions
 
 There are two exceptions to the above layout, `css/base.scss` and `_variables.scss`. The variables partial keeps track of all our common themes and colors. This file is imported first, so all following partials can use any variables.
 

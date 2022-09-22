@@ -5,6 +5,7 @@ query searchResults(
   $first: Int = 10
   $subject: [String!]
   $nupath: [String!]
+  $honors: Boolean
   $campus: [String!]
   $classType: [String!]
   $classIdRange: IntRange
@@ -16,6 +17,7 @@ query searchResults(
     first: $first
     subject: $subject
     nupath: $nupath
+    honors: $honors
     campus: $campus
     classType: $classType
     classIdRange: $classIdRange
@@ -41,6 +43,11 @@ query searchResults(
         description
       }
       campus {
+        value
+        count
+        description
+      }
+      honors {
         value
         count
         description

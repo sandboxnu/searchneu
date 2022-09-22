@@ -4,4 +4,4 @@ The master branch is the main branch for all the development. Merging into maste
 
 If the frontend has new environment variables, they can be set by going to Vercel -> Settings -> Environment Variables.
 
-- Remember if any environment variable needs to be exposed to the browser (for example, the backend endpoint the browser hits), the variable should be prefixed with `NEXT_PUBLIC_`. See [Next.js environment variables](NEXT_PUBLIC_GRAPHQL_ENDPOINT).
+!> If any environment variable needs to be exposed to the browser (for example, the backend endpoint the browser hits), the variable should be prefixed with `NEXT_PUBLIC_`. See [Next.js environment variables](NEXT_PUBLIC_GRAPHQL_ENDPOINT).

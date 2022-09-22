@@ -4,6 +4,7 @@ import CheckboxFilter from './CheckboxFilter';
 import DropdownFilter from './DropdownFilter';
 import { FilterOptions, FilterSelection, FILTERS_IN_ORDER } from './filters';
 import RangeFilter from './RangeFilter';
+import ToggleFilter from './ToggleFilter';
 
 export interface FilterPanelProps {
   options: FilterOptions;
@@ -23,6 +24,13 @@ function FilterPanel({
         const setActiveFilter = (a): void => setActive({ [key]: a });
         return (
           <React.Fragment key={index}>
+            {category === 'Toggle' && (
+              <ToggleFilter
+                title={display}
+                selected={aFilter}
+                setActive={setActiveFilter}
+              />
+            )}
             {category === 'Dropdown' && (
               <DropdownFilter
                 title={display}

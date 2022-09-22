@@ -1,4 +1,4 @@
-# Front-end only
+## Front-end only
 
 If the GraphQL endpoint exposed by production `course-catalog-api` supports the query you want to make, you just have to:
 
@@ -9,7 +9,7 @@ If the GraphQL endpoint exposed by production `course-catalog-api` supports the 
    `await gqlClient.whateverYouNamedYourQuery()`
 4. Start up SearchNEU locally by running `yarn dev`
 
-# Full-stack
+## Full-stack
 
 If the GraphQL endpoint exposed by production `course-catalog-api` does NOT support the query you want to make, you have to:
 

@@ -124,8 +124,6 @@ export default function Results(): ReactElement | null {
     return <p>{totalResults.toLocaleString('en-US') + totalResultsStr}</p>;
   };
 
-  macros.log(searchData);
-
   return (
     <div>
       <Header

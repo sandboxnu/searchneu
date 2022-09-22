@@ -85,7 +85,7 @@ const CLASSIDRANGE_SPEC: FilterSpec<'Range'> = {
   category: FilterCategories.Range,
   default: {},
   display: 'Course ID Range',
-  order: 5,
+  order: 6,
 };
 export const FILTER_SPECS = {
   subject: SUBJECT_SPEC,

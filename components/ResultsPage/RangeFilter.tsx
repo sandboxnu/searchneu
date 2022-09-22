@@ -49,41 +49,11 @@ export default function RangeFilter({
             });
           }}
           className="RangeFilter__slider"
+          value={[
+            controlledInput.min || courseIDs.at(0),
+            controlledInput.max || courseIDs.at(-1),
+          ]}
         />
-        {/*
-        <div className="RangeFilter__range-min">
-          <input
-            type="number"
-            className="RangeFilter__input-box"
-            placeholder="Min"
-            value={controlledInput.min}
-            onChange={(event) =>
-              setControlledInput({
-                min: macros.isNumeric(event.target.value)
-                  ? Number(event.target.value)
-                  : '',
-                max: controlledInput.max,
-              })
-            }
-          />
-        </div>
-        <div className="RangeFilter__range-max">
-          <input
-            type="number"
-            className="RangeFilter__input-box"
-            placeholder="Max"
-            value={controlledInput.max}
-            onChange={(event) =>
-              setControlledInput({
-                min: controlledInput.min,
-                max: macros.isNumeric(event.target.value)
-                  ? Number(event.target.value)
-                  : '',
-              })
-            }
-          />
-        </div>
-        */}
         <div
           role="button"
           tabIndex={0}

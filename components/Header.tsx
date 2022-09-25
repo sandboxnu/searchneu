@@ -24,7 +24,7 @@ import {
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
-import getTermInfos from '../utils/TermInfoProvider';
+import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 
 type HeaderProps = {
@@ -54,7 +54,7 @@ export default function Header({
   const campus = router.query.campus as string;
 
   // Get the TermInfo dict from the app context
-  const termInfos = getTermInfos();
+  const termInfos = getTermInfosWithError().termInfos;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);

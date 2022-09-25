@@ -202,9 +202,7 @@ export function MobileSectionPanel({
 }: MobileSectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
-    section.seatsCapacity,
-    section.waitCapacity,
-    section.waitRemaining
+    section.seatsCapacity
   );
 
   const groupedTimesAndDays = (times: DayjsTuple[]): Map<string, string[]> => {
@@ -278,21 +276,12 @@ export function MobileSectionPanel({
       </div>
       <div className="MobileSectionPanel__row">
         <div className={getSeatsClass()}>
-          {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+          <span>{`${section.seatsRemaining}/${section.seatsCapacity} Seats Available`}</span>
+          <span> | </span>
+          <span className="MobileSectionPanel__waitlist-text">
+            {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
+          </span>
         </div>
-      </div>
-      <div className="MobileSectionPanel__waitlist">
-        <div className={getSeatsClass()}>
-          {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
-        </div>
-        {userInfo && (
-          <SectionCheckBox
-            section={section}
-            checked={checked}
-            userInfo={userInfo}
-            fetchUserInfo={fetchUserInfo}
-          />
-        )}
       </div>
     </div>
   );

@@ -139,14 +139,15 @@ describe.only('Results page integration tests', () => {
     const resultsPage = mount(<Results />);
     waitForComponentToPaint(resultsPage);
     const classIdRangeFilter = resultsPage.find('.RangeFilter');
-    // find both min/max text input
-    const minInput = classIdRangeFilter.find('input').at(0);
-    const maxInput = classIdRangeFilter.find('input').at(1);
-    // simulate typing some values in
-    minInput.simulate('change', { target: { value: '0' } });
-    maxInput.simulate('change', { target: { value: '1000' } });
+    // find all slider value marks
+    const sliderMarks = classIdRangeFilter.find('.rc-slider-mark-text');
+    // simulate clicking on slider value marks
+    sliderMarks.at(1).simulate('click');
+    sliderMarks.at(4).simulate('click');
     // click the apply button
     classIdRangeFilter.find('.RangeFilter__apply-input').simulate('click');
-    expect(setQParams).toBeCalledWith({ classIdRange: { max: 1000, min: 0 } });
+    expect(setQParams).toBeCalledWith({
+      classIdRange: { max: 5000, min: 1000 },
+    });
   });
 });

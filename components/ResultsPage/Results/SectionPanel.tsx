@@ -281,15 +281,15 @@ export function MobileSectionPanel({
           <span className="MobileSectionPanel__waitlist-text">
             {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
           </span>
-          {userInfo && (
-            <SectionCheckBox
-              section={section}
-              checked={checked}
-              userInfo={userInfo}
-              fetchUserInfo={fetchUserInfo}
-            />
-          )}
         </div>
+        {userInfo && (
+          <SectionCheckBox
+            section={section}
+            checked={checked}
+            userInfo={userInfo}
+            fetchUserInfo={fetchUserInfo}
+          />
+        )}
       </div>
     </div>
   );

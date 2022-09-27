@@ -58,6 +58,7 @@
   }
   &__waitlist-text {
     color: gray;
+    white-space: no-wrap;
   }
 
   & > .green {

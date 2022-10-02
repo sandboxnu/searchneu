@@ -17,11 +17,9 @@ export default function RangeFilter({
   const [controlledInput, setControlledInput] = useState(selected);
 
   const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000];
-  const courseLabels = courseIDs.map((id) => id.toString());
-
   const marks = {};
-  courseIDs.forEach((id, index) => {
-    marks[id] = courseLabels[index];
+  courseIDs.forEach((id) => {
+    marks[id] = id.toString();
   });
 
   useEffect(() => {

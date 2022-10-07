@@ -25,13 +25,26 @@ exports[`should render a section 1`] = `
               <div className=\\"Results__searchwrapper\\">
                 <SearchBar onSearch={[Function: setSearchQuery]} query=\\"cs\\" buttonColor=\\"#E63946\\">
                   <div className=\\"searchbar\\">
-                    <input type=\\"search\\" id=\\"search_id\\" autoComplete=\\"off\\" spellCheck=\\"false\\" autoFocus={true} tabIndex={0} className=\\"searchbar__input\\" size={10} onKeyDown={[Function: onKeyDown]} onClick={[undefined]} onChange={[Function: onChange]} value=\\"cs\\" placeholder=\\"Class, professor, course number\\" />
+                    <input type=\\"search\\" id=\\"search_id\\" autoComplete=\\"off\\" spellCheck=\\"false\\" autoFocus={true} tabIndex={0} className=\\"searchbar__input\\" size={10} onKeyDown={[Function: onKeyDown]} onClick={[undefined]} onChange={[Function: onChange]} value=\\"cs\\" placeholder=\\"Class, professor, course number, \\"phrase\\"\\" />
                     <div onClick={[Function: search]} className=\\"searchbar__button\\" role=\\"button\\" tabIndex={0} style={{...}}>
                       <SvgMagnifyingGlass aria-label=\\"magnifying glass\\" className=\\"searchbar__magnifyingGlass\\">
                         <svg aria-label=\\"magnifying glass\\" className=\\"searchbar__magnifyingGlass\\" data-file-name=\\"SvgMagnifyingGlass\\" />
                       </SvgMagnifyingGlass>
                     </div>
                   </div>
+                  <SearchInfoIcon>
+                    <div className=\\"SearchInfoIcon\\">
+                      <SvgInfoIcon className=\\"SearchInfoIcon__icon\\">
+                        <svg className=\\"SearchInfoIcon__icon\\" data-file-name=\\"SvgInfoIcon\\" />
+                      </SvgInfoIcon>
+                      <Tooltip text=\\"Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase \\"studio design\\" to appear in the search results, wrap it up in quotes.\\" direction=\\"DOWN\\">
+                        <div className=\\"tooltip\\">
+                          Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase &quot;studio design&quot; to appear in the search results, wrap it up in quotes.
+                          <div className=\\"tooltip__arrow--DOWN\\" />
+                        </div>
+                      </Tooltip>
+                    </div>
+                  </SearchInfoIcon>
                 </SearchBar>
               </div>
               <div className=\\"Breadcrumb_Container\\">

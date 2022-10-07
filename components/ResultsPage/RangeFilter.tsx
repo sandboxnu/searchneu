@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { ClassRange } from './filters';
-import macros from '../macros';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 interface RangeFilterProps {
   title: string;
@@ -15,6 +16,12 @@ export default function RangeFilter({
 }: RangeFilterProps): ReactElement {
   const [controlledInput, setControlledInput] = useState(selected);
 
+  const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000];
+  const marks = {};
+  courseIDs.forEach((id) => {
+    marks[id] = id.toString();
+  });
+
   useEffect(() => {
     setControlledInput(selected);
   }, [selected]);
@@ -25,46 +32,34 @@ export default function RangeFilter({
         <p>{title}</p>
       </div>
       <div className="RangeFilter__input">
-        <div className="RangeFilter__range-min">
-          <input
-            type="number"
-            className="RangeFilter__input-box"
-            placeholder="Min"
-            value={controlledInput.min}
-            onChange={(event) =>
-              setControlledInput({
-                min: macros.isNumeric(event.target.value)
-                  ? Number(event.target.value)
-                  : '',
-                max: controlledInput.max,
-              })
-            }
-          />
-        </div>
-        <div className="RangeFilter__range-max">
-          <input
-            type="number"
-            className="RangeFilter__input-box"
-            placeholder="Max"
-            value={controlledInput.max}
-            onChange={(event) =>
-              setControlledInput({
-                min: controlledInput.min,
-                max: macros.isNumeric(event.target.value)
-                  ? Number(event.target.value)
-                  : '',
-              })
-            }
-          />
-        </div>
+        <Slider
+          range
+          marks={marks}
+          allowCross={false}
+          min={courseIDs[0]}
+          max={courseIDs[courseIDs.length - 1]}
+          defaultValue={[courseIDs[0], courseIDs[courseIDs.length - 1]]}
+          step={courseIDs[0]}
+          onChange={(event: number[]) => {
+            setControlledInput({
+              min: event[0],
+              max: event[1],
+            });
+          }}
+          className="RangeFilter__slider"
+          value={[
+            controlledInput.min || courseIDs[0],
+            controlledInput.max || courseIDs[courseIDs.length - 1],
+          ]}
+        />
         <div
           role="button"
           tabIndex={0}
           className="RangeFilter__apply-input"
           onClick={() =>
             setActive({
-              min: controlledInput.min || 0,
-              max: controlledInput.max || 9999,
+              min: controlledInput.min || courseIDs[0],
+              max: controlledInput.max || courseIDs[courseIDs.length - 1],
             })
           }
         >

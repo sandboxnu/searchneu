@@ -276,7 +276,11 @@ export function MobileSectionPanel({
       </div>
       <div className="MobileSectionPanel__row">
         <div className={getSeatsClass()}>
-          {`${section.seatsRemaining}/${section.seatsCapacity} Seats Available `}
+          <span>{`${section.seatsRemaining}/${section.seatsCapacity} Seats Available`}</span>
+          <span> | </span>
+          <span className="MobileSectionPanel__waitlist-text">
+            {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
+          </span>
         </div>
         {userInfo && (
           <SectionCheckBox

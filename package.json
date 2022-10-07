@@ -46,6 +46,7 @@
     "pg": "^8.5.1",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
+    "rc-slider": "^10.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-infinite-scroll-component": "^5.1.0",

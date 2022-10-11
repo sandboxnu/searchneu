@@ -238,7 +238,7 @@ exports[`should render a section 1`] = `
               <div className=\\"footer\\">
                 <div className=\\"footer ui basic center aligned segment\\">
                   Interested in how SearchNEU works? Check out our
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://api.searchneu.com/\\">
+                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://docs.searchneu.com/\\">
                      documentation!
                   </a>
                 </div>

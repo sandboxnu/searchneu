@@ -19,7 +19,7 @@ function Footer() {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://api.searchneu.com/"
+            href="https://docs.searchneu.com/"
           >
             &nbsp;documentation!
           </a>

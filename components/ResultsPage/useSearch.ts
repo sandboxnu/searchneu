@@ -22,7 +22,7 @@ export interface SearchParams {
   filters: FilterSelection;
 }
 interface UseSearchReturn {
-  error: any;
+  error: Error;
   searchData: SearchResult;
   loadMore: () => void;
 }

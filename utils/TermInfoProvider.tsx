@@ -32,7 +32,7 @@ TermInfoProvider.propTypes = {
 };
 
 const GetTermInfosWithError = (): {
-  error: any;
+  error: Error;
   termInfos: Record<Campus, TermInfo[]>;
 } => useContext(termInfoReactContext);
 export default GetTermInfosWithError;

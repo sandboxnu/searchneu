@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -20,7 +20,6 @@ import AlertBanner, {
 } from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
-import FeedbackModal from '../../components/FeedbackModal';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 
@@ -38,12 +37,6 @@ export default function Home(): ReactElement {
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
   const containerClassnames = 'home-container';
-
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
 
   return (
     <>
@@ -100,9 +93,6 @@ export default function Home(): ReactElement {
                 {termInfosError !== null ? (
                   <div>
                     <h3> An Error Occurred : ( </h3>
-                    <a role="button" onClick={toggleModal}>
-                      Report a bug
-                    </a>
                   </div>
                 ) : termInfos[campus].length == 0 ? (
                   <LoadingContainer />
@@ -120,7 +110,6 @@ export default function Home(): ReactElement {
           </div>
         </div>
       </div>
-      <FeedbackModal toggleForm={toggleModal} feedbackModalOpen={modalOpen} />
     </>
   );
 }

@@ -15,7 +15,7 @@ export interface TermInfo {
  * Queries the backend for information about the terms for all campuses
  */
 export async function fetchTermInfo(): Promise<{
-  error: any;
+  error: Error;
   termInfos: Record<Campus, TermInfo[]>;
 }> {
   // Creates a dict of {campus : TermInfo[] }

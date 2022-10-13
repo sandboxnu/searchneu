@@ -10,7 +10,6 @@ import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
 import getTermInfos from '../../utils/TermInfoProvider';
-import SearchInfoIcon from '../common/SearchInfoIcon';
 
 interface HomeSearchProps {
   termId: string;

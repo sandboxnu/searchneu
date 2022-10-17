@@ -22,6 +22,11 @@ export type Scalars = {
   JSONObject: any;
 };
 
+export type BulkClassInput = {
+  subject: Scalars['String'];
+  classId: Scalars['String'];
+};
+
 export type Class = {
   __typename?: 'Class';
   name: Scalars['String'];
@@ -129,6 +134,7 @@ export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
   class?: Maybe<Class>;
+  bulkClasses?: Maybe<Array<Class>>;
   classByHash?: Maybe<ClassOccurrence>;
   sectionByHash?: Maybe<Section>;
   major?: Maybe<Major>;
@@ -139,6 +145,10 @@ export type Query = {
 export type QueryClassArgs = {
   subject: Scalars['String'];
   classId: Scalars['String'];
+};
+
+export type QueryBulkClassesArgs = {
+  input: Array<BulkClassInput>;
 };
 
 export type QueryClassByHashArgs = {

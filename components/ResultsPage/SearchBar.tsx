@@ -85,7 +85,7 @@ export default function SearchBar({
           />
         </div>
       </div>
-      <SearchInfoIcon />
+      {!macros.isMobile ? <SearchInfoIcon /> : <></>}
     </>
   );
 }

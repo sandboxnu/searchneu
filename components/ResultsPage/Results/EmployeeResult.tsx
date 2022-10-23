@@ -22,16 +22,16 @@ function prepareEmployeeAttributes(
     employee.officeRoom,
   ];
 
-  for (const email of employee.emails) {
+  if (employee.email) {
     attributes.push(
       <a
-        key={email}
+        key={employee.email}
         className="employeeEmail"
         role="button"
         tabIndex={0}
-        href={`mailto:${email}`}
+        href={`mailto:${employee.email}`}
       >
-        {email}
+        {employee.email}
       </a>
     );
   }
@@ -50,32 +50,6 @@ function prepareEmployeeAttributes(
         href={`tel:${employee.phone}`}
       >
         {parsedPhone}
-      </a>
-    );
-  }
-
-  if (employee.url) {
-    attributes.push(
-      <a
-        key="link"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={employee.url}
-      >
-        NEU Profile
-      </a>
-    );
-  }
-
-  if (employee.personalSite) {
-    attributes.push(
-      <a
-        key="personalSite"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={employee.personalSite}
-      >
-        Personal Website
       </a>
     );
   }
@@ -121,8 +95,6 @@ function injectBRs(arr: (string | ReactElement)[]): (string | ReactElement)[] {
 
 // name, id, phone, emails, primaryRole, primaryDepartment, url, officeRoom, officeStreetAddress are all standardized across different data sources.
 // The other fields may be present for one (eg, COE), but are not common enough to be used.
-
-// not standardized yet: personalSite, bigPictureLink
 
 interface EmployeeResultProps {
   employee: Employee;

@@ -15,6 +15,19 @@ function Footer() {
     <>
       <div className="footer">
         <div className="footer ui basic center aligned segment">
+          Interested in how SearchNEU works? Check out our
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.searchneu.com/"
+          >
+            &nbsp;documentation!
+          </a>
+        </div>
+
+        <div className="ui divider" />
+
+        <div className="footer ui basic center aligned segment">
           See an issue or want to add to this website? Fork it or create an
           issue on
           <a

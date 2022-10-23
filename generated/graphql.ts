@@ -22,6 +22,11 @@ export type Scalars = {
   JSONObject: any;
 };
 
+export type BulkClassInput = {
+  subject: Scalars['String'];
+  classId: Scalars['String'];
+};
+
 export type Class = {
   __typename?: 'Class';
   name: Scalars['String'];
@@ -65,17 +70,10 @@ export type Employee = {
   name: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  emails: Array<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
   primaryDepartment?: Maybe<Scalars['String']>;
   primaryRole?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  streetAddress?: Maybe<Scalars['String']>;
-  personalSite?: Maybe<Scalars['String']>;
-  googleScholarId?: Maybe<Scalars['String']>;
-  bigPictureUrl?: Maybe<Scalars['String']>;
-  pic?: Maybe<Scalars['String']>;
-  link?: Maybe<Scalars['String']>;
   officeRoom?: Maybe<Scalars['String']>;
 };
 
@@ -129,6 +127,7 @@ export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
   class?: Maybe<Class>;
+  bulkClasses?: Maybe<Array<Class>>;
   classByHash?: Maybe<ClassOccurrence>;
   sectionByHash?: Maybe<Section>;
   major?: Maybe<Major>;
@@ -139,6 +138,10 @@ export type Query = {
 export type QueryClassArgs = {
   subject: Scalars['String'];
   classId: Scalars['String'];
+};
+
+export type QueryBulkClassesArgs = {
+  input: Array<BulkClassInput>;
 };
 
 export type QueryClassByHashArgs = {
@@ -387,19 +390,14 @@ export type SearchResultsQuery = { __typename?: 'Query' } & {
                   })
               | ({ __typename?: 'Employee' } & Pick<
                   Employee,
-                  | 'bigPictureUrl'
-                  | 'emails'
+                  | 'email'
                   | 'firstName'
-                  | 'googleScholarId'
                   | 'lastName'
-                  | 'link'
                   | 'name'
                   | 'officeRoom'
-                  | 'personalSite'
                   | 'phone'
                   | 'primaryDepartment'
                   | 'primaryRole'
-                  | 'streetAddress'
                 > & { type: 'Employee' })
             >
           >
@@ -560,19 +558,14 @@ export const SearchResultsDocument = gql`
       nodes {
         type: __typename
         ... on Employee {
-          bigPictureUrl
-          emails
+          email
           firstName
-          googleScholarId
           lastName
-          link
           name
           officeRoom
-          personalSite
           phone
           primaryDepartment
           primaryRole
-          streetAddress
         }
         ... on ClassOccurrence {
           name

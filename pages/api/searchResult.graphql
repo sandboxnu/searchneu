@@ -56,19 +56,14 @@ query searchResults(
     nodes {
       type: __typename
       ... on Employee {
-        bigPictureUrl
-        emails
+        email
         firstName
-        googleScholarId
         lastName
-        link
         name
         officeRoom
-        personalSite
         phone
         primaryDepartment
         primaryRole
-        streetAddress
       }
       ... on ClassOccurrence {
         name

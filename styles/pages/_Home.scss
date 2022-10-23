@@ -37,6 +37,7 @@
 
   .topHeader {
     display: flex !important;
+    min-height: 750px;
     align-items: center;
     margin-bottom: 0 !important;
     height: 100vh;
@@ -50,10 +51,6 @@
       rgba(208, 191, 131, 0.424862) 78.28%,
       rgba(255, 159, 28, 0.67) 103.17%
     );
-  }
-
-  .contentContainer {
-    min-height: 750px;
   }
 
   .centerTextContainer {

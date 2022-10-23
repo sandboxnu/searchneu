@@ -24,7 +24,7 @@ exports[`should render a section 1`] = `
       </svg>
     </a>
     <div>
-      <div className=\\"ui center spacing aligned icon header topHeader contentContainer\\">
+      <div className=\\"ui center spacing aligned icon header topHeader\\">
         <div className=\\"centerTextContainer\\">
           <Logo className=\\"logo\\" aria-label=\\"logo\\" campus=\\"NEU\\" />
           <LoadingContainer />

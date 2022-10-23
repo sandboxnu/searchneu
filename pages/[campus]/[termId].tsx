@@ -84,7 +84,7 @@ export default function Home(): ReactElement {
 
         <div>
           <div // TODO: Take this out and restyle this monstrosity from scratch
-            className="ui center spacing aligned icon header topHeader contentContainer"
+            className="ui center spacing aligned icon header topHeader"
           >
             <div className="centerTextContainer">
               <Logo className="logo" aria-label="logo" campus={campus} />

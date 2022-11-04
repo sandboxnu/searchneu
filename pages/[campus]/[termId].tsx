@@ -39,11 +39,11 @@ export default function Home(): ReactElement {
 
   return (
     <div>
-      <div className="alertBannerContainer">
+      {/*<div className="alertBannerContainer">
         {alertBanners.map((alertBanner) => (
           <AlertBanner key={alertBanner.text} alertBannerData={alertBanner} />
         ))}
-      </div>
+      </div>*/}
       <div className={containerClassnames}>
         {/*TODO: remove when notification is fixed */}
         <Head>

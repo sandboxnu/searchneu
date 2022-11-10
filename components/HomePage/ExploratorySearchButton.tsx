@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Campus } from '../types';
 import { useRouter } from 'next/router';
 import { getTermName } from '../terms';
-import getTermInfosWithError from '../../utils/TermInfoProvider';
+import getTermInfos from '../../utils/TermInfoProvider';
 
 interface ExploratorySearchButtonProps {
   termId: string;
@@ -15,9 +15,7 @@ const ExploratorySearchButton = ({
 }: ExploratorySearchButtonProps): ReactElement => {
   const router = useRouter();
 
-  const termInfosWithError = getTermInfosWithError();
-  const termInfosError = termInfosWithError.error;
-  const termInfos = termInfosWithError.termInfos;
+  const termInfos = getTermInfos();
   const termName = getTermName(termInfos, termId);
 
   return (
@@ -25,7 +23,7 @@ const ExploratorySearchButton = ({
       className="searchByFilters"
       onClick={() => router.push(`/${campus}/${termId}/search`)}
     >
-      {(!campus || !termName) && !termInfosError && 'Loading semester data...'}
+      {(!campus || !termName) && 'Loading semester data...'}
       {campus && termName && (
         <span>
           View all classes for

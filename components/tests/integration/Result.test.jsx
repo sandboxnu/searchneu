@@ -27,12 +27,9 @@ jest.mock('next/router', () => ({
 
 // Mock service provider
 jest.mock('../../../utils/TermInfoProvider', () => () => ({
-  error: null,
-  termInfos: {
-    NEU: [{ text: TERM_TEXT, value: TERM_ID }],
-    CPS: [],
-    LAW: [],
-  },
+  NEU: [{ text: TERM_TEXT, value: TERM_ID }],
+  CPS: [],
+  LAW: [],
 }));
 
 // Mock GraphQL Client

@@ -29,7 +29,8 @@ async function generateSitemap(): Promise<string> {
   // The part after the https://searchneu.com/
   const items: Set<string> = new Set();
 
-  const termInfos = await fetchTermInfo();
+  const termInfosWithError = await fetchTermInfo();
+  const termInfos = termInfosWithError.termInfos;
 
   // latest terms for each campus
   const latestTerms: [Campus, string][] = Object.values(Campus).map((c) => [

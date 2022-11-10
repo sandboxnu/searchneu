@@ -9,10 +9,15 @@ const emptyTermInfos: Record<Campus, TermInfo[]> = {
   [Campus.LAW]: [],
 };
 
-const termInfoReactContext = React.createContext(emptyTermInfos);
+const emptyTermInfosWithError = {
+  error: null,
+  termInfos: emptyTermInfos,
+};
+
+const termInfoReactContext = React.createContext(emptyTermInfosWithError);
 
 export const TermInfoProvider = ({ children }): ReactElement => {
-  const [termInfos, setTermInfos] = useState(emptyTermInfos);
+  const [termInfos, setTermInfos] = useState(emptyTermInfosWithError);
 
   useEffect(() => {
     fetchTermInfo().then((result) => setTermInfos(result));
@@ -26,6 +31,8 @@ TermInfoProvider.propTypes = {
   children: PropTypes.node,
 };
 
-const GetTermInfos = (): Record<Campus, TermInfo[]> =>
-  useContext(termInfoReactContext);
-export default GetTermInfos;
+const GetTermInfosWithError = (): {
+  error: Error;
+  termInfos: Record<Campus, TermInfo[]>;
+} => useContext(termInfoReactContext);
+export default GetTermInfosWithError;

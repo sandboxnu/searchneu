@@ -394,6 +394,31 @@ exports[`should render a section 1`] = `
         </div>
         <div className=\\"botttomPadding\\" />
       </div>
+      <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
+        <div className=\\"feedback-container\\">
+          <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
+            <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: bound hideMessage]}>
+              <div style={{...}} className=\\"ui success message alertMessage\\">
+                <Icon name=\\"close\\" onClick={[Function (anonymous)]} as=\\"i\\">
+                  <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"close icon\\" />
+                </Icon>
+                <MessageContent>
+                  <div className=\\"content\\">
+                    <MessageHeader content=\\"Your submission was successful.\\">
+                      <div className=\\"header\\">
+                        Your submission was successful.
+                      </div>
+                    </MessageHeader>
+                  </div>
+                </MessageContent>
+              </div>
+            </Message>
+          </Transition>
+          <Modal open={false} onClose={[Function: toggleModal]} size=\\"small\\" className=\\"feedback-modal-container\\" centered={true} dimmer={true} closeOnDimmerClick={true} closeOnDocumentClick={false} eventPool=\\"Modal\\">
+            <Portal closeOnDocumentClick={false} trigger={[undefined]} eventPool=\\"Modal\\" mountNode={{...}} open={false} onClose={[Function (anonymous)]} onMount={[Function (anonymous)]} onOpen={[Function (anonymous)]} onUnmount={[Function (anonymous)]} closeOnEscape={true} openOnTriggerClick={true} />
+          </Modal>
+        </div>
+      </FeedbackModal>
     </Results>
   </LocationProvider>
 </QueryParamProvider>"

@@ -70,8 +70,8 @@ function Footer() {
           )
         </div>
         <div className="footer ui basic center aligned segment affiliation">
-          Search NEU is built for students by students & is not affiliated with
-          NEU.
+          Search NEU is built for students by students &amp; is not affiliated
+          with NEU.
         </div>
         <div className="footer ui basic center aligned segment contact">
           <a role="button" tabIndex={0} onClick={toggleModal}>

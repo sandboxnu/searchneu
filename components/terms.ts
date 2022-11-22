@@ -14,7 +14,10 @@ export interface TermInfo {
 /**
  * Queries the backend for information about the terms for all campuses
  */
-export async function fetchTermInfo(): Promise<Record<Campus, TermInfo[]>> {
+export async function fetchTermInfo(): Promise<{
+  error: Error | null;
+  termInfos: Record<Campus, TermInfo[]>;
+}> {
   // Creates a dict of {campus : TermInfo[] }
   const allTermInfos = {
     [Campus.NEU]: [],
@@ -22,25 +25,33 @@ export async function fetchTermInfo(): Promise<Record<Campus, TermInfo[]>> {
     [Campus.LAW]: [],
   };
 
+  const termInfosWithError = {
+    error: null,
+    termInfos: allTermInfos,
+  };
+
   for (const college of Object.keys(Campus)) {
     // Query the TermInfos from the GraphQL client
-    const rawTermInfos = (
-      await gqlClient.getTermIDsByCollege({ subCollege: college })
-    )['termInfos'];
-
-    // Map the TermInfos to add a link parameter
-    const termInfos: TermInfo[] = rawTermInfos.map((term) => {
-      return {
-        text: term['text'],
-        value: term['termId'],
-        href: `/${college}/${term['termId']}`,
-      };
-    });
-
-    allTermInfos[college] = termInfos;
+    try {
+      const rawTermInfos = await gqlClient.getTermIDsByCollege({
+        subCollege: college,
+      });
+      // Map the TermInfos to add a link parameter
+      termInfosWithError.termInfos[college] = rawTermInfos['termInfos'].map(
+        (term) => {
+          return {
+            text: term['text'],
+            value: term['termId'],
+            href: `/${college}/${term['termId']}`,
+          };
+        }
+      );
+    } catch (e) {
+      termInfosWithError.error = e;
+    }
   }
 
-  return allTermInfos;
+  return termInfosWithError;
 }
 
 // Returns the latest (ie. most recent) term for the given campus

@@ -42,7 +42,6 @@
     margin-bottom: 0 !important;
     height: 100vh;
     position: relative;
-    pointer-events: none;
     background: linear-gradient(
       180deg,
       rgba(168, 218, 220, 0.66) 3.86%,
@@ -117,6 +116,7 @@
     text-align: center;
     line-height: 0;
     z-index: 8;
+    pointer-events: none;
   }
 
   .boston {

@@ -22,6 +22,7 @@ export interface SearchParams {
   filters: FilterSelection;
 }
 interface UseSearchReturn {
+  error: Error;
   searchData: SearchResult;
   loadMore: () => void;
 }
@@ -77,7 +78,7 @@ export default function useSearch({
     });
   };
 
-  const { data, size, setSize } = useSWRInfinite(
+  const { data, size, setSize, error } = useSWRInfinite(
     getKey,
     async (params): Promise<SearchResult> => {
       params = JSON.parse(params);
@@ -106,6 +107,7 @@ export default function useSearch({
   };
 
   return {
+    error: error,
     searchData: returnedData,
     loadMore: () => setSize((s) => s + 1),
   };

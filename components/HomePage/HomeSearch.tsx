@@ -9,7 +9,7 @@ import IconTie from '../icons/IconTie';
 import SearchBar from '../ResultsPage/SearchBar';
 import SearchDropdown from '../ResultsPage/SearchDropdown';
 import { Campus } from '../types';
-import getTermInfos from '../../utils/TermInfoProvider';
+import getTermInfosWithError from '../../utils/TermInfoProvider';
 
 interface HomeSearchProps {
   termId: string;
@@ -17,7 +17,8 @@ interface HomeSearchProps {
 }
 
 const HomeSearch = ({ termId, campus }: HomeSearchProps): ReactElement => {
-  const termInfos = getTermInfos();
+  const termInfosWithError = getTermInfosWithError();
+  const termInfos = termInfosWithError.termInfos;
 
   const campusLink = (c: Campus): string =>
     `/${c}/${getRoundedTerm(termInfos, c, termId)}`;

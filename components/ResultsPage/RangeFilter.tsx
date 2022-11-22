@@ -16,7 +16,7 @@ export default function RangeFilter({
 }: RangeFilterProps): ReactElement {
   const [controlledInput, setControlledInput] = useState(selected);
 
-  const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000];
+  const courseIDs = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
   const marks = {};
   courseIDs.forEach((id) => {
     marks[id] = id.toString();

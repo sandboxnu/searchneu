@@ -25,9 +25,12 @@ jest.mock('next/router', () => ({
 
 // Mock service provider
 jest.mock('../../../utils/TermInfoProvider', () => () => ({
-  NEU: [{ text: TERM_TEXT, value: TERM_ID }],
-  CPS: [],
-  LAW: [],
+  error: null,
+  termInfos: {
+    NEU: [{ text: TERM_TEXT, value: TERM_ID }],
+    CPS: [],
+    LAW: [],
+  },
 }));
 /* 
 Mock axios using a mock adapter. For some reason I couldn't mock

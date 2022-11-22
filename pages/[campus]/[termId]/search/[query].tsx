@@ -4,12 +4,13 @@
  */
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
 import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
+import FooterFeedbackModal from '../../../../components/FeedbackModal';
 import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
 import FilterPanel from '../../../../components/ResultsPage/FilterPanel';
 import FilterPills from '../../../../components/ResultsPage/FilterPills';
@@ -26,9 +27,7 @@ import useSearch, {
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 import Cookies from 'universal-cookie';
-import { useEffect } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
 
 const cookies = new Cookies();
@@ -40,6 +39,11 @@ export default function Results(): ReactElement | null {
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
   const [userInfo, setUserInfo] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
 
@@ -82,7 +86,7 @@ export default function Results(): ReactElement | null {
     }
   };
 
-  const { searchData, loadMore } = useSearch(searchParams);
+  const { error, searchData, loadMore } = useSearch(searchParams);
 
   if (!query && !termId) {
     return null;
@@ -125,65 +129,79 @@ export default function Results(): ReactElement | null {
   };
 
   return (
-    <div>
-      <Header
-        router={router}
-        title={`Search NEU - ${query}`}
-        searchData={searchData}
-        termAndCampusToURL={termAndCampusToURL}
-        userInfo={userInfo}
-        onSignOut={onSignOut}
-      ></Header>
+    <>
+      <div>
+        <Header
+          router={router}
+          title={`Search NEU - ${query}`}
+          searchData={searchData}
+          termAndCampusToURL={termAndCampusToURL}
+          userInfo={userInfo}
+          onSignOut={onSignOut}
+        ></Header>
 
-      {!macros.isMobile && <FeedbackModal />}
-      <div className="Results_Container">
-        {!macros.isMobile && (
-          <>
-            <div className="Results_SidebarWrapper">
-              <FilterPanel
-                options={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
-                selected={filters}
-                setActive={setQParams}
-              />
-            </div>
-            <div className="Results_SidebarSpacer" />
-          </>
-        )}
-        <div className="Results_Main">
-          {filtersAreSet ? (
+        {!macros.isMobile && <FeedbackModal />}
+        <div className="Results_Container">
+          {!macros.isMobile && (
             <>
-              <FilterPills filters={filters} setFilters={setQParams} />
-              <div className="Results_Aggregation__withFilters">
+              <div className="Results_SidebarWrapper">
+                <FilterPanel
+                  options={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
+                  selected={filters}
+                  setActive={setQParams}
+                />
+              </div>
+              <div className="Results_SidebarSpacer" />
+            </>
+          )}
+
+          <div className="Results_Main">
+            {filtersAreSet ? (
+              <>
+                <FilterPills filters={filters} setFilters={setQParams} />
+                <div className="Results_Aggregation__withFilters">
+                  <TotalResultsDisplay />
+                </div>
+              </>
+            ) : (
+              <div className="Results_Aggregation">
                 <TotalResultsDisplay />
               </div>
-            </>
-          ) : (
-            <div className="Results_Aggregation">
-              <TotalResultsDisplay />
-            </div>
-          )}
-          {!searchData && <LoadingContainer />}
-          {searchData && searchData.results.length === 0 && (
-            <EmptyResultsContainer
-              query={query}
-              filtersAreSet={filtersAreSet}
-              setFilters={setQParams}
-            />
-          )}
-          {searchData && searchData.results.length > 0 && (
-            <ResultsLoader
-              results={searchData.results}
-              loadMore={loadMore}
-              hasNextPage={searchData.hasNextPage}
-              userInfo={userInfo}
-              onSignIn={onSignIn}
-              fetchUserInfo={fetchUserInfo}
-            />
-          )}
-          <Footer />
+            )}
+            {error ? (
+              <div className="Results_EmptyContainer">
+                <h3> An Error Occurred : ( </h3>
+                <a role="button" onClick={toggleModal}>
+                  Report a bug
+                </a>
+              </div>
+            ) : !searchData ? (
+              <LoadingContainer />
+            ) : searchData && searchData.results.length === 0 ? (
+              <EmptyResultsContainer
+                query={query}
+                filtersAreSet={filtersAreSet}
+                setFilters={setQParams}
+              />
+            ) : (
+              <ResultsLoader
+                results={searchData.results}
+                loadMore={loadMore}
+                hasNextPage={searchData.hasNextPage}
+                userInfo={userInfo}
+                onSignIn={onSignIn}
+                fetchUserInfo={fetchUserInfo}
+              />
+            )}
+            <Footer />
+          </div>
         </div>
+        <div className="botttomPadding" />
       </div>
-      <div className="botttomPadding" />
-    </div>
+      <FooterFeedbackModal
+        toggleForm={toggleModal}
+        feedbackModalOpen={modalOpen}
+      />
+    </>
   );
 }

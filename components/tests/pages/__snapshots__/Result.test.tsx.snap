@@ -222,11 +222,11 @@ exports[`should render a section 1`] = `
                       </p>
                     </div>
                     <div className=\\"RangeFilter__input\\">
-                      <Slider range={true} marks={{...}} allowCross={false} min={1000} max={6000} defaultValue={{...}} step={1000} onChange={[Function: onChange]} className=\\"RangeFilter__slider\\" value={{...}}>
+                      <Slider range={true} marks={{...}} allowCross={false} min={1000} max={8000} defaultValue={{...}} step={1000} onChange={[Function: onChange]} className=\\"RangeFilter__slider\\" value={{...}}>
                         <div className=\\"rc-slider RangeFilter__slider rc-slider-horizontal rc-slider-with-marks\\" style={[undefined]} onMouseDown={[Function: onSliderMouseDown]}>
                           <div className=\\"rc-slider-rail\\" style={[undefined]} />
                           <Tracks prefixCls=\\"rc-slider\\" style={[undefined]} values={{...}} startPoint={[undefined]} onStartMove={{...}}>
-                            <Track index={0} prefixCls=\\"rc-slider\\" style={[undefined]} start={1000} end={6000} onStartMove={{...}}>
+                            <Track index={0} prefixCls=\\"rc-slider\\" style={[undefined]} start={1000} end={8000} onStartMove={{...}}>
                               <div className=\\"rc-slider-track rc-slider-track-1\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} />
                             </Track>
                           </Tracks>
@@ -250,14 +250,20 @@ exports[`should render a section 1`] = `
                               <Dot prefixCls=\\"rc-slider\\" value={6000} style={[undefined]} activeStyle={[undefined]}>
                                 <span className=\\"rc-slider-dot rc-slider-dot-active\\" style={{...}} />
                               </Dot>
+                              <Dot prefixCls=\\"rc-slider\\" value={7000} style={[undefined]} activeStyle={[undefined]}>
+                                <span className=\\"rc-slider-dot rc-slider-dot-active\\" style={{...}} />
+                              </Dot>
+                              <Dot prefixCls=\\"rc-slider\\" value={8000} style={[undefined]} activeStyle={[undefined]}>
+                                <span className=\\"rc-slider-dot rc-slider-dot-active\\" style={{...}} />
+                              </Dot>
                             </div>
                           </Steps>
                           <Handles prefixCls=\\"rc-slider\\" style={[undefined]} values={{...}} draggingIndex={-1} onStartMove={[Function: onStartMove]} onOffsetChange={[Function: onHandleOffsetChange]} onFocus={[undefined]} onBlur={[undefined]} handleRender={[undefined]}>
                             <Handle dragging={false} prefixCls=\\"rc-slider\\" style={[undefined]} value={1000} valueIndex={0} onStartMove={[Function: onStartMove]} onOffsetChange={[Function: onHandleOffsetChange]} render={[undefined]} onFocus={[undefined]} onBlur={[undefined]}>
-                              <div className=\\"rc-slider-handle rc-slider-handle-1\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} onKeyDown={[Function: onKeyDown]} tabIndex={0} role=\\"slider\\" aria-valuemin={1000} aria-valuemax={6000} aria-valuenow={1000} aria-disabled={false} aria-label={[undefined]} aria-labelledby={[undefined]} aria-valuetext={[undefined]} onFocus={[undefined]} onBlur={[undefined]} />
+                              <div className=\\"rc-slider-handle rc-slider-handle-1\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} onKeyDown={[Function: onKeyDown]} tabIndex={0} role=\\"slider\\" aria-valuemin={1000} aria-valuemax={8000} aria-valuenow={1000} aria-disabled={false} aria-label={[undefined]} aria-labelledby={[undefined]} aria-valuetext={[undefined]} onFocus={[undefined]} onBlur={[undefined]} />
                             </Handle>
-                            <Handle dragging={false} prefixCls=\\"rc-slider\\" style={[undefined]} value={6000} valueIndex={1} onStartMove={[Function: onStartMove]} onOffsetChange={[Function: onHandleOffsetChange]} render={[undefined]} onFocus={[undefined]} onBlur={[undefined]}>
-                              <div className=\\"rc-slider-handle rc-slider-handle-2\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} onKeyDown={[Function: onKeyDown]} tabIndex={0} role=\\"slider\\" aria-valuemin={1000} aria-valuemax={6000} aria-valuenow={6000} aria-disabled={false} aria-label={[undefined]} aria-labelledby={[undefined]} aria-valuetext={[undefined]} onFocus={[undefined]} onBlur={[undefined]} />
+                            <Handle dragging={false} prefixCls=\\"rc-slider\\" style={[undefined]} value={8000} valueIndex={1} onStartMove={[Function: onStartMove]} onOffsetChange={[Function: onHandleOffsetChange]} render={[undefined]} onFocus={[undefined]} onBlur={[undefined]}>
+                              <div className=\\"rc-slider-handle rc-slider-handle-2\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} onKeyDown={[Function: onKeyDown]} tabIndex={0} role=\\"slider\\" aria-valuemin={1000} aria-valuemax={8000} aria-valuenow={8000} aria-disabled={false} aria-label={[undefined]} aria-labelledby={[undefined]} aria-valuetext={[undefined]} onFocus={[undefined]} onBlur={[undefined]} />
                             </Handle>
                           </Handles>
                           <Marks prefixCls=\\"rc-slider\\" marks={{...}} onClick={[Function: changeToCloseValue]}>
@@ -290,6 +296,16 @@ exports[`should render a section 1`] = `
                               <Mark prefixCls=\\"rc-slider-mark\\" style={[undefined]} value={6000} onClick={[Function: changeToCloseValue]}>
                                 <span className=\\"rc-slider-mark-text rc-slider-mark-text-active\\" style={{...}} onMouseDown={[Function: onMouseDown]} onClick={[Function: onClick]}>
                                   6000
+                                </span>
+                              </Mark>
+                              <Mark prefixCls=\\"rc-slider-mark\\" style={[undefined]} value={7000} onClick={[Function: changeToCloseValue]}>
+                                <span className=\\"rc-slider-mark-text rc-slider-mark-text-active\\" style={{...}} onMouseDown={[Function: onMouseDown]} onClick={[Function: onClick]}>
+                                  7000
+                                </span>
+                              </Mark>
+                              <Mark prefixCls=\\"rc-slider-mark\\" style={[undefined]} value={8000} onClick={[Function: changeToCloseValue]}>
+                                <span className=\\"rc-slider-mark-text rc-slider-mark-text-active\\" style={{...}} onMouseDown={[Function: onMouseDown]} onClick={[Function: onClick]}>
+                                  8000
                                 </span>
                               </Mark>
                             </div>

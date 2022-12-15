@@ -34,6 +34,22 @@ module.exports = withPlugins(
           destination: '/NEU',
           permanent: true,
         },
+        // Temporary redirects for when our website is down (due to AWS migration)
+        {
+          source: '/NEU/:slug*',
+          destination: '/down',
+          permanent: false,
+        },
+        {
+          source: '/CPS/:slug*',
+          destination: '/down',
+          permanent: false,
+        },
+        {
+          source: '/LAW/:slug*',
+          destination: '/down',
+          permanent: false,
+        },
       ];
     },
     async rewrites() {

@@ -27,18 +27,29 @@
 
 .down-title-text {
   font-family: Montserrat Alternates;
-  font-size: 55px;
-  font-weight: 800;
   color: #e63946;
-  margin-bottom: 30px;
+  font-size: 31px;
+  font-weight: 800;
+  margin-bottom: 20px;
+
+  @media only screen and (min-width: 830px) {
+    font-size: 55px;
+    margin-bottom: 30px;
+  }
 }
 
 .down-sub-title-text {
   font-family: Lato;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 600;
   color: #2a426b;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+
+  @media only screen and (min-width: 830px) {
+    font-size: 25px;
+    margin-bottom: 40px;
+  }
 }
 
 .down-text {
@@ -46,6 +57,12 @@
   font-size: 16px;
   font-weight: 400;
   color: #2a426b;
-  width: 45%;
+  width: 85%;
   white-space: pre-line;
+
+  @media only screen and (min-width: 830px) {
+    height: 112px;
+    width: 45%;
+    margin-right: 20px;
+  }
 }

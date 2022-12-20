@@ -21,14 +21,19 @@
 
 .down-text-container {
   text-align: left;
-  margin-left: 75px;
-  margin-bottom: 200px;
+  margin-left: 50px;
+  margin-right: 50px;
+
+  @media only screen and (min-width: 830px) {
+    margin-left: 75px;
+    margin-bottom: 200px;
+  }
 }
 
 .down-title-text {
   font-family: Montserrat Alternates;
   color: #e63946;
-  font-size: 31px;
+  font-size: 32px;
   font-weight: 800;
   margin-bottom: 20px;
 

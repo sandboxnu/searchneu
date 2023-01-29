@@ -213,7 +213,10 @@ export function MobileCourseResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const sortedSections = useMemo(() => sortSections(course.sections), [course]);
+  const sortedSections = useMemo(
+    () => sortSections(course.sections, userInfo),
+    [course]
+  );
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
   );

@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -20,7 +20,6 @@ import AlertBanner, {
 } from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
-import FeedbackModal from '../../components/FeedbackModal';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 
@@ -39,11 +38,13 @@ export default function Home(): ReactElement {
 
   const containerClassnames = 'home-container';
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const apiErrorhref = '/apiError';
 
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
+  useEffect(() => {
+    if (termInfosError) {
+      router.push(apiErrorhref);
+    }
+  }, [termInfosError]);
 
   return (
     <>
@@ -97,14 +98,7 @@ export default function Home(): ReactElement {
             >
               <div className="centerTextContainer">
                 <Logo className="logo" aria-label="logo" campus={campus} />
-                {termInfosError !== null ? (
-                  <div>
-                    <h3> An Error Occurred : ( </h3>
-                    <a role="button" onClick={toggleModal}>
-                      Report a bug
-                    </a>
-                  </div>
-                ) : termInfos[campus].length == 0 ? (
+                {termInfos[campus].length == 0 ? (
                   <LoadingContainer />
                 ) : (
                   <HomeSearch termId={termId} campus={campus} />
@@ -120,7 +114,6 @@ export default function Home(): ReactElement {
           </div>
         </div>
       </div>
-      <FeedbackModal toggleForm={toggleModal} feedbackModalOpen={modalOpen} />
     </>
   );
 }
@@ -144,4 +137,3 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 export const getStaticProps: GetStaticProps = async () => {
   return { props: {} };
 };
-

@@ -25,12 +25,12 @@ interface CourseResultProps {
   fetchUserInfo: () => void;
 }
 
-const sortSections = (sections: Section[], userInfo: UserInfo): Section[] => {
+const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
   // NOTE (sam 2023-01-29): unsure why sections needs to be cloned, because all we're doing is sorting, nothing desctructive.
   // also unsure why sections are memoized after being sorted (in CourseResult)
   // memoized based on current course, but course should never change over lifetime of a CourseResult
   const sortedSections = cloneDeep(sections);
-  const subscribedSectionIds = new Set(userInfo.sectionIds);
+  const subscribedSectionIds = new Set(userInfo.sectionIds ?? []);
   sortedSections.sort((a: Section, b: Section) => {
     const aHash = Keys.getSectionHash(a);
     const bHash = Keys.getSectionHash(b);

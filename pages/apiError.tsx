@@ -26,7 +26,7 @@ export default function ApiErrorPage(): ReactElement {
             <div className="down-title-text">Oh man!</div>
             <div className="down-sub-title-text">Something went wrong...</div>
             <div className="down-text">{"Don't worry, we're on it"}</div>
-            <div className="Results_EmptyContainer">
+            <div>
               <h3> An Error Occurred : </h3>
               <a role="button" onClick={toggleModal}>
                 Report a bug

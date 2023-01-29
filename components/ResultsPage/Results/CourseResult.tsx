@@ -30,7 +30,7 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
   // also unsure why sections are memoized after being sorted (in CourseResult)
   // memoized based on current course, but course should never change over lifetime of a CourseResult
   const sortedSections = cloneDeep(sections);
-  const subscribedSectionIds = new Set(userInfo.sectionIds ?? []);
+  const subscribedSectionIds = new Set(userInfo?.sectionIds ?? []);
   sortedSections.sort((a: Section, b: Section) => {
     const aHash = Keys.getSectionHash(a);
     const bHash = Keys.getSectionHash(b);

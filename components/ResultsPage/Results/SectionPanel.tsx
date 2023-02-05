@@ -15,6 +15,9 @@ import SectionCheckBox from '../../panels/SectionCheckBox';
 import { UserInfo } from '../../../components/types';
 import InfoIconTooltip from '../../common/InfoIconTooltip';
 
+const negTooltipText =
+  'Negative seat counts are displayed when academic advisors apply course overrides for students.';
+
 interface SectionPanelProps {
   section: Section;
   userInfo: UserInfo;
@@ -178,7 +181,7 @@ export function DesktopSectionPanel({
           </span>
           {section.seatsRemaining < 0 && (
             <InfoIconTooltip
-              text="Negative seat counts are displayed when academic advisors apply course overrides for students."
+              text={negTooltipText}
               direction={TooltipDirection.Down}
               flipLeft={true}
             />
@@ -292,12 +295,11 @@ export function MobileSectionPanel({
             {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
           </span>
           {section.seatsRemaining < 0 && (
-            <div>
-              <span style={{ color: '#d41b2c' }}>
-                &nbsp;Negative seat counts are displayed when students override
-                into a course.
-              </span>
-            </div>
+            <InfoIconTooltip
+              text={negTooltipText}
+              direction={TooltipDirection.Down}
+              flipLeft={false}
+            />
           )}
         </div>
 

@@ -61,18 +61,17 @@
     white-space: nowrap;
   }
 
-  & > .green {
-    margin-top: 16px;
-    color: #27ae34;
-  }
+  .MobileSectionPanel__row {
+    .green {
+      color: #27ae34;
+    }
 
-  & > .yellow {
-    margin-top: 16px;
-    color: #ffbf3d;
-  }
+    .yellow {
+      color: #ffbf3d;
+    }
 
-  & > .red {
-    margin-top: 16px;
-    color: #d41b2c;
+    .red {
+      color: #d41b2c;
+    }
   }
 }

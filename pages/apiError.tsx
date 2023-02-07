@@ -1,8 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import Boston from '../components/icons/boston.svg';
 import FooterFeedbackModal from '../components/FeedbackModal';
-import Husky from '../components/icons/Husky';
-import { Campus } from '../components/types';
+import CryingHusky2 from '../components/icons/crying-husky-2.svg';
 import Image from 'next/image';
 
 /**
@@ -36,9 +35,7 @@ export default function ApiErrorPage(): ReactElement {
           </a>
 
           <div>
-            <div // TODO: Take this out and restyle this monstrosity from scratch
-              className="ui center spacing aligned icon header topHeader"
-            >
+            <div className="ui center spacing aligned icon header topHeader">
               <div className="centerTextContainer">
                 <div className="api-error-title-text">Oh man!</div>
                 <div className="api-error-sub-title-text">
@@ -66,7 +63,10 @@ export default function ApiErrorPage(): ReactElement {
                 </div>
               </div>
 
-              <Husky className="husky" campus={Campus.NEU} aria-label="husky" />
+              <CryingHusky2
+                className="crying-husky-2"
+                aria-label="crying-husky-2"
+              />
               <div className="bostonContainer">
                 <Boston className="boston" aria-label="logo" />
               </div>

@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
+
+/* Styles for ApiError Page. */
+.cryingHuskySearch {
+  width: 75% !important;
+  height: 45% !important;
+  position: absolute;
+  right: -260px;
+  bottom: 0px;
+  z-index: 100;
+}
+
+.api-error-title-text {
+  font-family: Montserrat Alternates;
+  color: #e63946;
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 100px;
+
+  // @media only screen and (min-width: 830px) {
+  //   font-size: 55px;
+  //   margin-bottom: 30px;
+  // }
+}
+
+.api-error-sub-title-text {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 50px;
+  line-height: 60px;
+  color: #2a426b;
+  margin-bottom: 40px;
+
+  // @media only screen and (min-width: 830px) {
+  //   font-size: 25px;
+  //   margin-bottom: 40px;
+  // }
+}
+
+.api-error-text {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 43px;
+  color: #2a426b;
+  margin-bottom: 20px;
+
+  // @media only screen and (min-width: 830px) {
+  //   height: 112px;
+  //   width: 45%;
+  //   margin-right: 20px;
+  // }
+}
+
+.suport-button {
+  padding: 20px 40px;
+  background: #e63946;
+  border: 1px solid #e63946;
+  border-radius: 28px;
+  // Inner text
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 26px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.suport-button:hover {
+  background: #b3131f;
+  border: 1px solid #b2131f;
+}
+
+.create-issue {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 20px;
+  color: #1d3557;
+  margin-left: 40px;
+}
+
+.create-issue:hover {
+  text-decoration-line: underline;
+  color: #1d3557;
+}

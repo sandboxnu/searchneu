@@ -9,12 +9,6 @@
   bottom: -40px;
   z-index: 102;
 
-  // there is definitely a better way to scale the width/position
-  // but for now there is just a bunch of media queries
-  // @media only screen and (min-width: 767px) {
-  //   width: 20vw !important;
-  // }
-
   @media only screen and (min-width: 0px) {
     // Screen too small to display
     width: 0% !important;

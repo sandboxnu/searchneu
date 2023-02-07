@@ -37,7 +37,5 @@ exports[`should render a section 1`] = `
       </div>
     </div>
   </div>
-  <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false} />
 </Fragment>"
 `;
-

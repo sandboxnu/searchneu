@@ -58,7 +58,7 @@ export default function ApiErrorPage(): ReactElement {
                     className="create-issue"
                     href="https://github.com/sandboxnu/searchneu"
                   >
-                    &nbsp;Create issue on GitHub
+                    Create issue on GitHub
                   </a>
                 </div>
               </div>

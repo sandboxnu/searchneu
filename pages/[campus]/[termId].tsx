@@ -38,13 +38,11 @@ export default function Home(): ReactElement {
 
   const containerClassnames = 'home-container';
 
-  const apiErrorhref = '/apiError';
-
   useEffect(() => {
     if (termInfosError) {
-      router.push(apiErrorhref);
+      router.push('/apiError');
     }
-  }, [termInfosError]);
+  }, [router, termInfosError]);
 
   return (
     <>

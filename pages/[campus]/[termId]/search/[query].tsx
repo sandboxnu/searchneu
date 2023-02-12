@@ -85,7 +85,7 @@ export default function Results(): ReactElement | null {
 
   useEffect(() => {
     if (error) {
-      console.log('There was an error during your search:' + error);
+      console.log('There was an error during your search: ' + error);
       router.push('/error');
     }
   }, [router, error]);

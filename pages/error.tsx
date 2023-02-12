@@ -36,32 +36,31 @@ export default function ApiErrorPage(): ReactElement {
 
           <div>
             <div className="ui center spacing aligned icon header topHeader">
-              <div className="centerTextContainer">
+              <div className="centerTextContainer error-text-container">
                 <div className="api-error-title-text">Oh man!</div>
                 <div className="api-error-sub-title-text">
                   Something went wrong...
                 </div>
-                <div>
-                  <div className="api-error-text">
-                    {"Don't worry, we're on it"}
-                  </div>
-                  <div className="request-container">
-                    <button
-                      type="button"
-                      className="suport-button"
-                      onClick={toggleModal}
-                    >
-                      SEND SUPPORT REQUEST
-                    </button>
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="create-issue"
-                      href="https://github.com/sandboxnu/searchneu"
-                    >
-                      Create issue on GitHub
-                    </a>
-                  </div>
+
+                <div className="api-error-text">
+                  {"Don't worry, we're on it"}
+                </div>
+                <div className="request-container">
+                  <button
+                    type="button"
+                    className="suport-button"
+                    onClick={toggleModal}
+                  >
+                    SEND SUPPORT REQUEST
+                  </button>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="create-issue"
+                    href="https://github.com/sandboxnu/searchneu"
+                  >
+                    Create issue on GitHub
+                  </a>
                 </div>
               </div>
 

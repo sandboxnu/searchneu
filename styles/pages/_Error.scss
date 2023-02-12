@@ -2,8 +2,8 @@
 
 /* Styles for ApiError Page. */
 .crying-husky-2 {
-  width: 260px !important;
-  height: auto !important;
+  width: 260px;
+  height: auto;
   position: absolute;
   right: 10px;
   bottom: -40px;
@@ -11,34 +11,34 @@
 
   @media only screen and (min-width: 0px) {
     // Screen too small to display
-    width: 0% !important;
+    width: 0%;
   }
 
   @media only screen and (min-width: 200px) {
-    width: 45% !important;
+    width: 45%;
     right: 0px;
     bottom: -10px;
   }
 
   @media only screen and (min-width: 600px) {
-    width: 45% !important;
+    width: 45%;
   }
 
   @media only screen and (min-width: 1000px) {
-    width: 25% !important;
+    width: 25%;
     right: -10px;
   }
 
   @media only screen and (min-width: 1100px) {
-    width: 30% !important;
+    width: 30%;
   }
 
   @media only screen and (min-width: 1200px) {
-    width: 40% !important;
+    width: 40%;
   }
 
   @media only screen and (min-width: 1400px) {
-    width: 30% !important;
+    width: 30%;
   }
 }
 
@@ -83,6 +83,8 @@
     font-size: 30px;
     line-height: 35px;
   }
+
+  position: relative;
 }
 
 .suport-button {
@@ -108,9 +110,10 @@
 
   @media only screen and (max-width: 800px) {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 22px;
+    font-size: 14px;
+    line-height: 20x;
   }
+  z-index: inherit;
 }
 
 .suport-button:hover {
@@ -131,12 +134,7 @@
   line-height: 20px;
   color: #1d3557;
   margin-left: 40px;
-
-  @media only screen and (max-width: 800px) {
-    margin-left: 0px;
-    margin-top: 10px;
-    display: block;
-  }
+  z-index: inherit;
 }
 
 .create-issue:hover {
@@ -147,4 +145,12 @@
 .request-container {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000 !important;
+}
+
+.error-text-container {
+  display: flex;
+  flex-direction: column;
+  z-index: 1000 !important;
 }

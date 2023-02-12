@@ -10,7 +10,7 @@ import Footer from '../../../../components/Footer';
 import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
-import FooterFeedbackModal from '../../../../components/FeedbackModal';
+
 import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
 import FilterPanel from '../../../../components/ResultsPage/FilterPanel';
 import FilterPills from '../../../../components/ResultsPage/FilterPills';
@@ -39,11 +39,6 @@ export default function Results(): ReactElement | null {
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
   const [userInfo, setUserInfo] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
 
@@ -87,6 +82,13 @@ export default function Results(): ReactElement | null {
   };
 
   const { error, searchData, loadMore } = useSearch(searchParams);
+
+  useEffect(() => {
+    if (error) {
+      console.log('There was an error during your search:' + error);
+      router.push('/error');
+    }
+  }, [router, error]);
 
   if (!query && !termId) {
     return null;
@@ -168,14 +170,7 @@ export default function Results(): ReactElement | null {
                 <TotalResultsDisplay />
               </div>
             )}
-            {error ? (
-              <div className="Results_EmptyContainer">
-                <h3> An Error Occurred : ( </h3>
-                <a role="button" onClick={toggleModal}>
-                  Report a bug
-                </a>
-              </div>
-            ) : !searchData ? (
+            {!searchData ? (
               <LoadingContainer />
             ) : searchData && searchData.results.length === 0 ? (
               <EmptyResultsContainer
@@ -198,10 +193,6 @@ export default function Results(): ReactElement | null {
         </div>
         <div className="botttomPadding" />
       </div>
-      <FooterFeedbackModal
-        toggleForm={toggleModal}
-        feedbackModalOpen={modalOpen}
-      />
     </>
   );
 }

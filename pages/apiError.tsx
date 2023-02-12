@@ -45,21 +45,23 @@ export default function ApiErrorPage(): ReactElement {
                   <div className="api-error-text">
                     {"Don't worry, we're on it"}
                   </div>
-                  <button
-                    type="button"
-                    className="suport-button"
-                    onClick={toggleModal}
-                  >
-                    SEND SUPPORT REQUEST
-                  </button>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="create-issue"
-                    href="https://github.com/sandboxnu/searchneu"
-                  >
-                    Create issue on GitHub
-                  </a>
+                  <div className="request-container">
+                    <button
+                      type="button"
+                      className="suport-button"
+                      onClick={toggleModal}
+                    >
+                      SEND SUPPORT REQUEST
+                    </button>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="create-issue"
+                      href="https://github.com/sandboxnu/searchneu"
+                    >
+                      Create issue on GitHub
+                    </a>
+                  </div>
                 </div>
               </div>
 

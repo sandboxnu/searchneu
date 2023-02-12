@@ -1,7 +1,6 @@
 import { Markup } from 'interweave';
 import { mean } from 'lodash';
 import React, { ReactElement, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { Dropdown } from 'semantic-ui-react';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
 import IconArrow from '../../icons/IconArrow';
@@ -42,7 +41,6 @@ export default function MobilePageContent({
   classPageInfo,
   isCoreq,
 }: PageContentProps): ReactElement {
-  const router = useRouter();
   const [expanded, setExpanded] = useState(true);
   const [showMore, setShowMore] = useState(false);
   const [sectionsExpanded, setSectionsExpanded] = useState(true);

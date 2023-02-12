@@ -40,7 +40,7 @@ export default function Home(): ReactElement {
 
   useEffect(() => {
     if (termInfosError) {
-      router.push('/apiError');
+      router.push('/error');
     }
   }, [router, termInfosError]);
 

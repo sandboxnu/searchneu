@@ -145,8 +145,10 @@
 .request-container {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   z-index: 1000 !important;
+  @media only screen and (max-width: 800px) {
+    justify-content: center;
+  }
 }
 
 .error-text-container {

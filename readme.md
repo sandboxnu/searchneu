@@ -34,7 +34,7 @@ SearchNEU was originally created and built in 2017 by [Ryan Hughes](https://gith
 
 Shout out to our current team of developers and designers 💖
 
-- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/hankewycz.z/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/hankewycz-z/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - Sebastian Wittrock <a href="https://github.com/sebwittr"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/sebastian-wittrock/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Lucas Dunker <a href="https://github.com/"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/lucasdunker/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Vanessa Peng <a href="https://www.linkedin.com/in/vanessa-peng"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://vanessapeng.com"><img src="./public/images/link.png" alt="Website" width="12px"></a>

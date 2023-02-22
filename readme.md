@@ -65,7 +65,7 @@ And a special thank you to the following folks for contributing!
 - [Puneet Johal](https://github.com/puneetjohal) <a href="https://www.linkedin.com/in/puneetjohal/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - [Diana Steelman](https://www.linkedin.com/in/dianasteelman/) <a href="https://www.dianasteelman.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - [Autumn Fung](https://www.linkedin.com/in/autumnfung/) <a href="https://autumnfung1.wixsite.com/fungsphotos"><img src="./public/images/link.png" alt="Website" width="12px"></a>
-- Tingwei Shi
+- Tingwei Shi <a href="https://www.linkedin.com/in/tingwei-shi/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 ### License
 

@@ -15,68 +15,64 @@ export default function ApiErrorPage(): ReactElement {
   const toggleModal = () => setModalOpen(!modalOpen);
 
   return (
-    <>
-      <div>
-        <div className={containerClassnames}>
-          <a
-            href="https://www.sandboxnu.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sandboxLogoContainer"
-          >
-            <Image
-              src="/images/sandbox-logo.png"
-              alt="sandbox logo"
-              width={47}
-              height={61}
-            />
-          </a>
+    <div>
+      <div className={containerClassnames}>
+        <a
+          href="https://www.sandboxnu.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sandboxLogoContainer"
+        >
+          <Image
+            src="/images/sandbox-logo.png"
+            alt="sandbox logo"
+            width={47}
+            height={61}
+          />
+        </a>
 
-          <div>
-            <div className="ui center spacing aligned icon header topHeader">
-              <div className="centerTextContainer error-text-container">
-                <div className="api-error-title-text">Oh man!</div>
-                <div className="api-error-sub-title-text">
-                  Something went wrong...
-                </div>
-
-                <div className="api-error-text">
-                  {"Don't worry, we're on it"}
-                </div>
-                <div className="request-container">
-                  <button
-                    type="button"
-                    className="suport-button"
-                    onClick={toggleModal}
-                  >
-                    SEND SUPPORT REQUEST
-                  </button>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="create-issue"
-                    href="https://github.com/sandboxnu/searchneu/issues/new"
-                  >
-                    Create issue on GitHub
-                  </a>
-                </div>
+        <div>
+          <div className="ui center spacing aligned icon header topHeader">
+            <div className="centerTextContainer error-text-container">
+              <div className="api-error-title-text">Oh man!</div>
+              <div className="api-error-sub-title-text">
+                Something went wrong...
               </div>
 
-              <CryingHusky2
-                className="crying-husky-2"
-                aria-label="crying-husky-2"
-              />
-              <div className="bostonContainer">
-                <Boston className="boston" aria-label="logo" />
+              <div className="api-error-text">{"Don't worry, we're on it"}</div>
+              <div className="request-container">
+                <button
+                  type="button"
+                  className="suport-button"
+                  onClick={toggleModal}
+                >
+                  SEND SUPPORT REQUEST
+                </button>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="create-issue"
+                  href="https://github.com/sandboxnu/searchneu/issues/new"
+                >
+                  Create issue on GitHub
+                </a>
               </div>
             </div>
-            <FooterFeedbackModal
-              toggleForm={toggleModal}
-              feedbackModalOpen={modalOpen}
+
+            <CryingHusky2
+              className="crying-husky-2"
+              aria-label="crying-husky-2"
             />
+            <div className="bostonContainer">
+              <Boston className="boston" aria-label="logo" />
+            </div>
           </div>
+          <FooterFeedbackModal
+            toggleForm={toggleModal}
+            feedbackModalOpen={modalOpen}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }

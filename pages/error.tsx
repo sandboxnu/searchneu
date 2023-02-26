@@ -12,9 +12,7 @@ export default function ApiErrorPage(): ReactElement {
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
+  const toggleModal = () => setModalOpen(!modalOpen);
 
   return (
     <>

@@ -55,7 +55,7 @@ export default function ApiErrorPage(): ReactElement {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="create-issue"
-                    href="https://github.com/sandboxnu/searchneu"
+                    href="https://github.com/sandboxnu/searchneu/issues/new"
                   >
                     Create issue on GitHub
                   </a>

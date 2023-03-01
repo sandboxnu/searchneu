@@ -114,6 +114,7 @@
   .error-container {
     flex-wrap: wrap;
     align-self: flex-start;
+    margin-top: 20px;
   }
   .husky-container {
     flex-direction: row;
@@ -124,9 +125,6 @@
 
 // For mobile devices, vertical orientation
 @media only screen and (max-width: 500px) {
-  .error-container {
-    margin-top: 30px;
-  }
   .request-container {
     flex-direction: column;
   }

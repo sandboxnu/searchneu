@@ -34,11 +34,11 @@
 .flip_tooltip {
   right: 0;
 
-  & > .tooltip__arrow--UP {
-    right: 5px;
+  & > .tooltip__arrow--DOWN {
+    right: 8px;
   }
 
-  & > .tooltip__arrow--DOWN {
-    right: 5px;
+  & > .tooltip__arrow--UP {
+    right: 8px;
   }
 }

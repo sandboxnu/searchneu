@@ -187,7 +187,6 @@ export function DesktopSectionPanel({
             />
           )}
         </div>
-        <br />
         <span>
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>

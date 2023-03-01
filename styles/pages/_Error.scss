@@ -48,6 +48,7 @@
 
 .request-container {
   display: inline-flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -89,7 +90,6 @@
   font-size: 17px;
   line-height: 20px;
   color: #1d3557;
-  margin-left: 40px;
 }
 
 .create-issue:hover {
@@ -119,5 +119,34 @@
     flex-direction: row;
     width: 100%;
     height: 40vh;
+  }
+}
+
+// For mobile devices, vertical orientation
+@media only screen and (max-width: 500px) {
+  .error-container {
+    margin-top: 30px;
+  }
+  .request-container {
+    flex-direction: column;
+  }
+  .create-issue {
+    margin-top: 10px;
+  }
+  .api-error-title-text {
+    font-size: 80px;
+    line-height: 80px;
+    align-self: center;
+  }
+  .api-error-sub-title-text {
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  .api-error-text {
+    font-size: 30px;
+    line-height: 30px;
+    align-self: center;
   }
 }

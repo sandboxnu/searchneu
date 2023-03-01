@@ -11,7 +11,6 @@
 .error-text-container {
   display: flex !important;
   flex-direction: column;
-  z-index: 1000 !important;
   justify-content: center;
 }
 
@@ -50,7 +49,6 @@
 .request-container {
   display: inline-flex;
   align-items: center;
-  z-index: 1000 !important;
 }
 
 .suport-button {
@@ -72,7 +70,6 @@
   flex: none;
   order: 0;
   flex-grow: 0;
-  z-index: inherit;
 }
 
 .suport-button:hover {
@@ -93,7 +90,6 @@
   line-height: 20px;
   color: #1d3557;
   margin-left: 40px;
-  z-index: inherit;
 }
 
 .create-issue:hover {
@@ -111,7 +107,6 @@
 .crying-husky-2 {
   width: 400px;
   height: auto;
-  z-index: 102;
 }
 
 @media only screen and (max-width: 1000px) {

@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import ClassPageInfoBody from './ClassPageInfoBody';
@@ -23,8 +22,6 @@ export default function PageContent({
   classPageInfo,
   isCoreq,
 }: PageContentProps): ReactElement {
-  const router = useRouter();
-
   // TODO: hacky front-end solution because for some reason allOccurrences includes
   // termIds where there are no sections. This should probably be fixed on the backend.
   if (classPageInfo && classPageInfo.class) {
@@ -34,15 +31,11 @@ export default function PageContent({
   }
   return (
     <div className={`pageContent ${isCoreq ? 'coreqPageContent' : ''}`}>
-      {isCoreq ? (
+      {isCoreq && (
         <h2 className="coreqHeader">
           COREQUISITES for
           <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
         </h2>
-      ) : (
-        <div className="backToResults" onClick={() => router.back()}>
-          Back to Search Results
-        </div>
       )}
       {classPageInfo && classPageInfo.class && (
         <div className="classPageInfoContent">

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { UserInfo } from '../components/types';
 import { gqlClient } from '../utils/courseAPIClient';
+import { PacmanLoader } from 'react-spinners';
+import { timeout } from 'q';
 
 const cookies = new Cookies();
 
@@ -35,13 +37,13 @@ export default function SubscrptionsPage(): ReactElement {
         let termId = '';
         const subElements = [];
         for (let i = 0; i < userInfo.sectionIds.length; i++) {
-          let curSectionInfo = userInfo.sectionIds[i].split('/');
-          let subject = curSectionInfo[2];
-          let courseId = curSectionInfo[3];
-          let crn = curSectionInfo[4];
+          const curSectionInfo = userInfo.sectionIds[i].split('/');
+          const subject = curSectionInfo[2];
+          const courseId = curSectionInfo[3];
+          const crn = curSectionInfo[4];
           termId = curSectionInfo[1];
 
-          let result = await gqlClient.searchResults({
+          const result = await gqlClient.searchResults({
             termId: termId,
             subject: subject,
             query: subject + courseId,
@@ -68,12 +70,12 @@ export default function SubscrptionsPage(): ReactElement {
         }
 
         for (let i = 0; i < userInfo.courseIds.length; i++) {
-          let curSectionInfo = userInfo.courseIds[i].split('/');
-          let subject = curSectionInfo[2];
-          let courseId = curSectionInfo[3];
+          const curSectionInfo = userInfo.courseIds[i].split('/');
+          const subject = curSectionInfo[2];
+          const courseId = curSectionInfo[3];
           termId = curSectionInfo[1];
 
-          let results = await gqlClient.searchResults({
+          const results = await gqlClient.searchResults({
             termId: termId,
             subject: subject,
             query: subject + courseId,
@@ -95,8 +97,21 @@ export default function SubscrptionsPage(): ReactElement {
     fetchNotifs().catch((e) => {
       console.log('subscription error with employees');
     });
-    setFetching(false);
+    setTimeout(() => {
+      setFetching(false);
+    }, 300);
   }, [userInfo]);
 
-  return <>{fetching ? <div>Fetching</div> : <div>{subscriptions}</div>}</>;
+  return (
+    <>
+      {fetching ? (
+        <PacmanLoader loading={fetching} size={30} />
+      ) : (
+        <>
+          <h2>This page is a work in progress!</h2>
+          <div>{subscriptions}</div>
+        </>
+      )}
+    </>
+  );
 }

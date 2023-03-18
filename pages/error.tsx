@@ -47,7 +47,7 @@ export default function ApiErrorPage(): ReactElement {
                   <div className="request-container">
                     <button
                       type="button"
-                      className="suport-button"
+                      className="support-button"
                       onClick={toggleModal}
                     >
                       SEND SUPPORT REQUEST

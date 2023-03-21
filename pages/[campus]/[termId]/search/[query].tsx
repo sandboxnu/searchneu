@@ -106,30 +106,6 @@ export default function Results(): ReactElement | null {
     }`;
   };
 
-  const TotalResultsDisplay = (): ReactElement => {
-    // This has to be a null safe because searchData can be undefined on mount
-    const totalResults = searchData?.totalCount;
-    if (totalResults === undefined) {
-      // if it is undefined, dont render results
-      return <></>;
-    }
-    // our ES index has a cap of 10,000 results for any search regardless of
-    // pagination. Therefore, if we get the max, we add a + to indicate possibly more.
-    let totalResultsStr = '';
-    switch (totalResults) {
-      case 1:
-        totalResultsStr = ' result';
-        break;
-      case 10000:
-        totalResultsStr = '+ results';
-        break;
-      default:
-        totalResultsStr = ' results';
-        break;
-    }
-    return <p>{totalResults.toLocaleString('en-US') + totalResultsStr}</p>;
-  };
-
   return (
     <>
       <div>
@@ -158,17 +134,10 @@ export default function Results(): ReactElement | null {
           )}
 
           <div className="Results_Main">
-            {filtersAreSet ? (
+            {filtersAreSet && (
               <>
                 <FilterPills filters={filters} setFilters={setQParams} />
-                <div className="Results_Aggregation__withFilters">
-                  <TotalResultsDisplay />
-                </div>
               </>
-            ) : (
-              <div className="Results_Aggregation">
-                <TotalResultsDisplay />
-              </div>
             )}
             {!searchData ? (
               <LoadingContainer />

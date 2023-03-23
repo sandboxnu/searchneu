@@ -109,7 +109,6 @@ export enum MeetingType {
 // Represents the course and employee data returned by /search
 export interface SearchResult {
   results: SearchItem[];
-  totalCount: number;
   filterOptions: FilterOptions;
   hasNextPage: boolean;
 }
@@ -125,7 +124,6 @@ export type SearchItem = CourseResult | Employee;
 export function BLANK_SEARCH_RESULT(): SearchResult {
   return {
     results: [],
-    totalCount: 0,
     filterOptions: {
       nupath: [],
       subject: [],

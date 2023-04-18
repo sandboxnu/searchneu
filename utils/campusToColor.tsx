@@ -1,7 +1,8 @@
 import { Campus } from '../components/types';
+import colors from '../styles/_exports.module.scss';
 
 export const campusToColor: Record<Campus, string> = {
-  [Campus.NEU]: '#E63946',
-  [Campus.CPS]: '#FF9F1C',
-  [Campus.LAW]: '#457B9D',
+  [Campus.NEU]: colors.neu_red,
+  [Campus.CPS]: colors.cps_yellow,
+  [Campus.LAW]: colors.law_blue,
 };

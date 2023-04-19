@@ -136,7 +136,7 @@ export default function FeedbackModal(): ReactElement {
             setOpen(!open);
           }}
         >
-          <LogoInput height="14" width="18" fill="#d41b2c" />
+          <LogoInput height="14" width="18" fill="#e63946" />
           <p>SearchNEU Feedback</p>
         </div>
       </div>

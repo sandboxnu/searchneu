@@ -128,7 +128,7 @@ export default function SignUpModal({
       <div className="phone-modal">
         {isLoading && (
           <div className="phone-modal__spinner">
-            <MoonLoader color={'#7fc4c7'} loading={true} size={32} />
+            <MoonLoader color={'#a8dadc'} loading={true} size={32} />
           </div>
         )}
         {(() => {

@@ -55,7 +55,7 @@ export default function MobileSearchOverlay({
           tabIndex={0}
           onClick={search}
         >
-          <IconClose fill="#d41b2c" />
+          <IconClose fill="#e63946" />
         </div>
         <FilterPanel
           options={filterOptions}

@@ -4,6 +4,7 @@
  */
 import React, { ReactElement, useEffect, useState } from 'react';
 import FadeLoader from 'react-spinners/FadeLoader';
+import Colors from '../../styles/_exports.module.scss';
 
 /**
  * Page that displays while results aren't ready
@@ -21,7 +22,7 @@ export default function LoadingContainer(): ReactElement {
     <div style={{ visibility: 'hidden' }} />
   ) : (
     <div className="loader">
-      <FadeLoader color="#e63946" />
+      <FadeLoader color={Colors.neu_red} />
     </div>
   );
 }

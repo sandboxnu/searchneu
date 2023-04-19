@@ -6,13 +6,12 @@
 import { uniqueId } from 'lodash';
 import React, { ReactElement, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
-import IconCheckMark from '../icons/IconCheckmark';
 import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
-import macros from '../macros';
 import { Section } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
+import Colors from '../../styles/_exports.module.scss';
 
 type SectionCheckBoxProps = {
   section: Section;
@@ -57,7 +56,7 @@ export default function SectionCheckBox({
   if (section.seatsRemaining > 5) {
     return (
       <div
-        style={{ color: '#d3d3d3' }}
+        style={{ color: Colors.light_grey }}
         data-tip="There are still seats remaining for this section"
         className="infoIcon"
       >

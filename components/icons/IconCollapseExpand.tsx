@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 const IconCollapseExpand = ({
   width = '11',
   height = '18',
-  fill = '#646464',
+  fill = '#4e525a',
   className,
 }: {
   width?: string;

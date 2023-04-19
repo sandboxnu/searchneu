@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 const IconArrow = ({
   width = '11',
   height = '10',
-  fill = '#505050',
+  fill = '#4e525a',
   className,
 }: {
   width?: string;

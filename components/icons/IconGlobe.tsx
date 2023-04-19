@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 const IconGlobe = ({
   width = '14',
   height = '14',
-  fill = '#505050',
+  fill = '#4e525a',
   className,
 }: {
   width?: string;

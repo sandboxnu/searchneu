@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 export const LeftNavArrow = ({
   width = '9',
   height = '20',
-  fill = '#000000',
+  fill = '#000',
   className,
 }: {
   width?: string;
@@ -29,7 +29,7 @@ export const LeftNavArrow = ({
 export const RightNavArrow = ({
   width = '9',
   height = '20',
-  fill = '#000000',
+  fill = '#000',
   className,
 }: {
   width?: string;

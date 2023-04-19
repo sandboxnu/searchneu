@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import IconCollapseExpand from '../../icons/IconCollapseExpand';
+import Colors from '../../../styles/_exports.module.scss';
 
 interface MobileCollapsableDetailProps {
   title: string;
@@ -25,7 +26,7 @@ function MobileCollapsableDetail({
         <IconCollapseExpand
           width="6"
           height="12"
-          fill="#000000"
+          fill={Colors.black}
           className={expand ? 'MobileSearchResult__panel--rotatedIcon' : ''}
         />
         <span>{title}</span>

@@ -3,53 +3,53 @@
  * See the license file in the root folder for details.
  *
  * This file contains normalizing styles, and is the primary file
- * that imports all partials.
+ * that uses all partials.
  */
 
-@import 'variables';
-@import 'panels/BaseClassPanel';
-@import 'panels/DesktopClassPanel';
-@import 'panels/DesktopSectionPanel';
-@import 'panels/MobileClassPanel';
-@import 'panels/MobileSectionPanel';
-@import 'panels/SplashPage';
-@import 'panels/WeekdayBoxes';
-@import 'pages/Home';
-@import 'pages/Results';
-@import 'pages/ClassPage';
-@import 'pages/404';
-@import 'pages/Down';
-@import 'pages/Error';
-@import 'SignUpForNotifications';
-@import 'EmailInput';
-@import 'SearchHeader';
-@import 'Footer';
-@import 'SearchBar';
-@import 'SearchDropdown';
-@import 'CheckboxFilter';
-@import 'FilterPanel';
-@import 'FilterPills';
-@import 'Filters';
-@import 'MobileSearchOverlay';
-@import 'FeedbackModal';
-@import 'results/SearchResult';
-@import 'results/WeekdayBoxes';
-@import 'results/DesktopSectionPanel';
-@import 'results/MobileSearchResult';
-@import 'results/MobileSectionPanel';
-@import 'results/NotifCheckBox';
-@import 'results/NotifSignUpButton';
-@import 'home/HomeSearch';
-@import 'DropdownFilter';
-@import 'home/ExploratorySearchButton';
-@import 'Tooltip';
-@import 'LastUpdated';
-@import 'AlertBanner';
-@import '~antd/dist/antd.css';
-@import 'LoadingContainer';
-@import 'PhoneModal';
-@import 'Modal';
-@import 'InfoIconTooltip';
+@use 'variables';
+@use 'panels/BaseClassPanel';
+@use 'panels/DesktopClassPanel';
+@use 'panels/DesktopSectionPanel' as panels_DesktopSectionPanel;
+@use 'panels/MobileClassPanel';
+@use 'panels/MobileSectionPanel' as panels_MobileSectionPanel;
+@use 'panels/SplashPage';
+@use 'panels/WeekdayBoxes' as panels_WeekdayBoxes;
+@use 'pages/Home';
+@use 'pages/Results';
+@use 'pages/ClassPage';
+@use 'pages/404' as four04;
+@use 'pages/Down';
+@use 'pages/Error';
+@use 'SignUpForNotifications';
+@use 'EmailInput';
+@use 'SearchHeader';
+@use 'Footer';
+@use 'SearchBar';
+@use 'SearchDropdown';
+@use 'CheckboxFilter';
+@use 'FilterPanel';
+@use 'FilterPills';
+@use 'Filters';
+@use 'MobileSearchOverlay';
+@use 'FeedbackModal';
+@use 'results/SearchResult';
+@use 'results/WeekdayBoxes' as results_WeekdayBoxes;
+@use 'results/DesktopSectionPanel' as results_DesktopSectionPanel;
+@use 'results/MobileSearchResult';
+@use 'results/MobileSectionPanel' as results_MobileSectionPanel;
+@use 'results/NotifCheckBox';
+@use 'results/NotifSignUpButton';
+@use 'home/HomeSearch';
+@use 'DropdownFilter';
+@use 'home/ExploratorySearchButton';
+@use 'Tooltip';
+@use 'LastUpdated';
+@use 'AlertBanner';
+@use '../node_modules/antd/dist/antd.css';
+@use 'LoadingContainer';
+@use 'PhoneModal';
+@use 'Modal';
+@use 'InfoIconTooltip';
 
 html,
 body,
@@ -119,5 +119,5 @@ p {
 }
 
 // .ui.segment:first-child {
-//   margin-top: 1rem !important;
+//   margin-top: 1rem !useant;
 // }

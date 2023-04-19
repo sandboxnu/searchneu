@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { getSeason, getYear } from '../terms';
 import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
-import Colors from '../styles/_exports.module.scss';
+import Colors from '../../styles/_exports.module.scss';
 
 type sectionsTermNavProps = {
   currTermIndex: number;

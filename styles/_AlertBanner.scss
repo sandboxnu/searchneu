@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .alertBannerContainer {
   z-index: 100000;
   top: 0px;
@@ -5,7 +7,7 @@
 }
 
 .alertBanner {
-  filter: drop-shadow(3px 1px 4px grey);
+  filter: drop-shadow(3px 1px 4px Colors.$Grey);
   padding: 15px 15px 15px 15px;
   text-align: center;
   font-size: 15px;
@@ -39,14 +41,14 @@
 }
 
 .errorBanner {
-  background-color: rgb(253, 236, 234);
-  color: rgb(97, 26, 21);
+  background-color: Colors.$Off_White;
+  color: Colors.$NEU_Red;
 }
 .warningBanner {
-  background-color: rgb(255, 244, 229);
-  color: rgb(102, 60, 0);
+  background-color: Colors.$Off_White;
+  color: Colors.$CPS_Yellow;
 }
 .infoBanner {
-  background-color: rgb(232, 244, 253);
-  color: rgb(13, 60, 97);
+  background-color: Colors.$Off_White;
+  color: Colors.$Navy;
 }

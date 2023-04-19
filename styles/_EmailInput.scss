@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 /*
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
@@ -10,7 +12,7 @@
 
   .enterEmail {
     padding-bottom: 5px;
-    color: gray;
+    color: Colors.$Grey;
     width: 350px;
 
     input {
@@ -19,11 +21,11 @@
 
     button {
       pointer-events: initial;
-      color: grey;
+      color: Colors.$Grey;
       font-weight: 500;
-      background: rgba(224, 225, 226, 0.5);
+      background: Colors.$Light_Grey;
       font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-      border: 1px solid rgba(34, 36, 38, 0.1);
+      border: 1px solid Colors.$Black;
       border-left: 0;
     }
   }
@@ -40,16 +42,16 @@
     text-align: left;
     font-size: 15px !important;
     min-height: 25px;
-    color: green;
+    color: Colors.$Green;
   }
 
   .emailStatus.success {
     opacity: 1;
-    color: green;
+    color: Colors.$Green;
   }
 
   .emailStatus.error {
     opacity: 1;
-    color: #ae4543;
+    color: Colors.$NEU_Red;
   }
 }

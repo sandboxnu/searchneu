@@ -1,3 +1,5 @@
+@use '../variables' as Colors;
+
 .WeekdayBoxes {
   display: inline-flex;
   flex-direction: row;
@@ -13,26 +15,26 @@
     display: block;
     width: 18px;
     height: 18px;
-    background: #fafafb;
-    color: #979797;
-    border: 0.5px solid #979797;
+    background: Colors.$White;
+    color: Colors.$Grey;
+    border: 0.5px solid Colors.$Grey;
 
     &--checked-class {
       display: block;
       width: 18px;
       height: 18px;
-      background: #a5c0dd;
-      color: #000;
-      border: 0.5px solid #979797;
+      background: Colors.$Light_Blue;
+      color: Colors.$Black;
+      border: 0.5px solid Colors.$Grey;
     }
 
     &--checked-final {
       display: block;
       width: 18px;
       height: 18px;
-      background: #b0dda5;
-      color: #000;
-      border: 0.5px solid #979797;
+      background: Colors.$Light_Green;
+      color: Colors.$Black;
+      border: 0.5px solid Colors.$Grey;
     }
   }
 

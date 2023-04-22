@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .InfoIconTooltip {
   background: transparent;
   position: relative;
@@ -13,7 +15,7 @@
   &__icon {
     &:hover + .tooltip {
       display: block;
-      background: #1d3557;
+      background: Colors.$Navy;
       white-space: wrap;
       width: 225px;
       padding: 7px;
@@ -22,11 +24,11 @@
       margin-left: -5px;
 
       & > .tooltip__arrow--DOWN {
-        border-color: transparent transparent #1d3557 transparent;
+        border-color: transparent transparent Colors.$Navy transparent;
       }
 
       & > .tooltip__arrow--UP {
-        border-color: #1d3557 transparent transparent transparent;
+        border-color: Colors.$Navy transparent transparent transparent;
       }
     }
 

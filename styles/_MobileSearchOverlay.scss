@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 $EXECUTE_BTN_HEIGHT: 40px;
 
 .msearch-overlay {
@@ -21,7 +23,7 @@ $EXECUTE_BTN_HEIGHT: 40px;
   &__content {
     flex-grow: 1;
     margin-bottom: $EXECUTE_BTN_HEIGHT;
-    background-color: #f6f6f6;
+    background-color: Colors.$Off_White;
     padding: 0 15px 25px 15px;
     padding-left: 30px;
   }
@@ -40,8 +42,8 @@ $EXECUTE_BTN_HEIGHT: 40px;
     font-size: 14px;
     line-height: $EXECUTE_BTN_HEIGHT;
     text-align: center;
-    background: #338ef1;
-    color: #fff;
+    background: Colors.$Blue;
+    color: Colors.$White;
   }
 }
 

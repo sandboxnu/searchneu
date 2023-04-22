@@ -2,6 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
+@use 'variables' as Colors;
 
 .sign-up-for-notifications-container {
   .disabledButton {
@@ -26,7 +27,7 @@
 
   .toggleCTA {
     margin-top: 4px;
-    color: #338ef1;
+    color: Colors.$Blue;
     width: 60%;
     margin-left: 40%;
     text-align: center;
@@ -36,7 +37,7 @@
 
   .allSeatsAvailable {
     margin-top: 4px;
-    color: #27ae34;
+    color: Colors.$Green;
     width: 60%;
     margin-left: 40%;
     text-align: center;
@@ -47,7 +48,7 @@
   .initialNotificationButton {
     cursor: pointer;
     border-radius: 5px;
-    background: #fff;
+    background: Colors.$White;
     border: 1px solid rgba(79, 79, 79, 0.5);
     display: flex;
     align-items: center;
@@ -55,7 +56,7 @@
     width: max-content;
 
     &:hover {
-      background: #fafafa;
+      background: Colors.$Off_White;
     }
 
     &:focus {

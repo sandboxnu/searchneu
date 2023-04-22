@@ -30,7 +30,7 @@
     color: Colors.$NEU_Red;
     padding: 0 10px;
     line-height: 30px;
-    background: rgba(255, 255, 255, 0);
+    background: transparent;
     display: inline-block;
   }
 
@@ -82,7 +82,7 @@
 
   &__close {
     height: 30px;
-    background: #ffff;
+    background: Colors.$White;
     white-space: nowrap;
     color: Colors.$Grey;
     border-radius: 7px;

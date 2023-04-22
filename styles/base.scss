@@ -6,7 +6,7 @@
  * that uses all partials.
  */
 
-@use 'variables';
+@use 'variables' as Colors;
 @use 'panels/BaseClassPanel';
 @use 'panels/DesktopClassPanel';
 @use 'panels/DesktopSectionPanel' as panels_DesktopSectionPanel;
@@ -103,13 +103,13 @@ img {
 }
 
 a {
-  color: #009fda;
+  color: Colors.$Blue;
   text-decoration: none;
 }
 
 body {
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #505050;
+  color: Colors.$Grey;
   line-height: 22px;
   background: none;
 }
@@ -117,7 +117,3 @@ body {
 p {
   margin: 1em 0;
 }
-
-// .ui.segment:first-child {
-//   margin-top: 1rem !useant;
-// }

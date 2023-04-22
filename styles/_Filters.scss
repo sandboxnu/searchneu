@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .react-switch-checkbox {
   height: 0;
   width: 0;
@@ -11,7 +13,7 @@
   cursor: pointer;
   width: 45px;
   height: 20px;
-  background: #d3d3d3;
+  background: Colors.$Off_White;
   border-radius: 36px;
   transition: background-color 0.01s;
   margin-top: 38px;
@@ -24,16 +26,16 @@
     height: 25px;
     border-radius: 25px;
     transition: 0.4s;
-    background: #a0a0a0;
+    background: Colors.$Grey;
     box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
   }
 }
 
 .react-switch-checkbox:checked + .react-switch-label {
-  background: #ca9897;
+  background: Colors.$Light_Red;
 
   .react-switch-button {
-    background: #ae4543;
+    background: Colors.$Dark_Red;
     left: 100%;
     transform: translateX(-100%);
   }
@@ -60,7 +62,7 @@
     max-width: calc(100% - 1rem);
 
     .rc-slider-track {
-      background: #e63946;
+      background: Colors.$NEU_Red;
     }
 
     .rc-slider-handle {

@@ -1,3 +1,5 @@
+@use '../variables' as Colors;
+
 .DesktopSectionPanel {
   font-family: Lato, sans-serif;
   font-style: normal;
@@ -40,15 +42,15 @@
   }
 
   &__green {
-    color: #27ae34;
+    color: Colors.$Green;
   }
 
   &__yellow {
-    color: #ffbf3d;
+    color: Colors.$CPS_Yellow;
   }
 
   &__red {
-    color: #d41b2c;
+    color: Colors.$NEU_Red;
   }
 
   .InfoIconTooltip__icon {
@@ -85,10 +87,10 @@
         display: block;
         top: -30px;
         right: -20px;
-        background: #338ef1;
+        background: Colors.$Blue;
         white-space: nowrap;
         & > div {
-          border-color: #338ef1 transparent transparent transparent;
+          border-color: Colors.$Blue transparent transparent transparent;
           right: 29px;
           top: 24px;
         }
@@ -102,10 +104,10 @@
         display: block;
         bottom: 30px;
         right: -14px;
-        background: #338ef1;
+        background: Colors.$Blue;
         white-space: nowrap;
         & > div {
-          border-color: #338ef1 transparent transparent transparent;
+          border-color: Colors.$Blue transparent transparent transparent;
           right: 29px;
           top: 24px;
         }

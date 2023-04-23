@@ -2,6 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
+@use '../variables' as Colors;
 
 .class-panel-container {
   padding: 0 !important;
@@ -10,7 +11,7 @@
   .header {
     outline: 0;
     border: none;
-    background-color: #fafafa;
+    background-color: Colors.$Off_White;
     padding: 11px;
     margin-top: 0;
     border-radius: 5px;
@@ -28,17 +29,17 @@
   }
 
   .hint-text {
-    color: #969696;
+    color: Colors.$Grey;
   }
 
   .more-sections-button {
     cursor: pointer;
     padding: 10px;
-    color: #888;
+    color: Colors.$Grey;
     font-weight: 600;
     outline: 0;
     border: none;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid Colors.$Light_Grey;
   }
 
   .prereq-show-more {

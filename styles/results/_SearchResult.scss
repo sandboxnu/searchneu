@@ -39,7 +39,7 @@
 
     &--creditString {
       font-size: 16px;
-      color: Colors.$Dark_Grey;
+      color: Colors.$Black;
     }
 
     &--sub {
@@ -54,7 +54,7 @@
       font-weight: normal;
       font-size: 14px;
       letter-spacing: 0.5px;
-      color: Colors.$Dark_Grey;
+      color: Colors.$Black;
       margin-left: 5px;
     }
 
@@ -114,7 +114,7 @@
     }
 
     &--left > span.empty {
-      color: Colors.$Grey;
+      color: Colors.$Dark_Grey;
     }
 
     &--right {
@@ -171,7 +171,7 @@
   }
 
   &__sectionTable td {
-    border: 1px solid Colors.$Off_White;
+    border: 1px solid Colors.$Light_Grey;
     padding: 16px 16px;
     font-size: 16px;
     line-height: 19px;
@@ -192,7 +192,7 @@
   }
 
   &__sectionTable > tbody > tr:nth-child(odd) {
-    background: Colors.$White;
+    background: Colors.$Off_White;
   }
 
   &__showAll {

@@ -1,3 +1,4 @@
+@use '../variables' as Colors;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
 
 /* Styles for ApiError Page. */
@@ -16,7 +17,7 @@
 
 .api-error-title-text {
   font-family: 'Montserrat Alternates';
-  color: #e63946;
+  color: Colors.$NEU_Red;
   font-size: 100px;
   font-weight: 700;
   line-height: 100px;
@@ -29,7 +30,7 @@
   font-weight: 600;
   font-size: 50px;
   line-height: 50px;
-  color: #2a426b;
+  color: Colors.$Navy;
   margin-bottom: 40px;
   align-self: start;
 }
@@ -40,7 +41,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 43px;
-  color: #2a426b;
+  color: Colors.$Navy;
   margin-bottom: 20px;
   position: relative;
   align-self: start;
@@ -55,8 +56,8 @@
 .support-button {
   box-sizing: border-box;
   padding: 10px 30px;
-  background: #e63946;
-  border: 1px solid #e63946;
+  background: Colors.$NEU_Red;
+  border: 1px solid Colors.$NEU_Red;
   border-radius: 28px;
 
   // Inner text
@@ -67,20 +68,20 @@
   line-height: 28px;
 
   cursor: pointer;
-  color: #ffffff;
+  color: Colors.$White;
   flex: none;
   order: 0;
   flex-grow: 0;
 }
 
 .suport-button:hover {
-  background: #b82e38;
-  border: 1px solid #b82e38;
+  background: Colors.$NEU_Red;
+  border: 1px solid Colors.$NEU_Red;
 }
 
 .suport-button:active {
-  background: #8a222a;
-  border: 1px solid #8a222a;
+  background: Colors.$Dark_Red;
+  border: 1px solid Colors.$Dark_Red;
 }
 
 .create-issue {
@@ -89,12 +90,12 @@
   font-weight: 500;
   font-size: 17px;
   line-height: 20px;
-  color: #1d3557;
+  color: Colors.$Navy;
 }
 
 .create-issue:hover {
   text-decoration-line: underline;
-  color: #1d3557;
+  color: Colors.$Navy;
 }
 
 .husky-container {

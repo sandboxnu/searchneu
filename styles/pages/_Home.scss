@@ -3,6 +3,7 @@
  * See the license file in the root folder for details.
  */
 
+@use '../variables' as Colors;
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
 
 .home-container {
@@ -29,7 +30,7 @@
 
   .subjectContaineRow {
     font-size: 19px;
-    color: #a3a3a3;
+    color: Colors.$Light_Grey;
     margin-left: auto;
     align-self: flex-end;
     margin-right: auto;
@@ -166,8 +167,8 @@
 
   /* Github corner. */
   .githubCornerContainer {
-    fill: rgba(175, 174, 171, 1);
-    color: #fff;
+    fill: Colors.$Light_Grey;
+    color: Colors.$White;
     position: absolute;
     top: 0;
     border: 0;
@@ -202,7 +203,7 @@
 
   /* Override the blue caused by the <a> tag. */
   .githubCornerContainer:hover {
-    color: #fff;
+    color: Colors.$White;
   }
 
   /* Below here is actually used. */
@@ -276,7 +277,7 @@
   }
 
   .aounContainer > img {
-    box-shadow: 0 0 20px 12px #ef6e7e;
+    box-shadow: 0 0 20px 12px Colors.$Light_Red;
     max-width: 100%;
   }
 
@@ -302,16 +303,16 @@
     transition-delay: 1s;
     margin-bottom: -16px;
     font-weight: 200;
-    color: #a3a3a3;
+    color: Colors.$Light_Grey;
     font-size: 21px;
 
     .getInvolvedText {
-      color: #5a5a5a;
+      color: Colors.$Grey;
       cursor: pointer;
     }
 
     .getInvolvedText:hover {
-      border-bottom: 1px solid #717171;
+      border-bottom: 1px solid Colors.$Grey;
     }
 
     .getInvolvedTextHidden {

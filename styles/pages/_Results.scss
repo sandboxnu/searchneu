@@ -1,3 +1,5 @@
+@use '../variables' as Colors;
+
 $TOPNAV_HEIGHT: 60px;
 $SIDEBAR_WIDTH: 268px;
 
@@ -7,23 +9,23 @@ $SIDEBAR_WIDTH: 268px;
   left: 0;
   top: 0;
   z-index: 9999;
-  background: #fff;
+  background: Colors.$White;
   flex-direction: row;
   display: flex;
   align-items: center;
   justify-content: left;
   position: fixed;
   box-shadow: 0 0 10px rgba(31, 33, 38, 0.5);
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid Colors.$White;
 
   &-top {
     box-shadow: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid Colors.$Off_White;
   }
 
   @media only screen and (max-width: 767px) {
     height: 120px;
-    background: #fff;
+    background: Colors.$White;
     align-items: unset;
     justify-content: left;
     position: inherit;
@@ -108,7 +110,7 @@ $SIDEBAR_WIDTH: 268px;
     display: none;
   }
 
-  background-color: #f6f6f6;
+  background-color: Colors.$White;
   padding: 25px 15px 25px 15px;
 }
 
@@ -171,7 +173,7 @@ $SIDEBAR_WIDTH: 268px;
   &__slash {
     font-size: 24px;
     font-weight: initial;
-    color: #c4c4c4;
+    color: Colors.$Light_Grey;
     margin: auto 4px;
   }
 }
@@ -201,7 +203,7 @@ $SIDEBAR_WIDTH: 268px;
   &__dropdown {
     z-index: 999999;
     position: absolute;
-    background: #fff;
+    background: Colors.$White;
     border-radius: 3px;
     padding: 12px;
     bottom: 0;
@@ -219,7 +221,7 @@ $SIDEBAR_WIDTH: 268px;
       height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-bottom: 4px solid #fff;
+      border-bottom: 4px solid Colors.$White;
 
       @media only screen and (max-width: 767px) {
         right: 10px;

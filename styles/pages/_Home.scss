@@ -43,6 +43,8 @@
     margin-bottom: 0 !important;
     height: 100vh;
     position: relative;
+    // Since this is a gradient that doesn't really go with other colors
+    // on the SearchNEU color palette, they can stay as rgba values
     background: linear-gradient(
       180deg,
       rgba(168, 218, 220, 0.66) 3.86%,
@@ -284,7 +286,7 @@
   .hitEnterToSearch {
     display: block;
     padding-top: 14px;
-    color: rgba(0, 0, 0, 0.6);
+    color: Colors.$Grey;
     visibility: hidden;
   }
 

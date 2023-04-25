@@ -5,7 +5,7 @@
 @use '../variables' as Colors;
 
 .section-container {
-  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  border-top: 1px solid Colors.$Light_Grey;
   line-height: 1.8em;
 
   tr {

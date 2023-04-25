@@ -5,8 +5,8 @@
   width: 100%;
   margin: 16px 0;
   border-radius: 5px;
-  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  box-shadow: 0 1px 2px 0 Colors.$Light_Grey;
+  border: 1px solid Colors.$Light_Grey;
   font-family: Lato, sans-serif;
   font-style: normal;
 
@@ -128,7 +128,7 @@
       .view-more-info-container {
         border-radius: 5px;
         background: Colors.$White;
-        border: 1px solid rgba(79, 79, 79, 0.5);
+        border: 1px solid Colors.$Grey;
         align-items: center;
         padding: 8px 10px 5px;
         width: max-content;

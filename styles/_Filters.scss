@@ -27,7 +27,7 @@
     border-radius: 25px;
     transition: 0.4s;
     background: Colors.$Grey;
-    box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+    box-shadow: 0 0 2px 0 Colors.$Grey;
   }
 }
 
@@ -69,14 +69,14 @@
       width: 18px;
       height: 18px;
       margin-top: -7px;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0px 2px 4px Colors.$Light_Grey !important;
       opacity: 1;
       border: none !important;
       border-color: transparent;
     }
 
     .rc-slider-handle-dragging {
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0px 2px 4px Colors.$Light_Grey;
       border: none;
       border-color: transparent;
     }

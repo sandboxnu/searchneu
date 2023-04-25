@@ -6,14 +6,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 4px 0 Colors.$Light_Grey;
+  box-shadow: 0 0 4px 0 Colors.$Grey;
   border-radius: 15px;
 
   &__campusSelector {
     height: 50px;
     width: 100%;
     background: transparent;
-    border-bottom: 1px solid Colors.$Off_White;
+    border-bottom: 1px solid Colors.$Light_Grey;
     display: flex;
     align-items: center;
     padding-left: 32px;

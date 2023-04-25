@@ -11,7 +11,7 @@
   font-style: normal;
 
   &__header {
-    background: Colors.$White;
+    background: Colors.$Off_White;
     padding: 12px 16px 4px 16px;
     font-weight: 800;
     display: flex;
@@ -63,9 +63,9 @@
         display: block;
         top: 24px;
         left: -10px;
-        background: Colors.$Dark_Grey;
+        background: Colors.$Navy;
         & > div {
-          border-color: transparent transparent Colors.$Dark_Grey transparent;
+          border-color: transparent transparent Colors.$Navy transparent;
           left: 12px;
         }
       }
@@ -114,7 +114,7 @@
     }
 
     &--left > span.empty {
-      color: Colors.$Dark_Grey;
+      color: Colors.$Grey;
     }
 
     &--right {
@@ -197,7 +197,7 @@
 
   &__showAll {
     padding: 10px 16px;
-    background: Colors.$White;
+    background: Colors.$Off_White;
     box-sizing: border-box;
     border-radius: 0 0 5px 5px;
     display: flex;

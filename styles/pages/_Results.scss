@@ -15,12 +15,12 @@ $SIDEBAR_WIDTH: 268px;
   align-items: center;
   justify-content: left;
   position: fixed;
-  box-shadow: 0 0 10px Colors.$Grey;
-  border-bottom: 1px solid Colors.$White;
+  box-shadow: 0 0 10px Colors.$Light_Grey;
+  border-bottom: 1px solid Colors.$Light_Grey;
 
   &-top {
     box-shadow: none;
-    border-bottom: 1px solid Colors.$Off_White;
+    border-bottom: 1px solid Colors.$Light_Grey;
   }
 
   @media only screen and (max-width: 767px) {
@@ -110,7 +110,7 @@ $SIDEBAR_WIDTH: 268px;
     display: none;
   }
 
-  background-color: Colors.$White;
+  background-color: Colors.$Off_White;
   padding: 25px 15px 25px 15px;
 }
 
@@ -175,6 +175,14 @@ $SIDEBAR_WIDTH: 268px;
     font-weight: initial;
     color: Colors.$Light_Grey;
     margin: auto 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: Colors.$Grey;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: Colors.$Light_Grey;
   }
 }
 

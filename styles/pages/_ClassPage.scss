@@ -56,12 +56,12 @@
   }
 
   .horizontalLine {
-    background-color: Colors.$Light_Grey;
+    background-color: Colors.$Grey;
     height: 1px;
   }
 
   .verticalLine {
-    border-left: 1px solid Colors.$Light_Grey;
+    border-left: 1px solid Colors.$Grey;
   }
 
   .flex {
@@ -175,7 +175,7 @@
     .emptyCourseFee p,
     .noReqs,
     .noNUPaths {
-      color: Colors.$Light_Grey;
+      color: Colors.$Grey;
     }
 
     .reqItemsContainer.showScroll {

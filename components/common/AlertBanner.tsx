@@ -41,7 +41,7 @@ export default function AlertBanner({ alertBannerData }: AlertBannerProps) {
             tabIndex={0}
             onClick={() => setIsVisible(false)}
           >
-            <IconClose fill={Colors.gray} />
+            <IconClose fill={Colors.grey} />
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react';
+import Colors from '../../styles/_exports.module.scss';
 
 const LogoInput = ({
-  fill = '#fff',
+  fill = Colors.white,
   height = '18',
   width = '21',
 }: {

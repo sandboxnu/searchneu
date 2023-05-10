@@ -1,6 +1,7 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import { ReactElement } from 'react';
 import Macros from '../components/abstractMacros';
+import Colors from '../styles/_exports.module.scss';
 
 const googleAnalyticsScript = `
 window.dataLayer = window.dataLayer || [];
@@ -74,7 +75,11 @@ class MyDocument extends Document {
             href="/faviconsearchingSmall.png"
           />
           <link rel="manifest" href="/manifest.json" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e63946" />
+          <link
+            rel="mask-icon"
+            href="/safari-pinned-tab.svg"
+            color={Colors.neu_red}
+          />
           <link
             href="https://fonts.googleapis.com/css?family=Open+Sans:400,700"
             rel="stylesheet"

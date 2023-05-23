@@ -23,7 +23,22 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "Literal[value=/^#[a-zA-Z0-9]/i]",
+        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+      },
+      {
+        "selector": "Literal[value=/^rgb[(]/i]",
+        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+      },
+      {
+        "selector": "Literal[value=/^rgba[(]/i]",
+        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+      }
+    ]
   },
   "overrides": [
     {

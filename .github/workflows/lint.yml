@@ -14,3 +14,4 @@ jobs:
           node-version: 12
       - uses: bahmutov/npm-install@v1
       - run: yarn lint
+      - run: yarn sass-lint

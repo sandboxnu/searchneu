@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 
+/* eslint-disable no-restricted-syntax */
+
 const IconGradcap = ({
   width = '27',
   height = '18',

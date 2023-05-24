@@ -28,15 +28,15 @@
       "error",
       {
         "selector": "Literal[value=/^#[a-zA-Z0-9]/i]",
-        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+        "message": "This project uses color variables for our styling to keep everything consistent with a single, unifying pallette; if the feature you're working on is using colors, please import Colors and use those variables instead! (_variables.scss for color variables in scss, _exports.module.scss for color variables in .tsx)"
       },
       {
         "selector": "Literal[value=/^rgb[(]/i]",
-        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+        "message": "This project uses color variables for our styling to keep everything consistent with a single, unifying pallette; if the feature you're working on is using colors, please import Colors and use those variables instead! (_variables.scss for color variables in scss, _exports.module.scss for color variables in .tsx)"
       },
       {
         "selector": "Literal[value=/^rgba[(]/i]",
-        "message": "Use 'Colors' from the _variables.scss or _exports.module.scss"
+        "message": "This project uses color variables for our styling to keep everything consistent with a single, unifying pallette; if the feature you're working on is using colors, please import Colors and use those variables instead! (_variables.scss for color variables in scss, _exports.module.scss for color variables in .tsx)"
       }
     ]
   },

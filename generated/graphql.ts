@@ -177,6 +177,7 @@ export type SearchResultItem = ClassOccurrence | Employee;
 
 export type SearchResultItemConnection = {
   __typename?: 'SearchResultItemConnection';
+  totalCount: Scalars['Int'];
   pageInfo: PageInfo;
   nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
   filterOptions: FilterOptions;

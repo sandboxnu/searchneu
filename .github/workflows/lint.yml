@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: install node v18.17.1
+      - name: install node v18
         uses: actions/setup-node@v1
         with:
-          node-version: 18.17.1
+          node-version: 18
       - uses: bahmutov/npm-install@v1
       - run: yarn lint

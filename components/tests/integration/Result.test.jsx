@@ -30,8 +30,8 @@ jest.mock('../../../utils/TermInfoProvider', () => () => ({
   error: null,
   termInfos: {
     NEU: [{ text: TERM_TEXT, value: TERM_ID }],
-    CPS: [],
-    LAW: [],
+    CPS: [{ text: TERM_TEXT, value: TERM_ID }],
+    LAW: [{ text: TERM_TEXT, value: TERM_ID }],
   },
 }));
 
@@ -150,7 +150,7 @@ describe.only('Results page integration tests', () => {
     // click the apply button
     classIdRangeFilter.find('.RangeFilter__apply-input').simulate('click');
     expect(setQParams).toBeCalledWith({
-      classIdRange: { max: 5000, min: 1000 },
+      classIdRange: { max: 5000, min: 2000 },
     });
   });
 });

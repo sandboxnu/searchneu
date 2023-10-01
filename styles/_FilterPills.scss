@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .selected-filters {
   display: flex;
   align-items: center;
@@ -25,10 +27,11 @@
 
   &__clear {
     cursor: pointer;
-    color: #d41b2c;
+    color: Colors.$NEU_Red;
     padding: 0 10px;
     line-height: 30px;
-    background: rgba(255, 255, 255, 0);
+    background: transparent;
+    display: inline-block;
   }
 
   &__clear:hover {
@@ -39,7 +42,7 @@
 /* for clearing filters when there are no results */
 .no-results__clear {
   cursor: pointer;
-  color: #d41b2c;
+  color: Colors.$NEU_Red;
   padding: 0 5px;
   display: inline;
   line-height: 30px;
@@ -65,7 +68,7 @@
       width: 14px; /* x size */
       height: 1.5px; /* x thickness */
       border-radius: 25px;
-      background-color: #d41b2c;
+      background-color: Colors.$NEU_Red;
     }
 
     &::before {
@@ -79,11 +82,11 @@
 
   &__close {
     height: 30px;
-    background: #ffff;
+    background: Colors.$White;
     white-space: nowrap;
-    color: #4c5454;
+    color: Colors.$Grey;
     border-radius: 7px;
-    border: 0.5px solid #e6e6e6;
+    border: 0.5px solid Colors.$Light_Grey;
     cursor: pointer;
     padding-left: 10px;
     margin-left: 5px;
@@ -94,14 +97,14 @@
     }
 
     &:hover {
-      background-color: #d41b2c;
-      border-color: #d41b2c;
-      color: #ffff;
+      background-color: Colors.$NEU_Red;
+      border-color: Colors.$NEU_Red;
+      color: Colors.$White;
     }
 
     &:hover .FilterPill__icon::before,
     &:hover .FilterPill__icon::after {
-      background-color: #ffff;
+      background-color: Colors.$White;
     }
   }
 

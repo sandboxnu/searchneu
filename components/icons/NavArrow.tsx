@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
+import Colors from '../../styles/_exports.module.scss';
 
 export const LeftNavArrow = ({
   width = '9',
   height = '20',
-  fill = '#000000',
+  fill = Colors.black,
   className,
 }: {
   width?: string;
@@ -29,7 +30,7 @@ export const LeftNavArrow = ({
 export const RightNavArrow = ({
   width = '9',
   height = '20',
-  fill = '#000000',
+  fill = Colors.black,
   className,
 }: {
   width?: string;

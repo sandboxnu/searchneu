@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
+import Colors from '../../styles/_exports.module.scss';
 
 const IconGlobe = ({
   width = '14',
   height = '14',
-  fill = '#505050',
+  fill = Colors.dark_grey,
   className,
 }: {
   width?: string;

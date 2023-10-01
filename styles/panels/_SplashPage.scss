@@ -3,6 +3,8 @@
  * See the license file in the root folder for details.
  */
 
+@use '../variables' as Colors;
+
 #splash-page {
   margin: 0;
   width: 100%;
@@ -22,14 +24,14 @@
     margin: 0 !important;
     width: 100%;
     overflow: hidden;
-    background: rgb(125, 128, 121);
+    background: Colors.$Grey;
   }
 
   .row-second.ui.grid {
     margin: 0 !important;
     width: 100%;
     overflow: hidden;
-    background: #e75353;
+    background: Colors.$NEU_Red;
   }
 
   .row-third.ui.grid {
@@ -37,24 +39,24 @@
     height: 906px;
     width: 100%;
     overflow: hidden;
-    background: rgb(221, 218, 210);
+    background: Colors.$Off_White;
     position: relative;
     padding-left: 10px;
   }
 
   img {
-    box-shadow: 0 0 9px 6px rgba(72, 75, 78, 0.44);
+    box-shadow: 0 0 9px 6px Colors.$Grey;
     border-radius: 0.285714rem;
   }
 
   .button-red {
-    background: rgb(246, 104, 104);
-    box-shadow: 0 5px 0 -2px rgb(215, 68, 68);
+    background: Colors.$Light_Red;
+    box-shadow: 0 5px 0 -2px Colors.$NEU_Red;
   }
 
   .button-grey {
-    background: rgb(175, 174, 171);
-    box-shadow: 0 5px 0 -2px rgb(125, 128, 121);
+    background: Colors.$Light_Grey;
+    box-shadow: 0 5px 0 -2px Colors.$Grey;
   }
 
   .all-text-desc {
@@ -75,12 +77,12 @@
   }
 
   .row-first {
-    background: rgb(125, 128, 121);
+    background: Colors.$Grey;
     z-index: 105;
     position: relative;
 
     .text {
-      color: white;
+      color: Colors.$White;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -102,7 +104,7 @@
     .rotated-div {
       padding-top: 50%;
       width: 50%;
-      background: rgb(231, 83, 83);
+      background: Colors.$NEU_Red;
       transform: rotate(65deg);
       float: right;
       position: absolute;
@@ -118,7 +120,7 @@
   }
 
   .row-second {
-    background: rgb(231, 83, 83);
+    background: Colors.$NEU_Red;
 
     .img-container {
       display: flex;
@@ -129,13 +131,13 @@
     }
 
     .text {
-      color: white;
+      color: Colors.$White;
     }
 
     .rotated-div {
       padding-top: 50%;
       width: 50%;
-      background: rgb(125, 128, 121);
+      background: Colors.$Grey;
       transform: rotate(65deg);
       float: right;
       position: absolute;
@@ -157,12 +159,12 @@
 
   .row-third {
     height: 906px;
-    background: rgb(221, 218, 210);
+    background: Colors.$Light_Grey;
     position: relative;
     padding-left: 10px;
 
     .text {
-      color: rgb(125, 128, 121);
+      color: Colors.$Grey;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -188,7 +190,7 @@
     .rotated-div {
       padding-top: 70%;
       width: 70%;
-      background: rgb(174, 69, 67);
+      background: Colors.$NEU_Red;
       transform: rotate(65deg);
       float: right;
       position: absolute;

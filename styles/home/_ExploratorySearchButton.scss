@@ -1,10 +1,12 @@
+@use '../variables' as Colors;
+
 .searchByFilters {
   pointer-events: initial;
   cursor: pointer;
   margin: 36px 0px 0px 50px;
   width: fit-content;
   font-weight: 400;
-  color: #2a426b;
+  color: Colors.$Navy;
 
   &:hover {
     text-decoration: underline;

@@ -2,6 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
+@use '../variables' as Colors;
 
 $box-size: 12px;
 
@@ -12,12 +13,12 @@ $box-size: 12px;
     width: $box-size;
     height: $box-size;
     display: inline-block;
-    border: 2px solid #bbb;
+    border: 2px solid Colors.$Light_Grey;
     border-radius: 3px;
     margin: 0 1px;
   }
 
   .weekday-box-checked {
-    background: #bbb;
+    background: Colors.$Light_Grey;
   }
 }

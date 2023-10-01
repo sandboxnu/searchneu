@@ -101,7 +101,6 @@ export default function useSearch({
 
   const returnedData = data && {
     filterOptions: data[0].filterOptions,
-    totalCount: data[0].totalCount,
     results: data.map((d) => d.results).flat(),
     hasNextPage: data[0].hasNextPage,
   };
@@ -118,7 +117,6 @@ function transformGraphQLToSearchResult(
 ): SearchResult {
   const transformedResults: SearchResult = {
     results: [],
-    totalCount: graphqlResults.search.totalCount,
     filterOptions: graphqlResults.search.filterOptions as FilterOptions,
     hasNextPage: graphqlResults.search.pageInfo.hasNextPage,
   };

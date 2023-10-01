@@ -17,6 +17,7 @@ import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
 import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
+import Keys from '../../Keys';
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
@@ -24,17 +25,23 @@ interface CourseResultProps {
   fetchUserInfo: () => void;
 }
 
-const sortSections = (sections: Section[]): Section[] => {
+const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
+  // TODO (sam 2023-03-09): remove this `cloneDeep` call once we can remove the `useMemo` from `CourseResult`.
   const sortedSections = cloneDeep(sections);
+  const subscribedSectionIds = new Set(userInfo?.sectionIds ?? []);
   sortedSections.sort((a: Section, b: Section) => {
-    if (!a.profs || !a.profs[0]) {
+    const aHash = Keys.getSectionHash(a);
+    const bHash = Keys.getSectionHash(b);
+    if (subscribedSectionIds.has(aHash) === subscribedSectionIds.has(bHash)) {
+      if (a.seatsRemaining === b.seatsRemaining) {
+        return b.waitRemaining - a.waitRemaining;
+      }
+      return b.seatsRemaining - a.seatsRemaining;
+    } else if (subscribedSectionIds.has(aHash)) {
       return -1;
+    } else {
+      return 1;
     }
-    if (!b.profs || !b.profs[0]) return 1;
-
-    if (a.profs[0] === b.profs[0]) return 0;
-
-    return a.profs[0] < b.profs[0] ? -1 : 1;
   });
   return sortedSections;
 };
@@ -48,7 +55,11 @@ export function CourseResult({
   const router = useRouter();
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
-  const sortedSections = useMemo(() => sortSections(course.sections), [course]);
+  // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
+  const sortedSections = useMemo(
+    () => sortSections(course.sections, userInfo),
+    [course]
+  );
   const { optionalDisplay } = useResultDetail(course);
 
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
@@ -201,7 +212,10 @@ export function MobileCourseResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const sortedSections = useMemo(() => sortSections(course.sections), [course]);
+  const sortedSections = useMemo(
+    () => sortSections(course.sections, userInfo),
+    [course]
+  );
   const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
     sortedSections
   );

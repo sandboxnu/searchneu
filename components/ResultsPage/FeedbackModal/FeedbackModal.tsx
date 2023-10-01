@@ -6,6 +6,7 @@ import useFeedbackSchedule from '../useFeedbackSchedule';
 import FeedbackModalCheckboxes from './FeedbackModalCheckboxes';
 import FeedbackModalFree from './FeedbackModalFree';
 import FeedbackModalInitial from './FeedbackModalInitial';
+import Colors from '../../../styles/_exports.module.scss';
 
 enum FeedbackStep {
   initial,
@@ -136,7 +137,7 @@ export default function FeedbackModal(): ReactElement {
             setOpen(!open);
           }}
         >
-          <LogoInput height="14" width="18" fill="#d41b2c" />
+          <LogoInput height="14" width="18" fill={Colors.neu_red} />
           <p>SearchNEU Feedback</p>
         </div>
       </div>

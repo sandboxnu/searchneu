@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .react-switch-checkbox {
   height: 0;
   width: 0;
@@ -11,7 +13,7 @@
   cursor: pointer;
   width: 45px;
   height: 20px;
-  background: #d3d3d3;
+  background: Colors.$Light_Grey;
   border-radius: 36px;
   transition: background-color 0.01s;
   margin-top: 38px;
@@ -24,16 +26,16 @@
     height: 25px;
     border-radius: 25px;
     transition: 0.4s;
-    background: #a0a0a0;
-    box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+    background: Colors.$Grey;
+    box-shadow: 0 0 2px 0 Colors.$Grey;
   }
 }
 
 .react-switch-checkbox:checked + .react-switch-label {
-  background: #ca9897;
+  background: Colors.$Light_Red;
 
   .react-switch-button {
-    background: #ae4543;
+    background: Colors.$Dark_Red;
     left: 100%;
     transform: translateX(-100%);
   }
@@ -60,23 +62,23 @@
     max-width: calc(100% - 1rem);
 
     .rc-slider-track {
-      background: #e63946;
+      background: Colors.$NEU_Red;
     }
 
     .rc-slider-handle {
       width: 18px;
       height: 18px;
       margin-top: -7px;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0px 2px 4px Colors.$Light_Grey !important;
       opacity: 1;
       border: none !important;
-      border-color: rgba(0, 0, 0, 0);
+      border-color: transparent;
     }
 
     .rc-slider-handle-dragging {
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0px 2px 4px Colors.$Light_Grey;
       border: none;
-      border-color: rgba(0, 0, 0, 0);
+      border-color: transparent;
     }
 
     .rc-slider-dot {
@@ -86,7 +88,7 @@
       bottom: initial;
       border: none;
       border-radius: 0;
-      background: rgba(136, 136, 136, 0.67);
+      background: Colors.$Grey;
     }
 
     .rc-slider-mark {

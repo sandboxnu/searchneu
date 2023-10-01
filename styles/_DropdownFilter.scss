@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .DropdownFilter {
   font-family: lato, sans-serif; //TO-DO: Change all fonts in filter sidebar
   min-height: 36px;
@@ -16,7 +18,7 @@
   }
 
   &__search {
-    background: white;
+    background: Colors.$White;
     position: relative;
     padding: 5px 24px 5px 5px;
     border-radius: 7px;
@@ -26,32 +28,32 @@
     }
 
     &.disabled {
-      background-color: #d3d3d3;
+      background-color: Colors.$Light_Grey;
     }
   }
 
   &__inputElement {
     display: inline-block;
     vertical-align: baseline;
-    background: #e6e6e6;
-    border: 1px solid #afafaf;
+    background: Colors.$Off_White;
+    border: 1px solid Colors.$Light_Grey;
     box-sizing: border-box;
     border-radius: 7px;
     cursor: pointer;
-    color: #4f4f4f;
+    color: Colors.$Dark_Grey;
     white-space: nowrap;
     overflow: hidden;
     margin-right: 5px;
     padding: 0 5px;
 
     &:hover {
-      color: #4f4f4f;
+      color: Colors.$Dark_Grey;
     }
   }
 
   &__inputDelete {
     margin-left: 5px;
-    color: #d41b2c;
+    color: Colors.$NEU_Red;
   }
 
   &__input {
@@ -65,7 +67,7 @@
     }
 
     &.disabled {
-      background-color: #d3d3d3;
+      background-color: Colors.$Light_Grey;
       pointer-events: none;
     }
   }
@@ -120,8 +122,8 @@
     padding-left: 10px;
     justify-content: flex-start;
     height: 55px;
-    background: #fff;
-    border: 1px solid #f5f5f5;
+    background: Colors.$White;
+    border: 1px solid Colors.$Off_White;
     box-sizing: border-box;
     border-radius: 0;
     text-align: center;
@@ -134,8 +136,8 @@
     justify-content: center;
     flex-direction: column;
     height: 55px;
-    background: #fff;
-    border: 1px solid #f5f5f5;
+    background: Colors.$White;
+    border: 1px solid Colors.$Off_White;
     box-sizing: border-box;
     border-radius: 0;
     cursor: pointer;
@@ -144,29 +146,29 @@
   }
 
   &__element:hover {
-    background: #f3f3f3;
+    background: Colors.$Off_White;
   }
 
   &__elementText {
     padding-right: 4px;
     display: inline-block;
-    color: black;
+    color: Colors.$Black;
   }
 
   &__elementCount {
-    color: grey;
+    color: Colors.$Grey;
   }
 
   &__elementSubtext {
     display: block;
-    color: grey;
+    color: Colors.$Grey;
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(172, 172, 172, 1);
+    background-color: Colors.$Grey;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: rgba(229, 229, 229, 1);
+    background-color: Colors.$Light_Grey;
   }
 }

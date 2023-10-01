@@ -177,7 +177,6 @@ export type SearchResultItem = ClassOccurrence | Employee;
 
 export type SearchResultItemConnection = {
   __typename?: 'SearchResultItemConnection';
-  totalCount: Scalars['Int'];
   pageInfo: PageInfo;
   nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
   filterOptions: FilterOptions;
@@ -294,115 +293,112 @@ export type SearchResultsQueryVariables = Exact<{
 
 export type SearchResultsQuery = { __typename?: 'Query' } & {
   search?: Maybe<
-    { __typename?: 'SearchResultItemConnection' } & Pick<
-      SearchResultItemConnection,
-      'totalCount'
-    > & {
-        pageInfo: { __typename?: 'PageInfo' } & Pick<PageInfo, 'hasNextPage'>;
-        filterOptions: { __typename?: 'FilterOptions' } & {
-          nupath?: Maybe<
-            Array<
-              { __typename?: 'FilterAgg' } & Pick<
-                FilterAgg,
-                'value' | 'count' | 'description'
-              >
-            >
-          >;
-          subject?: Maybe<
-            Array<
-              { __typename?: 'FilterAgg' } & Pick<
-                FilterAgg,
-                'value' | 'count' | 'description'
-              >
-            >
-          >;
-          classType?: Maybe<
-            Array<
-              { __typename?: 'FilterAgg' } & Pick<
-                FilterAgg,
-                'value' | 'count' | 'description'
-              >
-            >
-          >;
-          campus?: Maybe<
-            Array<
-              { __typename?: 'FilterAgg' } & Pick<
-                FilterAgg,
-                'value' | 'count' | 'description'
-              >
-            >
-          >;
-          honors?: Maybe<
-            Array<
-              { __typename?: 'FilterAgg' } & Pick<
-                FilterAgg,
-                'value' | 'count' | 'description'
-              >
-            >
-          >;
-        };
-        nodes?: Maybe<
+    { __typename?: 'SearchResultItemConnection' } & {
+      pageInfo: { __typename?: 'PageInfo' } & Pick<PageInfo, 'hasNextPage'>;
+      filterOptions: { __typename?: 'FilterOptions' } & {
+        nupath?: Maybe<
           Array<
-            Maybe<
-              | ({ __typename?: 'ClassOccurrence' } & Pick<
-                  ClassOccurrence,
-                  | 'name'
-                  | 'subject'
-                  | 'classId'
-                  | 'termId'
-                  | 'host'
-                  | 'desc'
-                  | 'nupath'
-                  | 'prereqs'
-                  | 'coreqs'
-                  | 'prereqsFor'
-                  | 'optPrereqsFor'
-                  | 'maxCredits'
-                  | 'minCredits'
-                  | 'classAttributes'
-                  | 'url'
-                  | 'prettyUrl'
-                  | 'lastUpdateTime'
-                  | 'feeAmount'
-                  | 'feeDescription'
-                > & { type: 'ClassOccurrence' } & {
-                    sections: Array<
-                      { __typename?: 'Section' } & Pick<
-                        Section,
-                        | 'campus'
-                        | 'classId'
-                        | 'classType'
-                        | 'crn'
-                        | 'honors'
-                        | 'host'
-                        | 'lastUpdateTime'
-                        | 'meetings'
-                        | 'profs'
-                        | 'seatsCapacity'
-                        | 'seatsRemaining'
-                        | 'subject'
-                        | 'termId'
-                        | 'url'
-                        | 'waitCapacity'
-                        | 'waitRemaining'
-                      >
-                    >;
-                  })
-              | ({ __typename?: 'Employee' } & Pick<
-                  Employee,
-                  | 'email'
-                  | 'firstName'
-                  | 'lastName'
-                  | 'name'
-                  | 'officeRoom'
-                  | 'phone'
-                  | 'primaryDepartment'
-                  | 'primaryRole'
-                > & { type: 'Employee' })
+            { __typename?: 'FilterAgg' } & Pick<
+              FilterAgg,
+              'value' | 'count' | 'description'
             >
           >
         >;
-      }
+        subject?: Maybe<
+          Array<
+            { __typename?: 'FilterAgg' } & Pick<
+              FilterAgg,
+              'value' | 'count' | 'description'
+            >
+          >
+        >;
+        classType?: Maybe<
+          Array<
+            { __typename?: 'FilterAgg' } & Pick<
+              FilterAgg,
+              'value' | 'count' | 'description'
+            >
+          >
+        >;
+        campus?: Maybe<
+          Array<
+            { __typename?: 'FilterAgg' } & Pick<
+              FilterAgg,
+              'value' | 'count' | 'description'
+            >
+          >
+        >;
+        honors?: Maybe<
+          Array<
+            { __typename?: 'FilterAgg' } & Pick<
+              FilterAgg,
+              'value' | 'count' | 'description'
+            >
+          >
+        >;
+      };
+      nodes?: Maybe<
+        Array<
+          Maybe<
+            | ({ __typename?: 'ClassOccurrence' } & Pick<
+                ClassOccurrence,
+                | 'name'
+                | 'subject'
+                | 'classId'
+                | 'termId'
+                | 'host'
+                | 'desc'
+                | 'nupath'
+                | 'prereqs'
+                | 'coreqs'
+                | 'prereqsFor'
+                | 'optPrereqsFor'
+                | 'maxCredits'
+                | 'minCredits'
+                | 'classAttributes'
+                | 'url'
+                | 'prettyUrl'
+                | 'lastUpdateTime'
+                | 'feeAmount'
+                | 'feeDescription'
+              > & { type: 'ClassOccurrence' } & {
+                  sections: Array<
+                    { __typename?: 'Section' } & Pick<
+                      Section,
+                      | 'campus'
+                      | 'classId'
+                      | 'classType'
+                      | 'crn'
+                      | 'honors'
+                      | 'host'
+                      | 'lastUpdateTime'
+                      | 'meetings'
+                      | 'profs'
+                      | 'seatsCapacity'
+                      | 'seatsRemaining'
+                      | 'subject'
+                      | 'termId'
+                      | 'url'
+                      | 'waitCapacity'
+                      | 'waitRemaining'
+                    >
+                  >;
+                })
+            | ({ __typename?: 'Employee' } & Pick<
+                Employee,
+                | 'email'
+                | 'firstName'
+                | 'lastName'
+                | 'name'
+                | 'officeRoom'
+                | 'phone'
+                | 'primaryDepartment'
+                | 'primaryRole'
+              > & { type: 'Employee' })
+          >
+        >
+      >;
+    }
   >;
 };
 
@@ -524,7 +520,6 @@ export const SearchResultsDocument = gql`
       classType: $classType
       classIdRange: $classIdRange
     ) {
-      totalCount
       pageInfo {
         hasNextPage
       }

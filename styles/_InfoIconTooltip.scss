@@ -1,0 +1,39 @@
+@use 'variables' as Colors;
+
+.InfoIconTooltip {
+  background: transparent;
+  position: relative;
+  width: 15px !important;
+  margin-top: 10px;
+  margin-left: 5px;
+
+  pointer-events: initial;
+  &:hover {
+    cursor: pointer;
+  }
+
+  &__icon {
+    &:hover + .tooltip {
+      display: block;
+      background: Colors.$Navy;
+      white-space: wrap;
+      width: 225px;
+      padding: 7px;
+      z-index: 100000;
+      line-height: 20px;
+      margin-left: -5px;
+
+      & > .tooltip__arrow--DOWN {
+        border-color: transparent transparent Colors.$Navy transparent;
+      }
+
+      & > .tooltip__arrow--UP {
+        border-color: Colors.$Navy transparent transparent transparent;
+      }
+    }
+
+    &:hover + .flip_tooltip {
+      margin-right: -3px;
+    }
+  }
+}

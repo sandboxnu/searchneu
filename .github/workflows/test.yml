@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: install node v14.13
+      - name: install node v14.19
         uses: actions/setup-node@v1
         with:
-          node-version: '14.13'
+          node-version: '14.19'
       - run: yarn install
       - run: yarn test

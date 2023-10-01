@@ -1,10 +1,12 @@
+@use '../variables' as Colors;
+
 .MobileSectionPanel {
-  border: 1px solid #cbcbcb;
+  border: 1px solid Colors.$Light_Grey;
   box-sizing: border-box;
   border-radius: 20px;
   margin-bottom: 16px;
   padding: 16px;
-  color: black;
+  color: Colors.$Black;
 
   &__meetings {
     &--online {
@@ -57,22 +59,21 @@
     }
   }
   &__waitlist-text {
-    color: #969696;
+    color: Colors.$Grey;
     white-space: nowrap;
   }
 
-  & > .green {
-    margin-top: 16px;
-    color: #27ae34;
-  }
+  .MobileSectionPanel__row {
+    .green {
+      color: Colors.$Green;
+    }
 
-  & > .yellow {
-    margin-top: 16px;
-    color: #ffbf3d;
-  }
+    .yellow {
+      color: Colors.$CPS_Yellow;
+    }
 
-  & > .red {
-    margin-top: 16px;
-    color: #d41b2c;
+    .red {
+      color: Colors.$NEU_Red;
+    }
   }
 }

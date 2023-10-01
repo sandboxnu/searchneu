@@ -1,11 +1,13 @@
+@use 'variables' as Colors;
+
 .SearchHeader {
   width: 100%;
   height: 88px;
   left: 0;
   top: 0;
   z-index: 9999;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background: Colors.$White;
+  box-shadow: 0 2px 4px Colors.$Grey;
   flex-direction: row;
   display: flex;
   align-items: center;
@@ -15,9 +17,9 @@
 
 .SearchHeader_Input {
   margin-left: 104px;
-  color: rgba(0, 0, 0, 0.6);
+  color: Colors.$Dark_Grey;
   transition: all 300ms ease;
-  border: 1px solid #979797;
+  border: 1px solid Colors.$Grey;
   border-radius: 9px;
   z-index: 9999;
   order: 0;
@@ -40,7 +42,7 @@
   line-height: 26px;
   align-items: center;
   letter-spacing: 1.5px;
-  color: #636363 !important;
+  color: Colors.$Dark_Grey !important;
   text-transform: uppercase;
   white-space: nowrap !important;
   display: flex !important;

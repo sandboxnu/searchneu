@@ -1,9 +1,11 @@
+@use '../variables' as Colors;
+
 .pageContent {
   margin-left: 10.49%;
   margin-top: 150px;
   padding-bottom: 120px;
   width: 80vw;
-  color: black;
+  color: Colors.$Black;
   &.coreqPageContent {
     margin-top: 0px;
   }
@@ -12,7 +14,7 @@
     height: 38px;
     font-size: 17px;
     cursor: pointer;
-    color: #009fda;
+    color: Colors.$Blue;
 
     &:hover {
       text-decoration: underline;
@@ -54,12 +56,12 @@
   }
 
   .horizontalLine {
-    background-color: #979797;
+    background-color: Colors.$Grey;
     height: 1px;
   }
 
   .verticalLine {
-    border-left: 1px solid #979797;
+    border-left: 1px solid Colors.$Grey;
   }
 
   .flex {
@@ -86,9 +88,9 @@
       display: block;
       margin-top: 70px;
       margin-left: -5px;
-      background: #505050;
+      background: Colors.$Grey;
       & > div {
-        border-color: transparent transparent #505050 transparent;
+        border-color: transparent transparent Colors.$Grey transparent;
         left: 12px;
       }
     }
@@ -97,10 +99,10 @@
   .sectionCRN > a {
     &:hover + .tooltip {
       display: block;
-      background: #338ef1;
+      background: Colors.$Blue;
       white-space: nowrap;
       & > div {
-        border-color: transparent transparent #338ef1 transparent;
+        border-color: transparent transparent Colors.$Blue transparent;
       }
     }
   }
@@ -173,13 +175,13 @@
     .emptyCourseFee p,
     .noReqs,
     .noNUPaths {
-      color: #969696;
+      color: Colors.$Grey;
     }
 
     .reqItemsContainer.showScroll {
       height: 130px;
       width: 220px;
-      border: 1px #e2e2e2 solid;
+      border: 1px Colors.$Off_White solid;
       border-radius: 10px;
       padding: 4px 0px 4px 0px;
       .reqItemsScroll {
@@ -188,7 +190,7 @@
       }
       .reqItem {
         padding: 7px 7px 7px 10px;
-        border-bottom: 1px #e2e2e2 solid;
+        border-bottom: 1px Colors.$Off_White solid;
       }
     }
   }
@@ -245,7 +247,7 @@
         padding: 28px !important;
         span {
           font-size: 22px;
-          color: #636363;
+          color: Colors.$Grey;
           margin-top: 8px;
           margin-bottom: 8px;
         }
@@ -277,15 +279,15 @@
       .seatsAvailable {
         margin: 20px 0;
         &.green {
-          color: #27ae34;
+          color: Colors.$Green;
         }
 
         &.yellow {
-          color: #ffbf3d;
+          color: Colors.$CPS_Yellow;
         }
 
         &.red {
-          color: #d41b2c;
+          color: Colors.$NEU_Red;
         }
       }
     }

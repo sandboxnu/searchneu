@@ -4,6 +4,7 @@ import macros from '../macros';
 import FilterPanel from './FilterPanel';
 import FilterPills from './FilterPills';
 import { areFiltersSet, FilterOptions, FilterSelection } from './filters';
+import Colors from '../../styles/_exports.module.scss';
 
 /**
  * setFilterPills sets the selected filters
@@ -55,7 +56,7 @@ export default function MobileSearchOverlay({
           tabIndex={0}
           onClick={search}
         >
-          <IconClose fill="#d41b2c" />
+          <IconClose fill={Colors.neu_red} />
         </div>
         <FilterPanel
           options={filterOptions}

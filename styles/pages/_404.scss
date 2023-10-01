@@ -1,3 +1,4 @@
+@use '../variables' as Colors;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
 
 .four04-container {
@@ -13,7 +14,7 @@
   font-family: Montserrat Alternates;
   font-size: 50px;
   font-weight: 700;
-  color: #e63946;
+  color: Colors.$NEU_Red;
   margin-bottom: 100px;
 }
 
@@ -23,13 +24,13 @@
   font-size: 22px;
   font-weight: 700;
   padding: 20px 40px;
-  color: #e63946;
-  border: 1px solid #e63946;
+  color: Colors.$NEU_Red;
+  border: 1px solid Colors.$NEU_Red;
   border-radius: 28px;
   transition: color, background-color 0.15s linear;
   &:hover {
-    background-color: #e63946;
-    color: white;
+    background-color: Colors.$NEU_Red;
+    color: Colors.$White;
     cursor: pointer;
   }
 }

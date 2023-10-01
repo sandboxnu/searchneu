@@ -5,6 +5,6 @@ module.exports = {
     '^.+\\.yml$': '<rootDir>/node_modules/yaml-jest',
   },
   moduleNameMapper: {
-    '^.+\\.(css|less)$': '<rootDir>/__mocks__/style.js',
+    '^.+\\.(css|less|scss)$': '<rootDir>/__mocks__/style.js',
   },
 };

@@ -2,6 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
+@use '../variables' as Colors;
 
 .resultsTable {
   border: none !important;
@@ -52,10 +53,10 @@
 }
 
 .Collapsible__trigger {
-  color: #009fda;
+  color: Colors.$Blue;
   cursor: pointer;
 
   &:hover {
-    color: #1e70bf;
+    color: Colors.$Blue;
   }
 }

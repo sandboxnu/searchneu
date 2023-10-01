@@ -6,8 +6,7 @@ import '../styles/base.scss';
 import { useGoogleAnalyticsOnPageChange } from '../utils/gtag';
 import { QueryParamProvider } from '../utils/QueryParamProvider';
 import { TermInfoProvider } from '../utils/TermInfoProvider';
-
-// TODO: Split CSS per page so we don't import all css in every page
+import Colors from '../styles/_exports.module.scss';
 
 function MyApp({ Component, pageProps }: AppProps): ReactElement {
   useGoogleAnalyticsOnPageChange();
@@ -18,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps): ReactElement {
         <meta name="description" content="Search for Northeastern" />
         <meta name="author" content="Sandbox" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content={Colors.white} />
       </Head>
       <QueryParamProvider>
         <TermInfoProvider>

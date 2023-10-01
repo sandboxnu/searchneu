@@ -22,7 +22,6 @@ query searchResults(
     classType: $classType
     classIdRange: $classIdRange
   ) {
-    totalCount
     pageInfo {
       hasNextPage
     }

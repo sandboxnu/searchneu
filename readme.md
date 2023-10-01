@@ -34,14 +34,13 @@ SearchNEU was originally created and built in 2017 by [Ryan Hughes](https://gith
 
 Shout out to our current team of developers and designers 💖
 
-- Andrew Dai <a href="https://github.com/andrewydai"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/andrewydai/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://andrewdai.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
-- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
-- Simar Chadha <a href="https://github.com/SimChadha"><img src="./public/images/github.png" alt="Github" width="12px"></a>
-- Adam Koulopoulos <a href="https://github.com/koulopoulos"><img src="./public/images/github.png" alt="Github" width="12px"></a>
-- Sebastian Wittrock <a href="https://github.com/sebwittr"><img src="./public/images/github.png" alt="Github" width="12px"></a>
-- Puneet Johal <a href="https://github.com/puneetjohal"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/puneetjohal/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
-- Diana Steelman <a href="https://www.linkedin.com/in/dianasteelman/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://www.dianasteelman.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
-- Autumn Fung <a href="https://www.linkedin.com/in/autumnfung/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://autumnfung1.wixsite.com/fungsphotos"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/hankewycz-z/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Sebastian Wittrock <a href="https://github.com/sebwittr"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/sebastian-wittrock/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Lucas Dunker <a href="https://github.com/Lucas-Dunker"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/lucasdunker/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Vanessa Peng <a href="https://www.linkedin.com/in/vanessa-peng"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://vanessapeng.com"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Ally Chao <a href="https://github.com/allychao"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/ally-chao/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Pranav Phadke <a href="https://github.com/pranavphadke1"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/pranav-phadke/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Sam Lyon <a href="https://github.com/soulwa"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/samclyon/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://soulware.us/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 
 And a special thank you to the following folks for contributing!
 
@@ -60,6 +59,13 @@ And a special thank you to the following folks for contributing!
 - [Megan Li](https://github.com/megandouli)
 - [Becca Johnson](https://github.com/beccajohnson17)
 - [Kimin Kim](https://github.com/kiminkim724)
+- [Andrew Dai](https://github.com/andrewydai) <a href="https://www.linkedin.com/in/andrewydai/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://andrewdai.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- [Simar Chadha](https://github.com/SimChadha)
+- [Adam Koulopoulos](https://github.com/koulopoulos)
+- [Puneet Johal](https://github.com/puneetjohal) <a href="https://www.linkedin.com/in/puneetjohal/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- [Diana Steelman](https://www.linkedin.com/in/dianasteelman/) <a href="https://www.dianasteelman.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- [Autumn Fung](https://www.linkedin.com/in/autumnfung/) <a href="https://autumnfung1.wixsite.com/fungsphotos"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- [Tingwei Shi](https://www.linkedin.com/in/tingwei-shi/) <a href="https://github.com/tiingweii-shii"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/tingwei-shi/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 ### License
 

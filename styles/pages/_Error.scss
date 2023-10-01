@@ -1,0 +1,151 @@
+@use '../variables' as Colors;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
+
+/* Styles for ApiError Page. */
+.error-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.api-error-title-text {
+  font-family: 'Montserrat Alternates';
+  color: Colors.$NEU_Red;
+  font-size: 100px;
+  font-weight: 700;
+  line-height: 100px;
+  align-self: start;
+}
+
+.api-error-sub-title-text {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 50px;
+  line-height: 50px;
+  color: Colors.$Navy;
+  margin-bottom: 40px;
+  align-self: start;
+}
+
+.api-error-text {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 43px;
+  color: Colors.$Navy;
+  margin-bottom: 20px;
+  position: relative;
+  align-self: start;
+}
+
+.request-container {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.support-button {
+  box-sizing: border-box;
+  padding: 10px 30px;
+  background: Colors.$NEU_Red;
+  border: 1px solid Colors.$NEU_Red;
+  border-radius: 28px;
+
+  // Inner text
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+
+  cursor: pointer;
+  color: Colors.$White;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.suport-button:hover {
+  background: Colors.$NEU_Red;
+  border: 1px solid Colors.$NEU_Red;
+}
+
+.suport-button:active {
+  background: Colors.$Dark_Red;
+  border: 1px solid Colors.$Dark_Red;
+}
+
+.create-issue {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 20px;
+  color: Colors.$Navy;
+}
+
+.create-issue:hover {
+  text-decoration-line: underline;
+  color: Colors.$Navy;
+}
+
+.husky-container {
+  display: flex;
+  width: auto;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.crying-husky-2 {
+  width: 400px;
+  height: auto;
+  z-index: 102;
+}
+
+@media only screen and (max-width: 1000px) {
+  .error-container {
+    flex-wrap: wrap;
+    align-self: flex-start;
+    margin-top: 20px;
+  }
+  .husky-container {
+    flex-direction: row;
+    width: 100%;
+    height: 40vh;
+  }
+}
+
+// For mobile devices, vertical orientation
+@media only screen and (max-width: 500px) {
+  .request-container {
+    flex-direction: column;
+  }
+  .create-issue {
+    margin-top: 10px;
+  }
+  .api-error-title-text {
+    font-size: 80px;
+    line-height: 80px;
+    align-self: center;
+  }
+  .api-error-sub-title-text {
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  .api-error-text {
+    font-size: 30px;
+    line-height: 30px;
+    align-self: center;
+  }
+}

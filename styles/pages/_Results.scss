@@ -1,3 +1,5 @@
+@use '../variables' as Colors;
+
 $TOPNAV_HEIGHT: 60px;
 $SIDEBAR_WIDTH: 268px;
 
@@ -7,23 +9,23 @@ $SIDEBAR_WIDTH: 268px;
   left: 0;
   top: 0;
   z-index: 9999;
-  background: #fff;
+  background: Colors.$White;
   flex-direction: row;
   display: flex;
   align-items: center;
   justify-content: left;
   position: fixed;
-  box-shadow: 0 0 10px rgba(31, 33, 38, 0.5);
-  border-bottom: 1px solid #fff;
+  box-shadow: 0 0 10px Colors.$Light_Grey;
+  border-bottom: 1px solid Colors.$Light_Grey;
 
   &-top {
     box-shadow: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid Colors.$Light_Grey;
   }
 
   @media only screen and (max-width: 767px) {
     height: 120px;
-    background: #fff;
+    background: Colors.$White;
     align-items: unset;
     justify-content: left;
     position: inherit;
@@ -108,7 +110,7 @@ $SIDEBAR_WIDTH: 268px;
     display: none;
   }
 
-  background-color: #f6f6f6;
+  background-color: Colors.$Off_White;
   padding: 25px 15px 25px 15px;
 }
 
@@ -154,19 +156,6 @@ $SIDEBAR_WIDTH: 268px;
   font-size: inherit !important;
 }
 
-.Results_Aggregation {
-  font-style: italic;
-  font-family: Lato;
-  text-align: right;
-  padding-right: 14px;
-  margin-bottom: -7px;
-
-  &__withFilters {
-    @extend .Results_Aggregation;
-    margin-top: -22px;
-  }
-}
-
 .Breadcrumb_Container {
   display: flex;
   flex-direction: row;
@@ -184,8 +173,16 @@ $SIDEBAR_WIDTH: 268px;
   &__slash {
     font-size: 24px;
     font-weight: initial;
-    color: #c4c4c4;
+    color: Colors.$Light_Grey;
     margin: auto 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: Colors.$Grey;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: Colors.$Light_Grey;
   }
 }
 
@@ -214,13 +211,13 @@ $SIDEBAR_WIDTH: 268px;
   &__dropdown {
     z-index: 999999;
     position: absolute;
-    background: #fff;
+    background: Colors.$White;
     border-radius: 3px;
     padding: 12px;
     bottom: 0;
     right: -20px;
     transform: translateY(calc(100% + 4px));
-    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0px 0px 3px Colors.$Grey);
     white-space: nowrap;
 
     &::before {
@@ -232,7 +229,7 @@ $SIDEBAR_WIDTH: 268px;
       height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-bottom: 4px solid #fff;
+      border-bottom: 4px solid Colors.$White;
 
       @media only screen and (max-width: 767px) {
         right: 10px;
@@ -250,7 +247,7 @@ $SIDEBAR_WIDTH: 268px;
     cursor: pointer;
 
     &:hover {
-      background: rgba(196, 196, 196, 0.15);
+      background: Colors.$Light_Grey;
     }
   }
 

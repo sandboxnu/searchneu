@@ -10,6 +10,7 @@ import macros from '../../macros';
 import Modal from '../../Modal';
 import PhoneNumber from './PhoneNumber';
 import VerificationCode from './VerificationCode';
+import Colors from '../../../styles/_exports.module.scss';
 
 const VERIFICATION_CODE_LENGTH = 6;
 
@@ -128,7 +129,7 @@ export default function SignUpModal({
       <div className="phone-modal">
         {isLoading && (
           <div className="phone-modal__spinner">
-            <MoonLoader color={'#7fc4c7'} loading={true} size={32} />
+            <MoonLoader color={Colors.aqua} loading={true} size={32} />
           </div>
         )}
         {(() => {

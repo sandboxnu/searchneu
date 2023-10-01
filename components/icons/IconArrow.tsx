@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
+import Colors from '../../styles/_exports.module.scss';
 
 const IconArrow = ({
   width = '11',
   height = '10',
-  fill = '#505050',
+  fill = Colors.dark_grey,
   className,
 }: {
   width?: string;

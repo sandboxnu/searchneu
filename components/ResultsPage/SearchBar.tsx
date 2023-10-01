@@ -5,7 +5,9 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import MagnifyingGlass from '../icons/magnifying-glass.svg';
 import macros from '../macros';
-import SearchInfoIcon from '../common/SearchInfoIcon';
+import InfoIconTooltip from '../common/InfoIconTooltip';
+import { TooltipDirection } from '../Tooltip';
+
 interface SearchBarProps {
   query: string;
   onSearch: (q: string) => void;
@@ -85,7 +87,14 @@ export default function SearchBar({
           />
         </div>
       </div>
-      {!macros.isMobile ? <SearchInfoIcon /> : <></>}
+      {!macros.isMobile ? (
+        <InfoIconTooltip
+          text='Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase "studio design" to appear in the search results, wrap it up in quotes.'
+          direction={TooltipDirection.Down}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 }

@@ -2,6 +2,7 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
+@use '../variables' as Colors;
 
 .wideOnlineCell {
   position: relative;
@@ -19,7 +20,7 @@
   vertical-align: middle;
   display: inline-block;
   height: 2px;
-  background-color: rgba(9, 10, 10, 0.2);
+  background-color: Colors.$Light_Grey;
   width: calc(50% - 102px);
   margin: 21px;
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import macros from '../macros';
 import IconClose from '../icons/IconClose';
+import Colors from '../styles/_exports.module.scss';
 
 type AlertLevel = 'error' | 'warning' | 'info';
 
@@ -40,7 +41,7 @@ export default function AlertBanner({ alertBannerData }: AlertBannerProps) {
             tabIndex={0}
             onClick={() => setIsVisible(false)}
           >
-            <IconClose fill="#808080" />
+            <IconClose fill={Colors.grey} />
           </div>
         </div>
       </div>

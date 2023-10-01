@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { getSeason, getYear } from '../terms';
 import { LeftNavArrow, RightNavArrow } from '../icons/NavArrow';
+import Colors from '../../styles/_exports.module.scss';
 
 type sectionsTermNavProps = {
   currTermIndex: number;
@@ -32,7 +33,7 @@ export default function SectionsTermNav({
         }`}
       >
         <LeftNavArrow
-          fill={leftNavDisabled(currTermIndex) ? '#969696' : '#000000'}
+          fill={leftNavDisabled(currTermIndex) ? Colors.grey : Colors.black}
         />
       </span>
       {`${getSeason(`${currTermId}`)} ${getYear(
@@ -45,7 +46,7 @@ export default function SectionsTermNav({
         }`}
       >
         <RightNavArrow
-          fill={rightNavDisabled(currTermIndex) ? '#969696' : '#000000'}
+          fill={rightNavDisabled(currTermIndex) ? Colors.grey : Colors.black}
         />
       </span>
     </div>

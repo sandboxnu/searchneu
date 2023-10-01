@@ -1,3 +1,4 @@
+@use '../variables' as Colors;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
 
 /* Styles for Down Page. */
@@ -32,7 +33,7 @@
 
 .down-title-text {
   font-family: Montserrat Alternates;
-  color: #e63946;
+  color: Colors.$NEU_Red;
   font-size: 32px;
   font-weight: 800;
   margin-bottom: 20px;
@@ -47,7 +48,7 @@
   font-family: Lato;
   font-size: 20px;
   font-weight: 600;
-  color: #2a426b;
+  color: Colors.$Navy;
   margin-bottom: 20px;
   margin-right: 20px;
 
@@ -61,7 +62,7 @@
   font-family: Lato;
   font-size: 16px;
   font-weight: 400;
-  color: #2a426b;
+  color: Colors.$Navy;
   width: 85%;
   white-space: pre-line;
 

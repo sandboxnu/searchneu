@@ -7,3 +7,8 @@ declare module '*.yml' {
   const data: any;
   export default data;
 }
+
+declare module '*.scss' {
+  const content: any;
+  export default content;
+}

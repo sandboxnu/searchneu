@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
+import Colors from '../../styles/_exports.module.scss';
 
 const IconCollapseExpand = ({
   width = '11',
   height = '18',
-  fill = '#646464',
+  fill = Colors.dark_grey,
   className,
 }: {
   width?: string;

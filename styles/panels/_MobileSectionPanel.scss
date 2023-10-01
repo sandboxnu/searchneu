@@ -2,19 +2,18 @@
  * This file is part of Search NEU and licensed under AGPL3.
  * See the license file in the root folder for details.
  */
-
-$matte-white: rgb(236, 236, 236);
+@use '../variables' as Colors;
 
 .section-container {
-  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  border-top: 1px solid Colors.$Light_Grey;
   line-height: 1.8em;
 
   tr {
-    border-bottom: 1px solid $matte-white;
+    border-bottom: 1px solid Colors.$Off_White;
   }
 
   &:nth-child(even) {
-    background: #fafafa;
+    background: Colors.$White;
   }
 
   table {
@@ -31,8 +30,8 @@ $matte-white: rgb(236, 236, 236);
   .firstColumn {
     padding: 2px;
     padding-right: 2px;
-    color: #999;
-    border-right: 1px solid $matte-white;
+    color: Colors.$Light_Grey;
+    border-right: 1px solid Colors.$Off_White;
     width: 53px;
   }
 
@@ -41,7 +40,7 @@ $matte-white: rgb(236, 236, 236);
   }
 
   .firstRow {
-    border-top: 1px solid $matte-white;
+    border-top: 1px solid Colors.$Off_White;
     vertical-align: bottom;
   }
 
@@ -53,7 +52,7 @@ $matte-white: rgb(236, 236, 236);
 
   .mobile-section-title {
     font-weight: bold;
-    color: #666;
+    color: Colors.$Light_Grey;
     font-size: 20px;
     padding-top: 20px;
     padding-bottom: 3px;

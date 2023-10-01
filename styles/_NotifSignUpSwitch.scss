@@ -1,3 +1,5 @@
+@use 'variables' as Colors;
+
 .wrapper {
   display: flex;
   align-items: center;
@@ -30,8 +32,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #e9e9e9;
-  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.3);
+  background-color: Colors.$Off_White;
+  box-shadow: 0px 2px 4px 0px Colors.$Light_Grey;
 }
 
 .slider:before {
@@ -41,17 +43,17 @@
   width: 24px;
   left: -4px;
   top: -4px;
-  background-color: #ccc;
+  background-color: Colors.$Off_White;
   -webkit-transition: 0.1s;
   transition: 0.1s;
 }
 
 input:checked + .slider {
-  background-color: #d0f3f4;
+  background-color: Colors.$Aqua;
 }
 
 input:checked + .slider:before {
-  background-color: #a8dadc;
+  background-color: Colors.$Aqua;
   -webkit-transform: translateX(24px);
   -ms-transform: translateX(24px);
   transform: translateX(24px);

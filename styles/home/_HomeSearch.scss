@@ -1,17 +1,19 @@
+@use '../variables' as Colors;
+
 .HomeSearch {
   width: 782px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 4px 0 Colors.$Grey;
   border-radius: 15px;
 
   &__campusSelector {
     height: 50px;
     width: 100%;
-    background: rgba(0, 0, 0, 0);
-    border-bottom: 1px solid #e0e0e0;
+    background: transparent;
+    border-bottom: 1px solid Colors.$Light_Grey;
     display: flex;
     align-items: center;
     padding-left: 32px;
@@ -21,11 +23,11 @@
       display: flex;
       align-items: center;
       justify-content: space-evenly;
-      color: #4c4c4c;
+      color: Colors.$Dark_Grey;
       width: 80px;
       height: 100%;
       font-size: 16px;
-      background: rgba(0, 0, 0, 0);
+      background: transparent;
       cursor: pointer;
 
       &.--neu {
@@ -33,7 +35,7 @@
 
         &.--checked {
           padding-top: 4px;
-          border-bottom: 4px solid #e63946;
+          border-bottom: 4px solid Colors.$NEU_Red;
         }
       }
 
@@ -42,14 +44,14 @@
 
         &.--checked {
           padding-top: 4px;
-          border-bottom: 4px solid #ff9f1c;
+          border-bottom: 4px solid Colors.$CPS_Yellow;
         }
       }
 
       &.--law {
         &.--checked {
           padding-top: 4px;
-          border-bottom: 4px solid #457b9d;
+          border-bottom: 4px solid Colors.$Law_Blue;
         }
       }
     }
@@ -60,7 +62,7 @@
     flex-direction: row-reverse;
     align-items: center;
     width: 100%;
-    background: rgba(0, 0, 0, 0);
+    background: transparent;
     padding: 24px 32px;
 
     @media only screen and (max-width: 830px) {
@@ -70,7 +72,7 @@
     &--dropdown {
       border-radius: 5px 0 0 5px;
       height: 46px;
-      background: #f5f5f5;
+      background: Colors.$Off_White;
       display: flex;
       align-items: center;
       min-width: max-content;
@@ -90,7 +92,7 @@
       .searchbar {
         height: 100%;
         width: 100%;
-        background: #f5f5f5;
+        background: Colors.$Off_White;
         border-top: none;
         border-bottom: none;
 
@@ -99,7 +101,7 @@
         }
 
         @media only screen and (max-width: 830px) {
-          border: 1px solid #979797;
+          border: 1px solid Colors.$Grey;
         }
 
         // on small screen, make top bar rounded on both edges
@@ -116,13 +118,13 @@
         }
 
         & > input {
-          background: #f5f5f5;
+          background: Colors.$Off_White;
           font-family: Lato, sans-serif;
           font-size: 17px;
 
           &::placeholder {
             font-family: Lato, sans-serif;
-            color: #717171;
+            color: Colors.$Grey;
           }
         }
       }

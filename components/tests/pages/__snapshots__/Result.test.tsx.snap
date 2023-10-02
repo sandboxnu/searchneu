@@ -224,9 +224,9 @@ exports[`should render a section 1`] = `
                     <div className=\\"RangeFilter__input\\">
                       <Slider range={true} marks={{...}} allowCross={false} min={1000} max={8000} defaultValue={{...}} step={1000} onChange={[Function: onChange]} className=\\"RangeFilter__slider\\" value={{...}}>
                         <div className=\\"rc-slider RangeFilter__slider rc-slider-horizontal rc-slider-with-marks\\" style={[undefined]} onMouseDown={[Function: onSliderMouseDown]}>
-                          <div className=\\"rc-slider-rail\\" style={[undefined]} />
+                          <div className=\\"rc-slider-rail\\" style={{...}} />
                           <Tracks prefixCls=\\"rc-slider\\" style={[undefined]} values={{...}} startPoint={[undefined]} onStartMove={{...}}>
-                            <Track index={0} prefixCls=\\"rc-slider\\" style={[undefined]} start={1000} end={8000} onStartMove={{...}}>
+                            <Track index={0} prefixCls=\\"rc-slider\\" style={{...}} start={1000} end={8000} onStartMove={{...}}>
                               <div className=\\"rc-slider-track rc-slider-track-1\\" style={{...}} onMouseDown={[Function: onInternalStartMove]} onTouchStart={[Function: onInternalStartMove]} />
                             </Track>
                           </Tracks>

@@ -1,111 +1,90 @@
 import { ReactElement, useEffect, useState } from 'react';
-import Cookies from 'universal-cookie';
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { UserInfo } from '../components/types';
 import { gqlClient } from '../utils/courseAPIClient';
 import { PacmanLoader } from 'react-spinners';
-import { timeout } from 'q';
+import useUserInfo from '../utils/useUserInfo';
 
-const cookies = new Cookies();
-
-export default function SubscrptionsPage(): ReactElement {
-  const [userInfo, setUserInfo] = useState<UserInfo>(null);
-  const [subscriptions, setSubs] = useState([]);
-  const [fetching, setFetching] = useState(true);
+export default function SubscriptionsPage(): ReactElement {
+  const [userInfo, isLoading] = useUserInfo();
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const token = cookies.get('SearchNEU JWT');
-
-    if (!token) {
-      router.push('/');
-    } else {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
-        )
-        .then(({ data }) => {
-          setUserInfo({ token, ...data });
-        });
+    if (isLoading) {
+      return;
     }
-  }, []);
 
-  useEffect(() => {
-    const fetchNotifs = async () => {
-      if (userInfo) {
-        let termId = '';
-        const subElements = [];
-        for (let i = 0; i < userInfo.sectionIds.length; i++) {
-          const curSectionInfo = userInfo.sectionIds[i].split('/');
-          const subject = curSectionInfo[2];
-          const courseId = curSectionInfo[3];
-          const crn = curSectionInfo[4];
-          termId = curSectionInfo[1];
+    if (!userInfo && !isLoading) {
+      console.log('GOING BACK TO HOME');
+      router.push('/');
+      return;
+    }
 
-          const result = await gqlClient.searchResults({
-            termId: termId,
-            subject: subject,
-            query: subject + courseId,
-          });
+    const subElements = [];
 
-          if (result.search.nodes[0].type == 'ClassOccurrence') {
-            for (let j = 0; j < result.search.nodes[0].sections.length; j++) {
-              if (result.search.nodes[0].sections[j].crn == crn) {
-                subElements.push(
-                  <div key={j}>
-                    <div>Name: {result.search.nodes[0].name}</div>
-                    <div>
-                      Section Professors:{' '}
-                      {result.search.nodes[0].sections[j].profs}
-                    </div>
-                    <div>Time: 100</div>
-                  </div>
-                );
-              }
-            }
-          } else {
-            throw new Error("Can't have subscriptions for an Employee");
-          }
-        }
+    const fetchSectionNotifs = async () => {
+      for (const sectionId of userInfo.sectionIds) {
+        console.log('section Id: ' + sectionId);
+        const result = await gqlClient.getSectionInfoByHash({
+          hash: sectionId,
+        });
 
-        for (let i = 0; i < userInfo.courseIds.length; i++) {
-          const curSectionInfo = userInfo.courseIds[i].split('/');
-          const subject = curSectionInfo[2];
-          const courseId = curSectionInfo[3];
-          termId = curSectionInfo[1];
-
-          const results = await gqlClient.searchResults({
-            termId: termId,
-            subject: subject,
-            query: subject + courseId,
-          });
-
-          if (results.search.nodes[0].type == 'ClassOccurrence') {
-            subElements.push(
-              <div key={i + userInfo.sectionIds.length}>
-                <div>Class Name: {results.search.nodes[0].name}</div>
-              </div>
-            );
-          } else {
-            throw new Error("Can't have subscriptions for an employee");
-          }
-        }
-        setSubs(subElements);
+        // if (result.search.nodes[0].type == 'ClassOccurrence') {
+        //   for (let j = 0; j < result.search.nodes[0].sections.length; j++) {
+        //     if (result.search.nodes[0].sections[j].crn == crn) {
+        //       subElements.push(
+        //         <div key={j}>
+        //           <div>Name: {result.search.nodes[0].name}</div>
+        //           <div>
+        //             Section Professors: {result.search.nodes[0].sections[j].profs}
+        //           </div>
+        //         </div>
+        //       );
+        //     }
+        //   }
+        // } else {
+        //   throw new Error("Can't have subscriptions for an employee");
+        // }
       }
     };
-    fetchNotifs().catch((e) => {
-      console.log('subscription error with employees');
+    const fetchCourseNotifs = async () => {
+      for (let i = 0; i < userInfo.courseIds.length; i++) {
+        const curSectionInfo = userInfo.courseIds[i].split('/');
+        const subject = curSectionInfo[2];
+        const courseId = curSectionInfo[3];
+        const termId = curSectionInfo[1];
+
+        const results = await gqlClient.searchResults({
+          termId: termId,
+          subject: subject,
+          query: subject + courseId,
+        });
+
+        if (results.search.nodes[0].type == 'ClassOccurrence') {
+          subElements.push(
+            <div key={i + userInfo.sectionIds.length}>
+              <div>Class Name: {results.search.nodes[0].name}</div>
+            </div>
+          );
+        } else {
+          throw new Error("Can't have subscriptions for an employee");
+        }
+      }
+      setSubscriptions(subElements);
+    };
+
+    fetchSectionNotifs().catch((e) => {
+      console.log(e.message);
     });
-    setTimeout(() => {
-      setFetching(false);
-    }, 300);
-  }, [userInfo]);
+
+    setIsFetching(false);
+  }, [userInfo, isLoading]);
 
   return (
     <>
-      {fetching ? (
-        <PacmanLoader loading={fetching} size={30} />
+      {isFetching ? (
+        <PacmanLoader loading={isFetching} size={30} />
       ) : (
         <>
           <h2>This page is a work in progress!</h2>

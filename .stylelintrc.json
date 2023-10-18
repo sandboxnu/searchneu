@@ -1,0 +1,18 @@
+{
+  "extends": "stylelint-config-recommended-scss",
+  "rules": {
+    "color-named": [
+      "never",
+      {
+        "severity": "error"
+      }
+    ],
+    "color-no-hex": [
+      true,
+      {
+        "severity": "error"
+      }
+    ]
+  },
+  "defaultSeverity": "warning"
+}

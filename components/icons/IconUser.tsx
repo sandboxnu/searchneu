@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 
+/* eslint-disable no-restricted-syntax */
+
 const IconUser = ({
   width = '28',
   height = '28',

@@ -115,7 +115,12 @@ function ResultsLoader({
       <div className="five column row">
         <div className="page-home">
           {results
-            .filter((result) => result !== null && result !== undefined)
+            .filter(
+              (result) =>
+                result !== null &&
+                result !== undefined &&
+                result.class.subject !== 'NULL'
+            )
             .map((result) => {
               return (
                 <ResultItemMemoized

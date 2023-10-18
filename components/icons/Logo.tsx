@@ -2,6 +2,8 @@ import { ReactElement } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
 import { Campus } from '../types';
 
+/* eslint-disable no-restricted-syntax */
+
 interface LogoProp {
   className: string;
   campus: Campus;

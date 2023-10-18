@@ -2,6 +2,8 @@ import { ReactElement } from 'react';
 import { campusToColor } from '../../utils/campusToColor';
 import { Campus } from '../types';
 
+/* eslint-disable no-restricted-syntax */
+
 interface HuskyProps {
   className: string;
   /** Decides the color based on campus */

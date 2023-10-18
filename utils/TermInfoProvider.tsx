@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, ReactElement } from 'react';
 import { fetchTermInfo, TermInfo } from '../components/terms';
 import { Campus } from '../components/types';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 
 const emptyTermInfos: Record<Campus, TermInfo[]> = {
   [Campus.NEU]: [],
@@ -28,7 +28,7 @@ export const TermInfoProvider = ({ children }): ReactElement => {
 };
 
 TermInfoProvider.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.any,
 };
 
 const GetTermInfosWithError = (): {

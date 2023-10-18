@@ -2,6 +2,8 @@ import Document, { Head, Html, Main, NextScript } from 'next/document';
 import { ReactElement } from 'react';
 import Macros from '../components/abstractMacros';
 
+/* eslint-disable no-restricted-syntax */
+
 const googleAnalyticsScript = `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}

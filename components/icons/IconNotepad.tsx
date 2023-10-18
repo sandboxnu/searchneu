@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 
+/* eslint-disable no-restricted-syntax */
+
 const IconNotepad = ({
   width = '17',
   height = '24',

@@ -1,4 +1,5 @@
 @import 'variables';
+//These variables are used for colors in .tsx files. Regular Sass variables don't work!
 
 :export {
   neu_red: $NEU_Red;

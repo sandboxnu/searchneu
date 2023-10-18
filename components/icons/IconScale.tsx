@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 
+/* eslint-disable no-restricted-syntax */
+
 const IconScale = ({
   width = '24',
   height = '24',

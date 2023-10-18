@@ -34,13 +34,13 @@ SearchNEU was originally created and built in 2017 by [Ryan Hughes](https://gith
 
 Shout out to our current team of developers and designers 💖
 
-- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/hankewycz-z/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - Sebastian Wittrock <a href="https://github.com/sebwittr"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/sebastian-wittrock/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Lucas Dunker <a href="https://github.com/Lucas-Dunker"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/lucasdunker/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
-- Vanessa Peng <a href="https://www.linkedin.com/in/vanessa-peng"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://vanessapeng.com"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - Ally Chao <a href="https://github.com/allychao"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/ally-chao/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Pranav Phadke <a href="https://github.com/pranavphadke1"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/pranav-phadke/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
-- Sam Lyon <a href="https://github.com/soulwa"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/samclyon/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://soulware.us/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Kate Feder <a href="https://www.linkedin.com/in/kate-feder/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Ananya Patil <a href="https://github.com/ananyaspatil"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/ananya-patil-740351205/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Robert Khan <a href="https://github.com/robertkkan2"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/robertkkan/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 And a special thank you to the following folks for contributing!
 
@@ -66,6 +66,9 @@ And a special thank you to the following folks for contributing!
 - [Diana Steelman](https://www.linkedin.com/in/dianasteelman/) <a href="https://www.dianasteelman.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - [Autumn Fung](https://www.linkedin.com/in/autumnfung/) <a href="https://autumnfung1.wixsite.com/fungsphotos"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - [Tingwei Shi](https://www.linkedin.com/in/tingwei-shi/) <a href="https://github.com/tiingweii-shii"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/tingwei-shi/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Sam Lyon <a href="https://github.com/soulwa"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/samclyon/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://soulware.us/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Vanessa Peng <a href="https://www.linkedin.com/in/vanessa-peng"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://vanessapeng.com"><img src="./public/images/link.png" alt="Website" width="12px"></a>
+- Zachar Hankewycz <a href="https://github.com/hankewyczz"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/hankewycz-z/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://zacharhankewycz.com/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 
 ### License
 

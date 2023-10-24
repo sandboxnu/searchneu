@@ -119,7 +119,7 @@ function ResultsLoader({
               (result) =>
                 result !== null &&
                 result !== undefined &&
-                result.class.subject !== 'NULL'
+                result?.class?.subject !== 'NULL'
             )
             .map((result) => {
               return (

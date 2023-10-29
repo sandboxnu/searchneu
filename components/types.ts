@@ -76,6 +76,12 @@ export interface Course {
   nupath: any;
 }
 
+export type SubscriptionCourse = {
+  subject: string;
+  classId: string;
+  name: string;
+};
+
 export interface Section {
   lastUpdateTime: number;
   meetings: Meeting[];
@@ -91,6 +97,21 @@ export interface Section {
   campusDescription: string;
   url: string;
 }
+
+export type SubscriptionSection = {
+  subject: string;
+  classId: string;
+  crn: string;
+  profs: string[];
+  meetings: Meeting[];
+  seatsRemaining: number;
+  seatsCapacity: number;
+  waitCapacity: number;
+  waitRemaining: number;
+  honors: boolean;
+  campus: string;
+  lastUpdateTime: number;
+};
 
 export interface Meeting {
   location: string;

@@ -218,7 +218,7 @@ export type GetCourseInfoByHashQuery = { __typename?: 'Query' } & {
   classByHash?: Maybe<
     { __typename?: 'ClassOccurrence' } & Pick<
       ClassOccurrence,
-      'subject' | 'classId'
+      'subject' | 'classId' | 'name'
     >
   >;
 };
@@ -409,7 +409,22 @@ export type GetSectionInfoByHashQueryVariables = Exact<{
 
 export type GetSectionInfoByHashQuery = { __typename?: 'Query' } & {
   sectionByHash?: Maybe<
-    { __typename?: 'Section' } & Pick<Section, 'subject' | 'classId' | 'crn'>
+    { __typename?: 'Section' } & Pick<
+      Section,
+      | 'subject'
+      | 'classId'
+      | 'crn'
+      | 'profs'
+      | 'meetings'
+      | 'seatsRemaining'
+      | 'seatsCapacity'
+      | 'waitCapacity'
+      | 'waitRemaining'
+      | 'honors'
+      | 'campus'
+      | 'lastUpdateTime'
+      | 'url'
+    >
   >;
 };
 
@@ -452,6 +467,7 @@ export const GetCourseInfoByHashDocument = gql`
     classByHash(hash: $hash) {
       subject
       classId
+      name
     }
   }
 `;
@@ -612,6 +628,16 @@ export const GetSectionInfoByHashDocument = gql`
       subject
       classId
       crn
+      profs
+      meetings
+      seatsRemaining
+      seatsCapacity
+      waitCapacity
+      waitRemaining
+      honors
+      campus
+      lastUpdateTime
+      url
     }
   }
 `;

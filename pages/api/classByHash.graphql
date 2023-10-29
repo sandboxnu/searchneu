@@ -2,5 +2,6 @@ query getCourseInfoByHash($hash: String!) {
   classByHash(hash: $hash) {
     subject
     classId
+    name
   }
 }

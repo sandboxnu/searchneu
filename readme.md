@@ -40,7 +40,7 @@ Shout out to our current team of developers and designers 💖
 - Pranav Phadke <a href="https://github.com/pranavphadke1"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/pranav-phadke/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Kate Feder <a href="https://www.linkedin.com/in/kate-feder/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Ananya Patil <a href="https://github.com/ananyaspatil"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/ananya-patil-740351205/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
-- Robert Khan <a href="https://github.com/robertkkan2"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/robertkkan/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Robert Kan <a href="https://github.com/robertkkan2"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/robertkkan/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 And a special thank you to the following folks for contributing!
 

@@ -1,3 +1,5 @@
+/* 10-16-23: This file currently isn't being used for linting, as it's typically only for monorepos. 
+Since we want all typescript files to be linted with the same rules, we don't need it!  */
 {
   "extends": "./tsconfig.json",
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]

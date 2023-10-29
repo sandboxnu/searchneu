@@ -21,7 +21,7 @@ export default function SubscriptionsPage(): ReactElement {
   const sectionElement = (sections: Section[]) => {
     const elements = [];
 
-    for (let section of sections) {
+    for (const section of sections) {
       elements.push(
         <div
           key={section.crn}
@@ -50,7 +50,7 @@ export default function SubscriptionsPage(): ReactElement {
     const classMapping = new Map<string, SubscriptionCourse>();
 
     const fetchCourseNotifs = async () => {
-      for (let courseId of userInfo.courseIds) {
+      for (const courseId of userInfo.courseIds) {
         const result = await gqlClient.getCourseInfoByHash({
           hash: courseId,
         });

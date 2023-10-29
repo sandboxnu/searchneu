@@ -1,4 +1,5 @@
 @use '../variables' as Colors;
+@use '../zIndexes' as Indexes;
 
 $TOPNAV_HEIGHT: 60px;
 $SIDEBAR_WIDTH: 268px;
@@ -8,7 +9,7 @@ $SIDEBAR_WIDTH: 268px;
   height: $TOPNAV_HEIGHT;
   left: 0;
   top: 0;
-  z-index: 9999;
+  z-index: Indexes.$Twelve;
   background: Colors.$White;
   flex-direction: row;
   display: flex;
@@ -63,7 +64,7 @@ $SIDEBAR_WIDTH: 268px;
 
 .Results__Logo {
   height: 40px;
-  z-index: 10;
+  z-index: Indexes.$Five;
   cursor: pointer;
   margin-left: 17px;
   margin-right: 2px;
@@ -104,7 +105,7 @@ $SIDEBAR_WIDTH: 268px;
   bottom: 0;
   overflow-y: scroll;
   scrollbar-width: none;
-  z-index: 21;
+  z-index: Indexes.$Six;
 
   &::-webkit-scrollbar {
     display: none;
@@ -209,7 +210,7 @@ $SIDEBAR_WIDTH: 268px;
   }
 
   &__dropdown {
-    z-index: 999999;
+    z-index: Indexes.$Fourteen;
     position: absolute;
     background: Colors.$White;
     border-radius: 3px;

@@ -144,11 +144,10 @@ export function FeedbackModal(props: Props): ReactElement {
       >
         <Header icon="mail" content={header} />
         {showError ? (
-          <Header color="red" content="Can't submit empty message!" />
+          <Message color="red" content="Can't submit an empty message!" />
         ) : (
           <></>
         )}
-        <Header color="red" />
         <Modal.Content className="formModalContent">
           <Form>
             <div className="feedbackParagraph">{firstText}</div>

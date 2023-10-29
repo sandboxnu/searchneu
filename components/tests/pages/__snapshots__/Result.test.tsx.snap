@@ -380,7 +380,7 @@ exports[`should render a section 1`] = `
               <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
                 <div className=\\"feedback-container\\">
                   <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
-                    <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: bound hideMessage]}>
+                    <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: hideMessage]}>
                       <div style={{...}} className=\\"ui success message alertMessage\\">
                         <Icon name=\\"close\\" onClick={[Function (anonymous)]} as=\\"i\\">
                           <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"close icon\\" />

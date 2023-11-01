@@ -119,6 +119,12 @@ $SIDEBAR_WIDTH: 268px;
   flex-shrink: 0;
 }
 
+.Results_MainWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .Results_Main {
   padding-top: 10px;
   padding-right: 40px;

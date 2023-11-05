@@ -3,7 +3,7 @@
  * See the license file in the root folder for details.
  */
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { Transition } from 'react-transition-group';
 
 import {
@@ -42,6 +42,11 @@ export function FeedbackModal(props: Props): ReactElement {
   const [sending, setSending] = useState(false);
   const [messageVisible, setMessageVisible] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  // when form is toggled, error message should not be shown.
+  useEffect(() => {
+    setShowError(false);
+  }, [props.feedbackModalOpen]);
 
   const onSubmit = async () => {
     setSending(true);

@@ -79,18 +79,15 @@
     transition-duration: 0.5s;
     transition-property: transform;
     transform: rotate(0deg);
-    transform-origin: top center;
 
     &:hover {
       cursor: pointer;
     }
 
     &.expanded {
-      top: 16px;
       transition-duration: 0.5s;
       transition-property: transform;
       transform: rotate(180deg);
-      transform-origin: top center;
     }
 
     &.disabled {

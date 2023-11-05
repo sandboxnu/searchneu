@@ -51,7 +51,8 @@ export function FeedbackModal(props: Props): ReactElement {
   const onSubmit = async () => {
     setSending(true);
 
-    if (!messageValue) {
+    // does the message not contain any alphanumeric characters (A-Z,0-9,_)
+    if (!/\w/.test(messageValue)) {
       setSending(false);
       setShowError(true);
       return;

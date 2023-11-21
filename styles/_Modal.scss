@@ -7,8 +7,7 @@
   height: 100vh;
   width: 100vw;
   z-index: 999999;
-  // This is Colors.Light_Grey with alpha value of 0.7
-  background-color: #d1d3d7b3;
+  background-color: Colors.$Light_Grey_Transparent;
   display: flex;
   align-items: center;
   justify-content: center;

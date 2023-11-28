@@ -4,6 +4,7 @@
  */
 
 @use '../variables' as Colors;
+@use '../zIndexes' as Indexes;
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
 
 .home-container {
@@ -71,7 +72,7 @@
 
   .logo {
     height: 60px;
-    z-index: 10;
+    z-index: Indexes.$Five;
     margin-bottom: 10px;
 
     @media only screen and (min-width: 830px) {
@@ -87,7 +88,7 @@
     position: absolute;
     right: -20px;
     bottom: -50px;
-    z-index: 102;
+    z-index: Indexes.$Ten;
 
     // there is definitely a better way to scale the width/position
     // but for now there is just a bunch of media queries
@@ -118,7 +119,7 @@
     bottom: 0;
     text-align: center;
     line-height: 0;
-    z-index: 8;
+    z-index: Indexes.$Four;
     pointer-events: none;
   }
 
@@ -175,7 +176,7 @@
     top: 0;
     border: 0;
     right: 0;
-    z-index: 101;
+    z-index: Indexes.$Nine;
     display: none;
   }
 
@@ -184,7 +185,7 @@
     top: 0;
     border: 0;
     left: 0;
-    z-index: 101;
+    z-index: Indexes.$Nine;
     margin-left: 15px;
     margin-top: 15px;
     width: 30px;
@@ -263,7 +264,7 @@
   /* Styles on tooltips that appear on desktop in the ClassPanel.js. Need to pass in the styles once, in Home.js, and not in every ClassPanel that appears. */
   .listIconTooltip {
     font-size: 14px !important;
-    z-index: 999999;
+    z-index: Indexes.$Fourteen;
     padding-top: 6px !important;
     padding-bottom: 6px !important;
     padding-left: 10px !important;

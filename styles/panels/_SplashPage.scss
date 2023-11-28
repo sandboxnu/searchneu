@@ -4,6 +4,7 @@
  */
 
 @use '../variables' as Colors;
+@use '../zIndexes' as Indexes;
 
 #splash-page {
   margin: 0;
@@ -78,7 +79,7 @@
 
   .row-first {
     background: Colors.$Grey;
-    z-index: 105;
+    z-index: Indexes.$Eleven;
     position: relative;
 
     .text {
@@ -114,7 +115,7 @@
 
     #cs2510-desktop {
       width: 89%;
-      z-index: 2;
+      z-index: Indexes.$Two;
       position: relative;
     }
   }
@@ -147,13 +148,13 @@
 
     #engw1111-desktop {
       width: 67%;
-      z-index: 2;
+      z-index: Indexes.$Two;
       position: relative;
     }
 
     #lerner-mobile {
       position: absolute;
-      z-index: 3;
+      z-index: Indexes.$Three;
     }
   }
 
@@ -272,7 +273,7 @@
       #engw1111-desktop {
         margin-top: 0;
         width: 132%;
-        z-index: 2;
+        z-index: Indexes.$Two;
         position: relative;
         margin-left: 100px;
       }
@@ -291,7 +292,7 @@
   top: 0%;
   left: 12.8%;
   width: 35%;
-  z-index: 2;
+  z-index: Indexes.$Two;
 }
 
 #oodMobile2 {
@@ -299,7 +300,7 @@
   top: 17%;
   left: 3%;
   width: 35%;
-  z-index: 1;
+  z-index: Indexes.$One;
 }
 
 #cs2500Mobile {
@@ -307,7 +308,7 @@
   top: 0%;
   left: 60%;
   width: 35%;
-  z-index: 2;
+  z-index: Indexes.$Two;
 }
 
 #cs2500Resultsmobile {
@@ -315,7 +316,7 @@
   top: 17%;
   left: 50%;
   width: 35%;
-  z-index: 1;
+  z-index: Indexes.$One;
 }
 
 @media only screen and (max-width: 767px) {
@@ -356,7 +357,7 @@
       position: absolute;
       top: 5%;
       left: 30%;
-      z-index: 2;
+      z-index: Indexes.$Two;
       width: 65%;
     }
 
@@ -364,7 +365,7 @@
       position: absolute;
       left: 3%;
       width: 65%;
-      z-index: 1;
+      z-index: Indexes.$One;
       top: initial;
       bottom: 25px;
     }

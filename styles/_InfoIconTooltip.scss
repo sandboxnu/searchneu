@@ -1,4 +1,5 @@
 @use 'variables' as Colors;
+@use 'zIndexes' as Indexes;
 
 .InfoIconTooltip {
   background: transparent;
@@ -19,7 +20,7 @@
       white-space: wrap;
       width: 225px;
       padding: 7px;
-      z-index: 100000;
+      z-index: Indexes.$Thirteen;
       line-height: 20px;
       margin-left: -5px;
 

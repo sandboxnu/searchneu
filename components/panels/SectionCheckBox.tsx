@@ -75,12 +75,16 @@ export default function SectionCheckBox({
         <input
           checked={checked}
           onChange={onCheckboxClick}
-          className="notif-switch-checkbox"
+          className="react-switch-checkbox"
           id={notifSwitchId}
           type="checkbox"
         />
-        <label className="notif-switch-label" htmlFor={notifSwitchId}>
-          <span className="notif-switch-button" />
+        <label
+          className="react-switch-label"
+          style={{ marginTop: '0px' }}
+          htmlFor={notifSwitchId}
+        >
+          <span className="react-switch-button" />
         </label>
       </div>
       <Tooltip

@@ -324,85 +324,87 @@ exports[`should render a section 1`] = `
             </FilterPanel>
           </div>
           <div className=\\"Results_SidebarSpacer\\" />
-          <div className=\\"Results_Main\\">
-            <LoadingContainer>
-              <div style={{...}} />
-            </LoadingContainer>
-            <Memo(Footer)>
-              <div className=\\"footer\\">
-                <div className=\\"footer ui basic center aligned segment\\">
-                  Interested in how SearchNEU works? Check out our
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://docs.searchneu.com/\\">
-                     documentation!
-                  </a>
+          <div className=\\"Results_MainWrapper\\">
+            <div className=\\"Results_Main\\">
+              <LoadingContainer>
+                <div style={{...}} />
+              </LoadingContainer>
+              <Memo(Footer)>
+                <div className=\\"footer\\">
+                  <div className=\\"footer ui basic center aligned segment\\">
+                    Interested in how SearchNEU works? Check out our
+                    <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://docs.searchneu.com/\\">
+                       documentation!
+                    </a>
+                  </div>
+                  <div className=\\"ui divider\\" />
+                  <div className=\\"footer ui basic center aligned segment\\">
+                    See an issue or want to add to this website? Fork it or create an issue on
+                    <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://github.com/sandboxnu/searchneu\\">
+                       GitHub
+                    </a>
+                    .
+                  </div>
+                  <div className=\\"ui divider\\" />
+                  <div className=\\"footer ui basic center aligned segment credits\\">
+                    A 
+                    <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://www.sandboxneu.com\\">
+                      Sandbox
+                    </a>
+                     Project (founded by 
+                    <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"http://github.com/ryanhugh\\">
+                      Ryan Hughes
+                    </a>
+                    , with some awesome 
+                    <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://github.com/sandboxnu/searchneu/graphs/contributors\\">
+                      contributors
+                    </a>
+                    )
+                  </div>
+                  <div className=\\"footer ui basic center aligned segment affiliation\\">
+                    Search NEU is built for students by students &amp; is not affiliated with NEU.
+                  </div>
+                  <div className=\\"footer ui basic center aligned segment contact\\">
+                    <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
+                      Feedback
+                    </a>
+                     • 
+                    <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
+                      Report a bug
+                    </a>
+                     • 
+                    <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
+                      Contact
+                    </a>
+                  </div>
                 </div>
-                <div className=\\"ui divider\\" />
-                <div className=\\"footer ui basic center aligned segment\\">
-                  See an issue or want to add to this website? Fork it or create an issue on
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://github.com/sandboxnu/searchneu\\">
-                     GitHub
-                  </a>
-                  .
-                </div>
-                <div className=\\"ui divider\\" />
-                <div className=\\"footer ui basic center aligned segment credits\\">
-                  A 
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://www.sandboxneu.com\\">
-                    Sandbox
-                  </a>
-                   Project (founded by 
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"http://github.com/ryanhugh\\">
-                    Ryan Hughes
-                  </a>
-                  , with some awesome 
-                  <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://github.com/sandboxnu/searchneu/graphs/contributors\\">
-                    contributors
-                  </a>
-                  )
-                </div>
-                <div className=\\"footer ui basic center aligned segment affiliation\\">
-                  Search NEU is built for students by students &amp; is not affiliated with NEU.
-                </div>
-                <div className=\\"footer ui basic center aligned segment contact\\">
-                  <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
-                    Feedback
-                  </a>
-                   • 
-                  <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
-                    Report a bug
-                  </a>
-                   • 
-                  <a role=\\"button\\" tabIndex={0} onClick={[Function: toggleModal]}>
-                    Contact
-                  </a>
-                </div>
-              </div>
-              <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
-                <div className=\\"feedback-container\\">
-                  <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
-                    <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: bound hideMessage]}>
-                      <div style={{...}} className=\\"ui success message alertMessage\\">
-                        <Icon name=\\"close\\" onClick={[Function (anonymous)]} as=\\"i\\">
-                          <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"close icon\\" />
-                        </Icon>
-                        <MessageContent>
-                          <div className=\\"content\\">
-                            <MessageHeader content=\\"Your submission was successful.\\">
-                              <div className=\\"header\\">
-                                Your submission was successful.
-                              </div>
-                            </MessageHeader>
-                          </div>
-                        </MessageContent>
-                      </div>
-                    </Message>
-                  </Transition>
-                  <Modal open={false} onClose={[Function: toggleModal]} size=\\"small\\" className=\\"feedback-modal-container\\" centered={true} dimmer={true} closeOnDimmerClick={true} closeOnDocumentClick={false} eventPool=\\"Modal\\">
-                    <Portal closeOnDocumentClick={false} trigger={[undefined]} eventPool=\\"Modal\\" mountNode={{...}} open={false} onClose={[Function (anonymous)]} onMount={[Function (anonymous)]} onOpen={[Function (anonymous)]} onUnmount={[Function (anonymous)]} closeOnEscape={true} openOnTriggerClick={true} />
-                  </Modal>
-                </div>
-              </FeedbackModal>
-            </Memo(Footer)>
+                <FeedbackModal toggleForm={[Function: toggleModal]} feedbackModalOpen={false}>
+                  <div className=\\"feedback-container\\">
+                    <Transition in={false} timeout={500} mountOnEnter={false} unmountOnExit={false} appear={false} enter={true} exit={true} onEnter={[Function: noop]} onEntering={[Function: noop]} onEntered={[Function: noop]} onExit={[Function: noop]} onExiting={[Function: noop]} onExited={[Function: noop]}>
+                      <Message success={true} className=\\"alertMessage\\" header=\\"Your submission was successful.\\" style={{...}} onDismiss={[Function: hideMessage]}>
+                        <div style={{...}} className=\\"ui success message alertMessage\\">
+                          <Icon name=\\"close\\" onClick={[Function (anonymous)]} as=\\"i\\">
+                            <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"close icon\\" />
+                          </Icon>
+                          <MessageContent>
+                            <div className=\\"content\\">
+                              <MessageHeader content=\\"Your submission was successful.\\">
+                                <div className=\\"header\\">
+                                  Your submission was successful.
+                                </div>
+                              </MessageHeader>
+                            </div>
+                          </MessageContent>
+                        </div>
+                      </Message>
+                    </Transition>
+                    <Modal open={false} onClose={[Function: toggleModal]} size=\\"small\\" className=\\"feedback-modal-container\\" centered={true} dimmer={true} closeOnDimmerClick={true} closeOnDocumentClick={false} eventPool=\\"Modal\\">
+                      <Portal closeOnDocumentClick={false} trigger={[undefined]} eventPool=\\"Modal\\" mountNode={{...}} open={false} onClose={[Function (anonymous)]} onMount={[Function (anonymous)]} onOpen={[Function (anonymous)]} onUnmount={[Function (anonymous)]} closeOnEscape={true} openOnTriggerClick={true} />
+                    </Modal>
+                  </div>
+                </FeedbackModal>
+              </Memo(Footer)>
+            </div>
           </div>
         </div>
         <div className=\\"botttomPadding\\" />

@@ -133,31 +133,33 @@ export default function Results(): ReactElement | null {
             </>
           )}
 
-          <div className="Results_Main">
-            {filtersAreSet && (
-              <>
-                <FilterPills filters={filters} setFilters={setQParams} />
-              </>
-            )}
-            {!searchData ? (
-              <LoadingContainer />
-            ) : searchData && searchData.results.length === 0 ? (
-              <EmptyResultsContainer
-                query={query}
-                filtersAreSet={filtersAreSet}
-                setFilters={setQParams}
-              />
-            ) : (
-              <ResultsLoader
-                results={searchData.results}
-                loadMore={loadMore}
-                hasNextPage={searchData.hasNextPage}
-                userInfo={userInfo}
-                onSignIn={onSignIn}
-                fetchUserInfo={fetchUserInfo}
-              />
-            )}
-            <Footer />
+          <div className="Results_MainWrapper">
+            <div className="Results_Main">
+              {filtersAreSet && (
+                <>
+                  <FilterPills filters={filters} setFilters={setQParams} />
+                </>
+              )}
+              {!searchData ? (
+                <LoadingContainer />
+              ) : searchData && searchData.results.length === 0 ? (
+                <EmptyResultsContainer
+                  query={query}
+                  filtersAreSet={filtersAreSet}
+                  setFilters={setQParams}
+                />
+              ) : (
+                <ResultsLoader
+                  results={searchData.results}
+                  loadMore={loadMore}
+                  hasNextPage={searchData.hasNextPage}
+                  userInfo={userInfo}
+                  onSignIn={onSignIn}
+                  fetchUserInfo={fetchUserInfo}
+                />
+              )}
+              <Footer />
+            </div>
           </div>
         </div>
         <div className="botttomPadding" />

@@ -114,4 +114,8 @@
       }
     }
   }
+  // If notifications present, last td should't have a right border
+  > td:last-child {
+    border-right: 0px;
+  }
 }

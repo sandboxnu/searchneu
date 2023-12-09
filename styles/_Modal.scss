@@ -1,4 +1,5 @@
 @use 'variables' as Colors;
+@use 'zIndexes' as Indexes;
 
 .modal-wrapper {
   position: fixed;
@@ -6,8 +7,8 @@
   left: 0;
   height: 100vh;
   width: 100vw;
-  z-index: 999999;
-  background: Colors.$Light_Grey;
+  z-index: Indexes.$Fourteen;
+  background-color: Colors.$Light_Grey_Transparent;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -10,9 +10,13 @@ All our styling files are in `/styles`, and are parallel to the content in `/com
 
 ## Exceptions
 
-There are two exceptions to the above layout, `css/base.scss` and `_variables.scss`. The variables partial keeps track of all our common themes and colors. This file is imported first, so all following partials can use any variables.
+There are three exceptions to the above layout, `css/base.scss`, `_variables.scss`, and `_zIndexes.css`. The variables partial keeps track of all our common themes and colors. This file is imported first, so all following partials can use any variables.
 
 `base.scss` itself has two purposes, 1) to import any partial styles, and 2) normalizing styles. This file should not contain anything else.
+
+## Z-Indexes
+
+In addition to utilizing variables for themes and colors, we use variables for our Z-indexes as well. Located in `/styles` in the `_zIndexes.scss` partial, our Z-index levels range from 1-15 and should be used instead of raw index numbers.
 
 ## Adding new styles
 

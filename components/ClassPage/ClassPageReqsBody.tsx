@@ -99,18 +99,16 @@ export default function ClassPageReqsBody({
           }
           className="prereqsFor"
           body={
-            latestOccurrence.prereqsFor.values.length === 0 ? (
+            latestOccurrence.prereqsFor.length === 0 ? (
               <span className="noReqs">None</span>
             ) : (
               <div
                 className={`reqItemsContainer ${
-                  latestOccurrence.prereqsFor.values.length > 3
-                    ? 'showScroll'
-                    : ''
+                  latestOccurrence.prereqsFor.length > 3 ? 'showScroll' : ''
                 }`}
               >
                 <div className="reqItemsScroll">
-                  {latestOccurrence.prereqsFor.values.map((value) => {
+                  {latestOccurrence.prereqsFor.map((value) => {
                     return (
                       <div
                         className="reqItem"

@@ -40,7 +40,7 @@ Shout out to our current team of developers and designers 💖
 - Robert Kan <a href="https://github.com/robertkkan2"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/robertkkan/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Sam Lyon <a href="https://github.com/soulwa"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/samclyon/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://soulware.us/"><img src="./public/images/link.png" alt="Website" width="12px"></a>
 - Vanessa Peng <a href="https://www.linkedin.com/in/vanessa-peng"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a> <a href="https://vanessapeng.com"><img src="./public/images/link.png" alt="Website" width="12px"></a>
-- Anzhou Wang <a href="https://github.com/Anzhuo-W"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/anzhuo-wang/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Anzhuo Wang <a href="https://github.com/Anzhuo-W"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/anzhuo-wang/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 And a special thank you to the following folks for contributing!
 

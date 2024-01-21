@@ -3,38 +3,17 @@ import { useRouter } from 'next/router';
 import { gqlClient } from '../utils/courseAPIClient';
 import { PacmanLoader } from 'react-spinners';
 import useUserInfo from '../utils/useUserInfo';
-import {
-  Meeting,
-  MeetingType,
-  Section,
-  SubscriptionCourse,
-} from '../components/types';
+import { Section, SubscriptionCourse } from '../components/types';
+import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
 
 export default function SubscriptionsPage(): ReactElement {
   const [userInfo, isLoading] = useUserInfo();
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [sections, setSections] = useState(new Map());
+  const [classes, setClasses] = useState(new Map());
 
   // is the course / section data still fetching
   const [isFetching, setIsFetching] = useState(true);
   const router = useRouter();
-
-  const sectionElement = (sections: Section[]) => {
-    const elements = [];
-
-    for (const section of sections) {
-      elements.push(
-        <div
-          key={section.crn}
-          style={{ display: 'flex', justifyContent: 'space-around' }}
-        >
-          <div>CRN: {section.crn}</div>
-          <div>Professor: {section.profs}</div>
-        </div>
-      );
-    }
-
-    return elements;
-  };
 
   useEffect(() => {
     if (isLoading) {
@@ -49,7 +28,7 @@ export default function SubscriptionsPage(): ReactElement {
     const classSectionMapping = new Map<string, Section[]>();
     const classMapping = new Map<string, SubscriptionCourse>();
 
-    const fetchCourseNotifs = async () => {
+    const fetchCourseNotifs = async (): Promise<void> => {
       for (const courseId of userInfo.courseIds) {
         const result = await gqlClient.getCourseInfoByHash({
           hash: courseId,
@@ -69,7 +48,7 @@ export default function SubscriptionsPage(): ReactElement {
       }
     };
 
-    const fetchSectionNotifs = async () => {
+    const fetchSectionNotifs = async (): Promise<void> => {
       for (const sectionId of userInfo.sectionIds) {
         const result = await gqlClient.getSectionInfoByHash({
           hash: sectionId,
@@ -114,32 +93,20 @@ export default function SubscriptionsPage(): ReactElement {
       }
     };
 
-    const fetchSubscriptions = async () => {
+    const fetchSubscriptions = async (): Promise<void> => {
       try {
         await fetchSectionNotifs();
         await fetchCourseNotifs();
-
-        classSectionMapping.forEach((sections, courseCode) => {
-          const course = classMapping.get(courseCode);
-          setSubscriptions((prevSubscriptions) => [
-            ...prevSubscriptions,
-            <div key={courseCode}>
-              <div>
-                {course.subject + ' ' + course.classId + ': ' + course.name}
-              </div>
-              {sectionElement(sections)}
-            </div>,
-          ]);
-        });
+        setClasses(classMapping);
+        setSections(classSectionMapping);
+        setIsFetching(false);
       } catch (e) {
         console.log(e);
       }
     };
-
     fetchSubscriptions();
-
-    setIsFetching(false);
-  }, [userInfo?.phoneNumber, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo?.phoneNumber, isLoading]); // Only depends on userInfo data
 
   return (
     <>
@@ -147,8 +114,23 @@ export default function SubscriptionsPage(): ReactElement {
         <PacmanLoader loading={isFetching} size={30} />
       ) : (
         <>
-          <h2>This page is a work in progress!</h2>
-          <div>{subscriptions}</div>
+          <div className="Results_Container">
+            <div className="Results_MainWrapper">
+              <div className="Results_Main">
+                <h2>This page is a work in progress!</h2>
+                {Array.from(sections).map(([courseCode, sections]) => {
+                  const course = classes.get(courseCode);
+                  return (
+                    <ClassCard
+                      key={courseCode}
+                      course={course}
+                      sections={sections}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </>
       )}
     </>

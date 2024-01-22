@@ -23,8 +23,6 @@ export default function PageContent({
   classPageInfo,
   isCoreq,
 }: PageContentProps): ReactElement {
-  const router = useRouter();
-
   // TODO: hacky front-end solution because for some reason allOccurrences includes
   // termIds where there are no sections. This should probably be fixed on the backend.
   if (classPageInfo && classPageInfo.class) {
@@ -40,9 +38,7 @@ export default function PageContent({
           <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
         </h2>
       ) : (
-        <div className="backToResults" onClick={() => router.back()}>
-          Back to Search Results
-        </div>
+        <></>
       )}
       {classPageInfo && classPageInfo.class && (
         <div className="classPageInfoContent">

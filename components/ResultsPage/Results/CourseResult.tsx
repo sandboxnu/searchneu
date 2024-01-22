@@ -58,7 +58,7 @@ export function CourseResult({
   // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
   const sortedSections = useMemo(
     () => sortSections(course.sections, userInfo),
-    [course]
+    [course.sections, userInfo]
   );
   const { optionalDisplay } = useResultDetail(course);
 
@@ -124,17 +124,14 @@ export function CourseResult({
               )}
             </div>
             <div className="SearchResult__panel--right">
-              <div
-                onClick={() =>
-                  router.push(
-                    `/${campus}/${termId}/classPage/${course.subject}/${course.classId}`
-                  )
-                }
-              >
-                <div className="view-more-info-container">
-                  <IconNotepad className="notepad-icon" />
+              <div className="view-more-info-container">
+                <IconNotepad className="notepad-icon" />
+                <a
+                  className="view-more-info-link"
+                  href={`/${campus}/${termId}/classPage/${course.subject}/${course.classId}`}
+                >
                   <span>View more info for this class</span>
-                </div>
+                </a>
               </div>
 
               <SignUpForNotifications

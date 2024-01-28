@@ -71,10 +71,8 @@
       right: 50%;
       position: absolute;
       content: '';
-      width: 14px;
-      /* x size */
-      height: 1.5px;
-      /* x thickness */
+      width: 14px; /* x size */
+      height: 1.5px; /* x thickness */
       border-radius: 25px;
       background-color: Colors.$NEU_Red;
     }

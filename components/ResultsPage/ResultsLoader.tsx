@@ -176,6 +176,14 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
     );
   }
 
+  const hiddenEmployees = ['s.ebadi@northeastern.edu'];
+  if (
+    result.type == 'employee' &&
+    hiddenEmployees.includes(result.employee?.email)
+  ) {
+    return null;
+  }
+
   if (result.type === 'employee') {
     return macros.isMobile ? (
       <MobileEmployeeResult employee={result.employee} />

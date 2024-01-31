@@ -147,8 +147,6 @@ describe.only('Results page integration tests', () => {
     // simulate clicking on slider value marks
     sliderMarks.at(1).simulate('click');
     sliderMarks.at(4).simulate('click');
-    // click the apply button
-    classIdRangeFilter.find('.RangeFilter__apply-input').simulate('click');
     expect(setQParams).toBeCalledWith({
       classIdRange: { max: 5000, min: 2000 },
     });

@@ -221,7 +221,7 @@ exports[`should render a section 1`] = `
                         Course ID Range
                       </p>
                     </div>
-                    <div className=\\"RangeFilter__input\\">
+                    <div className=\\"RangeFilter__input\\" onClick={[Function: onClick]}>
                       <Slider range={true} marks={{...}} allowCross={false} min={1000} max={8000} defaultValue={{...}} step={1000} onChange={[Function: onChange]} className=\\"RangeFilter__slider\\" value={{...}}>
                         <div className=\\"rc-slider RangeFilter__slider rc-slider-horizontal rc-slider-with-marks\\" style={[undefined]} onMouseDown={[Function: onSliderMouseDown]}>
                           <div className=\\"rc-slider-rail\\" style={{...}} />
@@ -312,11 +312,7 @@ exports[`should render a section 1`] = `
                           </Marks>
                         </div>
                       </Slider>
-                      <div role=\\"button\\" tabIndex={0} className=\\"RangeFilter__apply-input\\" onClick={[Function: onClick]}>
-                        <p>
-                          Apply
-                        </p>
-                      </div>
+                      <br />
                     </div>
                   </div>
                 </RangeFilter>

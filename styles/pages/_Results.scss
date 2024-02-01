@@ -250,8 +250,15 @@ $SIDEBAR_WIDTH: 268px;
 
   &__item {
     padding: 4px 6px;
-    border-radius: 5px;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    &:not(:first-child) {
+      border-style: solid;
+      border-width: 0px;
+      border-top-width: 1px;
+      border-color: Colors.$Light_Grey;
+    }
 
     &:hover {
       background: Colors.$Light_Grey;

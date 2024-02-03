@@ -3,7 +3,6 @@ import { Section, UserInfo } from '../types';
 import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
-import { cloneDeep } from 'lodash';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -49,7 +48,7 @@ export const ClassCard = ({
   userInfo,
   fetchUserInfo,
 }: ClassCardType): ReactElement => {
-  const sectionsFormated: Section[] = getFormattedSections(cloneDeep(sections));
+  const sectionsFormated: Section[] = getFormattedSections(sections);
 
   return (
     <ClassCardWrapper

@@ -36,6 +36,10 @@ export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
     const dayIndices = Object.keys(times);
 
     for (const dayIndex of dayIndices) {
+      // I ran into some cases where dayIndex isn't an array causing the foreach to break below.
+      if (!Array.isArray(times[dayIndex])) {
+        console.log('error', times[dayIndex]);
+      }
       times[dayIndex].forEach((event) => {
         //3 is to set in the second week of 1970
         const day = parseInt(dayIndex, 10) + 3;
@@ -74,7 +78,7 @@ export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getFormattedSections = (sections: any): Section[] => {
+export const getFormattedSections = (sections: any): Section[] => {
   const formattedSections: Section[] = [];
 
   sections.forEach((section) => {

@@ -80,11 +80,14 @@ export type SubscriptionCourse = {
   subject: string;
   classId: string;
   name: string;
+  host: string;
+  lastUpdateTime: number;
+  sections: Section[];
 };
 
 export interface Section {
-  lastUpdateTime: number;
-  meetings: Meeting[];
+  lastUpdateTime?: number;
+  meetings?: Meeting[];
   profs: string[];
   waitCapacity: number;
   waitRemaining: number;

@@ -218,8 +218,26 @@ export type GetCourseInfoByHashQuery = { __typename?: 'Query' } & {
   classByHash?: Maybe<
     { __typename?: 'ClassOccurrence' } & Pick<
       ClassOccurrence,
-      'subject' | 'classId' | 'name'
-    >
+      'subject' | 'classId' | 'name' | 'host' | 'termId' | 'lastUpdateTime'
+    > & {
+        sections: Array<
+          { __typename?: 'Section' } & Pick<
+            Section,
+            | 'campus'
+            | 'classType'
+            | 'crn'
+            | 'honors'
+            | 'lastUpdateTime'
+            | 'meetings'
+            | 'profs'
+            | 'seatsCapacity'
+            | 'seatsRemaining'
+            | 'url'
+            | 'waitCapacity'
+            | 'waitRemaining'
+          >
+        >;
+      }
   >;
 };
 
@@ -468,6 +486,23 @@ export const GetCourseInfoByHashDocument = gql`
       subject
       classId
       name
+      host
+      termId
+      lastUpdateTime
+      sections {
+        campus
+        classType
+        crn
+        honors
+        lastUpdateTime
+        meetings
+        profs
+        seatsCapacity
+        seatsRemaining
+        url
+        waitCapacity
+        waitRemaining
+      }
     }
   }
 `;

@@ -3,5 +3,22 @@ query getCourseInfoByHash($hash: String!) {
     subject
     classId
     name
+    host
+    termId
+    lastUpdateTime
+    sections {
+      campus
+      classType
+      crn
+      honors
+      lastUpdateTime
+      meetings
+      profs
+      seatsCapacity
+      seatsRemaining
+      url
+      waitCapacity
+      waitRemaining
+    }
   }
 }

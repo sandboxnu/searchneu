@@ -59,7 +59,7 @@ export const ClassCard = ({
           </span>
           <LastUpdated
             host={course.host}
-            prettyUrl={course.prettyUrl} //Ignore this for now, the current link we use is outdated anyway.
+            prettyUrl={''} //Ignore this for now, the current link we use is outdated anyway. Will need to be course.prettyUrl
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />

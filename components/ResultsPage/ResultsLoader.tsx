@@ -36,9 +36,9 @@ export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
     const dayIndices = Object.keys(times);
 
     for (const dayIndex of dayIndices) {
-      // I ran into some cases where dayIndex isn't an array causing the foreach to break below.
+      // There are some cases where dayIndex isn't an array, causing the foreach call to break below.
       if (!Array.isArray(times[dayIndex])) {
-        console.log('error', times[dayIndex]);
+        continue;
       }
       times[dayIndex].forEach((event) => {
         //3 is to set in the second week of 1970

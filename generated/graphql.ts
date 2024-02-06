@@ -218,8 +218,26 @@ export type GetCourseInfoByHashQuery = { __typename?: 'Query' } & {
   classByHash?: Maybe<
     { __typename?: 'ClassOccurrence' } & Pick<
       ClassOccurrence,
-      'subject' | 'classId'
-    >
+      'subject' | 'classId' | 'name' | 'host' | 'termId' | 'lastUpdateTime'
+    > & {
+        sections: Array<
+          { __typename?: 'Section' } & Pick<
+            Section,
+            | 'campus'
+            | 'classType'
+            | 'crn'
+            | 'honors'
+            | 'lastUpdateTime'
+            | 'meetings'
+            | 'profs'
+            | 'seatsCapacity'
+            | 'seatsRemaining'
+            | 'url'
+            | 'waitCapacity'
+            | 'waitRemaining'
+          >
+        >;
+      }
   >;
 };
 
@@ -409,7 +427,22 @@ export type GetSectionInfoByHashQueryVariables = Exact<{
 
 export type GetSectionInfoByHashQuery = { __typename?: 'Query' } & {
   sectionByHash?: Maybe<
-    { __typename?: 'Section' } & Pick<Section, 'subject' | 'classId' | 'crn'>
+    { __typename?: 'Section' } & Pick<
+      Section,
+      | 'subject'
+      | 'classId'
+      | 'crn'
+      | 'profs'
+      | 'meetings'
+      | 'seatsRemaining'
+      | 'seatsCapacity'
+      | 'waitCapacity'
+      | 'waitRemaining'
+      | 'honors'
+      | 'campus'
+      | 'lastUpdateTime'
+      | 'url'
+    >
   >;
 };
 
@@ -452,6 +485,24 @@ export const GetCourseInfoByHashDocument = gql`
     classByHash(hash: $hash) {
       subject
       classId
+      name
+      host
+      termId
+      lastUpdateTime
+      sections {
+        campus
+        classType
+        crn
+        honors
+        lastUpdateTime
+        meetings
+        profs
+        seatsCapacity
+        seatsRemaining
+        url
+        waitCapacity
+        waitRemaining
+      }
     }
   }
 `;
@@ -612,6 +663,16 @@ export const GetSectionInfoByHashDocument = gql`
       subject
       classId
       crn
+      profs
+      meetings
+      seatsRemaining
+      seatsCapacity
+      waitCapacity
+      waitRemaining
+      honors
+      campus
+      lastUpdateTime
+      url
     }
   }
 `;

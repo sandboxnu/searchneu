@@ -1,8 +1,9 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { Section, UserInfo } from '../types';
 import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
+import DropdownArrow from '../icons/DropdownArrow.svg';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -48,7 +49,8 @@ export const ClassCard = ({
   userInfo,
   fetchUserInfo,
 }: ClassCardType): ReactElement => {
-  const sectionsFormated: Section[] = getFormattedSections(sections);
+  const sectionsFormatted: Section[] = getFormattedSections(sections);
+  const [hideSections, setHideSections] = useState(true);
 
   return (
     <ClassCardWrapper
@@ -87,16 +89,30 @@ export const ClassCard = ({
               </tr>
             </thead>
             <tbody>
-              {sectionsFormated.map((section) => (
-                <DesktopSectionPanel
-                  key={section.crn}
-                  section={section}
-                  userInfo={userInfo}
-                  fetchUserInfo={fetchUserInfo}
-                />
-              ))}
+              {!hideSections &&
+                sectionsFormatted.map((section) => (
+                  <DesktopSectionPanel
+                    key={section.crn}
+                    section={section}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                  />
+                ))}
             </tbody>
           </table>
+          <div
+            className="SearchResult__showAll"
+            role="button"
+            tabIndex={0}
+            onClick={() => setHideSections(!hideSections)}
+          >
+            <span>{hideSections ? 'Show sections' : 'Hide sections'}</span>
+            <DropdownArrow
+              className={
+                !hideSections ? 'SearchResult__showAll--collapse' : null
+              }
+            />
+          </div>
         </>
       }
     />

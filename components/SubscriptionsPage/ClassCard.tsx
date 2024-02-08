@@ -70,27 +70,27 @@ export const ClassCard = ({
       headerRight={<button>Unsubscribe</button>}
       afterBody={
         <>
-          <table className="SearchResult__sectionTable">
-            <thead>
-              <tr>
-                <th>
-                  <div
-                    className="inlineBlock"
-                    data-tip="Course Reference Number"
-                  >
-                    CRN
-                  </div>
-                </th>
-                <th> Professors </th>
-                <th> Meetings </th>
-                <th> Campus </th>
-                <th> Seats </th>
-                {userInfo && <th> Notifications </th>}
-              </tr>
-            </thead>
-            <tbody>
-              {!hideSections &&
-                sectionsFormatted.map((section) => (
+          {!hideSections && (
+            <table className="SearchResult__sectionTable">
+              <thead>
+                <tr>
+                  <th>
+                    <div
+                      className="inlineBlock"
+                      data-tip="Course Reference Number"
+                    >
+                      CRN
+                    </div>
+                  </th>
+                  <th> Professors </th>
+                  <th> Meetings </th>
+                  <th> Campus </th>
+                  <th> Seats </th>
+                  {userInfo && <th> Notifications </th>}
+                </tr>
+              </thead>
+              <tbody>
+                {sectionsFormatted.map((section) => (
                   <DesktopSectionPanel
                     key={section.crn}
                     section={section}
@@ -98,8 +98,9 @@ export const ClassCard = ({
                     fetchUserInfo={fetchUserInfo}
                   />
                 ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          )}
           <div
             className="SearchResult__showAll"
             role="button"

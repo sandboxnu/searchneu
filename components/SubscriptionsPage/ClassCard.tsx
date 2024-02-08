@@ -108,6 +108,7 @@ export const ClassCard = ({
           >
             <span>{hideSections ? 'Show sections' : 'Hide sections'}</span>
             <DropdownArrow
+              style={{ marginTop: 3 }}
               className={
                 !hideSections ? 'SearchResult__showAll--collapse' : null
               }

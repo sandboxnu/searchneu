@@ -214,12 +214,12 @@
       border-width: 1px 0px 0px 0px;
     }
 
-    &--subscriptionExpand {
+    &--subscriptionExpanded {
       transform: rotate(-180deg);
       margin-top: 2px;
     }
 
-    &--subscriptionCollapse {
+    &--subscriptionCollapsed {
       transform: rotate(0deg);
       margin-top: 3px;
     }

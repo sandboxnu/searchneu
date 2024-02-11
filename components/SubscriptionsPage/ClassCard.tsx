@@ -50,7 +50,7 @@ export const ClassCard = ({
   fetchUserInfo,
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
-  const [hideSections, setHideSections] = useState(true);
+  const [areSectionsHidden, setAreSectionsHidden] = useState(true);
 
   return (
     <ClassCardWrapper
@@ -70,7 +70,7 @@ export const ClassCard = ({
       headerRight={<button>Unsubscribe</button>}
       body={
         <>
-          {!hideSections && (
+          {!areSectionsHidden && (
             <div>
               <table className="SearchResult__sectionTable">
                 <thead>
@@ -109,20 +109,20 @@ export const ClassCard = ({
         <>
           <div
             className={
-              hideSections
+              areSectionsHidden
                 ? 'SearchResult__showAll--subscriptionButton'
                 : 'SearchResult__showAll'
             }
             role="button"
             tabIndex={0}
-            onClick={() => setHideSections(!hideSections)}
+            onClick={() => setAreSectionsHidden(!areSectionsHidden)}
           >
-            <span>{hideSections ? 'Show sections' : 'Hide sections'}</span>
+            <span>{areSectionsHidden ? 'Show sections' : 'Hide sections'}</span>
             <DropdownArrow
               className={
-                hideSections
-                  ? 'SearchResult__showAll--subscriptionCollapse'
-                  : 'SearchResult__showAll--subscriptionExpand'
+                areSectionsHidden
+                  ? 'SearchResult__showAll--subscriptionCollapsed'
+                  : 'SearchResult__showAll--subscriptionExpanded'
               }
             />
           </div>

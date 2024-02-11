@@ -20,8 +20,14 @@
     padding-left: 0;
     padding-bottom: 0;
 
-    @media (max-width: 500px) {
+    // overflow behavior for mobile is a scrollbar (767px is max mobile horizontal width)
+    @media (max-width: 767px) {
       overflow-x: scroll;
+    }
+
+    // overflow behavior for desktop is stacking (768 is tablet and larger device width)
+    @media (min-width: 768px) {
+      flex-wrap: wrap;
     }
   }
 

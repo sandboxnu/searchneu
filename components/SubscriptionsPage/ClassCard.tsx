@@ -24,7 +24,7 @@ const ClassCardWrapper = ({
         <div className="SearchResult__header--left">{headerLeft}</div>
         {headerRight}
       </div>
-      <div className="SearchResult__panel">{body}</div>
+      {body}
       {afterBody}
     </div>
   );
@@ -68,50 +68,61 @@ export const ClassCard = ({
         </>
       }
       headerRight={<button>Unsubscribe</button>}
-      afterBody={
+      body={
         <>
           {!hideSections && (
-            <table className="SearchResult__sectionTable">
-              <thead>
-                <tr>
-                  <th>
-                    <div
-                      className="inlineBlock"
-                      data-tip="Course Reference Number"
-                    >
-                      CRN
-                    </div>
-                  </th>
-                  <th> Professors </th>
-                  <th> Meetings </th>
-                  <th> Campus </th>
-                  <th> Seats </th>
-                  {userInfo && <th> Notifications </th>}
-                </tr>
-              </thead>
-              <tbody>
-                {sectionsFormatted.map((section) => (
-                  <DesktopSectionPanel
-                    key={section.crn}
-                    section={section}
-                    userInfo={userInfo}
-                    fetchUserInfo={fetchUserInfo}
-                  />
-                ))}
-              </tbody>
-            </table>
+            <div>
+              <table className="SearchResult__sectionTable">
+                <thead>
+                  <tr>
+                    <th>
+                      <div
+                        className="inlineBlock"
+                        data-tip="Course Reference Number"
+                      >
+                        CRN
+                      </div>
+                    </th>
+                    <th> Professors </th>
+                    <th> Meetings </th>
+                    <th> Campus </th>
+                    <th> Seats </th>
+                    {userInfo && <th> Notifications </th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sectionsFormatted.map((section) => (
+                    <DesktopSectionPanel
+                      key={section.crn}
+                      section={section}
+                      userInfo={userInfo}
+                      fetchUserInfo={fetchUserInfo}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
+        </>
+      }
+      afterBody={
+        <>
           <div
-            className="SearchResult__showAll"
+            className={
+              hideSections
+                ? 'SearchResult__showAll--subscriptionButton'
+                : 'SearchResult__showAll'
+            }
             role="button"
             tabIndex={0}
             onClick={() => setHideSections(!hideSections)}
           >
             <span>{hideSections ? 'Show sections' : 'Hide sections'}</span>
             <DropdownArrow
-              style={{ marginTop: 3 }}
               className={
-                !hideSections ? 'SearchResult__showAll--collapse' : null
+                hideSections
+                  ? 'SearchResult__showAll--subscriptionCollapse'
+                  : 'SearchResult__showAll--subscriptionExpand'
               }
             />
           </div>

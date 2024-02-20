@@ -7,7 +7,7 @@ import { SubscriptionCourse } from '../components/types';
 import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
 
 export default function SubscriptionsPage(): ReactElement {
-  const [userInfo, isLoading, fetchUserInfo] = useUserInfo();
+  const [userInfo, isUserInfoLoading, fetchUserInfo] = useUserInfo();
   const [classes, setClasses] = useState(new Map<string, SubscriptionCourse>());
 
   // is the course / section data still fetching
@@ -15,11 +15,11 @@ export default function SubscriptionsPage(): ReactElement {
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoading) {
+    if (isUserInfoLoading) {
       return;
     }
 
-    if (!userInfo && !isLoading) {
+    if (!userInfo && !isUserInfoLoading) {
       router.push('/');
       return;
     }
@@ -42,6 +42,8 @@ export default function SubscriptionsPage(): ReactElement {
         const host = result.classByHash.host;
         const termId = result.classByHash.termId;
 
+        // The subscription page should only show sections that we can subscribe to.
+        // We identify such sections as those with less than 5 seats remaining.
         const filteredSections = result.classByHash.sections
           .filter((s) => {
             return s.seatsRemaining <= 5;
@@ -49,7 +51,6 @@ export default function SubscriptionsPage(): ReactElement {
           .map((s) => {
             return {
               ...s,
-              campusDescription: '',
               online: false,
               subject: subject,
               classId: classId,
@@ -98,7 +99,6 @@ export default function SubscriptionsPage(): ReactElement {
             .map((s) => {
               return {
                 ...s,
-                campusDescription: '',
                 online: false,
                 subject: subject,
                 classId: classId,
@@ -130,7 +130,7 @@ export default function SubscriptionsPage(): ReactElement {
     };
     fetchSubscriptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo?.phoneNumber, isLoading]); // Only depends on userInfo data
+  }, [userInfo?.phoneNumber, isUserInfoLoading]); // Only depends on userInfo data
 
   return (
     <>

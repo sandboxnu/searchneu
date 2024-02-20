@@ -1,4 +1,5 @@
 @use 'variables' as Colors;
+@use 'zIndexes' as Indexes;
 
 .FeedbackModal {
   &__pill {
@@ -12,6 +13,7 @@
     border: 1px solid Colors.$Dark_Grey;
     border-radius: 20px;
     background: Colors.$White;
+    z-index: Indexes.$One;
 
     &:hover {
       cursor: pointer;
@@ -49,6 +51,7 @@
     background: Colors.$Off_White;
     box-shadow: 0 4px 6px Colors.$Light_Grey;
     border-radius: 3px;
+    z-index: Indexes.$One;
   }
 
   &__popoutHeader {

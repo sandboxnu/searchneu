@@ -100,21 +100,6 @@ export interface Section {
   url: string;
 }
 
-export type SubscriptionSection = {
-  subject: string;
-  classId: string;
-  crn: string;
-  profs: string[];
-  meetings: Meeting[];
-  seatsRemaining: number;
-  seatsCapacity: number;
-  waitCapacity: number;
-  waitRemaining: number;
-  honors: boolean;
-  campus: string;
-  lastUpdateTime: number;
-};
-
 export interface Meeting {
   location: string;
   startDate: Dayjs;

@@ -70,39 +70,37 @@ export const ClassCard = ({
       headerRight={<button>Unsubscribe</button>}
       body={
         <>
-          {!areSectionsHidden && (
-            <div>
-              <table className="SearchResult__sectionTable">
-                <thead>
-                  <tr>
-                    <th>
-                      <div
-                        className="inlineBlock"
-                        data-tip="Course Reference Number"
-                      >
-                        CRN
-                      </div>
-                    </th>
-                    <th> Professors </th>
-                    <th> Meetings </th>
-                    <th> Campus </th>
-                    <th> Seats </th>
-                    {userInfo && <th> Notifications </th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sectionsFormatted.map((section) => (
-                    <DesktopSectionPanel
-                      key={section.crn}
-                      section={section}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
+            <table className="SearchResult__sectionTable">
+              <thead>
+                <tr>
+                  <th>
+                    <div
+                      className="inlineBlock"
+                      data-tip="Course Reference Number"
+                    >
+                      CRN
+                    </div>
+                  </th>
+                  <th> Professors </th>
+                  <th> Meetings </th>
+                  <th> Campus </th>
+                  <th> Seats </th>
+                  {userInfo && <th> Notifications </th>}
+                </tr>
+              </thead>
+              <tbody>
+                {sectionsFormatted.map((section) => (
+                  <DesktopSectionPanel
+                    key={section.crn}
+                    section={section}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       }
       afterBody={

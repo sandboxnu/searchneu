@@ -93,7 +93,7 @@ export default function DropdownFilter({
             type="text"
             value={filterString}
             placeholder={choosePlaceholder()}
-            size={selected.length}
+            size={selected.length !== 0 ? 5 : selected.length}
             onChange={(event) => setFilterString(event.target.value)}
             onClick={(e) => {
               e.stopPropagation();

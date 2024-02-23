@@ -116,6 +116,7 @@ export default function Results(): ReactElement | null {
           termAndCampusToURL={termAndCampusToURL}
           userInfo={userInfo}
           onSignOut={onSignOut}
+          onSignIn={onSignIn}
         ></Header>
 
         {!macros.isMobile && <FeedbackModal />}

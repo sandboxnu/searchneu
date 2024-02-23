@@ -26,6 +26,8 @@ import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
+import SignUpModal from './notifications/modal/SignUpModal';
+import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 
 type HeaderProps = {
   router: NextRouter;
@@ -34,6 +36,7 @@ type HeaderProps = {
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
   userInfo: UserInfo;
   onSignOut: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export default function Header({
@@ -43,10 +46,11 @@ export default function Header({
   termAndCampusToURL,
   userInfo,
   onSignOut,
+  onSignIn,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
-
+  const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
 
   const query = (router.query.query as string) || '';
@@ -71,6 +75,10 @@ export default function Header({
   // const subscriptionPage = (): void => {
   //   router.push('/subscriptions');
   // };
+
+  const onNotifSignUp = (): void => {
+    setShowModal(true);
+  };
 
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
@@ -189,8 +197,8 @@ export default function Header({
             />
           </div>
         </div>
-        {!macros.isMobile && userInfo && (
-          <>
+        {!macros.isMobile &&
+          (userInfo ? (
             <div className="user-menu">
               <div
                 className="user-menu__icon-wrapper"
@@ -209,8 +217,17 @@ export default function Header({
                 </div>
               )}
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+              <SignUpModal
+                visible={showModal}
+                onCancel={() => setShowModal(false)}
+                onSignIn={onSignIn}
+                onSuccess={() => setShowModal(false)}
+              />
+            </>
+          ))}
       </div>
     </div>
   );

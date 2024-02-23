@@ -7,8 +7,6 @@ import React, { ReactElement, useState } from 'react';
 import { UserInfo } from '../types';
 import Keys from '../Keys';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import SignUpModal from './modal/SignUpModal';
-import NotifSignUpButton from '../ResultsPage/Results/NotifSignUpButton';
 import { Course } from '../types';
 
 type SignUpForNotificationsProps = {
@@ -48,7 +46,7 @@ export default function SignUpForNotifications({
       : `There are ${numOpenSections} sections with seats left.`;
 
   return showNotificationSignup ? (
-    userInfo ? (
+    userInfo && (
       <div className="DesktopSectionPanel__notifs">
         <span className="checkboxLabel">
           Notify me when new sections are added:
@@ -60,16 +58,6 @@ export default function SignUpForNotifications({
           fetchUserInfo={fetchUserInfo}
         />
       </div>
-    ) : (
-      <>
-        <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-        <SignUpModal
-          visible={showModal}
-          onCancel={() => setShowModal(false)}
-          onSignIn={onSignIn}
-          onSuccess={() => setShowModal(false)}
-        />
-      </>
     )
   ) : (
     <div className="allSeatsAvailable">

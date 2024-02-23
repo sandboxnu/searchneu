@@ -2,7 +2,13 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
@@ -52,6 +58,7 @@ export default function Header({
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
@@ -79,6 +86,20 @@ export default function Header({
   const onNotifSignUp = (): void => {
     setShowModal(true);
   };
+
+  useEffect(() => {
+    const handleCloseDropdown = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenuDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleCloseDropdown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleCloseDropdown);
+    };
+  }, []);
 
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
@@ -136,23 +157,37 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
-            {userInfo && (
+            {userInfo ? (
               <>
                 <div className="user-menu">
                   <div
+                    ref={dropdownRef}
                     className="user-menu__icon-wrapper"
                     onClick={toggleMenuDropdown}
                   >
                     <IconUser className="user-menu__icon" />
                   </div>
                   {showMenuDropdown && (
-                    <div className="user-menu__dropdown">
+                    <div ref={dropdownRef} className="user-menu__dropdown">
                       <span className="user-menu__item" onClick={onSignOut}>
                         Sign out of {userInfo.phoneNumber}
                       </span>
                     </div>
                   )}
                 </div>
+              </>
+            ) : (
+              <>
+                <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+                <SignUpModal
+                  visible={showModal}
+                  onCancel={() => setShowModal(false)}
+                  onSignIn={onSignIn}
+                  onSuccess={() => {
+                    setShowModal(false);
+                    setShowMenuDropdown(false);
+                  }}
+                />
               </>
             )}
           </div>
@@ -201,13 +236,14 @@ export default function Header({
           (userInfo ? (
             <div className="user-menu">
               <div
+                ref={dropdownRef}
                 className="user-menu__icon-wrapper"
                 onClick={toggleMenuDropdown}
               >
                 <IconUser className="user-menu__icon" />
               </div>
               {showMenuDropdown && (
-                <div className="user-menu__dropdown">
+                <div ref={dropdownRef} className="user-menu__dropdown">
                   <span className="user-menu__item" onClick={onSignOut}>
                     Sign out of {userInfo.phoneNumber}
                   </span>
@@ -224,7 +260,10 @@ export default function Header({
                 visible={showModal}
                 onCancel={() => setShowModal(false)}
                 onSignIn={onSignIn}
-                onSuccess={() => setShowModal(false)}
+                onSuccess={() => {
+                  setShowModal(false);
+                  setShowMenuDropdown(false);
+                }}
               />
             </>
           ))}

@@ -61,7 +61,7 @@ export const DropdownMenuWrapper = ({
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handleCloseDropdown = (event) => {
+    const handleCloseDropdown = (event: Event): void => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowMenuDropdown(false);
       }

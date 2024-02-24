@@ -56,6 +56,7 @@ export function CourseResult({
   // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
   const sortedSections = useMemo(
     () => sortSections(course.sections, userInfo),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [course]
   );
   const { optionalDisplay } = useResultDetail(course);

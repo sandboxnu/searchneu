@@ -53,6 +53,11 @@ export default function Page(): ReactElement {
     fetchUserInfo();
   }, []);
 
+  const onSignIn = (token: string): void => {
+    cookies.set('SearchNEU JWT', token, { path: '/' });
+    fetchUserInfo();
+  };
+
   const onSignOut = () => {
     cookies.remove('SearchNEU JWT', { path: '/' });
     setUserInfo(null);
@@ -84,6 +89,7 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
         userInfo={userInfo}
+        onSignIn={onSignIn}
         onSignOut={onSignOut}
       />
       {macros.isMobile ? (

@@ -10,7 +10,7 @@ import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import { UserInfo } from '../../types';
 import IconArrow from '../../icons/IconArrow';
 import IconNotepad from '../../icons/IconNotepad';
-import SignUpForNotifications from '../../notifications/SignUpForNotifications';
+import SignUpForSectionNotifications from '../../notifications/SignUpForSectionNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
@@ -137,10 +137,9 @@ export function CourseResult({
                 </div>
               </div>
 
-              <SignUpForNotifications
+              <SignUpForSectionNotifications
                 course={course}
                 userInfo={userInfo}
-                onSignIn={onSignIn}
                 showNotificationSignup={hasAtLeastOneSectionFull()}
                 fetchUserInfo={fetchUserInfo}
               />
@@ -296,7 +295,7 @@ export function MobileCourseResult({
               renderChildren={() => optionalDisplay(PrereqType.COREQ, course)}
             />
             <div className="MobileSearchResult__panel--notifContainer">
-              <SignUpForNotifications
+              <SignUpForSectionNotifications
                 course={course}
                 userInfo={userInfo}
                 onSignIn={onSignIn}

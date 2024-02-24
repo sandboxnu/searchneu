@@ -3,35 +3,28 @@
  * See the license file in the root folder for details.
  */
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { UserInfo } from '../types';
 import Keys from '../Keys';
 import CourseCheckBox from '../panels/CourseCheckBox';
 import { Course } from '../types';
 
-type SignUpForNotificationsProps = {
+type SignUpForSectionNotificationsProps = {
   course: Course;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   showNotificationSignup: boolean;
   fetchUserInfo: () => void;
 };
 
-export default function SignUpForNotifications({
+export default function SignUpForSectionNotifications({
   course,
   userInfo,
-  onSignIn,
+
   showNotificationSignup,
   fetchUserInfo,
-}: SignUpForNotificationsProps): ReactElement {
-  const [showModal, setShowModal] = useState(false);
-
+}: SignUpForSectionNotificationsProps): ReactElement {
   const checked =
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
-
-  const onNotifSignUp = (): void => {
-    setShowModal(true);
-  };
 
   const numOpenSections = course.sections.reduce((prev, cur) => {
     if (cur.seatsRemaining > 0) {

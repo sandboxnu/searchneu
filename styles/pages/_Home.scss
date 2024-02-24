@@ -179,6 +179,14 @@
     display: none;
   }
 
+  .signInButtonContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: Indexes.$One;
+    margin-top: 20px;
+  }
+
   .sandboxLogoContainer {
     position: absolute;
     top: 0;

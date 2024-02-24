@@ -45,6 +45,90 @@ type HeaderProps = {
   onSignIn: (token: string) => void;
 };
 
+type DropDownMenuWrapperProps = {
+  userInfo: UserInfo;
+  onSignOut: () => void;
+  onSignIn: (token: string) => void;
+};
+
+export const DropdownMenuWrapper = ({
+  userInfo,
+  onSignOut,
+  onSignIn,
+}: DropDownMenuWrapperProps): ReactElement => {
+  const [showModal, setShowModal] = useState(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleCloseDropdown = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenuDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleCloseDropdown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleCloseDropdown);
+    };
+  }, []);
+
+  const onNotifSignUp = (): void => {
+    setShowModal(true);
+  };
+
+  const toggleMenuDropdown = (): void => {
+    setShowMenuDropdown(!showMenuDropdown);
+  };
+
+  // Commented out until subscription page is finalized
+  // const subscriptionPage = (): void => {
+  //   router.push('/subscriptions');
+  // };
+
+  return (
+    <>
+      {userInfo ? (
+        <>
+          <div className="user-menu">
+            <div
+              ref={dropdownRef}
+              className="user-menu__icon-wrapper"
+              onClick={toggleMenuDropdown}
+            >
+              <IconUser className="user-menu__icon" />
+            </div>
+            {showMenuDropdown && (
+              <div ref={dropdownRef} className="user-menu__dropdown">
+                <span className="user-menu__item" onClick={onSignOut}>
+                  Sign out of {userInfo.phoneNumber}
+                </span>
+                {/* <span className="user-menu__item" onClick={subscriptionPage}>
+                  View all subscriptions
+                </span> */}
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+          <SignUpModal
+            visible={showModal}
+            onCancel={() => setShowModal(false)}
+            onSignIn={onSignIn}
+            onSuccess={() => {
+              setShowModal(false);
+              setShowMenuDropdown(false);
+            }}
+          />
+        </>
+      )}
+    </>
+  );
+};
+
 export default function Header({
   router,
   title,
@@ -56,9 +140,6 @@ export default function Header({
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
-  const [showModal, setShowModal] = useState(false);
-  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
-  const dropdownRef = useRef(null);
 
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
@@ -78,39 +159,12 @@ export default function Header({
     );
   };
 
-  // Commented out until subscription page is finalized
-  // const subscriptionPage = (): void => {
-  //   router.push('/subscriptions');
-  // };
-
-  const onNotifSignUp = (): void => {
-    setShowModal(true);
-  };
-
-  useEffect(() => {
-    const handleCloseDropdown = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowMenuDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleCloseDropdown);
-
-    return () => {
-      document.removeEventListener('mousedown', handleCloseDropdown);
-    };
-  }, []);
-
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
       return termAndCampusToURL(t, newCampus, query);
     },
     [query, termAndCampusToURL]
   );
-
-  const toggleMenuDropdown = (): void => {
-    setShowMenuDropdown(!showMenuDropdown);
-  };
 
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {
@@ -157,39 +211,11 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
-            {userInfo ? (
-              <>
-                <div className="user-menu">
-                  <div
-                    ref={dropdownRef}
-                    className="user-menu__icon-wrapper"
-                    onClick={toggleMenuDropdown}
-                  >
-                    <IconUser className="user-menu__icon" />
-                  </div>
-                  {showMenuDropdown && (
-                    <div ref={dropdownRef} className="user-menu__dropdown">
-                      <span className="user-menu__item" onClick={onSignOut}>
-                        Sign out of {userInfo.phoneNumber}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-                <SignUpModal
-                  visible={showModal}
-                  onCancel={() => setShowModal(false)}
-                  onSignIn={onSignIn}
-                  onSuccess={() => {
-                    setShowModal(false);
-                    setShowMenuDropdown(false);
-                  }}
-                />
-              </>
-            )}
+            <DropdownMenuWrapper
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+              userInfo={userInfo}
+            />
           </div>
         )}
         {!macros.isMobile && (
@@ -232,41 +258,13 @@ export default function Header({
             />
           </div>
         </div>
-        {!macros.isMobile &&
-          (userInfo ? (
-            <div className="user-menu">
-              <div
-                ref={dropdownRef}
-                className="user-menu__icon-wrapper"
-                onClick={toggleMenuDropdown}
-              >
-                <IconUser className="user-menu__icon" />
-              </div>
-              {showMenuDropdown && (
-                <div ref={dropdownRef} className="user-menu__dropdown">
-                  <span className="user-menu__item" onClick={onSignOut}>
-                    Sign out of {userInfo.phoneNumber}
-                  </span>
-                  {/* <span className="user-menu__item" onClick={subscriptionPage}>
-                    View all subscriptions
-                  </span> */}
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-              <SignUpModal
-                visible={showModal}
-                onCancel={() => setShowModal(false)}
-                onSignIn={onSignIn}
-                onSuccess={() => {
-                  setShowModal(false);
-                  setShowMenuDropdown(false);
-                }}
-              />
-            </>
-          ))}
+        {!macros.isMobile && (
+          <DropdownMenuWrapper
+            onSignIn={onSignIn}
+            onSignOut={onSignOut}
+            userInfo={userInfo}
+          />
+        )}
       </div>
     </div>
   );

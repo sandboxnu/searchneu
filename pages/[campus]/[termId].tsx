@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -22,6 +22,9 @@ import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
+import Cookies from 'universal-cookie';
+import axios from 'axios';
+import { DropdownMenuWrapper } from '../../components/Header';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -37,6 +40,37 @@ export default function Home(): ReactElement {
   const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
 
   const containerClassnames = 'home-container';
+
+  const cookies = new Cookies();
+  const [userInfo, setUserInfo] = useState(null);
+
+  const fetchUserInfo = (): void => {
+    const token = cookies.get('SearchNEU JWT');
+    if (token) {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
+        )
+        .then(({ data }) => {
+          setUserInfo({ token, ...data });
+        });
+    }
+  };
+
+  const onSignIn = (token: string): void => {
+    cookies.set('SearchNEU JWT', token, { path: '/' });
+    fetchUserInfo();
+  };
+
+  const onSignOut = (): void => {
+    cookies.remove('SearchNEU JWT', { path: '/' });
+    setUserInfo(null);
+  };
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (termInfosError) {
@@ -71,6 +105,14 @@ export default function Home(): ReactElement {
               height={61}
             />
           </a>
+          <div className="signInButtonContainer">
+            <DropdownMenuWrapper
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+              userInfo={userInfo}
+            />
+          </div>
+
           <a
             target="_blank"
             rel="noopener noreferrer"

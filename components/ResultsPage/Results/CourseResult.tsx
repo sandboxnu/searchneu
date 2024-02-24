@@ -21,7 +21,6 @@ import Keys from '../../Keys';
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
 }
 
@@ -49,7 +48,6 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
 export function CourseResult({
   course,
   userInfo,
-  onSignIn,
   fetchUserInfo,
 }: CourseResultProps): ReactElement {
   const router = useRouter();
@@ -204,7 +202,6 @@ export function CourseResult({
 export function MobileCourseResult({
   course,
   userInfo,
-  onSignIn,
   fetchUserInfo,
 }: CourseResultProps): ReactElement {
   const [showMore, setShowMore] = useState(false);
@@ -298,7 +295,6 @@ export function MobileCourseResult({
               <SignUpForSectionNotifications
                 course={course}
                 userInfo={userInfo}
-                onSignIn={onSignIn}
                 showNotificationSignup={hasAtLeastOneSectionFull()}
                 fetchUserInfo={fetchUserInfo}
               />

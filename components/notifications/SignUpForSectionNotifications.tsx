@@ -19,7 +19,6 @@ type SignUpForSectionNotificationsProps = {
 export default function SignUpForSectionNotifications({
   course,
   userInfo,
-
   showNotificationSignup,
   fetchUserInfo,
 }: SignUpForSectionNotificationsProps): ReactElement {

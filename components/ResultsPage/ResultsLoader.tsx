@@ -167,14 +167,12 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
       <MobileCourseResult
         course={course}
         userInfo={userInfo}
-        onSignIn={onSignIn}
         fetchUserInfo={fetchUserInfo}
       />
     ) : (
       <CourseResult
         course={course}
         userInfo={userInfo}
-        onSignIn={onSignIn}
         fetchUserInfo={fetchUserInfo}
       />
     );

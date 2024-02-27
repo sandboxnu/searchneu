@@ -157,13 +157,6 @@ export default function Header({
     [query, termAndCampusToURL]
   );
 
-  const { userInfo, fetchUserInfo, onSignOut, onSignIn } = useUserInfo();
-
-  useEffect(() => {
-    fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {
     return (
@@ -209,11 +202,7 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
-            <DropdownMenuWrapper
-              onSignIn={onSignIn}
-              onSignOut={onSignOut}
-              userInfo={userInfo}
-            />
+            <DropdownMenuWrapper />
           </div>
         )}
         {!macros.isMobile && (
@@ -256,13 +245,7 @@ export default function Header({
             />
           </div>
         </div>
-        {!macros.isMobile && (
-          <DropdownMenuWrapper
-            onSignIn={onSignIn}
-            onSignOut={onSignOut}
-            userInfo={userInfo}
-          />
-        )}
+        {!macros.isMobile && <DropdownMenuWrapper />}
       </div>
     </div>
   );

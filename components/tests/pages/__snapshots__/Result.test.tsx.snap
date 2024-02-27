@@ -5,7 +5,7 @@ exports[`should render a section 1`] = `
   <LocationProvider stringifyOptions={[undefined]} history={{...}} location={{...}}>
     <Results>
       <div>
-        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]} userInfo={{...}} onSignOut={[Function: onSignOut]} onSignIn={[Function: onSignIn]}>
+        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]}>
           <div>
             <Head>
               <SideEffect reduceComponentsToState={[Function: reduceComponents]} headManager={{...}} inAmpMode={false} />
@@ -121,7 +121,7 @@ exports[`should render a section 1`] = `
                   </Memo(SearchDropdown)>
                 </div>
               </div>
-              <DropdownMenuWrapper onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} userInfo={{...}}>
+              <DropdownMenuWrapper>
                 <NotifSignUpButton onNotifSignUp={[Function: onNotifSignUp]}>
                   <button onClick={[Function: onClickWithAmplitudeHook]} type=\\"button\\" className=\\"Results_SignIn\\">
                     Sign In

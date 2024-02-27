@@ -137,7 +137,6 @@ function ResultsLoader({
                   }
                   result={result}
                   userInfo={userInfo}
-                  onSignIn={onSignIn}
                   fetchUserInfo={fetchUserInfo}
                 />
               );

@@ -7,7 +7,7 @@ import { SubscriptionCourse } from '../components/types';
 import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
 
 export default function SubscriptionsPage(): ReactElement {
-  const [userInfo, isUserInfoLoading, fetchUserInfo] = useUserInfo();
+  const { userInfo, isUserInfoLoading, fetchUserInfo } = useUserInfo();
   const [classes, setClasses] = useState(new Map<string, SubscriptionCourse>());
 
   // is the course / section data still fetching

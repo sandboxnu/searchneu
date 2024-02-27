@@ -4,7 +4,7 @@
  */
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
 import Header from '../../../../components/Header';
@@ -26,11 +26,7 @@ import useSearch, {
 } from '../../../../components/ResultsPage/useSearch';
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
-import Cookies from 'universal-cookie';
-import axios from 'axios';
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
-
-const cookies = new Cookies();
 
 const isWindow = typeof window !== 'undefined';
 
@@ -38,7 +34,6 @@ export default function Results(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
-  const [userInfo, setUserInfo] = useState(null);
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
 
@@ -52,33 +47,6 @@ export default function Results(): ReactElement | null {
     termId,
     query,
     filters,
-  };
-
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  const onSignOut = (): void => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    setUserInfo(null);
-  };
-
-  const onSignIn = (token: string): void => {
-    cookies.set('SearchNEU JWT', token, { path: '/' });
-    fetchUserInfo();
-  };
-
-  const fetchUserInfo = (): void => {
-    const token = cookies.get('SearchNEU JWT');
-    if (token) {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
-        )
-        .then(({ data }) => {
-          setUserInfo({ token, ...data });
-        });
-    }
   };
 
   const { error, searchData, loadMore } = useSearch(searchParams);
@@ -114,9 +82,6 @@ export default function Results(): ReactElement | null {
           title={`Search NEU - ${query}`}
           searchData={searchData}
           termAndCampusToURL={termAndCampusToURL}
-          userInfo={userInfo}
-          onSignOut={onSignOut}
-          onSignIn={onSignIn}
         ></Header>
 
         {!macros.isMobile && <FeedbackModal />}
@@ -154,9 +119,6 @@ export default function Results(): ReactElement | null {
                   results={searchData.results}
                   loadMore={loadMore}
                   hasNextPage={searchData.hasNextPage}
-                  userInfo={userInfo}
-                  onSignIn={onSignIn}
-                  fetchUserInfo={fetchUserInfo}
                 />
               )}
               <Footer />

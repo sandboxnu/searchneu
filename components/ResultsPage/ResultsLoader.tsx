@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { cloneDeep, flatten, groupBy, values } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Keys from '../Keys';
 import macros from '../macros';
@@ -15,6 +15,7 @@ import {
   UserInfo,
 } from '../types';
 import { MobileCourseResult, CourseResult } from './Results/CourseResult';
+import useUserInfo from '../../utils/useUserInfo';
 
 dayjs.extend(utc);
 
@@ -24,9 +25,6 @@ interface ResultsLoaderProps {
   results: SearchItem[];
   loadMore: () => void;
   hasNextPage: boolean;
-  userInfo: UserInfo;
-  onSignIn: (token: string) => void;
-  fetchUserInfo: () => void;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -105,10 +103,14 @@ function ResultsLoader({
   results,
   loadMore,
   hasNextPage,
-  userInfo,
-  onSignIn,
-  fetchUserInfo,
 }: ResultsLoaderProps): ReactElement {
+  const { userInfo, fetchUserInfo, onSignIn } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <InfiniteScroll
       dataLength={results.length}
@@ -151,12 +153,10 @@ function ResultsLoader({
 const ResultItemMemoized = React.memo(function ResultItemMemoized({
   result,
   userInfo,
-  onSignIn,
   fetchUserInfo,
 }: {
   result: SearchItem;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
 }) {
   if (result.type === 'class') {

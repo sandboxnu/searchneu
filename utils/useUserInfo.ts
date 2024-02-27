@@ -1,17 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserInfo } from '../components/types';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 
-/**
- * gets a logged in user's information if they're logged in.
- * @returns a list of [UserInfo: UserInfo, isLoading (boolean: representing if the data is still being fetched)]
- */
+type useUserInfoReturn = {
+  userInfo: UserInfo | null;
+  isUserInfoLoading: boolean;
+  fetchUserInfo: () => void;
+  onSignOut: () => void;
+  onSignIn: (token: string) => void;
+};
 
-const useUserInfo = (): [UserInfo | null, boolean, () => void] => {
+// Custom hook to maintain all userInfo related utility functions
+const useUserInfo = (): useUserInfoReturn => {
   const [cookies, setCookies] = useState(new Cookies());
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
+
+  const onSignOut = (): void => {
+    cookies.remove('SearchNEU JWT', { path: '/' });
+    setUserInfo(null);
+  };
+
+  const onSignIn = (token: string): void => {
+    cookies.set('SearchNEU JWT', token, { path: '/' });
+    fetchUserInfo();
+  };
 
   const fetchUserInfo = async (): Promise<void> => {
     const token = cookies.get('SearchNEU JWT');
@@ -37,7 +51,7 @@ const useUserInfo = (): [UserInfo | null, boolean, () => void] => {
     fetchData();
   }, [cookies]);
 
-  return [userInfo, isUserInfoLoading, fetchUserInfo];
+  return { userInfo, isUserInfoLoading, fetchUserInfo, onSignOut, onSignIn };
 };
 
 export default useUserInfo;

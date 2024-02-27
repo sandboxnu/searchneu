@@ -15,15 +15,10 @@ import Boston from '../../components/icons/boston.svg';
 import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
-import AlertBanner, {
-  AlertBannerData,
-} from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
 import alertBannersData from '../../public/alert-banners.yml';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
-import Cookies from 'universal-cookie';
-import axios from 'axios';
 import { DropdownMenuWrapper } from '../../components/Header';
 
 export default function Home(): ReactElement {
@@ -36,41 +31,7 @@ export default function Home(): ReactElement {
   const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
-
-  const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
-
   const containerClassnames = 'home-container';
-
-  const cookies = new Cookies();
-  const [userInfo, setUserInfo] = useState(null);
-
-  const fetchUserInfo = (): void => {
-    const token = cookies.get('SearchNEU JWT');
-    if (token) {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
-        )
-        .then(({ data }) => {
-          setUserInfo({ token, ...data });
-        });
-    }
-  };
-
-  const onSignIn = (token: string): void => {
-    cookies.set('SearchNEU JWT', token, { path: '/' });
-    fetchUserInfo();
-  };
-
-  const onSignOut = (): void => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    setUserInfo(null);
-  };
-
-  useEffect(() => {
-    fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (termInfosError) {
@@ -106,11 +67,7 @@ export default function Home(): ReactElement {
             />
           </a>
           <div className="signInButtonContainer">
-            <DropdownMenuWrapper
-              onSignIn={onSignIn}
-              onSignOut={onSignOut}
-              userInfo={userInfo}
-            />
+            <DropdownMenuWrapper />
           </div>
 
           <a

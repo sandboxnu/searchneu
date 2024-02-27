@@ -7,17 +7,12 @@ import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 import macros from '../../../../../components/macros';
-import Cookies from 'universal-cookie';
-import axios from 'axios';
-
-const cookies = new Cookies();
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
-  const [userInfo, setUserInfo] = useState(null);
 
   const router = useRouter();
 
@@ -50,34 +45,8 @@ export default function Page(): ReactElement {
   };
 
   useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  const onSignIn = (token: string): void => {
-    cookies.set('SearchNEU JWT', token, { path: '/' });
-    fetchUserInfo();
-  };
-
-  const onSignOut = () => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    setUserInfo(null);
-  };
-
-  const fetchUserInfo = () => {
-    const token = cookies.get('SearchNEU JWT');
-    if (token) {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
-        )
-        .then(({ data }) => {
-          setUserInfo({ token, ...data });
-        });
-    }
-  };
-
-  useEffect(() => {
     loadClassPageInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject, classId]);
 
   if (!termId || !campus) return null;
@@ -88,9 +57,6 @@ export default function Page(): ReactElement {
         title={`${subject}${classId}`}
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
-        userInfo={userInfo}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
       />
       {macros.isMobile ? (
         <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>

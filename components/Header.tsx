@@ -26,7 +26,6 @@ import {
   Campus,
   EMPTY_FILTER_OPTIONS,
   SearchResult,
-  UserInfo,
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
@@ -34,31 +33,26 @@ import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
+import useUserInfo from '../utils/useUserInfo';
 
 type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
-  userInfo: UserInfo;
-  onSignOut: () => void;
-  onSignIn: (token: string) => void;
 };
 
-type DropDownMenuWrapperProps = {
-  userInfo: UserInfo;
-  onSignOut: () => void;
-  onSignIn: (token: string) => void;
-};
-
-export const DropdownMenuWrapper = ({
-  userInfo,
-  onSignOut,
-  onSignIn,
-}: DropDownMenuWrapperProps): ReactElement => {
+export const DropdownMenuWrapper = (): ReactElement => {
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
+
+  const { userInfo, fetchUserInfo, onSignOut, onSignIn } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
@@ -134,9 +128,6 @@ export default function Header({
   title,
   searchData,
   termAndCampusToURL,
-  userInfo,
-  onSignOut,
-  onSignIn,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
@@ -165,6 +156,13 @@ export default function Header({
     },
     [query, termAndCampusToURL]
   );
+
+  const { userInfo, fetchUserInfo, onSignOut, onSignIn } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {

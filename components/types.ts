@@ -79,6 +79,7 @@ export interface Course {
 export type SubscriptionCourse = {
   subject: string;
   classId: string;
+  termId: string;
   name: string;
   host: string;
   lastUpdateTime: number;

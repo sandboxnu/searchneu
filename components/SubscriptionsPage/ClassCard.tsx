@@ -49,7 +49,6 @@ export const ClassCard = ({
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
   const checked =
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
-  console.log(checked);
 
   return (
     <ClassCardWrapper

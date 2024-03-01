@@ -195,6 +195,15 @@
     background: Colors.$Off_White;
   }
 
+  &__sectionTable > tfoot {
+    .toggle {
+      display: flex;
+      justify-content: center;
+      border-top: 0;
+      border-right: 0;
+    }
+  }
+
   &__showAll {
     padding: 10px 16px;
     background: Colors.$Off_White;

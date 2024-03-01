@@ -7,12 +7,12 @@ import { uniqueId } from 'lodash';
 import React, { ReactElement, useState } from 'react';
 import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
-import { Course } from '../types';
+import { Course, SubscriptionCourse } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
 
 type CourseCheckBoxProps = {
-  course: Course;
+  course: Course | SubscriptionCourse;
   checked: boolean;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
@@ -52,7 +52,7 @@ export default function CourseCheckBox({
   }
 
   return (
-    <div className="signUpSwitch">
+    <div className="signUpSwitch toggle">
       <div className="notifSwitch">
         <input
           checked={checked}

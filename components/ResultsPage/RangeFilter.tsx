@@ -31,7 +31,15 @@ export default function RangeFilter({
       <div className="RangeFilter__title">
         <p>{title}</p>
       </div>
-      <div className="RangeFilter__input">
+      <div
+        className="RangeFilter__input"
+        onClick={() =>
+          setActive({
+            min: controlledInput.min || courseIDs[0],
+            max: controlledInput.max || courseIDs[courseIDs.length - 1],
+          })
+        }
+      >
         <Slider
           range
           marks={marks}
@@ -52,19 +60,7 @@ export default function RangeFilter({
             controlledInput.max || courseIDs[courseIDs.length - 1],
           ]}
         />
-        <div
-          role="button"
-          tabIndex={0}
-          className="RangeFilter__apply-input"
-          onClick={() =>
-            setActive({
-              min: controlledInput.min || courseIDs[0],
-              max: controlledInput.max || courseIDs[courseIDs.length - 1],
-            })
-          }
-        >
-          <p>Apply</p>
-        </div>
+        <br></br>
       </div>
     </div>
   );

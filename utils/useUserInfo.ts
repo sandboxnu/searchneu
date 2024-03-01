@@ -11,7 +11,7 @@ import axios from 'axios';
 const useUserInfo = (): [UserInfo | null, boolean, () => void] => {
   const [cookies, setCookies] = useState(new Cookies());
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
 
   const fetchUserInfo = async (): Promise<void> => {
     const token = cookies.get('SearchNEU JWT');
@@ -32,12 +32,12 @@ const useUserInfo = (): [UserInfo | null, boolean, () => void] => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       await fetchUserInfo();
-      setIsLoading(false);
+      setIsUserInfoLoading(false);
     };
     fetchData();
   }, [cookies]);
 
-  return [userInfo, isLoading, fetchUserInfo];
+  return [userInfo, isUserInfoLoading, fetchUserInfo];
 };
 
 export default useUserInfo;

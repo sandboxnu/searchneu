@@ -142,13 +142,14 @@ describe.only('Results page integration tests', () => {
     const resultsPage = mount(<Results />);
     waitForComponentToPaint(resultsPage);
     const classIdRangeFilter = resultsPage.find('.RangeFilter');
+    const rangeFilterInput = resultsPage.find('.RangeFilter__input');
     // find all slider value marks
     const sliderMarks = classIdRangeFilter.find('.rc-slider-mark-text');
     // simulate clicking on slider value marks
     sliderMarks.at(1).simulate('click');
     sliderMarks.at(4).simulate('click');
-    // click the apply button
-    classIdRangeFilter.find('.RangeFilter__apply-input').simulate('click');
+    // mouse leaves the slider
+    rangeFilterInput.simulate('click');
     expect(setQParams).toBeCalledWith({
       classIdRange: { max: 5000, min: 2000 },
     });

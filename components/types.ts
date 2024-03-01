@@ -98,7 +98,6 @@ export interface Section {
   honors: boolean;
   crn: string;
   campus: string;
-  campusDescription: string;
   url: string;
 }
 

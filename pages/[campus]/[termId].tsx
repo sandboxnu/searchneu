@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -16,7 +16,6 @@ import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import { Campus } from '../../components/types';
-import alertBannersData from '../../public/alert-banners.yml';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';

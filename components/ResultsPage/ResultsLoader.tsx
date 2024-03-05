@@ -104,12 +104,11 @@ function ResultsLoader({
   loadMore,
   hasNextPage,
 }: ResultsLoaderProps): ReactElement {
-  const { userInfo, fetchUserInfo, onSignIn } = useUserInfo();
+  const { userInfo, fetchUserInfo } = useUserInfo();
 
   useEffect(() => {
     fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   return (
     <InfiniteScroll

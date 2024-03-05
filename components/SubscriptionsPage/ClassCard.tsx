@@ -60,8 +60,6 @@ export const ClassCard = ({
             {course.subject} {course.classId}: {course.name}
           </span>
           <LastUpdated
-            host={course.host}
-            prettyUrl={''} //Ignore this for now, the current link we use is outdated anyway. Will need to be course.prettyUrl
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />

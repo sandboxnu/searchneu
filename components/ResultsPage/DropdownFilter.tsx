@@ -93,6 +93,7 @@ export default function DropdownFilter({
             type="text"
             value={filterString}
             placeholder={choosePlaceholder()}
+            size={selected.length !== 0 ? 5 : selected.length}
             onChange={(event) => setFilterString(event.target.value)}
             onClick={(e) => {
               e.stopPropagation();
@@ -100,6 +101,7 @@ export default function DropdownFilter({
                 setIsOpen(true);
               }
             }}
+
           />
           <DropdownArrow
             aria-label="Dropdown arrow"

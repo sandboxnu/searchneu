@@ -1,5 +1,5 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import LogoInput from '../../icons/LogoInput';
+import SmallSearchLogo from '../../icons/faviconsearchingSmall.svg';
 import macros from '../../macros';
 import useClickOutside from '../useClickOutside';
 import useFeedbackSchedule from '../useFeedbackSchedule';
@@ -137,7 +137,7 @@ export default function FeedbackModal(): ReactElement {
             setOpen(!open);
           }}
         >
-          <LogoInput height="14" width="18" fill={Colors.neu_red} />
+          <SmallSearchLogo height="14" width="18" fill={Colors.neu_red} />
           <p>SearchNEU Feedback</p>
         </div>
       </div>

@@ -207,6 +207,23 @@
     line-height: 18px;
     cursor: pointer;
 
+    // This is for the subscription page class card
+    &--subscriptionButton {
+      @extend .SearchResult__showAll;
+      border: solid Colors.$Light_Grey;
+      border-width: 1px 0px 0px 0px;
+    }
+
+    &--subscriptionExpanded {
+      transform: rotate(-180deg);
+      margin-top: 2px;
+    }
+
+    &--subscriptionCollapsed {
+      transform: rotate(0deg);
+      margin-top: 3px;
+    }
+
     & > span {
       margin-right: 8px;
     }

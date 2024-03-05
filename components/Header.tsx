@@ -67,6 +67,11 @@ export default function Header({
     );
   };
 
+  // Commented out until subscription page is finalized
+  // const subscriptionPage = (): void => {
+  //   router.push('/subscriptions');
+  // };
+
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
       return termAndCampusToURL(t, newCampus, query);
@@ -198,6 +203,9 @@ export default function Header({
                   <span className="user-menu__item" onClick={onSignOut}>
                     Sign out of {userInfo.phoneNumber}
                   </span>
+                  {/* <span className="user-menu__item" onClick={subscriptionPage}>
+                    View all subscriptions
+                  </span> */}
                 </div>
               )}
             </div>

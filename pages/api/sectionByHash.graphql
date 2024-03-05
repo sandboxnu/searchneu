@@ -3,5 +3,15 @@ query getSectionInfoByHash($hash: String!) {
     subject
     classId
     crn
+    profs
+    meetings
+    seatsRemaining
+    seatsCapacity
+    waitCapacity
+    waitRemaining
+    honors
+    campus
+    lastUpdateTime
+    url
   }
 }

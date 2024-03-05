@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import IconGlobe from '../../icons/IconGlobe';
 import Keys from '../../Keys';
 import {
@@ -147,6 +147,12 @@ export function DesktopSectionPanel({
     });
   };
 
+  // Prevents rerendering when section toggle is switched on the notifications page
+  const DesktopMeetingsComponent = (s: Section): ReactElement[] => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return useMemo(() => getMeetings(s), []);
+  };
+
   const checked =
     userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
 
@@ -171,7 +177,11 @@ export function DesktopSectionPanel({
       </td>
       <td>{getProfs(section).join(', ')}</td>
       <td>
-        {section.online ? <span>Online Class</span> : getMeetings(section)}
+        {section.online ? (
+          <span>Online Class</span>
+        ) : (
+          DesktopMeetingsComponent(section)
+        )}
       </td>
       <td>{section.campus}</td>
       <td>

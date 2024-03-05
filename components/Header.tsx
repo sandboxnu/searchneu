@@ -51,8 +51,7 @@ export const DropdownMenuWrapper = (): ReactElement => {
 
   useEffect(() => {
     fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {

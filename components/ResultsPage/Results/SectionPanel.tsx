@@ -153,9 +153,6 @@ export function DesktopSectionPanel({
     return useMemo(() => getMeetings(s), []);
   };
 
-  const checked =
-    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
-
   return (
     <tr className="DesktopSectionPanel" key={Keys.getSectionHash(section)}>
       <td>
@@ -205,7 +202,6 @@ export function DesktopSectionPanel({
         <div className="DesktopSectionPanel__notifs">
           <SectionCheckBox
             section={section}
-            checked={checked}
             userInfo={userInfo}
             fetchUserInfo={fetchUserInfo}
           />
@@ -257,9 +253,6 @@ export function MobileSectionPanel({
     );
   };
 
-  const checked =
-    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
-
   return (
     <div className="MobileSectionPanel">
       <div className="MobileSectionPanel__header">
@@ -310,14 +303,11 @@ export function MobileSectionPanel({
           )}
         </div>
 
-        {userInfo && (
-          <SectionCheckBox
-            section={section}
-            checked={checked}
-            userInfo={userInfo}
-            fetchUserInfo={fetchUserInfo}
-          />
-        )}
+        <SectionCheckBox
+          section={section}
+          userInfo={userInfo}
+          fetchUserInfo={fetchUserInfo}
+        />
       </div>
     </div>
   );

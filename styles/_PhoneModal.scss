@@ -16,22 +16,25 @@
   }
 
   &__body {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px;
+    justify-content: center;
+    padding: 20px;
     min-width: 340px;
-    gap: 1rem;
   }
 
   &__header {
     font-family: 'Lato', sans-serif;
     font-style: normal;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 20px;
-    line-height: 25px;
+    line-height: normal;
     color: Colors.$Navy;
     text-align: center;
+
+    margin-top: 28px;
+    margin-bottom: 12px;
 
     &--verification {
       max-width: 256px;
@@ -42,25 +45,16 @@
     }
   }
 
-  &__footer {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    font-family: 'Lato', sans-serif;
-
-    &--buttons {
-      min-height: 70px;
-    }
-
-    &--links {
-      justify-content: space-between;
-      padding: 0 32px 32px 32px;
-    }
-  }
-
   &__phone-input {
     display: flex;
     width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 4px;
+    background-color: Colors.$NEU2;
+    border-radius: 8px;
+    border: 0.5px solid Colors.$NEU4;
+    color: Colors.$Black;
 
     :after {
       content: '';
@@ -73,7 +67,6 @@
       float: left;
       display: flex;
       min-height: 100%;
-      border: 1px solid Colors.$Off_White;
       background: none;
       padding: 0.5rem;
       margin: 0;
@@ -81,6 +74,8 @@
 
     .PhoneInputCountry {
       border-right: none;
+      border-radius: 8px;
+      background: Colors.$White;
     }
 
     .PhoneInputCountryIcon {
@@ -105,6 +100,8 @@
       font-family: 'Lato', sans-serif;
       font-size: 1rem;
       outline: inherit;
+      padding-left: 12px;
+      border: none;
 
       &::placeholder {
         color: Colors.$Light_Grey;
@@ -140,60 +137,41 @@
     }
   }
 
-  &__input-group {
+  &__button-container {
     display: flex;
+    flex-direction: column;
     width: 100%;
-
-    button,
-    input,
-    .phone-modal__input-box {
-      float: left;
-    }
-
-    button:not(:last-child),
-    input:not(:last-child),
-    .phone-modal__input-box:not(:last-child) {
-      border-right: none;
-    }
-
-    :after {
-      content: '';
-      clear: both;
-      display: table;
-    }
+    justify-content: center;
+    gap: 8px;
   }
 
   &__btn {
-    flex: 1;
-    height: 100%;
-    border: 1px solid Colors.$Off_White;
-    border-bottom: none;
-    background: none;
-    color: Colors.$Light_Grey;
-    padding: 0;
-    font-family: 'Lato', sans-serif;
-    font-size: 1rem;
+    color: Colors.$Black;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 14px;
     cursor: pointer;
-    outline: inherit;
-
-    &:first-child {
-      border-left: none;
-    }
-
-    &:last-child {
-      border-right: none;
-    }
+    border-radius: 8px;
+    border: none;
+    padding: 12px 20px;
+    background: Colors.$White;
 
     &--primary {
-      background: Colors.$Navy;
+      background: Colors.$NEU_Red;
       color: Colors.$White;
     }
   }
 
   &__label {
-    max-width: 256px;
-    font-size: 0.6rem;
-    line-height: 1.5;
+    max-width: 285px;
+    text-align: center;
+    font-family: Lato;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
   }
 
   &__error {

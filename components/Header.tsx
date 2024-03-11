@@ -34,6 +34,7 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import useUserInfo from '../utils/useUserInfo';
+import Colors from '../styles/_exports.module.scss';
 
 type HeaderProps = {
   router: NextRouter;
@@ -42,7 +43,13 @@ type HeaderProps = {
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
 };
 
-export const DropdownMenuWrapper = (): ReactElement => {
+type DropdownMenuWrapperProps = {
+  splashPage?: boolean;
+};
+
+export const DropdownMenuWrapper = ({
+  splashPage = false,
+}: DropdownMenuWrapperProps): ReactElement => {
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -51,9 +58,7 @@ export const DropdownMenuWrapper = (): ReactElement => {
 
   useEffect(() => {
     fetchUserInfo();
-  });
 
-  useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowMenuDropdown(false);
@@ -65,6 +70,7 @@ export const DropdownMenuWrapper = (): ReactElement => {
     return () => {
       document.removeEventListener('mousedown', handleCloseDropdown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onNotifSignUp = (): void => {
@@ -80,30 +86,38 @@ export const DropdownMenuWrapper = (): ReactElement => {
   //   router.push('/subscriptions');
   // };
 
+  const DropDownMenu = (): ReactElement => {
+    return (
+      <div className="user-menu">
+        <div
+          ref={dropdownRef}
+          className={
+            splashPage ? 'user-menu__splash-page' : 'user-menu__icon-wrapper'
+          }
+          onClick={toggleMenuDropdown}
+        >
+          {splashPage && <>Logged In</>}
+          <IconUser className="user-menu__icon" />
+        </div>
+
+        {showMenuDropdown && (
+          <div ref={dropdownRef} className="user-menu__dropdown">
+            <span className="user-menu__item" onClick={onSignOut}>
+              Sign out of {userInfo.phoneNumber}
+            </span>
+            {/* <span className="user-menu__item" onClick={subscriptionPage}>
+              View all subscriptions
+            </span> */}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       {userInfo ? (
-        <>
-          <div className="user-menu">
-            <div
-              ref={dropdownRef}
-              className="user-menu__icon-wrapper"
-              onClick={toggleMenuDropdown}
-            >
-              <IconUser className="user-menu__icon" />
-            </div>
-            {showMenuDropdown && (
-              <div ref={dropdownRef} className="user-menu__dropdown">
-                <span className="user-menu__item" onClick={onSignOut}>
-                  Sign out of {userInfo.phoneNumber}
-                </span>
-                {/* <span className="user-menu__item" onClick={subscriptionPage}>
-                  View all subscriptions
-                </span> */}
-              </div>
-            )}
-          </div>
-        </>
+        <DropDownMenu />
       ) : (
         <>
           <NotifSignUpButton onNotifSignUp={onNotifSignUp} />

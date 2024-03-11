@@ -228,6 +228,16 @@ $SIDEBAR_WIDTH: 268px;
     display: flex;
   }
 
+  &__splash-page {
+    display: inline-flex;
+    background: Colors.$White;
+    cursor: pointer;
+    align-items: center;
+    border-radius: 8px;
+    gap: 12px;
+    padding: 4px 12px;
+  }
+
   &__icon {
     cursor: pointer;
   }

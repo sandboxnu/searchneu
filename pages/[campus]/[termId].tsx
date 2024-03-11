@@ -66,7 +66,7 @@ export default function Home(): ReactElement {
             />
           </a>
           <div className="signInButtonContainer">
-            <DropdownMenuWrapper />
+            <DropdownMenuWrapper splashPage={true} />
           </div>
 
           <a

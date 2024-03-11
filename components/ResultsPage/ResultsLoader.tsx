@@ -15,7 +15,6 @@ import {
   UserInfo,
 } from '../types';
 import { MobileCourseResult, CourseResult } from './Results/CourseResult';
-import useUserInfo from '../../utils/useUserInfo';
 
 dayjs.extend(utc);
 
@@ -25,6 +24,8 @@ interface ResultsLoaderProps {
   results: SearchItem[];
   loadMore: () => void;
   hasNextPage: boolean;
+  fetchUserInfo: () => void;
+  userInfo: UserInfo | null;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -103,14 +104,9 @@ function ResultsLoader({
   results,
   loadMore,
   hasNextPage,
+  userInfo,
+  fetchUserInfo,
 }: ResultsLoaderProps): ReactElement {
-  const { userInfo, fetchUserInfo } = useUserInfo();
-
-  useEffect(() => {
-    fetchUserInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <InfiniteScroll
       dataLength={results.length}

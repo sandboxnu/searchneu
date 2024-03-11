@@ -26,6 +26,7 @@ import {
   Campus,
   EMPTY_FILTER_OPTIONS,
   SearchResult,
+  UserInfo,
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
@@ -33,32 +34,35 @@ import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import useUserInfo from '../utils/useUserInfo';
-import Colors from '../styles/_exports.module.scss';
 
 type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
+  userInfo: UserInfo | null;
+  onSignOut: () => void;
+  onSignIn: (token: string) => void;
 };
 
 type DropdownMenuWrapperProps = {
   splashPage?: boolean;
+  userInfo: UserInfo | null;
+  onSignOut: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export const DropdownMenuWrapper = ({
   splashPage = false,
+  userInfo,
+  onSignOut,
+  onSignIn,
 }: DropdownMenuWrapperProps): ReactElement => {
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const { userInfo, fetchUserInfo, onSignOut, onSignIn } = useUserInfo();
-
   useEffect(() => {
-    fetchUserInfo();
-
     const handleCloseDropdown = (event: Event): void => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowMenuDropdown(false);
@@ -141,6 +145,9 @@ export default function Header({
   title,
   searchData,
   termAndCampusToURL,
+  userInfo,
+  onSignOut,
+  onSignIn,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
@@ -215,7 +222,11 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
-            <DropdownMenuWrapper />
+            <DropdownMenuWrapper
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+              userInfo={userInfo}
+            />
           </div>
         )}
         {!macros.isMobile && (
@@ -258,7 +269,13 @@ export default function Header({
             />
           </div>
         </div>
-        {!macros.isMobile && <DropdownMenuWrapper />}
+        {!macros.isMobile && (
+          <DropdownMenuWrapper
+            onSignIn={onSignIn}
+            onSignOut={onSignOut}
+            userInfo={userInfo}
+          />
+        )}
       </div>
     </div>
   );

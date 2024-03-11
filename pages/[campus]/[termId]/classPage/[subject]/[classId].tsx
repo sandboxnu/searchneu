@@ -7,6 +7,7 @@ import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 import macros from '../../../../../components/macros';
+import useUserInfo from '../../../../../utils/useUserInfo';
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
@@ -49,6 +50,13 @@ export default function Page(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject, classId]);
 
+  const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!termId || !campus) return null;
   return (
     <div>
@@ -57,6 +65,9 @@ export default function Page(): ReactElement {
         title={`${subject}${classId}`}
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
+        userInfo={userInfo}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
       />
       {macros.isMobile ? (
         <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>

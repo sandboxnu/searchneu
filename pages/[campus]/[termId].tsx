@@ -19,6 +19,7 @@ import { Campus } from '../../components/types';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
+import useUserInfo from '../../utils/useUserInfo';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -31,6 +32,13 @@ export default function Home(): ReactElement {
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
   const containerClassnames = 'home-container';
+
+  const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (termInfosError) {
@@ -66,7 +74,12 @@ export default function Home(): ReactElement {
             />
           </a>
           <div className="signInButtonContainer">
-            <DropdownMenuWrapper splashPage={true} />
+            <DropdownMenuWrapper
+              splashPage={true}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+            />
           </div>
 
           <a

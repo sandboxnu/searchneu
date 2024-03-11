@@ -27,6 +27,7 @@ import useSearch, {
 import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
+import useUserInfo from '../../../../utils/useUserInfo';
 
 const isWindow = typeof window !== 'undefined';
 
@@ -50,6 +51,13 @@ export default function Results(): ReactElement | null {
   };
 
   const { error, searchData, loadMore } = useSearch(searchParams);
+
+  const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -82,6 +90,9 @@ export default function Results(): ReactElement | null {
           title={`Search NEU - ${query}`}
           searchData={searchData}
           termAndCampusToURL={termAndCampusToURL}
+          onSignIn={onSignIn}
+          userInfo={userInfo}
+          onSignOut={onSignOut}
         ></Header>
 
         {!macros.isMobile && <FeedbackModal />}
@@ -119,6 +130,8 @@ export default function Results(): ReactElement | null {
                   results={searchData.results}
                   loadMore={loadMore}
                   hasNextPage={searchData.hasNextPage}
+                  userInfo={userInfo}
+                  fetchUserInfo={fetchUserInfo}
                 />
               )}
               <Footer />

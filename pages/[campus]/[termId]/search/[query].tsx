@@ -93,7 +93,7 @@ export default function Results(): ReactElement | null {
           onSignIn={onSignIn}
           userInfo={userInfo}
           onSignOut={onSignOut}
-        ></Header>
+        />
 
         {!macros.isMobile && <FeedbackModal />}
         <div className="Results_Container">

@@ -201,18 +201,16 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      {userInfo && (
-        <td>
-          <div className="DesktopSectionPanel__notifs">
-            <SectionCheckBox
-              section={section}
-              checked={checked}
-              userInfo={userInfo}
-              fetchUserInfo={fetchUserInfo}
-            />
-          </div>
-        </td>
-      )}
+      <td>
+        <div className="DesktopSectionPanel__notifs">
+          <SectionCheckBox
+            section={section}
+            checked={checked}
+            userInfo={userInfo}
+            fetchUserInfo={fetchUserInfo}
+          />
+        </div>
+      </td>
     </tr>
   );
 }

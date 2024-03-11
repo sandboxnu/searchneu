@@ -74,6 +74,7 @@ export default function SectionCheckBox({
       <div className="notifSwitch">
         <input
           checked={checked}
+          disabled={!userInfo}
           onChange={onCheckboxClick}
           className="react-switch-checkbox"
           id={notifSwitchId}
@@ -89,7 +90,9 @@ export default function SectionCheckBox({
       </div>
       <Tooltip
         text={
-          checked
+          !userInfo
+            ? 'Sign in to subscribe for notifications.'
+            : checked
             ? 'Unsubscribe from notifications for this section.'
             : 'Subscribe to notifications for this section'
         }

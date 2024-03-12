@@ -34,6 +34,7 @@ import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
+import Exit from '../components/icons/exit.svg';
 
 type HeaderProps = {
   router: NextRouter;
@@ -107,7 +108,13 @@ export const DropdownMenuWrapper = ({
         {showMenuDropdown && (
           <div ref={dropdownRef} className="user-menu__dropdown">
             <span className="user-menu__item" onClick={onSignOut}>
-              Sign out of {userInfo.phoneNumber}
+              <Exit style={{ marginRight: '8px' }} />
+              <div className="user-menu__item--text-container">
+                <span className="user-menu__item--text">Sign out</span>
+                <span className="user-menu__item--phone-number">
+                  {userInfo.phoneNumber}
+                </span>
+              </div>
             </span>
             {/* <span className="user-menu__item" onClick={subscriptionPage}>
               View all subscriptions

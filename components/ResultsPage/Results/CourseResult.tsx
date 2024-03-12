@@ -22,6 +22,7 @@ interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
@@ -49,6 +50,7 @@ export function CourseResult({
   course,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: CourseResultProps): ReactElement {
   const router = useRouter();
   const termId = router.query.termId as string;
@@ -171,6 +173,7 @@ export function CourseResult({
                   section={section}
                   userInfo={userInfo}
                   fetchUserInfo={fetchUserInfo}
+                  onSignIn={onSignIn}
                 />
               ))}
             </tbody>
@@ -202,6 +205,7 @@ export function MobileCourseResult({
   course,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: CourseResultProps): ReactElement {
   const [showMore, setShowMore] = useState(false);
   const [showNUPath, setShowNUPath] = useState(false);
@@ -302,6 +306,7 @@ export function MobileCourseResult({
                 section={section}
                 userInfo={userInfo}
                 fetchUserInfo={fetchUserInfo}
+                onSignIn={onSignIn}
               />
             ))}
           </div>

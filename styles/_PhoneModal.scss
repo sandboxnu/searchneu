@@ -62,7 +62,6 @@
     display: flex;
     width: 100%;
     margin-top: 20px;
-    margin-bottom: 20px;
     padding: 4px;
     background-color: Colors.$NEU2;
     border-radius: 8px;
@@ -127,7 +126,7 @@
     justify-content: space-between;
     font-family: 'Lato', sans-serif;
     gap: 0.5rem;
-    margin: 20px 0px;
+    margin-top: 20px;
 
     &-input {
       max-width: 40px;
@@ -152,6 +151,7 @@
   }
 
   &__button-container {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     width: 100%;

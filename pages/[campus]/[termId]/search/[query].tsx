@@ -132,6 +132,7 @@ export default function Results(): ReactElement | null {
                   hasNextPage={searchData.hasNextPage}
                   userInfo={userInfo}
                   fetchUserInfo={fetchUserInfo}
+                  onSignIn={onSignIn}
                 />
               )}
               <Footer />

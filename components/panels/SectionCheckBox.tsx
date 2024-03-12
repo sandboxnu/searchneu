@@ -12,18 +12,22 @@ import { Section } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import Colors from '../../styles/_exports.module.scss';
+import SignUpModal from '../notifications/modal/SignUpModal';
 
 type SectionCheckBoxProps = {
   section: Section;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export default function SectionCheckBox({
   section,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: SectionCheckBoxProps): ReactElement {
+  const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   const isSectionChecked = (): boolean =>
@@ -40,7 +44,7 @@ export default function SectionCheckBox({
   function onCheckboxClick(): void {
     if (!userInfo) {
       setChecked(false);
-      // show modal
+      setShowModal(true);
     } else {
       setChecked(!checked);
       if (checked) {
@@ -88,33 +92,44 @@ export default function SectionCheckBox({
   }
 
   return (
-    <div className="signUpSwitch">
-      <div className="notifSwitch">
-        <input
-          checked={checked}
-          onChange={onCheckboxClick}
-          className="react-switch-checkbox"
-          id={notifSwitchId}
-          type="checkbox"
+    <>
+      <div className="signUpSwitch">
+        <div className="notifSwitch">
+          <input
+            checked={checked}
+            onChange={onCheckboxClick}
+            className="react-switch-checkbox"
+            id={notifSwitchId}
+            type="checkbox"
+          />
+          <label
+            className="react-switch-label"
+            style={{ marginTop: '0px' }}
+            htmlFor={notifSwitchId}
+          >
+            <span className="react-switch-button" />
+          </label>
+        </div>
+        <Tooltip
+          text={
+            !userInfo
+              ? 'Sign in to subscribe for notifications.'
+              : checked
+              ? 'Unsubscribe from notifications for this section.'
+              : 'Subscribe to notifications for this section'
+          }
+          direction={TooltipDirection.Up}
         />
-        <label
-          className="react-switch-label"
-          style={{ marginTop: '0px' }}
-          htmlFor={notifSwitchId}
-        >
-          <span className="react-switch-button" />
-        </label>
       </div>
-      <Tooltip
-        text={
-          !userInfo
-            ? 'Sign in to subscribe for notifications.'
-            : checked
-            ? 'Unsubscribe from notifications for this section.'
-            : 'Subscribe to notifications for this section'
-        }
-        direction={TooltipDirection.Up}
+      <SignUpModal
+        visible={showModal}
+        onCancel={() => setShowModal(false)}
+        onSignIn={onSignIn}
+        onSuccess={() => {
+          setShowModal(false);
+        }}
+        oneMoreStep={true}
       />
-    </div>
+    </>
   );
 }

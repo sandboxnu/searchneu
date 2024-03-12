@@ -94,6 +94,8 @@ export const ClassCard = ({
                     section={section}
                     userInfo={userInfo}
                     fetchUserInfo={fetchUserInfo}
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
+                    onSignIn={(token: string) => {}} // We don't have access to onSignIn until header is added to the subscription page
                   />
                 ))}
               </tbody>

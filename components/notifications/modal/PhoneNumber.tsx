@@ -24,7 +24,6 @@ export default function PhoneNumber({
     <>
       <div className="phone-modal__body">
         <div className="phone-modal__action-btns">
-          {/* <ArrowLeft className="phone-modal__action-btns--back" /> */}
           <button
             onClick={onCancel}
             className="phone-modal__action-btn phone-modal__action-btn--x"

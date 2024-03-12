@@ -22,12 +22,14 @@ interface SectionPanelProps {
   section: Section;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 interface MobileSectionPanelProps {
   section: Section;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 const meetsOnDay = (meeting: Meeting, dayIndex: DayOfWeek): boolean => {
@@ -77,6 +79,7 @@ export function DesktopSectionPanel({
   section,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: SectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -204,6 +207,7 @@ export function DesktopSectionPanel({
             section={section}
             userInfo={userInfo}
             fetchUserInfo={fetchUserInfo}
+            onSignIn={onSignIn}
           />
         </div>
       </td>
@@ -215,6 +219,7 @@ export function MobileSectionPanel({
   section,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: MobileSectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -307,6 +312,7 @@ export function MobileSectionPanel({
           section={section}
           userInfo={userInfo}
           fetchUserInfo={fetchUserInfo}
+          onSignIn={onSignIn}
         />
       </div>
     </div>

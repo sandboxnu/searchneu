@@ -25,6 +25,7 @@ interface CourseResultProps {
 
 const SECTIONS_SHOWN_BY_DEFAULT = 3;
 
+// Sorts the sections in place, since we don't care about preserving the original order.
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
   const subscribedSectionIds = new Set(userInfo?.sectionIds ?? []);
   sections.sort((a: Section, b: Section) => {

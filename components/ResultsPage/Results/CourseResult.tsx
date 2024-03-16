@@ -209,15 +209,14 @@ export function MobileCourseResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const sortedSections = sortSections(course.sections, userInfo);
   const { optionalDisplay } = useResultDetail(course);
 
   const [showAll, setShowAll] = useState(false);
 
-  const renderedSections = useMemo(
-    () => sectionsToDisplay(sortedSections, showAll),
-    [sortedSections, showAll]
-  );
+  const sortedSections = sortSections(course.sections, userInfo);
+  const renderedSections = showAll
+    ? sortedSections
+    : sortedSections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
 
   const hasAtLeastOneSectionFull = (): boolean => {
     return course.sections.some((e) => {

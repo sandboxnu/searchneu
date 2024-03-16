@@ -15,7 +15,6 @@ import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
 import useResultDetail from './useResultDetail';
-import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
 interface CourseResultProps {
@@ -24,6 +23,8 @@ interface CourseResultProps {
   onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
 }
+
+const SECTIONS_SHOWN_BY_DEFAULT = 3;
 
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
   // TODO (sam 2023-03-09): remove this `cloneDeep` call once we can remove the `useMemo` from `CourseResult`.
@@ -46,6 +47,17 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
   return sortedSections;
 };
 
+const sectionsToDisplay = (
+  sections: Section[],
+  showAll: boolean
+): Section[] => {
+  if (showAll) {
+    return sections;
+  } else {
+    return sections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
+  }
+};
+
 export function CourseResult({
   course,
   userInfo,
@@ -56,14 +68,15 @@ export function CourseResult({
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
   // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
-  const sortedSections = useMemo(
-    () => sortSections(course.sections, userInfo),
-    [course]
-  );
+  const sortedSections = sortSections(course.sections, userInfo);
   const { optionalDisplay } = useResultDetail(course);
 
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
+  const [showAll, setShowAll] = useState(false);
+
+  // we need to use `useMemo` here, as otherwise,
+  const renderedSections = useMemo(
+    () => sectionsToDisplay(sortedSections, showAll),
+    [sortedSections, showAll]
   );
 
   const feeString =
@@ -169,7 +182,7 @@ export function CourseResult({
               </tr>
             </thead>
             <tbody>
-              {renderedSections.map((section) => (
+              {sortedSections.map((section) => (
                 <DesktopSectionPanel
                   key={section.crn}
                   section={section}
@@ -179,7 +192,7 @@ export function CourseResult({
               ))}
             </tbody>
           </table>
-          {!hideShowAll && (
+          {!(renderedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="SearchResult__showAll"
               role="button"
@@ -212,15 +225,15 @@ export function MobileCourseResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const sortedSections = useMemo(
-    () => sortSections(course.sections, userInfo),
-    [course]
-  );
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
-  );
-
+  const sortedSections = sortSections(course.sections, userInfo);
   const { optionalDisplay } = useResultDetail(course);
+
+  const [showAll, setShowAll] = useState(false);
+
+  const renderedSections = useMemo(
+    () => sectionsToDisplay(sortedSections, showAll),
+    [sortedSections, showAll]
+  );
 
   const hasAtLeastOneSectionFull = (): boolean => {
     return course.sections.some((e) => {
@@ -315,7 +328,7 @@ export function MobileCourseResult({
               />
             ))}
           </div>
-          {!hideShowAll && (
+          {!(renderedSections.length < SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="MobileSearchResult__showAll"
               role="button"

@@ -27,10 +27,8 @@ interface CourseResultProps {
 const SECTIONS_SHOWN_BY_DEFAULT = 3;
 
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
-  // TODO (sam 2023-03-09): remove this `cloneDeep` call once we can remove the `useMemo` from `CourseResult`.
-  const sortedSections = cloneDeep(sections);
   const subscribedSectionIds = new Set(userInfo?.sectionIds ?? []);
-  sortedSections.sort((a: Section, b: Section) => {
+  sections.sort((a: Section, b: Section) => {
     const aHash = Keys.getSectionHash(a);
     const bHash = Keys.getSectionHash(b);
     if (subscribedSectionIds.has(aHash) === subscribedSectionIds.has(bHash)) {
@@ -44,18 +42,7 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
       return 1;
     }
   });
-  return sortedSections;
-};
-
-const sectionsToDisplay = (
-  sections: Section[],
-  showAll: boolean
-): Section[] => {
-  if (showAll) {
-    return sections;
-  } else {
-    return sections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
-  }
+  return sections;
 };
 
 export function CourseResult({
@@ -67,17 +54,14 @@ export function CourseResult({
   const router = useRouter();
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
-  // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
-  const sortedSections = sortSections(course.sections, userInfo);
   const { optionalDisplay } = useResultDetail(course);
 
   const [showAll, setShowAll] = useState(false);
 
-  // we need to use `useMemo` here, as otherwise,
-  const renderedSections = useMemo(
-    () => sectionsToDisplay(sortedSections, showAll),
-    [sortedSections, showAll]
-  );
+  const sortedSections = sortSections(course.sections, userInfo);
+  const renderedSections = showAll
+    ? sortedSections
+    : sortedSections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
 
   const feeString =
     course.feeDescription && course.feeAmount
@@ -182,7 +166,7 @@ export function CourseResult({
               </tr>
             </thead>
             <tbody>
-              {sortedSections.map((section) => (
+              {renderedSections.map((section) => (
                 <DesktopSectionPanel
                   key={section.crn}
                   section={section}
@@ -192,7 +176,7 @@ export function CourseResult({
               ))}
             </tbody>
           </table>
-          {!(renderedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
+          {!(sortedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="SearchResult__showAll"
               role="button"
@@ -328,7 +312,7 @@ export function MobileCourseResult({
               />
             ))}
           </div>
-          {!(renderedSections.length < SECTIONS_SHOWN_BY_DEFAULT) && (
+          {!(sortedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="MobileSearchResult__showAll"
               role="button"

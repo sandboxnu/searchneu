@@ -1,6 +1,6 @@
 import { Markup } from 'interweave';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
   CreditsDisplay,
   CreditsDisplayMobile,

@@ -79,9 +79,6 @@ export function CourseResult({
     });
   };
 
-  const checked =
-    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
-
   return (
     <SearchResult
       headerLeft={
@@ -181,7 +178,6 @@ export function CourseResult({
                   <td>
                     <CourseCheckBox
                       course={course}
-                      checked={checked}
                       userInfo={userInfo}
                       onSignIn={onSignIn}
                       fetchUserInfo={fetchUserInfo}

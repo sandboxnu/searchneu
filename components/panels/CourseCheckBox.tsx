@@ -14,7 +14,6 @@ import SignUpModal from '../notifications/modal/SignUpModal';
 
 type CourseCheckBoxProps = {
   course: Course | SubscriptionCourse;
-  checked: boolean;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
   onSignIn: (token: string) => void;
@@ -22,7 +21,6 @@ type CourseCheckBoxProps = {
 
 export default function CourseCheckBox({
   course,
-  checked,
   userInfo,
   fetchUserInfo,
   onSignIn,
@@ -30,28 +28,41 @@ export default function CourseCheckBox({
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
+  const isCourseChecked =
+    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
+  const [checked, setChecked] = useState<boolean>(isCourseChecked);
+
   function onCheckboxClick(): void {
-    if (checked) {
-      axios
-        .delete(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
-          {
-            data: {
+    if (!userInfo) {
+      setChecked(false);
+      setShowModal(true);
+    } else {
+      setChecked(!checked);
+      if (checked) {
+        axios
+          .delete(
+            `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
+            {
+              data: {
+                token: userInfo.token,
+                sectionIds: [],
+                courseIds: [Keys.getClassHash(course)],
+              },
+            }
+          )
+          .then(() => fetchUserInfo());
+      } else {
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`,
+            {
               token: userInfo.token,
               sectionIds: [],
               courseIds: [Keys.getClassHash(course)],
-            },
-          }
-        )
-        .then(() => fetchUserInfo());
-    } else {
-      axios
-        .put(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
-          token: userInfo.token,
-          sectionIds: [],
-          courseIds: [Keys.getClassHash(course)],
-        })
-        .then(() => fetchUserInfo());
+            }
+          )
+          .then(() => fetchUserInfo());
+      }
     }
   }
 

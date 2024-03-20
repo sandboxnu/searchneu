@@ -37,6 +37,7 @@ type ClassCardType = {
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export const ClassCard = ({
@@ -44,11 +45,10 @@ export const ClassCard = ({
   sections,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
-  const checked =
-    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
 
   return (
     <ClassCardWrapper
@@ -92,8 +92,8 @@ export const ClassCard = ({
                     section={section}
                     userInfo={userInfo}
                     fetchUserInfo={fetchUserInfo}
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    onSignIn={(token: string) => {}} // We don't have access to onSignIn until header is added to the subscription page
+                    // We don't really have access to onSignIn until header is added to the subscription page. Passing in a fake onSignIn
+                    onSignIn={onSignIn}
                   />
                 ))}
               </tbody>
@@ -103,9 +103,9 @@ export const ClassCard = ({
                   <td>
                     <CourseCheckBox
                       course={course}
-                      checked={checked}
                       userInfo={userInfo}
                       fetchUserInfo={fetchUserInfo}
+                      onSignIn={onSignIn}
                     />
                   </td>
                 </tr>

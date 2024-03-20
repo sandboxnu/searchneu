@@ -24,9 +24,6 @@ export default function SignUpForSectionNotifications({
   fetchUserInfo,
   onSignIn,
 }: SignUpForSectionNotificationsProps): ReactElement {
-  const checked =
-    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
-
   const numOpenSections = course.sections.reduce((prev, cur) => {
     if (cur.seatsRemaining > 0) {
       return prev + 1;
@@ -48,7 +45,6 @@ export default function SignUpForSectionNotifications({
         <CourseCheckBox
           onSignIn={onSignIn}
           course={course}
-          checked={checked}
           userInfo={userInfo}
           fetchUserInfo={fetchUserInfo}
         />

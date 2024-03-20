@@ -109,6 +109,10 @@ export default function SignUpModal({
       })
       .then(({ data }) => {
         onSignIn(data.token);
+        if (oneMoreStep) {
+          setStep(Step.GoSignIn);
+        }
+        setVerificationCode('');
         onSuccess();
       })
       .catch((error) => {

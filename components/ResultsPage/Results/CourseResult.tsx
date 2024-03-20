@@ -85,8 +85,6 @@ export function CourseResult({
             {course.subject} {course.classId}: {course.name}
           </span>
           <LastUpdated
-            host={course.host}
-            prettyUrl={course.prettyUrl}
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
@@ -250,11 +248,7 @@ export function MobileCourseResult({
         <>
           <div className="MobileSearchResult__panel--mainContainer">
             <div className="MobileSearchResult__panel--infoStrings">
-              <LastUpdatedMobile
-                host={course.host}
-                prettyUrl={course.prettyUrl}
-                lastUpdateTime={course.lastUpdateTime}
-              />
+              <LastUpdatedMobile lastUpdateTime={course.lastUpdateTime} />
               <CreditsDisplayMobile
                 maxCredits={course.maxCredits}
                 minCredits={course.minCredits}

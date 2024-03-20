@@ -18,6 +18,7 @@ import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
+import CourseCheckBox from '../../panels/CourseCheckBox';
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
@@ -78,6 +79,9 @@ export function CourseResult({
     });
   };
 
+  const checked =
+    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
+
   return (
     <SearchResult
       headerLeft={
@@ -135,13 +139,6 @@ export function CourseResult({
                   <span>View more info for this class</span>
                 </div>
               </div>
-
-              <SignUpForSectionNotifications
-                course={course}
-                userInfo={userInfo}
-                showNotificationSignup={hasAtLeastOneSectionFull()}
-                fetchUserInfo={fetchUserInfo}
-              />
             </div>
           </div>
         </>
@@ -177,6 +174,22 @@ export function CourseResult({
                 />
               ))}
             </tbody>
+            {hasAtLeastOneSectionFull() && (
+              <tfoot>
+                <tr>
+                  <td colSpan={5}>New available sections</td>
+                  <td>
+                    <CourseCheckBox
+                      course={course}
+                      checked={checked}
+                      userInfo={userInfo}
+                      onSignIn={onSignIn}
+                      fetchUserInfo={fetchUserInfo}
+                    />
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </table>
           {!hideShowAll && (
             <div
@@ -296,6 +309,7 @@ export function MobileCourseResult({
                 userInfo={userInfo}
                 showNotificationSignup={hasAtLeastOneSectionFull()}
                 fetchUserInfo={fetchUserInfo}
+                onSignIn={onSignIn}
               />
             </div>
           </div>

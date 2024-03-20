@@ -14,6 +14,7 @@ type SignUpForSectionNotificationsProps = {
   userInfo: UserInfo;
   showNotificationSignup: boolean;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export default function SignUpForSectionNotifications({
@@ -21,6 +22,7 @@ export default function SignUpForSectionNotifications({
   userInfo,
   showNotificationSignup,
   fetchUserInfo,
+  onSignIn,
 }: SignUpForSectionNotificationsProps): ReactElement {
   const checked =
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
@@ -44,6 +46,7 @@ export default function SignUpForSectionNotifications({
           Notify me when new sections are added:
         </span>
         <CourseCheckBox
+          onSignIn={onSignIn}
           course={course}
           checked={checked}
           userInfo={userInfo}

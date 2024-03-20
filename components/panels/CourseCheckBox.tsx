@@ -10,12 +10,14 @@ import Keys from '../Keys';
 import { Course, SubscriptionCourse } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
+import SignUpModal from '../notifications/modal/SignUpModal';
 
 type CourseCheckBoxProps = {
   course: Course | SubscriptionCourse;
   checked: boolean;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export default function CourseCheckBox({
@@ -23,7 +25,9 @@ export default function CourseCheckBox({
   checked,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: CourseCheckBoxProps): ReactElement {
+  const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   function onCheckboxClick(): void {
@@ -52,31 +56,42 @@ export default function CourseCheckBox({
   }
 
   return (
-    <div className="signUpSwitch toggle">
-      <div className="notifSwitch">
-        <input
-          checked={checked}
-          onChange={onCheckboxClick}
-          className="react-switch-checkbox"
-          id={notifSwitchId}
-          type="checkbox"
+    <>
+      <div className="signUpSwitch toggle">
+        <div className="notifSwitch">
+          <input
+            checked={checked}
+            onChange={onCheckboxClick}
+            className="react-switch-checkbox"
+            id={notifSwitchId}
+            type="checkbox"
+          />
+          <label
+            className="react-switch-label"
+            style={{ marginTop: '0px' }}
+            htmlFor={notifSwitchId}
+          >
+            <span className="react-switch-button" />
+          </label>
+        </div>
+        <Tooltip
+          text={
+            checked
+              ? 'Unsubscribe from notifications for this course.'
+              : 'Subscribe to notifications for this course'
+          }
+          direction={TooltipDirection.Up}
         />
-        <label
-          className="react-switch-label"
-          style={{ marginTop: '0px' }}
-          htmlFor={notifSwitchId}
-        >
-          <span className="react-switch-button" />
-        </label>
       </div>
-      <Tooltip
-        text={
-          checked
-            ? 'Unsubscribe from notifications for this course.'
-            : 'Subscribe to notifications for this course'
-        }
-        direction={TooltipDirection.Up}
+      <SignUpModal
+        visible={showModal}
+        onCancel={() => setShowModal(false)}
+        onSignIn={onSignIn}
+        onSuccess={() => {
+          setShowModal(false);
+        }}
+        oneMoreStep={true}
       />
-    </div>
+    </>
   );
 }

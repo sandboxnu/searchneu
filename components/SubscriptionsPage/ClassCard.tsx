@@ -82,7 +82,7 @@ export const ClassCard = ({
                   <th> Meetings </th>
                   <th> Campus </th>
                   <th> Seats </th>
-                  {userInfo && <th> Notifications </th>}
+                  <th> Notifications </th>
                 </tr>
               </thead>
               <tbody>

@@ -46,8 +46,8 @@ export default function SignUpModal({
   const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  // const [resendDisabled, setResendDisabled] = useState(false);
-  // const [resendDisabledTimeout, setResendDisabledTimeout] = useState(0);
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendDisabledTimeout, setResendDisabledTimeout] = useState(0);
 
   // To reset step status and associated message
   useEffect(() => {
@@ -55,23 +55,24 @@ export default function SignUpModal({
     setStatusMessage('');
   }, [step, visible, phoneNumber, verificationCode]);
 
-  // // useEffect pattern used for countdown as per:
-  // // https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
-  // useEffect(() => {
-  //   if (resendDisabled) {
-  //     const interval = setInterval(
-  //       () => setResendDisabledTimeout(resendDisabledTimeout - 1),
-  //       1000
-  //     );
+  // useEffect pattern used for countdown as per:
+  // https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
+  useEffect(() => {
+    if (resendDisabled) {
+      const interval = setInterval(
+        () => setResendDisabledTimeout(resendDisabledTimeout - 1),
+        1000
+      );
 
-  //     if (resendDisabledTimeout <= 0) {
-  //       clearInterval(interval);
-  //       setResendDisabled(false);
-  //     }
+      if (resendDisabledTimeout <= 0) {
+        clearInterval(interval);
+        setResendDisabled(false);
+      }
 
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [resendDisabledTimeout]);
+      return () => clearInterval(interval);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resendDisabledTimeout]);
 
   const onPhoneNumberSubmit = (): void => {
     if (isValidPhoneNumber(phoneNumber)) {
@@ -81,8 +82,8 @@ export default function SignUpModal({
           phoneNumber: phoneNumber,
         })
         .then(() => {
-          // setResendDisabled(true);
-          // setResendDisabledTimeout(30);
+          setResendDisabled(true);
+          setResendDisabledTimeout(30);
           setStep(Step.VerificationCode);
         })
         .catch((error) => {
@@ -172,8 +173,7 @@ export default function SignUpModal({
                   verificationCode={verificationCode}
                   setVerificationCode={setVerificationCode}
                   onVerificationCodeSubmit={onVerificationCodeSubmit}
-                  // isDisabled={resendDisabled}
-                  // disabledMessage={`resend in ${resendDisabledTimeout} seconds`}
+                  isDisabled={resendDisabled}
                   phoneNumber={formatPhoneNumberIntl(phoneNumber)}
                   codeLength={VERIFICATION_CODE_LENGTH}
                   error={statusMessage}

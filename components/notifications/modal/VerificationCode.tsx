@@ -8,8 +8,7 @@ interface VerificationCodeProps {
   onCancel: () => void;
   verificationCode: string;
   setVerificationCode: React.Dispatch<React.SetStateAction<string>>;
-  // isDisabled: boolean;
-  // disabledMessage?: string;
+  isDisabled: boolean;
   onVerificationCodeSubmit: () => void;
   phoneNumber: string;
   codeLength: number;
@@ -23,12 +22,11 @@ export default function VerificationCode({
   verificationCode,
   setVerificationCode,
   onVerificationCodeSubmit,
-  // isDisabled,
+  isDisabled,
   phoneNumber,
   codeLength,
   error,
-}: // disabledMessage,
-VerificationCodeProps): ReactElement {
+}: VerificationCodeProps): ReactElement {
   const inputRefs = React.useRef<HTMLInputElement[]>([]);
 
   // To handle input focusing
@@ -37,12 +35,10 @@ VerificationCodeProps): ReactElement {
   }, [verificationCode]);
 
   const resendVerificationCode = (): void => {
-    // if (!isDisabled) {
-    //   setVerificationCode('');
-    //   onResend();
-    // }
-    setVerificationCode('');
-    onResend();
+    if (!isDisabled) {
+      setVerificationCode('');
+      onResend();
+    }
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -110,18 +106,6 @@ VerificationCodeProps): ReactElement {
           </button>
         </div>
       </div>
-
-      {/* <div className="phone-modal__footer phone-modal__footer--links">
-        <span className="phone-modal__link" onClick={onBack}>
-          back
-        </span>
-        <span
-          className={`phone-modal__link ${isDisabled && '--disabled'}`}
-          onClick={resendVerificationCode}
-        >
-          {isDisabled ? disabledMessage || '' : 'resend code'}
-        </span>
-      </div> */}
     </>
   );
 }

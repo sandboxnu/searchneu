@@ -97,6 +97,19 @@ export const ClassCard = ({
                   />
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={5}>New available sections</td>
+                  <td>
+                    <CourseCheckBox
+                      course={course}
+                      checked={checked}
+                      userInfo={userInfo}
+                      fetchUserInfo={fetchUserInfo}
+                    />
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </>

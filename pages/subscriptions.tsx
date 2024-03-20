@@ -61,6 +61,7 @@ export default function SubscriptionsPage(): ReactElement {
         classMapping.set(courseCode, {
           subject: subject,
           classId: classId,
+          termId: termId,
           host: host,
           name: result.classByHash.name,
           lastUpdateTime: result.classByHash.lastUpdateTime,
@@ -109,6 +110,7 @@ export default function SubscriptionsPage(): ReactElement {
           classMapping.set(courseCode, {
             subject: subject,
             classId: classId,
+            termId: termId,
             host: host,
             name: courseResult.classByHash.name,
             lastUpdateTime: courseResult.classByHash.lastUpdateTime,

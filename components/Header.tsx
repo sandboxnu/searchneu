@@ -75,7 +75,6 @@ export const DropdownMenuWrapper = ({
     return () => {
       document.removeEventListener('mousedown', handleCloseDropdown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onNotifSignUp = (): void => {

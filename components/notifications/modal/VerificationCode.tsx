@@ -82,7 +82,6 @@ export default function VerificationCode({
             Resend code
           </span>
         </span>
-        {error && <span className="phone-modal__error">{error}</span>}
         <div className="phone-modal__verification">
           {[...Array(codeLength)].map((_, index) => (
             <input
@@ -96,6 +95,7 @@ export default function VerificationCode({
             />
           ))}
         </div>
+        {error && <span className="phone-modal__error">{error}</span>}
         <div className="phone-modal__button-container">
           <button
             key="ok"

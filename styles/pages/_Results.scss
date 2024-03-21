@@ -270,9 +270,9 @@ $SIDEBAR_WIDTH: 268px;
       border-color: Colors.$Light_Grey;
     }
 
-    &:hover {
-      background: Colors.$Light_Grey;
-    }
+    // &:hover {
+    //   text-decoration: underline;
+    // }
 
     &--text-container {
       display: flex;

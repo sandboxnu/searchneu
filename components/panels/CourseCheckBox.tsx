@@ -4,7 +4,7 @@
  */
 
 import { uniqueId } from 'lodash';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Tooltip, { TooltipDirection } from '../Tooltip';
 import Keys from '../Keys';
 import { Course, SubscriptionCourse } from '../types';
@@ -28,9 +28,14 @@ export default function CourseCheckBox({
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
-  const isCourseChecked =
+  const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
   const [checked, setChecked] = useState<boolean>(isCourseChecked);
+
+  useEffect(() => {
+    setChecked(isCourseChecked()); // Reset checked status onSignIn/onSignOut
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo]);
 
   function onCheckboxClick(): void {
     if (!userInfo) {

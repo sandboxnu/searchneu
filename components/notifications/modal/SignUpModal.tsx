@@ -91,13 +91,13 @@ export default function SignUpModal({
           macros.logAmplitudeEvent('Phone Number Failed', {
             error,
           });
-          setStatusMessage('error - failed to register');
+          setStatusMessage('Incorrect code entered');
         })
         .finally(() => {
           setIsLoading(false);
         });
     } else {
-      setStatusMessage('Not a valid phone number');
+      setStatusMessage('Invalid phone number');
     }
   };
 
@@ -121,7 +121,7 @@ export default function SignUpModal({
         macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
           error,
         });
-        setStatusMessage('error - incorrect code');
+        setStatusMessage('Incorrect code entered');
       })
       .finally(() => {
         setIsLoading(false);

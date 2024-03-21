@@ -116,9 +116,6 @@ export const DropdownMenuWrapper = ({
                 </span>
               </div>
             </span>
-            {/* <span className="user-menu__item" onClick={subscriptionPage}>
-              View all subscriptions
-            </span> */}
           </div>
         )}
       </div>

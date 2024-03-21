@@ -38,13 +38,13 @@ export default function PhoneNumber({
           else.
         </span>
 
-        {error && <span className="phone-modal__error">{error}</span>}
         <PhoneInput
           className="phone-modal__phone-input"
           placeholder="+1 (123)-456-7890"
           defaultCountry="US"
           onChange={validatePhoneNumber}
         />
+        {error && <span className="phone-modal__error">{error}</span>}
         <div className="phone-modal__button-container">
           <button
             key="ok"

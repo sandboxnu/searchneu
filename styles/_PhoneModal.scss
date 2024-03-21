@@ -123,6 +123,7 @@
 
   .phone-modal__verification {
     display: flex;
+    width: 100%;
     justify-content: space-between;
     font-family: 'Lato', sans-serif;
     gap: 0.5rem;
@@ -182,7 +183,7 @@
     max-width: 285px;
     text-align: center;
     font-family: Lato;
-    font-size: 12px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 18px;
@@ -192,18 +193,18 @@
     }
 
     &--resend {
-      color: Colors.$NEU_Red;
+      color: Colors.$Navy;
       cursor: pointer;
       text-decoration: underline;
     }
   }
 
   &__error {
+    align-self: flex-start;
     position: relative;
-    top: 5px;
-    margin-bottom: 5px;
-    font-size: 0.6rem;
-    line-height: 1.5;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: normal;
     color: Colors.$NEU_Red;
     text-align: center;
   }

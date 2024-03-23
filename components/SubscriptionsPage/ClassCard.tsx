@@ -5,7 +5,6 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -49,6 +48,12 @@ export const ClassCard = ({
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
+
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
 
   return (
     <ClassCardWrapper
@@ -97,19 +102,21 @@ export const ClassCard = ({
                   />
                 ))}
               </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={5}>New available sections</td>
-                  <td>
-                    <CourseCheckBox
-                      course={course}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                      onSignIn={onSignIn}
-                    />
-                  </td>
-                </tr>
-              </tfoot>
+              {hasAtLeastOneSectionFull() && (
+                <tfoot>
+                  <tr>
+                    <td colSpan={5}>New available sections</td>
+                    <td>
+                      <CourseCheckBox
+                        course={course}
+                        userInfo={userInfo}
+                        fetchUserInfo={fetchUserInfo}
+                        onSignIn={onSignIn}
+                      />
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </>

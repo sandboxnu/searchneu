@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect } from 'react';
 import X from '../../icons/X.svg';
 import ArrowLeft from '../../icons/arrow-left.svg';
+import Colors from '../../../styles/_exports.module.scss';
 
 interface VerificationCodeProps {
   onBack: () => void;
@@ -88,6 +89,7 @@ export default function VerificationCode({
               key={index}
               ref={(el) => (inputRefs.current[index] = el)}
               className="phone-modal__verification-input"
+              style={error ? { borderColor: Colors.neu_red } : {}}
               maxLength={1}
               value={verificationCode[index] || ''}
               onChange={onChange}

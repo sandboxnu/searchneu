@@ -5,7 +5,6 @@
 
 import React, { ReactElement } from 'react';
 import { UserInfo } from '../types';
-import Keys from '../Keys';
 import CourseCheckBox from '../panels/CourseCheckBox';
 import { Course } from '../types';
 
@@ -37,7 +36,7 @@ export default function SignUpForSectionNotifications({
       : `There are ${numOpenSections} sections with seats left.`;
 
   return showNotificationSignup ? (
-    userInfo && (
+    userInfo ? (
       <div className="DesktopSectionPanel__notifs">
         <span className="checkboxLabel">
           Notify me when new sections are added:
@@ -49,6 +48,9 @@ export default function SignUpForSectionNotifications({
           fetchUserInfo={fetchUserInfo}
         />
       </div>
+    ) : (
+      // Need to replace this once mobile notifs are finalized
+      <>Sign in for new section notifications.</>
     )
   ) : (
     <div className="allSeatsAvailable">

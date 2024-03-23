@@ -1,7 +1,6 @@
 import { Markup } from 'interweave';
-import { cloneDeep } from 'lodash';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
   CreditsDisplay,
   CreditsDisplayMobile,
@@ -15,7 +14,6 @@ import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
 import useResultDetail from './useResultDetail';
-import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
 interface CourseResultProps {
@@ -25,11 +23,12 @@ interface CourseResultProps {
   fetchUserInfo: () => void;
 }
 
+const SECTIONS_SHOWN_BY_DEFAULT = 3;
+
+// Sorts the sections in place, since we don't care about preserving the original order.
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
-  // TODO (sam 2023-03-09): remove this `cloneDeep` call once we can remove the `useMemo` from `CourseResult`.
-  const sortedSections = cloneDeep(sections);
   const subscribedSectionIds = new Set(userInfo?.sectionIds ?? []);
-  sortedSections.sort((a: Section, b: Section) => {
+  sections.sort((a: Section, b: Section) => {
     const aHash = Keys.getSectionHash(a);
     const bHash = Keys.getSectionHash(b);
     if (subscribedSectionIds.has(aHash) === subscribedSectionIds.has(bHash)) {
@@ -43,7 +42,7 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
       return 1;
     }
   });
-  return sortedSections;
+  return sections;
 };
 
 export function CourseResult({
@@ -55,16 +54,14 @@ export function CourseResult({
   const router = useRouter();
   const termId = router.query.termId as string;
   const campus = router.query.campus as string;
-  // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
-  const sortedSections = useMemo(
-    () => sortSections(course.sections, userInfo),
-    [course]
-  );
   const { optionalDisplay } = useResultDetail(course);
 
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
-  );
+  const [showAll, setShowAll] = useState(false);
+
+  const sortedSections = sortSections(course.sections, userInfo);
+  const renderedSections = showAll
+    ? sortedSections
+    : sortedSections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
 
   const feeString =
     course.feeDescription && course.feeAmount
@@ -177,7 +174,7 @@ export function CourseResult({
               ))}
             </tbody>
           </table>
-          {!hideShowAll && (
+          {!(sortedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="SearchResult__showAll"
               role="button"
@@ -210,15 +207,14 @@ export function MobileCourseResult({
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
   const [showCoreq, setShowCoreq] = useState(false);
-  const sortedSections = useMemo(
-    () => sortSections(course.sections, userInfo),
-    [course]
-  );
-  const { showAll, setShowAll, renderedSections, hideShowAll } = useShowAll(
-    sortedSections
-  );
-
   const { optionalDisplay } = useResultDetail(course);
+
+  const [showAll, setShowAll] = useState(false);
+
+  const sortedSections = sortSections(course.sections, userInfo);
+  const renderedSections = showAll
+    ? sortedSections
+    : sortedSections.slice(0, SECTIONS_SHOWN_BY_DEFAULT);
 
   const hasAtLeastOneSectionFull = (): boolean => {
     return course.sections.some((e) => {
@@ -309,7 +305,7 @@ export function MobileCourseResult({
               />
             ))}
           </div>
-          {!hideShowAll && (
+          {!(sortedSections.length <= SECTIONS_SHOWN_BY_DEFAULT) && (
             <div
               className="MobileSearchResult__showAll"
               role="button"

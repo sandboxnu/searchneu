@@ -249,14 +249,15 @@ $SIDEBAR_WIDTH: 268px;
     background: Colors.$White;
     border-radius: 8px;
     border: 0.5px solid Colors.$NEU4;
-    padding: 12px 4px;
+    padding: 8px;
 
-    transform: translateY(calc(100% - 15px));
+    transform: translateY(calc(100% - 16px));
+
     white-space: nowrap;
   }
 
   &__item {
-    padding: 4px 0px 4px 12px;
+    padding: 8px 0px 8px 12px;
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -270,9 +271,9 @@ $SIDEBAR_WIDTH: 268px;
       border-color: Colors.$Light_Grey;
     }
 
-    // &:hover {
-    //   text-decoration: underline;
-    // }
+    &:hover {
+      background-color: Colors.$Secondary_Hover;
+    }
 
     &--text-container {
       display: flex;

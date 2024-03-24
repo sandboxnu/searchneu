@@ -29,26 +29,6 @@ export default function Page(): ReactElement {
     return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
   };
 
-  const loadClassPageInfo = async (): Promise<void> => {
-    const classPage = await gqlClient.getClassPageInfo({ subject, classId });
-    if ((subject || classId) && !classPage.class) {
-      router.push('/404');
-    }
-    // assume coreq values will never be nested
-    const coreqs: CourseReq[] = classPage.class
-      ? classPage.class.latestOccurrence.coreqs.values
-      : [];
-
-    const coreqInfoArray = await pMap(coreqs, async (coreqVal) => {
-      return await gqlClient.getClassPageInfo({
-        subject: coreqVal.subject,
-        classId: coreqVal.classId,
-      });
-    });
-    setClassPageInfo(classPage);
-    setCoreqInfo(coreqInfoArray);
-  };
-
   useEffect(() => {
     fetchUserInfo();
   }, []);
@@ -72,8 +52,32 @@ export default function Page(): ReactElement {
   };
 
   useEffect(() => {
+    const loadClassPageInfo = async (): Promise<void> => {
+      if (subject && classId) {
+        const classPage = await gqlClient.getClassPageInfo({
+          subject,
+          classId,
+        });
+        if ((subject || classId) && !classPage.class) {
+          router.push('/404');
+        }
+        // assume coreq values will never be nested
+        const coreqs: CourseReq[] = classPage.class
+          ? classPage.class.latestOccurrence.coreqs.values
+          : [];
+
+        const coreqInfoArray = await pMap(coreqs, async (coreqVal) => {
+          return await gqlClient.getClassPageInfo({
+            subject: coreqVal.subject,
+            classId: coreqVal.classId,
+          });
+        });
+        setClassPageInfo(classPage);
+        setCoreqInfo(coreqInfoArray);
+      }
+    };
     loadClassPageInfo();
-  }, [subject, classId]);
+  }, [subject, classId, router]);
 
   if (!termId || !campus) return null;
   return (

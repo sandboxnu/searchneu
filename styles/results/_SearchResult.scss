@@ -64,6 +64,7 @@
         top: 24px;
         left: -10px;
         background: Colors.$Navy;
+
         & > div {
           border-color: transparent transparent Colors.$Navy transparent;
           left: 12px;
@@ -135,6 +136,7 @@
         margin-top: 10px;
         margin-bottom: 10px;
         cursor: pointer;
+
         &:hover {
           background: Colors.$Off_White;
         }
@@ -148,6 +150,11 @@
           line-height: 25px;
         }
       }
+
+      .view-more-info-link {
+        color: Colors.$Black;
+      }
+
       .notepad-icon {
         margin-right: 8px;
       }

@@ -192,7 +192,7 @@ export function DesktopSectionPanel({
         )}
       </td>
       <td>{section.campus}</td>
-      <td className="DeskopSectionPanel__seatcount">
+      <td>
         <div>
           <span className={'DesktopSectionPanel__' + getSeatsClass()}>
             {section.seatsRemaining}/{section.seatsCapacity}

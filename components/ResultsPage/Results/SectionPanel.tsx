@@ -111,17 +111,25 @@ export function DesktopSectionPanel({
                 <span>
                   {meeting.type === MeetingType.FINAL_EXAM ? (
                     <>
-                      <b>Final Exam</b> |{' '}
-                      {`${time.start.format('h:mm')}-${time.end.format(
-                        'h:mm a'
-                      )} | ${meeting.location} | ${meeting.startDate.format(
-                        'MMM D'
-                      )}`}
+                      <div>
+                        <b>Final Exam</b> |{' '}
+                        {`${time.start.format('h:mm')}-${time.end.format(
+                          'h:mm a'
+                        )} `}
+                      </div>
+                      <div>
+                        {` ${meeting.location} | ${meeting.startDate.format(
+                          'MMM D'
+                        )}`}
+                      </div>
                     </>
                   ) : (
-                    `${time.start.format('h:mm')}-${time.end.format(
-                      'h:mm a'
-                    )} | ${meeting.location}`
+                    <>
+                      <div>
+                        {time.start.format('h:mm')}-{time.end.format('h:mm a')}
+                      </div>
+                      <div>{meeting.location}</div>
+                    </>
                   )}
                 </span>
                 <br />
@@ -184,8 +192,8 @@ export function DesktopSectionPanel({
         )}
       </td>
       <td>{section.campus}</td>
-      <td>
-        <div className="DeskopSectionPanel__seatcount">
+      <td className="DeskopSectionPanel__seatcount">
+        <div>
           <span className={'DesktopSectionPanel__' + getSeatsClass()}>
             {section.seatsRemaining}/{section.seatsCapacity}
           </span>

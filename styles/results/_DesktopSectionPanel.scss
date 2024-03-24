@@ -20,7 +20,7 @@
       letter-spacing: 0.25px;
       display: inline-block;
       margin-bottom: 4px;
-      text-align: right;
+      text-align: left;
       width: max-content;
     }
   }
@@ -37,8 +37,14 @@
     }
   }
 
+  // Meetings
   > td:nth-child(3) {
     width: 35%;
+  }
+
+  // Notifications
+  > td:nth-child(6) {
+    width: 10%;
   }
 
   &__green {

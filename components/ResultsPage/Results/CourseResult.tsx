@@ -10,7 +10,7 @@ import { LastUpdated, LastUpdatedMobile } from '../../common/LastUpdated';
 import { UserInfo } from '../../types';
 import IconArrow from '../../icons/IconArrow';
 import IconNotepad from '../../icons/IconNotepad';
-import SignUpForNotifications from '../../notifications/SignUpForNotifications';
+import SignUpForSectionNotifications from '../../notifications/SignUpForSectionNotifications';
 import { Course, PrereqType, Section } from '../../types';
 import MobileCollapsableDetail from './MobileCollapsableDetail';
 import { DesktopSectionPanel, MobileSectionPanel } from './SectionPanel';
@@ -18,11 +18,12 @@ import useResultDetail from './useResultDetail';
 import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
+import CourseCheckBox from '../../panels/CourseCheckBox';
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
@@ -49,8 +50,8 @@ const sortSections = (sections: Section[], userInfo?: UserInfo): Section[] => {
 export function CourseResult({
   course,
   userInfo,
-  onSignIn,
   fetchUserInfo,
+  onSignIn,
 }: CourseResultProps): ReactElement {
   const router = useRouter();
   const termId = router.query.termId as string;
@@ -58,6 +59,7 @@ export function CourseResult({
   // TODO (sam 2023-03-09): this is necessary because of `useShowAll`, which should likely not be coupled to courses.
   const sortedSections = useMemo(
     () => sortSections(course.sections, userInfo),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [course]
   );
   const { optionalDisplay } = useResultDetail(course);
@@ -85,8 +87,6 @@ export function CourseResult({
             {course.subject} {course.classId}: {course.name}
           </span>
           <LastUpdated
-            host={course.host}
-            prettyUrl={course.prettyUrl}
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
@@ -136,14 +136,6 @@ export function CourseResult({
                   <span>View more info for this class</span>
                 </div>
               </div>
-
-              <SignUpForNotifications
-                course={course}
-                userInfo={userInfo}
-                onSignIn={onSignIn}
-                showNotificationSignup={hasAtLeastOneSectionFull()}
-                fetchUserInfo={fetchUserInfo}
-              />
             </div>
           </div>
         </>
@@ -165,7 +157,7 @@ export function CourseResult({
                 <th> Meetings </th>
                 <th> Campus </th>
                 <th> Seats </th>
-                {userInfo && <th> Notifications </th>}
+                <th> Notifications </th>
               </tr>
             </thead>
             <tbody>
@@ -175,9 +167,25 @@ export function CourseResult({
                   section={section}
                   userInfo={userInfo}
                   fetchUserInfo={fetchUserInfo}
+                  onSignIn={onSignIn}
                 />
               ))}
             </tbody>
+            {hasAtLeastOneSectionFull() && (
+              <tfoot>
+                <tr>
+                  <td colSpan={5}>New available sections</td>
+                  <td>
+                    <CourseCheckBox
+                      course={course}
+                      userInfo={userInfo}
+                      onSignIn={onSignIn}
+                      fetchUserInfo={fetchUserInfo}
+                    />
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </table>
           {!hideShowAll && (
             <div
@@ -205,8 +213,8 @@ export function CourseResult({
 export function MobileCourseResult({
   course,
   userInfo,
-  onSignIn,
   fetchUserInfo,
+  onSignIn,
 }: CourseResultProps): ReactElement {
   const [showMore, setShowMore] = useState(false);
   const [showNUPath, setShowNUPath] = useState(false);
@@ -250,11 +258,7 @@ export function MobileCourseResult({
         <>
           <div className="MobileSearchResult__panel--mainContainer">
             <div className="MobileSearchResult__panel--infoStrings">
-              <LastUpdatedMobile
-                host={course.host}
-                prettyUrl={course.prettyUrl}
-                lastUpdateTime={course.lastUpdateTime}
-              />
+              <LastUpdatedMobile lastUpdateTime={course.lastUpdateTime} />
               <CreditsDisplayMobile
                 maxCredits={course.maxCredits}
                 minCredits={course.minCredits}
@@ -296,12 +300,12 @@ export function MobileCourseResult({
               renderChildren={() => optionalDisplay(PrereqType.COREQ, course)}
             />
             <div className="MobileSearchResult__panel--notifContainer">
-              <SignUpForNotifications
+              <SignUpForSectionNotifications
                 course={course}
                 userInfo={userInfo}
-                onSignIn={onSignIn}
                 showNotificationSignup={hasAtLeastOneSectionFull()}
                 fetchUserInfo={fetchUserInfo}
+                onSignIn={onSignIn}
               />
             </div>
           </div>
@@ -312,6 +316,7 @@ export function MobileCourseResult({
                 section={section}
                 userInfo={userInfo}
                 fetchUserInfo={fetchUserInfo}
+                onSignIn={onSignIn}
               />
             ))}
           </div>

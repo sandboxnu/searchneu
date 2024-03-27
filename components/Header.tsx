@@ -2,7 +2,13 @@ import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
 import { NextRouter } from 'next/router';
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
 import { getRoundedTerm } from './terms';
 import FilterButton from '../components/icons/FilterButton.svg';
@@ -26,14 +32,115 @@ import { campusToColor } from '../utils/campusToColor';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
+import SignUpModal from './notifications/modal/SignUpModal';
+import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
+import Exit from '../components/icons/exit.svg';
 
 type HeaderProps = {
   router: NextRouter;
   title: string;
   searchData: SearchResult;
   termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
-  userInfo: UserInfo;
+  userInfo: UserInfo | null;
   onSignOut: () => void;
+  onSignIn: (token: string) => void;
+};
+
+type DropdownMenuWrapperProps = {
+  splashPage?: boolean;
+  userInfo: UserInfo | null;
+  onSignOut: () => void;
+  onSignIn: (token: string) => void;
+};
+
+export const DropdownMenuWrapper = ({
+  splashPage = false,
+  userInfo,
+  onSignOut,
+  onSignIn,
+}: DropdownMenuWrapperProps): ReactElement => {
+  const [showModal, setShowModal] = useState(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleCloseDropdown = (event: Event): void => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenuDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleCloseDropdown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleCloseDropdown);
+    };
+  }, []);
+
+  const onNotifSignUp = (): void => {
+    setShowModal(true);
+  };
+
+  const toggleMenuDropdown = (): void => {
+    setShowMenuDropdown(!showMenuDropdown);
+  };
+
+  // Commented out until subscription page is finalized
+  // const subscriptionPage = (): void => {
+  //   router.push('/subscriptions');
+  // };
+
+  const DropDownMenu = (): ReactElement => {
+    return (
+      <div className="user-menu">
+        <div
+          ref={dropdownRef}
+          className={
+            splashPage ? 'user-menu__splash-page' : 'user-menu__icon-wrapper'
+          }
+          onClick={toggleMenuDropdown}
+        >
+          {splashPage && <>Logged In</>}
+          <IconUser className="user-menu__icon" />
+        </div>
+
+        {showMenuDropdown && (
+          <div ref={dropdownRef} className="user-menu__dropdown">
+            <span className="user-menu__item" onClick={onSignOut}>
+              <Exit style={{ marginRight: '8px' }} />
+              <div className="user-menu__item--text-container">
+                <span className="user-menu__item--text">Sign out</span>
+                <span className="user-menu__item--phone-number">
+                  {userInfo.phoneNumber}
+                </span>
+              </div>
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {userInfo ? (
+        <DropDownMenu />
+      ) : (
+        <>
+          <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
+          <SignUpModal
+            visible={showModal}
+            onCancel={() => setShowModal(false)}
+            onSignIn={onSignIn}
+            onSuccess={() => {
+              setShowModal(false);
+              setShowMenuDropdown(false);
+            }}
+          />
+        </>
+      )}
+    </>
+  );
 };
 
 export default function Header({
@@ -43,11 +150,10 @@ export default function Header({
   termAndCampusToURL,
   userInfo,
   onSignOut,
+  onSignIn,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
-
-  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
 
   const query = (router.query.query as string) || '';
   const termId = router.query.termId as string;
@@ -67,21 +173,12 @@ export default function Header({
     );
   };
 
-  // Commented out until subscription page is finalized
-  // const subscriptionPage = (): void => {
-  //   router.push('/subscriptions');
-  // };
-
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
       return termAndCampusToURL(t, newCampus, query);
     },
     [query, termAndCampusToURL]
   );
-
-  const toggleMenuDropdown = (): void => {
-    setShowMenuDropdown(!showMenuDropdown);
-  };
 
   if (!termId || !campus) return null;
   if (showOverlay && macros.isMobile) {
@@ -128,25 +225,11 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
-            {userInfo && (
-              <>
-                <div className="user-menu">
-                  <div
-                    className="user-menu__icon-wrapper"
-                    onClick={toggleMenuDropdown}
-                  >
-                    <IconUser className="user-menu__icon" />
-                  </div>
-                  {showMenuDropdown && (
-                    <div className="user-menu__dropdown">
-                      <span className="user-menu__item" onClick={onSignOut}>
-                        Sign out of {userInfo.phoneNumber}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
+            <DropdownMenuWrapper
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+              userInfo={userInfo}
+            />
           </div>
         )}
         {!macros.isMobile && (
@@ -189,27 +272,12 @@ export default function Header({
             />
           </div>
         </div>
-        {!macros.isMobile && userInfo && (
-          <>
-            <div className="user-menu">
-              <div
-                className="user-menu__icon-wrapper"
-                onClick={toggleMenuDropdown}
-              >
-                <IconUser className="user-menu__icon" />
-              </div>
-              {showMenuDropdown && (
-                <div className="user-menu__dropdown">
-                  <span className="user-menu__item" onClick={onSignOut}>
-                    Sign out of {userInfo.phoneNumber}
-                  </span>
-                  {/* <span className="user-menu__item" onClick={subscriptionPage}>
-                    View all subscriptions
-                  </span> */}
-                </div>
-              )}
-            </div>
-          </>
+        {!macros.isMobile && (
+          <DropdownMenuWrapper
+            onSignIn={onSignIn}
+            onSignOut={onSignOut}
+            userInfo={userInfo}
+          />
         )}
       </div>
     </div>

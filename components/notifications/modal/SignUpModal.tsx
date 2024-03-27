@@ -9,6 +9,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import macros from '../../macros';
 import Modal from '../../Modal';
 import PhoneNumber from './PhoneNumber';
+import GoSignIn from './GoSignIn';
 import VerificationCode from './VerificationCode';
 import Colors from '../../../styles/_exports.module.scss';
 
@@ -19,12 +20,14 @@ interface SignUpModalProps {
   onCancel: () => void;
   onSignIn: (token: string) => void;
   onSuccess: () => void;
+  oneMoreStep?: boolean;
 }
 
 /**
  * A step in the sign-up process associated with a modal screen.
  */
 enum Step {
+  GoSignIn,
   PhoneNumber,
   VerificationCode,
 }
@@ -34,8 +37,11 @@ export default function SignUpModal({
   onCancel,
   onSignIn,
   onSuccess,
+  oneMoreStep = false,
 }: SignUpModalProps): ReactElement {
-  const [step, setStep] = useState<Step>(Step.PhoneNumber);
+  const [step, setStep] = useState<Step>(
+    oneMoreStep ? Step.GoSignIn : Step.PhoneNumber
+  );
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -48,13 +54,6 @@ export default function SignUpModal({
     setIsLoading(false);
     setStatusMessage('');
   }, [step, visible, phoneNumber, verificationCode]);
-
-  // To handle submission of verification code
-  useEffect(() => {
-    if (verificationCode.length === VERIFICATION_CODE_LENGTH) {
-      onVerificationCodeSubmit();
-    }
-  }, [verificationCode]);
 
   // useEffect pattern used for countdown as per:
   // https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
@@ -72,6 +71,7 @@ export default function SignUpModal({
 
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resendDisabledTimeout]);
 
   const onPhoneNumberSubmit = (): void => {
@@ -91,13 +91,13 @@ export default function SignUpModal({
           macros.logAmplitudeEvent('Phone Number Failed', {
             error,
           });
-          setStatusMessage('error - failed to register');
+          setStatusMessage('Incorrect code entered');
         })
         .finally(() => {
           setIsLoading(false);
         });
     } else {
-      setStatusMessage('Not a valid phone number');
+      setStatusMessage('Invalid phone number');
     }
   };
 
@@ -110,6 +110,10 @@ export default function SignUpModal({
       })
       .then(({ data }) => {
         onSignIn(data.token);
+        if (oneMoreStep) {
+          setStep(Step.GoSignIn);
+        }
+        setVerificationCode('');
         onSuccess();
       })
       .catch((error) => {
@@ -117,15 +121,22 @@ export default function SignUpModal({
         macros.logAmplitudeEvent('Phone Number Verification Code Failed', {
           error,
         });
-        setStatusMessage('error - incorrect code');
+        setStatusMessage('Incorrect code entered');
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
 
+  const handleCancel = (): void => {
+    if (oneMoreStep) {
+      setStep(Step.GoSignIn);
+    }
+    onCancel();
+  };
+
   return (
-    <Modal visible={visible} onCancel={onCancel}>
+    <Modal visible={visible} onCancel={handleCancel}>
       <div className="phone-modal">
         {isLoading && (
           <div className="phone-modal__spinner">
@@ -134,11 +145,18 @@ export default function SignUpModal({
         )}
         {(() => {
           switch (step) {
+            case Step.GoSignIn:
+              return (
+                <GoSignIn
+                  onCancel={handleCancel}
+                  onSubmit={() => setStep(Step.PhoneNumber)}
+                />
+              );
             case Step.PhoneNumber:
               return (
                 <PhoneNumber
                   setPhoneNumber={setPhoneNumber}
-                  onCancel={onCancel}
+                  onCancel={handleCancel}
                   onSubmit={onPhoneNumberSubmit}
                   error={statusMessage}
                 />
@@ -146,12 +164,16 @@ export default function SignUpModal({
             case Step.VerificationCode:
               return (
                 <VerificationCode
-                  onBack={() => setStep(Step.PhoneNumber)}
+                  onBack={() => {
+                    setPhoneNumber('');
+                    setStep(Step.PhoneNumber);
+                  }}
+                  onCancel={handleCancel}
                   onResend={onPhoneNumberSubmit}
                   verificationCode={verificationCode}
                   setVerificationCode={setVerificationCode}
+                  onVerificationCodeSubmit={onVerificationCodeSubmit}
                   isDisabled={resendDisabled}
-                  disabledMessage={`resend in ${resendDisabledTimeout} seconds`}
                   phoneNumber={formatPhoneNumberIntl(phoneNumber)}
                   codeLength={VERIFICATION_CODE_LENGTH}
                   error={statusMessage}

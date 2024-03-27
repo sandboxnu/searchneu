@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
 import macros from '../../macros';
-import IconMessage from '../../icons/IconMessage';
 
 interface NotifSignUpButtonProps {
   onNotifSignUp: () => void;
@@ -15,9 +14,12 @@ export default function NotifSignUpButton({
   };
 
   return (
-    <div onClick={onClickWithAmplitudeHook} className="button">
-      <IconMessage className="icon" />
-      <span>Notify me when seats open!</span>
-    </div>
+    <button
+      onClick={onClickWithAmplitudeHook}
+      type="button"
+      className="Results_SignIn"
+    >
+      Sign In
+    </button>
   );
 }

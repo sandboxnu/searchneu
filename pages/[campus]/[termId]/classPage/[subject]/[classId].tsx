@@ -7,17 +7,13 @@ import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
 import macros from '../../../../../components/macros';
-import Cookies from 'universal-cookie';
-import axios from 'axios';
-
-const cookies = new Cookies();
+import useUserInfo from '../../../../../utils/useUserInfo';
 
 export default function Page(): ReactElement {
   const [classPageInfo, setClassPageInfo] = useState<GetClassPageInfoQuery>(
     null
   );
   const [coreqInfo, setCoreqInfo] = useState<GetClassPageInfoQuery[]>([]);
-  const [userInfo, setUserInfo] = useState(null);
 
   const router = useRouter();
 
@@ -50,30 +46,16 @@ export default function Page(): ReactElement {
   };
 
   useEffect(() => {
-    fetchUserInfo();
-  }, []);
+    loadClassPageInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subject, classId]);
 
-  const onSignOut = () => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    setUserInfo(null);
-  };
-
-  const fetchUserInfo = () => {
-    const token = cookies.get('SearchNEU JWT');
-    if (token) {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${token}`
-        )
-        .then(({ data }) => {
-          setUserInfo({ token, ...data });
-        });
-    }
-  };
+  const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
   useEffect(() => {
-    loadClassPageInfo();
-  }, [subject, classId]);
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!termId || !campus) return null;
   return (
@@ -84,6 +66,7 @@ export default function Page(): ReactElement {
         searchData={null}
         termAndCampusToURL={termAndCampusToURL}
         userInfo={userInfo}
+        onSignIn={onSignIn}
         onSignOut={onSignOut}
       />
       {macros.isMobile ? (

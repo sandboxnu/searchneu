@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { cloneDeep, flatten, groupBy, values } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Keys from '../Keys';
 import macros from '../macros';
@@ -24,9 +24,9 @@ interface ResultsLoaderProps {
   results: SearchItem[];
   loadMore: () => void;
   hasNextPage: boolean;
-  userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
+  userInfo: UserInfo | null;
+  onSignIn: (token: string) => void;
 }
 
 export const getGroupedByTimeOfDay = (times): DayjsTuple[] => {
@@ -106,8 +106,8 @@ function ResultsLoader({
   loadMore,
   hasNextPage,
   userInfo,
-  onSignIn,
   fetchUserInfo,
+  onSignIn,
 }: ResultsLoaderProps): ReactElement {
   return (
     <InfiniteScroll
@@ -135,8 +135,8 @@ function ResultsLoader({
                   }
                   result={result}
                   userInfo={userInfo}
-                  onSignIn={onSignIn}
                   fetchUserInfo={fetchUserInfo}
+                  onSignIn={onSignIn}
                 />
               );
             })}
@@ -151,13 +151,13 @@ function ResultsLoader({
 const ResultItemMemoized = React.memo(function ResultItemMemoized({
   result,
   userInfo,
-  onSignIn,
   fetchUserInfo,
+  onSignIn,
 }: {
   result: SearchItem;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }) {
   if (result.type === 'class') {
     const course = result.class;
@@ -167,15 +167,15 @@ const ResultItemMemoized = React.memo(function ResultItemMemoized({
       <MobileCourseResult
         course={course}
         userInfo={userInfo}
-        onSignIn={onSignIn}
         fetchUserInfo={fetchUserInfo}
+        onSignIn={onSignIn}
       />
     ) : (
       <CourseResult
         course={course}
         userInfo={userInfo}
-        onSignIn={onSignIn}
         fetchUserInfo={fetchUserInfo}
+        onSignIn={onSignIn}
       />
     );
   }

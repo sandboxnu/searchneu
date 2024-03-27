@@ -7,8 +7,6 @@ import IconGlobe from '../icons/IconGlobe';
 dayjs.extend(relativeTime);
 
 interface LastUpdatedProps {
-  host: string;
-  prettyUrl: string;
   lastUpdateTime: number;
   iconHeight?: string;
   iconWidth?: string;
@@ -20,8 +18,6 @@ export function getLastUpdateString(lastUpdateTime: number): string {
 }
 
 export function LastUpdated({
-  host,
-  prettyUrl,
   lastUpdateTime,
   iconHeight,
   iconWidth,
@@ -29,15 +25,7 @@ export function LastUpdated({
 }: LastUpdatedProps): ReactElement {
   return (
     <div className={className ? className : ''}>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        data-tip={`View on ${host}`}
-        href={prettyUrl}
-        className="bannerPageLink"
-      >
-        <IconGlobe height={iconHeight} width={iconWidth} />
-      </a>
+      <IconGlobe height={iconHeight} width={iconWidth} />
       <Tooltip
         text={'View this course on Banner.'}
         direction={TooltipDirection.Down}
@@ -50,14 +38,7 @@ export function LastUpdated({
 }
 
 export function LastUpdatedMobile({
-  prettyUrl,
   lastUpdateTime,
 }: LastUpdatedProps): ReactElement {
-  return (
-    <a
-      href={prettyUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-    >{`Updated ${getLastUpdateString(lastUpdateTime)}`}</a>
-  );
+  return <>Updated {getLastUpdateString(lastUpdateTime)}</>;
 }

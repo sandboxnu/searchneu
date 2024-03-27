@@ -24,8 +24,6 @@ export default function ClassPageInfoHeader({
       </div>
       <div className="flex justify-space-between">
         <LastUpdated
-          host={latestOccurrence.host}
-          prettyUrl={latestOccurrence.prettyUrl}
           lastUpdateTime={latestOccurrence.lastUpdateTime}
           iconHeight="25"
           iconWidth="24"

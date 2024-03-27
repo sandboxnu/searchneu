@@ -1,9 +1,10 @@
 import { ReactElement, useState } from 'react';
-import { Section, UserInfo } from '../types';
+import { Section, SubscriptionCourse, UserInfo } from '../types';
 import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
+import CourseCheckBox from '../panels/CourseCheckBox';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -31,16 +32,11 @@ const ClassCardWrapper = ({
 };
 
 type ClassCardType = {
-  course: {
-    subject: string;
-    classId: string;
-    name: string;
-    host: string;
-    lastUpdateTime: number;
-  };
+  course: SubscriptionCourse;
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export const ClassCard = ({
@@ -48,9 +44,16 @@ export const ClassCard = ({
   sections,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
+
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
 
   return (
     <ClassCardWrapper
@@ -60,8 +63,6 @@ export const ClassCard = ({
             {course.subject} {course.classId}: {course.name}
           </span>
           <LastUpdated
-            host={course.host}
-            prettyUrl={''} //Ignore this for now, the current link we use is outdated anyway. Will need to be course.prettyUrl
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
@@ -86,7 +87,7 @@ export const ClassCard = ({
                   <th> Meetings </th>
                   <th> Campus </th>
                   <th> Seats </th>
-                  {userInfo && <th> Notifications </th>}
+                  <th> Notifications </th>
                 </tr>
               </thead>
               <tbody>
@@ -96,9 +97,26 @@ export const ClassCard = ({
                     section={section}
                     userInfo={userInfo}
                     fetchUserInfo={fetchUserInfo}
+                    // We don't really have access to onSignIn until header is added to the subscription page. Passing in a fake onSignIn
+                    onSignIn={onSignIn}
                   />
                 ))}
               </tbody>
+              {hasAtLeastOneSectionFull() && (
+                <tfoot>
+                  <tr>
+                    <td colSpan={5}>New available sections</td>
+                    <td>
+                      <CourseCheckBox
+                        course={course}
+                        userInfo={userInfo}
+                        fetchUserInfo={fetchUserInfo}
+                        onSignIn={onSignIn}
+                      />
+                    </td>
+                  </tr>
+                </tfoot>
+              )}
             </table>
           </div>
         </>

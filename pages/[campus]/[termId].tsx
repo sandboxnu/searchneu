@@ -15,13 +15,11 @@ import Boston from '../../components/icons/boston.svg';
 import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
-import AlertBanner, {
-  AlertBannerData,
-} from '../../components/common/AlertBanner';
 import { Campus } from '../../components/types';
-import alertBannersData from '../../public/alert-banners.yml';
 
 import getTermInfosWithError from '../../utils/TermInfoProvider';
+import { DropdownMenuWrapper } from '../../components/Header';
+import useUserInfo from '../../utils/useUserInfo';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -33,10 +31,14 @@ export default function Home(): ReactElement {
   const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
-
-  const alertBanners = Object.values(alertBannersData) as [AlertBannerData];
-
   const containerClassnames = 'home-container';
+
+  const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
+
+  useEffect(() => {
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (termInfosError) {
@@ -71,6 +73,15 @@ export default function Home(): ReactElement {
               height={61}
             />
           </a>
+          <div className="signInButtonContainer">
+            <DropdownMenuWrapper
+              splashPage={true}
+              userInfo={userInfo}
+              onSignIn={onSignIn}
+              onSignOut={onSignOut}
+            />
+          </div>
+
           <a
             target="_blank"
             rel="noopener noreferrer"

@@ -34,6 +34,23 @@ $SIDEBAR_WIDTH: 268px;
   }
 }
 
+.Results_SignIn {
+  margin: 0 17px 0 30px;
+  margin-left: auto;
+  padding: 12px 16px;
+  background: Colors.$NEU_Red;
+  color: Colors.$White;
+  border: 1px solid Colors.$NEU_Red;
+  border-radius: 8px;
+  font-family: 'Lato';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .Results__mobileSearchFilterWrapper {
   @media only screen and (max-width: 767px) {
     display: flex;
@@ -211,48 +228,42 @@ $SIDEBAR_WIDTH: 268px;
     display: flex;
   }
 
+  &__splash-page {
+    display: inline-flex;
+    background: Colors.$White;
+    cursor: pointer;
+    align-items: center;
+    border-radius: 8px;
+    gap: 12px;
+    padding: 4px 12px;
+  }
+
   &__icon {
     cursor: pointer;
   }
 
   &__dropdown {
+    min-width: 185px;
     z-index: Indexes.$Fourteen;
     position: absolute;
     background: Colors.$White;
-    border-radius: 3px;
-    padding: 12px;
-    bottom: 0;
-    right: -20px;
-    transform: translateY(calc(100% + 4px));
-    filter: drop-shadow(0px 0px 3px Colors.$Grey);
+    border-radius: 8px;
+    border: 0.5px solid Colors.$NEU4;
+    padding: 8px;
+
+    transform: translateY(calc(100% - 16px));
+
     white-space: nowrap;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: -4px;
-      right: 30px;
-      width: 0;
-      height: 0;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-bottom: 4px solid Colors.$White;
-
-      @media only screen and (max-width: 767px) {
-        right: 10px;
-      }
-    }
-
-    @media only screen and (max-width: 767px) {
-      right: 0;
-    }
   }
 
   &__item {
-    padding: 4px 6px;
+    padding: 8px 0px 8px 12px;
     cursor: pointer;
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+
     &:not(:first-child) {
       border-style: solid;
       border-width: 0px;
@@ -261,13 +272,45 @@ $SIDEBAR_WIDTH: 268px;
     }
 
     &:hover {
-      background: Colors.$Light_Grey;
+      background-color: Colors.$Secondary_Hover;
+    }
+
+    &--text-container {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      gap: 8px;
+    }
+
+    &--text {
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      line-height: 10px;
+      font-weight: 600;
+      color: Colors.$NEU9;
+    }
+
+    &--phone-number {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+      border-radius: 8px;
+      background: Colors.$NEU2;
+
+      font-family: Lato;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 9px;
+      color: Colors.$NEU7;
     }
   }
 
-  @media only screen and (max-width: 767px) {
-    margin: 0;
-  }
+  // @media only screen and (max-width: 767px) {
+  //   margin: 0;
+  // }
 }
 
 .User_SignOut {

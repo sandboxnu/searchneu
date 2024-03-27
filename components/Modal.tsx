@@ -23,16 +23,14 @@ export default function Modal({
     return () => document.removeEventListener('keydown', handleKeyEvent);
   }, [onCancel]);
 
-  return createPortal(
-    <>
-      {visible && (
+  return visible
+    ? createPortal(
         <div className="modal-wrapper" onClick={onCancel}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             {children}
           </div>
-        </div>
-      )}
-    </>,
-    document.body
-  );
+        </div>,
+        document.body
+      )
+    : null;
 }

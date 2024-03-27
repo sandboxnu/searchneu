@@ -3,38 +3,26 @@
  * See the license file in the root folder for details.
  */
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { UserInfo } from '../types';
-import Keys from '../Keys';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import SignUpModal from './modal/SignUpModal';
-import NotifSignUpButton from '../ResultsPage/Results/NotifSignUpButton';
 import { Course } from '../types';
 
-type SignUpForNotificationsProps = {
+type SignUpForSectionNotificationsProps = {
   course: Course;
   userInfo: UserInfo;
-  onSignIn: (token: string) => void;
   showNotificationSignup: boolean;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
-export default function SignUpForNotifications({
+export default function SignUpForSectionNotifications({
   course,
   userInfo,
-  onSignIn,
   showNotificationSignup,
   fetchUserInfo,
-}: SignUpForNotificationsProps): ReactElement {
-  const [showModal, setShowModal] = useState(false);
-
-  const checked =
-    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
-
-  const onNotifSignUp = (): void => {
-    setShowModal(true);
-  };
-
+  onSignIn,
+}: SignUpForSectionNotificationsProps): ReactElement {
   const numOpenSections = course.sections.reduce((prev, cur) => {
     if (cur.seatsRemaining > 0) {
       return prev + 1;
@@ -54,22 +42,15 @@ export default function SignUpForNotifications({
           Notify me when new sections are added:
         </span>
         <CourseCheckBox
+          onSignIn={onSignIn}
           course={course}
-          checked={checked}
           userInfo={userInfo}
           fetchUserInfo={fetchUserInfo}
         />
       </div>
     ) : (
-      <>
-        <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
-        <SignUpModal
-          visible={showModal}
-          onCancel={() => setShowModal(false)}
-          onSignIn={onSignIn}
-          onSuccess={() => setShowModal(false)}
-        />
-      </>
+      // Need to replace this once mobile notifs are finalized
+      <>Sign in for new section notifications.</>
     )
   ) : (
     <div className="allSeatsAvailable">

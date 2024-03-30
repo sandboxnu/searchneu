@@ -154,6 +154,25 @@ $SIDEBAR_WIDTH: 268px;
     padding-right: 10px;
     padding-left: 10px;
   }
+
+  &__EmptyCard {
+    margin: 0px 220px;
+
+    p {
+      font-weight: 400;
+    }
+
+    button {
+      padding: 6px 20px;
+    }
+
+    &_Title {
+      font-size: 18px;
+      b {
+        font-weight: 700;
+      }
+    }
+  }
 }
 
 // TODO make this a spiner, but need to fix ResultsLoader rerender issue first

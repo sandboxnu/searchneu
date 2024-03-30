@@ -4,10 +4,8 @@ import { gqlClient } from '../utils/courseAPIClient';
 import { PacmanLoader } from 'react-spinners';
 import useUserInfo from '../utils/useUserInfo';
 import { SubscriptionCourse } from '../components/types';
-import {
-  ClassCard,
-  ClassCardWrapper,
-} from '../components/SubscriptionsPage/ClassCard';
+import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
+import { EmptyCard } from '../components/SubscriptionsPage/EmptyCard';
 
 export default function SubscriptionsPage(): ReactElement {
   const {
@@ -178,30 +176,7 @@ export default function SubscriptionsPage(): ReactElement {
               </div>
             </>
           ) : (
-            <>
-              <div className="Results_Container">
-                <div className="Results_MainWrapper">
-                  <div className="Results_Main">
-                    <ClassCardWrapper
-                      headerLeft={
-                        <>
-                          <span className="SearchResult__header--classTitle">
-                            <b>
-                              You currently have no notifications. Hoosky sad :(
-                            </b>
-                          </span>
-                          <p>
-                            Be the first to know when new classes and sections
-                            drop!
-                          </p>
-                        </>
-                      }
-                      headerRight={<button>Search for classes</button>}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
+            <EmptyCard />
           )}
         </>
       )}

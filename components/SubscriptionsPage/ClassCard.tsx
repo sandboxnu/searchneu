@@ -13,7 +13,7 @@ type ClassCardWrapperType = {
   afterBody?: ReactElement;
 };
 
-const ClassCardWrapper = ({
+export const ClassCardWrapper = ({
   headerLeft,
   headerRight,
   body,

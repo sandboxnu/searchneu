@@ -4,7 +4,10 @@ import { gqlClient } from '../utils/courseAPIClient';
 import { PacmanLoader } from 'react-spinners';
 import useUserInfo from '../utils/useUserInfo';
 import { SubscriptionCourse } from '../components/types';
-import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
+import {
+  ClassCard,
+  ClassCardWrapper,
+} from '../components/SubscriptionsPage/ClassCard';
 
 export default function SubscriptionsPage(): ReactElement {
   const {
@@ -17,6 +20,8 @@ export default function SubscriptionsPage(): ReactElement {
 
   // is the course / section data still fetching
   const [isFetching, setIsFetching] = useState(true);
+  // is the user subscribed to at least one class
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +29,7 @@ export default function SubscriptionsPage(): ReactElement {
       return;
     }
 
+    // not logged in
     if (!userInfo && !isUserInfoLoading) {
       router.push('/');
       return;
@@ -131,6 +137,10 @@ export default function SubscriptionsPage(): ReactElement {
         await fetchSectionNotifs();
         setClasses(classMapping);
         setIsFetching(false);
+        // are there classes the user is subscribed to?
+        if (classMapping.size > 0) {
+          setIsSubscribed(true);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -145,25 +155,54 @@ export default function SubscriptionsPage(): ReactElement {
         <PacmanLoader loading={isFetching} size={30} />
       ) : (
         <>
-          <div className="Results_Container">
-            <div className="Results_MainWrapper">
-              <div className="Results_Main">
-                <h2>Subscriptions</h2>
-                {Array.from(classes).map(([courseCode, course]) => {
-                  return (
-                    <ClassCard
-                      key={courseCode}
-                      course={course}
-                      sections={course.sections}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                      onSignIn={onSignIn}
-                    />
-                  );
-                })}
+          {isSubscribed ? (
+            <>
+              <div className="Results_Container">
+                <div className="Results_MainWrapper">
+                  <div className="Results_Main">
+                    <h2>Subscriptions</h2>
+                    {Array.from(classes).map(([courseCode, course]) => {
+                      return (
+                        <ClassCard
+                          key={courseCode}
+                          course={course}
+                          sections={course.sections}
+                          userInfo={userInfo}
+                          fetchUserInfo={fetchUserInfo}
+                          onSignIn={onSignIn}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <div className="Results_Container">
+                <div className="Results_MainWrapper">
+                  <div className="Results_Main">
+                    <ClassCardWrapper
+                      headerLeft={
+                        <>
+                          <span className="SearchResult__header--classTitle">
+                            <b>
+                              You currently have no notifications. Hoosky sad :(
+                            </b>
+                          </span>
+                          <p>
+                            Be the first to know when new classes and sections
+                            drop!
+                          </p>
+                        </>
+                      }
+                      headerRight={<button>Search for classes</button>}
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </>

@@ -166,10 +166,19 @@ $SIDEBAR_WIDTH: 268px;
       padding: 6px 20px;
     }
 
-    &_Title {
-      font-size: 18px;
-      b {
-        font-weight: 700;
+    &_Text {
+      padding: 8px 2px;
+
+      p {
+        padding-bottom: 4px;
+      }
+
+      &_Title {
+        padding-bottom: 7px;
+        font-size: 18px;
+        b {
+          font-weight: 700;
+        }
       }
     }
   }

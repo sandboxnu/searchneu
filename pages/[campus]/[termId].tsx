@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -20,6 +20,8 @@ import { Campus } from '../../components/types';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
+import WeNeedYourHelp from '../../components/WeNeedYourHelp';
+import Cookies from 'universal-cookie';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -35,7 +37,21 @@ export default function Home(): ReactElement {
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
+  const [showHelpModal, setShowHelpModal] = useState(true);
+
+  const fetchFeedbackToken = async (): Promise<void> => {
+    const cookies = new Cookies();
+    const existingToken = cookies.get('FeedbackModal JWT');
+    if (existingToken) {
+      setShowHelpModal(false);
+    } else {
+      const newtoken = 'alreadyShowedModal';
+      cookies.set('FeedbackModal JWT', newtoken, { path: '/' });
+    }
+  };
+
   useEffect(() => {
+    fetchFeedbackToken();
     fetchUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,6 +97,11 @@ export default function Home(): ReactElement {
               onSignOut={onSignOut}
             />
           </div>
+
+          <WeNeedYourHelp
+            visible={showHelpModal}
+            onCancel={() => setShowHelpModal(false)}
+          />
 
           <a
             target="_blank"

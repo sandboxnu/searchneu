@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { createPortal } from 'react-dom';
 
 interface ModalProps {
   visible: boolean;
@@ -23,14 +22,11 @@ export default function Modal({
     return () => document.removeEventListener('keydown', handleKeyEvent);
   }, [onCancel]);
 
-  return visible
-    ? createPortal(
-        <div className="modal-wrapper" onClick={onCancel}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            {children}
-          </div>
-        </div>,
-        document.body
-      )
-    : null;
+  return visible ? (
+    <div className="modal-wrapper" onClick={onCancel}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  ) : null;
 }

@@ -1,26 +1,11 @@
-import { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { gqlClient } from '../utils/courseAPIClient';
+import { ReactElement, useEffect, useState } from 'react';
 import { PacmanLoader } from 'react-spinners';
-import useUserInfo from '../utils/useUserInfo';
-import { SubscriptionCourse } from '../components/types';
-import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
 import Header from '../components/Header';
-import Cookies from 'universal-cookie';
-
-// TODO (sam 25-02-2024): this stuff is necessary because of the header.
-// if we roll this functionality into the header we should remove it.
-const cookies = new Cookies();
-const isWindow = typeof window !== 'undefined';
-const termAndCampusToURL = (
-  t: string,
-  newCampus: string,
-  query: string
-): string => {
-  return `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
-    isWindow && window.location.search
-  }`;
-};
+import { ClassCard } from '../components/SubscriptionsPage/ClassCard';
+import { SubscriptionCourse } from '../components/types';
+import { gqlClient } from '../utils/courseAPIClient';
+import useUserInfo from '../utils/useUserInfo';
 
 export default function SubscriptionsPage(): ReactElement {
   const {
@@ -28,6 +13,7 @@ export default function SubscriptionsPage(): ReactElement {
     isUserInfoLoading,
     fetchUserInfo,
     onSignIn,
+    onSignOut,
   } = useUserInfo();
   const [classes, setClasses] = useState(new Map<string, SubscriptionCourse>());
 
@@ -155,47 +141,42 @@ export default function SubscriptionsPage(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo?.phoneNumber, isUserInfoLoading]); // Only depends on userInfo data
 
-  // TODO (sam 25-02-2024): we might need to redirect from subscriptions page?
-  // so maybe there is a case for signout logic being abstracted... not sure.
-  const onSignOut = () => {
-    cookies.remove('SearchNEU JWT', { path: '/' });
-    // setUserInfo(null);
-  };
-
   return (
     <>
-      <Header
-        router={router}
-        title={`Subscriptions`}
-        searchData={null}
-        termAndCampusToURL={termAndCampusToURL}
-        userInfo={userInfo}
-        onSignOut={onSignOut}
-      ></Header>
+      <div>
+        <Header
+          title={`Subscriptions`}
+          // TODO (sam 11-04-2024: maybe we can get the previous campus/termid if we wnt to preserve this behavior)
+          campus={null}
+          termId={null}
+          searchData={null}
+          userInfo={userInfo}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+        />
+      </div>
       {isFetching ? (
         <PacmanLoader loading={isFetching} size={30} />
       ) : (
-        <>
-          <div className="Results_Container">
-            <div className="Results_MainWrapper">
-              <div className="Results_Main">
-                <h2>Subscriptions</h2>
-                {Array.from(classes).map(([courseCode, course]) => {
-                  return (
-                    <ClassCard
-                      key={courseCode}
-                      course={course}
-                      sections={course.sections}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                      onSignIn={onSignIn}
-                    />
-                  );
-                })}
-              </div>
+        <div className="Results_Container">
+          <div className="Results_MainWrapper">
+            <div className="Results_Main">
+              <h2>Subscriptions</h2>
+              {Array.from(classes).map(([courseCode, course]) => {
+                return (
+                  <ClassCard
+                    key={courseCode}
+                    course={course}
+                    sections={course.sections}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                    onSignIn={onSignIn}
+                  />
+                );
+              })}
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

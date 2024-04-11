@@ -37,14 +37,13 @@ export default function Home(): ReactElement {
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
-  const [showHelpModal, setShowHelpModal] = useState(true);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   const fetchFeedbackToken = async (): Promise<void> => {
     const cookies = new Cookies();
     const existingToken = cookies.get('FeedbackModal JWT');
-    if (existingToken) {
-      setShowHelpModal(false);
-    } else {
+    if (!existingToken) {
+      setShowHelpModal(true);
       const newtoken = 'alreadyShowedModal';
       cookies.set('FeedbackModal JWT', newtoken, { path: '/' });
     }

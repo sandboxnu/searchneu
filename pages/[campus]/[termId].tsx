@@ -16,11 +16,10 @@ import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import { Campus } from '../../components/types';
-
+import TestimonialModal from '../../components/Testimonial/testimonialModal';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
-import WeNeedYourHelp from '../../components/WeNeedYourHelp';
 import Cookies from 'universal-cookie';
 
 export default function Home(): ReactElement {
@@ -97,7 +96,7 @@ export default function Home(): ReactElement {
             />
           </div>
 
-          <WeNeedYourHelp
+          <TestimonialModal
             visible={showHelpModal}
             onCancel={() => setShowHelpModal(false)}
           />

@@ -22,7 +22,6 @@ import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
-import Github from '../../components/Github';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -67,7 +66,6 @@ export default function Home(): ReactElement {
     <>
       <div>
         <div className={containerClassnames}>
-          {/*TODO: remove when notification is fixed */}
           <Head>
             <title>Search NEU - {campus} </title>
           </Head>
@@ -97,8 +95,6 @@ export default function Home(): ReactElement {
             visible={showHelpModal}
             onCancel={() => setShowHelpModal(false)}
           />
-
-          <Github />
 
           <div>
             <div // TODO: Take this out and restyle this monstrosity from scratch

@@ -1,0 +1,9 @@
+@use 'variables' as Colors;
+
+.toast-body {
+  display: inline-flex;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}

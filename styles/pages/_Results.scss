@@ -158,12 +158,41 @@ $SIDEBAR_WIDTH: 268px;
   &__EmptyCard {
     margin: 0px 220px;
 
+    .SearchResult {
+      border-radius: 8px;
+      border: 0.5px solid var(--Expanded-System-NEU4, #d7d9dc);
+      background: var(--Expanded-System-NEU2, #f8f9f9);
+      box-shadow: none;
+    }
+
     p {
       font-weight: 400;
     }
 
     button {
-      padding: 6px 20px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      background-color: #f8f9f9;
+      border: 1px solid var(--Brand-Palette-Sandbox-Navy, #1d3557);
+    }
+
+    button:hover {
+      background-color: #e5e6e6;
+    }
+
+    &_Button {
+      display: flex;
+      align-items: center;
+      column-gap: 8px;
+    }
+
+    &_Divider {
+      padding-bottom: 5px;
+    }
+
+    .SearchResult__header {
+      padding-bottom: 9px;
+      padding-top: 14px;
     }
 
     &_Text {

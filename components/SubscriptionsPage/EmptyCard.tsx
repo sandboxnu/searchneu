@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { ClassCardWrapper } from './ClassCard';
 import { useRouter } from 'next/router';
+import Circular from '../icons/circular.svg';
 
 export const EmptyCard = (): ReactElement => {
   const router = useRouter();
@@ -26,11 +27,17 @@ export const EmptyCard = (): ReactElement => {
                 }
                 headerRight={
                   <div
+                    className="Results_Main__EmptyCard_Divider"
                     onClick={() => {
                       router.push('NEU');
                     }}
                   >
-                    <button>Search for classes</button>
+                    <button>
+                      <div className="Results_Main__EmptyCard_Button">
+                        <Circular />
+                        Search for classes
+                      </div>
+                    </button>
                   </div>
                 }
               />

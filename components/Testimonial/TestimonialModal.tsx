@@ -3,7 +3,7 @@ import Modal from '../Modal';
 import X from '../icons/X.svg';
 import CryingHusky3 from '../icons/crying-husky-3.svg';
 
-interface WeNeedYourHelpProps {
+interface TestimonialModalProps {
   visible: boolean;
   onCancel: () => void;
 }
@@ -11,7 +11,7 @@ interface WeNeedYourHelpProps {
 export default function TestimonialModal({
   visible,
   onCancel,
-}: WeNeedYourHelpProps): ReactElement {
+}: TestimonialModalProps): ReactElement {
   return (
     <Modal visible={visible} onCancel={onCancel}>
       <div className="phone-modal">

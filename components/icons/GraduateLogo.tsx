@@ -1,3 +1,5 @@
+/* eslint no-restricted-syntax: 0 */
+
 import { ReactElement } from 'react';
 
 const GraduateLogo = (): ReactElement => (
@@ -53,8 +55,8 @@ const GraduateLogo = (): ReactElement => (
       fill="#EB5756"
     />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M4.00977 14.2959V22.3107H5.65306V15.0709L4.03903 14.306L4.00977 14.2959Z"
       fill="#1C3557"
     />

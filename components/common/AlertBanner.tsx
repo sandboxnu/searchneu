@@ -39,7 +39,7 @@ export default function AlertBanner({ alertBannerData }: AlertBannerProps) {
             <span>
               {alertBannerData.text}
               {alertBannerData.link && (
-                <a href={alertBannerData.link}>
+                <a href={alertBannerData.link} target="_blank" rel="norefferer">
                   {' '}
                   {alertBannerData.linkText
                     ? alertBannerData.linkText

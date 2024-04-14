@@ -28,6 +28,7 @@ import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
 import useUserInfo from '../../../../utils/useUserInfo';
+import TestimonialToast from '../../../../components/Testimonial/TestimonialToast';
 
 const isWindow = typeof window !== 'undefined';
 
@@ -95,7 +96,8 @@ export default function Results(): ReactElement | null {
           onSignOut={onSignOut}
         />
 
-        {!macros.isMobile && <FeedbackModal />}
+        {!macros.isMobile && <TestimonialToast />}
+        {/* {!macros.isMobile && <FeedbackModal />} */}
         <div className="Results_Container">
           {!macros.isMobile && (
             <>

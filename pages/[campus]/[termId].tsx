@@ -22,6 +22,7 @@ import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
+import macros from '../../components/macros';
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -33,7 +34,6 @@ export default function Home(): ReactElement {
   const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
-  const containerClassnames = 'home-container';
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
@@ -65,7 +65,7 @@ export default function Home(): ReactElement {
   return (
     <>
       <div>
-        <div className={containerClassnames}>
+        <div className={'home-container'}>
           <Head>
             <title>Search NEU - {campus} </title>
           </Head>
@@ -113,6 +113,9 @@ export default function Home(): ReactElement {
               <div className="bostonContainer">
                 <Boston className="boston" aria-label="logo" />
               </div>
+              {!macros.isMobile && (
+                <TestimonialToast position={'toast-bottom-left'} />
+              )}
             </div>
             <Footer />
           </div>

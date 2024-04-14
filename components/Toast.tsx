@@ -6,6 +6,7 @@ interface ToastProps {
   duration?: number;
   infiniteLength?: boolean;
   image?: ReactElement;
+  position: string;
 }
 
 export default function Toast({
@@ -13,6 +14,7 @@ export default function Toast({
   duration = 20,
   infiniteLength = false,
   image = null,
+  position,
 }: ToastProps): ReactElement {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -25,9 +27,8 @@ export default function Toast({
       return () => clearTimeout(timeout);
     }
   }, [duration, infiniteLength]);
-
   return isVisible ? (
-    <div className="toast-body">
+    <div className={`toast-body ${position}`}>
       {image}
       {message}
       <button

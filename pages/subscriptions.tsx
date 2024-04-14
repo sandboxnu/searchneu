@@ -15,6 +15,8 @@ export default function SubscriptionsPage(): ReactElement {
     onSignIn,
     onSignOut,
   } = useUserInfo();
+
+  const classMapping = new Map<string, SubscriptionCourse>();
   const [classes, setClasses] = useState(new Map<string, SubscriptionCourse>());
 
   // is the course / section data still fetching
@@ -30,8 +32,6 @@ export default function SubscriptionsPage(): ReactElement {
       router.push('/');
       return;
     }
-
-    const classMapping = new Map<string, SubscriptionCourse>();
 
     // This uses subscribed course ids to find the associated courses and their sections
     const fetchCourseNotifs = async (): Promise<void> => {

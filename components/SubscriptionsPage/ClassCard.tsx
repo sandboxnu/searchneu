@@ -4,7 +4,8 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import { ButtonContent, Button, Icon } from 'semantic-ui-react';
 import NotifPill from './NotifPill';
-import Toggle from '../common/Toggle';
+import axios from 'axios';
+import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -36,6 +37,7 @@ type ClassCardType = {
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  fetchCourseNotifs: () => Promise<void>;
   onSignIn: (token: string) => void;
 };
 
@@ -66,6 +68,20 @@ export const ClassCard = ({
       );
     }
   }
+
+  const unsubscribeFromCourse = async () => {
+    await axios
+      .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+        data: {
+          token: userInfo.token,
+          sectionIds: course.sections.map((section) =>
+            Keys.getSectionHash(section)
+          ),
+          courseIds: [Keys.getClassHash(course)],
+        },
+      })
+      .then(() => fetchUserInfo());
+  };
 
   return (
     <ClassCardWrapper
@@ -115,7 +131,7 @@ export const ClassCard = ({
                   <th> Notifications </th>
                 </tr>
               </thead>
-              <tfoot>
+              {/* <tfoot>
                 <tr>
                   <td colSpan={6}>
                     <div className="SubscriptionResult__sectionTable__deleteRow">
@@ -123,6 +139,7 @@ export const ClassCard = ({
                         animated
                         size="mini"
                         className="SubscriptionResult__sectionTable__deleteRow__button"
+                        onClick={unsubscribeFromCourse}
                       >
                         <ButtonContent visible>Delete Class</ButtonContent>
                         <ButtonContent hidden>
@@ -132,7 +149,7 @@ export const ClassCard = ({
                     </div>
                   </td>
                 </tr>
-              </tfoot>
+              </tfoot> */}
               <tbody>
                 {sectionsFormatted.map((section) => (
                   <DesktopSectionPanel

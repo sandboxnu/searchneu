@@ -245,12 +245,12 @@ $SIDEBAR_WIDTH: 268px;
     button {
       padding: 8px 18px;
       border-radius: 8px;
-      background-color: #f8f9f9;
+      background-color: Color.$Off_White;
       border: 1px solid Color.$Navy;
     }
 
     button:hover {
-      background-color: #e5e6e6;
+      background-color: Color.$Light_Grey;
     }
 
     &_Button {

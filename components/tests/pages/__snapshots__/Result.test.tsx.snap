@@ -134,18 +134,27 @@ exports[`should render a section 1`] = `
             </div>
           </div>
         </Header>
-        <FeedbackModal>
-          <div className=\\"FeedbackModal\\">
-            <div className=\\"FeedbackModal__pill\\" role=\\"button\\" tabIndex={0} onClick={[Function: onClick]}>
-              <SvgFaviconsearchingSmall height=\\"14\\" width=\\"18\\" fill={[undefined]}>
-                <svg height=\\"14\\" width=\\"18\\" fill={[undefined]} data-file-name=\\"SvgFaviconsearchingSmall\\" />
-              </SvgFaviconsearchingSmall>
-              <p>
-                SearchNEU Feedback
-              </p>
+        <TestimonialToast>
+          <Toast message={{...}} position=\\"toast-bottom-right\\" image={{...}} infiniteLength={true}>
+            <div className=\\"toast-body toast-bottom-right\\">
+              <SvgCryingHusky3 width={24} height={24}>
+                <svg width={24} height={24} data-file-name=\\"SvgCryingHusky3\\" />
+              </SvgCryingHusky3>
+              <span className=\\"toast-message\\">
+                We need your help!
+                 
+                <a className=\\"link\\" href=\\"https://docs.google.com/forms/d/e/1FAIpQLSdOWqfXW4KJZNbHI9hbQohfsY9BIJnxLSuUz8p_DIx4bZkZ9A/viewform\\" target=\\"_blank\\" rel=\\"noreferrer\\">
+                  Leave a testimonial
+                </a>
+              </span>
+              <button className=\\"phone-modal__action-btn phone-modal__action-btn--x\\" onClick={[Function: onClick]}>
+                <SvgX>
+                  <svg data-file-name=\\"SvgX\\" />
+                </SvgX>
+              </button>
             </div>
-          </div>
-        </FeedbackModal>
+          </Toast>
+        </TestimonialToast>
         <div className=\\"Results_Container\\">
           <div className=\\"Results_SidebarWrapper\\">
             <FilterPanel options={{...}} selected={{...}} setActive={[Function (anonymous)]}>

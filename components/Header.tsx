@@ -191,11 +191,9 @@ export default function Header({
   };
 
   let backlink = '/';
-  if (campus != null) {
-    backlink += `${campus}/`;
-  }
+
   if (campus != null && termId != null) {
-    backlink += `${termId}/`;
+    backlink += `${campus}/${termId}/`;
   }
 
   if (showOverlay && macros.isMobile) {
@@ -220,7 +218,7 @@ export default function Header({
             <Logo
               className="Results__Logo"
               aria-label="logo"
-              campus={campus == null ? Campus.NEU : (campus as Campus)}
+              campus={!campus ? Campus.NEU : (campus as Campus)}
             />
           </a>
         </Link>

@@ -15,7 +15,7 @@ exports[`should render a section 1`] = `
         <Image src=\\"/images/sandbox-logo.png\\" alt=\\"sandbox logo\\" width={47} height={61} />
       </a>
       <div className=\\"signInButtonContainer\\">
-        <DropdownMenuWrapper splashPage={true} userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} />
+        <DropdownMenuWrapper userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} />
       </div>
       <a target=\\"_blank\\" rel=\\"noopener noreferrer\\" href=\\"https://github.com/sandboxnu/searchneu\\" className=\\"githubCornerContainer\\">
         <svg width=\\"80\\" height=\\"80\\" viewBox=\\"0 0 250 250\\">

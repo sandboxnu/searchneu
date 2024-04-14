@@ -170,7 +170,7 @@ $SIDEBAR_WIDTH: 268px;
 
       .Results_Main__EmptyCard_Header_Spacer {
         display: flex;
-        padding-top: 15px;
+        padding-top: 12px;
         align-items: center;
       }
 
@@ -214,6 +214,20 @@ $SIDEBAR_WIDTH: 268px;
       flex-direction: column;
       align-items: flex-start;
       gap: 14px;
+
+      .Results_Main__EmptyCard_Text_Body {
+        line-height: 10px;
+      }
+    }
+
+    .Results_Main__EmptyCard_Button {
+      line-height: 10px;
+      padding: 12px 20px;
+      align-items: center;
+    }
+
+    .Results_Main__EmptyCard_Divider {
+      padding-bottom: 0px;
     }
 
     .SearchResult {

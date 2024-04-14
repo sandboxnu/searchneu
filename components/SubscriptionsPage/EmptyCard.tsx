@@ -52,11 +52,9 @@ export const EmptyCard = (): ReactElement => {
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                   >
-                    <button>
-                      <div className="Results_Main__EmptyCard_Button">
-                        <Circular />
-                        Search for classes
-                      </div>
+                    <button className="Results_Main__EmptyCard_Button">
+                      <Circular />
+                      <b>Search for classes</b>
                     </button>
                   </div>
                 }

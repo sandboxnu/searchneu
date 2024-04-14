@@ -5,13 +5,13 @@ exports[`should render a section 1`] = `
   <LocationProvider stringifyOptions={[undefined]} history={{...}} location={{...}}>
     <Results>
       <div>
-        <Header router={{...}} title=\\"Search NEU - cs\\" searchData={[undefined]} termAndCampusToURL={[Function: termAndCampusToURL]} onSignIn={[Function: onSignIn]} userInfo={{...}} onSignOut={[Function: onSignOut]}>
+        <Header title=\\"Search NEU - cs\\" campus=\\"NEU\\" termId=\\"202160\\" searchData={[undefined]} userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]}>
           <div>
             <Head>
               <SideEffect reduceComponentsToState={[Function: reduceComponents]} headManager={{...}} inAmpMode={false} />
             </Head>
             <div className=\\"Results_Header Results_Header-top\\">
-              <ForwardRef(LinkComponent) href=\\"/NEU/202160\\">
+              <ForwardRef(LinkComponent) href=\\"/NEU/202160/\\">
                 <a className=\\"Results__Logo--wrapper\\" onClick={[Function: onClick]} onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]} href=\\"/NEU/202160\\">
                   <Logo className=\\"Results__Logo\\" aria-label=\\"logo\\" campus=\\"NEU\\">
                     <svg viewBox=\\"0 0 526 113\\" fill=\\"none\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"Results__Logo\\">
@@ -22,105 +22,6 @@ exports[`should render a section 1`] = `
                 </a>
               </ForwardRef(LinkComponent)>
               <div className=\\"Results__spacer\\" />
-              <div className=\\"Results__searchwrapper\\">
-                <SearchBar onSearch={[Function: setSearchQuery]} query=\\"cs\\" buttonColor={[undefined]}>
-                  <div className=\\"searchbar\\">
-                    <input type=\\"search\\" id=\\"search_id\\" autoComplete=\\"off\\" spellCheck=\\"false\\" autoFocus={true} tabIndex={0} className=\\"searchbar__input\\" size={10} onKeyDown={[Function: onKeyDown]} onClick={[undefined]} onChange={[Function: onChange]} value=\\"cs\\" placeholder=\\"Class, professor, course number, \\"phrase\\"\\" />
-                    <div onClick={[Function: search]} className=\\"searchbar__button\\" role=\\"button\\" tabIndex={0} style={{...}}>
-                      <SvgMagnifyingGlass aria-label=\\"magnifying glass\\" className=\\"searchbar__magnifyingGlass\\">
-                        <svg aria-label=\\"magnifying glass\\" className=\\"searchbar__magnifyingGlass\\" data-file-name=\\"SvgMagnifyingGlass\\" />
-                      </SvgMagnifyingGlass>
-                    </div>
-                  </div>
-                  <SearchInfoIcon text=\\"Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase \\"studio design\\" to appear in the search results, wrap it up in quotes.\\" direction=\\"DOWN\\">
-                    <div className=\\"InfoIconTooltip\\">
-                      <SvgInfoIcon className=\\"InfoIconTooltip__icon\\">
-                        <svg className=\\"InfoIconTooltip__icon\\" data-file-name=\\"SvgInfoIcon\\" />
-                      </SvgInfoIcon>
-                      <Tooltip text=\\"Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase \\"studio design\\" to appear in the search results, wrap it up in quotes.\\" direction=\\"DOWN\\">
-                        <div className=\\"tooltip\\">
-                          Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase &quot;studio design&quot; to appear in the search results, wrap it up in quotes.
-                          <div className=\\"tooltip__arrow--DOWN\\" />
-                        </div>
-                      </Tooltip>
-                    </div>
-                  </SearchInfoIcon>
-                </SearchBar>
-              </div>
-              <div className=\\"Breadcrumb_Container\\">
-                <div className=\\"Breadcrumb_Container__dropDownContainer\\">
-                  <Memo(SearchDropdown) options={{...}} value=\\"NEU\\" className=\\"searchDropdown\\" compact={false}>
-                    <Dropdown fluid={true} compact={false} text=\\"NEU\\" className=\\"selection searchDropdown \\" additionLabel=\\"Add \\" additionPosition=\\"top\\" closeOnBlur={true} closeOnEscape={true} deburr={false} icon=\\"dropdown\\" minCharacters={1} noResultsMessage=\\"No results found.\\" openOnFocus={true} renderLabel={[Function: renderItemContent]} searchInput=\\"text\\" selectOnBlur={true} selectOnNavigation={true} wrapSelection={true}>
-                      <Ref innerRef={{...}}>
-                        <RefFindNode innerRef={{...}}>
-                          <div role=\\"listbox\\" aria-busy={[undefined]} aria-disabled={[undefined]} aria-expanded={false} aria-multiselectable={[undefined]} className=\\"ui fluid dropdown selection searchDropdown \\" onBlur={[Function (anonymous)]} onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onFocus={[Function (anonymous)]} onChange={[Function (anonymous)]} tabIndex={0}>
-                            <DropdownText className=\\"text\\" content=\\"NEU\\">
-                              <div aria-atomic={true} aria-live=\\"polite\\" role=\\"alert\\" className=\\"divider text\\">
-                                NEU
-                              </div>
-                            </DropdownText>
-                            <Icon name=\\"dropdown\\" className=\\"\\" onClick={[Function: onClick]} as=\\"i\\">
-                              <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"dropdown icon\\" />
-                            </Icon>
-                            <DropdownMenu className=\\"\\">
-                              <div className=\\"menu transition\\">
-                                <ForwardRef(LinkComponent) href=\\"/NEU//search/cs\\">
-                                  <DropdownItem selected={true} text=\\"NEU\\" onClick={[Function: onClick]} onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]}>
-                                    <div onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={true} className=\\"selected item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        NEU
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </ForwardRef(LinkComponent)>
-                                <ForwardRef(LinkComponent) href=\\"/CPS//search/cs\\">
-                                  <DropdownItem selected={false} text=\\"CPS\\" onClick={[Function: onClick]} onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]}>
-                                    <div onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        CPS
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </ForwardRef(LinkComponent)>
-                                <ForwardRef(LinkComponent) href=\\"/LAW//search/cs\\">
-                                  <DropdownItem selected={false} text=\\"LAW\\" onClick={[Function: onClick]} onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]}>
-                                    <div onMouseEnter={[Function: onMouseEnter]} onTouchStart={[Function: onTouchStart]} role=\\"option\\" aria-disabled={[undefined]} aria-checked={[undefined]} aria-selected={false} className=\\"item\\" onClick={[Function (anonymous)]}>
-                                      <span className=\\"text\\">
-                                        LAW
-                                      </span>
-                                    </div>
-                                  </DropdownItem>
-                                </ForwardRef(LinkComponent)>
-                              </div>
-                            </DropdownMenu>
-                          </div>
-                        </RefFindNode>
-                      </Ref>
-                    </Dropdown>
-                  </Memo(SearchDropdown)>
-                </div>
-                <span className=\\"Breadcrumb_Container__slash\\">
-                  /
-                </span>
-                <div className=\\"Breadcrumb_Container__dropDownContainer\\">
-                  <Memo(SearchDropdown) options={{...}} value=\\"202160\\" className=\\"searchDropdown\\" compact={false}>
-                    <Dropdown fluid={true} compact={false} text=\\"\\" className=\\"selection searchDropdown \\" additionLabel=\\"Add \\" additionPosition=\\"top\\" closeOnBlur={true} closeOnEscape={true} deburr={false} icon=\\"dropdown\\" minCharacters={1} noResultsMessage=\\"No results found.\\" openOnFocus={true} renderLabel={[Function: renderItemContent]} searchInput=\\"text\\" selectOnBlur={true} selectOnNavigation={true} wrapSelection={true}>
-                      <Ref innerRef={{...}}>
-                        <RefFindNode innerRef={{...}}>
-                          <div role=\\"listbox\\" aria-busy={[undefined]} aria-disabled={[undefined]} aria-expanded={false} aria-multiselectable={[undefined]} className=\\"ui fluid dropdown selection searchDropdown \\" onBlur={[Function (anonymous)]} onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onFocus={[Function (anonymous)]} onChange={[Function (anonymous)]} tabIndex={0}>
-                            <Icon name=\\"dropdown\\" className=\\"\\" onClick={[Function: onClick]} as=\\"i\\">
-                              <i onClick={[Function (anonymous)]} aria-hidden=\\"true\\" className=\\"dropdown icon\\" />
-                            </Icon>
-                            <DropdownMenu className=\\"\\">
-                              <div className=\\"menu transition\\" />
-                            </DropdownMenu>
-                          </div>
-                        </RefFindNode>
-                      </Ref>
-                    </Dropdown>
-                  </Memo(SearchDropdown)>
-                </div>
-              </div>
               <DropdownMenuWrapper onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} userInfo={{...}}>
                 <NotifSignUpButton onNotifSignUp={[Function: onNotifSignUp]}>
                   <button onClick={[Function: onClickWithAmplitudeHook]} type=\\"button\\" className=\\"Results_SignIn\\">

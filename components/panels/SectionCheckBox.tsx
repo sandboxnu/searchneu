@@ -13,6 +13,7 @@ import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import Colors from '../../styles/_exports.module.scss';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import Toggle from '../common/Toggle';
 
 type SectionCheckBoxProps = {
   section: Section;
@@ -95,7 +96,8 @@ export default function SectionCheckBox({
     <>
       <div className="signUpSwitch">
         <div className="notifSwitch">
-          <input
+          <Toggle active={checked} onClick={onCheckboxClick} />
+          {/* <input
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -108,7 +110,7 @@ export default function SectionCheckBox({
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />
-          </label>
+          </label> */}
         </div>
         <Tooltip
           text={

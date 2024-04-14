@@ -1,17 +1,17 @@
-@use '../variables' as Colors;
+@use 'variables' as Colors;
 
-.SearchResult {
+.SubscriptionResult {
   background: Colors.$White;
   width: 100%;
   margin: 16px 0;
-  border-radius: 5px;
+  border-radius: 8px;
   border: 1px solid Colors.$Light_Grey;
   font-family: Lato, sans-serif;
   font-style: normal;
 
   &__header {
     background: Colors.$Off_White;
-    padding: 12px 16px 4px 16px;
+    padding: 24px 16px;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -22,16 +22,26 @@
       width: 50%;
       display: inline-block;
     }
+
+    &--pills {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      height: 10px;
+      padding-top: 15px;
+    }
+
     &--classTitle {
       margin-bottom: 4px;
       font-size: 18px;
-      line-height: 2px;
+      line-height: 13px;
       border-radius: 5px 5px 0 0;
     }
 
     &--employeeName {
       margin-bottom: 4px;
-      font-size: 18px;
+      font-size: 14px;
       border-radius: 5px 5px 0 0;
     }
 
@@ -90,7 +100,7 @@
 
     &--left {
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     &--left > a {
@@ -156,11 +166,23 @@
     width: 100%;
     border-spacing: 0;
     font-size: 14px;
-  }
+    margin-top: 13px;
 
+    &__deleteRow {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+
+      &__button {
+        background-color: Colors.$White !important;
+        border-radius: 8px !important;
+      }
+    }
+  }
   &__sectionTable > thead > tr > th {
     text-align: left;
     padding-left: 16px;
+    padding-bottom: 10px;
   }
 
   &__sectionTable > thead > tr > th:nth-child(6) {
@@ -172,7 +194,7 @@
     border: 1px solid Colors.$Light_Grey;
     padding: 16px 16px;
     font-size: 14px;
-    line-height: 19px;
+    line-height: 14px;
   }
 
   &__sectionTable td:nth-child(odd) {
@@ -194,6 +216,7 @@
   }
 
   &__sectionTable > tfoot {
+    background: Colors.$NEU2;
     .toggle {
       display: flex;
       justify-content: center;
@@ -216,7 +239,7 @@
 
     // This is for the subscription page class card
     &--subscriptionButton {
-      @extend .SearchResult__showAll;
+      @extend .SubscriptionResult__showAll;
       border: solid Colors.$Light_Grey;
       border-width: 1px 0px 0px 0px;
     }

@@ -158,10 +158,9 @@ export default function SubscriptionsPage(): ReactElement {
       {isFetching ? (
         <PacmanLoader loading={isFetching} size={30} />
       ) : (
-        <div className="Results_Container">
-          <div className="Results_MainWrapper">
-            <div className="Results_Main">
-              <h2>Subscriptions</h2>
+        <div className="Subscription_Container">
+          <div className="Subscription_MainWrapper">
+            <div className="Subscription_Main">
               {Array.from(classes).map(([courseCode, course]) => {
                 return (
                   <ClassCard

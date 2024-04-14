@@ -1,10 +1,10 @@
 import { ReactElement, useState } from 'react';
 import { Section, SubscriptionCourse, UserInfo } from '../types';
-import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
-import DropdownArrow from '../icons/DropdownArrow.svg';
-import CourseCheckBox from '../panels/CourseCheckBox';
+import { ButtonContent, Button, Icon } from 'semantic-ui-react';
+import NotifPill from './NotifPill';
+import Toggle from '../common/Toggle';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -20,9 +20,9 @@ const ClassCardWrapper = ({
   afterBody,
 }: ClassCardWrapperType): ReactElement => {
   return (
-    <div className="SearchResult">
-      <div className="SearchResult__header">
-        <div className="SearchResult__header--left">{headerLeft}</div>
+    <div className="SubscriptionResult">
+      <div className="SubscriptionResult__header">
+        <div className="SubscriptionResult__header--left">{headerLeft}</div>
         {headerRight}
       </div>
       {body}
@@ -49,30 +49,55 @@ export const ClassCard = ({
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
 
-  const hasAtLeastOneSectionFull = (): boolean => {
-    return course.sections.some((e) => {
-      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
-    });
+  const toggleHiddenSections = () => {
+    setAreSectionsHidden(!areSectionsHidden);
   };
+
+  const userInfoIds = userInfo.sectionIds.map((hash) => {
+    const h = hash.split('/');
+    return h[h.length - 1];
+  });
+  const notifPills: Array<ReactElement> = [];
+
+  for (const section of sections) {
+    if (userInfoIds.includes(section.crn)) {
+      notifPills.push(
+        <NotifPill key={section.crn} active={true} CRN={section.crn} />
+      );
+    }
+  }
 
   return (
     <ClassCardWrapper
       headerLeft={
         <>
-          <span className="SearchResult__header--classTitle">
+          <span className="SubscriptionResult__header--classTitle">
             {course.subject} {course.classId}: {course.name}
           </span>
-          <LastUpdated
-            lastUpdateTime={course.lastUpdateTime}
-            className="SearchResult__header--sub"
-          />
+          <div className="SubscriptionResult__header--pills">{notifPills}</div>
         </>
       }
-      headerRight={<button>Unsubscribe</button>}
+      headerRight={
+        areSectionsHidden ? (
+          <Icon
+            name="chevron down"
+            size="large"
+            onClick={toggleHiddenSections}
+            style={{ cursor: 'pointer' }}
+          />
+        ) : (
+          <Icon
+            name="chevron up"
+            size="large"
+            onClick={toggleHiddenSections}
+            style={{ cursor: 'pointer' }}
+          />
+        )
+      }
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
-            <table className="SearchResult__sectionTable">
+            <table className="SubscriptionResult__sectionTable">
               <thead>
                 <tr>
                   <th>
@@ -90,6 +115,24 @@ export const ClassCard = ({
                   <th> Notifications </th>
                 </tr>
               </thead>
+              <tfoot>
+                <tr>
+                  <td colSpan={6}>
+                    <div className="SubscriptionResult__sectionTable__deleteRow">
+                      <Button
+                        animated
+                        size="mini"
+                        className="SubscriptionResult__sectionTable__deleteRow__button"
+                      >
+                        <ButtonContent visible>Delete Class</ButtonContent>
+                        <ButtonContent hidden>
+                          <Icon name="trash" />
+                        </ButtonContent>
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
               <tbody>
                 {sectionsFormatted.map((section) => (
                   <DesktopSectionPanel
@@ -102,48 +145,11 @@ export const ClassCard = ({
                   />
                 ))}
               </tbody>
-              {hasAtLeastOneSectionFull() && (
-                <tfoot>
-                  <tr>
-                    <td colSpan={5}>New available sections</td>
-                    <td>
-                      <CourseCheckBox
-                        course={course}
-                        userInfo={userInfo}
-                        fetchUserInfo={fetchUserInfo}
-                        onSignIn={onSignIn}
-                      />
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
             </table>
           </div>
         </>
       }
-      afterBody={
-        <>
-          <div
-            className={
-              areSectionsHidden
-                ? 'SearchResult__showAll--subscriptionButton'
-                : 'SearchResult__showAll'
-            }
-            role="button"
-            tabIndex={0}
-            onClick={() => setAreSectionsHidden(!areSectionsHidden)}
-          >
-            <span>{areSectionsHidden ? 'Show sections' : 'Hide sections'}</span>
-            <DropdownArrow
-              className={
-                areSectionsHidden
-                  ? 'SearchResult__showAll--subscriptionCollapsed'
-                  : 'SearchResult__showAll--subscriptionExpanded'
-              }
-            />
-          </div>
-        </>
-      }
+      afterBody={<></>}
     />
   );
 };

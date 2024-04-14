@@ -175,7 +175,7 @@ $SIDEBAR_WIDTH: 268px;
       }
 
       .Results_Main__EmptyCard_Header_Title {
-        color: Color.$NEU9;
+        color: Colors.$NEU9;
 
         /* Desktop/Heading/H1 */
         font-family: Lato;
@@ -191,7 +191,7 @@ $SIDEBAR_WIDTH: 268px;
         height: 11px;
         flex-direction: column;
         justify-content: center;
-        color: Color.$NEU9;
+        color: Colors.$NEU9;
 
         /* Desktop/Body/B2 */
         font-family: Lato;
@@ -233,8 +233,8 @@ $SIDEBAR_WIDTH: 268px;
       justify-content: space-between;
       align-items: center;
       border-radius: 8px;
-      border: 0.5px solid Color.$NEU4;
-      background: Color.$NEU2;
+      border: 0.5px solid Colors.$NEU4;
+      background: Colors.$NEU2;
       z-index: Indexes.$Ten;
     }
 
@@ -245,12 +245,12 @@ $SIDEBAR_WIDTH: 268px;
     button {
       padding: 8px 18px;
       border-radius: 8px;
-      background-color: Color.$Off_White;
-      border: 1px solid Color.$Navy;
+      background-color: Colors.$Off_White;
+      border: 1px solid Colors.$Navy;
     }
 
     button:hover {
-      background-color: Color.$Light_Grey;
+      background-color: Colors.$Light_Grey;
     }
 
     &_Button {

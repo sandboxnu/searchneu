@@ -46,8 +46,8 @@ function SemesterDropdown({
             className={'DropdownFilter__input'}
             tabIndex={0}
             type="text"
-            value={currentText}
-          />
+            defaultValue={currentText}
+          ></input>
           <DropdownArrow
             aria-label="Dropdown arrow"
             className={`DropdownFilter__icon ${getDropdownStatus()}`}

@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import React, {
   ReactElement,
   useCallback,
@@ -58,14 +58,12 @@ type HeaderProps = {
 };
 
 type DropdownMenuWrapperProps = {
-  splashPage?: boolean;
   userInfo: UserInfo | null;
   onSignOut: () => void;
   onSignIn: (token: string) => void;
 };
 
 export const DropdownMenuWrapper = ({
-  splashPage = false,
   userInfo,
   onSignOut,
   onSignIn,
@@ -73,6 +71,7 @@ export const DropdownMenuWrapper = ({
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
@@ -96,23 +95,29 @@ export const DropdownMenuWrapper = ({
     setShowMenuDropdown(!showMenuDropdown);
   };
 
-  // Commented out until subscription page is finalized
-  // const subscriptionPage = (): void => {
-  //   router.push('/subscriptions');
-  // };
-
   const DropDownMenu = (): ReactElement => {
     return (
       <div className="user-menu">
-        <div
-          ref={dropdownRef}
-          className={
-            splashPage ? 'user-menu__splash-page' : 'user-menu__icon-wrapper'
-          }
-          onClick={toggleMenuDropdown}
-        >
-          {splashPage && <>Logged In</>}
-          <IconUser className="user-menu__icon" />
+        <div className={'user-menu__icon-wrapper'}>
+          <>
+            {userInfo && !macros.isMobile && (
+              <button
+                onClick={() => router.push('/subscriptions')}
+                className="user-menu__button"
+              >
+                Notifications
+              </button>
+            )}
+            {/* Still need to create FAQ page */}
+            {/* <button>FAQ</button> */}
+          </>
+          <div
+            className="user-menu__icon"
+            ref={dropdownRef}
+            onClick={toggleMenuDropdown}
+          >
+            <IconUser />
+          </div>
         </div>
 
         {showMenuDropdown && (

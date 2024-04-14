@@ -224,18 +224,28 @@ $SIDEBAR_WIDTH: 268px;
   position: relative;
   justify-content: flex-end;
 
-  &__icon-wrapper {
+  &__button {
     display: flex;
+    padding: 13px 12px;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    // text
+    color: Colors.$NEU9;
+
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 14px;
   }
 
-  &__splash-page {
+  &__icon-wrapper {
     display: inline-flex;
-    background: Colors.$White;
-    cursor: pointer;
     align-items: center;
-    border-radius: 8px;
+    justify-content: center;
     gap: 12px;
-    padding: 4px 12px;
   }
 
   &__icon {

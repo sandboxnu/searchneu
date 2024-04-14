@@ -16,7 +16,7 @@ import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import { Campus } from '../../components/types';
-import TestimonialModal from '../../components/Testimonial/testimonialModal';
+import TestimonialModal from '../../components/Testimonial/TestimonialModal';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';

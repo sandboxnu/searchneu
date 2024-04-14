@@ -11,7 +11,7 @@ import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
 
-import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
+// import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
 import FilterPanel from '../../../../components/ResultsPage/FilterPanel';
 import FilterPills from '../../../../components/ResultsPage/FilterPills';
 import {

@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React, {
   ReactElement,
   useCallback,

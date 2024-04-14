@@ -37,7 +37,7 @@ import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import { getRoundedTerm } from './terms';
 
 const isWindow = typeof window !== 'undefined';
-const termAndCampusToURL = (
+export const termAndCampusToURL = (
   t: string,
   newCampus: string,
   query: string
@@ -257,7 +257,7 @@ export default function Header({
             />
           </div>
         )}
-        {searchData && (
+        {macros.isMobile && searchData && (
           <div className="Breadcrumb_Container">
             <div className="Breadcrumb_Container__dropDownContainer">
               <SearchDropdown

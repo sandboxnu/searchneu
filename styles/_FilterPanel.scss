@@ -5,6 +5,10 @@
   grid-row-gap: 25px;
 }
 
+.SemesterDropdown {
+  margin-bottom: 25px;
+}
+
 .filter__title {
   font-family: Lato, sans-serif;
   font-size: 16px;
@@ -15,5 +19,6 @@
 }
 
 .ui.dropdown .menu > .item {
+  width: 100%;
   font-size: 12px;
 }

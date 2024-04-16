@@ -30,11 +30,10 @@ import LoadingContainer from '../../../../components/ResultsPage/LoadingContaine
 import useUserInfo from '../../../../utils/useUserInfo';
 import TestimonialToast from '../../../../components/Testimonial/TestimonialToast';
 
-const isWindow = typeof window !== 'undefined';
-
 export default function Results(): ReactElement | null {
   const router = useRouter();
   const query = (router.query.query as string) || '';
+  const campus = router.query.campus as string;
   const termId = router.query.termId as string;
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
@@ -73,26 +72,16 @@ export default function Results(): ReactElement | null {
 
   const filtersAreSet: boolean = areFiltersSet(filters);
 
-  const termAndCampusToURL = (
-    t: string,
-    newCampus: string,
-    query: string
-  ): string => {
-    return `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
-      isWindow && window.location.search
-    }`;
-  };
-
   return (
     <>
       <div>
         <Header
-          router={router}
           title={`Search NEU - ${query}`}
+          campus={campus}
+          termId={termId}
           searchData={searchData}
-          termAndCampusToURL={termAndCampusToURL}
-          onSignIn={onSignIn}
           userInfo={userInfo}
+          onSignIn={onSignIn}
           onSignOut={onSignOut}
         />
 

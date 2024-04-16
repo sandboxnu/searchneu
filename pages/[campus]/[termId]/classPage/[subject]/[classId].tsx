@@ -3,10 +3,10 @@ import pMap from 'p-map';
 import React, { ReactElement, useEffect, useState } from 'react';
 import PageContent from '../../../../../components/ClassPage/PageContent';
 import Header from '../../../../../components/Header';
+import macros from '../../../../../components/macros';
 import { CourseReq } from '../../../../../components/types';
 import { GetClassPageInfoQuery } from '../../../../../generated/graphql';
 import { gqlClient } from '../../../../../utils/courseAPIClient';
-import macros from '../../../../../components/macros';
 import useUserInfo from '../../../../../utils/useUserInfo';
 
 export default function Page(): ReactElement {
@@ -21,9 +21,6 @@ export default function Page(): ReactElement {
   const campus = router.query.campus as string;
   const subject = ((router.query.subject as string) || '').toUpperCase();
   const classId = (router.query.classId as string) || '';
-  const termAndCampusToURL = (t: string, newCampus: string): string => {
-    return `/${newCampus}/${t}/classPage/${subject}/${classId}${window.location.search}`;
-  };
 
   const loadClassPageInfo = async (): Promise<void> => {
     const classPage = await gqlClient.getClassPageInfo({ subject, classId });
@@ -61,10 +58,10 @@ export default function Page(): ReactElement {
   return (
     <div>
       <Header
-        router={router}
         title={`${subject}${classId}`}
+        campus={campus}
+        termId={termId}
         searchData={null}
-        termAndCampusToURL={termAndCampusToURL}
         userInfo={userInfo}
         onSignIn={onSignIn}
         onSignOut={onSignOut}

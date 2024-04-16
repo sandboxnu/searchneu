@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
-import { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React, {
   ReactElement,
   useCallback,
@@ -10,10 +10,10 @@ import React, {
   useState,
 } from 'react';
 import { BooleanParam, useQueryParam, useQueryParams } from 'use-query-params';
-import { getRoundedTerm } from './terms';
+import Exit from '../components/icons/exit.svg';
 import FilterButton from '../components/icons/FilterButton.svg';
 import Logo from '../components/icons/Logo';
-import macros from '../components/macros';
+import { default as macros } from '../components/macros';
 import {
   DEFAULT_FILTER_SELECTION,
   FilterSelection,
@@ -29,21 +29,32 @@ import {
   UserInfo,
 } from '../components/types';
 import { campusToColor } from '../utils/campusToColor';
-import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import getTermInfosWithError from '../utils/TermInfoProvider';
 import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
+import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import Exit from '../components/icons/exit.svg';
+import { getRoundedTerm } from './terms';
+
+const isWindow = typeof window !== 'undefined';
+const termAndCampusToURL = (
+  t: string,
+  newCampus: string,
+  query: string
+): string => {
+  return `/${newCampus}/${t}/search/${encodeURIComponent(query)}${
+    isWindow && window.location.search
+  }`;
+};
 
 type HeaderProps = {
-  router: NextRouter;
   title: string;
-  searchData: SearchResult;
-  termAndCampusToURL: (t: string, newCampus: string, query: string) => string;
+  campus: string | null;
+  termId: string | null;
+  searchData: SearchResult | null;
   userInfo: UserInfo | null;
-  onSignOut: () => void;
   onSignIn: (token: string) => void;
+  onSignOut: () => void;
 };
 
 type DropdownMenuWrapperProps = {
@@ -144,23 +155,29 @@ export const DropdownMenuWrapper = ({
 };
 
 export default function Header({
-  router,
   title,
+  campus,
+  termId,
   searchData,
-  termAndCampusToURL,
   userInfo,
-  onSignOut,
   onSignIn,
+  onSignOut,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
+
   const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
 
+  const router = useRouter();
   const query = (router.query.query as string) || '';
-  const termId = router.query.termId as string;
-  const campus = router.query.campus as string;
 
-  // Get the TermInfo dict from the app context
   const termInfos = getTermInfosWithError().termInfos;
+
+  const termAndCampusToURLCallback = useCallback(
+    (t: string, newCampus: string) => {
+      return termAndCampusToURL(t, newCampus, query);
+    },
+    [query]
+  );
 
   const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
@@ -173,14 +190,12 @@ export default function Header({
     );
   };
 
-  const termAndCampusToURLCallback = useCallback(
-    (t: string, newCampus: string) => {
-      return termAndCampusToURL(t, newCampus, query);
-    },
-    [query, termAndCampusToURL]
-  );
+  let backlink = '/';
 
-  if (!termId || !campus) return null;
+  if (campus != null && termId != null) {
+    backlink += `${campus}/${termId}/`;
+  }
+
   if (showOverlay && macros.isMobile) {
     return (
       <MobileSearchOverlay
@@ -191,23 +206,24 @@ export default function Header({
       />
     );
   }
+
   return (
     <div>
       <Head>
         <title>{title}</title>
       </Head>
       <div className={`Results_Header ${atTop ? 'Results_Header-top' : ''}`}>
-        <Link href={`/${campus}/${termId}`}>
+        <Link href={backlink}>
           <a className="Results__Logo--wrapper">
             <Logo
               className="Results__Logo"
               aria-label="logo"
-              campus={campus as Campus}
+              campus={!campus ? Campus.NEU : (campus as Campus)}
             />
           </a>
         </Link>
         <div className="Results__spacer" />
-        {macros.isMobile && (
+        {macros.isMobile && searchData && (
           <div className="Results__mobileSearchFilterWrapper">
             <FilterButton
               className="Results__filterButton"
@@ -232,7 +248,7 @@ export default function Header({
             />
           </div>
         )}
-        {!macros.isMobile && (
+        {!macros.isMobile && searchData && (
           <div className="Results__searchwrapper">
             <SearchBar
               onSearch={setSearchQuery}
@@ -241,37 +257,39 @@ export default function Header({
             />
           </div>
         )}
-        <div className="Breadcrumb_Container">
-          <div className="Breadcrumb_Container__dropDownContainer">
-            <SearchDropdown
-              options={Object.keys(Campus).map((c: Campus) => ({
-                text: c,
-                value: c,
-                link: termAndCampusToURLCallback(
-                  getRoundedTerm(termInfos, c, termId),
-                  c
-                ),
-              }))}
-              value={campus}
-              className="searchDropdown"
-              compact={false}
-            />
+        {searchData && (
+          <div className="Breadcrumb_Container">
+            <div className="Breadcrumb_Container__dropDownContainer">
+              <SearchDropdown
+                options={Object.keys(Campus).map((c: Campus) => ({
+                  text: c,
+                  value: c,
+                  link: termAndCampusToURLCallback(
+                    getRoundedTerm(termInfos, c, termId),
+                    c
+                  ),
+                }))}
+                value={campus}
+                className="searchDropdown"
+                compact={false}
+              />
+            </div>
+            <span className="Breadcrumb_Container__slash">/</span>
+            <div className="Breadcrumb_Container__dropDownContainer">
+              <SearchDropdown
+                options={termInfos[campus].map((terminfo) => ({
+                  text: terminfo.text,
+                  value: terminfo.value,
+                  link: termAndCampusToURLCallback(terminfo.value, campus),
+                }))}
+                value={termId}
+                className="searchDropdown"
+                compact={false}
+                key={campus}
+              />
+            </div>
           </div>
-          <span className="Breadcrumb_Container__slash">/</span>
-          <div className="Breadcrumb_Container__dropDownContainer">
-            <SearchDropdown
-              options={termInfos[campus].map((terminfo) => ({
-                text: terminfo.text,
-                value: terminfo.value,
-                link: termAndCampusToURLCallback(terminfo.value, campus),
-              }))}
-              value={termId}
-              className="searchDropdown"
-              compact={false}
-              key={campus}
-            />
-          </div>
-        </div>
+        )}
         {!macros.isMobile && (
           <DropdownMenuWrapper
             onSignIn={onSignIn}

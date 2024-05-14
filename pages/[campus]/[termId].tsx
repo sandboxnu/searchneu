@@ -20,9 +20,21 @@ import TestimonialModal from '../../components/Testimonial/TestimonialModal';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
+import AlertBanner, {
+  AlertBannerData,
+} from '../../components/common/AlertBanner';
+import GraduateLogo from '../../components/icons/GraduateLogo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
+
+const grad_banner_data: AlertBannerData = {
+  text: 'has just released!',
+  alertLevel: 'info',
+  link: 'https://www.graduatenu.com/',
+  linkText: 'Try it out now!',
+  logo: GraduateLogo,
+};
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -65,7 +77,11 @@ export default function Home(): ReactElement {
   return (
     <>
       <div>
+        <div className="alertBannerContainer">
+          <AlertBanner key={'grad_banner'} alertBannerData={grad_banner_data} />
+        </div>
         <div className={'home-container'}>
+          {/*TODO: remove when notification is fixed */}
           <Head>
             <title>Search NEU - {campus} </title>
           </Head>

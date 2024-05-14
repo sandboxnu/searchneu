@@ -26,15 +26,9 @@
   }
 
   &__text {
-    display: flex;
     flex: 5;
-    align-items: center;
-    justify-content: center;
   }
 
-  &__logo {
-    margin-right: 5px;
-  }
   &__back {
     height: 15px;
     width: 15px;
@@ -58,6 +52,4 @@
 .infoBanner {
   background-color: Colors.$Off_White;
   color: Colors.$Navy;
-  display: flex;
-  align-items: center;
 }

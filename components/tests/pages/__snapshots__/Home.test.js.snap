@@ -3,9 +3,6 @@
 exports[`should render a section 1`] = `
 "<Fragment>
   <div>
-    <div className=\\"alertBannerContainer\\">
-      <AlertBanner alertBannerData={{...}} />
-    </div>
     <div className=\\"home-container\\">
       <Head>
         <title>

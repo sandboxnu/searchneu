@@ -1,8 +1,7 @@
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import macros from '../macros';
 import IconClose from '../icons/IconClose';
-import Colors from '../../styles/_exports.module.scss';
-import GraduateLogo from '../icons/GraduateLogo';
+import Colors from '../styles/_exports.module.scss';
 
 type AlertLevel = 'error' | 'warning' | 'info';
 
@@ -10,8 +9,6 @@ export type AlertBannerData = {
   text: string;
   alertLevel: AlertLevel;
   link?: string;
-  linkText?: string;
-  logo?: () => ReactElement;
 };
 
 type AlertBannerProps = {
@@ -31,20 +28,10 @@ export default function AlertBanner({ alertBannerData }: AlertBannerProps) {
       >
         <div className={`alertBanner ${alertBannerData.alertLevel}Banner`}>
           <div className="alertBanner__text">
-            {alertBannerData.logo && (
-              <span className="alertBanner__logo">
-                <alertBannerData.logo />
-              </span>
-            )}
             <span>
               {alertBannerData.text}
               {alertBannerData.link && (
-                <a href={alertBannerData.link} target="_blank" rel="noreferrer">
-                  {' '}
-                  {alertBannerData.linkText
-                    ? alertBannerData.linkText
-                    : 'Learn More'}
-                </a>
+                <a href={alertBannerData.link}> Learn More.</a>
               )}
             </span>
           </div>

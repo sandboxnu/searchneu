@@ -11,7 +11,7 @@ import Header, { termAndCampusToURL } from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
 
-import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
+// import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
 import FilterPanel from '../../../../components/ResultsPage/FilterPanel';
 import FilterPills from '../../../../components/ResultsPage/FilterPills';
 import {
@@ -32,6 +32,7 @@ import getTermInfosWithError from '../../../../utils/TermInfoProvider';
 import SemesterDropdown from '../../../../components/ResultsPage/SemesterDropdown';
 import { TermInfo } from '../../../../components/terms';
 import CampusSelection from '../../../../components/ResultsPage/CampusSelection';
+import TestimonialToast from '../../../../components/Testimonial/TestimonialToast';
 
 export default function Results(): ReactElement | null {
   const router = useRouter();
@@ -149,7 +150,8 @@ export default function Results(): ReactElement | null {
           onSignOut={onSignOut}
         />
 
-        {!macros.isMobile && <FeedbackModal />}
+        {!macros.isMobile && <TestimonialToast />}
+        {/* {!macros.isMobile && <FeedbackModal />} */}
         <div className="Results_Container">
           {!macros.isMobile && (
             <>

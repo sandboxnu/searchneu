@@ -27,6 +27,8 @@
     cursor: pointer;
     background: none;
     padding: 0;
+    display: flex;
+    justify-content: center;
     border: none;
     &--x {
       margin-left: auto;

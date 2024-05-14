@@ -6,7 +6,7 @@ import { GetStaticPathsResult, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { fetchTermInfo } from '../../components/terms';
 import HomeSearch from '../../components/HomePage/HomeSearch';
@@ -16,10 +16,25 @@ import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import { Campus } from '../../components/types';
-
+import TestimonialModal from '../../components/Testimonial/TestimonialModal';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
+import AlertBanner, {
+  AlertBannerData,
+} from '../../components/common/AlertBanner';
+import GraduateLogo from '../../components/icons/GraduateLogo';
+import Cookies from 'universal-cookie';
+import TestimonialToast from '../../components/Testimonial/TestimonialToast';
+import macros from '../../components/macros';
+
+const grad_banner_data: AlertBannerData = {
+  text: 'has just released!',
+  alertLevel: 'info',
+  link: 'https://www.graduatenu.com/',
+  linkText: 'Try it out now!',
+  logo: GraduateLogo,
+};
 
 export default function Home(): ReactElement {
   const router = useRouter();
@@ -31,11 +46,23 @@ export default function Home(): ReactElement {
   const LATEST_TERM =
     termInfos[campus].length > 0 ? termInfos[campus][0]['value'] : '';
   const termId = (router.query.termId as string) || LATEST_TERM;
-  const containerClassnames = 'home-container';
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
+  const [showHelpModal, setShowHelpModal] = useState(false);
+
+  const fetchFeedbackToken = async (): Promise<void> => {
+    const cookies = new Cookies();
+    const existingToken = cookies.get('FeedbackModal JWT');
+    if (!existingToken) {
+      setShowHelpModal(true);
+      const newtoken = 'alreadyShowedModal';
+      cookies.set('FeedbackModal JWT', newtoken, { path: '/' });
+    }
+  };
+
   useEffect(() => {
+    fetchFeedbackToken();
     fetchUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -50,12 +77,10 @@ export default function Home(): ReactElement {
   return (
     <>
       <div>
-        {/*<div className="alertBannerContainer">
-          {alertBanners.map((alertBanner) => (
-            <AlertBanner key={alertBanner.text} alertBannerData={alertBanner} />
-          ))}
-        </div>*/}
-        <div className={containerClassnames}>
+        <div className="alertBannerContainer">
+          <AlertBanner key={'grad_banner'} alertBannerData={grad_banner_data} />
+        </div>
+        <div className={'home-container'}>
           {/*TODO: remove when notification is fixed */}
           <Head>
             <title>Search NEU - {campus} </title>
@@ -81,25 +106,10 @@ export default function Home(): ReactElement {
             />
           </div>
 
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://github.com/sandboxnu/searchneu"
-            className="githubCornerContainer"
-          >
-            <svg width="80" height="80" viewBox="0 0 250 250">
-              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />
-              <path
-                d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-                fill="currentColor"
-                className="octopusArm"
-              />
-              <path
-                d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-                fill="currentColor"
-              />
-            </svg>
-          </a>
+          <TestimonialModal
+            visible={showHelpModal}
+            onCancel={() => setShowHelpModal(false)}
+          />
 
           <div>
             <div // TODO: Take this out and restyle this monstrosity from scratch
@@ -118,6 +128,9 @@ export default function Home(): ReactElement {
               <div className="bostonContainer">
                 <Boston className="boston" aria-label="logo" />
               </div>
+              {!macros.isMobile && (
+                <TestimonialToast position={'toast-bottom-left'} />
+              )}
             </div>
             <Footer />
           </div>

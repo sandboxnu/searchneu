@@ -37,7 +37,7 @@ import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import { getRoundedTerm } from './terms';
 
 const isWindow = typeof window !== 'undefined';
-export const termAndCampusToURL = (
+const termAndCampusToURL = (
   t: string,
   newCampus: string,
   query: string
@@ -58,12 +58,14 @@ type HeaderProps = {
 };
 
 type DropdownMenuWrapperProps = {
+  splashPage?: boolean;
   userInfo: UserInfo | null;
   onSignOut: () => void;
   onSignIn: (token: string) => void;
 };
 
 export const DropdownMenuWrapper = ({
+  splashPage = false,
   userInfo,
   onSignOut,
   onSignIn,
@@ -71,7 +73,6 @@ export const DropdownMenuWrapper = ({
   const [showModal, setShowModal] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const router = useRouter();
 
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
@@ -95,29 +96,23 @@ export const DropdownMenuWrapper = ({
     setShowMenuDropdown(!showMenuDropdown);
   };
 
+  // Commented out until subscription page is finalized
+  // const subscriptionPage = (): void => {
+  //   router.push('/subscriptions');
+  // };
+
   const DropDownMenu = (): ReactElement => {
     return (
       <div className="user-menu">
-        <div className={'user-menu__icon-wrapper'}>
-          <>
-            {userInfo && !macros.isMobile && (
-              <button
-                onClick={() => router.push('/subscriptions')}
-                className="user-menu__button"
-              >
-                Notifications
-              </button>
-            )}
-            {/* Still need to create FAQ page */}
-            {/* <button>FAQ</button> */}
-          </>
-          <div
-            className="user-menu__icon"
-            ref={dropdownRef}
-            onClick={toggleMenuDropdown}
-          >
-            <IconUser />
-          </div>
+        <div
+          ref={dropdownRef}
+          className={
+            splashPage ? 'user-menu__splash-page' : 'user-menu__icon-wrapper'
+          }
+          onClick={toggleMenuDropdown}
+        >
+          {splashPage && <>Logged In</>}
+          <IconUser className="user-menu__icon" />
         </div>
 
         {showMenuDropdown && (
@@ -262,7 +257,7 @@ export default function Header({
             />
           </div>
         )}
-        {macros.isMobile && searchData && (
+        {searchData && (
           <div className="Breadcrumb_Container">
             <div className="Breadcrumb_Container__dropDownContainer">
               <SearchDropdown

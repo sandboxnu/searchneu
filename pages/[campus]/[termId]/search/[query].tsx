@@ -135,7 +135,6 @@ export default function Results(): ReactElement | null {
 
   const filtersAreSet: boolean = areFiltersSet(filters);
 
-  console.log('term', termInfos);
 
   return (
     <>

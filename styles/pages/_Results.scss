@@ -224,18 +224,28 @@ $SIDEBAR_WIDTH: 268px;
   position: relative;
   justify-content: flex-end;
 
-  &__icon-wrapper {
+  &__button {
     display: flex;
+    padding: 13px 12px;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    // text
+    color: Colors.$NEU9;
+
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 14px;
   }
 
-  &__splash-page {
+  &__icon-wrapper {
     display: inline-flex;
-    background: Colors.$White;
-    cursor: pointer;
     align-items: center;
-    border-radius: 8px;
+    justify-content: center;
     gap: 12px;
-    padding: 4px 12px;
   }
 
   &__icon {
@@ -307,12 +317,53 @@ $SIDEBAR_WIDTH: 268px;
       color: Colors.$NEU7;
     }
   }
-
-  // @media only screen and (max-width: 767px) {
-  //   margin: 0;
-  // }
 }
 
 .User_SignOut {
   margin: 0px 10px;
+}
+
+.Campus_Selection {
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 8px;
+  background: Colors.$White;
+  margin-bottom: 25px;
+  width: fit-content;
+}
+
+.Campus_Button {
+  display: flex;
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  // Text
+  color: Colors.$NEU9;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 14px;
+  letter-spacing: 0.62px;
+}
+
+.Campus_NEU {
+  background: Colors.$NEU_Red;
+  color: Colors.$White;
+}
+
+.Campus_CPS {
+  background: Colors.$CPS_Yellow;
+  color: Colors.$White;
+}
+
+.Campus_LAW {
+  background: Colors.$LAW_Blue;
+  color: Colors.$White;
 }

@@ -100,7 +100,6 @@ export default function Home(): ReactElement {
           </a>
           <div className="signInButtonContainer">
             <DropdownMenuWrapper
-              splashPage={true}
               userInfo={userInfo}
               onSignIn={onSignIn}
               onSignOut={onSignOut}

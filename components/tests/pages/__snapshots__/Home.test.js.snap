@@ -18,7 +18,7 @@ exports[`should render a section 1`] = `
         <Image src=\\"/images/sandbox-logo.png\\" alt=\\"sandbox logo\\" width={47} height={61} />
       </a>
       <div className=\\"signInButtonContainer\\">
-        <DropdownMenuWrapper splashPage={true} userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} />
+        <DropdownMenuWrapper userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} />
       </div>
       <TestimonialModal visible={false} onCancel={[Function: onCancel]} />
       <div>

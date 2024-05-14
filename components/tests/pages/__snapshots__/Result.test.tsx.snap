@@ -58,6 +58,35 @@ exports[`should render a section 1`] = `
         </TestimonialToast>
         <div className=\\"Results_Container\\">
           <div className=\\"Results_SidebarWrapper\\">
+            <Memo(CampusSelection) termInfos={{...}} termId=\\"202160\\" query=\\"cs\\" campus=\\"NEU\\">
+              <div className=\\"Campus_Selection\\">
+                <button onClick={[Function: onClick]} className=\\"Campus_Button Campus_NEU\\">
+                  NEU
+                </button>
+                <button onClick={[Function: onClick]} className=\\"Campus_Button false\\">
+                  CPS
+                </button>
+                <button onClick={[Function: onClick]} className=\\"Campus_Button false\\">
+                  LAW
+                </button>
+              </div>
+            </Memo(CampusSelection)>
+            <Memo(SemesterDropdown) options={{...}} title=\\"Semesters\\" value=\\"202160\\">
+              <div className=\\"DropdownFilter SemesterDropdown\\">
+                <div className=\\"DropdownFilter__title\\">
+                  Semesters
+                </div>
+                <div className=\\"DropdownFilter__dropdown\\" role=\\"button\\" tabIndex={0} onClick={[Function: onClick]}>
+                  <div className=\\"DropdownFilter__search \\">
+                    <input className=\\"DropdownFilter__input\\" tabIndex={0} type=\\"text\\" defaultValue=\\"\\" />
+                    <SvgDropdownArrow aria-label=\\"Dropdown arrow\\" className=\\"DropdownFilter__icon \\">
+                      <svg aria-label=\\"Dropdown arrow\\" className=\\"DropdownFilter__icon \\" data-file-name=\\"SvgDropdownArrow\\" />
+                    </SvgDropdownArrow>
+                  </div>
+                  <div className=\\"DropdownFilter__selectable\\" />
+                </div>
+              </div>
+            </Memo(SemesterDropdown)>
             <FilterPanel options={{...}} selected={{...}} setActive={[Function (anonymous)]}>
               <div className=\\"FilterPanel\\">
                 <DropdownFilter title=\\"Subject\\" options={{...}} selected={{...}} setActive={[Function: setActiveFilter]}>

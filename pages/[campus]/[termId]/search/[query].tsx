@@ -4,10 +4,10 @@
  */
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useCallback, useEffect } from 'react';
 import { useQueryParams } from 'use-query-params';
 import Footer from '../../../../components/Footer';
-import Header from '../../../../components/Header';
+import Header, { termAndCampusToURL } from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
 
@@ -24,10 +24,14 @@ import ResultsLoader from '../../../../components/ResultsPage/ResultsLoader';
 import useSearch, {
   SearchParams,
 } from '../../../../components/ResultsPage/useSearch';
-import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
+import { Campus, EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
 import useUserInfo from '../../../../utils/useUserInfo';
+import getTermInfosWithError from '../../../../utils/TermInfoProvider';
+import SemesterDropdown from '../../../../components/ResultsPage/SemesterDropdown';
+import { TermInfo } from '../../../../components/terms';
+import CampusSelection from '../../../../components/ResultsPage/CampusSelection';
 import TestimonialToast from '../../../../components/Testimonial/TestimonialToast';
 
 export default function Results(): ReactElement | null {
@@ -49,6 +53,66 @@ export default function Results(): ReactElement | null {
     query,
     filters,
   };
+
+  const termInfos = getTermInfosWithError().termInfos;
+
+  const deepCopy = (
+    termInfos: Record<Campus, TermInfo[]>
+  ): Record<Campus, TermInfo[]> => {
+    const stringy = JSON.stringify(termInfos);
+    const parsed = JSON.parse(stringy);
+    return parsed;
+  };
+
+  const termInfosCopy = deepCopy(termInfos);
+
+  const formatTermInfos = (termInfos: Record<Campus, TermInfo[]>): void => {
+    const cps = termInfos['CPS'];
+    const cpsFormatted: TermInfo[] = cps.map((term) => {
+      const text = term['text'];
+      const split = text.split(' ');
+      const lastIndex = split.length - 1;
+      if (split[lastIndex] == 'Semester') {
+        split[lastIndex] = '(S)';
+      }
+      if (split[lastIndex] == 'Quarter') {
+        split[lastIndex] = '(Q)';
+      }
+      const joined = split.join(' ');
+      term.text = joined;
+      return term;
+    });
+
+    termInfos.CPS = cpsFormatted;
+
+    const removeSemester = (terms: TermInfo[]): TermInfo[] => {
+      terms.map((term) => {
+        const text = term['text'];
+        const split = text.split(' ');
+        const lastIndex = split.length - 1;
+        split.splice(lastIndex);
+        const joined = split.join(' ');
+        term.text = joined;
+        return term;
+      });
+      return terms;
+    };
+
+    const lawFormatted = removeSemester(termInfos['LAW']);
+    const neuFormatted = removeSemester(termInfos['NEU']);
+
+    termInfos.LAW = lawFormatted;
+    termInfos.NEU = neuFormatted;
+  };
+
+  formatTermInfos(termInfosCopy);
+
+  const termAndCampusToURLCallback = useCallback(
+    (t: string, newCampus: string) => {
+      return termAndCampusToURL(t, newCampus, query);
+    },
+    [query]
+  );
 
   const { error, searchData, loadMore } = useSearch(searchParams);
 
@@ -72,6 +136,7 @@ export default function Results(): ReactElement | null {
 
   const filtersAreSet: boolean = areFiltersSet(filters);
 
+
   return (
     <>
       <div>
@@ -91,6 +156,24 @@ export default function Results(): ReactElement | null {
           {!macros.isMobile && (
             <>
               <div className="Results_SidebarWrapper">
+                <CampusSelection
+                  termInfos={termInfos}
+                  termId={termId}
+                  query={query}
+                  campus={campus}
+                />
+                <SemesterDropdown
+                  options={termInfosCopy[campus].map((terminfo) => ({
+                    text: terminfo.text,
+                    value: terminfo.value,
+                    link: termAndCampusToURLCallback(terminfo.value, campus),
+                  }))}
+                  title={
+                    campus === 'CPS' ? 'Semesters / Quarters' : 'Semesters'
+                  }
+                  value={termId}
+                  key={campus}
+                />
                 <FilterPanel
                   options={searchData?.filterOptions || EMPTY_FILTER_OPTIONS()}
                   selected={filters}

@@ -20,7 +20,7 @@ exports[`should render a section 1`] = `
       <div className=\\"signInButtonContainer\\">
         <DropdownMenuWrapper userInfo={{...}} onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} />
       </div>
-      <TestimonialModal visible={false} onCancel={[Function: onCancel]} />
+      <DisabledNotificationsModal visible={false} onCancel={[Function: onCancel]} />
       <div>
         <div className=\\"ui center spacing aligned icon header topHeader\\">
           <div className=\\"centerTextContainer\\">

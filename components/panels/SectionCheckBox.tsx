@@ -30,6 +30,8 @@ export default function SectionCheckBox({
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
+  const NOTIFICATIONS_ARE_DISABLED = true;
+
   const isSectionChecked = (): boolean =>
     userInfo
       ? userInfo.sectionIds.includes(Keys.getSectionHash(section))
@@ -96,6 +98,7 @@ export default function SectionCheckBox({
       <div className="signUpSwitch">
         <div className="notifSwitch">
           <input
+            disabled={NOTIFICATIONS_ARE_DISABLED}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -103,14 +106,14 @@ export default function SectionCheckBox({
             type="checkbox"
           />
           <label
-            className="react-switch-label"
-            style={{ marginTop: '0px' }}
+            className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
+            style={{ marginTop: '0px', cursor: `${NOTIFICATIONS_ARE_DISABLED ? 'not-allowed' : 'inherit'}` }}
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />
           </label>
         </div>
-        <Tooltip
+        {!NOTIFICATIONS_ARE_DISABLED && <Tooltip
           text={
             !userInfo
               ? 'Sign in to subscribe for notifications.'
@@ -119,7 +122,7 @@ export default function SectionCheckBox({
               : 'Subscribe to notifications for this section'
           }
           direction={TooltipDirection.Up}
-        />
+        />}
       </div>
       <SignUpModal
         visible={showModal}

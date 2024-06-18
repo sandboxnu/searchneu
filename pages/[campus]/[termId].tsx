@@ -16,7 +16,7 @@ import Husky from '../../components/icons/Husky';
 import Logo from '../../components/icons/Logo';
 import LoadingContainer from '../../components/ResultsPage/LoadingContainer';
 import { Campus } from '../../components/types';
-import TestimonialModal from '../../components/Testimonial/TestimonialModal';
+// import TestimonialModal from '../../components/Testimonial/TestimonialModal';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
 import { DropdownMenuWrapper } from '../../components/Header';
 import useUserInfo from '../../utils/useUserInfo';
@@ -27,6 +27,7 @@ import GraduateLogo from '../../components/icons/GraduateLogo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
+import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',
@@ -49,20 +50,38 @@ export default function Home(): ReactElement {
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
-  const [showHelpModal, setShowHelpModal] = useState(false);
 
-  const fetchFeedbackToken = async (): Promise<void> => {
+  const [showNotificationsDisabledModal, setShowNotificationsDisabledModal] = useState(false);
+
+  const fetchNotificationsToken = async (): Promise<void> => {
     const cookies = new Cookies();
-    const existingToken = cookies.get('FeedbackModal JWT');
+    const existingToken = cookies.get('NotificationsModal JWT');
+    // Show modal twice
     if (!existingToken) {
-      setShowHelpModal(true);
-      const newtoken = 'alreadyShowedModal';
-      cookies.set('FeedbackModal JWT', newtoken, { path: '/' });
+      setShowNotificationsDisabledModal(true);
+      cookies.set('NotificationsModal JWT', 1, { path: '/' });
+    } else if (parseFloat(existingToken) < 2) {
+      setShowNotificationsDisabledModal(true);
+      cookies.set('NotificationsModal JWT', 2, { path: '/' });
     }
   };
 
+  // Remove if no longer a need for the testimonial modal
+  // const [showHelpModal, setShowHelpModal] = useState(false);
+  
+  // const fetchFeedbackToken = async (): Promise<void> => {
+  //   const cookies = new Cookies();
+  //   const existingToken = cookies.get('FeedbackModal JWT');
+  //   if (!existingToken) {
+  //     setShowHelpModal(true);
+  //     const newtoken = 'alreadyShowedModal';
+  //     cookies.set('FeedbackModal JWT', newtoken, { path: '/' });
+  //   }
+  // };
+
   useEffect(() => {
-    fetchFeedbackToken();
+    // fetchFeedbackToken();
+    fetchNotificationsToken();
     fetchUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -106,9 +125,15 @@ export default function Home(): ReactElement {
             />
           </div>
 
-          <TestimonialModal
+          {/* Remove this if there is no longer a need for the testimonial modal */}
+          {/* <TestimonialModal
             visible={showHelpModal}
             onCancel={() => setShowHelpModal(false)}
+          /> */}
+
+          <DisabledNotificationsModal
+            visible={showNotificationsDisabledModal}
+            onCancel={() => setShowNotificationsDisabledModal(false)}
           />
 
           <div>

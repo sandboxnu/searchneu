@@ -27,6 +27,7 @@ export default function CourseCheckBox({
 }: CourseCheckBoxProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
+  const NOTIFICATIONS_ARE_DISABLED = true;
 
   const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
@@ -76,6 +77,7 @@ export default function CourseCheckBox({
       <div className="signUpSwitch toggle">
         <div className="notifSwitch">
           <input
+            disabled={NOTIFICATIONS_ARE_DISABLED}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -83,8 +85,8 @@ export default function CourseCheckBox({
             type="checkbox"
           />
           <label
-            className="react-switch-label"
-            style={{ marginTop: '0px' }}
+            className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
+            style={{ marginTop: '0px', cursor: `${NOTIFICATIONS_ARE_DISABLED ? 'not-allowed' : 'inherit'}` }}
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />

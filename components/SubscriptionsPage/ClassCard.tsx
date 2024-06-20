@@ -13,7 +13,7 @@ type ClassCardWrapperType = {
   afterBody?: ReactElement;
 };
 
-const ClassCardWrapper = ({
+export const ClassCardWrapper = ({
   headerLeft,
   headerRight,
   body,
@@ -21,10 +21,9 @@ const ClassCardWrapper = ({
 }: ClassCardWrapperType): ReactElement => {
   return (
     <div className="SearchResult">
-      <div className="SearchResult__header">
-        <div className="SearchResult__header--left">{headerLeft}</div>
-        {headerRight}
-      </div>
+      <div>{headerLeft}</div>
+      {headerRight}
+
       {body}
       {afterBody}
     </div>

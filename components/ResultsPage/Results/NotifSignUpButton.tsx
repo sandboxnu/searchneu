@@ -13,14 +13,16 @@ export default function NotifSignUpButton({
     macros.logAmplitudeEvent('Notifs Button');
   };
 
-  const NOTIFICATIONS_ARE_DISABLED = true;
+  const NOTIFICATIONS_ARE_DISABLED = false;
 
   return (
     <button
       disabled={NOTIFICATIONS_ARE_DISABLED}
       onClick={onClickWithAmplitudeHook}
       type="button"
-      className={`Results_SignIn ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
+      className={`Results_SignIn ${
+        NOTIFICATIONS_ARE_DISABLED ? 'disabledButton' : ''
+      }`}
     >
       Sign In
     </button>

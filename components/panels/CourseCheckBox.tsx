@@ -27,7 +27,15 @@ export default function CourseCheckBox({
 }: CourseCheckBoxProps): ReactElement {
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
-  const NOTIFICATIONS_ARE_DISABLED = true;
+
+  const NOTIFICATIONS_LIMIT = 12;
+  const NOTIFICATIONS_ARE_DISABLED = false;
+
+  const notificationsLimitReached = (): boolean =>
+    NOTIFICATIONS_ARE_DISABLED ||
+    (userInfo &&
+      userInfo.courseIds.length + userInfo.sectionIds.length >=
+        NOTIFICATIONS_LIMIT);
 
   const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
@@ -77,7 +85,8 @@ export default function CourseCheckBox({
       <div className="signUpSwitch toggle">
         <div className="notifSwitch">
           <input
-            disabled={NOTIFICATIONS_ARE_DISABLED}
+            //disabled={NOTIFICATIONS_ARE_DISABLED && (userInfo.courseIds.length + userInfo.sectionIds.length >= NOTIFICATIONS_LIMIT)}
+            disabled={notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -85,8 +94,14 @@ export default function CourseCheckBox({
             type="checkbox"
           />
           <label
-            className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
-            style={{ marginTop: '0px', cursor: `${NOTIFICATIONS_ARE_DISABLED ? 'not-allowed' : 'inherit'}` }}
+            //className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
+            className={`react-switch-label ${notificationsLimitReached()}`}
+            style={{
+              marginTop: '0px',
+              cursor: `${
+                notificationsLimitReached() ? 'not-allowed' : 'inherit'
+              }`,
+            }}
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />

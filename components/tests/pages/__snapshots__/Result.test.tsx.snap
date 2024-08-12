@@ -24,7 +24,7 @@ exports[`should render a section 1`] = `
               <div className=\\"Results__spacer\\" />
               <DropdownMenuWrapper onSignIn={[Function: onSignIn]} onSignOut={[Function: onSignOut]} userInfo={{...}}>
                 <NotifSignUpButton onNotifSignUp={[Function: onNotifSignUp]}>
-                  <button disabled={true} onClick={[Function: onClickWithAmplitudeHook]} type=\\"button\\" className=\\"Results_SignIn disabledButton\\">
+                  <button disabled={false} onClick={[Function: onClickWithAmplitudeHook]} type=\\"button\\" className=\\"Results_SignIn \\">
                     Sign In
                   </button>
                 </NotifSignUpButton>

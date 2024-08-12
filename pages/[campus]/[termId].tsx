@@ -28,6 +28,7 @@ import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
 import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
+import NewSubscriptionsLimitModal from '../../components/notifications/NewSubscriptionsLimitModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',
@@ -50,25 +51,24 @@ export default function Home(): ReactElement {
 
   const { userInfo, fetchUserInfo, onSignIn, onSignOut } = useUserInfo();
 
+  const [showNewLimitModal, setShowNewLimitModal] = useState(false);
 
-  const [showNotificationsDisabledModal, setShowNotificationsDisabledModal] = useState(false);
-
-  const fetchNotificationsToken = async (): Promise<void> => {
+  const fetchModalToken = async (): Promise<void> => {
     const cookies = new Cookies();
-    const existingToken = cookies.get('NotificationsModal JWT');
+    const existingToken = cookies.get('NewLimitModal JWT');
     // Show modal twice
     if (!existingToken) {
-      setShowNotificationsDisabledModal(true);
-      cookies.set('NotificationsModal JWT', 1, { path: '/' });
+      setShowNewLimitModal(true);
+      cookies.set('NewLimitModal JWT', 1, { path: '/' });
     } else if (parseFloat(existingToken) < 2) {
-      setShowNotificationsDisabledModal(true);
-      cookies.set('NotificationsModal JWT', 2, { path: '/' });
+      setShowNewLimitModal(true);
+      cookies.set('NewLimitModal JWT', 2, { path: '/' });
     }
   };
 
   // Remove if no longer a need for the testimonial modal
   // const [showHelpModal, setShowHelpModal] = useState(false);
-  
+
   // const fetchFeedbackToken = async (): Promise<void> => {
   //   const cookies = new Cookies();
   //   const existingToken = cookies.get('FeedbackModal JWT');
@@ -81,7 +81,7 @@ export default function Home(): ReactElement {
 
   useEffect(() => {
     // fetchFeedbackToken();
-    fetchNotificationsToken();
+    fetchModalToken();
     fetchUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -131,9 +131,9 @@ export default function Home(): ReactElement {
             onCancel={() => setShowHelpModal(false)}
           /> */}
 
-          <DisabledNotificationsModal
-            visible={showNotificationsDisabledModal}
-            onCancel={() => setShowNotificationsDisabledModal(false)}
+          <NewSubscriptionsLimitModal
+            visible={showNewLimitModal}
+            onCancel={() => setShowNewLimitModal(false)}
           />
 
           <div>

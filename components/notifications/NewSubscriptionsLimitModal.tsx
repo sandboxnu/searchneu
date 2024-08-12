@@ -1,17 +1,17 @@
 import React, { ReactElement } from 'react';
 import Modal from '../Modal';
 import X from '../icons/X.svg';
-import CryingHusky3 from '../icons/crying-husky-3.svg';
+import Boston from '../icons/boston.svg';
 
-interface DisabledNotificationsModalProps {
+interface NewSubscriptionsLimitModalProps {
   visible: boolean;
   onCancel: () => void;
 }
 
-export default function DisabledNotificationsModal({
+export default function NewSubscriptionsLimitModal({
   visible,
   onCancel,
-}: DisabledNotificationsModalProps): ReactElement {
+}: NewSubscriptionsLimitModalProps): ReactElement {
   return (
     <Modal visible={visible} onCancel={onCancel}>
       <div className="phone-modal">
@@ -24,14 +24,12 @@ export default function DisabledNotificationsModal({
               <X />
             </button>
           </div>
-          <CryingHusky3 />
-          <span className="phone-modal__header">
-            Notifications have paused for the summer
-          </span>
+          <Boston />
+          <span className="phone-modal__header">Notifications are up!</span>
 
           <span className="phone-modal__label">
-            Due to cost issues, we{`'`}re putting notifications on pause until
-            we acquire additional funding in the fall.
+            We{`'`}re limiting users to 12 subscriptions per semester to keep
+            SearchNEU running for our growing NEU community.
           </span>
         </div>
       </div>

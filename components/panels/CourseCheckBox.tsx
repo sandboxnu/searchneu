@@ -85,7 +85,6 @@ export default function CourseCheckBox({
       <div className="signUpSwitch toggle">
         <div className="notifSwitch">
           <input
-            //disabled={NOTIFICATIONS_ARE_DISABLED && (userInfo.courseIds.length + userInfo.sectionIds.length >= NOTIFICATIONS_LIMIT)}
             disabled={notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}

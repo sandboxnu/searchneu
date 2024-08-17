@@ -28,7 +28,7 @@ export default function NewSubscriptionsLimitModal({
           <span className="phone-modal__header">Notifications are up!</span>
 
           <span className="phone-modal__label">
-            We{`'`}re limiting users to 12 subscriptions per semester to keep
+            We{`'`}re limiting users to 12 subscriptions at a time to keep
             SearchNEU running for our growing NEU community.
           </span>
         </div>

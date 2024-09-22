@@ -42,12 +42,7 @@ function SemesterDropdown({
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className={`DropdownFilter__search ${getDropdownStatus()}`}>
-          <input
-            className={'DropdownFilter__input'}
-            tabIndex={0}
-            type="text"
-            defaultValue={currentText}
-          ></input>
+          <div aria-label={currentText}>{currentText}</div>
           <DropdownArrow
             aria-label="Dropdown arrow"
             className={`DropdownFilter__icon ${getDropdownStatus()}`}

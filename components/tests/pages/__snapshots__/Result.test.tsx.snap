@@ -78,7 +78,7 @@ exports[`should render a section 1`] = `
                 </div>
                 <div className=\\"DropdownFilter__dropdown\\" role=\\"button\\" tabIndex={0} onClick={[Function: onClick]}>
                   <div className=\\"DropdownFilter__search \\">
-                    <input className=\\"DropdownFilter__input\\" tabIndex={0} type=\\"text\\" defaultValue=\\"\\" />
+                    <div aria-label=\\"\\" />
                     <SvgDropdownArrow aria-label=\\"Dropdown arrow\\" className=\\"DropdownFilter__icon \\">
                       <svg aria-label=\\"Dropdown arrow\\" className=\\"DropdownFilter__icon \\" data-file-name=\\"SvgDropdownArrow\\" />
                     </SvgDropdownArrow>

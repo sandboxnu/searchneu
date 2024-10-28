@@ -49,7 +49,7 @@ const useUserInfo = (): useUserInfoReturn => {
       setIsUserInfoLoading(false);
     };
     fetchData();
-  }, [cookies]);
+  }, []);
 
   return { userInfo, isUserInfoLoading, fetchUserInfo, onSignOut, onSignIn };
 };

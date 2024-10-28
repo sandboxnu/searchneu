@@ -70,16 +70,17 @@ export const DropdownMenuWrapper = ({
   onSignIn,
 }: DropdownMenuWrapperProps): ReactElement => {
   const [showModal, setShowModal] = useState(false);
-  const showMenuDropdown = useRef(false);
+  // const showMenuDropdown = useRef(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const router = useRouter();
 
   const [userLoggedOut, setUserLoggedOut] = useState(false);
-  
+
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        showMenuDropdown.current = false;
+        setShowMenuDropdown(false);
       }
     };
 
@@ -96,7 +97,7 @@ export const DropdownMenuWrapper = ({
 
   const DropDownMenu = useMemo(() => {
     const toggleMenuDropdown = (): void => {
-      showMenuDropdown.current = !showMenuDropdown.current;
+      setShowMenuDropdown(!showMenuDropdown);
     };
 
     const MemoizedDropDownMenu = (): ReactElement => (
@@ -123,8 +124,14 @@ export const DropdownMenuWrapper = ({
           </div>
         </div>
 
-        {showMenuDropdown.current && (
-          <div ref={dropdownRef} onClick={() => {onSignOut(), setUserLoggedOut(true)}} className="user-menu__dropdown">
+        {showMenuDropdown && (
+          <div
+            ref={dropdownRef}
+            onClick={() => {
+              onSignOut(), setUserLoggedOut(true);
+            }}
+            className="user-menu__dropdown"
+          >
             <span className="user-menu__item">
               <Exit style={{ marginRight: '8px' }} />
               <div className="user-menu__item--text-container">
@@ -142,8 +149,8 @@ export const DropdownMenuWrapper = ({
     MemoizedDropDownMenu.displayName = 'DropDownMenu';
 
     return MemoizedDropDownMenu;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[showMenuDropdown.current, userInfo?.token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showMenuDropdown, userInfo?.token]);
 
   return (
     <>
@@ -155,10 +162,13 @@ export const DropdownMenuWrapper = ({
           <SignUpModal
             visible={showModal}
             onCancel={() => setShowModal(false)}
-            onSignIn={(token: string) => {onSignIn(token); setUserLoggedOut(false)}}
+            onSignIn={(token: string) => {
+              onSignIn(token);
+              setUserLoggedOut(false);
+            }}
             onSuccess={() => {
               setShowModal(false);
-              showMenuDropdown.current = false;
+              setShowMenuDropdown(false);
             }}
           />
         </>

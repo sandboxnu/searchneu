@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import Modal from '../Modal';
 import X from '../icons/X.svg';
 import Boston from '../icons/boston.svg';
+import CryingHusky3 from '../icons/crying-husky-3.svg';
 
 interface NewSubscriptionsLimitModalProps {
   visible: boolean;
@@ -24,12 +25,15 @@ export default function NewSubscriptionsLimitModal({
               <X />
             </button>
           </div>
-          <Boston />
-          <span className="phone-modal__header">Unable to turn on notifs?</span>
+          <CryingHusky3 />
+          <span className="phone-modal__header">Notifications Issues</span>
 
           <span className="phone-modal__label">
-            Users are limited to 12 notifications at a time. Please unsubscribe
-            from a class to turn on other notifications.
+            We've found issues with unsubscribing from notifications.
+          </span>
+          <span className="phone-modal__label">
+            We're very sorry about the inconvenience this causes, and are
+            working to deploy fixes ASAP. Thank you!
           </span>
         </div>
       </div>

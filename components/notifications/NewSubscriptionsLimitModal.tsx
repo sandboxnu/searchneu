@@ -25,11 +25,11 @@ export default function NewSubscriptionsLimitModal({
             </button>
           </div>
           <Boston />
-          <span className="phone-modal__header">Notifications are up!</span>
+          <span className="phone-modal__header">Unable to turn on notifs?</span>
 
           <span className="phone-modal__label">
-            We{`'`}re limiting users to 12 subscriptions at a time to keep
-            SearchNEU running for our growing NEU community.
+            Users are limited to 12 notifications at a time. Please unsubscribe
+            from a class to turn on other notifications.
           </span>
         </div>
       </div>

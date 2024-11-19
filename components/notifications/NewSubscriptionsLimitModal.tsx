@@ -29,10 +29,10 @@ export default function NewSubscriptionsLimitModal({
           <span className="phone-modal__header">Notifications Issues</span>
 
           <span className="phone-modal__label">
-            We've found issues with unsubscribing from notifications.
+            We found issues with unsubscribing from notifications.
           </span>
           <span className="phone-modal__label">
-            We're very sorry about the inconvenience this causes, and are
+            We are very sorry about the inconvenience this causes, and are
             working to deploy fixes ASAP. Thank you!
           </span>
         </div>

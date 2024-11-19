@@ -28,7 +28,7 @@ export default function CourseCheckBox({
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
-  const NOTIFICATIONS_LIMIT = 30;
+  const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
 
   const notificationsLimitReached = (): boolean =>

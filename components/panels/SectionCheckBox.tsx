@@ -105,7 +105,7 @@ export default function SectionCheckBox({
       <div className="signUpSwitch">
         <div className="notifSwitch">
           <input
-            disabled={notificationsLimitReached()}
+            disabled={checked ? false : notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -114,12 +114,14 @@ export default function SectionCheckBox({
           />
           <label
             className={`react-switch-label ${
-              notificationsLimitReached() && 'disabledButton'
+              !checked && notificationsLimitReached() && 'disabledButton'
             }`}
             style={{
               marginTop: '0px',
               cursor: `${
-                notificationsLimitReached() ? 'not-allowed' : 'inherit'
+                !checked && notificationsLimitReached()
+                  ? 'not-allowed'
+                  : 'inherit'
               }`,
             }}
             htmlFor={notifSwitchId}
@@ -127,15 +129,22 @@ export default function SectionCheckBox({
             <span className="react-switch-button" />
           </label>
         </div>
-        {!notificationsLimitReached() && (
+        {checked ||
+          (!notificationsLimitReached() && (
+            <Tooltip
+              text={
+                !userInfo
+                  ? 'Sign in to subscribe for notifications.'
+                  : checked
+                  ? 'Unsubscribe from notifications for this section.'
+                  : 'Subscribe to notifications for this section'
+              }
+              direction={TooltipDirection.Up}
+            />
+          ))}
+        {!checked && notificationsLimitReached() && (
           <Tooltip
-            text={
-              !userInfo
-                ? 'Sign in to subscribe for notifications.'
-                : checked
-                ? 'Unsubscribe from notifications for this section.'
-                : 'Subscribe to notifications for this section'
-            }
+            text="Notification limit reached - unsubscribe to add more."
             direction={TooltipDirection.Up}
           />
         )}

@@ -26,15 +26,21 @@ export default function NewSubscriptionsLimitModal({
             </button>
           </div>
           <CryingHusky3 />
-          <span className="phone-modal__header">Notifications Issues</span>
+          <span className="phone-modal__header">Recent Issues</span>
 
           <span className="phone-modal__label">
-            We found issues with unsubscribing from notifications.
+            We have identified issues with unsubscribing from notifications.
           </span>
           <span className="phone-modal__label">
-            We are very sorry about the inconvenience this causes, and are
-            working to deploy fixes ASAP. Thank you!
+            Additionally, we have not been been displaying professor names as
+            Banner recently changed how it shows professor data.
           </span>
+          <br />
+          <span className="phone-modal__label">
+            We are very sorry about the inconvenience these issues cause, and
+            are working to deploy fixes ASAP. Thank you!
+          </span>
+          <br />
         </div>
       </div>
     </Modal>

@@ -11,6 +11,7 @@ import { Course, SubscriptionCourse } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import { useRouter } from 'next/router';
 
 type CourseCheckBoxProps = {
   course: Course | SubscriptionCourse;
@@ -25,16 +26,20 @@ export default function CourseCheckBox({
   fetchUserInfo,
   onSignIn,
 }: CourseCheckBoxProps): ReactElement {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
 
   const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
 
+  const termId = router.query.termId as string;
+
   const notificationsLimitReached = (): boolean =>
     NOTIFICATIONS_ARE_DISABLED ||
     (userInfo &&
-      userInfo.courseIds.length + userInfo.sectionIds.length >=
+      userInfo.courseIds.filter((id) => id.includes(termId)).length +
+        userInfo.sectionIds.filter((id) => id.includes(termId)).length >=
         NOTIFICATIONS_LIMIT);
 
   const isCourseChecked = (): boolean =>

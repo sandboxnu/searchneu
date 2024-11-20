@@ -41,7 +41,7 @@ export default function NewSubscriptionsLimitModal({
           <br />
           <span className="phone-modal__label">
             We are very sorry about the inconvenience these issues cause, and
-            will deploy more fixes ASAP. Thank you!
+            will deploy more fixes as soon as possible. Thank you!
           </span>
           <br />
         </div>

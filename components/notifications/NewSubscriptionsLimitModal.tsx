@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import Modal from '../Modal';
 import X from '../icons/X.svg';
 import Boston from '../icons/boston.svg';
+import CryingHusky3 from '../icons/crying-husky-3.svg';
 
 interface NewSubscriptionsLimitModalProps {
   visible: boolean;
@@ -24,13 +25,22 @@ export default function NewSubscriptionsLimitModal({
               <X />
             </button>
           </div>
-          <Boston />
-          <span className="phone-modal__header">Notifications are up!</span>
+          <CryingHusky3 />
+          <span className="phone-modal__header">Notification Issues</span>
 
           <span className="phone-modal__label">
-            We{`'`}re limiting users to 12 subscriptions at a time to keep
-            SearchNEU running for our growing NEU community.
+            We have identified issues with unsubscribing from notifications.
           </span>
+          <span className="phone-modal__label">
+            Additionally, we have not been been displaying professor names as
+            Banner recently changed how it shows professor data.
+          </span>
+          <br />
+          <span className="phone-modal__label">
+            We are very sorry about the inconvenience these issues cause, and
+            are working to deploy fixes ASAP. Thank you!
+          </span>
+          <br />
         </div>
       </div>
     </Modal>

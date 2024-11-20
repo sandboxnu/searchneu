@@ -85,7 +85,8 @@ export default function CourseCheckBox({
       <div className="signUpSwitch toggle">
         <div className="notifSwitch">
           <input
-            disabled={notificationsLimitReached()}
+            //disabled={notificationsLimitReached()}
+            disabled={checked ? false : notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -94,11 +95,17 @@ export default function CourseCheckBox({
           />
           <label
             //className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
-            className={`react-switch-label ${notificationsLimitReached()}`}
+            className={`react-switch-label ${
+              //notificationsLimitReached()
+              !checked && notificationsLimitReached() && 'disabledButton'
+            }`}
             style={{
               marginTop: '0px',
               cursor: `${
-                notificationsLimitReached() ? 'not-allowed' : 'inherit'
+                //notificationsLimitReached() ? 'not-allowed' : 'inherit'
+                !checked && notificationsLimitReached()
+                  ? 'not-allowed'
+                  : 'inherit'
               }`,
             }}
             htmlFor={notifSwitchId}
@@ -106,14 +113,25 @@ export default function CourseCheckBox({
             <span className="react-switch-button" />
           </label>
         </div>
-        <Tooltip
-          text={
-            checked
-              ? 'Unsubscribe from notifications for this course.'
-              : 'Subscribe to notifications for this course'
-          }
-          direction={TooltipDirection.Up}
-        />
+        {checked ||
+          (!notificationsLimitReached() && (
+            <Tooltip
+              text={
+                !userInfo
+                  ? 'Sign in to subscribe for notifications.'
+                  : checked
+                  ? 'Unsubscribe from notifications for this section.'
+                  : 'Subscribe to notifications for this section'
+              }
+              direction={TooltipDirection.Up}
+            />
+          ))}
+        {!checked && notificationsLimitReached() && (
+          <Tooltip
+            text="Notification limit reached - unsubscribe to add more."
+            direction={TooltipDirection.Up}
+          />
+        )}
       </div>
       <SignUpModal
         visible={showModal}

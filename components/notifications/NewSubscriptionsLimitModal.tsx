@@ -26,19 +26,22 @@ export default function NewSubscriptionsLimitModal({
             </button>
           </div>
           <CryingHusky3 />
-          <span className="phone-modal__header">Notification Issues</span>
+          <span className="phone-modal__header">Notifications Update</span>
 
           <span className="phone-modal__label">
-            We have identified issues with unsubscribing from notifications.
+            Users can now properly subscribe/unsubscribe to up to 12
+            notifications for Spring 2025. Previous semester notifs are no
+            longer counted towards this limit.
           </span>
+          <br />
           <span className="phone-modal__label">
-            Additionally, we have not been been displaying professor names as
-            Banner recently changed how it shows professor data.
+            We are working on a way for users to view all their subscriptions
+            and are updating our display of professor data on courses.
           </span>
           <br />
           <span className="phone-modal__label">
             We are very sorry about the inconvenience these issues cause, and
-            are working to deploy fixes ASAP. Thank you!
+            will deploy more fixes as soon as possible. Thank you!
           </span>
           <br />
         </div>

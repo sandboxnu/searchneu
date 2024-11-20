@@ -26,7 +26,7 @@ export default function NewSubscriptionsLimitModal({
             </button>
           </div>
           <CryingHusky3 />
-          <span className="phone-modal__header">Recent Issues</span>
+          <span className="phone-modal__header">Notification Issues</span>
 
           <span className="phone-modal__label">
             We have identified issues with unsubscribing from notifications.

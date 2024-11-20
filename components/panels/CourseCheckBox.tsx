@@ -11,6 +11,7 @@ import { Course, SubscriptionCourse } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import { gqlClient } from '/Users/user/searchneu/utils/courseAPIClient';
 
 type CourseCheckBoxProps = {
   course: Course | SubscriptionCourse;
@@ -30,12 +31,20 @@ export default function CourseCheckBox({
 
   const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
+  const CURRENT_TERM = '202530';
+
+  const currentCourseNotifs = userInfo
+    ? userInfo.courseIds.filter(async (c) => {
+        const result = await gqlClient.getCourseInfoByHash({
+          hash: c,
+        });
+        return result.classByHash.termId === CURRENT_TERM;
+      }).length
+    : 0;
 
   const notificationsLimitReached = (): boolean =>
     NOTIFICATIONS_ARE_DISABLED ||
-    (userInfo &&
-      userInfo.courseIds.length + userInfo.sectionIds.length >=
-        NOTIFICATIONS_LIMIT);
+    (userInfo && currentCourseNotifs >= NOTIFICATIONS_LIMIT);
 
   const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));

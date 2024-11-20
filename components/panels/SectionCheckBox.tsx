@@ -13,6 +13,7 @@ import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import Colors from '../../styles/_exports.module.scss';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import { gqlClient } from '/Users/user/searchneu/utils/courseAPIClient';
 
 type SectionCheckBoxProps = {
   section: Section;
@@ -32,12 +33,23 @@ export default function SectionCheckBox({
 
   const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
+  const CURRENT_TERM = '202530';
+
+  const currentSectionNotifs = userInfo
+    ? userInfo.sectionIds.filter(async (s) => {
+        const sectionHashSlice = s.split('/');
+        const courseHash = sectionHashSlice.slice(0, -1).join('/');
+
+        const courseResult = await gqlClient.getCourseInfoByHash({
+          hash: courseHash,
+        });
+        return courseResult.classByHash.termId === CURRENT_TERM;
+      }).length
+    : 0;
 
   const notificationsLimitReached = (): boolean =>
     NOTIFICATIONS_ARE_DISABLED ||
-    (userInfo &&
-      userInfo.courseIds.length + userInfo.sectionIds.length >=
-        NOTIFICATIONS_LIMIT);
+    (userInfo && currentSectionNotifs >= NOTIFICATIONS_LIMIT);
 
   const isSectionChecked = (): boolean =>
     userInfo

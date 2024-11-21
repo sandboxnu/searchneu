@@ -7,7 +7,7 @@ import CryingHusky from '../icons/crying-husky.svg';
 import HappyHusky from '../icons/happy-husky.svg';
 
 type EmptyCardProps = {
-  termYear: number;
+  termYear: string;
   termId: string;
 };
 
@@ -20,13 +20,13 @@ export const EmptyCard = ({
 
   return (
     <>
-      <div className="Results_Container">
-        <div className="Results_MainWrapper">
-          <div className="Results_Main">
-            <div className="Results_Main__EmptyCard">
-              <div className="Results_Main_EmptyCard_Header">
-                <div className="Results_Main__EmptyCard_Header_Spacer">
-                  <div className="Results_Main__EmptyCard_Header_Title">
+      <div className="Empty_Container">
+        <div className="Empty_MainWrapper">
+          <div className="Empty_Main">
+            <div className="Empty_Main__EmptyCard">
+              <div className="Empty_Main_EmptyCard_Header">
+                <div className="Empty_Main__EmptyCard_Header_Spacer">
+                  <div className="Empty_Main__EmptyCard_Header_Title">
                     <b>
                       {termId} {termYear} Notifications
                     </b>
@@ -44,25 +44,25 @@ export const EmptyCard = ({
               </div>
               <ClassCardWrapper
                 headerLeft={
-                  <div className="Results_Main__EmptyCard_Text">
-                    <div className="Results_Main__EmptyCard_Text_Title">
+                  <div className="Empty_Main__EmptyCard_Text">
+                    <div className="Empty_Main__EmptyCard_Text_Title">
                       <b>You currently have no notifications. Hoosky sad :(</b>
                     </div>
-                    <div className="Results_Main__EmptyCard_Text_Body">
+                    <div className="Empty_Main__EmptyCard_Text_Body">
                       Be the first to know when new classes and sections drop!
                     </div>
                   </div>
                 }
                 headerRight={
                   <div
-                    className="Results_Main__EmptyCard_Divider"
+                    className="Empty_Main__EmptyCard_Divider"
                     onClick={() => {
-                      router.push('/NEU/');
+                      router.push('/search/');
                     }}
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                   >
-                    <button className="Results_Main__EmptyCard_Button">
+                    <button className="Empty_Main__EmptyCard_Button">
                       <Circular />
                       <b>Search for classes</b>
                     </button>

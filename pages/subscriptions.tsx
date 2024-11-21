@@ -190,7 +190,7 @@ export default function SubscriptionsPage(): ReactElement {
               </div>
             </>
           ) : (
-            <EmptyCard termId="Fall 2024" />
+            <EmptyCard />
           )}
         </>
       )}

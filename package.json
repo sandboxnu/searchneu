@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n app,codegen \"next dev -p 5000\" \"npm:generate:graphql -- --watch\"",
+    "dev": "concurrently -n app,codegen \"next dev -p 5001\" \"npm:generate:graphql -- --watch\"",
     "dev:fullstack": "NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000 NEXT_PUBLIC_NOTIFS_ENDPOINT=http://localhost:8080 yarn run dev",
     "build": "next build",
     "vercel:build": "yarn build",

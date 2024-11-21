@@ -41,7 +41,7 @@ export default function PageContent({
         </h2>
       ) : (
         <div className="backToResults" onClick={() => router.back()}>
-          Back to Search Results
+          Back
         </div>
       )}
       {classPageInfo && classPageInfo.class && (

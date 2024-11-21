@@ -142,7 +142,11 @@ export function CourseResult({
       }
       afterBody={
         <>
-          <table className="SearchResult__sectionTable">
+          <table
+            className={`SearchResult__sectionTable ${
+              hideShowAll ? 'SearchResult__sectionTable--hidden' : ''
+            }`}
+          >
             <thead>
               <tr>
                 <th>

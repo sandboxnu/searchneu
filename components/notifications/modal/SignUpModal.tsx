@@ -91,13 +91,13 @@ export default function SignUpModal({
           macros.logAmplitudeEvent('Phone Number Failed', {
             error,
           });
-          setStatusMessage('Incorrect code entered');
+          setStatusMessage('Invalid phone number');
         })
         .finally(() => {
           setIsLoading(false);
         });
     } else {
-      setStatusMessage('Invalid phone number');
+      setStatusMessage('Incorrect code entered');
     }
   };
 

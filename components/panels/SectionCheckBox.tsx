@@ -13,6 +13,7 @@ import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import Colors from '../../styles/_exports.module.scss';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import { useRouter } from 'next/router';
 
 type SectionCheckBoxProps = {
   section: Section;
@@ -27,8 +28,21 @@ export default function SectionCheckBox({
   fetchUserInfo,
   onSignIn,
 }: SectionCheckBoxProps): ReactElement {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
+
+  const NOTIFICATIONS_LIMIT = 12;
+  const NOTIFICATIONS_ARE_DISABLED = false;
+
+  const termId = router.query.termId as string;
+
+  const notificationsLimitReached = (): boolean =>
+    NOTIFICATIONS_ARE_DISABLED ||
+    (userInfo &&
+      userInfo.courseIds.filter((id) => id.includes(termId)).length +
+        userInfo.sectionIds.filter((id) => id.includes(termId)).length >=
+        NOTIFICATIONS_LIMIT);
 
   const isSectionChecked = (): boolean =>
     userInfo
@@ -96,6 +110,7 @@ export default function SectionCheckBox({
       <div className="signUpSwitch">
         <div className="notifSwitch">
           <input
+            disabled={checked ? false : notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -103,23 +118,41 @@ export default function SectionCheckBox({
             type="checkbox"
           />
           <label
-            className="react-switch-label"
-            style={{ marginTop: '0px' }}
+            className={`react-switch-label ${
+              !checked && notificationsLimitReached() && 'disabledButton'
+            }`}
+            style={{
+              marginTop: '0px',
+              cursor: `${
+                !checked && notificationsLimitReached()
+                  ? 'not-allowed'
+                  : 'inherit'
+              }`,
+            }}
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />
           </label>
         </div>
-        <Tooltip
-          text={
-            !userInfo
-              ? 'Sign in to subscribe for notifications.'
-              : checked
-              ? 'Unsubscribe from notifications for this section.'
-              : 'Subscribe to notifications for this section'
-          }
-          direction={TooltipDirection.Up}
-        />
+        {checked ||
+          (!notificationsLimitReached() && (
+            <Tooltip
+              text={
+                !userInfo
+                  ? 'Sign in to subscribe for notifications.'
+                  : checked
+                  ? 'Unsubscribe from notifications for this section.'
+                  : 'Subscribe to notifications for this section'
+              }
+              direction={TooltipDirection.Up}
+            />
+          ))}
+        {!checked && notificationsLimitReached() && (
+          <Tooltip
+            text="Notification limit reached - unsubscribe to add more."
+            direction={TooltipDirection.Up}
+          />
+        )}
       </div>
       <SignUpModal
         visible={showModal}

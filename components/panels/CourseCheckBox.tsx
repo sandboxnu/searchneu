@@ -11,6 +11,7 @@ import { Course, SubscriptionCourse } from '../types';
 import axios from 'axios';
 import { UserInfo } from '../../components/types';
 import SignUpModal from '../notifications/modal/SignUpModal';
+import { useRouter } from 'next/router';
 
 type CourseCheckBoxProps = {
   course: Course | SubscriptionCourse;
@@ -25,8 +26,21 @@ export default function CourseCheckBox({
   fetchUserInfo,
   onSignIn,
 }: CourseCheckBoxProps): ReactElement {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [notifSwitchId] = useState(uniqueId('notifSwitch-'));
+
+  const NOTIFICATIONS_LIMIT = 12;
+  const NOTIFICATIONS_ARE_DISABLED = false;
+
+  const termId = router.query.termId as string;
+
+  const notificationsLimitReached = (): boolean =>
+    NOTIFICATIONS_ARE_DISABLED ||
+    (userInfo &&
+      userInfo.courseIds.filter((id) => id.includes(termId)).length +
+        userInfo.sectionIds.filter((id) => id.includes(termId)).length >=
+        NOTIFICATIONS_LIMIT);
 
   const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
@@ -76,6 +90,8 @@ export default function CourseCheckBox({
       <div className="signUpSwitch toggle">
         <div className="notifSwitch">
           <input
+            //disabled={notificationsLimitReached()}
+            disabled={checked ? false : notificationsLimitReached()}
             checked={checked}
             onChange={onCheckboxClick}
             className="react-switch-checkbox"
@@ -83,21 +99,44 @@ export default function CourseCheckBox({
             type="checkbox"
           />
           <label
-            className="react-switch-label"
-            style={{ marginTop: '0px' }}
+            //className={`react-switch-label ${NOTIFICATIONS_ARE_DISABLED && 'disabledButton'}`}
+            className={`react-switch-label ${
+              //notificationsLimitReached()
+              !checked && notificationsLimitReached() && 'disabledButton'
+            }`}
+            style={{
+              marginTop: '0px',
+              cursor: `${
+                //notificationsLimitReached() ? 'not-allowed' : 'inherit'
+                !checked && notificationsLimitReached()
+                  ? 'not-allowed'
+                  : 'inherit'
+              }`,
+            }}
             htmlFor={notifSwitchId}
           >
             <span className="react-switch-button" />
           </label>
         </div>
-        <Tooltip
-          text={
-            checked
-              ? 'Unsubscribe from notifications for this course.'
-              : 'Subscribe to notifications for this course'
-          }
-          direction={TooltipDirection.Up}
-        />
+        {checked ||
+          (!notificationsLimitReached() && (
+            <Tooltip
+              text={
+                !userInfo
+                  ? 'Sign in to subscribe for notifications.'
+                  : checked
+                  ? 'Unsubscribe from notifications for this section.'
+                  : 'Subscribe to notifications for this section'
+              }
+              direction={TooltipDirection.Up}
+            />
+          ))}
+        {!checked && notificationsLimitReached() && (
+          <Tooltip
+            text="Notification limit reached - unsubscribe to add more."
+            direction={TooltipDirection.Up}
+          />
+        )}
       </div>
       <SignUpModal
         visible={showModal}

@@ -13,7 +13,7 @@ type useUserInfoReturn = {
 
 // Custom hook to maintain all userInfo related utility functions
 const useUserInfo = (): useUserInfoReturn => {
-  const [cookies, setCookies] = useState(new Cookies());
+  const cookies = new Cookies();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
 
@@ -49,7 +49,7 @@ const useUserInfo = (): useUserInfoReturn => {
       setIsUserInfoLoading(false);
     };
     fetchData();
-  }, [cookies]);
+  }, []);
 
   return { userInfo, isUserInfoLoading, fetchUserInfo, onSignOut, onSignIn };
 };

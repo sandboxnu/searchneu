@@ -6,6 +6,7 @@ import React, {
   ReactElement,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -37,7 +38,7 @@ import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import { getRoundedTerm } from './terms';
 
 const isWindow = typeof window !== 'undefined';
-const termAndCampusToURL = (
+export const termAndCampusToURL = (
   t: string,
   newCampus: string,
   query: string
@@ -58,21 +59,23 @@ type HeaderProps = {
 };
 
 type DropdownMenuWrapperProps = {
-  splashPage?: boolean;
   userInfo: UserInfo | null;
   onSignOut: () => void;
   onSignIn: (token: string) => void;
 };
 
 export const DropdownMenuWrapper = ({
-  splashPage = false,
   userInfo,
   onSignOut,
   onSignIn,
 }: DropdownMenuWrapperProps): ReactElement => {
   const [showModal, setShowModal] = useState(false);
+  // const showMenuDropdown = useRef(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const router = useRouter();
+
+  const [userLoggedOut, setUserLoggedOut] = useState(false);
 
   useEffect(() => {
     const handleCloseDropdown = (event: Event): void => {
@@ -92,32 +95,44 @@ export const DropdownMenuWrapper = ({
     setShowModal(true);
   };
 
-  const toggleMenuDropdown = (): void => {
-    setShowMenuDropdown(!showMenuDropdown);
-  };
+  const DropDownMenu = useMemo(() => {
+    const toggleMenuDropdown = (): void => {
+      setShowMenuDropdown(!showMenuDropdown);
+    };
 
-  // Commented out until subscription page is finalized
-  // const subscriptionPage = (): void => {
-  //   router.push('/subscriptions');
-  // };
-
-  const DropDownMenu = (): ReactElement => {
-    return (
+    const MemoizedDropDownMenu = (): ReactElement => (
       <div className="user-menu">
-        <div
-          ref={dropdownRef}
-          className={
-            splashPage ? 'user-menu__splash-page' : 'user-menu__icon-wrapper'
-          }
-          onClick={toggleMenuDropdown}
-        >
-          {splashPage && <>Logged In</>}
-          <IconUser className="user-menu__icon" />
+        <div className={'user-menu__icon-wrapper'}>
+          <>
+            {/* {userInfo && !macros.isMobile && (
+              <button
+                onClick={() => router.push('/subscriptions')}
+                className="user-menu__button"
+              >
+                Notifications
+              </button>
+            )} */}
+            {/* Still need to create FAQ page */}
+            {/* <button>FAQ</button> */}
+          </>
+          <div
+            className="user-menu__icon"
+            ref={dropdownRef}
+            onClick={toggleMenuDropdown}
+          >
+            <IconUser />
+          </div>
         </div>
 
         {showMenuDropdown && (
-          <div ref={dropdownRef} className="user-menu__dropdown">
-            <span className="user-menu__item" onClick={onSignOut}>
+          <div
+            ref={dropdownRef}
+            onClick={() => {
+              onSignOut(), setUserLoggedOut(true);
+            }}
+            className="user-menu__dropdown"
+          >
+            <span className="user-menu__item">
               <Exit style={{ marginRight: '8px' }} />
               <div className="user-menu__item--text-container">
                 <span className="user-menu__item--text">Sign out</span>
@@ -130,11 +145,16 @@ export const DropdownMenuWrapper = ({
         )}
       </div>
     );
-  };
+
+    MemoizedDropDownMenu.displayName = 'DropDownMenu';
+
+    return MemoizedDropDownMenu;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showMenuDropdown, userInfo?.token]);
 
   return (
     <>
-      {userInfo ? (
+      {userInfo && !userLoggedOut ? (
         <DropDownMenu />
       ) : (
         <>
@@ -142,7 +162,10 @@ export const DropdownMenuWrapper = ({
           <SignUpModal
             visible={showModal}
             onCancel={() => setShowModal(false)}
-            onSignIn={onSignIn}
+            onSignIn={(token: string) => {
+              onSignIn(token);
+              setUserLoggedOut(false);
+            }}
             onSuccess={() => {
               setShowModal(false);
               setShowMenuDropdown(false);
@@ -257,7 +280,7 @@ export default function Header({
             />
           </div>
         )}
-        {searchData && (
+        {macros.isMobile && searchData && (
           <div className="Breadcrumb_Container">
             <div className="Breadcrumb_Container__dropDownContainer">
               <SearchDropdown

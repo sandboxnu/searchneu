@@ -6,7 +6,15 @@ import Circular from '../icons/circular.svg';
 import CryingHusky from '../icons/crying-husky.svg';
 import HappyHusky from '../icons/happy-husky.svg';
 
-export const EmptyCard = (): ReactElement => {
+type EmptyCardProps = {
+  termYear: number;
+  termId: string;
+};
+
+export const EmptyCard = ({
+  termYear,
+  termId,
+}: EmptyCardProps): ReactElement => {
   const router = useRouter();
   const [isHovering, setIsHovering] = useState(false);
 
@@ -19,7 +27,9 @@ export const EmptyCard = (): ReactElement => {
               <div className="Results_Main_EmptyCard_Header">
                 <div className="Results_Main__EmptyCard_Header_Spacer">
                   <div className="Results_Main__EmptyCard_Header_Title">
-                    <b>Spring 2023 Notifications</b>
+                    <b>
+                      {termId} {termYear} Notifications
+                    </b>
                   </div>
                 </div>
                 {isHovering ? (
@@ -47,7 +57,7 @@ export const EmptyCard = (): ReactElement => {
                   <div
                     className="Results_Main__EmptyCard_Divider"
                     onClick={() => {
-                      router.push('NEU');
+                      router.push('/NEU/');
                     }}
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}

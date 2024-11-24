@@ -14,7 +14,7 @@ export const EmptyCard = (): ReactElement => {
 
   const termInfos = getTermInfosWithError().termInfos;
   const termId = router.query.termId as string;
-  const termName = getTermName(termInfos, termId);
+  const termName = getTermName(termInfos, termId).replace('Semester', '');
 
   return (
     <>
@@ -53,7 +53,7 @@ export const EmptyCard = (): ReactElement => {
                   <div
                     className="Empty_Main__EmptyCard_Divider"
                     onClick={() => {
-                      router.push('/NEU/');
+                      router.push(`/NEU/${termId}/search`);
                     }}
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}

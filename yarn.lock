@@ -7482,11 +7482,6 @@ latest-version@5.1.0, latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-leading-trim@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/leading-trim/-/leading-trim-1.0.2.tgz#08cc24ebf7eb93e49f2ae631b96398cbc4dec277"
-  integrity sha512-UEzrceHMHYmp1TUfAQsBQcW06rOVNtyOD+APKIosqTZh+KIq21xJXr5q/HGLuCR34Ugjk8m2yYZN4BYepMK14w==
-
 leven@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"

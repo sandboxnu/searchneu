@@ -38,13 +38,13 @@ type ClassCardType = {
   onSignIn: (token: string) => void;
 };
 
-export const ClassCard = ({
+export default function ClassCard({
   course,
   sections,
   userInfo,
   fetchUserInfo,
   onSignIn,
-}: ClassCardType): ReactElement => {
+}: ClassCardType): ReactElement {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
 
@@ -145,4 +145,4 @@ export const ClassCard = ({
       }
     />
   );
-};
+}

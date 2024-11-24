@@ -38,7 +38,7 @@ type ClassCardType = {
   onSignIn: (token: string) => void;
 };
 
-export default function ClassCard({
+export function ClassCard({
   course,
   sections,
   userInfo,

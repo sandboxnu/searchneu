@@ -53,13 +53,15 @@ $SIDEBAR_WIDTH: 268px;
 .notificationsButton {
   margin-left: auto;
   font-size: 16px;
-  color: inherit;
+  color: Colors.$NEU9;
   text-decoration: none;
   margin-right: 16px;
+  margin-bottom: 6px;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .notificationsButton:hover {
@@ -236,13 +238,19 @@ $SIDEBAR_WIDTH: 268px;
   float: right;
 }
 
+.header-items {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
 .user-menu {
   display: flex;
   flex: 1;
   text-align: right;
-  margin: 0 17px 0 30px;
+  margin: 0 17px 0 4px;
   position: relative;
-  justify-content: flex-end;
 
   &__button {
     display: flex;

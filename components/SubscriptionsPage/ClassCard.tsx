@@ -5,20 +5,22 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
+import axios from 'axios';
+import Keys from '../Keys';
 
-type ClassCardWrapperType = {
+interface ClassCardWrapperType {
   headerLeft: ReactElement;
   headerRight?: ReactElement;
   body?: ReactElement;
   afterBody?: ReactElement;
-};
+}
 
-export const ClassCardWrapper = ({
+export function ClassCardWrapper({
   headerLeft,
   headerRight,
   body,
   afterBody,
-}: ClassCardWrapperType): ReactElement => {
+}: ClassCardWrapperType): ReactElement {
   return (
     <div className="SearchResult">
       <div>{headerLeft}</div>
@@ -28,15 +30,15 @@ export const ClassCardWrapper = ({
       {afterBody}
     </div>
   );
-};
+}
 
-type ClassCardType = {
+interface ClassCardType {
   course: SubscriptionCourse;
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
   onSignIn: (token: string) => void;
-};
+}
 
 export function ClassCard({
   course,
@@ -54,6 +56,18 @@ export function ClassCard({
     });
   };
 
+  const unsubscribeAll = () => {
+    axios
+      .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+        data: {
+          token: userInfo.token,
+          sectionIds: sections.map((s) => Keys.getSectionHash(s)),
+          courseIds: [Keys.getClassHash(course)],
+        },
+      })
+      .then(() => fetchUserInfo());
+  };
+
   return (
     <ClassCardWrapper
       headerLeft={
@@ -67,7 +81,7 @@ export function ClassCard({
           />
         </>
       }
-      headerRight={<button>Unsubscribe</button>}
+      headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>

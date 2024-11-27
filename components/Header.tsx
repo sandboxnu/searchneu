@@ -158,6 +158,10 @@ export const DropdownMenuWrapper = ({
         <DropDownMenu />
       ) : (
         <>
+          <Link href="/subscriptions">
+            <a className="notificationsButton">Notifications</a>
+          </Link>
+
           <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
           <SignUpModal
             visible={showModal}
@@ -264,6 +268,7 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
+
             <DropdownMenuWrapper
               onSignIn={onSignIn}
               onSignOut={onSignOut}

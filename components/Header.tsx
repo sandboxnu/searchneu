@@ -160,7 +160,7 @@ export const DropdownMenuWrapper = ({
 
   return (
     <>
-      {true || userInfo && !userLoggedOut ? (
+      {userInfo && !userLoggedOut ? (
         <div className="header-items">
           <NotificationsButton />
           <DropDownMenu />

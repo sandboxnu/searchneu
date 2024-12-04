@@ -101,6 +101,7 @@ export default function DropdownFilter({
                 setIsOpen(true);
               }
             }}
+
           />
           <DropdownArrow
             aria-label="Dropdown arrow"

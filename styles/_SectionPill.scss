@@ -1,0 +1,27 @@
+@use 'variables' as Colors;
+
+.SectionPill {
+  display: inline-flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 900px;
+  padding: 2px 6px;
+  max-width: fit-content;
+  margin-left: 10px;
+
+  &__text {
+    font-size: 14px;
+    margin-left: 10px;
+  }
+
+  &__subscribed {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: Colors.$Light_Grey;
+
+    &--active {
+      background-color: Colors.$NEU_Red;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
+import { SectionPill } from './SectionPill';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -65,6 +66,13 @@ export function ClassCard({
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
+          {course.sections.map((section) => (
+            <SectionPill
+              key={section.crn}
+              userInfo={userInfo}
+              crn={section.crn}
+            ></SectionPill>
+          ))}
         </>
       }
       headerRight={<button>Unsubscribe</button>}

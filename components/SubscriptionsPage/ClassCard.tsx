@@ -5,6 +5,7 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
+import { SectionPill } from './SectionPill';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -13,7 +14,7 @@ type ClassCardWrapperType = {
   afterBody?: ReactElement;
 };
 
-const ClassCardWrapper = ({
+export const ClassCardWrapper = ({
   headerLeft,
   headerRight,
   body,
@@ -21,10 +22,9 @@ const ClassCardWrapper = ({
 }: ClassCardWrapperType): ReactElement => {
   return (
     <div className="SearchResult">
-      <div className="SearchResult__header">
-        <div className="SearchResult__header--left">{headerLeft}</div>
-        {headerRight}
-      </div>
+      <div>{headerLeft}</div>
+      {headerRight}
+
       {body}
       {afterBody}
     </div>
@@ -39,13 +39,13 @@ type ClassCardType = {
   onSignIn: (token: string) => void;
 };
 
-export const ClassCard = ({
+export function ClassCard({
   course,
   sections,
   userInfo,
   fetchUserInfo,
   onSignIn,
-}: ClassCardType): ReactElement => {
+}: ClassCardType): ReactElement {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
 
@@ -66,6 +66,13 @@ export const ClassCard = ({
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
           />
+          {course.sections.map((section) => (
+            <SectionPill
+              key={section.crn}
+              userInfo={userInfo}
+              crn={section.crn}
+            ></SectionPill>
+          ))}
         </>
       }
       headerRight={<button>Unsubscribe</button>}
@@ -146,4 +153,4 @@ export const ClassCard = ({
       }
     />
   );
-};
+}

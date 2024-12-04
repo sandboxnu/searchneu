@@ -95,6 +95,12 @@ export const DropdownMenuWrapper = ({
     setShowModal(true);
   };
 
+  const NotificationsButton = (): ReactElement => (
+    <Link href="/subscriptions">
+      <a className="notificationsButton">Notifications</a>
+    </Link>
+  );
+
   const DropDownMenu = useMemo(() => {
     const toggleMenuDropdown = (): void => {
       setShowMenuDropdown(!showMenuDropdown);
@@ -155,7 +161,10 @@ export const DropdownMenuWrapper = ({
   return (
     <>
       {userInfo && !userLoggedOut ? (
-        <DropDownMenu />
+        <div className="header-items">
+          <NotificationsButton />
+          <DropDownMenu />
+        </div>
       ) : (
         <>
           <NotifSignUpButton onNotifSignUp={onNotifSignUp} />
@@ -264,6 +273,7 @@ export default function Header({
                 buttonColor={campusToColor[campus]}
               />
             </div>
+
             <DropdownMenuWrapper
               onSignIn={onSignIn}
               onSignOut={onSignOut}

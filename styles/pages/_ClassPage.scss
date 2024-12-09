@@ -11,13 +11,16 @@
   }
 
   .backToResults {
-    height: 38px;
-    font-size: 17px;
+    font-size: 18px;
     cursor: pointer;
     color: Colors.$Blue;
-
+    padding: 2px 3px 2px 3px;
+    border-radius: 10%;
+    width: fit-content;
+    margin-bottom: 40px;
     &:hover {
-      text-decoration: underline;
+      background-color: Colors.$Blue;
+      color: white
     }
   }
 

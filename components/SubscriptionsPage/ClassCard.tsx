@@ -6,6 +6,8 @@ import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
 import { SectionPill } from './SectionPill';
+import axios from 'axios';
+import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -55,6 +57,18 @@ export function ClassCard({
     });
   };
 
+  const unsubscribeAll = () => {
+    axios
+      .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+        data: {
+          token: userInfo.token,
+          sectionIds: sections.map((s) => Keys.getSectionHash(s)),
+          courseIds: [Keys.getClassHash(course)],
+        },
+      })
+      .then(() => fetchUserInfo());
+  };
+
   return (
     <ClassCardWrapper
       headerLeft={
@@ -75,7 +89,7 @@ export function ClassCard({
           ))}
         </>
       }
-      headerRight={<button>Unsubscribe</button>}
+      headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>

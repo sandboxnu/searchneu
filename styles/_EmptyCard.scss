@@ -1,9 +1,9 @@
-@use '../variables' as Colors;
-@use '../zIndexes' as Indexes;
+@use 'variables' as Colors;
+@use 'zIndexes' as Indexes;
 
 .Empty_Container {
   display: flex;
-  margin-top: 50px;
+  padding-top: 100px;
 
   @media only screen and (max-width: 767px) {
     padding-top: 0;

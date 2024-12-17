@@ -29,6 +29,7 @@ import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
 import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
 import NewSubscriptionsLimitModal from '../../components/notifications/NewSubscriptionsLimitModal';
+import SubscriptionsPageModal from '../../components/notifications/SubscriptionPageModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',
@@ -131,7 +132,7 @@ export default function Home(): ReactElement {
             onCancel={() => setShowHelpModal(false)}
           /> */}
 
-          <NewSubscriptionsLimitModal
+          <SubscriptionsPageModal
             visible={showNewLimitModal}
             onCancel={() => setShowNewLimitModal(false)}
           />

@@ -27,8 +27,6 @@ import GraduateLogo from '../../components/icons/GraduateLogo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
-import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
-import NewSubscriptionsLimitModal from '../../components/notifications/NewSubscriptionsLimitModal';
 import SubscriptionsPageModal from '../../components/notifications/SubscriptionPageModal';
 
 const grad_banner_data: AlertBannerData = {

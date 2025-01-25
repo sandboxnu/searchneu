@@ -42,8 +42,8 @@ Shout out to our current team of developers and designers 💖
 - Carter Herman <a href="https://github.com/cherman23"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/carter-herman/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Nick Pfeiffer <a href="https://github.com/nickpfeiffer05"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/nickpfeiffer05"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 - Eric Sun <a href="https://github.com/ItsEricSun"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/the-eric-sun/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
-- Wesley Tran <a href="https://github.com/WesleyTran0"><img src="./public/images/github.png" alt="Github" width="12px"></a> 
-- Nitish Gannu <a href="https://www.linkedin.com/in/nitishgannu/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Wesley Tran <a href="https://github.com/WesleyTran0"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/wesley-tran/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
+- Nitish Gannu <a href="https://github.com/tissuepy"><img src="./public/images/github.png" alt="Github" width="12px"></a> <a href="https://www.linkedin.com/in/nitishgannu/"><img src="./public/images/linkedin.png" alt="LinkedIn" width="12px"></a>
 
 
 And a special thank you to the following folks for contributing!

@@ -8,11 +8,15 @@ type CRNBadgeProps = {
 };
 
 export const CRNBadge = ({ crn, userInfo }: CRNBadgeProps): ReactElement => {
+  const subscribed = userInfo.sectionIds.map((str) =>
+    str.substring(str.lastIndexOf('/') + 1)
+  );
+
   return (
     <div className="CRNBadge">
       <div
         className={`CRNBadge__subscribed ${
-          userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(crn))
+          userInfo && subscribed.includes(crn)
             ? 'CRNBadge__subscribed--active'
             : ''
         }`}

@@ -50,6 +50,11 @@ export default function PhoneNumber({
             key="ok"
             onClick={onSubmit}
             className="phone-modal__btn phone-modal__btn--primary"
+            onKeyDown={(e) => {
+              if (e.code === 'Enter') {
+                onSubmit();
+              }
+            }}
           >
             Send Code
           </button>

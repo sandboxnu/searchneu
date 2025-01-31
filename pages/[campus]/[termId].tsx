@@ -27,7 +27,7 @@ import GraduateLogo from '../../components/icons/GraduateLogo';
 import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
-import SubscriptionsPageModal from '../../components/notifications/SubscriptionPageModal';
+import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',

@@ -130,11 +130,6 @@ export default function Home(): ReactElement {
             onCancel={() => setShowHelpModal(false)}
           /> */}
 
-          <SubscriptionsPageModal
-            visible={showNewLimitModal}
-            onCancel={() => setShowNewLimitModal(false)}
-          />
-
           <div>
             <div // TODO: Take this out and restyle this monstrosity from scratch
               className="ui center spacing aligned icon header topHeader"

@@ -143,9 +143,11 @@ export default function Home(): ReactElement {
                 )}
                 <ExploratorySearchButton termId={termId} campus={campus} />
               </div>
-              <Husky className="husky" campus={campus} aria-label="husky" />
               <div className="bostonContainer">
                 <Boston className="boston" aria-label="logo" />
+              </div>
+              <div className="huskyContainer">
+                <Husky className="husky" campus={campus} aria-label="husky" />
               </div>
               {!macros.isMobile && (
                 <TestimonialToast position={'toast-bottom-left'} />

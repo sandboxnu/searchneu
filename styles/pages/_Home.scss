@@ -82,13 +82,12 @@
     }
   }
 
-  .husky {
+  .huskyContainer {
     width: 260px !important;
     height: auto !important;
     position: absolute;
     right: -20px;
     bottom: -50px;
-    z-index: Indexes.$Ten;
 
     // there is definitely a better way to scale the width/position
     // but for now there is just a bunch of media queries
@@ -111,6 +110,10 @@
       width: 35vw !important;
       right: -40px;
     }
+  }
+
+  .husky {
+    width: 100%;
   }
 
   .bostonContainer {

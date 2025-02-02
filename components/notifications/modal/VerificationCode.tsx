@@ -93,7 +93,11 @@ export default function VerificationCode({
               maxLength={1}
               value={verificationCode[index] || ''}
               onChange={onChange}
-              onKeyDown={onKeyDown}
+              onKeyDown={(e) => {
+                if (e.code === 'Enter') {
+                  onVerificationCodeSubmit();
+                }
+              }}
             />
           ))}
         </div>

@@ -394,7 +394,7 @@ $SIDEBAR_WIDTH: 268px;
     border: 0.5px solid Colors.$NEU4;
     padding: 8px;
 
-    transform: translateY(calc(100% - 16px));
+    transform: translate(calc(-75%), calc(100% - 16px));
 
     white-space: nowrap;
   }

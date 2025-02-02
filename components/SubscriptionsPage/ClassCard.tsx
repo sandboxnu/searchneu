@@ -5,7 +5,9 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import { SectionPill } from './SectionPill';
+import { CRNBadge } from './CRNBadge';
+import axios from 'axios';
+import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -55,6 +57,18 @@ export function ClassCard({
     });
   };
 
+  const unsubscribeAll = () => {
+    axios
+      .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+        data: {
+          token: userInfo.token,
+          sectionIds: sections.map((s) => Keys.getSectionHash(s)),
+          courseIds: [Keys.getClassHash(course)],
+        },
+      })
+      .then(() => fetchUserInfo());
+  };
+
   return (
     <ClassCardWrapper
       headerLeft={
@@ -67,15 +81,15 @@ export function ClassCard({
             className="SearchResult__header--sub"
           />
           {course.sections.map((section) => (
-            <SectionPill
+            <CRNBadge
               key={section.crn}
               userInfo={userInfo}
               crn={section.crn}
-            ></SectionPill>
+            ></CRNBadge>
           ))}
         </>
       }
-      headerRight={<button>Unsubscribe</button>}
+      headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>

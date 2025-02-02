@@ -6,14 +6,16 @@ import Circular from '../icons/circular.svg';
 import CryingHusky from '../icons/crying-husky.svg';
 import HappyHusky from '../icons/happy-husky.svg';
 import getTermInfosWithError from '../../utils/TermInfoProvider';
-import { getTermName } from '../terms';
+import { getTermName, getLatestTerm } from '../terms';
+import { Campus } from '../types';
 
 export const EmptyCard = (): ReactElement => {
   const router = useRouter();
   const [isHovering, setIsHovering] = useState(false);
 
   const termInfos = getTermInfosWithError().termInfos;
-  const termId = router.query.termId as string;
+  // note: not sure of a way to find current campus, if not create it?
+  const termId = getLatestTerm(termInfos, Campus.NEU);
   const termName = getTermName(termInfos, termId).replace('Semester', '');
 
   return (

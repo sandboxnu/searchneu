@@ -254,9 +254,41 @@ export function MobileCourseResult({
   return (
     <MobileSearchResult
       headerLeft={
-        <span className="MobileSearchResult__header--classTitle">
-          {course.subject} {course.classId} : {course.name}
-        </span>
+        <>
+          <div className="MobileSearchResult__header--rowDouble">
+            <span className="MobileSearchResult__header--classTitle">
+              {course.subject} {course.classId}
+            </span>
+            <span className="MobileSearchResult__header--classTitle">
+              <CreditsDisplayMobile
+                maxCredits={course.maxCredits}
+                minCredits={course.minCredits}
+              />
+            </span>
+          </div>
+          <div className="MobileSearchResult__header--rowSingle">
+            <span className="MobileSearchResult__header--className">
+              {course.name}
+            </span>
+          </div>
+          <div className="MobileSearchResult__header--rowDouble">
+            <span className="MobileSearchResult__header--sectionsAvailable">
+              {/* Create a component like CreditsDisplayMobile */}
+              {/* Follow thw color scaling of seats available */}
+              1/8 sections
+            </span>
+            <span className="MobileSearchResult__header--nuPaths">
+              {/* Create a component like CreditsDisplayMobile */}
+              {/* Main wrapper component converts the NU Path strings into abbreviations */}
+              {/* Uses a bunch of badge icon components */}
+              {course.nupath.length > 0 ? (
+                <span> {course.nupath.join(', ')}</span>
+              ) : (
+                <span className="empty"> None</span>
+              )}
+            </span>
+          </div>
+        </>
       }
       body={
         <>

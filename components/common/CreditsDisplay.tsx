@@ -42,5 +42,9 @@ export function CreditsDisplayMobile({
   maxCredits,
   minCredits,
 }: CreditsDisplayProps): ReactElement {
-  return <span>{creditsString(maxCredits, minCredits)}</span>;
+  return (
+    <span className="MobileSearchResult__header--creditString">
+      {creditsString(maxCredits, minCredits)}
+    </span>
+  );
 }

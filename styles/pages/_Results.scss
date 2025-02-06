@@ -173,6 +173,7 @@ $SIDEBAR_WIDTH: 268px;
   @media only screen and (max-width: 1000px) {
     padding-right: 10px;
     padding-left: 10px;
+    background-color: Colors.$Secondary_Hover;
   }
 
   .Results_Main__EmptyCard {

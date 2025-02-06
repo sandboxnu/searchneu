@@ -5,10 +5,8 @@
   font-family: Lato, sans-serif;
 
   &__header {
-    background: Colors.$Off_White;
-    border: 1px solid Colors.$Grey;
+    background: Colors.$White;
     box-sizing: border-box;
-    box-shadow: 0 0 3px Colors.$Light_Grey;
     border-radius: 8px;
     padding: 16px;
     display: flex;
@@ -22,6 +20,7 @@
 
     &--rowSingle {
       justify-content: flex-start; // Single items aligned to the left
+      max-width: 75%;
     }
 
     &--rowDouble {
@@ -80,6 +79,14 @@
       color: Colors.$Grey;
     }
 
+    &--nuId {
+      background-color: Colors.$NEU3;
+      border-radius: 4px;
+      color: Colors.$NEU8;
+      padding: 1px 6px;
+      margin-left: 4px;
+    }
+
     &--employeeName {
       font-style: normal;
       font-weight: 800;
@@ -92,11 +99,23 @@
     }
 
     &--creditString {
-      font-size: 14px;
+      font-size: 13px;
       font-style: normal;
       font-weight: 500;
       line-height: normal;
       color: Colors.$Grey;
+    }
+
+    &--sections {
+      .green {
+        color: Colors.$Green;
+      }
+      .yellow {
+        color: Colors.$CPS_Yellow;
+      }
+      .red {
+        color: Colors.$NEU_Red;
+      }
     }
   }
 

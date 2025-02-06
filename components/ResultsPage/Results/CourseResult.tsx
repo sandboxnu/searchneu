@@ -19,6 +19,9 @@ import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
 import CourseCheckBox from '../../panels/CourseCheckBox';
+import useSectionPanelDetail from './useSectionPanelDetail';
+import nupathToId from '../../../utils/nuPathToID';
+
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
@@ -251,6 +254,19 @@ export function MobileCourseResult({
     </div>
   );
 
+  const numOpenSections = (sections): number =>
+    sections.reduce((prev, cur) => {
+      if (cur.seatsRemaining > 0) {
+        return prev + 1;
+      }
+      return prev;
+    }, 0);
+
+  const { getSeatsClass } = useSectionPanelDetail(
+    numOpenSections(course.sections),
+    course.sections.length
+  );
+
   return (
     <MobileSearchResult
       headerLeft={
@@ -272,19 +288,26 @@ export function MobileCourseResult({
             </span>
           </div>
           <div className="MobileSearchResult__header--rowDouble">
-            <span className="MobileSearchResult__header--sectionsAvailable">
-              {/* Create a component like CreditsDisplayMobile */}
-              {/* Follow thw color scaling of seats available */}
-              1/8 sections
+            <span className="MobileSearchResult__header--sections">
+              <div className={getSeatsClass()}>
+                {numOpenSections(course.sections)}/{course.sections.length}{' '}
+                sections available
+              </div>
             </span>
             <span className="MobileSearchResult__header--nuPaths">
-              {/* Create a component like CreditsDisplayMobile */}
-              {/* Main wrapper component converts the NU Path strings into abbreviations */}
-              {/* Uses a bunch of badge icon components */}
               {course.nupath.length > 0 ? (
-                <span> {course.nupath.join(', ')}</span>
+                <span>
+                  {/* Convert each nupath string to an id then put each into html */}
+                  {course.nupath
+                    .map((nupath) => nupathToId(nupath))
+                    .map((id) => (
+                      <span className="MobileSearchResult__header--nuId">
+                        <b>{id}</b>
+                      </span>
+                    ))}
+                </span>
               ) : (
-                <span className="empty"> None</span>
+                <span className="empty"></span>
               )}
             </span>
           </div>

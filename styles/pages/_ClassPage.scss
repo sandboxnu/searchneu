@@ -21,6 +21,24 @@
     }
   }
 
+  .mobileBackToResults {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid var(--Expanded-System-NEU4, #c2c2c2);
+    border-radius: 36px;
+    background: #fff;
+    font-size: 16px;
+    color: #858585;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    gap: 8px;
+  }
+
   .title {
     height: 155px;
     margin-top: 17px;

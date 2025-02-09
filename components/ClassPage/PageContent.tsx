@@ -5,6 +5,8 @@ import ClassPageInfoBody from './ClassPageInfoBody';
 import ClassPageInfoHeader from './ClassPageInfoHeader';
 import ClassPageReqsBody from './ClassPageReqsBody';
 import ClassPageSections from './ClassPageSections';
+import macros from '../macros';
+import IconArrowFlipped from '../icons/IconArrowFlipped';
 
 type PageContentProps = {
   termId: string;
@@ -39,6 +41,11 @@ export default function PageContent({
           COREQUISITES for
           <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
         </h2>
+      ) : macros.isMobile ? (
+        <div className="mobileBackToResults" onClick={() => router.back()}>
+          <IconArrowFlipped fill="#858585" />
+          Back to search
+        </div>
       ) : (
         <div className="backToResults" onClick={() => router.back()}>
           Back to Search Results

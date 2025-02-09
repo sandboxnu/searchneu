@@ -4,6 +4,7 @@ import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
+import IconCollapseExpand from '../icons/IconCollapseExpand';
 import CourseCheckBox from '../panels/CourseCheckBox';
 import { CRNBadge } from './CRNBadge';
 import axios from 'axios';
@@ -24,8 +25,10 @@ export const ClassCardWrapper = ({
 }: ClassCardWrapperType): ReactElement => {
   return (
     <div className="SearchResult">
-      <div>{headerLeft}</div>
-      {headerRight}
+      <div className="SearchResult__header">
+        <div className="SearchResult__header--left">{headerLeft}</div>
+        {headerRight}
+      </div>
 
       {body}
       {afterBody}
@@ -72,24 +75,37 @@ export function ClassCard({
   return (
     <ClassCardWrapper
       headerLeft={
+        // ask Nick what this is and if this makes me not have to div --left
         <>
           <span className="SearchResult__header--classTitle">
             {course.subject} {course.classId}: {course.name}
           </span>
-          <LastUpdated
+          {/* <LastUpdated
             lastUpdateTime={course.lastUpdateTime}
             className="SearchResult__header--sub"
-          />
-          {course.sections.map((section) => (
-            <CRNBadge
-              key={section.crn}
-              userInfo={userInfo}
-              crn={section.crn}
-            ></CRNBadge>
-          ))}
+          />  */}
+          <div className="SearchResult__header--sub">
+            {course.sections.map((section) => (
+              <CRNBadge
+                key={section.crn}
+                userInfo={userInfo}
+                crn={section.crn}
+              ></CRNBadge>
+            ))}
+          </div>
         </>
       }
-      headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
+      headerRight={
+        <IconCollapseExpand
+          className={
+            areSectionsHidden
+              ? 'SearchResult__showAll--subscriptionCollapsed'
+              : 'SearchResult__showAll--subscriptionExpanded'
+          }
+        />
+      }
+      // Temporariliy getting rid of unsubsribeALl button
+      // headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>

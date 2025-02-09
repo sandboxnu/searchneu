@@ -29,6 +29,7 @@
       font-size: 18px;
       line-height: 2px;
       border-radius: 5px 5px 0 0;
+      color: Colors.$NEU9;
     }
 
     &--employeeName {
@@ -236,12 +237,12 @@
     }
 
     &--subscriptionExpanded {
-      transform: rotate(-180deg);
+      transform: rotate(-90deg);
       margin-top: 2px;
     }
 
     &--subscriptionCollapsed {
-      transform: rotate(0deg);
+      transform: rotate(90deg);
       margin-top: 3px;
     }
 

@@ -223,6 +223,9 @@ export function MobileCourseResult({
   fetchUserInfo,
   onSignIn,
 }: CourseResultProps): ReactElement {
+  const router = useRouter();
+  const termId = router.query.termId as string;
+  const campus = router.query.campus as string;
   const [showMore, setShowMore] = useState(false);
   const [showNUPath, setShowNUPath] = useState(false);
   const [showPrereq, setShowPrereq] = useState(false);
@@ -270,7 +273,13 @@ export function MobileCourseResult({
   return (
     <MobileSearchResult
       headerLeft={
-        <>
+        <div
+          onClick={() =>
+            router.push(
+              `/${campus}/${termId}/classPage/${course.subject}/${course.classId}`
+            )
+          }
+        >
           <div className="MobileSearchResult__header--rowDouble">
             <span className="MobileSearchResult__header--classTitle">
               {course.subject} {course.classId}
@@ -314,7 +323,7 @@ export function MobileCourseResult({
               )}
             </span>
           </div>
-        </>
+        </div>
       }
       body={
         <>

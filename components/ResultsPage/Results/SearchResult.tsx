@@ -32,23 +32,11 @@ export function MobileSearchResult({
   body,
   afterBody,
 }: SearchResultProps): ReactElement {
-  const [expanded, setExpanded] = useState(false);
-
   return (
     <div className="MobileSearchResult">
-      <div
-        className={
-          expanded
-            ? 'MobileSearchResult__header--expanded'
-            : 'MobileSearchResult__header'
-        }
-        role="button"
-        tabIndex={0}
-        onClick={() => setExpanded(!expanded)}
-      >
+      <div className="MobileSearchResult__header">
         {headerLeft} {headerRight}
       </div>
-      {expanded && <div className="MobileSearchResult__panel">{body}</div>}
     </div>
   );
 }

@@ -27,9 +27,11 @@ exports[`should render a section 1`] = `
             <LoadingContainer />
             <ExploratorySearchButton termId=\\"\\" campus=\\"NEU\\" />
           </div>
-          <Husky className=\\"husky\\" campus=\\"NEU\\" aria-label=\\"husky\\" />
           <div className=\\"bostonContainer\\">
             <SvgBoston className=\\"boston\\" aria-label=\\"logo\\" />
+          </div>
+          <div className=\\"huskyContainer\\">
+            <Husky className=\\"husky\\" campus=\\"NEU\\" aria-label=\\"husky\\" />
           </div>
           <TestimonialToast position=\\"toast-bottom-left\\" />
         </div>

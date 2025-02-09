@@ -28,7 +28,6 @@ import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
 import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
-import NewSubscriptionsLimitModal from '../../components/notifications/NewSubscriptionsLimitModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',
@@ -131,11 +130,6 @@ export default function Home(): ReactElement {
             onCancel={() => setShowHelpModal(false)}
           /> */}
 
-          <NewSubscriptionsLimitModal
-            visible={showNewLimitModal}
-            onCancel={() => setShowNewLimitModal(false)}
-          />
-
           <div>
             <div // TODO: Take this out and restyle this monstrosity from scratch
               className="ui center spacing aligned icon header topHeader"
@@ -149,9 +143,11 @@ export default function Home(): ReactElement {
                 )}
                 <ExploratorySearchButton termId={termId} campus={campus} />
               </div>
-              <Husky className="husky" campus={campus} aria-label="husky" />
               <div className="bostonContainer">
                 <Boston className="boston" aria-label="logo" />
+              </div>
+              <div className="huskyContainer">
+                <Husky className="husky" campus={campus} aria-label="husky" />
               </div>
               {!macros.isMobile && (
                 <TestimonialToast position={'toast-bottom-left'} />

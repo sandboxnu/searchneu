@@ -19,6 +19,9 @@ import useShowAll from './useShowAll';
 import { MobileSearchResult, SearchResult } from './SearchResult';
 import Keys from '../../Keys';
 import CourseCheckBox from '../../panels/CourseCheckBox';
+import useSectionPanelDetail from './useSectionPanelDetail';
+import nupathToId from '../../../utils/nuPathToID';
+
 interface CourseResultProps {
   course: Course;
   userInfo: UserInfo;
@@ -251,12 +254,67 @@ export function MobileCourseResult({
     </div>
   );
 
+  const numOpenSections = (sections): number =>
+    sections.reduce((prev, cur) => {
+      if (cur.seatsRemaining > 0) {
+        return prev + 1;
+      }
+      return prev;
+    }, 0);
+
+  const { getSeatsClass } = useSectionPanelDetail(
+    numOpenSections(course.sections),
+    course.sections.length
+  );
+
   return (
     <MobileSearchResult
       headerLeft={
-        <span className="MobileSearchResult__header--classTitle">
-          {course.subject} {course.classId} : {course.name}
-        </span>
+        <>
+          <div className="MobileSearchResult__header--rowDouble">
+            <span className="MobileSearchResult__header--classTitle">
+              {course.subject} {course.classId}
+            </span>
+            <span className="MobileSearchResult__header--classTitle">
+              <CreditsDisplayMobile
+                maxCredits={course.maxCredits}
+                minCredits={course.minCredits}
+              />
+            </span>
+          </div>
+          <div className="MobileSearchResult__header--rowSingle">
+            <span className="MobileSearchResult__header--className">
+              {course.name}
+            </span>
+          </div>
+          <div className="MobileSearchResult__header--rowDouble">
+            <span className="MobileSearchResult__header--sections">
+              <div className={getSeatsClass()}>
+                {numOpenSections(course.sections)}/{course.sections.length}{' '}
+                sections available
+              </div>
+            </span>
+            <span className="MobileSearchResult__header--nuPaths">
+              {course.nupath.length > 0 ? (
+                <span>
+                  {/* Convert each nupath string to an id then put each into html */}
+                  {course.nupath
+                    .map((nupath) => nupathToId(nupath))
+                    .map((id) => (
+                      <span
+                        className="MobileSearchResult__header--nuId"
+                        key={id}
+                      >
+                        <b>{id}</b>
+                      </span>
+                    ))}
+                </span>
+              ) : (
+                <span className="empty"></span>
+              )}
+            </span>
+          </div>
+        </>
       }
       body={
         <>

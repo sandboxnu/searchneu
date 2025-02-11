@@ -104,8 +104,6 @@ export function ClassCard({
           }
         />
       }
-      // Temporariliy getting rid of unsubsribeALl button
-      // headerRight={<button onClick={unsubscribeAll}>Unsubscribe</button>}
       body={
         <>
           <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
@@ -170,14 +168,16 @@ export function ClassCard({
             tabIndex={0}
             onClick={() => setAreSectionsHidden(!areSectionsHidden)}
           >
-            <span>{areSectionsHidden ? 'Show sections' : 'Hide sections'}</span>
-            <DropdownArrow
+            <button
               className={
                 areSectionsHidden
                   ? 'SearchResult__showAll--subscriptionCollapsed'
                   : 'SearchResult__showAll--subscriptionExpanded'
               }
-            />
+              onClick={unsubscribeAll}
+            >
+              Unsubscribe
+            </button>
           </div>
         </>
       }

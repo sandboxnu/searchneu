@@ -212,6 +212,48 @@
       }
     }
   }
+
+  .mobileClassPageReqsBody {
+    &--nuPaths {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    &--nuPathsHeader {
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16.8px;
+      color: Colors.$NEU7;
+    }
+
+    &--nuPathBadge {
+      background-color: Colors.$NEU3;
+      border-radius: 4px;
+      color: Colors.$NEU8;
+      padding: 1px 6px;
+      font-family: Lato;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%;
+    }
+
+    &--rowDouble {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: nowrap; // Prevents wrapping to the next line
+
+      & > * {
+        flex: 1; // Distributes space equally
+        text-align: center; // Adjust as needed
+      }
+    }
+  }
+
   .classPageReqsBody .flex .nupaths,
   .prereqs,
   .coreqs,
@@ -307,6 +349,35 @@
         &.red {
           color: Colors.$NEU_Red;
         }
+      }
+    }
+  }
+
+  .MobileClassPageSections {
+    .MobileSectionTable {
+      overflow-x: auto;
+
+      &--header {
+        color: Colors.$NEU7;
+        background-color: Colors.$NEU3;
+      }
+
+      &--entry {
+      }
+    }
+
+    .seatsAvailable {
+      margin: 20px 0;
+      &.green {
+        color: Colors.$Green;
+      }
+
+      &.yellow {
+        color: Colors.$CPS_Yellow;
+      }
+
+      &.red {
+        color: Colors.$NEU_Red;
       }
     }
   }

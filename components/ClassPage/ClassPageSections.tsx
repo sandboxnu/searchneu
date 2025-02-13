@@ -17,7 +17,7 @@ type ClassPageSectionsProps = {
 
 type ClassPageSection = GetClassPageInfoQuery['class']['allOccurrences'][number]['sections'][number];
 
-export default function ClassPageSections({
+export function ClassPageSections({
   classPageInfo,
 }: ClassPageSectionsProps): ReactElement {
   const [currTermIndex, setCurrTermIndex] = useState(0);
@@ -94,6 +94,68 @@ export default function ClassPageSections({
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+export function MobileClassPageSections({
+  classPageInfo,
+}: ClassPageSectionsProps): ReactElement {
+  const [currTermIndex, setCurrTermIndex] = useState(0);
+  const [sectionCampuses, setSectionCampuses] = useState([]);
+  const [selectedCampus, setSelectedCampus] = useState('');
+  const [sections, setSections] = useState<ClassPageSection[]>([]);
+
+  useEffect(() => {
+    setSectionCampuses(getCampusOptions(currTermIndex, classPageInfo));
+  }, [currTermIndex, classPageInfo]);
+
+  useEffect(() => {
+    setSelectedCampus(sectionCampuses[0]);
+  }, [sectionCampuses]);
+
+  useEffect(() => {
+    setSections(
+      classPageInfo.class.allOccurrences[currTermIndex].sections.filter(
+        (section) => section.campus === selectedCampus
+      )
+    );
+  }, [currTermIndex, selectedCampus, classPageInfo]);
+
+  return (
+    <div className="MobileClassPageSections">
+      <div className="MobileSectionTable">
+        <table>
+          <tr className="MobileSectionTable--header">
+            <th> CRN </th>
+            <th> Professor </th>
+            <th> Meetings </th>
+            <th> Campus </th>
+            <th> Seats </th>
+            <th> Notifs </th>
+          </tr>
+          {sections.map((section) => {
+            const { getSeatsClass } = useSectionPanelDetail(
+              section.seatsRemaining,
+              section.seatsCapacity
+            );
+            return (
+              <tr className="MobileSectionTable--entry">
+                <td> {section.crn} </td>
+                <td> {section.profs[0]} </td>
+                <td> MEETING TIMES </td>
+                <td> {section.campus} </td>
+                <td>
+                  <div className={`seatsAvailable ${getSeatsClass()}`}>
+                    {`${section.seatsRemaining}/${section.seatsCapacity}`}
+                    Add waitlist seats
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </table>
       </div>
     </div>
   );

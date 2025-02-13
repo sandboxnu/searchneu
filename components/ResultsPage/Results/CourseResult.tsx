@@ -311,7 +311,7 @@ export function MobileCourseResult({
                     .map((nupath) => nupathToId(nupath))
                     .map((id) => (
                       <span
-                        className="MobileSearchResult__header--nuId"
+                        className="MobileSearchResult__header--nuPathBadge"
                         key={id}
                       >
                         <b>{id}</b>

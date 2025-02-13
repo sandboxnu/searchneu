@@ -247,6 +247,19 @@
       margin-top: 3px;
     }
 
+    &--unsubscribeButton {
+      margin-left: auto;
+      width: fit-content;
+      display: flex;
+      width: auto;
+      padding: 8px 16px;
+      align-items: center;
+      border-radius: 8px;
+      border: 1px solid #d1d3d7;
+      font-weight: 700;
+      background: #fff;
+    }
+
     & > span {
       margin-right: 8px;
     }

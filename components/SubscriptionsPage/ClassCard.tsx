@@ -96,13 +96,23 @@ export function ClassCard({
         </>
       }
       headerRight={
-        <IconCollapseExpand
-          className={
-            areSectionsHidden
-              ? 'SearchResult__showAll--subscriptionCollapsed'
-              : 'SearchResult__showAll--subscriptionExpanded'
-          }
-        />
+        <div
+          className="SearchResult__showAll"
+          onClick={() => setAreSectionsHidden(!areSectionsHidden)}
+          style={{
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          <IconCollapseExpand
+            className={
+              areSectionsHidden
+                ? 'SearchResult__showAll--subscriptionCollapsed'
+                : 'SearchResult__showAll--subscriptionExpanded'
+            }
+          />
+        </div>
       }
       body={
         <>
@@ -157,29 +167,26 @@ export function ClassCard({
         </>
       }
       afterBody={
-        <>
-          <div
-            className={
-              areSectionsHidden
-                ? 'SearchResult__showAll--subscriptionButton'
-                : 'SearchResult__showAll'
-            }
-            role="button"
-            tabIndex={0}
-            onClick={() => setAreSectionsHidden(!areSectionsHidden)}
-          >
-            <button
+        !areSectionsHidden && (
+          <>
+            <div
               className={
                 areSectionsHidden
-                  ? 'SearchResult__showAll--subscriptionCollapsed'
-                  : 'SearchResult__showAll--subscriptionExpanded'
+                  ? 'SearchResult__showAll--subscriptionButton'
+                  : 'SearchResult__showAll'
               }
-              onClick={unsubscribeAll}
+              role="button"
+              tabIndex={0}
             >
-              Unsubscribe
-            </button>
-          </div>
-        </>
+              <button
+                className={'SearchResult__showAll--unsubscribeButton'}
+                onClick={unsubscribeAll}
+              >
+                Unsubscribe All
+              </button>
+            </div>
+          </>
+        )
       }
     />
   );

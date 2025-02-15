@@ -4,6 +4,7 @@ import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { getCampusByLastDigit, getSeason, getYear } from '../terms';
 import { Campus } from '../types';
 import HeaderBody from './HeaderBody';
+import removeHTMLTags from '../../utils/removeHTMLTags';
 
 type ClassPageInfoProp = {
   classPageInfo: GetClassPageInfoQuery;
@@ -18,7 +19,7 @@ export default function ClassPageInfoBody({
       <div className="classPageBodyLeft">
         <HeaderBody
           header="COURSE DESCRIPTION"
-          body={<p>{latestOccurrence.desc}</p>}
+          body={<p>{removeHTMLTags(latestOccurrence.desc)}</p>}
         />
         <HeaderBody
           header="COURSE LEVEL"

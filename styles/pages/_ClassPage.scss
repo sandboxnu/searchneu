@@ -214,14 +214,20 @@
   }
 
   .mobileClassPageReqsBody {
-    &--nuPaths {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    &--req {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 5px;
     }
 
-    &--nuPathsHeader {
+    &--header {
       font-family: Lato;
       font-size: 14px;
       font-style: normal;
@@ -244,12 +250,13 @@
 
     &--rowDouble {
       display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
       justify-content: space-between;
-      flex-wrap: nowrap; // Prevents wrapping to the next line
 
       & > * {
-        flex: 1; // Distributes space equally
-        text-align: center; // Adjust as needed
+        width: 50%;
+        box-sizing: border-box;
       }
     }
   }

@@ -9,6 +9,10 @@ export function creditsDescription(maxCredits: number): string {
   return maxCredits > 1 || maxCredits === 0 ? 'CREDITS' : 'CREDIT';
 }
 
+export function lowercaseCreditsDescription(maxCredits: number): string {
+  return maxCredits > 1 || maxCredits === 0 ? 'credits' : 'credit';
+}
+
 export function creditsNumericDisplay(
   maxCredits: number,
   minCredits: number

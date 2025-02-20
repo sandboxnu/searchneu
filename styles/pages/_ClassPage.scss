@@ -362,14 +362,50 @@
 
   .MobileClassPageSections {
     .MobileSectionTable {
-      overflow-x: auto;
+      border: 1px solid Colors.$Light_Grey;
+      overflow-x: scroll;
 
-      &--header {
-        color: Colors.$NEU7;
-        background-color: Colors.$NEU3;
+      table {
+        width: 100%;
+        border-collapse: collapse;
       }
 
-      &--entry {
+      thead {
+        background-color: Colors.$NEU3;
+        color: Colors.$NEU7;
+
+        th {
+          padding: 10px 5px;
+          text-align: left;
+          height: 5px;
+          white-space: nowrap;
+        }
+      }
+
+      th,
+      td {
+        text-align: left;
+        white-space: nowrap;
+        padding: 10px;
+      }
+
+      tbody {
+        tr:nth-child(odd) {
+          background: Colors.$White;
+        }
+
+        tr:nth-child(even) {
+          background: Colors.$Off_White;
+        }
+
+        td:first-child {
+          color: Colors.$Blue;
+          padding-left: 10px;
+        }
+
+        td:last-child {
+          padding-right: 10px;
+        }
       }
     }
 

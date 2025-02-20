@@ -2,7 +2,10 @@ import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import ClassPageInfoBody from './ClassPageInfoBody';
-import ClassPageInfoHeader from './ClassPageInfoHeader';
+import {
+  ClassPageInfoHeader,
+  MobileClassPageInfoHeader,
+} from './ClassPageInfoHeader';
 import {
   ClassPageReqsBody,
   MobileClassPageReqsBody,
@@ -61,12 +64,14 @@ export default function PageContent({
         classPageInfo.class &&
         (macros.isMobile ? (
           <div className="classPageInfoContent">
-            <div className=""></div>
+            <MobileClassPageInfoHeader classPageInfo={classPageInfo} />
+            <div className="mobileHorizontalLine" />
             <MobileClassPageReqsBody
               termId={termId}
               campus={campus}
               classPageInfo={classPageInfo}
             ></MobileClassPageReqsBody>
+            <div className="mobileHorizontalLine" />
             <MobileClassPageSections classPageInfo={classPageInfo} />
           </div>
         ) : (

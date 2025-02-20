@@ -326,6 +326,13 @@
     margin-top: 20px;
     margin-bottom: 20px;
 
+    .prereqsDisplay {
+      ul > li {
+        margin-left: 18px;
+        line-height: 20px;
+      }
+    }
+
     &--req {
       display: flex;
       flex-direction: column;

@@ -68,8 +68,8 @@ export function MobileClassPageInfoHeader({
         <span className="mobileClassPageInfoHeader--className">{name}</span>
         <LastUpdated
           lastUpdateTime={latestOccurrence.lastUpdateTime}
-          iconHeight="11"
-          iconWidth="11"
+          iconHeight="16"
+          iconWidth="16"
           className="mobileClassPageInfoHeader--lastUpdated"
         />
       </div>

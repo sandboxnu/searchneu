@@ -259,6 +259,9 @@
       font-style: italic;
       font-weight: 400;
       line-height: 18px;
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
     }
 
     &--header {

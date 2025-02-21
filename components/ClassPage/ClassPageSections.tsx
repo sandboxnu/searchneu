@@ -7,9 +7,12 @@ import IconGlobe from '../icons/IconGlobe';
 import useSectionPanelDetail from '../ResultsPage/Results/useSectionPanelDetail';
 import WeekdayBoxes from '../ResultsPage/Results/WeekdayBoxes';
 import { getGroupedByTimeOfDay } from '../ResultsPage/ResultsLoader';
-import { MeetingType } from '../types';
+import { Meeting, MeetingType } from '../types';
 import SectionsTermNav from './SectionsTermNav';
 import Tooltip, { TooltipDirection } from '../Tooltip';
+import CourseCheckBox from '../panels/CourseCheckBox';
+import SectionCheckBox from '../panels/SectionCheckBox';
+import useUserInfo from '../../utils/useUserInfo';
 
 type ClassPageSectionsProps = {
   classPageInfo: GetClassPageInfoQuery;
@@ -123,38 +126,108 @@ export function MobileClassPageSections({
     );
   }, [currTermIndex, selectedCampus, classPageInfo]);
 
+  const getSeatsClass = (seatsRemaining, seatsCapacity): string => {
+    const seatingPercentage = seatsRemaining / seatsCapacity;
+    if (seatingPercentage > 2 / 3) {
+      return 'green';
+    }
+    if (seatingPercentage > 1 / 3) {
+      return 'yellow';
+    }
+    return 'red';
+  };
+  const { userInfo, fetchUserInfo, onSignIn } = useUserInfo();
+
   return (
     <div className="MobileClassPageSections">
+      <div className="sectionsNav">
+        <div className="campusNav">
+          SECTIONS FOR{' '}
+          <Dropdown
+            compact
+            text={(selectedCampus || '').toUpperCase() + ' CAMPUS'}
+            className="sectionsCampusDropdown"
+          >
+            <Dropdown.Menu className="sectionsCampusDropdownMenu">
+              {sectionCampuses.map((campus) => (
+                <Dropdown.Item
+                  className={'sectionsCampusOption'}
+                  value={campus}
+                  text={campus.toUpperCase() + ' CAMPUS'}
+                  selected={campus === selectedCampus}
+                  onClick={() => setSelectedCampus(campus)}
+                  key={campus}
+                ></Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      </div>
       <div className="MobileSectionTable">
         <table>
-          <tr className="MobileSectionTable--header">
-            <th> CRN </th>
-            <th> Professor </th>
-            <th> Meetings </th>
-            <th> Campus </th>
-            <th> Seats </th>
-            <th> Notifs </th>
-          </tr>
-          {sections.map((section) => {
-            const { getSeatsClass } = useSectionPanelDetail(
-              section.seatsRemaining,
-              section.seatsCapacity
-            );
-            return (
-              <tr className="MobileSectionTable--entry">
-                <td> {section.crn} </td>
-                <td> {section.profs[0]} </td>
-                <td> MEETING TIMES </td>
-                <td> {section.campus} </td>
-                <td>
-                  <div className={`seatsAvailable ${getSeatsClass()}`}>
-                    {`${section.seatsRemaining}/${section.seatsCapacity}`}
-                    Add waitlist seats
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+          <thead>
+            <tr className="MobileSectionTable--header">
+              <th> CRN </th>
+              <th> Professor </th>
+              <th> Meetings </th>
+              <th> Campus </th>
+              <th> Seats </th>
+              <th> Notifs </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sections.map(
+              (section): ReactElement => (
+                <tr className="MobileSectionTable--entry" key={section.crn}>
+                  <td> {section.crn} </td>
+                  <td> {section.profs[0] ? section.profs[0] : 'TBD'} </td>
+                  <td>
+                    {section.meetings.length ? (
+                      <>
+                        {getDaysOfWeekAsString(section.meetings[0])}
+                        <br />
+                        {displayCourseMeetingTimes(section.meetings[0])}
+                      </>
+                    ) : (
+                      'N/A'
+                    )}
+                  </td>
+                  <td> {section.campus} </td>
+                  <td>
+                    <div
+                      className={`seatsAvailable ${getSeatsClass(
+                        section.seatsRemaining,
+                        section.seatsCapacity
+                      )}`}
+                    >
+                      {`${section.seatsRemaining}/${section.seatsCapacity}`}
+                    </div>
+                    {`${section.waitRemaining}/${section.waitCapacity}` +
+                      ' Waitlist'}
+                  </td>
+                  <td>
+                    <SectionCheckBox
+                      section={{ ...section, online: false, honors: false }}
+                      userInfo={userInfo}
+                      fetchUserInfo={fetchUserInfo}
+                      onSignIn={onSignIn}
+                    />
+                  </td>
+                </tr>
+              )
+            )}
+            <tr>
+              <td colSpan={5}>New Available Sections</td>
+              <td>
+                <CourseCheckBox
+                  course={null}
+                  userInfo={userInfo}
+                  fetchUserInfo={fetchUserInfo}
+                  onSignIn={onSignIn}
+                />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -284,4 +357,16 @@ function getDaysOfWeekAsBooleans(meeting): boolean[] {
     retVal[key] = true;
   });
   return retVal;
+}
+
+function getDaysOfWeekAsString(meetings: Meeting): string {
+  const DaysOfWeek = ['S', 'M', 'T', 'W', 'Th', 'F', 'S'];
+  const meetingDays = getDaysOfWeekAsBooleans(meetings);
+  let days = '';
+  meetingDays.forEach((day, index) => {
+    if (day) {
+      days += DaysOfWeek[index] + ' ';
+    }
+  });
+  return days;
 }

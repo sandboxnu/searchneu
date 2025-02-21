@@ -473,9 +473,49 @@
   }
 
   .MobileClassPageSections {
+    .campusNav,
+    .termNav {
+      font-size: 16px;
+      font-weight: bold;
+      color: Colors.$Dark_Grey;
+      vertical-align: middle;
+      padding-bottom: 10px;
+    }
+    .navArrow {
+      padding: 8px;
+      cursor: pointer;
+      &.disabled {
+        cursor: default;
+      }
+    }
+
+    .sectionsCampusDropdown {
+      .divider.text {
+        text-decoration: underline;
+      }
+      .dropdown.icon {
+        margin: 0 0 0 12px;
+      }
+      .sectionsCampusDropdownMenu {
+        margin-top: 10px;
+      }
+
+      .sectionsCampusOption.item {
+        padding: 14px !important;
+        span {
+          font-size: 14px;
+          color: Colors.$Grey;
+          margin-top: 8px;
+          margin-bottom: 8px;
+        }
+      }
+    }
+
     .MobileSectionTable {
       border: 1px solid Colors.$Light_Grey;
-      overflow-x: scroll;
+      width: 100%;
+      min-width: 100%;
+      overflow-x: auto;
 
       table {
         width: 100%;
@@ -485,7 +525,6 @@
       thead {
         background-color: Colors.$NEU3;
         color: Colors.$NEU7;
-
         th {
           padding: 10px 5px;
           text-align: left;
@@ -502,6 +541,10 @@
       }
 
       tbody {
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+
         tr:nth-child(odd) {
           background: Colors.$White;
         }
@@ -517,6 +560,14 @@
 
         td:last-child {
           padding-right: 10px;
+        }
+
+        tr:last-child {
+          td:first-child {
+            color: Colors.$NEU7;
+            font-weight: bold;
+            padding: 10px 5px;
+          }
         }
       }
     }

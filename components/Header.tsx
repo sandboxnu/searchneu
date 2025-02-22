@@ -36,6 +36,7 @@ import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
 import { getRoundedTerm } from './terms';
+import { func } from 'prop-types';
 
 const isWindow = typeof window !== 'undefined';
 export const termAndCampusToURL = (
@@ -333,4 +334,16 @@ export default function Header({
       </div>
     </div>
   );
+}
+
+export function MobileHeader({
+  title,
+  campus,
+  termId,
+  searchData,
+  userInfo,
+  onSignIn,
+  onSignOut,
+}: HeaderProps): ReactElement {
+  return <div className=""></div>;
 }

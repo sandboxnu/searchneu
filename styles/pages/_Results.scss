@@ -96,6 +96,7 @@ $SIDEBAR_WIDTH: 268px;
 
   @media only screen and (max-width: 767px) {
     flex-basis: 10px;
+    background-color: Colors.$Light_Grey;
   }
 }
 
@@ -123,6 +124,8 @@ $SIDEBAR_WIDTH: 268px;
 
   @media only screen and (max-width: 767px) {
     margin-right: 18px;
+    border-radius: 36px;
+    background-color: Colors.$Light_Grey;
   }
 }
 

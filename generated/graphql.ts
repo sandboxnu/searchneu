@@ -288,6 +288,7 @@ export type GetClassPageInfoQuery = { __typename?: 'Query' } & {
                     | 'profs'
                     | 'meetings'
                     | 'url'
+                    | 'honors'
                   >
                 >;
               }
@@ -542,6 +543,7 @@ export const GetClassPageInfoDocument = gql`
           profs
           meetings
           url
+          honors
         }
       }
     }

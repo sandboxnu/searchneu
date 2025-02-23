@@ -476,117 +476,91 @@
   }
 
   .MobileClassPageSections {
-    .campusNav,
-    .termNav {
-      font-size: 16px;
-      font-weight: bold;
-      color: Colors.$Dark_Grey;
-      vertical-align: middle;
-      padding-bottom: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sectionsNav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .campusNav {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .MobileSectionTableWrapper {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    scroll-behavior: smooth;
+    display: flex;
+
+    /* Hide scrollbar in WebKit browsers */
+    &::-webkit-scrollbar {
+      display: none;
     }
-    .navArrow {
-      padding: 8px;
-      cursor: pointer;
-      &.disabled {
-        cursor: default;
-      }
+  }
+
+  .MobileSectionTable {
+    min-width: max-content; /* Prevents table from shrinking */
+    border: 1px solid Colors.$Light_Grey;
+
+    table {
+      width: auto; /* Prevents table from being constrained */
+      border-collapse: collapse;
     }
 
-    .sectionsCampusDropdown {
-      .divider.text {
-        text-decoration: underline;
-      }
-      .dropdown.icon {
-        margin: 0 0 0 12px;
-      }
-      .sectionsCampusDropdownMenu {
-        margin-top: 10px;
-      }
+    thead {
+      background-color: Colors.$NEU3;
+      color: Colors.$NEU7;
 
-      .sectionsCampusOption.item {
-        padding: 14px !important;
-        span {
-          font-size: 14px;
-          color: Colors.$Grey;
-          margin-top: 8px;
-          margin-bottom: 8px;
-        }
-      }
-    }
-
-    .MobileSectionTable {
-      border: 1px solid Colors.$Light_Grey;
-      width: 100%;
-      min-width: 100%;
-      overflow-x: auto;
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      thead {
-        background-color: Colors.$NEU3;
-        color: Colors.$NEU7;
-        th {
-          padding: 10px 5px;
-          text-align: left;
-          height: 5px;
-          white-space: nowrap;
-        }
-      }
-
-      th,
-      td {
+      th {
+        padding: 10px 5px;
         text-align: left;
-        white-space: nowrap;
-        padding: 10px;
-      }
-
-      tbody {
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 400;
-
-        tr:nth-child(odd) {
-          background: Colors.$White;
-        }
-
-        tr:nth-child(even) {
-          background: Colors.$Off_White;
-        }
-
-        td:first-child {
-          color: Colors.$Blue;
-          padding-left: 10px;
-        }
-
-        td:last-child {
-          padding-right: 10px;
-        }
-
-        tr:last-child {
-          td:first-child {
-            color: Colors.$NEU7;
-            font-weight: bold;
-            padding: 10px 5px;
-          }
-        }
+        height: 5px;
+        white-space: nowrap; /* Prevents headers from wrapping */
       }
     }
 
-    .seatsAvailable {
-      margin: 20px 0;
-      &.green {
-        color: Colors.$Green;
+    th,
+    td {
+      text-align: left;
+      white-space: nowrap; /* Ensures table cells do not wrap */
+      padding: 10px;
+    }
+
+    tbody {
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+
+      tr:nth-child(odd) {
+        background: Colors.$White;
       }
 
-      &.yellow {
-        color: Colors.$CPS_Yellow;
+      tr:nth-child(even) {
+        background: Colors.$Off_White;
       }
 
-      &.red {
-        color: Colors.$NEU_Red;
+      td:first-child {
+        color: Colors.$Blue;
+        padding-left: 10px;
+      }
+
+      td:last-child {
+        padding-right: 10px;
+      }
+
+      tr:last-child {
+        td:first-child {
+          color: Colors.$NEU7;
+          font-weight: bold;
+          padding: 10px 5px;
+        }
       }
     }
   }

@@ -136,6 +136,7 @@ export function MobileClassPageSections({
     }
     return 'red';
   };
+
   const { userInfo, fetchUserInfo, onSignIn } = useUserInfo();
 
   return (
@@ -163,72 +164,88 @@ export function MobileClassPageSections({
           </Dropdown>
         </div>
       </div>
-      <div className="MobileSectionTable">
-        <table>
-          <thead>
-            <tr className="MobileSectionTable--header">
-              <th> CRN </th>
-              <th> Professor </th>
-              <th> Meetings </th>
-              <th> Campus </th>
-              <th> Seats </th>
-              <th> Notifs </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sections.map(
-              (section): ReactElement => (
-                <tr className="MobileSectionTable--entry" key={section.crn}>
-                  <td> {section.crn} </td>
-                  <td> {section.profs[0] ? section.profs[0] : 'TBD'} </td>
-                  <td>
-                    {section.meetings.length ? (
-                      <>
-                        {getDaysOfWeekAsString(section.meetings[0])}
-                        <br />
-                        {displayCourseMeetingTimes(section.meetings[0])}
-                      </>
-                    ) : (
-                      'N/A'
-                    )}
-                  </td>
-                  <td> {section.campus} </td>
-                  <td>
-                    <div
-                      className={`seatsAvailable ${getSeatsClass(
-                        section.seatsRemaining,
-                        section.seatsCapacity
-                      )}`}
-                    >
-                      {`${section.seatsRemaining}/${section.seatsCapacity}`}
-                    </div>
-                    {`${section.waitRemaining}/${section.waitCapacity}` +
-                      ' Waitlist'}
-                  </td>
-                  <td>
-                    <SectionCheckBox
-                      section={{ ...section, online: false, honors: false }}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                      onSignIn={onSignIn}
-                    />
-                  </td>
-                </tr>
-              )
-            )}
-            <tr>
-              <td colSpan={5}>New Available Sections</td>
-              <td>
-                <CourseCheckBox
-                  course={null}
-                  userInfo={userInfo}
-                  fetchUserInfo={fetchUserInfo}
-                  onSignIn={onSignIn}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div className="MobileSectionTableWrapper">
+        <div className="MobileSectionTable">
+          <table>
+            <thead>
+              <tr className="MobileSectionTable--header">
+                <th> CRN </th>
+                <th> Professor </th>
+                <th> Meetings </th>
+                <th> Campus </th>
+                <th> Seats </th>
+                <th> Notifs </th>
+              </tr>
+            </thead>
+            <tbody>
+              {sections.map(
+                (section): ReactElement => (
+                  <tr className="MobileSectionTable--entry" key={section.crn}>
+                    <td> {section.crn} </td>
+                    <td> {section.profs[0] ? section.profs[0] : 'TBD'} </td>
+                    <td>
+                      {section.meetings.length ? (
+                        <>
+                          {getDaysOfWeekAsString(section.meetings[0])}
+                          <br />
+                          {displayCourseMeetingTimes(section.meetings[0])}
+                        </>
+                      ) : (
+                        'N/A'
+                      )}
+                    </td>
+                    <td> {section.campus} </td>
+                    <td>
+                      <div
+                        className={`seatsAvailable ${getSeatsClass(
+                          section.seatsRemaining,
+                          section.seatsCapacity
+                        )}`}
+                      >
+                        {`${section.seatsRemaining}/${section.seatsCapacity}`}
+                      </div>
+                      {`${section.waitRemaining}/${section.waitCapacity}` +
+                        ' Waitlist'}
+                    </td>
+                    <td>
+                      <SectionCheckBox
+                        section={{
+                          ...section,
+                          online: section.campus === 'Online',
+                        }}
+                        userInfo={userInfo}
+                        fetchUserInfo={fetchUserInfo}
+                        onSignIn={onSignIn}
+                      />
+                    </td>
+                  </tr>
+                )
+              )}
+              <tr>
+                <td colSpan={5}>New Available Sections</td>
+                <td>
+                  <CourseCheckBox
+                    course={{
+                      ...classPageInfo.class,
+                      termId: classPageInfo.class.latestOccurrence.termId,
+                      host: classPageInfo.class.latestOccurrence.host,
+                      lastUpdateTime:
+                        classPageInfo.class.latestOccurrence.lastUpdateTime,
+                      sections: sections.map((section) => ({
+                        ...section,
+                        online: section.campus === 'Online',
+                      })),
+                    }}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                    onSignIn={onSignIn}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

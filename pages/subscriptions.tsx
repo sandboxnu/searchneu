@@ -7,6 +7,11 @@ import { SubscriptionCourse } from '../components/types';
 import { gqlClient } from '../utils/courseAPIClient';
 import useUserInfo from '../utils/useUserInfo';
 import { EmptyCard } from '../components/SubscriptionsPage/EmptyCard';
+import getTermInfosWithError from '../utils/TermInfoProvider';
+import { getTermName, getLatestTerm } from '../components/terms';
+import { Campus } from '../components/types';
+import Keys from '../components/Keys';
+import axios from 'axios';
 
 async function fetchCourseNotifs(classMapping, courseIds) {
   for (const courseId of courseIds) {
@@ -116,6 +121,10 @@ export default function SubscriptionsPage(): ReactElement {
   // is the user subscribed to at least one class
   const [isSubscribed, setIsSubscribed] = useState(false);
 
+  const termInfos = getTermInfosWithError().termInfos;
+  const termId = getLatestTerm(termInfos, Campus.NEU);
+  const termName = getTermName(termInfos, termId).replace('Semester', '');
+
   useEffect(() => {
     if (isUserInfoLoading) {
       return;
@@ -145,6 +154,22 @@ export default function SubscriptionsPage(): ReactElement {
     fetchSubscriptions();
   }, [userInfo?.phoneNumber, isUserInfoLoading]);
 
+  const unsubscribeAll = () => {
+    const allSections = Array.from(classes.values()).flatMap(
+      (course) => course.sections
+    );
+
+    axios
+      .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
+        data: {
+          token: userInfo.token,
+          sectionIds: allSections.map((s) => Keys.getSectionHash(s)),
+          // courseIds: [Keys.getClassHash(course)],
+        },
+      })
+      .then(() => fetchUserInfo());
+  };
+
   if (isFetching) {
     return (
       <>
@@ -171,7 +196,6 @@ export default function SubscriptionsPage(): ReactElement {
       <div>
         <Header
           title={`Subscriptions`}
-          // TODO (sam 11-04-2024: maybe we can get the previous campus/termid if we wnt to preserve this behavior)
           campus={null}
           termId={null}
           searchData={null}
@@ -180,30 +204,38 @@ export default function SubscriptionsPage(): ReactElement {
           onSignOut={onSignOut}
         />
       </div>
+
       {isSubscribed ? (
-        <>
-          <div className="Results_Container">
-            <div className="Results_MainWrapper">
-              <div className="Results_Main">
-                <h2>Subscriptions</h2>
-                {Array.from(classes)
-                  .sort((a, b) => (a > b ? 1 : -1)) // Sort to ensure the sub order doesn't change
-                  .map(([courseCode, course]) => {
-                    return (
-                      <ClassCard
-                        key={courseCode}
-                        course={course}
-                        sections={course.sections}
-                        userInfo={userInfo}
-                        fetchUserInfo={fetchUserInfo}
-                        onSignIn={onSignIn}
-                      />
-                    );
-                  })}
+        <div className="Results_Container">
+          <div className="Results_MainWrapper">
+            <div className="Results_Main">
+              <div className="Subscriptions_Header_Container">
+                <h2 className="Subscriptions_Title">
+                  {termName} Notifications
+                </h2>
+                <button
+                  className="Unsubscribe_All_Button"
+                  onClick={unsubscribeAll}
+                >
+                  <img src="/unsubscribe.svg" className="Unsubscribe_Icon" />
+                  Unsubscribe All
+                </button>
               </div>
+              {Array.from(classes)
+                .sort((a, b) => (a > b ? 1 : -1))
+                .map(([courseCode, course]) => (
+                  <ClassCard
+                    key={courseCode}
+                    course={course}
+                    sections={course.sections}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                    onSignIn={onSignIn}
+                  />
+                ))}
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <EmptyCard />
       )}

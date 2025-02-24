@@ -46,7 +46,7 @@ export function MobileSearchResult({
         tabIndex={0}
         onClick={() => setExpanded(!expanded)}
       >
-        <IconCollapseExpand /> {headerLeft} {headerRight}
+        {headerLeft} {headerRight}
       </div>
       {expanded && <div className="MobileSearchResult__panel">{body}</div>}
     </div>

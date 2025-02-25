@@ -33,6 +33,7 @@ query getClassPageInfo($subject: String!, $classId: String!) {
         profs
         meetings
         url
+        honors
       }
     }
   }

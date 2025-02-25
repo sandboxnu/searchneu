@@ -321,6 +321,45 @@
     }
   }
 
+  .mobileClassPageInfoBody {
+    &--collapsed svg {
+      transform: rotate(90deg);
+    }
+
+    &--expanded svg {
+      transform: rotate(-90deg);
+    }
+
+    &--moreInfo {
+      font-family: Lato;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 900;
+      line-height: normal;
+    }
+
+    &--rowDouble {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+
+      & > * {
+        max-width: 50%;
+        box-sizing: border-box;
+      }
+    }
+
+    &--items {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      gap: 20px;
+    }
+  }
+
   .mobileClassPageReqsBody {
     display: flex;
     flex-direction: column;

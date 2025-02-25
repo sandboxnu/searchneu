@@ -1,15 +1,16 @@
 import { mean } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
 import { getCampusByLastDigit, getSeason, getYear } from '../terms';
 import { Campus } from '../types';
 import HeaderBody from './HeaderBody';
+import IconCollapseExpand from '../icons/IconCollapseExpand';
 
 type ClassPageInfoProp = {
   classPageInfo: GetClassPageInfoQuery;
 };
 
-export default function ClassPageInfoBody({
+export function ClassPageInfoBody({
   classPageInfo,
 }: ClassPageInfoProp): ReactElement {
   const latestOccurrence = classPageInfo.class.latestOccurrence;
@@ -69,6 +70,140 @@ export default function ClassPageInfoBody({
         </div>
       </div>
     </div>
+  );
+}
+
+export function MobileClassPageInfoBody({
+  classPageInfo,
+}: ClassPageInfoProp): ReactElement {
+  const latestOccurrence = classPageInfo.class.latestOccurrence;
+  const [expanded, setExpanded] = useState(true);
+  return (
+    <div className="mobileClassPageInfoBody">
+      <div className="mobileHorizontalLine" />
+      <div
+        className={
+          expanded
+            ? 'mobileClassPageInfoBody--expanded'
+            : 'mobileClassPageInfoBody--collapsed'
+        }
+        role="button"
+        tabIndex={0}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="mobileClassPageInfoBody--rowDouble">
+          <span className="mobileClassPageInfoBody--moreInfo">More Info</span>
+          <IconCollapseExpand />
+        </div>
+        <div className="mobileHorizontalLine" />
+      </div>
+      {expanded && (
+        <div>
+          <div className="mobileClassPageInfoBody--items">
+            <div className="mobileClassPageReqsBody--req">
+              <div className="mobileClassPageReqsBody--header">
+                Recent Professors
+              </div>
+              <span>{getProfessors(classPageInfo, 10).join(', ')}</span>
+            </div>
+            <div className="mobileClassPageReqsBody--req">
+              <div className="mobileClassPageReqsBody--header">
+                Recent Semesters
+              </div>
+              <span>{getRecentSemesterNames(classPageInfo, 6).join(', ')}</span>
+            </div>
+            <div className="mobileClassPageReqsBody--rowDouble">
+              <div className="mobileClassPageReqsBody--req">
+                <span className="mobileClassPageReqsBody--header">
+                  Avg Seats Filled
+                </span>
+                <span>{Math.round(mean(seatsFilled(classPageInfo)))}</span>
+              </div>
+              <div className="mobileClassPageReqsBody--req">
+                <span className="mobileClassPageReqsBody--header">
+                  Avg Seats Available
+                </span>
+                <span>{Math.round(mean(seatsAvailable(classPageInfo)))}</span>
+              </div>
+            </div>
+            <div className="mobileClassPageReqsBody--rowDouble">
+              <div className="mobileClassPageReqsBody--req">
+                <span className="mobileClassPageReqsBody--header">
+                  Avg # Sections
+                </span>
+                <span>{Math.round(mean(numberOfSections(classPageInfo)))}</span>
+              </div>
+              <div className="mobileClassPageReqsBody--req">
+                <span className="mobileClassPageReqsBody--header">
+                  Course Fees
+                </span>
+                <span>
+                  {latestOccurrence.feeAmount
+                    ? `$${latestOccurrence.feeAmount.toLocaleString()}`
+                    : 'None'}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="mobileHorizontalLine" />
+        </div>
+      )}
+    </div>
+    // <div className="classPageBody flex justify-space-between">
+    //   <div className="classPageBodyLeft">
+    //     <HeaderBody
+    //       header="COURSE DESCRIPTION"
+    //       body={<p>{latestOccurrence.desc}</p>}
+    //     />
+    //     <HeaderBody
+    //       header="COURSE LEVEL"
+    //       body={<p>{getCourseLevel(latestOccurrence.termId.toString())}</p>}
+    //     />
+    //   </div>
+    //   <div className="verticalLine" />
+    //   <div className="classPageBodyRight">
+    //     <HeaderBody
+    //       header="RECENT PROFESSORS"
+    //       body={<p>{getProfessors(classPageInfo, 10).join(', ')}</p>}
+    //     />
+    //     <HeaderBody
+    //       header="RECENT SEMESTERS"
+    //       body={<p>{getRecentSemesterNames(classPageInfo, 6).join(', ')}</p>}
+    //     />
+    //     <div className="flex justify-space-between">
+    //       <HeaderBody
+    //         className="lg-text avgSeatsFilled"
+    //         header="AVG SEATS FILLED"
+    //         body={<p>{Math.round(mean(seatsFilled(classPageInfo)))}</p>}
+    //       />
+    //       <HeaderBody
+    //         className="lg-text avgSeatsAvail"
+    //         header="AVG SEATS AVAILABLE"
+    //         body={<p>{Math.round(mean(seatsAvailable(classPageInfo)))}</p>}
+    //       />
+    //     </div>
+    //     <div className="flex justify-space-between">
+    //       <HeaderBody
+    //         className="lg-text avgNumSections"
+    //         header="AVG # SECTIONS"
+    //         body={<p>{Math.round(mean(numberOfSections(classPageInfo)))}</p>}
+    //       />
+    //       <HeaderBody
+    //         className={`lg-text courseFees ${
+    //           latestOccurrence.feeAmount ? '' : 'emptyCourseFee'
+    //         } `}
+    //         header="COURSE FEES"
+    //         body={
+    //           <p>
+    //             {latestOccurrence.feeAmount
+    //               ? `$${latestOccurrence.feeAmount.toLocaleString()}`
+    //               : 'None'}
+    //           </p>
+    //         }
+    //       />
+    //     </div>
+    //   </div>
+    // </div>
   );
 }
 

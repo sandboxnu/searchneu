@@ -7,12 +7,19 @@ import MagnifyingGlass from '../icons/magnifying-glass.svg';
 import macros from '../macros';
 import InfoIconTooltip from '../common/InfoIconTooltip';
 import { TooltipDirection } from '../Tooltip';
+import MobileFilter from '../icons/mobile-filter.svg';
 
 interface SearchBarProps {
   query: string;
   onSearch: (q: string) => void;
   onClick?: () => void;
   buttonColor: string;
+}
+
+interface MobileSearchBarProps {
+  query: string;
+  onSearch: (q: string) => void;
+  onClick?: () => void;
 }
 
 /**
@@ -96,5 +103,58 @@ export default function SearchBar({
         <></>
       )}
     </>
+  );
+}
+
+export function MobileSearchBar({
+  query,
+  onSearch,
+  onClick,
+}: MobileSearchBarProps): ReactElement {
+  const [controlledQuery, setControlledQuery] = useState(query);
+
+  useEffect(() => {
+    setControlledQuery(query);
+  }, [query]);
+
+  const search = (): void => {
+    if (macros.isMobile) {
+      if (
+        document.activeElement &&
+        document.activeElement instanceof HTMLElement
+      ) {
+        document.activeElement.blur();
+      }
+    }
+    onSearch(controlledQuery);
+  };
+
+  return (
+    <div className="MobileSearchBar">
+      <MagnifyingGlass
+        aria-label="magnifying glass"
+        className="MobileSearchBar__magnifyingGlass"
+      />
+      <input
+        type="search"
+        autoComplete="off"
+        spellCheck="false"
+        tabIndex={0}
+        className="MobileSearchBar__input"
+        size={10}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            search();
+          }
+        }}
+        onClick={onClick}
+        onChange={(event) => {
+          setControlledQuery(event.target.value);
+        }}
+        value={controlledQuery}
+        placeholder="Course, professor or phrase"
+      />
+      <MobileFilter className="MobileSearchBar__filter" />
+    </div>
   );
 }

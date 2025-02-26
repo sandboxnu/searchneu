@@ -34,8 +34,8 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import SearchDropdown from '../components/ResultsPage/SearchDropdown';
 import MobileDropdown from './ResultsPage/MobileDropdown';
+import { MobileSearchBar } from '../components/ResultsPage/SearchBar';
 
 const isWindow = typeof window !== 'undefined';
 export const termAndCampusToURL = (
@@ -311,7 +311,7 @@ function MobileHeader({
       </div>
 
       <div className="MobileHeader--SearchBar">
-        <SearchBar
+        <MobileSearchBar
           onSearch={(q) =>
             router.push(
               `/${campus}/${termId}/search/${encodeURIComponent(q)}${
@@ -320,7 +320,6 @@ function MobileHeader({
             )
           }
           query={query}
-          buttonColor={campusToColor[campus]}
         />
       </div>
 

@@ -21,7 +21,6 @@ import {
   QUERY_PARAM_ENCODERS,
 } from '../components/ResultsPage/filters';
 import SearchBar from '../components/ResultsPage/SearchBar';
-import SearchDropdown from '../components/ResultsPage/SearchDropdown';
 import useAtTop from '../components/ResultsPage/useAtTop';
 import {
   Campus,
@@ -35,8 +34,8 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import { getRoundedTerm } from './terms';
-import { func } from 'prop-types';
+import SearchDropdown from '../components/ResultsPage/SearchDropdown';
+import MobileDropdown from './ResultsPage/MobileDropdown';
 
 const isWindow = typeof window !== 'undefined';
 export const termAndCampusToURL = (
@@ -278,6 +277,8 @@ function MobileHeader({
   const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
   const router = useRouter();
   const query = (router.query.query as string) || '';
+  const termInfosWithError = getTermInfosWithError();
+  const termInfos = termInfosWithError.termInfos;
 
   if (showOverlay) {
     return (
@@ -324,13 +325,17 @@ function MobileHeader({
       </div>
 
       <div className="MobileHeader--bottom">
-        <div className="MobileHeader--SemesterDropdown">
-          {/* Placeholder for Semester Dropdown */}
-          Semester Dropdown
-        </div>
+        <div className="MobileHeader--SemesterDropdown"></div>
+        <MobileDropdown
+          options={[{ text: 'Spring', value: 'Spring', link: 'spring' }]}
+          value="Spring (2025)"
+        />
         <div className="MobileHeader--ResultData">
-          {/* Placeholder for Result Data */}| {searchData.results.length}{' '}
-          Results
+          <span className="MobileHeader--ResultData__Filters">
+            {' '}
+            {} Filters{' '}
+          </span>
+          |{searchData ? searchData.results.length : 0} Results
         </div>
       </div>
     </div>

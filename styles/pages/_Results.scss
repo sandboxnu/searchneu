@@ -46,6 +46,10 @@ $SIDEBAR_WIDTH: 268px;
   line-height: 12px;
   cursor: pointer;
   white-space: nowrap;
+
+  @media only screen and (max-width: 767px) {
+    margin: 0;
+  }
 }
 
 .notificationsButton {
@@ -71,21 +75,54 @@ $SIDEBAR_WIDTH: 268px;
   cursor: not-allowed;
 }
 
-.Results__mobileSearchFilterWrapper {
-  @media only screen and (max-width: 767px) {
+.MobileHeader {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  padding: 10px 15px 5px;
+  gap: 1rem;
+
+  &--top {
     display: flex;
     justify-content: space-between;
-    width: 100vw;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 12px;
-    gap: 1rem;
     align-items: center;
+    width: 100%;
+    position: relative; // Ensures precise positioning of the dropdown
   }
 
-  & > .Results__filterButton {
-    overflow: visible;
+  &--logowrapper {
+    display: flex;
+    align-items: center; // Ensures vertical alignment with the dropdown
+  }
+
+  &--logo {
+    height: 30px;
+    z-index: Indexes.$Five;
+  }
+
+  &--menuWrapper {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &--SearchBar {
+    width: 100%;
+  }
+
+  &--bottom {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &--SemesterDropdown {
+    align-self: flex-end;
+  }
+
+  &--ResultData {
+    align-self: flex-end;
   }
 }
 
@@ -93,11 +130,6 @@ $SIDEBAR_WIDTH: 268px;
   min-width: 10px;
   flex-basis: 100px;
   flex-shrink: 3;
-
-  @media only screen and (max-width: 767px) {
-    flex-basis: 10px;
-    background-color: Colors.$Light_Grey;
-  }
 }
 
 .Results__Logo {
@@ -110,10 +142,6 @@ $SIDEBAR_WIDTH: 268px;
   &--wrapper {
     line-height: 0;
   }
-
-  @media only screen and (max-width: 767px) {
-    display: none;
-  }
 }
 
 .Results__searchwrapper {
@@ -121,12 +149,6 @@ $SIDEBAR_WIDTH: 268px;
   flex-shrink: 2;
 
   display: flex;
-
-  @media only screen and (max-width: 767px) {
-    margin-right: 18px;
-    border-radius: 36px;
-    background-color: Colors.$Light_Grey;
-  }
 }
 
 .Results_Container {

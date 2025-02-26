@@ -2,6 +2,8 @@ import Link from 'next/link';
 import React, { ReactElement } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import DropdownArrow from '../icons/DropdownArrow.svg';
+import { getTermName, TermInfo } from '../terms';
+import { Campus } from '../types';
 
 interface ItemProps {
   text: string;
@@ -10,26 +12,33 @@ interface ItemProps {
 }
 interface DropdownProps {
   options: ItemProps[];
-  value: string;
+  termId: string;
+  termInfos: Record<Campus, TermInfo[]>;
 }
 
-function MobileDropdown({
+function MobileSemesterDropdown({
   options,
-  value: currentValue,
+  termId: currentTerm,
+  termInfos,
 }: DropdownProps): ReactElement {
-  const currentOption = options.find((o) => o.value == currentValue);
-  const currentText = currentOption ? currentOption.text : 'Spring (2025)';
+  const currSemester = getTermName(termInfos, currentTerm).split(' ');
+  const semester =
+    currSemester.length == 3
+      ? currSemester[0]
+      : currSemester[0] + ' ' + currSemester[1];
+  const currYear = currSemester.length == 3 ? currSemester[1] : currSemester[2];
+  const currText = semester + ' (' + currYear + ')';
   return (
     <Dropdown
       fluid
-      text={currentText}
+      text={currText}
       className="MobileDropdown"
       icon={DropdownArrow}
     >
-      <Dropdown.Menu>
+      <Dropdown.Menu className="MobileDropdown__Menu">
         {options.map(({ text, value, link }) => (
           <Link key={value} href={link}>
-            <Dropdown.Item selected={currentValue == value} text={text} />
+            <Dropdown.Item selected={currentTerm == value} text={text} />
           </Link>
         ))}
       </Dropdown.Menu>
@@ -37,4 +46,4 @@ function MobileDropdown({
   );
 }
 
-export default React.memo(MobileDropdown);
+export default React.memo(MobileSemesterDropdown);

@@ -68,28 +68,29 @@ $SIDEBAR_WIDTH: 268px;
     width: 100%;
   }
 
-  &--bottom {
+  &__bottom {
     display: flex;
-    padding: 0px 16px;
     justify-content: space-between;
     align-items: center;
-  }
 
-  &--SemesterDropdown {
-    align-self: flex-start;
-  }
+    &--SemesterDropdown {
+      display: flex;
+      order: 1;
+    }
 
-  &--ResultData {
-    color: Colors.$NEU5;
-    display: flex;
-    width: 148px;
-    height: 18px;
-    flex-direction: row;
-    justify-content: flex-end;
-    flex-shrink: 0;
+    &--ResultData {
+      color: Colors.$NEU5;
+      display: flex;
+      width: 148px;
+      height: 18px;
+      flex-direction: row;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      order: 2;
 
-    &__Filters {
-      color: Colors.$NEU_Red;
+      &-Filters {
+        color: Colors.$NEU_Red;
+      }
     }
   }
 }
@@ -102,7 +103,7 @@ $SIDEBAR_WIDTH: 268px;
   height: 32px;
   max-width: 140px;
   padding: 8px 12px;
-  text-align: left;
+  text-align: center;
   flex-shrink: 0;
   border-radius: 16px;
   background-color: Colors.$Secondary_Hover;
@@ -112,12 +113,15 @@ $SIDEBAR_WIDTH: 268px;
   font-weight: 900;
   line-height: 120%;
 
-  .dropdown.icon {
-    font-size: 50px;
-    float: right;
+  .MobileDropdown.icon {
+    display: flex;
+    font-size: 16px;
+    margin-left: 8px;
   }
 
-  .visible.menu {
+  &__Menu {
+    border-radius: 16px;
+    background-color: Colors.$Secondary_Hover;
   }
 }
 

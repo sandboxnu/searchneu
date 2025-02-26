@@ -34,7 +34,7 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import MobileDropdown from './ResultsPage/MobileDropdown';
+import MobileSemesterDropdown from './ResultsPage/MobileDropdown';
 import { MobileSearchBar } from '../components/ResultsPage/SearchBar';
 
 const isWindow = typeof window !== 'undefined';
@@ -279,6 +279,12 @@ function MobileHeader({
   const query = (router.query.query as string) || '';
   const termInfosWithError = getTermInfosWithError();
   const termInfos = termInfosWithError.termInfos;
+  const termAndCampusToURLCallback = useCallback(
+    (t: string, newCampus: string) => {
+      return termAndCampusToURL(t, newCampus, query);
+    },
+    [query]
+  );
 
   if (showOverlay) {
     return (
@@ -323,14 +329,19 @@ function MobileHeader({
         />
       </div>
 
-      <div className="MobileHeader--bottom">
-        <div className="MobileHeader--SemesterDropdown"></div>
-        <MobileDropdown
-          options={[{ text: 'Spring', value: 'Spring', link: 'spring' }]}
-          value="Spring (2025)"
+      <div className="MobileHeader__bottom">
+        <div className="MobileHeader__bottom--SemesterDropdown"></div>
+        <MobileSemesterDropdown
+          options={termInfos[campus].map((terminfo) => ({
+            text: terminfo.text,
+            value: terminfo.value,
+            link: termAndCampusToURLCallback(terminfo.value, campus),
+          }))}
+          termId={termId}
+          termInfos={termInfos}
         />
-        <div className="MobileHeader--ResultData">
-          <span className="MobileHeader--ResultData__Filters">
+        <div className="MobileHeader__bottom--ResultData">
+          <span className="MobileHeader__bottom--ResultData-Filters">
             {' '}
             {} Filters{' '}
           </span>

@@ -18,13 +18,12 @@
   transform: scaleX(-1);
   filter: brightness(0) saturate(100%) invert(50%) sepia(0%) saturate(0%)
     hue-rotate(0deg) brightness(85%) contrast(90%);
-  /* This filter makes white icons appear gray */
 }
 
 .MobileSearchBar__input {
   all: unset;
   display: flex;
-  flex-grow: 1; /* Ensures input takes available space */
+  flex-grow: 1;
   font-family: Lato;
   font-size: 14px;
   font-style: normal;
@@ -35,5 +34,5 @@
 .MobileSearchBar__filter {
   display: flex;
   justify-content: flex-end;
-  margin-left: auto; /* Pushes filter to the right */
+  margin-left: auto;
 }

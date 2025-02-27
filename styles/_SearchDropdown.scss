@@ -88,7 +88,7 @@
     left: 0;
     overflow-y: auto;
     background: #fff !important;
-    border-radius: 30px;
+    border-radius: 20px;
     padding: 8px 0;
     z-index: 2;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -109,6 +109,14 @@
         display: block;
         width: 100%;
       }
+    }
+
+    li:first-child {
+      padding-top: 0px;
+    }
+
+    li:last-child {
+      padding-bottom: 0px;
     }
 
     &::-webkit-scrollbar {

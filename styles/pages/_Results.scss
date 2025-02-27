@@ -23,7 +23,6 @@ $SIDEBAR_WIDTH: 268px;
   }
 
   @media only screen and (max-width: 767px) {
-    height: 120px;
     background: Colors.$White;
     align-items: unset;
     justify-content: left;
@@ -111,7 +110,8 @@ $SIDEBAR_WIDTH: 268px;
   }
 
   @media only screen and (max-width: 767px) {
-    display: none;
+    margin-top: 15px;
+    margin-left: 10px;
   }
 }
 

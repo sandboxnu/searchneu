@@ -95,53 +95,6 @@ $SIDEBAR_WIDTH: 268px;
   }
 }
 
-.MobileDropdown {
-  width: 148px;
-  height: 32px;
-  max-width: 140px;
-  padding: 8px 12px;
-  border-radius: 16px;
-  background-color: Colors.$Secondary_Hover;
-  font-family: Lato;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 900;
-  line-height: 120%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-
-  &__Trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  &__Arrow {
-    margin-left: auto;
-    font-size: 16px;
-  }
-
-  &__Menu {
-    border-radius: 16px;
-    background-color: Colors.$Secondary_Hover;
-    max-height: 128px;
-    max-width: 140px;
-    overflow-y: auto;
-  }
-
-  &__Item {
-    background-color: Colors.$Secondary_Hover;
-    font-family: Lato;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: 120%;
-  }
-}
-
 .Results_SignIn {
   margin: 0 17px 0 5px;
   padding: 12px 16px;

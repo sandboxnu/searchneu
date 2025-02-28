@@ -34,7 +34,6 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import MobileSemesterDropdown from './ResultsPage/MobileDropdown';
 import { MobileSearchBar } from '../components/ResultsPage/SearchBar';
 
 const isWindow = typeof window !== 'undefined';
@@ -331,19 +330,11 @@ function MobileHeader({
 
       <div className="MobileHeader__bottom">
         <div className="MobileHeader__bottom--SemesterDropdown"></div>
-        <MobileSemesterDropdown
-          options={termInfos[campus].map((terminfo) => ({
-            text: terminfo.text,
-            value: terminfo.value,
-            link: termAndCampusToURLCallback(terminfo.value, campus),
-          }))}
-          termId={termId}
-          termInfos={termInfos}
-        />
+        Mobile Dropdown
         <div className="MobileHeader__bottom--ResultData">
           <span className="MobileHeader__bottom--ResultData-Filters">
             {' '}
-            {} Filters{' '}
+            {} X Filters{' '}
           </span>
           |{searchData ? searchData.results.length : 0} Results
         </div>

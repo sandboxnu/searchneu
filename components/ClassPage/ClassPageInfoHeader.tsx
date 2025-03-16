@@ -83,7 +83,7 @@ export function MobileClassPageInfoHeader({
             : 'mobileClassPageInfoHeader--descriptionHidden'
         }
       >
-        <span dangerouslySetInnerHTML={{ __html: latestOccurrence.desc }} />
+        {latestOccurrence.desc}
       </div>
       <div
         className="mobileClassPageInfoHeader--seeMore"

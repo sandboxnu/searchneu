@@ -80,7 +80,7 @@ export function MobileClassPageInfoBody({
   const [expanded, setExpanded] = useState(true);
   return (
     <div className="mobileClassPageInfoBody">
-      <div className="mobileHorizontalLine" />
+      <div className="mobileClassPageInfoBody--mobileHorizontalLine" />
       <div
         className={
           expanded
@@ -95,7 +95,7 @@ export function MobileClassPageInfoBody({
           <span className="mobileClassPageInfoBody--moreInfo">More Info</span>
           <IconCollapseExpand />
         </div>
-        <div className="mobileHorizontalLine" />
+        <div className="mobileClassPageInfoBody--mobileHorizontalLine" />
       </div>
       {expanded && (
         <div>

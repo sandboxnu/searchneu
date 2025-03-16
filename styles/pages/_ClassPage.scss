@@ -44,6 +44,7 @@
     line-height: normal;
     text-decoration: none;
     gap: 8px;
+    margin: 0 19px;
   }
 
   .title {
@@ -88,8 +89,6 @@
   .mobileHorizontalLine {
     background-color: Colors.$Light_Grey;
     height: 1px;
-    margin-top: 30px;
-    margin-bottom: 30px;
   }
 
   .verticalLine {
@@ -231,9 +230,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     gap: 2px;
+    padding: 0 19px;
 
     &--classTitle {
       font-family: Lato;
@@ -281,12 +281,7 @@
       margin-top: 20px;
     }
 
-    &--description {
-      max-width: 280px;
-    }
-
     &--descriptionHidden {
-      max-width: 280px;
       max-height: 67px;
       overflow: hidden;
       position: relative;
@@ -329,6 +324,13 @@
   }
 
   .mobileClassPageInfoBody {
+    background-color: Colors.$Off_White;
+
+    &--mobileHorizontalLine {
+      background-color: Colors.$Light_Grey;
+      height: 1px;
+    }
+
     &--collapsed svg {
       transform: rotate(90deg);
     }
@@ -350,6 +352,8 @@
       flex-direction: row;
       justify-content: space-between;
       width: 100%;
+      margin: 15px 0px;
+      padding: 0 19px;
 
       & > * {
         max-width: 50%;
@@ -364,6 +368,7 @@
       margin-top: 20px;
       margin-bottom: 20px;
       gap: 20px;
+      padding: 0 19px;
     }
   }
 
@@ -372,8 +377,8 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: 30px 0px;
+    padding: 0 19px;
 
     .prereqsDisplay {
       ul > li {
@@ -525,12 +530,14 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin: 20px 0px;
+    padding: 0 19px;
   }
 
   .sectionsNav {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 10px 0px;
   }
 
   .campusNav {

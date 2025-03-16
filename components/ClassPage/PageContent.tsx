@@ -68,7 +68,10 @@ export default function PageContent({
         (macros.isMobile ? (
           <div className="classPageInfoContent">
             <MobileClassPageInfoHeader classPageInfo={classPageInfo} />
-            <div className="mobileHorizontalLine" />
+            <div
+              className="mobileHorizontalLine"
+              style={{ margin: '0px 19px' }}
+            />
             <MobileClassPageReqsBody
               termId={termId}
               campus={campus}

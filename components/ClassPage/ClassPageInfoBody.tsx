@@ -18,7 +18,7 @@ export default function ClassPageInfoBody({
       <div className="classPageBodyLeft">
         <HeaderBody
           header="COURSE DESCRIPTION"
-          body={<p>{latestOccurrence.desc}</p>}
+          body={<p>{stripHTMLTags(latestOccurrence.desc)}</p>}
         />
         <HeaderBody
           header="COURSE LEVEL"
@@ -70,6 +70,14 @@ export default function ClassPageInfoBody({
       </div>
     </div>
   );
+}
+
+function stripHTMLTags(text: string): string {
+  if (text.includes('</')) {
+    const indxOfOpenTag = text.indexOf('>') + 2;
+    return text.substring(0, text.indexOf('</')).substring(indxOfOpenTag);
+  }
+  return text;
 }
 
 function getCourseLevel(termId: string): string {

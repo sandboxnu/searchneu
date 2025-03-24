@@ -1,5 +1,4 @@
 import { ReactElement } from 'react';
-import Keys from '../Keys';
 import { UserInfo } from '../types';
 
 type CRNBadgeProps = {
@@ -8,7 +7,7 @@ type CRNBadgeProps = {
 };
 
 export const CRNBadge = ({ crn, userInfo }: CRNBadgeProps): ReactElement => {
-  const subscribed = userInfo.sectionIds.map((str) =>
+  const subscribed = userInfo?.sectionIds.map((str) =>
     str.substring(str.lastIndexOf('/') + 1)
   );
 

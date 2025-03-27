@@ -32,6 +32,69 @@ $SIDEBAR_WIDTH: 268px;
   }
 }
 
+.MobileHeader {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  padding: 10px 15px 5px;
+  gap: 1rem;
+
+  &--top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+
+  &--logowrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &--logo {
+    height: 38px;
+    z-index: Indexes.$Five;
+  }
+
+  &--menuWrapper {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &--SearchBar {
+    width: 100%;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &--SemesterDropdown {
+      display: flex;
+      order: 1;
+    }
+
+    &--ResultData {
+      color: Colors.$NEU5;
+      display: flex;
+      width: 148px;
+      height: 18px;
+      flex-direction: row;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      order: 2;
+
+      &-Filters {
+        color: Colors.$NEU_Red;
+      }
+    }
+  }
+}
+
 .Results_SignIn {
   margin: 0 17px 0 5px;
   padding: 12px 16px;
@@ -46,6 +109,10 @@ $SIDEBAR_WIDTH: 268px;
   line-height: 12px;
   cursor: pointer;
   white-space: nowrap;
+
+  @media only screen and (max-width: 767px) {
+    margin: 0;
+  }
 }
 
 .notificationsButton {
@@ -71,32 +138,10 @@ $SIDEBAR_WIDTH: 268px;
   cursor: not-allowed;
 }
 
-.Results__mobileSearchFilterWrapper {
-  @media only screen and (max-width: 767px) {
-    display: flex;
-    justify-content: space-between;
-    width: 100vw;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 12px;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  & > .Results__filterButton {
-    overflow: visible;
-  }
-}
-
 .Results__spacer {
   min-width: 10px;
   flex-basis: 100px;
   flex-shrink: 3;
-
-  @media only screen and (max-width: 767px) {
-    flex-basis: 10px;
-  }
 }
 
 .Results__Logo {
@@ -109,10 +154,6 @@ $SIDEBAR_WIDTH: 268px;
   &--wrapper {
     line-height: 0;
   }
-
-  @media only screen and (max-width: 767px) {
-    display: none;
-  }
 }
 
 .Results__searchwrapper {
@@ -120,10 +161,6 @@ $SIDEBAR_WIDTH: 268px;
   flex-shrink: 2;
 
   display: flex;
-
-  @media only screen and (max-width: 767px) {
-    margin-right: 18px;
-  }
 }
 
 .Results_Container {

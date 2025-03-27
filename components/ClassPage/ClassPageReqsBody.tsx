@@ -87,7 +87,7 @@ export default function ClassPageReqsBody({
           className="link"
           body={
             <a href={latestOccurrence.prettyUrl}>
-              Click here to view this course on the Northeastern website.
+              Click here to view this course on the Northeastern website
             </a>
           }
         />

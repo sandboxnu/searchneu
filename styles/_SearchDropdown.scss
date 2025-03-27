@@ -69,8 +69,8 @@
     font-size: 13px;
     font-weight: 600;
 
-    background-color: #f1f3f5;
-    color: #333;
+    background-color: Colors.$Secondary_Hover;
+    color: Colors.$Button_Text;
 
     border: none;
     border-radius: 30px;
@@ -87,7 +87,7 @@
     top: calc(100% + 5px);
     left: 0;
     overflow-y: auto;
-    background: #fff !important;
+    background: Colors.$White !important;
     border-radius: 20px;
     padding: 8px 0;
     z-index: 2;
@@ -105,7 +105,7 @@
 
       a {
         text-decoration: none;
-        color: #333;
+        color: Colors.$Button_Text;
         display: block;
         width: 100%;
       }

@@ -66,31 +66,27 @@ export default function Page(): ReactElement {
         onSignIn={onSignIn}
         onSignOut={onSignOut}
       />
-      {macros.isMobile ? (
-        <h3 style={{ margin: '20px' }}>Class pages coming to mobile soon!</h3>
-      ) : (
-        <>
+      <>
+        <PageContent
+          termId={termId}
+          campus={campus}
+          subject={subject}
+          classId={classId}
+          classPageInfo={classPageInfo}
+          isCoreq={false}
+        />
+        {coreqInfo.map((info, index) => (
           <PageContent
+            key={index}
             termId={termId}
             campus={campus}
             subject={subject}
             classId={classId}
-            classPageInfo={classPageInfo}
-            isCoreq={false}
+            classPageInfo={info}
+            isCoreq={true}
           />
-          {coreqInfo.map((info, index) => (
-            <PageContent
-              key={index}
-              termId={termId}
-              campus={campus}
-              subject={subject}
-              classId={classId}
-              classPageInfo={info}
-              isCoreq={true}
-            />
-          ))}
-        </>
-      )}
+        ))}
+      </>
     </div>
   );
 }

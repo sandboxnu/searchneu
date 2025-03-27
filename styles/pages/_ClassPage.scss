@@ -10,6 +10,13 @@
     margin-top: 0px;
   }
 
+  @media only screen and (max-width: 767px) {
+    padding-bottom: 50px;
+    margin-top: 5px;
+    margin-left: 1px;
+    width: 100%;
+  }
+
   .backToResults {
     height: 38px;
     font-size: 17px;
@@ -19,6 +26,25 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .mobileBackToResults {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid var(--Expanded-System-NEU4, #c2c2c2);
+    border-radius: 36px;
+    background: #fff;
+    font-size: 16px;
+    color: #858585;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    gap: 8px;
+    margin: 0 19px;
   }
 
   .title {
@@ -57,6 +83,11 @@
 
   .horizontalLine {
     background-color: Colors.$Grey;
+    height: 1px;
+  }
+
+  .mobileHorizontalLine {
+    background-color: Colors.$Light_Grey;
     height: 1px;
   }
 
@@ -194,6 +225,208 @@
       }
     }
   }
+
+  .mobileClassPageInfoHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    gap: 2px;
+    padding: 0 19px;
+
+    &--classTitle {
+      font-family: Lato;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 900;
+      line-height: normal;
+    }
+
+    &--credits {
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      align-self: center;
+    }
+
+    &--className {
+      font-family: Lato;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    &--lastUpdated {
+      font-family: Lato;
+      font-size: 12px;
+      font-style: italic;
+      font-weight: 400;
+      line-height: 18px;
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+    }
+
+    &--header {
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16.8px;
+      color: Colors.$NEU8;
+      margin-top: 20px;
+    }
+
+    &--descriptionHidden {
+      max-height: 67px;
+      overflow: hidden;
+      position: relative;
+
+      &::after {
+        content: '';
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 90%;
+        height: 18px;
+        background: linear-gradient(to right, transparent, Colors.$White);
+      }
+    }
+
+    &--seeMore {
+      color: Colors.$Blue;
+      font-style: italic;
+      text-decoration: underline;
+      display: inline-block;
+
+      &:focus,
+      &:active {
+        outline: none;
+      }
+    }
+
+    &--rowDouble {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+
+      & > * {
+        max-width: 50%;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+  .mobileClassPageInfoBody {
+    background-color: Colors.$Off_White;
+
+    &--mobileHorizontalLine {
+      background-color: Colors.$Light_Grey;
+      height: 1px;
+    }
+
+    &--collapsed svg {
+      transform: rotate(90deg);
+    }
+
+    &--expanded svg {
+      transform: rotate(-90deg);
+    }
+
+    &--moreInfo {
+      font-family: Lato;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 900;
+      line-height: normal;
+    }
+
+    &--rowDouble {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      margin: 15px 0px;
+      padding: 0 19px;
+
+      & > * {
+        max-width: 50%;
+        box-sizing: border-box;
+      }
+    }
+
+    &--items {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      gap: 20px;
+      padding: 0 19px;
+    }
+  }
+
+  .mobileClassPageReqsBody {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 30px 0px;
+    padding: 0 19px;
+
+    .prereqsDisplay {
+      ul > li {
+        margin-left: 18px;
+        line-height: 20px;
+      }
+    }
+
+    &--req {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &--header {
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16.8px;
+      color: Colors.$NEU8;
+    }
+
+    &--nuPathBadge {
+      background-color: Colors.$NEU3;
+      border-radius: 4px;
+      color: Colors.$NEU8;
+      padding: 1px 8px;
+      font-family: Lato;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%;
+    }
+
+    &--rowDouble {
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+      justify-content: space-between;
+
+      & > * {
+        width: 50%;
+        box-sizing: border-box;
+      }
+    }
+  }
+
   .classPageReqsBody .flex .nupaths,
   .prereqs,
   .coreqs,
@@ -288,6 +521,98 @@
 
         &.red {
           color: Colors.$NEU_Red;
+        }
+      }
+    }
+  }
+
+  .MobileClassPageSections {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px;
+    padding: 0 19px;
+  }
+
+  .sectionsNav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+  }
+
+  .campusNav {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .MobileSectionTableWrapper {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    scroll-behavior: smooth;
+    display: flex;
+
+    /* Hide scrollbar in WebKit browsers */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .MobileSectionTable {
+    min-width: max-content; /* Prevents table from shrinking */
+    border: 1px solid Colors.$Light_Grey;
+
+    table {
+      width: auto; /* Prevents table from being constrained */
+      border-collapse: collapse;
+    }
+
+    thead {
+      background-color: Colors.$NEU3;
+      color: Colors.$NEU7;
+
+      th {
+        padding: 10px 5px;
+        text-align: left;
+        height: 5px;
+        white-space: nowrap; /* Prevents headers from wrapping */
+      }
+    }
+
+    th,
+    td {
+      text-align: left;
+      white-space: nowrap; /* Ensures table cells do not wrap */
+      padding: 10px;
+    }
+
+    tbody {
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+
+      tr:nth-child(odd) {
+        background: Colors.$White;
+      }
+
+      tr:nth-child(even) {
+        background: Colors.$Off_White;
+      }
+
+      td:first-child {
+        color: Colors.$Blue;
+        padding-left: 10px;
+      }
+
+      td:last-child {
+        padding-right: 10px;
+      }
+
+      tr:last-child {
+        td:first-child {
+          color: Colors.$NEU7;
+          font-weight: bold;
+          padding: 10px 5px;
         }
       }
     }

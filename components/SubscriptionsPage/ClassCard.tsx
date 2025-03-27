@@ -85,7 +85,7 @@ export function ClassCard({
             className="SearchResult__header--sub"
           />  */}
           <div className="SearchResult__header--sub">
-            {course.sections.map((section) => (
+            {sectionsFormatted.map((section) => (
               <CRNBadge
                 key={section.crn}
                 userInfo={userInfo}

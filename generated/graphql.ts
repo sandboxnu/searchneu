@@ -208,6 +208,7 @@ export type TermInfo = {
   termId: Scalars['String'];
   subCollege: Scalars['String'];
   text: Scalars['String'];
+  active: Scalars['Boolean'];
 };
 
 export type GetCourseInfoByHashQueryVariables = Exact<{
@@ -476,7 +477,7 @@ export type GetTermIDsByCollegeQueryVariables = Exact<{
 
 export type GetTermIDsByCollegeQuery = { __typename?: 'Query' } & {
   termInfos: Array<
-    { __typename?: 'TermInfo' } & Pick<TermInfo, 'text' | 'termId'>
+    { __typename?: 'TermInfo' } & Pick<TermInfo, 'text' | 'termId' | 'active'>
   >;
 };
 
@@ -701,6 +702,7 @@ export const GetTermIDsByCollegeDocument = gql`
     termInfos(subCollege: $subCollege) {
       text
       termId
+      active
     }
   }
 `;

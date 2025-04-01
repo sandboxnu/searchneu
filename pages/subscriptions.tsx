@@ -27,7 +27,7 @@ async function fetchCourseNotifs(termMapping, courseIds) {
     const host = result.classByHash.host;
     const termId = result.classByHash.termId;
 
-    const filteredSections = result.classByHash.sections.map((s) => {
+    const formattedSections = result.classByHash.sections.map((s) => {
       return {
         ...s,
         online: false,
@@ -39,7 +39,7 @@ async function fetchCourseNotifs(termMapping, courseIds) {
     });
 
     // If no sections are available, skip this course
-    if (filteredSections.length === 0) {
+    if (formattedSections.length === 0) {
       continue;
     }
 
@@ -55,7 +55,7 @@ async function fetchCourseNotifs(termMapping, courseIds) {
       host: host,
       name: result.classByHash.name,
       lastUpdateTime: result.classByHash.lastUpdateTime,
-      sections: filteredSections,
+      sections: formattedSections,
     });
   }
 }
@@ -89,7 +89,7 @@ async function fetchSectionNotifs(termMapping, sectionIds) {
 
     // If course has already been found in fetchCourseNotifs(), continue
     if (!classMap.has(courseCode)) {
-      const filteredSections = courseResult.classByHash.sections.map((s) => {
+      const formattedSections = courseResult.classByHash.sections.map((s) => {
         return {
           ...s,
           online: false,
@@ -101,7 +101,7 @@ async function fetchSectionNotifs(termMapping, sectionIds) {
       });
 
       // If no sections are available, skip this course
-      if (filteredSections.length === 0) {
+      if (formattedSections.length === 0) {
         continue;
       }
 
@@ -112,7 +112,7 @@ async function fetchSectionNotifs(termMapping, sectionIds) {
         host: host,
         name: courseResult.classByHash.name,
         lastUpdateTime: courseResult.classByHash.lastUpdateTime,
-        sections: filteredSections,
+        sections: formattedSections,
       });
     }
   }

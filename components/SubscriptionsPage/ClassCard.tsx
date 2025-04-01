@@ -152,12 +152,14 @@ export function ClassCard({
                   <tr>
                     <td colSpan={5}>New available sections</td>
                     <td>
-                      <CourseCheckBox
-                        course={course}
-                        userInfo={userInfo}
-                        fetchUserInfo={fetchUserInfo}
-                        onSignIn={onSignIn}
-                      />
+                      <div className="DesktopSectionPanel__notifs">
+                        <CourseCheckBox
+                          course={course}
+                          userInfo={userInfo}
+                          fetchUserInfo={fetchUserInfo}
+                          onSignIn={onSignIn}
+                        />
+                      </div>
                     </td>
                   </tr>
                 </tfoot>

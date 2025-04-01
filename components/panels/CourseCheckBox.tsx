@@ -33,7 +33,10 @@ export default function CourseCheckBox({
   const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
 
-  const termId = router.query.termId as string;
+  // try to get the termId from the router query, if not available, fallback to the course's termId
+  const termId = router.query.termId
+    ? (router.query.termId as string)
+    : course.termId;
 
   const notificationsLimitReached = (): boolean =>
     NOTIFICATIONS_ARE_DISABLED ||
@@ -41,6 +44,24 @@ export default function CourseCheckBox({
       userInfo.courseIds.filter((id) => id.includes(termId)).length +
         userInfo.sectionIds.filter((id) => id.includes(termId)).length >=
         NOTIFICATIONS_LIMIT);
+
+  const getNumberOfNotifications = async (): Promise<number> => {
+    if (!userInfo) {
+      return 0;
+    }
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${userInfo.token}`
+      );
+      const count =
+        res.data.sectionIds.filter((id: string) => id.includes(termId)).length +
+        res.data.courseIds.filter((id: string) => id.includes(termId)).length;
+      return count;
+    } catch (err) {
+      console.error(err);
+      return 0;
+    }
+  };
 
   const isCourseChecked = (): boolean =>
     userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
@@ -51,11 +72,17 @@ export default function CourseCheckBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo]);
 
-  function onCheckboxClick(): void {
+  async function onCheckboxClick(): Promise<void> {
     if (!userInfo) {
       setChecked(false);
       setShowModal(true);
     } else {
+      // Check again if the user is already subscribed to the maximum number of notifications
+      const numberOfNotifications = await getNumberOfNotifications();
+      if (!checked && numberOfNotifications >= NOTIFICATIONS_LIMIT) {
+        fetchUserInfo();
+        return;
+      }
       setChecked(!checked);
       if (checked) {
         axios

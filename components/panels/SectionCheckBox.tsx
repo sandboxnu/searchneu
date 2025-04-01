@@ -35,7 +35,10 @@ export default function SectionCheckBox({
   const NOTIFICATIONS_LIMIT = 12;
   const NOTIFICATIONS_ARE_DISABLED = false;
 
-  const termId = router.query.termId as string;
+  // try to get the termId from the router query, if not available, fallback to the section's termId
+  const termId = router.query.termId
+    ? (router.query.termId as string)
+    : Keys.getSectionHash(section).split('/')[1];
 
   const notificationsLimitReached = (): boolean =>
     NOTIFICATIONS_ARE_DISABLED ||
@@ -43,6 +46,24 @@ export default function SectionCheckBox({
       userInfo.courseIds.filter((id) => id.includes(termId)).length +
         userInfo.sectionIds.filter((id) => id.includes(termId)).length >=
         NOTIFICATIONS_LIMIT);
+
+  const getNumberOfNotifications = async (): Promise<number> => {
+    if (!userInfo) {
+      return 0;
+    }
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions/${userInfo.token}`
+      );
+      const count =
+        res.data.sectionIds.filter((id: string) => id.includes(termId)).length +
+        res.data.courseIds.filter((id: string) => id.includes(termId)).length;
+      return count;
+    } catch (err) {
+      console.error(err);
+      return 0;
+    }
+  };
 
   const isSectionChecked = (): boolean =>
     userInfo
@@ -55,12 +76,17 @@ export default function SectionCheckBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo]);
 
-  function onCheckboxClick(): void {
+  async function onCheckboxClick(): Promise<void> {
     if (!userInfo) {
       setChecked(false);
       setShowModal(true);
     } else {
-      setChecked(!checked);
+      // Check again if the user is already subscribed to the maximum number of notifications
+      const numberOfNotifications = await getNumberOfNotifications();
+      if (!checked && numberOfNotifications >= NOTIFICATIONS_LIMIT) {
+        fetchUserInfo();
+        return;
+      }
       if (checked) {
         axios
           .delete(
@@ -89,7 +115,7 @@ export default function SectionCheckBox({
     }
   }
 
-  if (section.seatsRemaining > 5) {
+  if (section.seatsRemaining > 0 && !checked) {
     return (
       <div
         style={{ color: Colors.light_grey }}

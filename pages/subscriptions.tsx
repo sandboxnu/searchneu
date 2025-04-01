@@ -141,7 +141,7 @@ export default function SubscriptionsPage(): ReactElement {
   //   },
   // }
   // When displayed, its most recent semester first (highest termId), then courses in alphabetical order
-  const [classes, setClasses] = useState(
+  const [terms, setTerms] = useState(
     new Map<string, Map<string, SubscriptionCourse>>()
   );
 
@@ -151,8 +151,6 @@ export default function SubscriptionsPage(): ReactElement {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const termInfos = getTermInfosWithError().termInfos;
-  const termId = getLatestTerm(termInfos, Campus.NEU);
-  const termName = getTermName(termInfos, termId).replace('Semester', '');
 
   useEffect(() => {
     if (isUserInfoLoading) {
@@ -165,15 +163,15 @@ export default function SubscriptionsPage(): ReactElement {
       return;
     }
 
-    const classMapping = new Map<string, Map<string, SubscriptionCourse>>();
+    const termMapping = new Map<string, Map<string, SubscriptionCourse>>();
     const fetchSubscriptions = async (): Promise<void> => {
       try {
-        await fetchCourseNotifs(classMapping, userInfo.courseIds);
-        await fetchSectionNotifs(classMapping, userInfo.sectionIds);
-        setClasses(classMapping);
+        await fetchCourseNotifs(termMapping, userInfo.courseIds);
+        await fetchSectionNotifs(termMapping, userInfo.sectionIds);
+        setTerms(termMapping);
         setIsFetching(false);
         // are there classes the user is subscribed to?
-        if (classMapping.size > 0) {
+        if (termMapping.size > 0) {
           setIsSubscribed(true);
         }
       } catch (e) {
@@ -184,8 +182,8 @@ export default function SubscriptionsPage(): ReactElement {
   }, [userInfo?.phoneNumber, isUserInfoLoading]);
 
   const unsubscribeAll = () => {
-    const allSections = Array.from(classes.values()).flatMap((courseMap) =>
-      Array.from(courseMap.values()).flatMap((course) => course.sections)
+    const allSections = Array.from(terms.values()).flatMap((termMap) =>
+      Array.from(termMap.values()).flatMap((course) => course.sections)
     );
     axios
       .delete(`${process.env.NEXT_PUBLIC_NOTIFS_ENDPOINT}/user/subscriptions`, {
@@ -248,13 +246,13 @@ export default function SubscriptionsPage(): ReactElement {
                 </button>
               </div>
               {/* Sort termId keys and iterate over them */}
-              {Array.from(classes.keys())
+              {Array.from(terms.keys())
                 .sort((a, b) => parseInt(b) - parseInt(a)) // Sort termIds in descending order
                 .map((termId) => (
                   <div key={termId}>
                     <h3>{getTermName(termInfos, termId)}</h3>
                     {/* Get the courses map for this termId and sort courses */}
-                    {Array.from(classes.get(termId)!.entries())
+                    {Array.from(terms.get(termId)!.entries())
                       .sort(([codeA], [codeB]) => codeA.localeCompare(codeB)) // Sort courses by courseCode
                       .map(([courseCode, course]) => (
                         <ClassCard

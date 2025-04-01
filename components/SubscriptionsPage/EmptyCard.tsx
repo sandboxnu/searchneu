@@ -16,7 +16,6 @@ export const EmptyCard = (): ReactElement => {
   const termInfos = getTermInfosWithError().termInfos;
   // note: not sure of a way to find current campus, if not create it?
   const termId = getLatestTerm(termInfos, Campus.NEU);
-  const termName = getTermName(termInfos, termId).replace('Semester', '');
 
   return (
     <>

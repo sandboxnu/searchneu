@@ -27,7 +27,7 @@ export const EmptyCard = (): ReactElement => {
               <div className="Empty_Main_EmptyCard_Header">
                 <div className="Empty_Main__EmptyCard_Header_Spacer">
                   <div className="Empty_Main__EmptyCard_Header_Title">
-                    <b>{termName} Notifications</b>
+                    <b>Notifications</b>
                   </div>
                 </div>
                 {isHovering ? (

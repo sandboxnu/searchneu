@@ -9,6 +9,7 @@ export interface TermInfo {
   /** Term ID */
   value: string;
   href: string;
+  active: boolean;
 }
 
 /**
@@ -43,6 +44,7 @@ export async function fetchTermInfo(): Promise<{
             text: term['text'],
             value: term['termId'],
             href: `/${college}/${term['termId']}`,
+            active: term['active'],
           };
         }
       );

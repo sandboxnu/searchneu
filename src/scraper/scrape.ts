@@ -1,4 +1,5 @@
-// TODO: url decode like all the strings lol
+import { BannerSection, Course, Section, TermScrape } from "./types";
+import { decode } from "he";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -10,7 +11,7 @@ export async function scrapeTerm(term: string) {
 
   const termDef = await getTermInfo(term);
 
-  return { term: termDef, courses, subjects };
+  return { term: termDef, courses, subjects } as TermScrape;
 }
 
 // getTermInfo gets the name for the term being scraped from banner
@@ -25,7 +26,7 @@ async function getTermInfo(term: string) {
 
 // getCourseDescriptions goes through and scrapes the course descriptions for
 // every course
-async function getCourseDescriptions(courses: any[]) {
+async function getCourseDescriptions(courses: Course[]) {
   console.log("getting course descriptions");
   const batchSize = 50;
   const term = courses[0].term;
@@ -65,23 +66,38 @@ async function getCourseDescriptions(courses: any[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-function arrangeCourses(sections: any[]) {
-  const courses = {};
+function arrangeCourses(sections: BannerSection[]) {
+  const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
 
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
-        name: s.courseTitle,
+        name: decode(s.courseTitle),
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,
+        description: "", // note - this will be filled in later when the descriptions are scraped
+        maxCredits: s.creditHourHigh ?? s.creditHourLow,
+        minCredits: s.creditHourLow,
+        nupath: s.sectionAttributes
+          .filter((a) => a.code.startsWith("NC"))
+          .map((a) => a.description),
         sections: [],
       };
     }
 
     courses[s.subjectCourse].sections.push({
       crn: s.courseReferenceNumber,
+      seatCapacity: s.maximumEnrollment,
+      seatRemaining: s.seatsAvailable,
+      waitlistCapacity: s.waitCapacity,
+      waitlistRemaining: s.waitAvailable,
+      classType: s.scheduleTypeDescription,
+      honors: s.sectionAttributes.some((a) => a.description === "Honors"),
+      campus: s.campusDescription,
+      // TODO: meeting times
+
       faculty: s.f,
     });
 
@@ -94,7 +110,7 @@ function arrangeCourses(sections: any[]) {
 // getSectionFaculty scrapes the faculty for the sections. Banner does not
 // return the faculty on the search page so these have to be gathered from
 // seperate requests
-async function getSectionFaculty(sections: any[]) {
+async function getSectionFaculty(sections: BannerSection[]) {
   console.log("getting section faculty");
   const batchSize = 50;
   const term = sections[0].term;
@@ -154,7 +170,7 @@ async function scrapeSections(term: string) {
   const numBatches = Math.ceil(Math.ceil(resp.totalCount / 500) / cookiePool);
   console.log(`running ${numBatches} batches`);
 
-  const rawSections = [];
+  const rawSections: BannerSection[] = [];
 
   for (let i = 0; i < numBatches; i++) {
     console.log(`batch ${i}`);

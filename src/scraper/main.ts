@@ -1,7 +1,7 @@
 import { scrapeTerm } from "./scrape";
 import { existsSync, readFileSync, writeFile } from "node:fs";
 import { drizzle } from "drizzle-orm/neon-serverless";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import {
   termsTable,
   coursesTable,
@@ -10,6 +10,8 @@ import {
 } from "@/db/schema";
 // TODO: replace with @next/env (for better next compat)
 import { loadEnvFile } from "node:process";
+import { TermScrape } from "./types";
+import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 const TERM = "202530";
 
@@ -39,11 +41,21 @@ async function main() {
 
   console.log("connected");
   await insertCourseData(term, db);
+
+  // Generate the searching index
+  // @ts-ignore
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
+    USING bm25 (id, name, subject, "courseNumber")
+    WITH (key_field='id',
+        text_fields='{"name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}}}'
+    );
+`);
 }
 
 // insertCourseData takes a term scrape cache and inserts it
 // into the database
-async function insertCourseData(data, db) {
+async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
   await db.transaction(async (tx) => {
     await tx
       .insert(termsTable)
@@ -76,8 +88,11 @@ async function insertCourseData(data, db) {
         .values({
           term: course.term,
           subject: course.subject,
+          name: course.name,
           courseNumber: course.courseNumber,
           description: course.description,
+          minCredits: course.minCredits,
+          maxCredits: course.maxCredits,
         })
         .returning({ id: coursesTable.id });
 
@@ -108,10 +123,26 @@ async function insertCourseData(data, db) {
               courseId: existingCourseId,
               crn: section.crn,
               faculty: section.faculty,
+              seatCapacity: section.seatCapacity,
+              seatRemaining: section.seatRemaining,
+              waitlistCapacity: section.waitlistCapacity,
+              waitlistRemaining: section.waitlistRemaining,
+              classType: section.classType,
+              honors: section.honors,
+              campus: section.campus,
             })
             .onConflictDoUpdate({
               target: sectionsTable.crn,
-              set: { faculty: section.faculty },
+              set: {
+                faculty: section.faculty,
+                seatCapacity: section.seatCapacity,
+                seatRemaining: section.seatRemaining,
+                waitlistCapacity: section.waitlistCapacity,
+                waitlistRemaining: section.waitlistRemaining,
+                classType: section.classType,
+                honors: section.honors,
+                campus: section.campus,
+              },
             });
         }
       } else {
@@ -122,10 +153,26 @@ async function insertCourseData(data, db) {
               courseId: courseId,
               crn: section.crn,
               faculty: section.faculty,
+              seatCapacity: section.seatCapacity,
+              seatRemaining: section.seatRemaining,
+              waitlistCapacity: section.waitlistCapacity,
+              waitlistRemaining: section.waitlistRemaining,
+              classType: section.classType,
+              honors: section.honors,
+              campus: section.campus,
             })
             .onConflictDoUpdate({
               target: sectionsTable.crn,
-              set: { faculty: section.faculty },
+              set: {
+                faculty: section.faculty,
+                seatCapacity: section.seatCapacity,
+                seatRemaining: section.seatRemaining,
+                waitlistCapacity: section.waitlistCapacity,
+                waitlistRemaining: section.waitlistRemaining,
+                classType: section.classType,
+                honors: section.honors,
+                campus: section.campus,
+              },
             });
         }
       }

@@ -1,4 +1,6 @@
 import {
+  boolean,
+  decimal,
   foreignKey,
   integer,
   pgTable,
@@ -7,13 +9,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable("users", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
-  age: integer().notNull(),
-  email: varchar({ length: 255 }).notNull().unique(),
-});
-
 export const coursesTable = pgTable(
   "courses",
   {
@@ -21,9 +16,12 @@ export const coursesTable = pgTable(
     term: varchar({ length: 6 })
       .notNull()
       .references(() => termsTable.term),
+    name: text().notNull(),
     subject: varchar({ length: 6 }).notNull(),
     courseNumber: varchar({ length: 6 }).notNull(),
     description: text().notNull(),
+    minCredits: decimal().notNull(),
+    maxCredits: decimal().notNull(),
   },
   (table) => [
     foreignKey({
@@ -40,6 +38,13 @@ export const sectionsTable = pgTable("sections", {
     .references(() => coursesTable.id),
   crn: varchar({ length: 5 }).notNull().unique(),
   faculty: text().notNull(), // TODO: support multiple faculty
+  seatCapacity: integer().notNull(),
+  seatRemaining: integer().notNull(),
+  waitlistCapacity: integer().notNull(),
+  waitlistRemaining: integer().notNull(),
+  classType: text().notNull(),
+  honors: boolean().notNull(),
+  campus: text().notNull(),
 });
 
 export const termsTable = pgTable("terms", {

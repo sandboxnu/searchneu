@@ -31,7 +31,7 @@ export default function GivingDayModal({
 
           <span className="phone-modal__label">
             On April 10th, make a donation to Sandbox
-            <a href="https://givingday.northeastern.edu/pages/northeastern-giving-day">
+            <a href="https://givingday.northeastern.edu/campaigns/sandbox-club">
               {' '}
               here
             </a>{' '}

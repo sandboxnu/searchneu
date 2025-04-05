@@ -2,12 +2,7 @@ import { scrapeTerm } from "./scrape";
 import { existsSync, readFileSync, writeFile } from "node:fs";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { eq, sql } from "drizzle-orm";
-import {
-  termsTable,
-  coursesTable,
-  sectionsTable,
-  subjectsTable,
-} from "@/db/schema";
+import { termsT, coursesT, sectionsT, subjectsT } from "@/db/schema";
 // TODO: replace with @next/env (for better next compat)
 import { loadEnvFile } from "node:process";
 import { TermScrape } from "./types";
@@ -46,13 +41,14 @@ async function main() {
 
   // Generate the searching index
   // @ts-ignore
-  await db.execute(sql`
-    CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
-    USING bm25 (id, name, subject, "courseNumber")
-    WITH (key_field='id',
-        text_fields='{"name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}}}'
-    );
-`);
+  // BUG: this is being a little problematic - really we should just drop and reindex completely
+  //   await db.execute(sql`
+  //     CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
+  //     USING bm25 (id, name, subject, "courseNumber")
+  //     WITH (key_field='id',
+  //         text_fields='{"name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}}}'
+  //     );
+  // `);
 }
 
 // insertCourseData takes a term scrape cache and inserts it
@@ -60,7 +56,7 @@ async function main() {
 async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
   await db.transaction(async (tx) => {
     await tx
-      .insert(termsTable)
+      .insert(termsT)
       .values({
         term: data.term.code,
         name: data.term.description,
@@ -68,7 +64,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
         activeUntil: new Date("2025-05-05T17:41:35+00:00"),
       })
       .onConflictDoUpdate({
-        target: termsTable.term,
+        target: termsT.term,
         set: { name: data.term.description },
       });
 
@@ -80,15 +76,12 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
     }));
 
     if (subjectInserts.length > 0) {
-      await tx
-        .insert(subjectsTable)
-        .values(subjectInserts)
-        .onConflictDoNothing();
+      await tx.insert(subjectsT).values(subjectInserts).onConflictDoNothing();
     }
 
     for (const course of data.courses) {
       const courseInsertResult = await tx
-        .insert(coursesTable)
+        .insert(coursesT)
         .values({
           term: course.term,
           subject: course.subject,
@@ -98,18 +91,18 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
           minCredits: course.minCredits,
           maxCredits: course.maxCredits,
         })
-        .returning({ id: coursesTable.id });
+        .returning({ id: coursesT.id });
 
       const courseId = courseInsertResult[0]?.id;
 
       if (!courseId) {
         const existingCourse = await tx
-          .select({ id: coursesTable.id })
-          .from(coursesTable)
+          .select({ id: coursesT.id })
+          .from(coursesT)
           .where(
-            eq(coursesTable.term, course.term) &&
-              eq(coursesTable.subject, course.subject) &&
-              eq(coursesTable.courseNumber, course.courseNumber),
+            eq(coursesT.term, course.term) &&
+              eq(coursesT.subject, course.subject) &&
+              eq(coursesT.courseNumber, course.courseNumber),
           );
 
         if (existingCourse.length === 0) {
@@ -122,7 +115,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
 
         for (const section of course.sections) {
           await tx
-            .insert(sectionsTable)
+            .insert(sectionsT)
             .values({
               courseId: existingCourseId,
               crn: section.crn,
@@ -136,7 +129,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
               campus: section.campus,
             })
             .onConflictDoUpdate({
-              target: sectionsTable.crn,
+              target: sectionsT.crn,
               set: {
                 faculty: section.faculty,
                 seatCapacity: section.seatCapacity,
@@ -152,7 +145,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
       } else {
         for (const section of course.sections) {
           await tx
-            .insert(sectionsTable)
+            .insert(sectionsT)
             .values({
               courseId: courseId,
               crn: section.crn,
@@ -166,7 +159,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
               campus: section.campus,
             })
             .onConflictDoUpdate({
-              target: sectionsTable.crn,
+              target: sectionsT.crn,
               set: {
                 faculty: section.faculty,
                 seatCapacity: section.seatCapacity,

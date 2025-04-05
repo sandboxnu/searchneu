@@ -10,13 +10,13 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const coursesTable = pgTable(
+export const coursesT = pgTable(
   "courses",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     term: varchar({ length: 6 })
       .notNull()
-      .references(() => termsTable.term),
+      .references(() => termsT.term),
     name: text().notNull(),
     subject: varchar({ length: 6 }).notNull(),
     courseNumber: varchar({ length: 6 }).notNull(),
@@ -27,16 +27,16 @@ export const coursesTable = pgTable(
   (table) => [
     foreignKey({
       columns: [table.term, table.subject],
-      foreignColumns: [subjectsTable.term, subjectsTable.code],
+      foreignColumns: [subjectsT.term, subjectsT.code],
     }),
   ],
 );
 
-export const sectionsTable = pgTable("sections", {
+export const sectionsT = pgTable("sections", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   courseId: integer()
     .notNull()
-    .references(() => coursesTable.id),
+    .references(() => coursesT.id),
   crn: varchar({ length: 5 }).notNull().unique(),
   faculty: text().notNull(), // TODO: support multiple faculty
   seatCapacity: integer().notNull(),
@@ -48,18 +48,18 @@ export const sectionsTable = pgTable("sections", {
   campus: text().notNull(),
 });
 
-export const termsTable = pgTable("terms", {
+export const termsT = pgTable("terms", {
   term: varchar({ length: 6 }).primaryKey(),
   name: text().notNull(),
   activeUntil: timestamp().notNull().defaultNow(),
 });
 
-export const subjectsTable = pgTable(
+export const subjectsT = pgTable(
   "subjects",
   {
     term: varchar({ length: 6 })
       .notNull()
-      .references(() => termsTable.term),
+      .references(() => termsT.term),
     code: varchar({ length: 6 }).notNull(),
     name: text().notNull(),
   },

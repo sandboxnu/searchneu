@@ -1,4 +1,4 @@
-import { coursesTable, sectionsTable, termsTable } from "@/db/schema";
+import { coursesT, sectionsT, termsT } from "@/db/schema";
 import { scrapeSections } from "@/scraper/scrape";
 import { eq, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
@@ -20,31 +20,29 @@ export async function GET(req: NextRequest) {
   // use the direct database connection for increased throughput (write intensive!)
   const db = drizzle(process.env.DATABASE_URL_DIRECT!);
 
-  const term = "202530";
-
-  // TODO: get active terms
+  // get active terms
   const dbterms = await db
-    .select({ term: termsTable.term })
-    .from(termsTable)
-    .where(gt(termsTable.activeUntil, new Date()));
+    .select({ term: termsT.term })
+    .from(termsT)
+    .where(gt(termsT.activeUntil, new Date()));
 
   const terms = dbterms.map((t) => t.term);
   console.log("terms to update: ", terms);
 
-  // TODO: iterate over those terms and update as needed
+  // for each term perform an update
   for (let term of terms) {
     console.log("updating term ", term);
     const sections = await scrapeSections(term);
 
     const prevSections = await db
       .select({
-        crn: sectionsTable.crn,
-        seatRemaining: sectionsTable.seatRemaining,
-        waitRemaining: sectionsTable.waitlistRemaining,
+        crn: sectionsT.crn,
+        seatRemaining: sectionsT.seatRemaining,
+        waitRemaining: sectionsT.waitlistRemaining,
       })
-      .from(sectionsTable)
-      .innerJoin(coursesTable, eq(coursesTable.id, sectionsTable.courseId))
-      .where(eq(coursesTable.term, term));
+      .from(sectionsT)
+      .innerJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
+      .where(eq(coursesT.term, term));
 
     const seats: string[] = [];
     const waitlistSeats: string[] = [];
@@ -94,12 +92,12 @@ export async function GET(req: NextRequest) {
 
     // NOTE: this uses a cool postgres feature where multiple rows can be updated
     await db.execute(sql`
-    UPDATE ${sectionsTable}
+    UPDATE ${sectionsT}
     SET 
       "seatRemaining" = v.seat_remaining,
       "waitlistRemaining" = v.waitlist_remaining
     FROM (VALUES ${sql.raw(values)}) AS v(crn, seat_remaining, waitlist_remaining)
-    WHERE ${sectionsTable.crn} = v.crn
+    WHERE ${sectionsT.crn} = v.crn
   `);
   }
 

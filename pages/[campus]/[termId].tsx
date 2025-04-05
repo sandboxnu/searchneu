@@ -28,6 +28,7 @@ import Cookies from 'universal-cookie';
 import TestimonialToast from '../../components/Testimonial/TestimonialToast';
 import macros from '../../components/macros';
 import DisabledNotificationsModal from '../../components/notifications/DisabledNotificationsModal';
+import GivingDayModal from '../../components/GivingDay/GivingDayModal';
 
 const grad_banner_data: AlertBannerData = {
   text: 'has just released!',
@@ -67,6 +68,8 @@ export default function Home(): ReactElement {
 
   // Remove if no longer a need for the testimonial modal
   // const [showHelpModal, setShowHelpModal] = useState(false);
+  // Remove if no longer a need for the giving day modal
+  const [showGivingModal, setShowGivingModal] = useState(true);
 
   // const fetchFeedbackToken = async (): Promise<void> => {
   //   const cookies = new Cookies();
@@ -129,6 +132,11 @@ export default function Home(): ReactElement {
             visible={showHelpModal}
             onCancel={() => setShowHelpModal(false)}
           /> */}
+
+          <GivingDayModal
+            visible={showGivingModal}
+            onCancel={() => setShowGivingModal(false)}
+          />
 
           <div>
             <div // TODO: Take this out and restyle this monstrosity from scratch

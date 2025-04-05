@@ -148,9 +148,9 @@ async function getSectionFaculty(sections: BannerSection[]) {
 }
 
 // scrapeSections get all the sections in a term. It steps through the pages of search results
-// to get all the sections in a term
-async function scrapeSections(term: string) {
-  const cookiePool = 10; // The number of cookies to get
+// to get all the sections in a term. The cookie pool represents how many cookies to get
+// (ie number of concurrent requests to send in a batch)
+export async function scrapeSections(term: string, cookiePool = 10) {
   const cookies = await getAuthCookies(term, cookiePool);
   console.log("have cookies");
 

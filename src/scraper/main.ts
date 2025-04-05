@@ -12,12 +12,14 @@ import {
 import { loadEnvFile } from "node:process";
 import { TermScrape } from "./types";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import path from "node:path";
 
+const CACHE_PATH = "cache/";
 const TERM = "202530";
 
 // Entrypoint for the scraper
 async function main() {
-  const cachename = `term-${TERM}.json`;
+  const cachename = path.resolve(CACHE_PATH, `term-${TERM}.json`);
   const existingCache = existsSync(cachename);
 
   let term;
@@ -62,6 +64,8 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
       .values({
         term: data.term.code,
         name: data.term.description,
+        // TODO: activeUntil
+        activeUntil: new Date("2025-05-05T17:41:35+00:00"),
       })
       .onConflictDoUpdate({
         target: termsTable.term,

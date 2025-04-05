@@ -6,6 +6,7 @@ import {
   pgTable,
   primaryKey,
   text,
+  timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -50,6 +51,7 @@ export const sectionsTable = pgTable("sections", {
 export const termsTable = pgTable("terms", {
   term: varchar({ length: 6 }).primaryKey(),
   name: text().notNull(),
+  activeUntil: timestamp().notNull().defaultNow(),
 });
 
 export const subjectsTable = pgTable(

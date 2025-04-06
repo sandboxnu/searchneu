@@ -3,8 +3,7 @@ import { existsSync, readFileSync, writeFile } from "node:fs";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { eq, sql } from "drizzle-orm";
 import { termsT, coursesT, sectionsT, subjectsT } from "@/db/schema";
-// TODO: replace with @next/env (for better next compat)
-import { loadEnvFile } from "node:process";
+import { loadEnvConfig } from "@next/env";
 import { TermScrape } from "./types";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import path from "node:path";
@@ -23,17 +22,15 @@ async function main() {
     term = JSON.parse(readFileSync(cachename, "utf8"));
   } else {
     console.log("generating new scrape");
-    // TODO: Scrape the term
     term = await scrapeTerm(TERM);
 
-    // TODO: Save term to file
     writeFile(cachename, JSON.stringify(term), (err) => {
       if (err) console.log(err);
     });
   }
 
-  // TODO: Save to db
-  loadEnvFile("./.env");
+  const projectDir = process.cwd();
+  loadEnvConfig(projectDir);
   const db = drizzle(process.env.DATABASE_URL_DIRECT!);
 
   console.log("connected");

@@ -6,6 +6,8 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
   const query = params.get("q");
+  // const numResults = params.get("count");
+  // const offset = params.get("offset");
 
   const result = await db
     .select({

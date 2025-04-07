@@ -7,7 +7,7 @@ export function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,12 +29,13 @@ export function SearchBar() {
   }, [query]);
 
   return (
-    <input
-      value={query}
-      defaultValue={searchParams.get("query")?.toString()}
-      onChange={(e) => setQuery(e.target.value)}
-      placeholder="Search..."
-      className="text-lg border-neutral-900 border-b-2 focus:outline-none w-1/2"
-    />
+    <div className="">
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+        className="text-lg border-neutral-900 border-b-2 focus:outline-none w-1/2"
+      />
+    </div>
   );
 }

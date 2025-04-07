@@ -30,29 +30,27 @@ export default function GivingDayModal({
           </span>
 
           <span className="phone-modal__label">
-            On April 10th, make a donation to Sandbox
-            <a href="https://givingday.northeastern.edu/campaigns/sandbox-club">
-              {' '}
-              here
-            </a>{' '}
-            to help keep SearchNEU running!
+            On April 10th, make a donation to Sandbox to help keep SearchNEU
+            running!
           </span>
 
-          {/* <div className="phone-modal__button-container">
-            <button
-              key="ok"
-              onClick={() => {
-                window.open(
-                  'https://docs.google.com/forms/d/e/1FAIpQLSdOWqfXW4KJZNbHI9hbQohfsY9BIJnxLSuUz8p_DIx4bZkZ9A/viewform',
-                  '_blank'
-                );
-                onCancel();
-              }}
-              className="phone-modal__btn phone-modal__btn--primary"
-            >
-              Fill out the Google Form
-            </button>
-          </div> */}
+          {
+            <div className="phone-modal__button-container">
+              <button
+                key="ok"
+                onClick={() => {
+                  window.open(
+                    'https://givingday.northeastern.edu/campaigns/sandbox-club',
+                    '_blank'
+                  );
+                  onCancel();
+                }}
+                className="phone-modal__btn phone-modal__btn--primary"
+              >
+                Donate
+              </button>
+            </div>
+          }
         </div>
       </div>
     </Modal>

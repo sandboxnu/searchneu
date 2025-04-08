@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 
 export default async function Layout(props: {
   params: Promise<{ term: string }>;

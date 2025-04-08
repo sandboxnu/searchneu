@@ -1,11 +1,10 @@
 import { scrapeTerm } from "./scrape";
 import { existsSync, readFileSync, writeFile } from "node:fs";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { eq, sql } from "drizzle-orm";
+import { drizzle, NeonClient, NeonDatabase } from "drizzle-orm/neon-serverless";
+import { eq } from "drizzle-orm";
 import { termsT, coursesT, sectionsT, subjectsT } from "@/db/schema";
 import { loadEnvConfig } from "@next/env";
 import { TermScrape } from "./types";
-import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
@@ -37,7 +36,6 @@ async function main() {
   await insertCourseData(term, db);
 
   // Generate the searching index
-  // @ts-ignore
   // BUG: this is being a little problematic - really we should just drop and reindex completely
   //   await db.execute(sql`
   //     CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
@@ -50,7 +48,10 @@ async function main() {
 
 // insertCourseData takes a term scrape cache and inserts it
 // into the database
-async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
+async function insertCourseData(
+  data: TermScrape,
+  db: NeonDatabase<Record<string, never>> & { $client: NeonClient },
+) {
   await db.transaction(async (tx) => {
     await tx
       .insert(termsT)

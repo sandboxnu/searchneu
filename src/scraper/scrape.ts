@@ -1,4 +1,4 @@
-import { BannerSection, Course, Section, TermScrape } from "./types";
+import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 
 // scrapeTerm completely scrapes a term

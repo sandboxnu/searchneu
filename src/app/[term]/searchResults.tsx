@@ -4,10 +4,18 @@ import { ResultCard } from "@/components/resultCard";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
+interface searchResult {
+  name: string;
+  courseNumber: string;
+  subject: string;
+  minCredits: number;
+  maxCredits: number;
+}
+
 export default function SearchResults() {
   const params = useSearchParams();
   const { course } = useParams();
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<searchResult[]>([]);
 
   useEffect(() => {
     async function data() {

@@ -1,6 +1,24 @@
 import { cn } from "@/lib/cn";
 
-export function SectionTable(props: { sections: any }) {
+interface meetingTime {
+  building: string;
+  room: string;
+  days: number[];
+  startTime: number;
+  endTime: number;
+  final: boolean;
+  finalDate?: string;
+}
+
+export function SectionTable(props: {
+  sections: {
+    crn: string;
+    faculty: string;
+    meetingTimes: meetingTime[];
+    seatRemaining: number;
+    seatCapacity: number;
+  }[];
+}) {
   return (
     <table className="w-full rounded-t overflow-clip">
       <thead className="bg-muted">
@@ -33,7 +51,7 @@ export function SectionTable(props: { sections: any }) {
   );
 }
 
-function MeetingBlocks(props: { meetings: any; crn: string }) {
+function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   const days = ["S", "M", "T", "W", "T", "F", "S"];
 
   if (!props.meetings || props.meetings[0].days.length === 0) {
@@ -73,7 +91,7 @@ function MeetingBlocks(props: { meetings: any; crn: string }) {
   );
 }
 
-function RoomBlocks(props: { meetings: any[]; crn: string }) {
+function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
   return (
     <div className="flex flex-col gap-1">
       {props.meetings.map((m, i) => (

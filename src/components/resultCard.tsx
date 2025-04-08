@@ -2,13 +2,19 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 export function ResultCard(props: {
-  result: any;
+  result: {
+    name: string;
+    courseNumber: string;
+    subject: string;
+    minCredits: number;
+    maxCredits: number;
+  };
   params: string;
   active: boolean;
 }) {
   let creditRange = "";
   if (props.result.minCredits === props.result.maxCredits) {
-    creditRange = props.result.minCredits;
+    creditRange = String(props.result.minCredits);
   } else {
     creditRange = props.result.minCredits + "-" + props.result.maxCredits;
   }

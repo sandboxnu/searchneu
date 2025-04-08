@@ -33,7 +33,7 @@ export interface BannerSection {
   instructionalMethodDescription: string;
   reservedSeatSummary: null;
 
-  meetingsFaculty: any[]; // TODO: types on this :(
+  meetingsFaculty: BannerSectionSession[];
 
   sectionAttributes: {
     class: string;
@@ -46,6 +46,41 @@ export interface BannerSection {
 
   // Hacking in the faculty field since it is scraped seperatly
   f?: string;
+}
+
+interface BannerSectionSession {
+  category: string;
+  class: string;
+  courseReferenceNumber: string;
+  faculty: null;
+  meetingTime: {
+    beginTime: string;
+    building: string;
+    buildingDescription: string;
+    campus: string;
+    campusDescription: string;
+    category: string;
+    class: string;
+    courseReferenceNumber: string;
+    creditHourSession: number;
+    endDate: string;
+    endTime: string;
+    friday: boolean;
+    hoursWeek: number;
+    meetingScheduleType: string;
+    meetingType: string;
+    meetingTypeDescription: string;
+    monday: boolean;
+    room: string;
+    saturday: boolean;
+    startDate: string;
+    sunday: boolean;
+    term: string;
+    thursday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+  };
+  term: string;
 }
 
 export interface Section {

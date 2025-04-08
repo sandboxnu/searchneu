@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   console.log("terms to update: ", terms);
 
   // for each term perform an update
-  for (let term of terms) {
+  for (const term of terms) {
     console.log("updating term ", term);
     const sections = await scrapeSections(term);
 
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     // PERF: when notif info is added to db, if could be worth only
     // checking the sections people are subbed too
 
-    for (let s of prevSections) {
+    for (const s of prevSections) {
       const c = sections.find((j) => j.courseReferenceNumber === s.crn);
       if (!c) {
         console.log("section went missing!", s.crn);

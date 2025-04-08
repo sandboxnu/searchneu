@@ -39,10 +39,7 @@ export default function GivingDayModal({
               <button
                 key="ok"
                 onClick={() => {
-                  window.open(
-                    'https://givingday.northeastern.edu/campaigns/sandbox-club',
-                    '_blank'
-                  );
+                  window.open('http://bit.ly/sandboxgivingday', '_blank');
                   onCancel();
                 }}
                 className="phone-modal__btn phone-modal__btn--primary"

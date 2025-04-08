@@ -86,8 +86,8 @@ async function insertCourseData(
           name: course.name,
           courseNumber: course.courseNumber,
           description: course.description,
-          minCredits: course.minCredits,
-          maxCredits: course.maxCredits,
+          minCredits: String(course.minCredits),
+          maxCredits: String(course.maxCredits),
         })
         .returning({ id: coursesT.id });
 

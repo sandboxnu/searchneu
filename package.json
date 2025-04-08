@@ -28,6 +28,7 @@
     "@eslint/eslintrc": "^3",
     "@next/env": "^15.2.4",
     "@tailwindcss/postcss": "^4",
+    "@types/he": "^1.2.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

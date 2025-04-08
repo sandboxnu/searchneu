@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
   const query = params.get("q");
   // const numResults = params.get("count");
   // const offset = params.get("offset");
-  console.log(query);
 
   // NOTE: this should probably be a cte rather than add to the index?
   const result = await db

@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { ResultCard } from "@/components/resultCard";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export function SearchResults(props: { term: string; initData: any[] }) {
+export default function SearchResults() {
   const params = useSearchParams();
-  const [result, setResult] = useState(props.initData);
-  const [loading, setLoading] = useState(false);
+  const { course } = useParams();
+  const [result, setResult] = useState([]);
 
   useEffect(() => {
     async function data() {
@@ -15,55 +15,32 @@ export function SearchResults(props: { term: string; initData: any[] }) {
         next: { revalidate: 300 },
       }).then((resp) => resp.json());
       setResult(d.result);
-      setLoading(false);
     }
 
-    setLoading(true);
     data();
   }, [params]);
+  console.log(course);
 
-  if (loading) {
-    return <p>loading...</p>;
+  if (result.length < 0) {
+    return <p>No results</p>;
   }
 
   return (
-    <>
-      {result.length > 0 ? (
-        <>
-          <p className="text-neutral-400 pt-2">{result.length} results</p>
-          <ul className="">
-            {result.map((result, index) => (
-              <li
-                key={index}
-                className="flex flex-col p-2 border-neutral-100 border"
-              >
-                <Link
-                  href={
-                    "/202530/c/" +
-                    result.subject +
-                    " " +
-                    result.courseNumber +
-                    "?" +
-                    params.toString()
-                  }
-                >
-                  <div className="flex gap-2 text-lg">
-                    <h1 className="font-semibold w-28">
-                      {result.subject + " " + result.courseNumber}
-                    </h1>
-                    <p>{result.name}</p>
-                    {/* <p>{result.score}</p> */}
-                  </div>
-                  {/* <p className="">{result.description}</p> */}
-                  {/* <p className="text-neutral-500">{result.score}</p> */}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>No results</p>
-      )}
-    </>
+    <div className="flex flex-col overflow-y-scroll h-[calc(100vh-100px)]">
+      <p className="text-muted-foreground">{result.length} results</p>
+      <ul className="space-y-4 pr-2">
+        {result.map((result, index) => (
+          <ResultCard
+            key={index}
+            result={result}
+            params={params.toString()}
+            active={
+              decodeURIComponent(course?.toString() ?? "") ===
+              result.subject + " " + result.courseNumber
+            }
+          />
+        ))}
+      </ul>
+    </div>
   );
 }

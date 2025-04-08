@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -14,6 +15,7 @@ export function SearchBar() {
       const params = new URLSearchParams(searchParams);
       if (!query.trim()) {
         params.delete("q");
+        router.replace(`${pathname}`);
         return;
       }
 
@@ -30,11 +32,10 @@ export function SearchBar() {
 
   return (
     <div className="">
-      <input
+      <Input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search..."
-        className="text-lg border-neutral-900 border-b-2 focus:outline-none w-1/2"
       />
     </div>
   );

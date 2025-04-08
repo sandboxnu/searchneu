@@ -1,15 +1,12 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { cookies } from "next/headers";
 import { SectionTable } from "./sectionTable";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // NOTE: puling cookies here just to get it dynamic for now
-  const _ = await cookies();
   const course = decodeURIComponent((await props.params)?.course) ?? "";
 
   const result = await db
@@ -81,7 +78,6 @@ export default async function Page(props: {
       </div>
       <div className="">
         <h2 className="font-semibold text-xl pb-3">Available Sections</h2>
-        {/* @ts-expect-error */}
         <SectionTable sections={sections} />
       </div>
     </div>

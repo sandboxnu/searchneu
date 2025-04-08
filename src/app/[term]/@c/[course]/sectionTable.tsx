@@ -10,15 +10,15 @@ interface meetingTime {
   finalDate?: string;
 }
 
-export function SectionTable(props: {
-  sections: {
-    crn: string;
-    faculty: string;
-    meetingTimes: meetingTime[];
-    seatRemaining: number;
-    seatCapacity: number;
-  }[];
-}) {
+interface section {
+  crn: string;
+  faculty: string;
+  meetingTimes: meetingTime[];
+  seatRemaining: number;
+  seatCapacity: number;
+}
+
+export function SectionTable(props: { sections: section[] }) {
   return (
     <table className="w-full rounded-t overflow-clip">
       <thead className="bg-muted">

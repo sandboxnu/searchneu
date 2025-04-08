@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { SectionTable } from "./sectionTable";
+import { meetingTime, SectionTable } from "./sectionTable";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
@@ -78,6 +78,7 @@ export default async function Page(props: {
       </div>
       <div className="">
         <h2 className="font-semibold text-xl pb-3">Available Sections</h2>
+        {/* @ts-expect-error: need to parse out the meetingTimes */}
         <SectionTable sections={sections} />
       </div>
     </div>

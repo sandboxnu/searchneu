@@ -55,8 +55,10 @@ async function getCourseDescriptions(courses: Course[]) {
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        // TODO: parse out the section description
-        courses[offset + j].description = p.value;
+        courses[offset + j].description = decode(p.value)
+          .replace(/<[^>]*>/g, "") // Remove HTML tags
+          .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments
+          .trim();
       });
   }
 
@@ -96,15 +98,62 @@ function arrangeCourses(sections: BannerSection[]) {
       classType: s.scheduleTypeDescription,
       honors: s.sectionAttributes.some((a) => a.description === "Honors"),
       campus: s.campusDescription,
-      // TODO: meeting times
+      meetingTimes: parseMeetingTimes(s),
 
-      faculty: s.f,
+      faculty: s.f ?? "TBA",
     });
 
     if (!subjects.includes(s.subject)) subjects.push(s.subject);
   }
 
   return { courses: Object.values(courses), subjects };
+}
+
+function parseMeetingTimes(section: BannerSection) {
+  const meetings = [];
+  for (const meetingFaculty of section.meetingsFaculty) {
+    const meetingTime = meetingFaculty?.meetingTime;
+    if (!meetingTime) {
+      console.log("no meeting time " + section.courseReferenceNumber);
+      continue;
+    }
+
+    const days = [];
+    if (meetingTime.sunday) days.push(0);
+    if (meetingTime.monday) days.push(1);
+    if (meetingTime.tuesday) days.push(2);
+    if (meetingTime.wednesday) days.push(3);
+    if (meetingTime.thursday) days.push(4);
+    if (meetingTime.friday) days.push(5);
+    if (meetingTime.saturday) days.push(6);
+
+    // Convert time strings to integers without timezone adjustment
+    // e.g., "0800" -> 800, "1430" -> 1430
+    const startTime = parseInt(meetingTime.beginTime, 10);
+    const endTime = parseInt(meetingTime.endTime, 10);
+
+    const isFinal =
+      meetingTime.meetingTypeDescription === "Final Exam" ||
+      meetingTime.meetingType === "FNEX";
+
+    // Only include finalDate if it's a final exam
+    let finalDate = null;
+    if (isFinal && meetingTime.startDate) {
+      finalDate = meetingTime.startDate;
+    }
+
+    meetings.push({
+      building: meetingTime.buildingDescription || meetingTime.building || "",
+      room: meetingTime.room || "",
+      days: days,
+      startTime: startTime,
+      endTime: endTime,
+      final: isFinal,
+      finalDate: finalDate,
+    });
+  }
+
+  return meetings;
 }
 
 // getSectionFaculty scrapes the faculty for the sections. Banner does not
@@ -137,7 +186,7 @@ async function getSectionFaculty(sections: BannerSection[]) {
         // TODO: support multiple faculty
         const faculty = p.value.fmt[0].faculty;
         if (faculty.length > 0) {
-          sections[offset + j].f = faculty[0].displayName ?? "TBA";
+          sections[offset + j].f = decode(faculty[0].displayName) ?? "TBA";
         } else {
           sections[offset + j].f = "TBA";
         }

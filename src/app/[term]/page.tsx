@@ -1,5 +1,5 @@
 import SearchResults from "./searchResults";
-import { SearchBar } from "./search";
+import { SearchBar } from "./searchPanel";
 import { db } from "@/db";
 import { coursesT } from "@/db/schema";
 import { sql } from "drizzle-orm";
@@ -27,12 +27,8 @@ export default async function Page(props: {
 
   return (
     <div className="grid grid-cols-2">
-      <div className="px-2 py-2">
-        <SearchBar />
-      </div>
-      <div className="py-2 px-2">
-        <SearchResults />
-      </div>
+      <SearchBar />
+      <SearchResults />
     </div>
   );
 }

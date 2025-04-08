@@ -3,6 +3,7 @@ import {
   decimal,
   foreignKey,
   integer,
+  json,
   pgTable,
   primaryKey,
   text,
@@ -23,6 +24,7 @@ export const coursesT = pgTable(
     description: text().notNull(),
     minCredits: decimal().notNull(),
     maxCredits: decimal().notNull(),
+    // nupath: json().notNull(),
   },
   (table) => [
     foreignKey({
@@ -46,6 +48,7 @@ export const sectionsT = pgTable("sections", {
   classType: text().notNull(),
   honors: boolean().notNull(),
   campus: text().notNull(),
+  meetingTimes: json().notNull(),
 });
 
 export const termsT = pgTable("terms", {

@@ -111,6 +111,10 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
         const existingCourseId = existingCourse[0].id;
 
         for (const section of course.sections) {
+          if (!section.faculty) {
+            console.log(section);
+            continue;
+          }
           await tx
             .insert(sectionsT)
             .values({
@@ -124,6 +128,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
               classType: section.classType,
               honors: section.honors,
               campus: section.campus,
+              meetingTimes: section.meetingTimes,
             })
             .onConflictDoUpdate({
               target: sectionsT.crn,
@@ -136,11 +141,16 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
                 classType: section.classType,
                 honors: section.honors,
                 campus: section.campus,
+                meetingTimes: section.meetingTimes,
               },
             });
         }
       } else {
         for (const section of course.sections) {
+          if (!section.faculty) {
+            console.log(section);
+            continue;
+          }
           await tx
             .insert(sectionsT)
             .values({
@@ -154,6 +164,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
               classType: section.classType,
               honors: section.honors,
               campus: section.campus,
+              meetingTimes: section.meetingTimes,
             })
             .onConflictDoUpdate({
               target: sectionsT.crn,
@@ -166,6 +177,7 @@ async function insertCourseData(data: TermScrape, db: NeonHttpDatabase<any>) {
                 classType: section.classType,
                 honors: section.honors,
                 campus: section.campus,
+                meetingTimes: section.meetingTimes,
               },
             });
         }

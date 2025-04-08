@@ -15,7 +15,8 @@ export async function GET(req: NextRequest) {
       name: coursesT.name,
       courseNumber: coursesT.courseNumber,
       subject: coursesT.subject,
-      description: coursesT.description,
+      maxCredits: coursesT.maxCredits,
+      minCredits: coursesT.minCredits,
       score: sql`paradedb.score(id)`,
     })
     .from(coursesT)

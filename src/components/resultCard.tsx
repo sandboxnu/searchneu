@@ -6,6 +6,18 @@ export function ResultCard(props: {
   params: string;
   active: boolean;
 }) {
+  let creditRange = "";
+  if (props.result.minCredits === props.result.maxCredits) {
+    creditRange = props.result.minCredits;
+  } else {
+    creditRange = props.result.minCredits + "-" + props.result.maxCredits;
+  }
+
+  let creditLabel = "credits";
+  if (creditRange === "1") {
+    creditLabel = "credit";
+  }
+
   return (
     <li
       className={cn(
@@ -28,6 +40,12 @@ export function ResultCard(props: {
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
         <p className="text-sm">{props.result.name}</p>
+        <div className="flex justify-between text-sm">
+          <span>
+            {creditRange} {creditLabel}
+          </span>
+          <span>40% enrolled</span>
+        </div>
         {/* <p className="text-neutral-500">{result.score}</p> */}
       </Link>
     </li>

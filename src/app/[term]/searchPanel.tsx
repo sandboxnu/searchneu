@@ -1,6 +1,8 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -31,12 +33,17 @@ export function SearchBar() {
   }, [query]);
 
   return (
-    <div className="">
+    <div className="px-2 py-2">
       <Input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search..."
       />
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Campus..." />
+        </SelectTrigger>
+      </Select>
     </div>
   );
 }

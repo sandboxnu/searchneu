@@ -58,7 +58,15 @@ export interface Section {
   classType: string;
   honors: boolean;
   campus: string;
-  // TODO: meeting times
+  meetingTimes: {
+    building: string;
+    room: string;
+    days: number[];
+    startTime: number;
+    endTime: number;
+    final: boolean;
+    finalDate: string | null;
+  }[];
 }
 
 export interface Course {

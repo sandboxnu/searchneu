@@ -33,6 +33,8 @@ export default async function Page(props: {
       campus: sectionsT.campus,
       seatCapacity: sectionsT.seatCapacity,
       seatRemaining: sectionsT.seatRemaining,
+      waitlistCapacity: sectionsT.waitlistCapacity,
+      waitlistRemaining: sectionsT.waitlistRemaining,
       meetingTimes: sectionsT.meetingTimes,
       faculty: sectionsT.faculty,
       honors: sectionsT.honors,

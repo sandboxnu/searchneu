@@ -7,9 +7,9 @@ export default async function Layout(props: {
   c: ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-2">
-      {props.children}
-      {props.c}
+    <div className="grid grid-cols-8">
+      <div className="col-span-3">{props.children}</div>
+      <div className="col-span-5">{props.c}</div>
     </div>
   );
 }

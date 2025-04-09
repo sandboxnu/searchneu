@@ -6,14 +6,16 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
 
+  // parse all the potential params
   const query = params.get("q");
-  const term = params.get("term") ?? "202530";
+  const term = params.get("term") ?? "202530"; // TODO: like not hardcode this lol
   const subjects = params.getAll("subject");
-  // const minCourseId = params.get("minCourseId");
-  // const maxCourseId = params.get("maxCourseId");
+  const minCourseId = params.get("minCourseId");
+  const maxCourseId = params.get("maxCourseId");
   const honorsFilter = params.get("honors");
   const campusFilter = params.get("campus");
 
+  // construct the where clause based on what params are present
   const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
 
   if (query) {
@@ -32,14 +34,15 @@ export async function GET(req: NextRequest) {
     sqlChunks.push(sql`(${sql.join(subjectConditions, sql` or `)})`);
   }
 
-  // // Apply course ID range filters if provided
-  // if (minCourseId) {
-  //   queryBuilder = queryBuilder.where(sql`${coursesT.id} >= ${minCourseId}`);
-  // }
-  //
-  // if (maxCourseId) {
-  //   queryBuilder = queryBuilder.where(sql`${coursesT.id} <= ${maxCourseId}`);
-  // }
+  if (minCourseId) {
+    sqlChunks.push(sql`and`);
+    sqlChunks.push(sql`${coursesT.id} >= ${minCourseId}`);
+  }
+
+  if (maxCourseId) {
+    sqlChunks.push(sql`and`);
+    sqlChunks.push(sql`${coursesT.id} <= ${maxCourseId}`);
+  }
 
   if (honorsFilter && honorsFilter.toLowerCase() === "true") {
     sqlChunks.push(sql`and`);
@@ -51,6 +54,7 @@ export async function GET(req: NextRequest) {
     sqlChunks.push(sql`${sectionsT.campus} = ${campusFilter}`);
   }
 
+  // run the query
   const result = await db
     .select({
       id: coursesT.id,

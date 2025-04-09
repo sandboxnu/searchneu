@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { SectionTable } from "./sectionTable";
+import { ExpandableDescription } from "./expandableDescription";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
@@ -76,7 +77,18 @@ export default async function Page(props: {
       </div>
       <div className="rounded bg-background shadow-sm py-4 px-5">
         <h3 className="text-secondary-foreground pb-3 text-sm">Description</h3>
-        <p>{result[0].description}</p>
+        <ExpandableDescription description={result[0].description} />
+      </div>
+      <div className="flex gap-5">
+        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+          <h3 className="text-secondary-foreground pb-3 text-sm">NU Paths</h3>
+        </div>
+        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+          <h3 className="text-secondary-foreground pb-3 text-sm">Prereqs</h3>
+        </div>
+        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+          <h3 className="text-secondary-foreground pb-3 text-sm">Coreqs</h3>
+        </div>
       </div>
       <div className="">
         <h2 className="font-semibold text-xl pb-3">Available Sections</h2>

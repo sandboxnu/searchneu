@@ -90,8 +90,12 @@ export async function GET(req: NextRequest) {
       )
       .join(", ");
 
+    // BUG: neon scales to zero before we get here so we have to reconnect. ideally
+    // this can be fixed with the pro plan (which we are going to get)
+    const dbReconn = drizzle(process.env.DATABASE_URL_DIRECT!);
+
     // NOTE: this uses a cool postgres feature where multiple rows can be updated
-    await db.execute(sql`
+    await dbReconn.execute(sql`
     UPDATE ${sectionsT}
     SET 
       "seatRemaining" = v.seat_remaining,

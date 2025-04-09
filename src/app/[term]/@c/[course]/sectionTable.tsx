@@ -145,16 +145,16 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   );
 }
 
-function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex gap-2 items-center">
-          <p className="text-sm">
-            {m.building} {m.room}
-          </p>
-        </span>
-      ))}
-    </div>
-  );
-}
+// function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
+//   return (
+//     <div className="flex flex-col gap-1">
+//       {props.meetings.map((m, i) => (
+//         <span key={props.crn + i} className="flex gap-2 items-center">
+//           <p className="text-sm">
+//             {m.building} {m.room}
+//           </p>
+//         </span>
+//       ))}
+//     </div>
+//   );
+// }

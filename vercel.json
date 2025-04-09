@@ -1,6 +1,6 @@
 {
   "functions": {
-    "app/api/update/route.ts": {
+    "api/update/route.ts": {
       "memory": 3000,
       "maxDuration": 300
     }

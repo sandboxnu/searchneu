@@ -25,13 +25,10 @@ export default function GivingDayModal({
             </button>
           </div>
           <DonateHusky />
-          <span className="phone-modal__header">
-            It{`'`}s almost Giving Day!
-          </span>
+          <span className="phone-modal__header">It{`'`}s Giving Day!</span>
 
           <span className="phone-modal__label">
-            On April 10th, make a donation to Sandbox to help keep SearchNEU
-            running!
+            Make a donation today to Sandbox to help keep SearchNEU running!
           </span>
 
           {

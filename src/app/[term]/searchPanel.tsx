@@ -17,7 +17,7 @@ export function SearchBar() {
       const params = new URLSearchParams(searchParams);
       if (!query.trim()) {
         params.delete("q");
-        router.replace(`${pathname}`);
+        router.replace(`${pathname}?${params.toString()}`);
         return;
       }
 

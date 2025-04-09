@@ -16,6 +16,7 @@ interface section {
   faculty: string;
   meetingTimes: meetingTime[];
   campus: string;
+  honors: boolean;
   seatRemaining: number;
   seatCapacity: number;
   waitlistCapacity: number;
@@ -49,7 +50,12 @@ function SectionRow(props: { section: section }) {
 
   return (
     <tr className="h-16">
-      <td className="pl-3">{props.section.crn}</td>
+      <td className="pl-3">
+        <span>
+          {props.section.crn}
+          {props.section.honors && <p>honors</p>}
+        </span>
+      </td>
       <td className="">
         <Switch disabled={seatDelta > 0} />
       </td>

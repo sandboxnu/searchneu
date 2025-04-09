@@ -14,19 +14,23 @@ interface searchResult {
 
 export default function SearchResults() {
   const params = useSearchParams();
+  const { term } = useParams();
   const { course } = useParams();
   const [results, setResults] = useState<searchResult[]>([]);
 
   useEffect(() => {
     async function data() {
-      const d = await fetch("/api/search?q=" + (params.get("q") ?? ""), {
+      const searchP = new URLSearchParams(params);
+      searchP.set("term", term?.toString() ?? "202530");
+
+      const d = await fetch("/api/search?" + searchP.toString(), {
         next: { revalidate: 300 },
       }).then((resp) => resp.json());
       setResults(d.result);
     }
 
     data();
-  }, [params]);
+  }, [params, term]);
   console.log(course);
 
   if (results.length < 0) {

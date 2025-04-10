@@ -31,9 +31,10 @@ export function SectionTable(props: { sections: section[] }) {
           <th className="font-medium text-sm text-left py-3 pl-3 w-20">CRN</th>
           <th className="font-medium text-sm text-left py-3 w-16">NOTIF</th>
           <th className="font-medium text-sm text-left py-3 w-28">SEATS</th>
+          <th className="font-medium text-sm text-left py-3 w-72">MEETINGS</th>
+          <th className="font-medium text-sm text-left py-3 w-36">ROOM</th>
           <th className="font-medium text-sm text-left py-3 w-36">PROF</th>
-          <th className="font-medium text-sm text-left py-3 w-96">MEETINGS</th>
-          <th className="font-medium text-sm text-left py-3 w-36">CAMPUS</th>
+          {/* <th className="font-medium text-sm text-left py-3 w-36">CAMPUS</th> */}
         </tr>
       </thead>
       <tbody className="divide-y">
@@ -52,7 +53,7 @@ function SectionRow(props: { section: section }) {
     <tr className="h-16">
       <td className="pl-3">
         <span>
-          {props.section.crn}
+          <p className="text-accent underline">{props.section.crn}</p>
           {props.section.honors && <p>honors</p>}
         </span>
       </td>
@@ -85,17 +86,20 @@ function SectionRow(props: { section: section }) {
           )}
         </div>
       </td>
-      <td>{props.section.faculty}</td>
       <td>
         <MeetingBlocks
           meetings={props.section.meetingTimes}
           crn={props.section.crn}
         />
       </td>
-      <td>{props.section.campus}</td>
-      {/* <td> */}
-      {/*   <RoomBlocks meetings={s.meetingTimes} crn={s.crn} /> */}
-      {/* </td> */}
+      <td>
+        <RoomBlocks
+          meetings={props.section.meetingTimes}
+          crn={props.section.crn}
+        />
+      </td>
+      <td>{props.section.faculty}</td>
+      {/* <td>{props.section.campus}</td> */}
     </tr>
   );
 }
@@ -110,21 +114,29 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   return (
     <div className="flex flex-col gap-3 py-2">
       {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex flex-col gap-1">
+        <span key={props.crn + i} className="flex gap-2">
           <span className="flex gap-1 items-center">
-            <span className="flex rounded justify-between bg-background w-28">
+            <span className="flex rounded justify-between bg-background w-[140px] h-5 items-center">
               {[...Array(7).keys()].map((j) => (
                 <span
                   key={props.crn + i + j}
                   className={cn(
-                    "text-xs w-4 text-center",
+                    "text-xs w-5 text-center h-full py-0.5",
                     m.days.includes(j)
                       ? m.final
                         ? "bg-primary"
                         : "bg-accent"
                       : null,
-                    m.days.includes(j) &&
-                      "text-background rounded font-semibold",
+                    m.days.includes(j) && "text-background font-semibold",
+                    m.days.includes(j + 1) &&
+                      !m.days.includes(j - 1) &&
+                      "rounded-l",
+                    m.days.includes(j - 1) &&
+                      !m.days.includes(j + 1) &&
+                      "rounded-r",
+                    !m.days.includes(j - 1) &&
+                      !m.days.includes(j + 1) &&
+                      "rounded",
                   )}
                 >
                   {days[j]}
@@ -137,13 +149,11 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
           <span className="flex gap-1 items-center text-sm">
             {m.final && <p className="font-semibold">Final Exam</p>}
             {m.final && <p className="">|</p>}
-            <p className="">
-              {m.startTime} - {m.endTime}
-            </p>
-            <p className="">|</p>
-            <p className="">
-              {m.building} {m.room}
-            </p>
+            <p className="">{formatTimeRange(m.startTime, m.endTime)}</p>
+            {/* <p className="">|</p> */}
+            {/* <p className=""> */}
+            {/*   {m.building} {m.room} */}
+            {/* </p> */}
           </span>
         </span>
       ))}
@@ -151,16 +161,41 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   );
 }
 
-// function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
-//   return (
-//     <div className="flex flex-col gap-1">
-//       {props.meetings.map((m, i) => (
-//         <span key={props.crn + i} className="flex gap-2 items-center">
-//           <p className="text-sm">
-//             {m.building} {m.room}
-//           </p>
-//         </span>
-//       ))}
-//     </div>
-//   );
-// }
+function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
+  return (
+    <div className="flex flex-col gap-2">
+      {props.meetings.map((m, i) => (
+        <span key={props.crn + i} className="flex gap-2 items-center">
+          <p className="text-sm">
+            {m.building} {m.room}
+          </p>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function formatTimeRange(startTime: number, endTime: number) {
+  const startHours = Math.floor(startTime / 100);
+  const startMinutes = startTime % 100;
+  const endHours = Math.floor(endTime / 100);
+  const endMinutes = endTime % 100;
+
+  const startIsPM = startHours >= 12;
+  const endIsPM = endHours >= 12;
+
+  const start12Hour = startHours % 12 || 12;
+  const end12Hour = endHours % 12 || 12;
+
+  let formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
+  let formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
+
+  formattedStart = formattedStart.replace(":00", "").replace(":0", ":");
+  formattedEnd = formattedEnd.replace(":00", "").replace(":0", ":");
+
+  if (startIsPM === endIsPM) {
+    return `${formattedStart} - ${formattedEnd}${endIsPM ? "pm" : "am"}`;
+  } else {
+    return `${formattedStart}${startIsPM ? "pm" : "am"} - ${formattedEnd}${endIsPM ? "pm" : "am"}`;
+  }
+}

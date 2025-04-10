@@ -26,9 +26,9 @@ export function ResultCard(props: {
 
   return (
     <li
+      data-active={props.active}
       className={cn(
-        "flex flex-col px-4 py-2.5 rounded border-[0.5px]",
-        props.active ? "bg-secondary" : "",
+        "flex flex-col px-4 py-2.5 rounded bg-background data-[active=true]:bg-muted",
       )}
     >
       <Link

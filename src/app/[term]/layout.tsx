@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { DialogWrapper } from "./dialogWrapper";
 
 export default async function Layout(props: {
   params: Promise<{ term: string }>;
@@ -7,9 +8,9 @@ export default async function Layout(props: {
   c: ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-8">
-      <div className="col-span-3">{props.children}</div>
-      <div className="col-span-5">{props.c}</div>
+    <div className="w-full">
+      <DialogWrapper>{props.c}</DialogWrapper>
+      <div className="">{props.children}</div>
     </div>
   );
 }

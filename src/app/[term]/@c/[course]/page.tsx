@@ -65,7 +65,7 @@ export default async function Page(props: {
   }
 
   return (
-    <div className="py-8 px-6 flex-col gap-8 flex overflow-y-scroll h-[calc(100vh-100px)] bg-secondary border-l-[0.5px]">
+    <div className="px-6 flex-col gap-8 flex overflow-y-scroll bg-secondary">
       <div>
         <h1 className="font-semibold text-2xl">{course}</h1>
         <div className="flex gap-2">

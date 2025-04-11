@@ -12,9 +12,13 @@ export default async function Page() {
     .from(termsT);
 
   return (
-    <div className="grid grid-cols-2">
-      <SearchBar terms={terms} />
-      <SearchResults />
+    <div className="grid grid-cols-5">
+      <div className="col-span-1">
+        <SearchBar terms={terms} />
+      </div>
+      <div className="col-span-4">
+        <SearchResults />
+      </div>
     </div>
   );
 }

@@ -1,10 +1,24 @@
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { GetClassPageInfoQuery } from '../../generated/graphql';
-import ClassPageInfoBody from './ClassPageInfoBody';
-import ClassPageInfoHeader from './ClassPageInfoHeader';
-import ClassPageReqsBody from './ClassPageReqsBody';
-import ClassPageSections from './ClassPageSections';
+import {
+  ClassPageInfoBody,
+  MobileClassPageInfoBody,
+} from './ClassPageInfoBody';
+import {
+  ClassPageInfoHeader,
+  MobileClassPageInfoHeader,
+} from './ClassPageInfoHeader';
+import {
+  ClassPageReqsBody,
+  MobileClassPageReqsBody,
+} from './ClassPageReqsBody';
+import {
+  ClassPageSections,
+  MobileClassPageSections,
+} from './ClassPageSections';
+import macros from '../macros';
+import IconArrowFlipped from '../icons/IconArrowFlipped';
 
 type PageContentProps = {
   termId: string;
@@ -39,27 +53,49 @@ export default function PageContent({
           COREQUISITES for
           <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
         </h2>
+      ) : macros.isMobile ? (
+        <div className="mobileBackToResults" onClick={() => router.back()}>
+          <IconArrowFlipped fill="#858585" />
+          Back to search
+        </div>
       ) : (
         <div className="backToResults" onClick={() => router.back()}>
           Back to Search Results
         </div>
       )}
-      {classPageInfo && classPageInfo.class && (
-        <div className="classPageInfoContent">
-          <ClassPageInfoHeader classPageInfo={classPageInfo} />
-          <div className="horizontalLine" />
-          <ClassPageInfoBody classPageInfo={classPageInfo} />
-          <div className="horizontalLine" />
-          <ClassPageReqsBody
-            termId={termId}
-            campus={campus}
-            classPageInfo={classPageInfo}
-          />
-          <div className="horizontalLine" />
-          <ClassPageSections classPageInfo={classPageInfo} />
-          <div className="horizontalLine" />
-        </div>
-      )}
+      {classPageInfo &&
+        classPageInfo.class &&
+        (macros.isMobile ? (
+          <div className="classPageInfoContent">
+            <MobileClassPageInfoHeader classPageInfo={classPageInfo} />
+            <div
+              className="mobileHorizontalLine"
+              style={{ margin: '0px 19px' }}
+            />
+            <MobileClassPageReqsBody
+              termId={termId}
+              campus={campus}
+              classPageInfo={classPageInfo}
+            ></MobileClassPageReqsBody>
+            <MobileClassPageInfoBody classPageInfo={classPageInfo} />
+            <MobileClassPageSections classPageInfo={classPageInfo} />
+          </div>
+        ) : (
+          <div className="classPageInfoContent">
+            <ClassPageInfoHeader classPageInfo={classPageInfo} />
+            <div className="horizontalLine" />
+            <ClassPageInfoBody classPageInfo={classPageInfo} />
+            <div className="horizontalLine" />
+            <ClassPageReqsBody
+              termId={termId}
+              campus={campus}
+              classPageInfo={classPageInfo}
+            />
+            <div className="horizontalLine" />
+            <ClassPageSections classPageInfo={classPageInfo} />
+            <div className="horizontalLine" />
+          </div>
+        ))}
     </div>
   );
 }

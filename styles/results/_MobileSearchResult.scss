@@ -5,19 +5,33 @@
   font-family: Lato, sans-serif;
 
   &__header {
-    background: Colors.$Off_White;
-    border: 1px solid Colors.$Grey;
+    background: Colors.$White;
     box-sizing: border-box;
-    box-shadow: 0 0 3px Colors.$Light_Grey;
     border-radius: 8px;
     padding: 16px;
     display: flex;
-    align-items: center;
     cursor: pointer;
+    flex-direction: column;
 
     &:focus,
     &:active {
       outline: none;
+    }
+
+    &--rowSingle {
+      justify-content: flex-start; // Single items aligned to the left
+      max-width: 75%;
+    }
+
+    &--rowDouble {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap; // Allows items to wrap to the next line
+    }
+
+    &--rowDouble > *:last-child {
+      align-self: flex-end; // Ensures the right element moves to the next line when wrapping
+      text-align: right; // Aligns the text to the right when it moves down
     }
 
     &--expanded {
@@ -47,14 +61,30 @@
     }
 
     &--classTitle {
+      font-size: 16px;
       font-style: normal;
-      font-weight: 800;
-      font-size: 20px;
+      font-weight: 900;
+      line-height: normal;
       line-height: 24px;
       display: flex;
       align-items: center;
-      color: Colors.$Dark_Grey;
-      margin-left: 24px;
+      color: Colors.$Black;
+    }
+
+    &--className {
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      color: Colors.$Grey;
+    }
+
+    &--nuPathBadge {
+      background-color: Colors.$NEU3;
+      border-radius: 4px;
+      color: Colors.$NEU8;
+      padding: 1px 6px;
+      margin-left: 4px;
     }
 
     &--employeeName {
@@ -66,6 +96,26 @@
       align-items: center;
       color: Colors.$Dark_Grey;
       margin-left: 24px;
+    }
+
+    &--creditString {
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      color: Colors.$Grey;
+    }
+
+    &--sections {
+      .green {
+        color: Colors.$Green;
+      }
+      .yellow {
+        color: Colors.$CPS_Yellow;
+      }
+      .red {
+        color: Colors.$NEU_Red;
+      }
     }
   }
 

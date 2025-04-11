@@ -9,6 +9,10 @@ export function creditsDescription(maxCredits: number): string {
   return maxCredits > 1 || maxCredits === 0 ? 'CREDITS' : 'CREDIT';
 }
 
+export function lowercaseCreditsDescription(maxCredits: number): string {
+  return maxCredits > 1 || maxCredits === 0 ? 'credits' : 'credit';
+}
+
 export function creditsNumericDisplay(
   maxCredits: number,
   minCredits: number
@@ -42,5 +46,9 @@ export function CreditsDisplayMobile({
   maxCredits,
   minCredits,
 }: CreditsDisplayProps): ReactElement {
-  return <span>{creditsString(maxCredits, minCredits)}</span>;
+  return (
+    <span className="MobileSearchResult__header--creditString">
+      {creditsString(maxCredits, minCredits)}
+    </span>
+  );
 }

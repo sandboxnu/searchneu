@@ -21,7 +21,7 @@ import {
   QUERY_PARAM_ENCODERS,
 } from '../components/ResultsPage/filters';
 import SearchBar from '../components/ResultsPage/SearchBar';
-import SearchDropdown from '../components/ResultsPage/SearchDropdown';
+import { MobileSearchDropdown } from '../components/ResultsPage/SearchDropdown';
 import useAtTop from '../components/ResultsPage/useAtTop';
 import {
   Campus,
@@ -239,6 +239,10 @@ export default function Header({
     );
   }
 
+  function formatSemester(semester: string): string {
+    return semester.replace(/(\w+(?: \d)?) (\d{4}) Semester/, '$1 ($2)');
+  }
+
   return (
     <div>
       <Head>
@@ -292,31 +296,18 @@ export default function Header({
         )}
         {macros.isMobile && searchData && (
           <div className="Breadcrumb_Container">
-            <div className="Breadcrumb_Container__dropDownContainer">
-              <SearchDropdown
-                options={Object.keys(Campus).map((c: Campus) => ({
-                  text: c,
-                  value: c,
-                  link: termAndCampusToURLCallback(
-                    getRoundedTerm(termInfos, c, termId),
-                    c
-                  ),
-                }))}
-                value={campus}
-                className="searchDropdown"
-                compact={false}
-              />
-            </div>
-            <span className="Breadcrumb_Container__slash">/</span>
-            <div className="Breadcrumb_Container__dropDownContainer">
-              <SearchDropdown
+            <div className="Breadcrumb_Container1__dropDownContainer">
+              <MobileSearchDropdown
                 options={termInfos[campus].map((terminfo) => ({
-                  text: terminfo.text,
+                  text: terminfo.text.replace(
+                    /(\w+(?: \d+| Full)?) (\d{4}) Semester/,
+                    '$1 ($2)'
+                  ), // parse into desired format
                   value: terminfo.value,
                   link: termAndCampusToURLCallback(terminfo.value, campus),
                 }))}
                 value={termId}
-                className="searchDropdown"
+                className="mobileSearchDropdown"
                 compact={false}
                 key={campus}
               />

@@ -59,7 +59,7 @@ export function SearchBar(props: {
       <Select
         onValueChange={(e) => router.push(`/${e}?${searchParams.toString()}`)}
         // value={props.terms[0].value}
-        value={term}
+        value={term?.toString()}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Term" />

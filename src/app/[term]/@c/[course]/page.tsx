@@ -65,9 +65,9 @@ export default async function Page(props: {
   }
 
   return (
-    <div className="px-6 flex-col gap-8 flex overflow-y-scroll bg-secondary">
-      <div>
-        <h1 className="font-semibold text-2xl">{course}</h1>
+    <div className="bg-secondary flex flex-col gap-8 overflow-y-scroll px-6">
+      <div className="bg-secondary sticky top-0 bottom-0 z-10 -mr-4 -ml-4 pb-4 pl-4">
+        <h1 className="text-2xl font-semibold">{course}</h1>
         <div className="flex gap-2">
           <h2 className="">{result[0].name}</h2>
           <span>·</span>
@@ -76,23 +76,23 @@ export default async function Page(props: {
           </h2>
         </div>
       </div>
-      <div className="rounded bg-background shadow-sm py-4 px-5">
+      <div className="bg-background -mt-4 rounded px-5 py-4 shadow-sm">
         <h3 className="text-secondary-foreground pb-3 text-sm">Description</h3>
         <ExpandableDescription description={result[0].description} />
       </div>
       <div className="flex gap-5">
-        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
           <h3 className="text-secondary-foreground pb-3 text-sm">NU Paths</h3>
         </div>
-        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
           <h3 className="text-secondary-foreground pb-3 text-sm">Prereqs</h3>
         </div>
-        <div className="rounded bg-background shadow-sm py-4 px-5 grow">
+        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
           <h3 className="text-secondary-foreground pb-3 text-sm">Coreqs</h3>
         </div>
       </div>
       <div className="">
-        <h2 className="font-semibold text-xl pb-3">Available Sections</h2>
+        <h2 className="pb-3 text-xl font-semibold">Available Sections</h2>
         {/* @ts-expect-error: need to parse out the meetingTimes */}
         <SectionTable sections={sections} />
       </div>

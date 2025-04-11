@@ -29,7 +29,7 @@ export function DialogWrapper(props: { children: ReactNode }) {
       open={visible}
       onOpenChange={() => router.push(`/${term}?${params.toString()}`)}
     >
-      <DialogContent className="min-w-[80%] h-[95%] bg-secondary">
+      <DialogContent className="bg-secondary h-[100%] min-w-[100%] md:h-[95%] md:min-w-[95%] xl:min-w-[80%]">
         <DialogHeader className="hidden">
           <DialogTitle className="">{course}</DialogTitle>
           {/* <DialogDescription> */}

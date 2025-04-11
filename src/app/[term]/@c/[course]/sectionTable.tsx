@@ -25,16 +25,16 @@ interface section {
 
 export function SectionTable(props: { sections: section[] }) {
   return (
-    <table className="rounded-t overflow-x-scroll w-full">
-      <thead className="bg-muted">
+    <table className="w-full overflow-x-scroll rounded-t">
+      <thead className="bg-muted shadow-sm">
         <tr className="">
-          <th className="font-medium text-sm text-left py-3 pl-3 w-20">CRN</th>
-          <th className="font-medium text-sm text-left py-3 w-16">NOTIF</th>
-          <th className="font-medium text-sm text-left py-3 w-28">SEATS</th>
-          <th className="font-medium text-sm text-left py-3 w-72">MEETINGS</th>
-          <th className="font-medium text-sm text-left py-3 w-36">ROOM</th>
-          <th className="font-medium text-sm text-left py-3 w-36">PROF</th>
-          {/* <th className="font-medium text-sm text-left py-3 w-36">CAMPUS</th> */}
+          <th className="w-16 py-3 pl-3 text-left text-sm font-medium">CRN</th>
+          <th className="w-12 py-3 text-left text-sm font-medium">NOTIF</th>
+          <th className="w-20 py-3 text-left text-sm font-medium">SEATS</th>
+          <th className="w-72 py-3 text-left text-sm font-medium">MEETINGS</th>
+          <th className="w-36 py-3 text-left text-sm font-medium">ROOM</th>
+          <th className="w-36 py-3 text-left text-sm font-medium">PROFESSOR</th>
+          <th className="w-28 py-3 text-left text-sm font-medium">CAMPUS</th>
         </tr>
       </thead>
       <tbody className="divide-y">
@@ -61,8 +61,8 @@ function SectionRow(props: { section: section }) {
         <Switch disabled={seatDelta > 0} />
       </td>
       <td className="">
-        <div className="flex flex-col gap-2">
-          <span className="flex gap-1 items-center">
+        <div className="flex flex-col">
+          <span className="flex items-center gap-1">
             <p
               className={cn(
                 "text-md",
@@ -99,13 +99,16 @@ function SectionRow(props: { section: section }) {
         />
       </td>
       <td>{props.section.faculty}</td>
-      {/* <td>{props.section.campus}</td> */}
+      <td>{props.section.campus}</td>
     </tr>
   );
 }
 
 function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   const days = ["S", "M", "T", "W", "T", "F", "S"];
+
+  // always have the final be the last row
+  props.meetings.sort((a) => (a.final ? 1 : -1));
 
   if (!props.meetings || props.meetings[0].days.length === 0) {
     return <p className="text-sm">Online</p>;
@@ -115,28 +118,29 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
     <div className="flex flex-col gap-3 py-2">
       {props.meetings.map((m, i) => (
         <span key={props.crn + i} className="flex gap-2">
-          <span className="flex gap-1 items-center">
-            <span className="flex rounded justify-between bg-background w-[140px] h-5 items-center">
+          <span className="flex items-center gap-1">
+            <span className="bg-background flex h-5 w-[140px] items-center justify-between rounded">
               {[...Array(7).keys()].map((j) => (
                 <span
                   key={props.crn + i + j}
                   className={cn(
-                    "text-xs w-5 text-center h-full py-0.5",
+                    "h-full w-5 py-0.5 text-center text-xs",
                     m.days.includes(j)
                       ? m.final
                         ? "bg-primary"
                         : "bg-accent"
                       : null,
-                    m.days.includes(j) && "text-background font-semibold",
-                    m.days.includes(j + 1) &&
-                      !m.days.includes(j - 1) &&
-                      "rounded-l",
-                    m.days.includes(j - 1) &&
-                      !m.days.includes(j + 1) &&
-                      "rounded-r",
-                    !m.days.includes(j - 1) &&
-                      !m.days.includes(j + 1) &&
-                      "rounded",
+                    m.days.includes(j) &&
+                      "text-background rounded font-semibold",
+                    // m.days.includes(j + 1) &&
+                    //   !m.days.includes(j - 1) &&
+                    //   "rounded-l",
+                    // m.days.includes(j - 1) &&
+                    //   !m.days.includes(j + 1) &&
+                    //   "rounded-r",
+                    // !m.days.includes(j - 1) &&
+                    //   !m.days.includes(j + 1) &&
+                    //   "rounded",
                   )}
                 >
                   {days[j]}
@@ -146,7 +150,7 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
             {/* TODO: this should be a hover i to save talk to the prof! */}
             {/* {m.final ? <p className="text-sm">i</p> : null} */}
           </span>
-          <span className="flex gap-1 items-center text-sm">
+          <span className="flex items-center gap-1 text-sm">
             {m.final && <p className="font-semibold">Final Exam</p>}
             {m.final && <p className="">|</p>}
             <p className="">{formatTimeRange(m.startTime, m.endTime)}</p>
@@ -165,7 +169,7 @@ function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
   return (
     <div className="flex flex-col gap-2">
       {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex gap-2 items-center">
+        <span key={props.crn + i} className="flex items-center gap-2">
           <p className="text-sm">
             {m.building} {m.room}
           </p>

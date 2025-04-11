@@ -39,8 +39,14 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "he": "^1.2.0",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",
     "typescript": "^5"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
   }
 }

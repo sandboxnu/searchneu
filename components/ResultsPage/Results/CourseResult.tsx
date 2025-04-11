@@ -180,12 +180,14 @@ export function CourseResult({
                 <tr>
                   <td colSpan={5}>New available sections</td>
                   <td>
-                    <CourseCheckBox
-                      course={course}
-                      userInfo={userInfo}
-                      onSignIn={onSignIn}
-                      fetchUserInfo={fetchUserInfo}
-                    />
+                    <div className="DesktopSectionPanel__notifs">
+                      <CourseCheckBox
+                        course={course}
+                        userInfo={userInfo}
+                        onSignIn={onSignIn}
+                        fetchUserInfo={fetchUserInfo}
+                      />
+                    </div>
                   </td>
                 </tr>
               </tfoot>

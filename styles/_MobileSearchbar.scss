@@ -1,0 +1,38 @@
+@use 'variables' as Colors;
+@use 'zIndexes' as Indexes;
+
+.MobileSearchBar {
+  border-radius: 36px;
+  background-color: Colors.$Secondary_Hover;
+  width: 350px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.MobileSearchBar__magnifyingGlass {
+  display: flex;
+  padding-left: 10px;
+  transform: scaleX(-1);
+  filter: brightness(0) saturate(100%) invert(50%) sepia(0%) saturate(0%)
+    hue-rotate(0deg) brightness(85%) contrast(90%);
+}
+
+.MobileSearchBar__input {
+  all: unset;
+  display: flex;
+  flex-grow: 1;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  color: Colors.$NEU6;
+}
+
+.MobileSearchBar__filter {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}

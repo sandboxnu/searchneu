@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import React, {
   ReactElement,
   useCallback,
@@ -21,7 +21,6 @@ import {
   QUERY_PARAM_ENCODERS,
 } from '../components/ResultsPage/filters';
 import SearchBar from '../components/ResultsPage/SearchBar';
-import SearchDropdown from '../components/ResultsPage/SearchDropdown';
 import useAtTop from '../components/ResultsPage/useAtTop';
 import {
   Campus,
@@ -35,7 +34,7 @@ import IconUser from './icons/IconUser';
 import SignUpModal from './notifications/modal/SignUpModal';
 import MobileSearchOverlay from './ResultsPage/MobileSearchOverlay';
 import NotifSignUpButton from './ResultsPage/Results/NotifSignUpButton';
-import { getRoundedTerm } from './terms';
+import { MobileSearchBar } from '../components/ResultsPage/SearchBar';
 
 const isWindow = typeof window !== 'undefined';
 export const termAndCampusToURL = (
@@ -53,6 +52,15 @@ type HeaderProps = {
   campus: string | null;
   termId: string | null;
   searchData: SearchResult | null;
+  userInfo: UserInfo | null;
+  onSignIn: (token: string) => void;
+  onSignOut: () => void;
+};
+
+type MobileHeaderProps = {
+  searchData: SearchResult | null;
+  campus: string | null;
+  termId: string | null;
   userInfo: UserInfo | null;
   onSignIn: (token: string) => void;
   onSignOut: () => void;
@@ -196,14 +204,80 @@ export default function Header({
   onSignOut,
 }: HeaderProps): ReactElement {
   const atTop = useAtTop();
-
-  const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
-
   const router = useRouter();
   const query = (router.query.query as string) || '';
+  let backlink = '/';
+  if (campus && termId) {
+    backlink += `${campus}/${termId}/`;
+  }
 
-  const termInfos = getTermInfosWithError().termInfos;
+  return (
+    <div>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      {macros.isMobile ? (
+        <MobileHeader
+          searchData={searchData}
+          campus={campus}
+          termId={termId}
+          userInfo={userInfo}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+        />
+      ) : (
+        <div className={`Results_Header ${atTop ? 'Results_Header-top' : ''}`}>
+          <Link href={backlink}>
+            <a className="Results__Logo--wrapper">
+              <Logo
+                className="Results__Logo"
+                aria-label="logo"
+                campus={!campus ? Campus.NEU : (campus as Campus)}
+              />
+            </a>
+          </Link>
+          <div className="Results__spacer" />
+          {searchData && (
+            <div className="Results__searchwrapper">
+              <SearchBar
+                onSearch={(q) =>
+                  router.push(
+                    `/${campus}/${termId}/search/${encodeURIComponent(q)}${
+                      window.location.search
+                    }`
+                  )
+                }
+                query={query}
+                buttonColor={campusToColor[campus]}
+              />
+            </div>
+          )}
+          <DropdownMenuWrapper
+            onSignIn={onSignIn}
+            onSignOut={onSignOut}
+            userInfo={userInfo}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
+function MobileHeader({
+  searchData,
+  campus,
+  termId,
+  userInfo,
+  onSignIn,
+  onSignOut,
+}: MobileHeaderProps): ReactElement {
+  const [showOverlay, setShowOverlay] = useQueryParam('overlay', BooleanParam);
+  const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
+  const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
+  const router = useRouter();
+  const query = (router.query.query as string) || '';
+  const termInfosWithError = getTermInfosWithError();
+  const termInfos = termInfosWithError.termInfos;
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {
       return termAndCampusToURL(t, newCampus, query);
@@ -211,24 +285,7 @@ export default function Header({
     [query]
   );
 
-  const [qParams, setQParams] = useQueryParams(QUERY_PARAM_ENCODERS);
-  const filters: FilterSelection = merge({}, DEFAULT_FILTER_SELECTION, qParams);
-
-  const setSearchQuery = (q: string): void => {
-    router.push(
-      `/${campus}/${termId}/search/${encodeURIComponent(q)}${
-        window.location.search
-      }`
-    );
-  };
-
-  let backlink = '/';
-
-  if (campus != null && termId != null) {
-    backlink += `${campus}/${termId}/`;
-  }
-
-  if (showOverlay && macros.isMobile) {
+  if (showOverlay) {
     return (
       <MobileSearchOverlay
         filterSelection={filters}
@@ -240,96 +297,47 @@ export default function Header({
   }
 
   return (
-    <div>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <div className={`Results_Header ${atTop ? 'Results_Header-top' : ''}`}>
-        <Link href={backlink}>
-          <a className="Results__Logo--wrapper">
+    <div className="MobileHeader">
+      <div className="MobileHeader--top">
+        <Link href={'/'}>
+          <a className="MobileHeader--logowrapper">
             <Logo
-              className="Results__Logo"
+              className="MobileHeader--logo"
               aria-label="logo"
               campus={!campus ? Campus.NEU : (campus as Campus)}
             />
           </a>
         </Link>
-        <div className="Results__spacer" />
-        {macros.isMobile && searchData && (
-          <div className="Results__mobileSearchFilterWrapper">
-            <FilterButton
-              className="Results__filterButton"
-              aria-label="filter-button"
-              onClick={() => {
-                if (macros.isMobile) {
-                  setShowOverlay(true);
-                }
-              }}
-            />
-            <div className="Results__searchwrapper">
-              <SearchBar
-                onSearch={setSearchQuery}
-                query={query}
-                buttonColor={campusToColor[campus]}
-              />
-            </div>
+        <DropdownMenuWrapper
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          userInfo={userInfo}
+        />
+      </div>
 
-            <DropdownMenuWrapper
-              onSignIn={onSignIn}
-              onSignOut={onSignOut}
-              userInfo={userInfo}
-            />
-          </div>
-        )}
-        {!macros.isMobile && searchData && (
-          <div className="Results__searchwrapper">
-            <SearchBar
-              onSearch={setSearchQuery}
-              query={query}
-              buttonColor={campusToColor[campus]}
-            />
-          </div>
-        )}
-        {macros.isMobile && searchData && (
-          <div className="Breadcrumb_Container">
-            <div className="Breadcrumb_Container__dropDownContainer">
-              <SearchDropdown
-                options={Object.keys(Campus).map((c: Campus) => ({
-                  text: c,
-                  value: c,
-                  link: termAndCampusToURLCallback(
-                    getRoundedTerm(termInfos, c, termId),
-                    c
-                  ),
-                }))}
-                value={campus}
-                className="searchDropdown"
-                compact={false}
-              />
-            </div>
-            <span className="Breadcrumb_Container__slash">/</span>
-            <div className="Breadcrumb_Container__dropDownContainer">
-              <SearchDropdown
-                options={termInfos[campus].map((terminfo) => ({
-                  text: terminfo.text,
-                  value: terminfo.value,
-                  link: termAndCampusToURLCallback(terminfo.value, campus),
-                }))}
-                value={termId}
-                className="searchDropdown"
-                compact={false}
-                key={campus}
-              />
-            </div>
-          </div>
-        )}
-        {!macros.isMobile && (
-          <DropdownMenuWrapper
-            onSignIn={onSignIn}
-            onSignOut={onSignOut}
-            userInfo={userInfo}
-          />
-        )}
+      <div className="MobileHeader--SearchBar">
+        <MobileSearchBar
+          onSearch={(q) =>
+            router.push(
+              `/${campus}/${termId}/search/${encodeURIComponent(q)}${
+                window.location.search
+              }`
+            )
+          }
+          query={query}
+        />
+      </div>
+
+      <div className="MobileHeader__bottom">
+        <div className="MobileHeader__bottom--SemesterDropdown"></div>
+        Mobile Dropdown
+        <div className="MobileHeader__bottom--ResultData">
+          <span className="MobileHeader__bottom--ResultData-Filters">
+            {' '}
+            {} X Filters{' '}
+          </span>
+          |{searchData ? searchData.results.length : 0} Results
+        </div>
       </div>
     </div>
   );

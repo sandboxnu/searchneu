@@ -21,6 +21,7 @@ export default async function Page(props: {
     .from(coursesT)
     .where(
       and(
+        eq(coursesT.term, (await props.params).term),
         eq(coursesT.courseNumber, course.split(" ")[1]),
         eq(coursesT.subject, course.split(" ")[0]),
       ),

@@ -8,7 +8,7 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERM = "202530";
+const TERM = "202610";
 
 // Entrypoint for the scraper
 async function main() {

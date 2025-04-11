@@ -2,14 +2,30 @@
 
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { SelectTrigger, SelectValue } from "@radix-ui/react-select";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function SearchBar() {
+export function SearchBar(props: {
+  terms: {
+    value: string;
+    label: string;
+  }[];
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { term } = useParams();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
 
   useEffect(() => {
@@ -39,10 +55,22 @@ export function SearchBar() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search..."
       />
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="Campus..." />
+
+      <Select
+        onValueChange={(e) => router.push(`/${e}?${searchParams.toString()}`)}
+        // value={props.terms[0].value}
+        value={term}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Term" />
         </SelectTrigger>
+        <SelectContent>
+          {props.terms.map((t) => (
+            <SelectItem key={t.value} value={t.value}>
+              {t.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
     </div>
   );

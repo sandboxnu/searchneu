@@ -184,10 +184,22 @@ async function getSectionFaculty(sections: BannerSection[]) {
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
         // TODO: support multiple faculty
-        const faculty = p.value.fmt[0].faculty;
-        if (faculty.length > 0) {
-          sections[offset + j].f = decode(faculty[0].displayName) ?? "TBA";
-        } else {
+        try {
+          if (p.value.fmt.length < 0) {
+            sections[offset + j].f = "TBA";
+          }
+
+          const faculty = p.value.fmt[0]?.faculty;
+          if (!faculty || !faculty?.length) {
+            sections[offset + j].f = "TBA";
+          }
+
+          if (faculty?.length > 0) {
+            sections[offset + j].f = decode(faculty[0].displayName) ?? "TBA";
+          } else {
+            sections[offset + j].f = "TBA";
+          }
+        } catch {
           sections[offset + j].f = "TBA";
         }
       });

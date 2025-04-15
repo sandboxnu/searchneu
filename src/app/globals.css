@@ -124,3 +124,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+.sunset {
+  background: linear-gradient(
+    180deg,
+    rgba(168, 218, 220, 0.66) 3.86%,
+    rgba(168, 218, 220, 0.66) 54.45%,
+    hsla(90, 23%, 74%, 0.539) 68.57%,
+    hsla(47, 45%, 66%, 0.425) 78.28%,
+    rgba(255, 159, 28, 0.67) 103.17%
+  );
+}

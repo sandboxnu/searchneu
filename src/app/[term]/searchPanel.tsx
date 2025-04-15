@@ -43,7 +43,7 @@ export function SearchBar(props: {
 
     const timeoutId = setTimeout(() => {
       fetchData();
-    }, 300);
+    }, 50);
 
     return () => clearTimeout(timeoutId);
   }, [query]);

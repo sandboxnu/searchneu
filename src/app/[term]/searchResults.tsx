@@ -38,7 +38,7 @@ export default function SearchResults() {
   }
 
   return (
-    <div className="flex flex-col overflow-y-scroll h-[calc(100vh-100px)] px-2 py-2 bg-secondary">
+    <div className="bg-secondary flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
       <p className="text-muted-foreground">{results.length} results</p>
       <ul className="space-y-4 pr-2">
         {results.map((result, index) => (

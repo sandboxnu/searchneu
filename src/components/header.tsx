@@ -1,13 +1,6 @@
-import { Lato } from "next/font/google";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Logo } from "./icons/logo";
-
-const latoSans = Lato({
-  subsets: ["latin"],
-  variable: "--font-lato-sans",
-  weight: ["900"],
-});
 
 export function Header() {
   // TODO: the courses link should.. ya know... not be hardcoded

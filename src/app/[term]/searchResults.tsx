@@ -31,7 +31,6 @@ export default function SearchResults() {
 
     data();
   }, [params, term]);
-  console.log(course);
 
   if (results.length < 0) {
     return <p>No results</p>;
@@ -45,7 +44,7 @@ export default function SearchResults() {
           <ResultCard
             key={index}
             result={result}
-            params={params.toString()}
+            link={`/${term}/${result.subject}%20${result.courseNumber}?${params}`}
             active={
               decodeURIComponent(course?.toString() ?? "") ===
               result.subject + " " + result.courseNumber

@@ -2,6 +2,7 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 
 export function ResultCard(props: {
+  link: string;
   result: {
     name: string;
     courseNumber: string;
@@ -9,7 +10,6 @@ export function ResultCard(props: {
     minCredits: number;
     maxCredits: number;
   };
-  params: string;
   active: boolean;
 }) {
   let creditRange = "";
@@ -28,21 +28,11 @@ export function ResultCard(props: {
     <li
       data-active={props.active}
       className={cn(
-        "flex flex-col px-4 py-2.5 rounded bg-background data-[active=true]:bg-muted",
+        "bg-background data-[active=true]:bg-muted flex flex-col rounded px-4 py-2.5",
       )}
     >
-      <Link
-        href={
-          "/202530/" +
-          props.result.subject +
-          " " +
-          props.result.courseNumber +
-          "?" +
-          props.params
-        }
-        className="flex flex-col gap-1"
-      >
-        <h1 className="font-semibold text-lg">
+      <Link href={props.link} className="flex flex-col gap-1">
+        <h1 className="text-lg font-semibold">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
         <p className="text-sm">{props.result.name}</p>

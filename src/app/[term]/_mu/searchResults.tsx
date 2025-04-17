@@ -17,14 +17,13 @@ export default function SearchResults() {
   const params = useSearchParams();
   const deferred = useDeferredValue(params.toString());
   const stale = deferred !== params.toString();
-  console.log("weee");
 
   return (
     <div className="bg-secondary flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
       {/* <p className="text-muted-foreground">{results.length} results</p> */}
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<p>loading.......</p>}>
-          <ResultsList params={deferred} term={term} />
+          <ResultsList params={deferred} term={term?.toString() ?? ""} />
         </Suspense>
       </div>
     </div>
@@ -32,7 +31,7 @@ export default function SearchResults() {
 }
 
 let cKey = "!";
-let cPromise: Promise<unknown> = new Promise((r) => {});
+let cPromise: Promise<unknown> = new Promise(() => {});
 
 function fetcher<T>(key: string, p: () => string) {
   if (!Object.is(cKey, key)) {

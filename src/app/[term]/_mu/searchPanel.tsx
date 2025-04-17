@@ -24,7 +24,6 @@ export function SearchBar(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
 }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");

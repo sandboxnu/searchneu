@@ -76,7 +76,8 @@ export async function GET(req: NextRequest) {
       coursesT.maxCredits,
       coursesT.minCredits,
     )
-    .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
+    .orderBy(sql`paradedb.score(${coursesT.id}) desc`)
+    .limit(30);
 
   return Response.json(result);
 }

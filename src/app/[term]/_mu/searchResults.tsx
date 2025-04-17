@@ -32,12 +32,14 @@ export default function SearchResults() {
 }
 
 let cKey = "!";
-let cPromise: Promise<unknown> = new Promise(() => {});
+let cPromise: Promise<unknown> = new Promise((r) => r([]));
 
 function fetcher<T>(key: string, p: () => string) {
   if (!Object.is(cKey, key)) {
     cKey = key;
-    cPromise = fetch(p()).then((r) => r.json());
+    if (typeof window !== "undefined") {
+      cPromise = fetch(p()).then((r) => r.json());
+    }
   }
   return cPromise as Promise<T>;
 }
@@ -50,7 +52,7 @@ const ResultsList = memo(function ResultsList(props: {
     fetcher<searchResult[]>(props.params, () => {
       const searchP = new URLSearchParams(props.params);
       searchP.set("term", props.term);
-      return `${getBaseUrl()}/api/search?${searchP.toString()}`;
+      return `/api/search?${searchP.toString()}`;
     }),
   );
 

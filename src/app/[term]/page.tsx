@@ -1,7 +1,7 @@
-import SearchResults from "./_mu/searchResults";
+import { SearchResults } from "./_mu/searchResults";
 import { SearchBar } from "./_mu/searchPanel";
-import { getTerms } from "@/lib/getTerms";
-import { getSubjects } from "@/lib/getSubjects";
+import { getTerms } from "@/lib/controllers/getTerms";
+import { getSubjects } from "@/lib/controllers/getSubjects";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;

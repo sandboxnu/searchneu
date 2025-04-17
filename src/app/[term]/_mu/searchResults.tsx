@@ -12,42 +12,54 @@ interface searchResult {
   maxCredits: number;
 }
 
-export default function SearchResults() {
-  const { term } = useParams();
+export function SearchResults() {
+  const { term, course } = useParams();
   const params = useSearchParams();
   const deferred = useDeferredValue(params.toString());
   const stale = deferred !== params.toString();
 
   return (
     <div className="bg-secondary flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
-      {/* <p className="text-muted-foreground">{results.length} results</p> */}
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<p>loading.......</p>}>
-          <ResultsList params={deferred} term={term?.toString() ?? ""} />
+          <ResultsList
+            params={deferred}
+            term={term?.toString() ?? ""}
+            course={course?.toString() ?? ""}
+          />
         </Suspense>
       </div>
     </div>
   );
 }
 
-let cKey = "!";
-let cPromise: Promise<unknown> = new Promise((r) => r([]));
+// this acts as a single value cache for the data fetcher - the fetch promise has to be stored outside
+// the react tree since otherwise they would be recreated on every rerender
+let cacheKey = "!";
+let cachePromise: Promise<unknown> = new Promise((r) => r([]));
 
 function fetcher<T>(key: string, p: () => string) {
-  if (!Object.is(cKey, key)) {
-    cKey = key;
+  if (!Object.is(cacheKey, key)) {
+    cacheKey = key;
+    // if window is undefined, then we are ssr and thus cannot do a relative fetch
     if (typeof window !== "undefined") {
-      cPromise = fetch(p()).then((r) => r.json());
+      // PERF: next caching on the fetch
+      cachePromise = fetch(p()).then((r) => r.json());
     }
   }
-  return cPromise as Promise<T>;
+
+  return cachePromise as Promise<T>;
 }
 
+// this is explicitly memoized a) because it is a little heavy to render and b)
+// (more importantly) the parent component rerenders too frequently with
+// the searchParams and the memo shields the extra fetching requests
 const ResultsList = memo(function ResultsList(props: {
   term: string;
+  course: string;
   params: string;
 }) {
-  const r = use(
+  const results = use(
     fetcher<searchResult[]>(props.params, () => {
       const searchP = new URLSearchParams(props.params);
       searchP.set("term", props.term);
@@ -55,23 +67,21 @@ const ResultsList = memo(function ResultsList(props: {
     }),
   );
 
-  if (r.length < 0) {
+  if (results.length < 0) {
     return <p>No results</p>;
   }
 
   return (
     <ul className="space-y-4 pr-2">
-      {r.map((result, index) => (
+      {results.map((result, index) => (
         <ResultCard
           key={index}
           result={result}
-          // link={`/${props.term}/${result.subject}%20${result.courseNumber}?${props.params}`}
-          link={"/"}
-          active={false}
-          // active={
-          //   decodeURIComponent(course?.toString() ?? "") ===
-          //   result.subject + " " + result.courseNumber
-          // }
+          link={`/${props.term}/${result.subject}%20${result.courseNumber}?${props.params}`}
+          active={
+            decodeURIComponent(props.course) ===
+            result.subject + " " + result.courseNumber
+          }
         />
       ))}
     </ul>

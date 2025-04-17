@@ -5,7 +5,7 @@ import { drizzle } from "drizzle-orm/neon-serverless";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
-// NOTE: This route is special since it should only be called by the Vercel cron service,
+// NOTE: this route is special since it should only be called by the Vercel cron service,
 // and has custom configuration specified in the `vercel.json` file
 
 export async function GET(req: NextRequest) {

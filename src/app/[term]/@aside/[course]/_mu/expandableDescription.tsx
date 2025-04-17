@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 
+// yes this is ai code yes it is bad but it was fast alright?
 export function ExpandableDescription(props: { description: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Define the character limit for the collapsed view
+  // define the character limit for the collapsed view
   const charLimit = 300;
 
-  // Check if the description exceeds the character limit
+  // check if the description exceeds the character limit
   const needsExpansion = props.description.length > charLimit;
 
-  // Get the display text based on expansion state
+  // get the display text based on expansion state
   const displayText =
     isExpanded || !needsExpansion
       ? props.description
@@ -24,7 +25,7 @@ export function ExpandableDescription(props: { description: string }) {
       {needsExpansion && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-blue-600 hover:text-blue-800 text-sm mt-2 focus:outline-none"
+          className="mt-2 text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
         >
           {isExpanded ? "Show less" : "Show more"}
         </button>

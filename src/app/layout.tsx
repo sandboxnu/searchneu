@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
-// import { Footer } from "@/components/footer";
+import Script from "next/script";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -15,9 +15,12 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "search2",
+  title: "SearchNEU",
   description: "Search courses at Northeastern University",
 };
+
+// enable react rerender indicators
+const enableDebug = false;
 
 export default function RootLayout({
   children,
@@ -29,9 +32,15 @@ export default function RootLayout({
       <body
         className={`${geist} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
+        {enableDebug && (
+          <Script
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+            strategy="beforeInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         <Header />
         <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>
-        {/* <Footer /> */}
       </body>
     </html>
   );

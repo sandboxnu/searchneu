@@ -132,6 +132,7 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
                       : null,
                     m.days.includes(j) &&
                       "text-background rounded font-semibold",
+                    // rounded blobs rather than individually wrapped below
                     // m.days.includes(j + 1) &&
                     //   !m.days.includes(j - 1) &&
                     //   "rounded-l",
@@ -147,7 +148,7 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
                 </span>
               ))}
             </span>
-            {/* TODO: this should be a hover i to save talk to the prof! */}
+            {/* TODO: this should be a hover i to say talk to the prof! */}
             {/* {m.final ? <p className="text-sm">i</p> : null} */}
           </span>
           <span className="flex items-center gap-1 text-sm">

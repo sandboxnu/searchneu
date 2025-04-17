@@ -14,7 +14,6 @@ export function Header() {
       <div className="flex items-center gap-8">
         <nav className="space-x-4 font-semibold">
           <Link href="/202530">Courses</Link>
-          <Link href="/faq">FAQ</Link>
         </nav>
         <Button className="font-bold">Sign In</Button>
       </div>

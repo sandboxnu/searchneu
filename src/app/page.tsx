@@ -3,7 +3,7 @@ import { City } from "@/components/icons/city";
 import { Logo } from "@/components/icons/logo";
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import { getTerms } from "@/lib/getTerms";
+import { getTerms } from "@/lib/controllers/getTerms";
 
 // cache the terms - every request does not need to hit the db
 const cachedTerms = unstable_cache(async () => getTerms(), ["terms"], {

@@ -64,8 +64,8 @@ export default async function Page(props: {
   }
 
   return (
-    <div className="bg-secondary flex flex-col gap-8 overflow-y-scroll px-6">
-      <div className="bg-secondary sticky top-0 bottom-0 z-10 -mr-4 -ml-4 pb-4 pl-4">
+    <div className="flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll px-6 pb-8">
+      <div className="bg-background sticky top-0 bottom-0 z-10 -mr-4 -ml-4 pt-2 pb-4 pl-4">
         <h1 className="text-2xl font-semibold">{course}</h1>
         <div className="flex gap-2">
           <h2 className="">{result[0].name}</h2>

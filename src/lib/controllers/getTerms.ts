@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { termsT } from "@/db/schema";
-import type { GroupedTerms } from "./types";
+import type { GroupedTerms } from "../types";
 
 // getTerms retreives all the terms from the db
 export async function getTerms() {

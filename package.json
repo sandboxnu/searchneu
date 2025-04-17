@@ -14,6 +14,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.42.0",
+    "flags": "^3.2.0",
     "lucide-react": "^0.488.0",
     "next": "15.3.0",
     "radix-ui": "^1.2.0",

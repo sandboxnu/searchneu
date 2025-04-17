@@ -1,6 +1,7 @@
 "use client";
 
 import { ResultCard } from "@/components/resultCard";
+import { getBaseUrl } from "@/lib/getUrl";
 import { useParams, useSearchParams } from "next/navigation";
 import { memo, Suspense, use, useDeferredValue } from "react";
 
@@ -49,7 +50,7 @@ const ResultsList = memo(function ResultsList(props: {
     fetcher<searchResult[]>(props.params, () => {
       const searchP = new URLSearchParams(props.params);
       searchP.set("term", props.term);
-      return `http://localhost:3000/api/search?${searchP.toString()}`;
+      return `${getBaseUrl()}/api/search?${searchP.toString()}`;
     }),
   );
 

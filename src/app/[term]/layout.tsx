@@ -1,16 +1,13 @@
 import { ReactNode } from "react";
-import { DialogWrapper } from "./dialogWrapper";
 
 export default async function Layout(props: {
-  params: Promise<{ term: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
   children: ReactNode;
-  c: ReactNode;
+  aside: ReactNode;
 }) {
   return (
-    <div className="w-full">
-      <DialogWrapper>{props.c}</DialogWrapper>
+    <div className="grid w-full grid-cols-2">
       <div className="">{props.children}</div>
+      <div className="h-full overflow-scroll">{props.aside}</div>
     </div>
   );
 }

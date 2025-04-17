@@ -1,12 +1,11 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { SectionTable } from "./sectionTable";
-import { ExpandableDescription } from "./expandableDescription";
+import { SectionTable } from "./_mu/sectionTable";
+import { ExpandableDescription } from "./_mu/expandableDescription";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const course = decodeURIComponent((await props.params)?.course) ?? "";
 

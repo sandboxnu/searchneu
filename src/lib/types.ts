@@ -8,3 +8,8 @@ export interface GroupedTerms {
   cps: Term[];
   law: Term[];
 }
+
+export interface Subject {
+  code: string;
+  name: string;
+}

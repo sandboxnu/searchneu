@@ -4,9 +4,6 @@ import type { GroupedTerms } from "./types";
 
 // getTerms retreives all the terms from the db
 export async function getTerms() {
-  // PERF: remote the below line - artificially slow for testing
-  await new Promise((r) => setTimeout(r, 2000));
-
   const terms = await db
     .select({ term: termsT.term, name: termsT.name })
     .from(termsT);

@@ -78,5 +78,5 @@ export async function GET(req: NextRequest) {
     )
     .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
 
-  return Response.json({ result });
+  return Response.json(result);
 }

@@ -20,12 +20,24 @@ export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
+
+  const startVerification = async () => {
+    await fetch("/api/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phoneNumber })
+    });
+    setPage(2)
+  }
+
   return (
     <Dialog onOpenChange={(e) => props.closeFn()} defaultOpen={true}>
       {page === 0 && <OneMoreStep next={() => setPage(1)} />}
       {page === 1 && (
         <PhoneNumberPage
-          next={() => setPage(2)}
+          next={() => startVerification()}
           setPhoneNumber={setPhoneNumber}
         />
       )}
@@ -89,8 +101,10 @@ function PhoneNumberPage(props: {
     // formally mentioned method to throw errors if the libs are not updated
     if (isPossiblePhoneNumber(number)) {
       props.next();
+    } else {
+      setInvalidCode(true);
+
     }
-    setInvalidCode(true);
   }
 
   return (

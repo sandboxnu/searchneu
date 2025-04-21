@@ -25,6 +25,7 @@
     "react-phone-number-input": "^3.4.12",
     "tailwind-merge": "^3.2.0",
     "tw-animate-css": "^1.2.5",
+    "twilio": "^5.5.2",
     "vaul": "^1.1.2"
   },
   "devDependencies": {

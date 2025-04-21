@@ -4,6 +4,7 @@ import { eq, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
+import { db } from "@/db";
 
 // NOTE: this route is special since it should only be called by the Vercel cron service,
 // and has custom configuration specified in the `vercel.json` file
@@ -16,9 +17,6 @@ export async function GET(req: NextRequest) {
       status: 401,
     });
   }
-
-  // use the direct database connection for increased throughput (write intensive!)
-  const db = drizzle(process.env.DATABASE_URL_DIRECT!);
 
   // get active terms
   const dbterms = await db
@@ -94,7 +92,7 @@ export async function GET(req: NextRequest) {
     // this can be fixed with the pro plan (which we are going to get)
     const dbReconn = drizzle(process.env.DATABASE_URL_DIRECT!);
 
-    // NOTE: this uses a cool postgres feature where multiple rows can be updated
+    // this uses a cool postgres feature where multiple rows can be updated
     await dbReconn.execute(sql`
     UPDATE ${sectionsT}
     SET 

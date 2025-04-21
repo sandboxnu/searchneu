@@ -2,12 +2,15 @@ import {
   boolean,
   decimal,
   foreignKey,
+  index,
   integer,
   json,
+  jsonb,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -24,7 +27,9 @@ export const coursesT = pgTable(
     description: text().notNull(),
     minCredits: decimal().notNull(),
     maxCredits: decimal().notNull(),
-    // nupath: json().notNull(),
+    nupaths: varchar({ length: 200 }).array().notNull(),
+    prereqs: jsonb().notNull(),
+    coreqs: jsonb().notNull(),
   },
   (table) => [
     foreignKey({
@@ -55,6 +60,11 @@ export const termsT = pgTable("terms", {
   term: varchar({ length: 6 }).primaryKey(),
   name: text().notNull(),
   activeUntil: timestamp().notNull().defaultNow(),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const subjectsT = pgTable(
@@ -67,4 +77,53 @@ export const subjectsT = pgTable(
     name: text().notNull(),
   },
   (table) => [primaryKey({ columns: [table.term, table.code] })],
+);
+
+export const usersT = pgTable(
+  "users",
+  {
+    userId: varchar({ length: 191 })
+      .primaryKey()
+      .$default(() => crypto.randomUUID()), // PERF: maybe this doesnt need to be crypto
+    phoneNumber: varchar({ length: 20 }).notNull().unique(),
+    plan: integer()
+      .notNull()
+      .default(0) // the 0th plan will be the default limits
+      .references(() => plansT.id),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [uniqueIndex("phone_idx").on(table.phoneNumber)],
+);
+
+// TODO: lol
+export const subscriptionsT = pgTable("subscriptions", {});
+
+export const plansT = pgTable("plans", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text(),
+  x: integer().notNull(),
+  y: integer().notNull(),
+});
+
+export const tokensT = pgTable(
+  "tokens",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: varchar({ length: 191 })
+      .notNull()
+      .references(() => usersT.userId),
+    token: varchar({ length: 500 }).notNull(),
+    expiresAt: timestamp().notNull(),
+    createdAt: timestamp().notNull().defaultNow(),
+    revoked: boolean().notNull(),
+    revokedAt: timestamp(),
+  },
+  (table) => [
+    index("user_id_idx").on(table.userId),
+    uniqueIndex("token_idx").on(table.token),
+  ],
 );

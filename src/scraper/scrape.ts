@@ -74,7 +74,6 @@ function arrangeCourses(sections: BannerSection[]) {
   const subjects: string[] = [];
 
   for (const s of sections) {
-    console.log(s.sectionAttributes);
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
         name: decode(s.courseTitle),

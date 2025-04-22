@@ -11,6 +11,7 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
+  index,
 } from "drizzle-orm/pg-core";
 
 export const coursesT = pgTable(
@@ -87,7 +88,7 @@ export const usersT = pgTable(
     phoneNumber: varchar({ length: 20 }).notNull().unique(),
     plan: integer()
       .notNull()
-      .default(0) // the 0th plan will be the default limits
+      .default(1) // the 1st plan will be the default limits
       .references(() => plansT.id),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
@@ -98,12 +99,66 @@ export const usersT = pgTable(
   (table) => [uniqueIndex("phone_idx").on(table.phoneNumber)],
 );
 
-// TODO: lol
-export const subscriptionsT = pgTable("subscriptions", {});
-
 export const plansT = pgTable("plans", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text(),
-  x: integer().notNull(),
-  y: integer().notNull(),
+  maxActiveCourses: integer().notNull().default(5),
+  maxNotificationsPerCourse: integer().notNull().default(3),
 });
+
+export const courseNotificationsT = pgTable(
+  "course_notifications",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: varchar({ length: 191 })
+      .notNull()
+      .references(() => usersT.userId),
+    courseId: integer()
+      .notNull()
+      .references(() => coursesT.id),
+    term: varchar({ length: 6 })
+      .notNull()
+      .references(() => termsT.term),
+    active: boolean().notNull().default(true),
+    notifiedCount: integer().notNull().default(0),
+    lastNotifiedAt: timestamp(),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("user_course_notifications_idx").on(table.userId),
+    index("course_notifications_idx").on(table.courseId),
+    uniqueIndex("user_course_idx").on(table.userId, table.courseId),
+  ],
+);
+
+export const seatNotificationsT = pgTable(
+  "seat_notifications",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    courseNotificationId: integer()
+      .notNull()
+      .references(() => courseNotificationsT.id),
+    sectionId: integer()
+      .notNull()
+      .references(() => sectionsT.id),
+    active: boolean().notNull().default(true),
+    notifiedCount: integer().notNull().default(0),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("course_notification_idx").on(table.courseNotificationId),
+    index("section_notification_idx").on(table.sectionId),
+    uniqueIndex("course_notif_section_idx").on(
+      table.courseNotificationId,
+      table.sectionId,
+    ),
+  ],
+);

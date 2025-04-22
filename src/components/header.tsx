@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./icons/logo";
-import { Avatar } from "./Avatar";
+import { UserIcon } from "./UserIcon";
 
 export function Header() {
   // TODO: the courses link should.. ya know... not be hardcoded
@@ -15,7 +15,7 @@ export function Header() {
         <nav className="space-x-4 font-semibold">
           <Link href="/202530">Courses</Link>
         </nav>
-        <Avatar />
+        <UserIcon />
       </div>
     </header>
   );

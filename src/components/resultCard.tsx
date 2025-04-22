@@ -51,8 +51,8 @@ export function ResultCard(props: {
           <span
             className={cn(
               "text-sm font-medium",
-              sectionCapacity > 0.8 && "text-green",
-              sectionCapacity <= 0.8 && "text-yellow",
+              sectionCapacity > 0.3 && "text-green",
+              sectionCapacity <= 0.3 && "text-yellow",
               sectionCapacity <= 0 && "text-red",
             )}
           >
@@ -69,9 +69,7 @@ export function ResultCard(props: {
 
 function NUPathBadges(props: { nupaths: string[] }) {
   // BUG: this will be fixed next rescrape and the filter can be removed!!!
-  let paths = props.nupaths
-    .map((p) => convertNupath(p.trim()))
-    .filter((p) => p !== "??");
+  let paths = props.nupaths.map((p) => convertNupath(p.trim()));
   let plusMore = 0;
 
   if (paths.length > 3) {

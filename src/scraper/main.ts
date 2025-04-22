@@ -8,15 +8,17 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERM = "202560";
+const TERMS = ["202610", "202530", "202534", "202532"];
 
 // always assume this file is only every called directy
 (async () => {
-  await main();
+  for (const term of TERMS) {
+    await main(term);
+  }
 })();
 
-async function main() {
-  const cachename = path.resolve(CACHE_PATH, `term-${TERM}.json`);
+async function main(m: string) {
+  const cachename = path.resolve(CACHE_PATH, `term-${m}.json`);
   const existingCache = existsSync(cachename);
 
   let term;
@@ -25,7 +27,7 @@ async function main() {
     term = JSON.parse(readFileSync(cachename, "utf8"));
   } else {
     console.log("generating new scrape");
-    term = await scrapeTerm(TERM);
+    term = await scrapeTerm(m);
 
     writeFile(cachename, JSON.stringify(term), (err) => {
       if (err) console.log(err);

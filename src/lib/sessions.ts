@@ -6,8 +6,8 @@ export async function createSession(userId: string) {
   const cookieStore = await cookies();
   const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-  const iat = Date.now();
-  const exp = new Date(iat + 1000 * 60 * 60 * 24 * 30);
+  const iat = new Date();
+  const exp = new Date(iat.getTime() + 1000 * 60 * 60 * 24 * 30);
 
   const token = await new SignJWT({ userId })
     .setProtectedHeader({ alg: "HS256" })
@@ -39,7 +39,8 @@ export async function getSession() {
     const { payload } = await jwtVerify(token.value, secret);
 
     return payload;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return null;
   }
 }

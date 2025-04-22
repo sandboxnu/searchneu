@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/header";
+import { Header } from "@/components/Header";
 import Script from "next/script";
+import { AuthProvider } from "@/lib/context/auth-context";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 // enable react rerender indicators
-const enableDebug = true;
+const enableDebug = false;
 
 export default function RootLayout({
   children,
@@ -39,8 +40,10 @@ export default function RootLayout({
             crossOrigin="anonymous"
           />
         )}
-        <Header />
-        <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>
+        <AuthProvider>
+          <Header />
+          <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

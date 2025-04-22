@@ -19,6 +19,7 @@ import {
   sendVerificationText,
 } from "@/lib/actions/signIn";
 import { Magoskie } from "./icons/Magoskie";
+import { useAuth } from "@/lib/context/auth-context";
 
 export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   const [page, setPage] = useState(Boolean(props?.oneMoreStep) ? 0 : 1);
@@ -74,6 +75,7 @@ function Onboarding(props: { next: () => void }) {
 function PhoneVerification(props: { next: () => void; phoneNumber: string }) {
   const [code, setCode] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const { signUser } = useAuth();
 
   async function verifyCode() {
     if (code.length !== 6) {
@@ -82,10 +84,12 @@ function PhoneVerification(props: { next: () => void; phoneNumber: string }) {
     }
 
     const status = await checkVerificationCode(props.phoneNumber, code);
-    if (status.status !== "approved") {
+    if (status.status !== "approved" || !status.uid) {
       setErrorMsg("Invalid code");
       return;
     }
+
+    signUser({ userId: status.uid });
 
     props.next();
   }

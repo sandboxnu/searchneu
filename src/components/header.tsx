@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { Logo } from "./icons/logo";
+import { UserIcon } from "./UserIcon";
 
 export function Header() {
   // TODO: the courses link should.. ya know... not be hardcoded
@@ -15,7 +15,7 @@ export function Header() {
         <nav className="space-x-4 font-semibold">
           <Link href="/202530">Courses</Link>
         </nav>
-        <Button className="font-bold">Sign In</Button>
+        <UserIcon />
       </div>
     </header>
   );

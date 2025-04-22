@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   // parse all the potential params
   const query = params.get("q");
-  const term = params.get("term") ?? "202530"; // TODO: like not hardcode this lol
+  const term = params.get("term");
   const subjects = params.getAll("subject");
   const minCourseId = params.get("minCourseId");
   const maxCourseId = params.get("maxCourseId");
@@ -63,6 +63,9 @@ export async function GET(req: NextRequest) {
       subject: coursesT.subject,
       maxCredits: coursesT.maxCredits,
       minCredits: coursesT.minCredits,
+      nupaths: coursesT.nupaths,
+      totalSections: sql`count(distinct ${sectionsT.id})`,
+      sectionsWithSeats: sql`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
       score: sql`paradedb.score(${coursesT.id})`,
     })
     .from(coursesT)
@@ -75,6 +78,7 @@ export async function GET(req: NextRequest) {
       coursesT.subject,
       coursesT.maxCredits,
       coursesT.minCredits,
+      coursesT.nupaths,
     )
     .orderBy(sql`paradedb.score(${coursesT.id}) desc`)
     .limit(30);

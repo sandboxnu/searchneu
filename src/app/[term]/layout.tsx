@@ -5,9 +5,9 @@ export default async function Layout(props: {
   aside: ReactNode;
 }) {
   return (
-    <div className="grid h-full w-full grid-cols-5">
-      <div className="col-span-2">{props.children}</div>
-      <div className="col-span-3">{props.aside}</div>
+    <div className="grid h-full w-full grid-cols-12">
+      <div className="col-span-5">{props.children}</div>
+      <div className="col-span-7">{props.aside}</div>
     </div>
   );
 }

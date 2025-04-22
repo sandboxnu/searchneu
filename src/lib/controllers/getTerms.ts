@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from "@/db";
 import { termsT } from "@/db/schema";
 import type { GroupedTerms } from "../types";

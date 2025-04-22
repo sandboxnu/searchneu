@@ -5,6 +5,24 @@
 /* @custom-variant dark (&:is(.dark *)); */
 
 :root {
+  --neu9: oklch(0.25 0 0);
+  --neu7: oklch(0.49 0 0);
+  --neu6: oklch(0.62 0 0);
+  --neu4: oklch(0.81 0 0);
+  --neu2: oklch(0.98 0.0011 197.14);
+  --neu1: oklch(1 0 0);
+
+  --green: oklch(0.69 0.1768 152.94);
+  --yellow: oklch(0.79 0.169 69.48);
+  --red: oklch(0.67 0.1868 27.46);
+  --b2: oklch(0.6 0.1786 254.7);
+  --b1: oklch(0.92 0.0334 250.99);
+
+  --neu: oklch(0.61 0.2082 22.24);
+  --cps: oklch(0.78 0.168 66.2);
+  --law: oklch(0.56 0.0781 237.98);
+  --accent: oklch(0.33 0.0678 257.27);
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.25 0 0);
   --card: oklch(1 0 0);
@@ -78,6 +96,24 @@
 /* } */
 
 @theme inline {
+  --color-neu9: var(--neu9);
+  --color-neu7: var(--neu7);
+  --color-neu6: var(--neu6);
+  --color-neu4: var(--neu4);
+  --color-neu2: var(--neu2);
+  --color-neu1: var(--neu1);
+
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-red: var(--red);
+  --color-b2: var(--b2);
+  --color-b1: var(--b1);
+
+  --color-neu: var(--neu);
+  --color-cps: var(--cps);
+  --color-law: var(--law);
+  --color-accent: var(--accent);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -90,7 +126,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  /* --color-accent: var(--accent); */
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);

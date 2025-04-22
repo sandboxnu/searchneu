@@ -8,11 +8,17 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERM = "202610";
+const TERMS = ["202610", "202530", "202534", "202532"];
 
-// Entrypoint for the scraper
-async function main() {
-  const cachename = path.resolve(CACHE_PATH, `term-${TERM}.json`);
+// always assume this file is only every called directy
+(async () => {
+  for (const term of TERMS) {
+    await main(term);
+  }
+})();
+
+async function main(m: string) {
+  const cachename = path.resolve(CACHE_PATH, `term-${m}.json`);
   const existingCache = existsSync(cachename);
 
   let term;
@@ -21,7 +27,7 @@ async function main() {
     term = JSON.parse(readFileSync(cachename, "utf8"));
   } else {
     console.log("generating new scrape");
-    term = await scrapeTerm(TERM);
+    term = await scrapeTerm(m);
 
     writeFile(cachename, JSON.stringify(term), (err) => {
       if (err) console.log(err);
@@ -30,12 +36,14 @@ async function main() {
 
   const projectDir = process.cwd();
   loadEnvConfig(projectDir);
-  const db = drizzle(process.env.DATABASE_URL_DIRECT!);
+  const db = drizzle({
+    connection: process.env.DATABASE_URL_DIRECT!,
+  });
 
   console.log("connected");
   await insertCourseData(term, db);
 
-  // Generate the searching index
+  // generate the searching index
   // BUG: this is being a little problematic - really we should just drop and reindex completely
   //   await db.execute(sql`
   //     CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
@@ -59,14 +67,14 @@ async function insertCourseData(
         term: data.term.code,
         name: data.term.description,
         // TODO: activeUntil
-        activeUntil: new Date("2025-05-05T17:41:35+00:00"),
+        activeUntil: new Date("2025-10-05T17:41:35+00:00"),
       })
       .onConflictDoUpdate({
         target: termsT.term,
         set: { name: data.term.description },
       });
 
-    // Upsert subjects
+    // upsert subjects
     const subjectInserts = data.subjects.map((subjectCode) => ({
       term: data.term.code,
       code: subjectCode,
@@ -88,6 +96,9 @@ async function insertCourseData(
           description: course.description,
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),
+          nupaths: course.nupath,
+          prereqs: {},
+          coreqs: {},
         })
         .returning({ id: coursesT.id });
 
@@ -188,8 +199,3 @@ async function insertCourseData(
 
   return;
 }
-
-// Always assume this file is only every called directy
-(async () => {
-  await main();
-})();

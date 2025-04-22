@@ -10,84 +10,84 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { PhoneInput } from "./ui/phone-input";
-import { Chairsky } from "./icons/Chairsky";
+import { Chairskie } from "./icons/Chairskie";
 import { InputOTP, InputOTPSlot, InputOTPGroup } from "./ui/input-otp";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { isPossiblePhoneNumber, type Value } from "react-phone-number-input";
-import { useRouter } from "next/router";
+import {
+  checkVerificationCode,
+  sendVerificationText,
+} from "@/lib/actions/signIn";
+import { Magoskie } from "./icons/Magoskie";
 
 export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   const [page, setPage] = useState(Boolean(props?.oneMoreStep) ? 0 : 1);
-  const [verificationCode, setVerificationCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [invalidCode, setInvalidCode] = useState<string | null>(null);
-  const router = useRouter();
-
-
-  const startVerification = async () => {
-    const data = await fetch("/api/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ phoneNumber })
-    });
-    const res = await data.json();
-    if (res.error) {
-      console.log(res.error);
-      return;
-    }
-    //setVerificationCode(res.verificationCode);
-    setPage(2)
-  }
-
-
-  const checkVerificationCode = async () => {
-    const data = await fetch("/api/verify/code", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ verificationCode, phoneNumber })
-    });
-    const res = await data.json();
-    if (res.message) {
-      console.error(res.error);
-      setInvalidCode(res.message + res.error.code || "Invalid verification code");
-      return;
-    }
-    if (res.status === "approved") {
-      //hard coded right now, will be dynamic and based on time later
-      router.push("/202530");
-    }
-  }
 
   return (
-    <Dialog onOpenChange={(e) => props.closeFn()} defaultOpen={true}>
+    <Dialog onOpenChange={() => props.closeFn()} defaultOpen={true}>
       {page === 0 && <OneMoreStep next={() => setPage(1)} />}
       {page === 1 && (
         <PhoneNumberPage
-          next={() => startVerification()}
+          next={() => setPage(2)}
           setPhoneNumber={setPhoneNumber}
         />
       )}
       {page === 2 && (
-        <PhoneVerification
-          next={checkVerificationCode}
-          phoneNumber={phoneNumber}
-          setVerificationCode={setVerificationCode}
-          error={invalidCode}
-        />
+        <PhoneVerification next={() => setPage(3)} phoneNumber={phoneNumber} />
       )}
+      {page === 3 && <Onboarding next={() => props.closeFn()} />}
     </Dialog>
   );
 }
 
-function PhoneVerification(props: { next: () => void; phoneNumber: string, setVerificationCode: Dispatch<SetStateAction<string>>, error: string | null }) {
-  const [value, setValue] = useState("");
-  const handleChange = (e: string) => {
-    setValue(e);
-    props.setVerificationCode(e);
+function Onboarding(props: { next: () => void }) {
+  return (
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader className="flex w-full items-center">
+        <DialogTitle>Legal</DialogTitle>
+        {/* <DialogDescription className="text-center"> */}
+        {/*   By continuing you agree to the Terms of Service and Privacy Policy; */}
+        {/*   additionally, you agree to receive recurring automated text messages */}
+        {/*   from us at your cell number when suscribing to seat notifications. */}
+        {/*   Consent is a requirement for seat notifications. Msg frequency varies; */}
+        {/*   msg and data rates may apply. */}
+        {/* </DialogDescription> */}
+        <DialogDescription className="text-center">
+          By continuing you agree to the Terms of Service and Privacy Policy.
+          Consent to automated messages is a requirement for seat notifications.
+          Msg frequency varies. Msg and data rates may apply.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex w-full items-center justify-center py-4">
+        <Magoskie className="w-32" />
+      </div>
+      <DialogFooter>
+        <Button type="submit" className="w-full" onClick={() => props.next()}>
+          Continue
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+function PhoneVerification(props: { next: () => void; phoneNumber: string }) {
+  const [code, setCode] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function verifyCode() {
+    if (code.length !== 6) {
+      setErrorMsg("Code is formatted poorly");
+      return;
+    }
+
+    const status = await checkVerificationCode(props.phoneNumber, code);
+    if (status.status !== "approved") {
+      setErrorMsg("Invalid code");
+      return;
+    }
+
+    props.next();
   }
 
   return (
@@ -102,7 +102,13 @@ function PhoneVerification(props: { next: () => void; phoneNumber: string, setVe
         </DialogDescription>
       </DialogHeader>
       <div className="flex justify-center">
-        <InputOTP maxLength={6} className="" value={value} onChange={handleChange}>
+        <InputOTP
+          maxLength={6}
+          className=""
+          value={code}
+          onChange={(e) => setCode(e)}
+          onKeyDown={(e) => e.code === "Enter" && verifyCode()}
+        >
           <InputOTPGroup>
             <InputOTPSlot index={0} className="h-12 w-12 text-lg" />
             <InputOTPSlot index={1} className="h-12 w-12 text-lg" />
@@ -113,13 +119,11 @@ function PhoneVerification(props: { next: () => void; phoneNumber: string, setVe
           </InputOTPGroup>
         </InputOTP>
       </div>
-      {props.error && (
-        <p className="text-sm font-semibold text-red-500 text-center">
-          {props.error}
-        </p>
+      {errorMsg && (
+        <p className="text-xs font-semibold text-red-400">{errorMsg}</p>
       )}
       <DialogFooter className="">
-        <Button type="submit" className="w-full" onClick={() => props.next()}>
+        <Button type="submit" className="w-full" onClick={() => verifyCode()}>
           Verify Code
         </Button>
       </DialogFooter>
@@ -132,21 +136,28 @@ function PhoneNumberPage(props: {
   setPhoneNumber: Dispatch<SetStateAction<string>>;
 }) {
   const [number, setNumber] = useState("");
-  const [invalidCode, setInvalidCode] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   function onChange(e: Value) {
     setNumber(e);
     props.setPhoneNumber(e);
   }
 
-  function onClick() {
+  async function sendCode() {
     // isValidPhoneNumber is *not* used b/c number spaces change, which can cause the
     // formally mentioned method to throw errors if the libs are not updated
-    if (isPossiblePhoneNumber(number)) {
-      props.next();
-    } else {
-      setInvalidCode(true);
+    if (!isPossiblePhoneNumber(number)) {
+      setErrorMsg("Invalid phone number");
+      return;
     }
+
+    const a = await sendVerificationText(number);
+    if (a.statusCode !== 200) {
+      setErrorMsg(a.message);
+      return;
+    }
+
+    props.next();
   }
 
   return (
@@ -163,19 +174,18 @@ function PhoneNumberPage(props: {
           id="phone"
           aria-label="phone input"
           onChange={onChange}
+          onKeyDown={(e) => e.code === "Enter" && sendCode()}
           value={number}
           placeholder="(123) 456-7890"
           defaultCountry="US"
           className="text-foreground h-12 w-full text-lg"
         />
-        {invalidCode && (
-          <p className="text-xs font-semibold text-red-400">
-            Invalid phone number
-          </p>
+        {errorMsg && (
+          <p className="text-xs font-semibold text-red-400">{errorMsg}</p>
         )}
       </div>
       <DialogFooter>
-        <Button type="submit" className="w-full" onClick={onClick}>
+        <Button type="submit" className="w-full" onClick={sendCode}>
           Send Code
         </Button>
       </DialogFooter>
@@ -194,7 +204,7 @@ function OneMoreStep(props: { next: () => void }) {
         </DialogDescription>
       </DialogHeader>
       <div className="flex w-full items-center justify-center py-4">
-        <Chairsky className="w-32" />
+        <Chairskie className="w-32" />
       </div>
       <DialogFooter>
         <Button type="submit" className="w-full" onClick={() => props.next()}>

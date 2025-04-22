@@ -1,3 +1,4 @@
+import { validNupath } from "@/lib/nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 
@@ -73,6 +74,7 @@ function arrangeCourses(sections: BannerSection[]) {
   const subjects: string[] = [];
 
   for (const s of sections) {
+    console.log(s.sectionAttributes);
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
         name: decode(s.courseTitle),
@@ -83,8 +85,8 @@ function arrangeCourses(sections: BannerSection[]) {
         maxCredits: s.creditHourHigh ?? s.creditHourLow,
         minCredits: s.creditHourLow,
         nupath: s.sectionAttributes
-          .filter((a) => a.code.startsWith("NC"))
-          .map((a) => a.description),
+          .filter((a) => validNupath(a.code))
+          .map((a) => a.description.trim()),
         sections: [],
       };
     }

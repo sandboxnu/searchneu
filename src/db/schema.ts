@@ -2,7 +2,6 @@ import {
   boolean,
   decimal,
   foreignKey,
-  index,
   integer,
   json,
   jsonb,

@@ -10,6 +10,9 @@ interface searchResult {
   subject: string;
   minCredits: number;
   maxCredits: number;
+  sectionsWithSeats: number;
+  totalSections: number;
+  nupaths: string[];
 }
 
 export function SearchResults() {
@@ -18,7 +21,7 @@ export function SearchResults() {
   const stale = deferred !== params.toString();
 
   return (
-    <div className="bg-secondary flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
+    <div className="bg-neu2 flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<p>loading.......</p>}>
           <ResultsList params={deferred} />
@@ -55,7 +58,7 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
   const results = use(
     fetcher<searchResult[]>(props.params + term?.toString(), () => {
       const searchP = new URLSearchParams(props.params);
-      searchP.set("term", term?.toString());
+      searchP.set("term", term?.toString() ?? "");
       return `/api/search?${searchP.toString()}`;
     }),
   );
@@ -65,14 +68,14 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
   }
 
   return (
-    <ul className="space-y-4 pr-2">
+    <ul className="space-y-4">
       {results.map((result, index) => (
         <ResultCard
           key={index}
           result={result}
           link={`/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
           active={
-            decodeURIComponent(course?.toString()) ===
+            decodeURIComponent(course?.toString() ?? "") ===
             result.subject + " " + result.courseNumber
           }
         />

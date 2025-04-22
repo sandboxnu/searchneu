@@ -1,4 +1,4 @@
-export function Chairsky(props: { className?: string }) {
+export function Chairskie(props: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

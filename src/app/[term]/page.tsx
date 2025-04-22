@@ -10,11 +10,11 @@ export default async function Page(props: {
   const subjects = getSubjects((await props.params)?.term ?? "");
 
   return (
-    <div className="grid grid-cols-2">
-      <div className="col-span-1">
+    <div className="grid grid-cols-12">
+      <div className="col-span-5">
         <SearchBar terms={terms} subjects={subjects} />
       </div>
-      <div className="col-span-1">
+      <div className="col-span-7">
         <SearchResults />
       </div>
     </div>

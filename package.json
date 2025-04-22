@@ -17,6 +17,7 @@
     "drizzle-orm": "^0.42.0",
     "flags": "^3.2.0",
     "input-otp": "^1.4.2",
+    "jose": "^6.0.10",
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
     "radix-ui": "^1.3.3",
@@ -41,6 +42,7 @@
     "eslint-config-next": "15.3.1",
     "he": "^1.2.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "server-only": "^0.0.1",
     "tailwindcss": "^4.1.4",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"

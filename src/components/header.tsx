@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { Logo } from "./icons/logo";
 import { Avatar } from "./Avatar";
 

@@ -8,7 +8,7 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERM = "202532";
+const TERM = "202560";
 
 // always assume this file is only every called directy
 (async () => {

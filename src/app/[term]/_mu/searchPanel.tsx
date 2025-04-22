@@ -89,26 +89,28 @@ export function SearchBar(props: {
         </Button>
       </div>
 
-      <div className="">
-        <h3 className="font-semibold">Semester</h3>
-        <Suspense fallback={<p>loading...</p>}>
-          <TermSelect terms={props.terms} />
-        </Suspense>
-      </div>
+      <div className="hidden xl:block">
+        <div className="">
+          <h3 className="font-semibold">Semester</h3>
+          <Suspense fallback={<p>loading...</p>}>
+            <TermSelect terms={props.terms} />
+          </Suspense>
+        </div>
 
-      <div className="">
-        <h3 className="font-semibold">Subjects</h3>
-        <Suspense fallback={<p>loading...</p>}>
-          <SubjectSelect subjects={props.subjects} />
-        </Suspense>
-        {searchParams.get("subject") && (
-          <p
-            onClick={() => clearField("subject")}
-            className="cursor-pointer text-sm italic"
-          >
-            clear
-          </p>
-        )}
+        <div className="">
+          <h3 className="font-semibold">Subjects</h3>
+          <Suspense fallback={<p>loading...</p>}>
+            <SubjectSelect subjects={props.subjects} />
+          </Suspense>
+          {searchParams.get("subject") && (
+            <p
+              onClick={() => clearField("subject")}
+              className="cursor-pointer text-sm italic"
+            >
+              clear
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -59,7 +59,6 @@ export function ResultCard(props: {
             {props.result.sectionsWithSeats}/{props.result.totalSections}{" "}
             sections available
           </span>
-          {/* <p className="text-sm text-neutral-500">{props.result.score}</p> */}
           <NUPathBadges nupaths={props.result.nupaths} />
         </div>
       </Link>
@@ -68,7 +67,6 @@ export function ResultCard(props: {
 }
 
 function NUPathBadges(props: { nupaths: string[] }) {
-  // BUG: this will be fixed next rescrape and the filter can be removed!!!
   let paths = props.nupaths.map((p) => convertNupath(p.trim()));
   let plusMore = 0;
 
@@ -80,12 +78,12 @@ function NUPathBadges(props: { nupaths: string[] }) {
   return (
     <ul className="flex gap-0.5">
       {paths.map((n) => (
-        <span key={n} className="bg-neu4 rounded px-2 text-sm font-medium">
+        <span key={n} className="bg-neu4 rounded px-2 text-xs font-medium">
           {n}
         </span>
       ))}
       {plusMore > 0 && (
-        <span className="bg-neu4 rounded px-2 text-sm font-medium">
+        <span className="bg-neu4 rounded px-2 text-xs font-medium">
           +{plusMore}
         </span>
       )}

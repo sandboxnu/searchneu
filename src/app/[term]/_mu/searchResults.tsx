@@ -21,7 +21,7 @@ export function SearchResults() {
   const stale = deferred !== params.toString();
 
   return (
-    <div className="bg-neu2 flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
+    <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col overflow-y-scroll px-2 py-2 xl:h-[calc(100vh-56px)]">
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<p>loading.......</p>}>
           <ResultsList params={deferred} />

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 // enable react rerender indicators
-const enableDebug = false;
+const enableDebug = true;
 
 export default function RootLayout({
   children,

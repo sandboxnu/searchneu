@@ -108,22 +108,3 @@ export const plansT = pgTable("plans", {
   x: integer().notNull(),
   y: integer().notNull(),
 });
-
-export const tokensT = pgTable(
-  "tokens",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: varchar({ length: 191 })
-      .notNull()
-      .references(() => usersT.userId),
-    token: varchar({ length: 500 }).notNull(),
-    expiresAt: timestamp().notNull(),
-    createdAt: timestamp().notNull().defaultNow(),
-    revoked: boolean().notNull(),
-    revokedAt: timestamp(),
-  },
-  (table) => [
-    index("user_id_idx").on(table.userId),
-    uniqueIndex("token_idx").on(table.token),
-  ],
-);

@@ -9,6 +9,9 @@ export function ResultCard(props: {
     subject: string;
     minCredits: number;
     maxCredits: number;
+    sectionsWithSeats: number;
+    totalSections: number;
+    nupaths: string[];
   };
   active: boolean;
 }) {
@@ -40,7 +43,10 @@ export function ResultCard(props: {
           <span>
             {creditRange} {creditLabel}
           </span>
-          <span>40% enrolled</span>
+          <span>
+            {props.result.sectionsWithSeats} / {props.result.totalSections}{" "}
+            sections
+          </span>
         </div>
         {/* <p className="text-neutral-500">{result.score}</p> */}
       </Link>

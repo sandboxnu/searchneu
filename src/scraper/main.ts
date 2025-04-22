@@ -8,7 +8,7 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERM = "202610";
+const TERM = "202532";
 
 // always assume this file is only every called directy
 (async () => {
@@ -36,7 +36,6 @@ async function main() {
   loadEnvConfig(projectDir);
   const db = drizzle({
     connection: process.env.DATABASE_URL_DIRECT!,
-    casing: "snake_case",
   });
 
   console.log("connected");
@@ -66,7 +65,7 @@ async function insertCourseData(
         term: data.term.code,
         name: data.term.description,
         // TODO: activeUntil
-        activeUntil: new Date("2025-05-05T17:41:35+00:00"),
+        activeUntil: new Date("2025-10-05T17:41:35+00:00"),
       })
       .onConflictDoUpdate({
         target: termsT.term,
@@ -95,7 +94,7 @@ async function insertCourseData(
           description: course.description,
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),
-          nupaths: [],
+          nupaths: course.nupath,
           prereqs: {},
           coreqs: {},
         })

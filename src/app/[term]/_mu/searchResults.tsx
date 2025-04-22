@@ -13,7 +13,6 @@ interface searchResult {
 }
 
 export function SearchResults() {
-  const { term, course } = useParams();
   const params = useSearchParams();
   const deferred = useDeferredValue(params.toString());
   const stale = deferred !== params.toString();
@@ -22,11 +21,7 @@ export function SearchResults() {
     <div className="bg-secondary flex h-[calc(100vh-56px)] flex-col overflow-y-scroll px-2 py-2">
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<p>loading.......</p>}>
-          <ResultsList
-            params={deferred}
-            term={term?.toString() ?? ""}
-            course={course?.toString() ?? ""}
-          />
+          <ResultsList params={deferred} />
         </Suspense>
       </div>
     </div>
@@ -54,15 +49,13 @@ function fetcher<T>(key: string, p: () => string) {
 // this is explicitly memoized a) because it is a little heavy to render and b)
 // (more importantly) the parent component rerenders too frequently with
 // the searchParams and the memo shields the extra fetching requests
-const ResultsList = memo(function ResultsList(props: {
-  term: string;
-  course: string;
-  params: string;
-}) {
+const ResultsList = memo(function ResultsList(props: { params: string }) {
+  const { term, course } = useParams();
+
   const results = use(
-    fetcher<searchResult[]>(props.params, () => {
+    fetcher<searchResult[]>(props.params + term?.toString(), () => {
       const searchP = new URLSearchParams(props.params);
-      searchP.set("term", props.term);
+      searchP.set("term", term?.toString());
       return `/api/search?${searchP.toString()}`;
     }),
   );
@@ -77,9 +70,9 @@ const ResultsList = memo(function ResultsList(props: {
         <ResultCard
           key={index}
           result={result}
-          link={`/${props.term}/${result.subject}%20${result.courseNumber}?${props.params}`}
+          link={`/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
           active={
-            decodeURIComponent(props.course) ===
+            decodeURIComponent(course?.toString()) ===
             result.subject + " " + result.courseNumber
           }
         />

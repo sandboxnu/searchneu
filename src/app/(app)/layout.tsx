@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import Script from "next/script";
+import { Header } from "@/components/navigation/Header";
 import { AuthProvider } from "@/lib/context/auth-context";
+import { DebugTools } from "@/components/DebugTools";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -20,9 +20,6 @@ export const metadata: Metadata = {
   description: "Search courses at Northeastern University",
 };
 
-// enable react rerender indicators
-const enableDebug = false;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,13 +30,7 @@ export default function RootLayout({
       <body
         className={`${geist} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
-        {enableDebug && (
-          <Script
-            src="//unpkg.com/react-scan/dist/auto.global.js"
-            strategy="beforeInteractive"
-            crossOrigin="anonymous"
-          />
-        )}
+        <DebugTools />
         <AuthProvider>
           <Header />
           <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>

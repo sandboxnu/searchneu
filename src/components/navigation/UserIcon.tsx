@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/lib/context/auth-context";
-import { SignIn } from "./SignIn";
-import { Button } from "./ui/button";
+import { SignIn } from "../SignIn";
+import { Button } from "../ui/button";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -10,10 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
-import { Iconskie } from "./icons/Iconskie";
+import { Iconskie } from "../icons/Iconskie";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);

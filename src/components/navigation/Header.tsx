@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "./icons/logo";
+import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserIcon";
 
 export function Header() {

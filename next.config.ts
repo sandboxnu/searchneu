@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
+import withVercelToolbar from "@vercel/toolbar/plugins/next";
 
 const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default nextConfig;
+const vercelToolbar = withVercelToolbar();
+
+export default vercelToolbar(nextConfig);

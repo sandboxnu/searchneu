@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { getSubjects } from "@/lib/controllers/getSubjects";
-import { MobileWrapper } from "./_mu/MobileWrapper";
+import { MobileWrapper } from "@/components/search/MobileWrapper";
 
 export default async function Layout(props: {
   params: Promise<{ term: string; course?: string }>;

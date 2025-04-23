@@ -79,6 +79,12 @@ export const subjectsT = pgTable(
   (table) => [primaryKey({ columns: [table.term, table.code] })],
 );
 
+export const userRolesEnum = {
+  USER: "USER",
+  ADMIN: "ADMIN",
+  DEVELOPER: "DEVELOPER",
+} as const;
+
 export const usersT = pgTable(
   "users",
   {
@@ -90,6 +96,10 @@ export const usersT = pgTable(
       .notNull()
       .default(1) // the 1st plan will be the default limits
       .references(() => plansT.id),
+    role: varchar({ length: 20 })
+      .notNull()
+      .default(userRolesEnum.USER)
+      .$type<keyof typeof userRolesEnum>(),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()

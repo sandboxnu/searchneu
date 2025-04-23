@@ -1,7 +1,7 @@
 "use client";
 
-import { SearchResults } from "./searchResults";
-import { SearchBar } from "./searchPanel";
+import { SearchResults } from "./SearchResults";
+import { SearchBar } from "./SearchPanel";
 import { GroupedTerms, Subject } from "@/lib/types";
 import { useParams } from "next/navigation";
 

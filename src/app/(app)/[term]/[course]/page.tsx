@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import { SectionTable } from "./_mu/sectionTable";
-import { ExpandableDescription } from "./_mu/expandableDescription";
+import { SectionTable } from "@/components/coursePage/SectionTable";
+import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;

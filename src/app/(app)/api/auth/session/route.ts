@@ -7,9 +7,11 @@ export async function GET() {
     return Response.json({});
   }
 
+  const uid = payload.userId as string;
+
   return Response.json({
     user: {
-      userId: payload.userId,
+      userId: uid,
     },
   });
 }

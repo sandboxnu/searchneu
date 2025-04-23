@@ -1,6 +1,6 @@
 "use client";
 
-import { ResultCard } from "@/components/ResultCard";
+import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
 import { memo, Suspense, use, useDeferredValue } from "react";
 

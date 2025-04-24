@@ -30,6 +30,19 @@ const baseOptions: BaseLayoutProps = {
   githubUrl: "https://github.com/sandboxnu/search2",
 };
 
+const docsOptions: DocsLayoutProps = {
+  ...baseOptions,
+  tree: source.pageTree,
+  sidebar: {
+    tabs: {
+      transform: (option, node) => ({
+        ...option,
+        icon: <div className="[&>svg]:size-5">{node.icon}</div>,
+      }),
+    },
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,9 +56,7 @@ export default function RootLayout({
         <DebugTools />
         <AuthProvider>
           <RootProvider>
-            <DocsLayout tree={source.pageTree} {...baseOptions}>
-              {children}
-            </DocsLayout>
+            <DocsLayout {...docsOptions}>{children}</DocsLayout>
           </RootProvider>
         </AuthProvider>
       </body>

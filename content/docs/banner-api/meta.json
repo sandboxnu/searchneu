@@ -1,0 +1,13 @@
+{
+  "title": "Banner API",
+  "description": "API spec for Banner",
+  "icon": "Flag",
+  "root": true,
+  "pages": [
+    "index",
+    "---Registration Listings---",
+    "...registration-listings",
+    "---Search Results---",
+    "...search-results"
+  ]
+}

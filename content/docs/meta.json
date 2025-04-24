@@ -1,0 +1,10 @@
+{
+  "pages": [
+    "index",
+    "---Sections---",
+    "user-docs",
+    "dev-docs",
+    "api",
+    "banner-api"
+  ]
+}

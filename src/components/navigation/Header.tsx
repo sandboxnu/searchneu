@@ -13,7 +13,7 @@ export function Header() {
       </Link>
       <div className="flex items-center gap-8">
         <nav className="space-x-4 font-semibold">
-          <Link href="/202530">Courses</Link>
+          <Link href="/catalog">Courses</Link>
         </nav>
         <UserIcon />
       </div>

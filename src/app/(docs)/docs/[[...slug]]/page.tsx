@@ -6,7 +6,7 @@ import {
   DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { getMDXComponents } from "@/app/(docs)/mdx-components";
+import { getMDXComponents } from "@/app/mdx-components";
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;

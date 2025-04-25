@@ -1,0 +1,26 @@
+User-agent: Bingbot
+User-agent: Googlebot
+User-Agent: Googlebot-Image
+User-Agent: Googlebot-Mobile
+User-agent: Mediapartners-Google
+User-agent: MSNbot
+User-agent: Slurp
+User-agent: Twitterbot
+User-agent: DuckDuckBot
+Disallow: 
+
+# There's no point in allowing spiders to hit the api
+# It will just generate logs unnecessarily
+Disallow: /api
+
+# Everyone else is banned.  If you operate a search engine and would like to crawl Search NEU,
+# please contact hey@searchneu.com before crawling!
+# This was modeled after bluegolf.com/robots.txt
+User-agent: *
+Disallow: /
+
+# some specific bans
+User-agent: Aboundexbot
+Disallow: /
+
+Sitemap: https://searchneu.com/sitemap.xml

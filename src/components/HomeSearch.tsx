@@ -25,7 +25,7 @@ export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
   function handleSubmit() {
     const params = new URLSearchParams();
     params.set("q", query);
-    router.push(`/${termState[0]}?${params.toString()}`);
+    router.push(`/catalog/${termState[0]}?${params.toString()}`);
   }
 
   return (
@@ -49,7 +49,7 @@ export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
           </Button>
         </div>
       </div>
-      <Link href={`/${termState[0]}`} className="italic">
+      <Link href={`/catalog/${termState[0]}`} className="italic">
         See all courses
       </Link>
     </div>

@@ -130,18 +130,16 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
                         ? "bg-primary"
                         : "bg-accent"
                       : null,
-                    m.days.includes(j) &&
-                      "text-background rounded font-semibold",
-                    // rounded blobs rather than individually wrapped below
-                    // m.days.includes(j + 1) &&
-                    //   !m.days.includes(j - 1) &&
-                    //   "rounded-l",
-                    // m.days.includes(j - 1) &&
-                    //   !m.days.includes(j + 1) &&
-                    //   "rounded-r",
-                    // !m.days.includes(j - 1) &&
-                    //   !m.days.includes(j + 1) &&
-                    //   "rounded",
+                    m.days.includes(j) && "text-background font-semibold",
+                    m.days.includes(j + 1) &&
+                      !m.days.includes(j - 1) &&
+                      "rounded-l",
+                    m.days.includes(j - 1) &&
+                      !m.days.includes(j + 1) &&
+                      "rounded-r",
+                    !m.days.includes(j - 1) &&
+                      !m.days.includes(j + 1) &&
+                      "rounded",
                   )}
                 >
                   {days[j]}

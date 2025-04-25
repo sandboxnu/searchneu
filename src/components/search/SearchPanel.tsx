@@ -158,7 +158,9 @@ function TermSelect(props: { terms: Promise<GroupedTerms> }) {
 
   return (
     <Select
-      onValueChange={(e) => router.push(`/${e}?${searchParams.toString()}`)}
+      onValueChange={(e) =>
+        router.push(`/catalog/${e}?${searchParams.toString()}`)
+      }
       value={term?.toString()}
     >
       <SelectTrigger className="bg-background border-[0.5px] md:w-40 xl:w-52">

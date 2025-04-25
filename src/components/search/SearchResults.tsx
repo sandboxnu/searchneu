@@ -73,7 +73,7 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
         <ResultCard
           key={index}
           result={result}
-          link={`/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
+          link={`/catalog/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
           active={
             decodeURIComponent(course?.toString() ?? "") ===
             result.subject + " " + result.courseNumber

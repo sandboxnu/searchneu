@@ -5,26 +5,33 @@ import { eq } from "drizzle-orm";
 
 import Script from "next/script";
 import { VercelToolbar } from "@vercel/toolbar/next";
-
-// acts as an override for local
-const debug = false;
-
-const debugComps = (
-  <>
-    <Script
-      src="//unpkg.com/react-scan/dist/auto.global.js"
-      strategy="beforeInteractive"
-      crossOrigin="anonymous"
-    />
-    <VercelToolbar />
-  </>
-);
+import { reactScanFlag } from "@/lib/flags";
 
 export async function DebugTools() {
-  if (debug) {
+  // include React Scan if the flag is enabled
+  const reactScan = await reactScanFlag();
+  const debugComps = (
+    <>
+      {reactScan && (
+        <Script
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+          crossOrigin="anonymous"
+        />
+      )}
+      <VercelToolbar />
+    </>
+  );
+
+  // if running locally inject the toolbar
+  const isLocalEnv = process.env.NODE_ENV === "development";
+  if (isLocalEnv) {
     return debugComps;
   }
 
+  // TODO: might be worth checking if the toolbar is worth
+  // injecting in prod or using the browser extension
+
+  // inject the toolbar if the user is an admin
   const session = await getSession();
 
   if (!session) {

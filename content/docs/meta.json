@@ -2,8 +2,8 @@
   "pages": [
     "index",
     "---Sections---",
-    "user-docs",
-    "dev-docs",
+    "user-guide",
+    "dev-guide",
     "api",
     "banner-api"
   ]

@@ -7,6 +7,7 @@ import { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { source } from "@/lib/source";
 import { DocsLayout, DocsLayoutProps } from "fumadocs-ui/layouts/docs";
 import { RootProvider } from "fumadocs-ui/provider";
+import { Banner } from "fumadocs-ui/components/banner";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -55,6 +56,9 @@ export default function RootLayout({
       >
         <DebugTools />
         <AuthProvider>
+          <Banner>
+            Heads up! These docs are still in development! Mind our mess 🏗️
+          </Banner>
           <RootProvider>
             <DocsLayout {...docsOptions}>{children}</DocsLayout>
           </RootProvider>

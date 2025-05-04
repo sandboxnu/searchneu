@@ -3,7 +3,6 @@ import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserIcon";
 
 export function Header() {
-  // TODO: the courses link should.. ya know... not be hardcoded
   // TODO: hamburger menu for mobile
 
   return (
@@ -13,7 +12,7 @@ export function Header() {
       </Link>
       <div className="flex items-center gap-8">
         <nav className="space-x-4 font-semibold">
-          <Link href="/catalog">Courses</Link>
+          <Link href="/catalog">Catalog</Link>
         </nav>
         <UserIcon />
       </div>

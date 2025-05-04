@@ -3,11 +3,21 @@ import { coursesT, sectionsT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { SectionTable } from "@/components/coursePage/SectionTable";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
+import { Separator } from "@/components/ui/separator";
+import { convertNupathToLongform } from "@/lib/banner/nupaths";
+import Link from "next/link";
+
+// PERF: switch to ISR (need to pull seat data out first)
+// export const revalidate = 3600;
 
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
 }) {
   const course = decodeURIComponent((await props.params)?.course) ?? "";
+
+  const term = (await props.params).term;
+  const courseNumber = course.split(" ")[1];
+  const subject = course.split(" ")[0];
 
   const result = await db
     .select({
@@ -16,6 +26,7 @@ export default async function Page(props: {
       description: coursesT.description,
       minCredits: coursesT.minCredits,
       maxCredits: coursesT.maxCredits,
+      nupaths: coursesT.nupaths,
     })
     .from(coursesT)
     .where(
@@ -64,34 +75,53 @@ export default async function Page(props: {
   }
 
   return (
-    <div className="flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll px-6 pb-8">
-      <div className="bg-background sticky top-0 bottom-0 z-10 -mr-4 -ml-4 pt-2 pb-4 pl-4">
-        <h1 className="text-2xl font-semibold">{course}</h1>
-        <div className="flex gap-2">
+    <div className="flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll px-6 pt-8 pb-8">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">{course}</h1>
           <h2 className="">{result[0].name}</h2>
-          <span>·</span>
-          <h2 className="">
+        </div>
+        <div className="text-end">
+          <h2 className="text-xl font-medium">
             {creditRange} {creditLabel}
           </h2>
-        </div>
-      </div>
-      <div className="bg-background -mt-4 rounded px-5 py-4 shadow-sm">
-        <h3 className="text-secondary-foreground pb-3 text-sm">Description</h3>
-        <ExpandableDescription description={result[0].description} />
-      </div>
-      <div className="flex gap-5">
-        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
-          <h3 className="text-secondary-foreground pb-3 text-sm">NU Paths</h3>
-        </div>
-        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
-          <h3 className="text-secondary-foreground pb-3 text-sm">Prereqs</h3>
-        </div>
-        <div className="bg-background grow rounded px-5 py-4 shadow-sm">
-          <h3 className="text-secondary-foreground pb-3 text-sm">Coreqs</h3>
+          <Link
+            className="text-b2 hover:text-b2/80"
+            href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${term}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
+          >
+            View on NEU
+          </Link>
         </div>
       </div>
       <div className="">
-        <h2 className="pb-3 text-xl font-semibold">Available Sections</h2>
+        <h3 className="text-neu7 pb-2 text-sm font-medium">
+          Course Description
+        </h3>
+        <ExpandableDescription description={result[0].description} />
+      </div>
+      <Separator />
+      <div className="">
+        <h3 className="text-neu7 pb-2 text-sm font-medium">NUPaths</h3>
+        <div className="flex gap-2">
+          {c.nupaths.map((n) => (
+            <span key={n} className="bg-neu2 rounded px-2 py-1 text-sm">
+              {convertNupathToLongform(n)}
+            </span>
+          ))}
+          {c.nupaths.length === 0 && <p>None</p>}
+        </div>
+      </div>
+      <div className="">
+        <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
+        <p>None</p>
+      </div>
+      <div className="">
+        <h3 className="text-neu7 pb-2 text-sm font-medium">Coreqs</h3>
+        <p>None</p>
+      </div>
+      <Separator />
+      <div className="w-full">
+        {/* <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3> */}
         {/* @ts-expect-error: need to parse out the meetingTimes */}
         <SectionTable sections={sections} />
       </div>

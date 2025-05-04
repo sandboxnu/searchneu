@@ -25,16 +25,16 @@ interface section {
 
 export function SectionTable(props: { sections: section[] }) {
   return (
-    <table className="w-full overflow-x-scroll rounded-t">
+    <table className="w-full rounded-t">
       <thead className="bg-muted shadow-sm">
         <tr className="">
           <th className="w-16 py-3 pl-3 text-left text-sm font-medium">CRN</th>
           <th className="w-12 py-3 text-left text-sm font-medium">NOTIF</th>
-          <th className="w-20 py-3 text-left text-sm font-medium">SEATS</th>
-          <th className="w-72 py-3 text-left text-sm font-medium">MEETINGS</th>
-          <th className="w-36 py-3 text-left text-sm font-medium">ROOM</th>
+          <th className="w-24 py-3 text-left text-sm font-medium">SEATS</th>
+          <th className="w-80 py-3 text-left text-sm font-medium">MEETINGS</th>
+          {/* <th className="w-36 py-3 text-left text-sm font-medium">ROOM</th> */}
           <th className="w-36 py-3 text-left text-sm font-medium">PROFESSOR</th>
-          <th className="w-28 py-3 text-left text-sm font-medium">CAMPUS</th>
+          <th className="w-20 py-3 text-left text-sm font-medium">CAMPUS</th>
         </tr>
       </thead>
       <tbody className="divide-y">
@@ -92,12 +92,12 @@ function SectionRow(props: { section: section }) {
           crn={props.section.crn}
         />
       </td>
-      <td>
-        <RoomBlocks
-          meetings={props.section.meetingTimes}
-          crn={props.section.crn}
-        />
-      </td>
+      {/* <td> */}
+      {/*   <RoomBlocks */}
+      {/*     meetings={props.section.meetingTimes} */}
+      {/*     crn={props.section.crn} */}
+      {/*   /> */}
+      {/* </td> */}
       <td>{props.section.faculty}</td>
       <td>{props.section.campus}</td>
     </tr>
@@ -119,7 +119,7 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
       {props.meetings.map((m, i) => (
         <span key={props.crn + i} className="flex gap-2">
           <span className="flex items-center gap-1">
-            <span className="bg-background flex h-5 w-[140px] items-center justify-between rounded">
+            <span className="bg-neu2 flex h-5 w-[140px] items-center justify-between rounded">
               {[...Array(7).keys()].map((j) => (
                 <span
                   key={props.crn + i + j}
@@ -164,19 +164,19 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   );
 }
 
-function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
-  return (
-    <div className="flex flex-col gap-2">
-      {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex items-center gap-2">
-          <p className="text-sm">
-            {m.building} {m.room}
-          </p>
-        </span>
-      ))}
-    </div>
-  );
-}
+// function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
+//   return (
+//     <div className="flex flex-col gap-2">
+//       {props.meetings.map((m, i) => (
+//         <span key={props.crn + i} className="flex items-center gap-2">
+//           <p className="text-sm">
+//             {m.building} {m.room}
+//           </p>
+//         </span>
+//       ))}
+//     </div>
+//   );
+// }
 
 function formatTimeRange(startTime: number, endTime: number) {
   const startHours = Math.floor(startTime / 100);

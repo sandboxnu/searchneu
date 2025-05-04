@@ -80,8 +80,8 @@ export async function GET(req: NextRequest) {
       coursesT.minCredits,
       coursesT.nupaths,
     )
-    .orderBy(sql`paradedb.score(${coursesT.id}) desc`)
-    .limit(30);
+    .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
+  // .limit(30);
 
   return Response.json(result);
 }

@@ -1,4 +1,4 @@
-import { validNupath } from "@/lib/nupaths";
+import { isValidNupath } from "@/lib/banner/nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 
@@ -56,7 +56,7 @@ async function getCourseDescriptions(courses: Course[]) {
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        courses[offset + j].description = decode(p.value)
+        courses[offset + j].description = decode(decode(p.value))
           .replace(/<[^>]*>/g, "") // Remove HTML tags
           .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments
           .trim();
@@ -76,7 +76,7 @@ function arrangeCourses(sections: BannerSection[]) {
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
-        name: decode(s.courseTitle),
+        name: decode(decode(s.courseTitle)),
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,
@@ -84,7 +84,7 @@ function arrangeCourses(sections: BannerSection[]) {
         maxCredits: s.creditHourHigh ?? s.creditHourLow,
         minCredits: s.creditHourLow,
         nupath: s.sectionAttributes
-          .filter((a) => validNupath(a.code))
+          .filter((a) => isValidNupath(a.code))
           .map((a) => a.description.trim()),
         sections: [],
       };
@@ -196,7 +196,8 @@ async function getSectionFaculty(sections: BannerSection[]) {
           }
 
           if (faculty?.length > 0) {
-            sections[offset + j].f = decode(faculty[0].displayName) ?? "TBA";
+            sections[offset + j].f =
+              decode(decode(faculty[0].displayName)) ?? "TBA";
           } else {
             sections[offset + j].f = "TBA";
           }

@@ -52,11 +52,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geist} ${geistMono.variable} flex h-screen flex-col antialiased`}
+        className={`${geist} ${geistMono.variable} flex flex-col antialiased`}
       >
         <DebugTools />
         <AuthProvider>
-          <Banner>
+          {/* These className overrides required b/c of a bug in the Banner component */}
+          <Banner className="sticky shrink-0">
             Heads up! These docs are still in development! Mind our mess 🏗️
           </Banner>
           <RootProvider>

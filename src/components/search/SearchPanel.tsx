@@ -19,6 +19,22 @@ import {
 } from "@/components/ui/select";
 import { useState, useEffect, use, Suspense } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
+import MultipleSelector, { Option } from "@/components/ui/multi-select";
+import { Switch } from "../ui/switch";
+
+const OPTIONS: Option[] = [
+  { label: "nextjs", value: "nextjs" },
+  { label: "React", value: "react" },
+  { label: "Remix", value: "remix" },
+  { label: "Vite", value: "vite" },
+  { label: "Nuxt", value: "nuxt" },
+  { label: "Vue", value: "vue" },
+  { label: "Svelte", value: "svelte" },
+  { label: "Angular", value: "angular" },
+  { label: "Ember", value: "ember", disable: true },
+  { label: "Gatsby", value: "gatsby", disable: true },
+  { label: "Astro", value: "astro", fixed: true },
+];
 
 export function SearchBar(props: {
   terms: Promise<GroupedTerms>;
@@ -71,7 +87,7 @@ export function SearchBar(props: {
   }
 
   return (
-    <div className="flex flex-col gap-2 px-2 py-2">
+    <div className="flex flex-col gap-2 px-4 py-2">
       <div className="flex w-full">
         <Input
           className="bg-background rounded-r-none border-[0.5px] border-r-0"
@@ -89,7 +105,7 @@ export function SearchBar(props: {
         </Button>
       </div>
 
-      <div className="hidden xl:block">
+      <div className="hidden space-y-6 xl:block">
         <div className="">
           <h3 className="font-semibold">Semester</h3>
           <Suspense fallback={<p>loading...</p>}>
@@ -111,42 +127,115 @@ export function SearchBar(props: {
             </p>
           )}
         </div>
+
+        <div className="">
+          <h3 className="font-semibold">NUPaths</h3>
+          <MultipleSelector
+            defaultOptions={OPTIONS}
+            className="bg-neu2 rounded-full md:w-40 xl:w-full"
+            placeholder="Select frameworks you like..."
+            emptyIndicator={
+              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                no results found.
+              </p>
+            }
+          />
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">Campus</h3>
+          <MultipleSelector
+            defaultOptions={OPTIONS}
+            className="bg-neu2 rounded-full md:w-40 xl:w-full"
+            placeholder="Select frameworks you like..."
+            emptyIndicator={
+              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                no results found.
+              </p>
+            }
+          />
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">Class Type</h3>
+          <MultipleSelector
+            defaultOptions={OPTIONS}
+            className="bg-neu2 rounded-full md:w-40 xl:w-full"
+            placeholder="Select frameworks you like..."
+            emptyIndicator={
+              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                no results found.
+              </p>
+            }
+          />
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">Class Type</h3>
+          <MultipleSelector
+            defaultOptions={OPTIONS}
+            className="bg-neu2 rounded-full md:w-40 xl:w-full"
+            placeholder="Select frameworks you like..."
+            emptyIndicator={
+              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                no results found.
+              </p>
+            }
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Honors</h3>
+          <Switch />
+        </div>
       </div>
     </div>
   );
 }
 
 function SubjectSelect(props: { subjects: Promise<Subject[]> }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  // const router = useRouter();
+  // const searchParams = useSearchParams();
   const subjects = use(props.subjects);
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
-  function onChange(subj: string) {
-    const params = new URLSearchParams(searchParams);
-    if (!subj.trim()) {
-      params.delete("subject");
-      router.push(`${pathname}?${params.toString()}`);
-      return;
-    }
-
-    params.set("subject", subj);
-    router.push(`${pathname}?${params.toString()}`);
-  }
+  // function onChange(subj: string) {
+  //   const params = new URLSearchParams(searchParams);
+  //   if (!subj.trim()) {
+  //     params.delete("subject");
+  //     router.push(`${pathname}?${params.toString()}`);
+  //     return;
+  //   }
+  //
+  //   params.set("subject", subj);
+  //   router.push(`${pathname}?${params.toString()}`);
+  // }
 
   return (
-    <Select onValueChange={onChange} value={searchParams.get("subject") ?? ""}>
-      <SelectTrigger className="bg-background border-[0.5px] md:w-40 xl:w-52">
-        <SelectValue placeholder="Select a subject" />
-      </SelectTrigger>
-      <SelectContent className="">
-        {subjects.map((s) => (
-          <SelectItem key={s.code} value={s.code}>
-            {s.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <MultipleSelector
+      defaultOptions={subjects as Option[]}
+      placeholder="Select subjects"
+      hidePlaceholderWhenSelected
+      className="bg-neu2 rounded-full md:w-40 xl:w-full"
+      emptyIndicator={
+        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+          no results found.
+        </p>
+      }
+    />
+    //   <Select onValueChange={onChange} value={searchParams.get("subject") ?? ""}>
+    //     <SelectTrigger className="bg-neu2 rounded-full md:w-40 xl:w-full">
+    //       <SelectValue placeholder="Select a subject" />
+    //     </SelectTrigger>
+    //     <SelectContent className="">
+    //       {subjects.map((s) => (
+    //         <SelectItem key={s.code} value={s.code}>
+    //           {s.name}
+    //         </SelectItem>
+    //       ))}
+    //     </SelectContent>
+    //   </Select>
+    // );
   );
 }
 
@@ -163,7 +252,7 @@ function TermSelect(props: { terms: Promise<GroupedTerms> }) {
       }
       value={term?.toString()}
     >
-      <SelectTrigger className="bg-background border-[0.5px] md:w-40 xl:w-52">
+      <SelectTrigger className="bg-neu2 rounded-full md:w-40 xl:w-full">
         <SelectValue placeholder="Select term" />
       </SelectTrigger>
       <SelectContent className="">

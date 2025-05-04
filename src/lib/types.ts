@@ -10,6 +10,6 @@ export interface GroupedTerms {
 }
 
 export interface Subject {
-  code: string;
-  name: string;
+  label: string;
+  value: string;
 }

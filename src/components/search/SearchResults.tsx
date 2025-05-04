@@ -23,7 +23,7 @@ export function SearchResults() {
   return (
     <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col overflow-y-scroll px-2 py-2 xl:h-[calc(100vh-56px)]">
       <div className={stale ? "opacity-80" : ""}>
-        <Suspense fallback={<p>loading.......</p>}>
+        <Suspense fallback={<ResultsListSkeleton />}>
           <ResultsList params={deferred} />
         </Suspense>
       </div>
@@ -83,3 +83,13 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
     </ul>
   );
 });
+
+function ResultsListSkeleton() {
+  return (
+    <ul className="space-y-4">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <li key={i} className="bg-neu3 h-20 w-full animate-pulse rounded"></li>
+      ))}
+    </ul>
+  );
+}

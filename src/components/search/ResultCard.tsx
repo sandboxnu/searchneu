@@ -36,17 +36,17 @@ export function ResultCard(props: {
       <Link
         href={props.link}
         data-active={props.active}
-        className="bg-neu1 hover:bg-muted data-[active=true]:bg-muted data-[active=true]:border-border flex flex-col gap-0.5 rounded border-[0.5px] border-transparent px-4 py-2"
+        className="bg-neu1 hover:bg-muted data-[active=true]:bg-muted data-[active=true]:border-border flex flex-col gap-0.5 rounded border-[0.5px] border-transparent px-4 py-2 shadow-xs"
       >
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">
             {props.result.subject + " " + props.result.courseNumber}
           </h1>
-          <span className="text-neu7 text-sm">
+          <span className="text-neu6 text-sm">
             {creditRange} {creditLabel}
           </span>
         </div>
-        <p className="text-neu7 -mt-1 pb-1 text-sm">{props.result.name}</p>
+        <p className="text-neu6 -mt-1 pb-1 text-sm">{props.result.name}</p>
         <div className="flex items-center justify-between">
           <span
             className={cn(
@@ -78,12 +78,12 @@ function NUPathBadges(props: { nupaths: string[] }) {
   return (
     <ul className="flex gap-0.5">
       {paths.map((n) => (
-        <span key={n} className="bg-neu4 rounded px-2 text-xs font-medium">
+        <span key={n} className="bg-neu3 rounded px-2 text-xs font-medium">
           {n}
         </span>
       ))}
       {plusMore > 0 && (
-        <span className="bg-neu4 rounded px-2 text-xs font-medium">
+        <span className="bg-neu3 rounded px-2 text-xs font-medium">
           +{plusMore}
         </span>
       )}

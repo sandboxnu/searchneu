@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
-    <div className="py-2 px-4 flex-col gap-4 flex h-full bg-secondary">
-      <span className="bg-foreground/40 rounded w-96 h-8 animate-pulse"></span>
+    <div className="flex h-full flex-col gap-4 px-4 py-2">
+      <span className="bg-neu3 h-8 w-96 animate-pulse rounded"></span>
     </div>
   );
 }

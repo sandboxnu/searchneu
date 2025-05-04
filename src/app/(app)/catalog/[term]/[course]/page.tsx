@@ -104,7 +104,7 @@ export default async function Page(props: {
         <h3 className="text-neu7 pb-2 text-sm font-medium">NUPaths</h3>
         <div className="flex gap-2">
           {c.nupaths.map((n) => (
-            <span key={n} className="bg-neu2 rounded px-2 py-1 text-sm">
+            <span key={n} className="bg-neu3 rounded px-2 py-1 text-sm">
               {convertNupathToLongform(n)}
             </span>
           ))}

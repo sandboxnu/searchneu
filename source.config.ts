@@ -13,7 +13,7 @@ export default defineConfig({
         light: "github-light",
         dark: "github-dark",
       },
-      langs: ["js", "jsx", "ts", "tsx", "json", "bash"],
+      langs: ["ts", "tsx", "json"],
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
         transformerTwoslash(),

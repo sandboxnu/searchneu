@@ -131,6 +131,7 @@ async function insertCourseData(
             .insert(sectionsT)
             .values({
               courseId: existingCourseId,
+              term: course.term,
               crn: section.crn,
               faculty: section.faculty,
               seatCapacity: section.seatCapacity,
@@ -167,6 +168,7 @@ async function insertCourseData(
             .insert(sectionsT)
             .values({
               courseId: courseId,
+              term: course.term,
               crn: section.crn,
               faculty: section.faculty,
               seatCapacity: section.seatCapacity,

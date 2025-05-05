@@ -41,6 +41,9 @@ export const coursesT = pgTable(
 
 export const sectionsT = pgTable("sections", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  term: varchar({ length: 6 })
+    .notNull()
+    .references(() => termsT.term),
   courseId: integer()
     .notNull()
     .references(() => coursesT.id),

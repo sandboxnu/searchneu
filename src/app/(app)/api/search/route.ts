@@ -9,11 +9,12 @@ export async function GET(req: NextRequest) {
   // parse all the potential params
   const query = params.get("q");
   const term = params.get("term");
-  const subjects = params.getAll("subject");
+  const subjects = params.getAll("subj");
+  // const nupaths = params.getAll("nupath");
+  const campusFilter = params.get("campus");
   const minCourseId = params.get("minCourseId");
   const maxCourseId = params.get("maxCourseId");
   const honorsFilter = params.get("honors");
-  const campusFilter = params.get("campus");
 
   // construct the where clause based on what params are present
   const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
@@ -80,8 +81,8 @@ export async function GET(req: NextRequest) {
       coursesT.minCredits,
       coursesT.nupaths,
     )
-    .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
-  // .limit(30);
+    .orderBy(sql`paradedb.score(${coursesT.id}) desc`)
+    .limit(30);
 
   return Response.json(result);
 }

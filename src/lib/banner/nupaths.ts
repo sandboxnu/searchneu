@@ -30,6 +30,22 @@ const NUPATH_LONGFORMS: { [key: string]: string } = {
   "NUpath Capstone Experience": "Capstone Experience (CE)",
 };
 
+export const NUPATH_OPTIONS = [
+  { value: "ND", label: "Natural/Designed World (ND)" },
+  { value: "EI", label: "Creative Express/Innov (EI)" },
+  { value: "IC", label: "Interpreting Culture (IC)" },
+  { value: "FQ", label: "Formal/Quant Reasoning (FQ)" },
+  { value: "SI", label: "Societies/Institutions (SI)" },
+  { value: "AD", label: "Analyzing/Using Data (AD)" },
+  { value: "DD", label: "Difference/Diversity (DD)" },
+  { value: "EF", label: "Ethical Reasoning (ER)" },
+  { value: "WF", label: "First Year Writing (WF)" },
+  { value: "WI", label: "Writing Intensive (WI)" },
+  { value: "WD", label: "Advanced Writing (WD)" },
+  { value: "EX", label: "Integration Experience (EX)" },
+  { value: "CE", label: "Capstone Experience (CE)" },
+];
+
 const BANNER_NUP_CODES = Object.values(NUPATH_CODES).map((c) => "NC" + c);
 
 export function convertNupathToCode(path: string) {

@@ -1,13 +1,17 @@
 "use client";
 
 import { SearchResults } from "./SearchResults";
-import { SearchBar } from "./SearchPanel";
+import { SearchPanel } from "./SearchPanel";
 import { GroupedTerms, Subject } from "@/lib/types";
 import { useParams } from "next/navigation";
+import { Option } from "../ui/multi-select";
 
 export function MobileWrapper(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
+  campuses: Promise<string[]>;
+  classTypes: Promise<string[]>;
+  nupaths: Promise<Option[]>;
 }) {
   const { course } = useParams();
 
@@ -18,7 +22,7 @@ export function MobileWrapper(props: {
     >
       <div className="flex grid-cols-2 flex-col xl:grid!">
         <div className="col-span-1">
-          <SearchBar terms={props.terms} subjects={props.subjects} />
+          <SearchPanel {...props} />
         </div>
         <div className="col-span-1">
           <SearchResults />

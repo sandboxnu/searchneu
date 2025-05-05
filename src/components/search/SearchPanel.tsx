@@ -22,24 +22,83 @@ import type { GroupedTerms, Subject } from "@/lib/types";
 import MultipleSelector, { Option } from "@/components/ui/multi-select";
 import { Switch } from "../ui/switch";
 
-const OPTIONS: Option[] = [
-  { label: "nextjs", value: "nextjs" },
-  { label: "React", value: "react" },
-  { label: "Remix", value: "remix" },
-  { label: "Vite", value: "vite" },
-  { label: "Nuxt", value: "nuxt" },
-  { label: "Vue", value: "vue" },
-  { label: "Svelte", value: "svelte" },
-  { label: "Angular", value: "angular" },
-  { label: "Ember", value: "ember", disable: true },
-  { label: "Gatsby", value: "gatsby", disable: true },
-  { label: "Astro", value: "astro", fixed: true },
-];
-
-export function SearchBar(props: {
+export function SearchPanel(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
+  campuses: Promise<string[]>;
+  classTypes: Promise<string[]>;
+  nupaths: Promise<Option[]>;
 }) {
+  return (
+    <div className="flex flex-col gap-2 px-4 py-2">
+      <SearchBar />
+
+      <div className="hidden space-y-6 xl:block">
+        <div className="">
+          <h3 className="font-semibold">Semester</h3>
+          <Suspense fallback={<MultiselectSkeleton />}>
+            <TermSelect terms={props.terms} />
+          </Suspense>
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">Subjects</h3>
+          <Suspense fallback={<MultiselectSkeleton />}>
+            <SPMultiselect
+              opts={props.subjects}
+              spCode="subj"
+              placeholder="Select subjects"
+              transform={(opts) => opts as Option[]}
+            />
+          </Suspense>
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">NUPaths</h3>
+          <Suspense fallback={<MultiselectSkeleton />}>
+            <SPMultiselect
+              opts={props.nupaths}
+              spCode="nupath"
+              placeholder="Select NUPaths"
+              transform={(opts) => opts as Option[]}
+            />
+          </Suspense>
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">Campus</h3>
+          <Suspense fallback={<MultiselectSkeleton />}>
+            <SPMultiselect
+              opts={props.campuses}
+              spCode="camp"
+              placeholder="Select campus"
+              transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
+            />
+          </Suspense>
+        </div>
+
+        <div className="">
+          <h3 className="font-semibold">ClassType</h3>
+          <Suspense fallback={<MultiselectSkeleton />}>
+            <SPMultiselect
+              opts={props.classTypes}
+              spCode="clty"
+              placeholder="Select class type"
+              transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
+            />
+          </Suspense>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Honors</h3>
+          <HonorsSwitch />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SearchBar() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
@@ -80,170 +139,32 @@ export function SearchBar(props: {
     window.history.pushState(null, "", `${pathname}?${params.toString()}`);
   }
 
-  function clearField(field: string) {
-    const params = new URLSearchParams(searchParams);
-    params.delete(field);
-    window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-  }
-
   return (
-    <div className="flex flex-col gap-2 px-4 py-2">
-      <div className="flex w-full">
-        <Input
-          className="bg-background rounded-r-none border-[0.5px] border-r-0"
-          placeholder="Search for a course, CRN, or phrase"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-        />
-        <Button
-          size="icon"
-          className="rounded-l-none shadow-sm"
-          onClick={() => handleSubmit()}
-        >
-          🔍
-        </Button>
-      </div>
-
-      <div className="hidden space-y-6 xl:block">
-        <div className="">
-          <h3 className="font-semibold">Semester</h3>
-          <Suspense fallback={<p>loading...</p>}>
-            <TermSelect terms={props.terms} />
-          </Suspense>
-        </div>
-
-        <div className="">
-          <h3 className="font-semibold">Subjects</h3>
-          <Suspense fallback={<p>loading...</p>}>
-            <SubjectSelect subjects={props.subjects} />
-          </Suspense>
-          {searchParams.get("subject") && (
-            <p
-              onClick={() => clearField("subject")}
-              className="cursor-pointer text-sm italic"
-            >
-              clear
-            </p>
-          )}
-        </div>
-
-        <div className="">
-          <h3 className="font-semibold">NUPaths</h3>
-          <MultipleSelector
-            defaultOptions={OPTIONS}
-            className="bg-neu2 rounded-full md:w-40 xl:w-full"
-            placeholder="Select frameworks you like..."
-            emptyIndicator={
-              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                no results found.
-              </p>
-            }
-          />
-        </div>
-
-        <div className="">
-          <h3 className="font-semibold">Campus</h3>
-          <MultipleSelector
-            defaultOptions={OPTIONS}
-            className="bg-neu2 rounded-full md:w-40 xl:w-full"
-            placeholder="Select frameworks you like..."
-            emptyIndicator={
-              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                no results found.
-              </p>
-            }
-          />
-        </div>
-
-        <div className="">
-          <h3 className="font-semibold">Class Type</h3>
-          <MultipleSelector
-            defaultOptions={OPTIONS}
-            className="bg-neu2 rounded-full md:w-40 xl:w-full"
-            placeholder="Select frameworks you like..."
-            emptyIndicator={
-              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                no results found.
-              </p>
-            }
-          />
-        </div>
-
-        <div className="">
-          <h3 className="font-semibold">Class Type</h3>
-          <MultipleSelector
-            defaultOptions={OPTIONS}
-            className="bg-neu2 rounded-full md:w-40 xl:w-full"
-            placeholder="Select frameworks you like..."
-            emptyIndicator={
-              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                no results found.
-              </p>
-            }
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Honors</h3>
-          <Switch />
-        </div>
-      </div>
+    <div className="flex w-full">
+      <Input
+        className="bg-background rounded-r-none border-[0.5px] border-r-0"
+        placeholder="Search for a course, CRN, or phrase"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+      />
+      <Button
+        size="icon"
+        className="rounded-l-none shadow-sm"
+        onClick={() => handleSubmit()}
+      >
+        🔍
+      </Button>
     </div>
   );
 }
 
-function SubjectSelect(props: { subjects: Promise<Subject[]> }) {
-  // const router = useRouter();
-  // const searchParams = useSearchParams();
-  const subjects = use(props.subjects);
-  // const pathname = usePathname();
-
-  // function onChange(subj: string) {
-  //   const params = new URLSearchParams(searchParams);
-  //   if (!subj.trim()) {
-  //     params.delete("subject");
-  //     router.push(`${pathname}?${params.toString()}`);
-  //     return;
-  //   }
-  //
-  //   params.set("subject", subj);
-  //   router.push(`${pathname}?${params.toString()}`);
-  // }
-
-  return (
-    <MultipleSelector
-      defaultOptions={subjects as Option[]}
-      placeholder="Select subjects"
-      hidePlaceholderWhenSelected
-      className="bg-neu2 rounded-full md:w-40 xl:w-full"
-      emptyIndicator={
-        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-          no results found.
-        </p>
-      }
-    />
-    //   <Select onValueChange={onChange} value={searchParams.get("subject") ?? ""}>
-    //     <SelectTrigger className="bg-neu2 rounded-full md:w-40 xl:w-full">
-    //       <SelectValue placeholder="Select a subject" />
-    //     </SelectTrigger>
-    //     <SelectContent className="">
-    //       {subjects.map((s) => (
-    //         <SelectItem key={s.code} value={s.code}>
-    //           {s.name}
-    //         </SelectItem>
-    //       ))}
-    //     </SelectContent>
-    //   </Select>
-    // );
-  );
-}
-
 function TermSelect(props: { terms: Promise<GroupedTerms> }) {
+  const terms = use(props.terms);
+
   const { term } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const terms = use(props.terms);
 
   return (
     <Select
@@ -283,4 +204,87 @@ function TermSelect(props: { terms: Promise<GroupedTerms> }) {
       </SelectContent>
     </Select>
   );
+}
+
+// generally these very abstracted functions are bad, but in this case
+// the four multiselects are nearly the same so some abstraction saves
+// LoC
+
+// SPMultiselect is a multiselect component that stores the state in the
+// search params
+function SPMultiselect<T>(props: {
+  opts: Promise<T[]>;
+  spCode: string;
+  placeholder: string;
+  transform: (opts: T[]) => Option[];
+}) {
+  const resolved = use(props.opts);
+  const options = props.transform(resolved);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  function updateSearchParams(opts: Option[]) {
+    const params = new URLSearchParams(searchParams);
+    if (opts.length === 0) {
+      params.delete(props.spCode);
+      // router.push(`${pathname}?${params.toString()}`);
+
+      window.history.pushState(null, "", `${pathname}?${params.toString()}`);
+      return;
+    }
+
+    params.delete(props.spCode);
+    opts.forEach((s) => params.append(props.spCode, s.value));
+    // router.push(`${pathname}?${params.toString()}`);
+    window.history.pushState(null, "", `${pathname}?${params.toString()}`);
+  }
+
+  const spSelected = searchParams.getAll(props.spCode);
+  const selected = options.filter((s) => spSelected.indexOf(s.value) > -1);
+
+  return (
+    <MultipleSelector
+      value={selected as Option[]}
+      onChange={updateSearchParams}
+      defaultOptions={options as Option[]}
+      placeholder={props.placeholder}
+      hidePlaceholderWhenSelected
+      className="bg-neu2 rounded-full md:w-40 xl:w-full"
+      emptyIndicator={
+        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+          no results found
+        </p>
+      }
+    />
+  );
+}
+
+function HonorsSwitch() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  function updateSearchParams(state: boolean) {
+    const params = new URLSearchParams(searchParams);
+    if (!state) {
+      params.delete("honors");
+      router.push(`${pathname}?${params.toString()}`);
+      return;
+    }
+
+    params.set("honors", "true");
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  return (
+    <Switch
+      checked={Boolean(searchParams.get("honors"))}
+      onCheckedChange={updateSearchParams}
+    />
+  );
+}
+
+function MultiselectSkeleton() {
+  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-full"></div>;
 }

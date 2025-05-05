@@ -106,8 +106,8 @@ importers:
         specifier: ^2.0.13
         version: 2.0.13
       '@types/node':
-        specifier: ^22.15.7
-        version: 22.15.7
+        specifier: ^22.15.8
+        version: 22.15.8
       '@types/react':
         specifier: ^19.1.2
         version: 19.1.2
@@ -1669,8 +1669,8 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@22.15.7':
-    resolution: {integrity: sha512-3hieEH05p8cnASknk8cYV71K2Vqmn4Nv8gjvRc5N3XbMlBS4wPwsmsw5bcHw6ISL36vVFuAhElcQCf7Ir4bR0w==}
+  '@types/node@22.15.8':
+    resolution: {integrity: sha512-VINDWfc4C3DGAa1J+riYRHjzt+IFj5eRaEl768ze7ZqXcjyN/4WHxPLAWMLTwmODpPvFyzuMTAT6A4RMOHlg5g==}
 
   '@types/pg@8.12.0':
     resolution: {integrity: sha512-a9Z11ecnpNPFu2iT4Qo9SSYgM2r1l4UqLIQ454zhCDRzxqOh/vsi57FFovbc64oBGPBotXw5cRhUQtJEHCb/OA==}
@@ -4871,7 +4871,7 @@ snapshots:
 
   '@neondatabase/serverless@1.0.0':
     dependencies:
-      '@types/node': 22.15.7
+      '@types/node': 22.15.8
       '@types/pg': 8.12.0
 
   '@next/env@15.3.1': {}
@@ -5917,13 +5917,13 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@22.15.7':
+  '@types/node@22.15.8':
     dependencies:
       undici-types: 6.21.0
 
   '@types/pg@8.12.0':
     dependencies:
-      '@types/node': 22.15.7
+      '@types/node': 22.15.8
       pg-protocol: 1.9.5
       pg-types: 4.0.2
 

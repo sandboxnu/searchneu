@@ -12,6 +12,7 @@ export function MobileWrapper(props: {
   campuses: Promise<string[]>;
   classTypes: Promise<string[]>;
   nupaths: Promise<Option[]>;
+  searchUrl: string;
 }) {
   const { course } = useParams();
 
@@ -25,7 +26,7 @@ export function MobileWrapper(props: {
           <SearchPanel {...props} />
         </div>
         <div className="col-span-1">
-          <SearchResults />
+          <SearchResults searchUrl={props.searchUrl} />
         </div>
       </div>
     </div>

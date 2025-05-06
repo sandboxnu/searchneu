@@ -37,12 +37,13 @@ export async function GET(req: NextRequest) {
   const results = r
     .filter(
       (r) =>
-        (subjects ? subjects.includes(r.item.subject) : true) &&
-        (campusFilter
-          ? campusFilter.filter((x) => r.item.classType.includes(x))
+        (subjects.length > 0 ? subjects.includes(r.item.subject) : true) &&
+        (campusFilter.length > 0
+          ? r.item.campus.filter((x) => campusFilter.includes(x)).length > 0
           : true) &&
-        (classTypeFilter
-          ? classTypeFilter.filter((x) => r.item.classType.includes(x))
+        (classTypeFilter.length > 0
+          ? r.item.classType.filter((x) => classTypeFilter.includes(x)).length >
+            0
           : true) &&
         (honorsFilter ? r.item.honors : true),
     )

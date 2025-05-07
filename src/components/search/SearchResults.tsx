@@ -15,6 +15,7 @@ interface searchResult {
   nupaths: string[];
 }
 
+// NOTE: have to pass the searchUrl up from a server component b/c of the feature flag
 export function SearchResults(props: { searchUrl: string }) {
   const params = useSearchParams();
   const deferred = useDeferredValue(params.toString());
@@ -70,9 +71,10 @@ const ResultsList = memo(function ResultsList(props: {
     return <p>No results</p>;
   }
 
+  // BUG: remove the slice with a virtualized list
   return (
     <ul className="space-y-4">
-      {results.map((result, index) => (
+      {results.slice(0, 50).map((result, index) => (
         <ResultCard
           key={index}
           result={result}

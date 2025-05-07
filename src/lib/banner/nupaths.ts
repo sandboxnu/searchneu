@@ -38,7 +38,7 @@ export const NUPATH_OPTIONS = [
   { value: "SI", label: "Societies/Institutions (SI)" },
   { value: "AD", label: "Analyzing/Using Data (AD)" },
   { value: "DD", label: "Difference/Diversity (DD)" },
-  { value: "EF", label: "Ethical Reasoning (ER)" },
+  { value: "ER", label: "Ethical Reasoning (ER)" },
   { value: "WF", label: "First Year Writing (WF)" },
   { value: "WI", label: "Writing Intensive (WI)" },
   { value: "WD", label: "Advanced Writing (WD)" },
@@ -58,4 +58,10 @@ export function isValidNupath(code: string) {
 
 export function convertNupathToLongform(path: string) {
   return NUPATH_LONGFORMS[path] ?? "??";
+}
+
+export function convertCodeToLiteral(code: string) {
+  return (
+    Object.keys(NUPATH_CODES).find((key) => NUPATH_CODES[key] === code) ?? "??"
+  );
 }

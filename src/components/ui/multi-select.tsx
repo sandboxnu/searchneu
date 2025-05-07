@@ -460,7 +460,7 @@ const MultipleSelector = React.forwardRef<
             // HACK: this undoes the full rounding so the element can grow correctly. This
             // should be pulled into a prop tho as an option rather than be hardcoded
             {
-              "rounded-md": selected.length > 2,
+              "rounded-md": selected.length > 1,
             },
           )}
           onClick={() => {

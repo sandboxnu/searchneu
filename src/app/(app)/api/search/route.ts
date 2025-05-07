@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
-import { type SQL, sql, eq } from "drizzle-orm";
+import { convertCodeToLiteral } from "@/lib/banner/nupaths";
+import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -10,10 +11,11 @@ export async function GET(req: NextRequest) {
   const query = params.get("q");
   const term = params.get("term");
   const subjects = params.getAll("subj");
-  // const nupaths = params.getAll("nupath");
-  const campusFilter = params.get("campus");
-  const minCourseId = params.get("minCourseId");
-  const maxCourseId = params.get("maxCourseId");
+  const nupaths = params.getAll("nupath");
+  const campusFilter = params.getAll("camp");
+  const classTypeFilter = params.getAll("clty");
+  const minCourseId = params.get("nci");
+  const maxCourseId = params.get("xci");
   const honorsFilter = params.get("honors");
 
   // construct the where clause based on what params are present
@@ -27,35 +29,22 @@ export async function GET(req: NextRequest) {
   }
 
   if (subjects && subjects.length > 0) {
-    const subjectConditions = subjects.map(
-      (subject) => sql`${coursesT.subject} = ${subject}`,
-    );
-
     sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`(${sql.join(subjectConditions, sql` or `)})`);
+    sqlChunks.push(
+      sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + s, "") + "]"}`,
+    );
   }
 
   if (minCourseId) {
     sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${coursesT.id} >= ${minCourseId}`);
+    sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${">= " + minCourseId}`);
   }
 
   if (maxCourseId) {
     sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${coursesT.id} <= ${maxCourseId}`);
+    sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${"<= " + maxCourseId}`);
   }
 
-  if (honorsFilter && honorsFilter.toLowerCase() === "true") {
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${sectionsT.honors} = true`);
-  }
-
-  if (campusFilter) {
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${sectionsT.campus} = ${campusFilter}`);
-  }
-
-  // run the query
   const result = await db
     .select({
       id: coursesT.id,
@@ -65,9 +54,12 @@ export async function GET(req: NextRequest) {
       maxCredits: coursesT.maxCredits,
       minCredits: coursesT.minCredits,
       nupaths: coursesT.nupaths,
-      totalSections: sql`count(distinct ${sectionsT.id})`,
-      sectionsWithSeats: sql`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
-      score: sql`paradedb.score(${coursesT.id})`,
+      totalSections: countDistinct(sectionsT.id),
+      sectionsWithSeats: sql<number>`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
+      campus: sql<string[]>`array_agg(distinct ${sectionsT.campus})`,
+      classType: sql<string[]>`array_agg(distinct ${sectionsT.classType})`,
+      honors: sql<boolean>`bool_or(${sectionsT.honors})`,
+      score: sql<number>`paradedb.score(${coursesT.id})`,
     })
     .from(coursesT)
     .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
@@ -81,8 +73,21 @@ export async function GET(req: NextRequest) {
       coursesT.minCredits,
       coursesT.nupaths,
     )
-    .orderBy(sql`paradedb.score(${coursesT.id}) desc`)
-    .limit(30);
+    .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
 
-  return Response.json(result);
+  // filter through the results to find the other filters (not in db index!)
+  const processed = result.filter(
+    (r) =>
+      (nupaths.length === 0 ||
+        nupaths
+          .map((n) => convertCodeToLiteral(n))
+          .every((x) => r.nupaths.includes(x))) &&
+      (campusFilter.length === 0 ||
+        r.campus.some((x) => campusFilter.includes(x))) &&
+      (classTypeFilter.length === 0 ||
+        r.classType.some((x) => classTypeFilter.includes(x))) &&
+      (!honorsFilter || r.honors),
+  );
+
+  return Response.json(processed);
 }

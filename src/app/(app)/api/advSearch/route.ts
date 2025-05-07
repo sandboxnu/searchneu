@@ -11,6 +11,7 @@ const config = {
 };
 
 export async function GET(req: NextRequest) {
+  const start = performance.now();
   const params = req.nextUrl.searchParams;
 
   // parse all the potential params
@@ -30,9 +31,14 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  const paramTime = performance.now();
+
   const { list, index } = await generateFuse(term);
+  const indexTime = performance.now();
   const fuse = new Fuse(list, config, Fuse.parseIndex(index));
+  const instanceTime = performance.now();
   const r = fuse.search(query);
+  const searchTime = performance.now();
 
   const results = r
     .filter(
@@ -54,6 +60,15 @@ export async function GET(req: NextRequest) {
       sectionsWithSeats: 0,
       totalSections: 0,
     }));
+
+  const parsingTime = performance.now();
+
+  console.log("total time: ", parsingTime - start);
+  console.log("parse params: ", paramTime - start);
+  console.log("get index: ", indexTime - paramTime);
+  console.log("get instance: ", instanceTime - indexTime);
+  console.log("search: ", searchTime - instanceTime);
+  console.log("parse: ", parsingTime - searchTime);
 
   return Response.json(results);
 }

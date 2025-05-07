@@ -122,7 +122,7 @@ function SearchBar() {
 
     const timeoutId = setTimeout(() => {
       fetchData();
-    }, 100);
+    }, 300);
 
     return () => clearTimeout(timeoutId);
   }, [query]);

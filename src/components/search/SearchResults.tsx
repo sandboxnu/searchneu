@@ -19,14 +19,19 @@ interface searchResult {
 // NOTE: have to pass the searchUrl up from a server component b/c of the feature flag
 export function SearchResults() {
   const params = useSearchParams();
+  const { term, course } = useParams();
   const deferred = useDeferredValue(params.toString());
   const stale = deferred !== params.toString();
 
   return (
     <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col xl:h-[calc(100vh-56px)]">
-      <div className={stale ? "opacity-80" : ""}>
+      <div className={stale ? "opacity-60" : ""}>
         <Suspense fallback={<ResultsListSkeleton />}>
-          <ResultsList params={deferred} />
+          <ResultsList
+            params={deferred}
+            term={term?.toString() ?? ""}
+            course={course?.toString() ?? ""}
+          />
         </Suspense>
       </div>
     </div>
@@ -54,13 +59,15 @@ function fetcher<T>(key: string, p: () => string) {
 // this is explicitly memoized a) because it is a little heavy to render and b)
 // (more importantly) the parent component rerenders too frequently with
 // the searchParams and the memo shields the extra fetching requests
-const ResultsList = memo(function ResultsList(props: { params: string }) {
-  const { term, course } = useParams();
-
+const ResultsList = memo(function ResultsList(props: {
+  params: string;
+  term: string;
+  course: string;
+}) {
   const results = use(
-    fetcher<searchResult[]>(props.params + term?.toString(), () => {
+    fetcher<searchResult[]>(props.params + props.term, () => {
       const searchP = new URLSearchParams(props.params);
-      searchP.set("term", term?.toString() ?? "");
+      searchP.set("term", props.term);
       return `/api/search?${searchP.toString()}`;
     }),
   );
@@ -80,12 +87,14 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
 
   const items = virtual.getVirtualItems();
 
-  // BUG: remove the slice with a virtualized list
   return (
     <div
       ref={parentRef}
-      className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 py-2 xl:h-[calc(100vh-56px)]"
+      className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 pt-2 xl:h-[calc(100vh-56px)]"
     >
+      <p className="text-neu6 mb-2 w-full text-center text-sm">
+        {results.length} results
+      </p>
       <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
         <ul
           className="absolute top-0 left-0 w-full"
@@ -100,9 +109,9 @@ const ResultsList = memo(function ResultsList(props: { params: string }) {
             >
               <ResultCard
                 result={results[v.index]}
-                link={`/catalog/${term?.toString()}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+                link={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
                 active={
-                  decodeURIComponent(course?.toString() ?? "") ===
+                  decodeURIComponent(props.course) ===
                   results[v.index].subject + " " + results[v.index].courseNumber
                 }
               />

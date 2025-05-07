@@ -36,10 +36,6 @@ export default async function Layout(props: {
   // NOTE: the static nupaths needs a promise b/c the use hook is called on it later
   const nupaths = new Promise((r) => r(NUPATH_OPTIONS)) as Promise<Option[]>;
 
-  const searchUrl = "/api/search";
-
-  console.log("server refresh!");
-
   return (
     <div className="grid h-full w-full grid-cols-12">
       <MobileWrapper
@@ -48,7 +44,6 @@ export default async function Layout(props: {
         campuses={campuses}
         classTypes={classTypes}
         nupaths={nupaths}
-        searchUrl={searchUrl}
       />
       <div className="col-span-12 xl:col-span-7">{props.children}</div>
     </div>

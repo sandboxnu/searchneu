@@ -2,7 +2,7 @@
 
 import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, use, useDeferredValue, useRef } from "react";
+import { memo, Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 interface searchResult {
@@ -17,16 +17,16 @@ interface searchResult {
 }
 
 // NOTE: have to pass the searchUrl up from a server component b/c of the feature flag
-export function SearchResults(props: { searchUrl: string }) {
+export function SearchResults() {
   const params = useSearchParams();
   const deferred = useDeferredValue(params.toString());
   const stale = deferred !== params.toString();
 
   return (
-    <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col overflow-y-scroll px-2 py-2 xl:h-[calc(100vh-56px)]">
+    <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col xl:h-[calc(100vh-56px)]">
       <div className={stale ? "opacity-80" : ""}>
         <Suspense fallback={<ResultsListSkeleton />}>
-          <ResultsList params={deferred} searchUrl={props.searchUrl} />
+          <ResultsList params={deferred} />
         </Suspense>
       </div>
     </div>
@@ -54,15 +54,14 @@ function fetcher<T>(key: string, p: () => string) {
 // this is explicitly memoized a) because it is a little heavy to render and b)
 // (more importantly) the parent component rerenders too frequently with
 // the searchParams and the memo shields the extra fetching requests
-function ResultsList(props: { params: string; searchUrl: string }) {
-  const parentRef = useRef(null);
+const ResultsList = memo(function ResultsList(props: { params: string }) {
   const { term, course } = useParams();
 
   const results = use(
     fetcher<searchResult[]>(props.params + term?.toString(), () => {
       const searchP = new URLSearchParams(props.params);
       searchP.set("term", term?.toString() ?? "");
-      return `${props.searchUrl}?${searchP.toString()}`;
+      return `/api/search?${searchP.toString()}`;
     }),
   );
 
@@ -70,36 +69,54 @@ function ResultsList(props: { params: string; searchUrl: string }) {
     return <p>No results</p>;
   }
 
-  // const virtual = useVirtualizer({
-  //   count: results.length,
-  //   getScrollElement: () => parentRef.current,
-  //   estimateSize: (i) => 90,
-  //   overscan: 5,
-  // });
+  const parentRef = useRef(null);
+
+  const virtual = useVirtualizer({
+    count: results.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: (i) => 90,
+    overscan: 5,
+  });
+
+  const items = virtual.getVirtualItems();
 
   // BUG: remove the slice with a virtualized list
   return (
-    <div ref={parentRef}>
-      <ul className="space-y-4">
-        {results.slice(0, 50).map((result, index) => (
-          <ResultCard
-            key={index}
-            result={result}
-            link={`/catalog/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
-            active={
-              decodeURIComponent(course?.toString() ?? "") ===
-              result.subject + " " + result.courseNumber
-            }
-          />
-        ))}
-      </ul>
+    <div
+      ref={parentRef}
+      className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 py-2 xl:h-[calc(100vh-56px)]"
+    >
+      <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
+        <ul
+          className="absolute top-0 left-0 w-full"
+          style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}
+        >
+          {items.map((v) => (
+            <li
+              className={`mb-2`}
+              key={v.index}
+              data-index={v.index}
+              ref={virtual.measureElement}
+            >
+              <ResultCard
+                result={results[v.index]}
+                link={`/catalog/${term?.toString()}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+                active={
+                  decodeURIComponent(course?.toString() ?? "") ===
+                  results[v.index].subject + " " + results[v.index].courseNumber
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-}
+});
 
 function ResultsListSkeleton() {
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-2 p-2">
       {Array.from({ length: 10 }).map((_, i) => (
         <li key={i} className="bg-neu3 h-20 w-full animate-pulse rounded"></li>
       ))}

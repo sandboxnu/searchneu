@@ -2,7 +2,8 @@
 
 import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
-import { memo, Suspense, use, useDeferredValue } from "react";
+import { Suspense, use, useDeferredValue, useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 interface searchResult {
   name: string;
@@ -53,10 +54,8 @@ function fetcher<T>(key: string, p: () => string) {
 // this is explicitly memoized a) because it is a little heavy to render and b)
 // (more importantly) the parent component rerenders too frequently with
 // the searchParams and the memo shields the extra fetching requests
-const ResultsList = memo(function ResultsList(props: {
-  params: string;
-  searchUrl: string;
-}) {
+function ResultsList(props: { params: string; searchUrl: string }) {
+  const parentRef = useRef(null);
   const { term, course } = useParams();
 
   const results = use(
@@ -71,23 +70,32 @@ const ResultsList = memo(function ResultsList(props: {
     return <p>No results</p>;
   }
 
+  // const virtual = useVirtualizer({
+  //   count: results.length,
+  //   getScrollElement: () => parentRef.current,
+  //   estimateSize: (i) => 90,
+  //   overscan: 5,
+  // });
+
   // BUG: remove the slice with a virtualized list
   return (
-    <ul className="space-y-4">
-      {results.slice(0, 50).map((result, index) => (
-        <ResultCard
-          key={index}
-          result={result}
-          link={`/catalog/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
-          active={
-            decodeURIComponent(course?.toString() ?? "") ===
-            result.subject + " " + result.courseNumber
-          }
-        />
-      ))}
-    </ul>
+    <div ref={parentRef}>
+      <ul className="space-y-4">
+        {results.slice(0, 50).map((result, index) => (
+          <ResultCard
+            key={index}
+            result={result}
+            link={`/catalog/${term?.toString()}/${result.subject}%20${result.courseNumber}?${props.params}`}
+            active={
+              decodeURIComponent(course?.toString() ?? "") ===
+              result.subject + " " + result.courseNumber
+            }
+          />
+        ))}
+      </ul>
+    </div>
   );
-});
+}
 
 function ResultsListSkeleton() {
   return (

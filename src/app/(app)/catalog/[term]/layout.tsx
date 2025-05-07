@@ -6,7 +6,6 @@ import { NUPATH_OPTIONS } from "@/lib/banner/nupaths";
 import { db } from "@/db";
 import { subjectsT, sectionsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { advancedSearchFlag } from "@/lib/flags";
 
 export default async function Layout(props: {
   params: Promise<{ term: string; course?: string }>;
@@ -37,9 +36,9 @@ export default async function Layout(props: {
   // NOTE: the static nupaths needs a promise b/c the use hook is called on it later
   const nupaths = new Promise((r) => r(NUPATH_OPTIONS)) as Promise<Option[]>;
 
-  const searchUrl = (await advancedSearchFlag())
-    ? "/api/advSearch"
-    : "/api/search";
+  const searchUrl = "/api/search";
+
+  console.log("server refresh!");
 
   return (
     <div className="grid h-full w-full grid-cols-12">

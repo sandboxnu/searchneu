@@ -16,7 +16,10 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "SearchNEU",
+  title: {
+    template: "%s | SearchNEU",
+    default: "SearchNEU",
+  },
   description: "Search courses at Northeastern University",
 };
 

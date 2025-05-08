@@ -460,7 +460,7 @@ const MultipleSelector = React.forwardRef<
             // HACK: this undoes the full rounding so the element can grow correctly. This
             // should be pulled into a prop tho as an option rather than be hardcoded
             {
-              "rounded-md": selected.length > 1,
+              "rounded-lg": selected.length > 1,
             },
           )}
           onClick={() => {
@@ -566,7 +566,7 @@ const MultipleSelector = React.forwardRef<
         <div className="relative">
           {open && (
             <CommandList
-              className="bg-neu1 text-neu9 animate-in absolute top-1 z-10 w-full rounded-md shadow-md outline-none"
+              className="bg-neu1 text-neu9 animate-in fade-in-0 zoom-in-95 absolute top-1 z-10 w-full rounded-lg shadow-md outline-none"
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}

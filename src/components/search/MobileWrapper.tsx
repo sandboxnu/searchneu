@@ -20,11 +20,11 @@ export function MobileWrapper(props: {
       data-show={!Boolean(course)}
       className="col-span-12 hidden data-[show=true]:block xl:col-span-5 xl:block!"
     >
-      <div className="flex grid-cols-2 flex-col xl:grid!">
-        <div className="col-span-1">
+      <div className="flex grid-cols-12 flex-col xl:grid!">
+        <div className="col-span-5">
           <SearchPanel {...props} />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-7">
           <SearchResults />
         </div>
       </div>

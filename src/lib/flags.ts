@@ -7,3 +7,11 @@ export const reactScanFlag = flag({
     return false;
   },
 });
+
+export const faqFlag = flag({
+  key: "faq-page",
+  description: "Enable FAQ page",
+  decide() {
+    return false;
+  },
+});

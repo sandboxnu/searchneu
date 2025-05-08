@@ -35,7 +35,7 @@ export function ResultCard(props: {
     <Link
       href={props.link}
       data-active={props.active}
-      className="bg-neu1 hover:bg-muted data-[active=true]:bg-muted data-[active=true]:border-border flex flex-col gap-0.5 rounded border-[0.5px] border-transparent px-4 py-2 shadow-xs"
+      className="bg-neu1 hover:bg-muted data-[active=true]:bg-muted data-[active=true]:border-border flex flex-col gap-0.5 rounded-lg border-[0.5px] border-transparent px-4 py-2"
     >
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">

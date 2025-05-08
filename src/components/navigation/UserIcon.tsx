@@ -39,8 +39,8 @@ function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative size-10 rounded-full">
+          <Avatar className="size-10">
             <AvatarFallback>
               <Iconskie className="size-full" />
             </AvatarFallback>

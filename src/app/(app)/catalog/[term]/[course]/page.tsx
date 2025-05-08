@@ -10,6 +10,14 @@ import Link from "next/link";
 // PERF: switch to ISR (need to pull seat data out first)
 // export const revalidate = 3600;
 
+export async function generateMetadata(props: {
+  params: Promise<{ term: string; course: string }>;
+}) {
+  return {
+    title: decodeURIComponent((await props.params)?.course) ?? "",
+  };
+}
+
 export default async function Page(props: {
   params: Promise<{ term: string; course: string }>;
 }) {

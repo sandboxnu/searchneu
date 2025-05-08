@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserIcon";
+import { faqFlag } from "@/lib/flags";
 
-export function Header() {
+export async function Header() {
+  const enableFaqPage = await faqFlag();
   // TODO: hamburger menu for mobile
 
   return (
@@ -13,6 +15,7 @@ export function Header() {
       <div className="flex items-center gap-8">
         <nav className="space-x-4 font-semibold">
           <Link href="/catalog">Catalog</Link>
+          {enableFaqPage && <Link href="/faq">FAQ</Link>}
         </nav>
         <UserIcon />
       </div>

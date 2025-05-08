@@ -2,7 +2,7 @@
 
 import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
-import { memo, Suspense, use, useDeferredValue, useRef } from "react";
+import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 interface searchResult {
@@ -16,7 +16,6 @@ interface searchResult {
   nupaths: string[];
 }
 
-// NOTE: have to pass the searchUrl up from a server component b/c of the feature flag
 export function SearchResults() {
   const params = useSearchParams();
   const { term, course } = useParams();
@@ -56,14 +55,12 @@ function fetcher<T>(key: string, p: () => string) {
   return cachePromise as Promise<T>;
 }
 
-// this is explicitly memoized a) because it is a little heavy to render and b)
-// (more importantly) the parent component rerenders too frequently with
-// the searchParams and the memo shields the extra fetching requests
-const ResultsList = memo(function ResultsList(props: {
-  params: string;
-  term: string;
-  course: string;
-}) {
+// this is explicitly memoized b/c the parent component
+// rerenders too frequently with the searchParams and the
+// memo shields the extra fetch requests
+function ResultsList(props: { params: string; term: string; course: string }) {
+  "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
+
   const results = use(
     fetcher<searchResult[]>(props.params + props.term, () => {
       const searchP = new URLSearchParams(props.params);
@@ -72,20 +69,20 @@ const ResultsList = memo(function ResultsList(props: {
     }),
   );
 
-  if (results.length < 0) {
-    return <p>No results</p>;
-  }
-
   const parentRef = useRef(null);
 
   const virtual = useVirtualizer({
     count: results.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: (i) => 90,
+    estimateSize: () => 90,
     overscan: 5,
   });
 
   const items = virtual.getVirtualItems();
+
+  if (results.length < 0) {
+    return <p>No results</p>;
+  }
 
   return (
     <div
@@ -121,7 +118,7 @@ const ResultsList = memo(function ResultsList(props: {
       </div>
     </div>
   );
-});
+}
 
 function ResultsListSkeleton() {
   return (

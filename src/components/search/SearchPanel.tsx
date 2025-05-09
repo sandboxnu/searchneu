@@ -33,7 +33,7 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="flex flex-col gap-2 px-4 py-4">
+    <div className="flex flex-col gap-2 overflow-y-scroll px-4 py-4 xl:h-[calc(100vh-56px)]">
       <SearchBar />
 
       <div className="hidden space-y-6 xl:block">
@@ -128,7 +128,7 @@ export function SearchPanel(props: {
         <div className="flex items-center justify-between">
           <Label
             htmlFor="course-honors-toggle"
-            className="pb-3 text-base font-semibold"
+            className="text-base font-semibold"
           >
             Honors
           </Label>
@@ -249,7 +249,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
         const newestTerm = terms[val as keyof GroupedTerms][0];
         router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
       }}
-      className="bg-neu2 w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3"
+      className="bg-neu2 w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3 *:data-[slot=toggle-group-item]:font-bold"
     >
       <ToggleGroupItem value="neu" aria-label="Toggle last 24 hours">
         NEU

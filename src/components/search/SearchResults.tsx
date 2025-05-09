@@ -90,7 +90,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
       className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 pt-2 xl:h-[calc(100vh-56px)]"
     >
       <p className="text-neu6 mb-2 w-full text-center text-sm">
-        {results.length} results
+        {results.length} Results
       </p>
       <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
         <ul

@@ -1,8 +1,5 @@
 "use server";
-import { db, twilio } from "@/db";
-import { usersT } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { createSession } from "../sessions";
+import { twilio } from "@/db";
 
 export async function sendVerificationText(phone: string) {
   try {
@@ -50,26 +47,7 @@ export async function checkVerificationCode(phone: string, code: string) {
       return { status: check.status };
     }
 
-    const user = await db
-      .select({ uid: usersT.userId })
-      .from(usersT)
-      .where(eq(usersT.phoneNumber, phone));
-
-    let userId = user[0]?.uid;
-    if (user.length === 0) {
-      const newUser = await db
-        .insert(usersT)
-        .values({
-          phoneNumber: phone,
-          plan: 1,
-        })
-        .returning({ uid: usersT.userId });
-
-      userId = newUser[0].uid;
-    }
-
-    await createSession(userId);
-    return { status: "approved", uid: userId };
+    return { status: "approved", uid: 123 };
   } catch (err) {
     console.error("error confirming verification code");
     throw err;

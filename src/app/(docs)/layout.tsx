@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/lib/context/auth-context";
 import { DebugTools } from "@/components/DebugTools";
 import { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { source } from "@/lib/source";
@@ -55,15 +54,13 @@ export default function RootLayout({
         className={`${geist} ${geistMono.variable} flex flex-col antialiased`}
       >
         <DebugTools />
-        <AuthProvider>
-          {/* These className overrides required b/c of a bug in the Banner component */}
-          <Banner className="sticky shrink-0">
-            Heads up! These docs are still in development! Mind our mess 🏗️
-          </Banner>
-          <RootProvider>
-            <DocsLayout {...docsOptions}>{children}</DocsLayout>
-          </RootProvider>
-        </AuthProvider>
+        {/* These className overrides required b/c of a bug in the Banner component */}
+        <Banner className="sticky shrink-0">
+          Heads up! These docs are still in development! Mind our mess 🏗️
+        </Banner>
+        <RootProvider>
+          <DocsLayout {...docsOptions}>{children}</DocsLayout>
+        </RootProvider>
       </body>
     </html>
   );

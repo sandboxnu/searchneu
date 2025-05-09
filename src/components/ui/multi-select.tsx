@@ -452,7 +452,7 @@ const MultipleSelector = React.forwardRef<
       >
         <div
           className={cn(
-            "ring-offset-background focus-visible:ring-neu2 flex min-h-10 items-center rounded-md px-4 py-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 md:text-sm",
+            "ring-offset-background focus-visible:ring-neu2 flex min-h-10 items-center rounded-md py-2 pr-5 pl-2 text-base focus-visible:ring-2 focus-visible:ring-offset-2 md:text-sm",
             {
               "cursor-text": !disabled && selected.length !== 0,
             },
@@ -460,7 +460,7 @@ const MultipleSelector = React.forwardRef<
             // HACK: this undoes the full rounding so the element can grow correctly. This
             // should be pulled into a prop tho as an option rather than be hardcoded
             {
-              "rounded-lg": selected.length > 1,
+              "rounded-3xl": selected.length > 1,
             },
           )}
           onClick={() => {

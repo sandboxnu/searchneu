@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@/lib/context/auth-context";
 import { SignIn } from "../SignIn";
 import { Button } from "../ui/button";
 import { useState } from "react";
@@ -14,14 +13,15 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
+import { authClient } from "@/lib/auth-client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
-  const { user } = useAuth();
+  const user = authClient.useSession();
 
   return (
     <>
-      {user ? (
+      {user.data ? (
         <UserMenu />
       ) : (
         <Button className="font-bold" onClick={() => setShowSI(!showSI)}>
@@ -34,8 +34,6 @@ export function UserIcon() {
 }
 
 function UserMenu() {
-  const { signOut } = useAuth();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -53,7 +51,10 @@ function UserMenu() {
         <DropdownMenuItem asChild>
           <Link href="/">Subscriptions</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={signOut} variant="destructive">
+        <DropdownMenuItem
+          onClick={() => authClient.signOut()}
+          variant="destructive"
+        >
           Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>

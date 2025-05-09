@@ -19,7 +19,7 @@ import {
   sendVerificationText,
 } from "@/lib/actions/signIn";
 import { Magoskie } from "./icons/Magoskie";
-import { useAuth } from "@/lib/context/auth-context";
+import { authClient } from "@/lib/auth-client";
 
 export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   const [page, setPage] = useState(Boolean(props?.oneMoreStep) ? 0 : 1);
@@ -28,17 +28,48 @@ export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   return (
     <Dialog onOpenChange={() => props.closeFn()} defaultOpen={true}>
       {page === 0 && <OneMoreStep next={() => setPage(1)} />}
-      {page === 1 && (
+      {page === 1 && <SocialSignIn next={() => setPage(2)} />}
+      {page === 2 && <Onboarding next={() => setPage(3)} />}
+      {page === 3 && (
         <PhoneNumberPage
-          next={() => setPage(2)}
+          next={() => setPage(4)}
           setPhoneNumber={setPhoneNumber}
         />
       )}
-      {page === 2 && (
-        <PhoneVerification next={() => setPage(3)} phoneNumber={phoneNumber} />
+      {page === 4 && (
+        <PhoneVerification next={() => setPage(5)} phoneNumber={phoneNumber} />
       )}
-      {page === 3 && <Onboarding next={() => props.closeFn()} />}
+      {page === 5 && <Onboarding next={() => props.closeFn()} />}
     </Dialog>
+  );
+}
+
+function SocialSignIn(props: { next: () => void }) {
+  async function signIn() {
+    await authClient.signIn.social({
+      provider: "github",
+    });
+
+    props.next();
+  }
+
+  return (
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader className="flex w-full items-center">
+        <DialogTitle>SignIn</DialogTitle>
+        <DialogDescription className="text-center">
+          blah blah blah
+        </DialogDescription>
+      </DialogHeader>
+      {/* <div className="flex w-full items-center justify-center py-4"> */}
+      {/*   <Magoskie className="w-32" /> */}
+      {/* </div> */}
+      <DialogFooter>
+        <Button type="submit" className="w-full" onClick={() => signIn()}>
+          Sign In
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -75,7 +106,6 @@ function Onboarding(props: { next: () => void }) {
 function PhoneVerification(props: { next: () => void; phoneNumber: string }) {
   const [code, setCode] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const { signUser } = useAuth();
 
   async function verifyCode() {
     if (code.length !== 6) {
@@ -88,8 +118,6 @@ function PhoneVerification(props: { next: () => void; phoneNumber: string }) {
       setErrorMsg("Invalid code");
       return;
     }
-
-    signUser({ userId: status.uid });
 
     props.next();
   }

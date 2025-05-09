@@ -76,12 +76,12 @@ function NUPathBadges(props: { nupaths: string[] }) {
   return (
     <ul className="flex gap-0.5">
       {paths.map((n) => (
-        <span key={n} className="bg-neu3 rounded px-2 text-xs font-medium">
+        <span key={n} className="bg-neu3 rounded px-2 text-xs font-bold">
           {n}
         </span>
       ))}
       {plusMore > 0 && (
-        <span className="bg-neu3 rounded px-2 text-xs font-medium">
+        <span className="bg-neu3 rounded px-2 text-xs font-bold">
           +{plusMore}
         </span>
       )}

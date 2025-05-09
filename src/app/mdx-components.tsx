@@ -8,13 +8,7 @@ import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
-    APIPage: (props) => {
-      const oapiProps = openapi.getAPIPageProps(props);
-
-      console.log(oapiProps);
-
-      return <APIPage {...oapiProps} />;
-    },
+    APIPage: (props) => <APIPage {...openapi.getAPIPageProps(props)} />,
     Popup,
     PopupContent,
     PopupTrigger,

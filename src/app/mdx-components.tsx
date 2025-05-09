@@ -10,6 +10,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
     APIPage: (props) => {
+      console.log("getting page");
       const oapiProps = openapi.getAPIPageProps(props);
 
       const path = oapiProps.document;

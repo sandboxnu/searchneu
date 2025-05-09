@@ -17,7 +17,7 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      redirectURI: "https://search2-beta.vercal.app/api/auth/callback/github",
+      redirectURI: "https://search2-beta.vercel.app/api/auth/callback/github",
     },
   },
   plugins: [

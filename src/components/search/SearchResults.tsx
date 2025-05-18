@@ -16,7 +16,7 @@ interface searchResult {
   nupaths: string[];
 }
 
-export function SearchResults() {
+export default function SearchResults() {
   const params = useSearchParams();
   const { term, course } = useParams();
   const deferred = useDeferredValue(params.toString());
@@ -80,8 +80,15 @@ function ResultsList(props: { params: string; term: string; course: string }) {
 
   const items = virtual.getVirtualItems();
 
-  if (results.length < 0) {
-    return <p>No results</p>;
+  if (results.length === 0) {
+    return (
+      <div
+        ref={parentRef}
+        className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 pt-2 xl:h-[calc(100vh-56px)]"
+      >
+        <p className="text-neu6 mb-2 w-full text-center text-sm">No Results</p>
+      </div>
+    );
   }
 
   return (

@@ -6,6 +6,7 @@ import { oAuthProxy, phoneNumber } from "better-auth/plugins";
 import * as schema from "@/db/schema";
 
 export const auth = betterAuth({
+  productionURL: "https://search2-beta.vercel.app",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -28,7 +29,10 @@ export const auth = betterAuth({
         return;
       },
     }),
-    oAuthProxy(),
+    oAuthProxy({
+      productionURL: "https://search2-beta.vercel.app",
+      // currentURL: "http://localhost:3000",
+    }),
     nextCookies(),
   ],
 });

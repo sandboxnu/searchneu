@@ -14,20 +14,26 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
 import { authClient } from "@/lib/auth-client";
+import { Skeleton } from "../ui/skeleton";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
   const user = authClient.useSession();
+  console.log(user);
+
+  if (user.isPending) {
+    return <Skeleton className="size-4 rounded-full" />;
+  }
+
+  if (user.data) {
+    return <UserMenu />;
+  }
 
   return (
     <>
-      {user.data ? (
-        <UserMenu />
-      ) : (
-        <Button className="font-bold" onClick={() => setShowSI(!showSI)}>
-          Sign In
-        </Button>
-      )}
+      <Button className="font-bold" onClick={() => setShowSI(!showSI)}>
+        Sign In
+      </Button>
       {showSI && <SignIn closeFn={() => setShowSI(false)} />}
     </>
   );

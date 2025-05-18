@@ -1,10 +1,16 @@
 "use client";
 
-import { SearchResults } from "./SearchResults";
 import { SearchPanel } from "./SearchPanel";
 import { GroupedTerms, Subject } from "@/lib/types";
 import { useParams } from "next/navigation";
 import { Option } from "../ui/multi-select";
+import dynamic from "next/dynamic";
+
+// BUG: ssr on the results list w/ query params causes hydration error
+// https://nextjs.org/docs/messages/react-hydration-error
+const SearchResults = dynamic(() => import("./SearchResults"), {
+  ssr: false,
+});
 
 export function MobileWrapper(props: {
   terms: Promise<GroupedTerms>;

@@ -33,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${lato.className} ${geistMono.variable} flex min-h-screen flex-col font-sans antialiased`}
       >
-        <DebugTools />
+        {/* <DebugTools /> */}
         <Header />
         <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>
       </body>

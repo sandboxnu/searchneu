@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/navigation/Header";
-import { DebugTools } from "@/components/DebugTools";
+// import { DebugTools } from "@/components/DebugTools";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",

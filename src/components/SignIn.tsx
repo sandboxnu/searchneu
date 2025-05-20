@@ -11,21 +11,16 @@ import {
 import { Button } from "./ui/button";
 import { Chairskie } from "./icons/Chairskie";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
+import { signIn } from "@/lib/auth-client";
+import { GoogleLogo } from "./icons/Google";
 
 export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   const [loading, setLoading] = useState(false);
 
-  async function signIn() {
+  async function doSignIn() {
     setLoading(true);
-    const a = await authClient.signIn.social({
-      provider: "github",
-      // newUserCallbackURL: "/on",
-      callbackURL: window.location.toString(),
-    });
-    console.log("a");
-    console.log(JSON.stringify(a));
+    signIn();
   }
 
   return (
@@ -34,7 +29,9 @@ export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
         <DialogHeader className="flex w-full items-center">
           <DialogTitle>One More Step</DialogTitle>
           <DialogDescription className="text-center">
-            Sign in to be the first to know when seats open up.
+            Sign in to be the first to know when seats open up! We currently
+            only support valid <span className="font-bold">husky.neu.edu</span>{" "}
+            accounts.
           </DialogDescription>
         </DialogHeader>
         <div className="flex w-full items-center justify-center py-4">
@@ -44,11 +41,14 @@ export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
           <Button
             type="submit"
             className="w-full"
-            onClick={() => signIn()}
+            onClick={() => doSignIn()}
             disabled={loading}
           >
             {loading && <Loader2 />}
-            Sign In
+            Sign in with{" "}
+            <span className="bg-neu1 rounded p-0.5">
+              <GoogleLogo className="" />
+            </span>
           </Button>
         </DialogFooter>
       </DialogContent>

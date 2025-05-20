@@ -1,41 +1,57 @@
-import { db } from "@/db";
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { nextCookies } from "better-auth/next-js";
-import { oAuthProxy, phoneNumber } from "better-auth/plugins";
-import * as schema from "@/db/schema";
+import "server-only";
 
-export const auth = betterAuth({
-  logger: {
-    level: "debug",
-  },
-  baseURL: process.env.BETTER_AUTH_URL ?? process.env.VERCEL_URL,
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    schema: {
-      ...schema,
-    },
-    usePlural: true,
-  }),
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      redirectURI: "https://search2-beta.vercel.app/api/auth/callback/github",
-    },
-  },
-  plugins: [
-    phoneNumber({
-      sendOTP: ({ phoneNumber, code }) => {
-        console.log(phoneNumber);
-        console.log(code);
-        return;
-      },
-    }),
-    oAuthProxy({
-      productionURL: "https://search2-beta.vercel.app",
-      // currentURL: "http://localhost:3000",
-    }),
-    nextCookies(),
-  ],
-});
+import { Google } from "arctic";
+import { createSecretKey } from "node:crypto";
+import { jwtVerify, SignJWT } from "jose";
+
+export const config = {
+  callback:
+    process.env.NODE_ENV === "production"
+      ? "https://search2-beta.vercel.app/api/auth/callback"
+      : "http://localhost:3000/api/auth/callback",
+  issuer: "https://searchneu.com",
+  cookieName: "searchneu.session",
+  expiration: 60 * 60 * 24 * 7 * 7,
+  hostedDomain: "husky.neu.edu",
+} as const;
+
+export const googleProvider = new Google(
+  process.env.GOOGLE_CLIENT_ID!,
+  process.env.GOOGLE_CLIENT_SECRET!,
+  config.callback,
+);
+
+export async function createJWT(uid: string) {
+  const secretKey = createSecretKey(process.env.JWT_SECRET!, "utf-8");
+
+  return await new SignJWT()
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(uid)
+    .setIssuedAt()
+    .setExpirationTime(Math.floor(Date.now() / 1000) + config.expiration)
+    .setIssuer(config.issuer)
+    .setAudience(config.issuer)
+    .setJti("")
+    .sign(secretKey);
+}
+
+export async function verifyJWT(token: string) {
+  const secretKey = createSecretKey(process.env.JWT_SECRET!, "utf-8");
+
+  try {
+    const { payload } = await jwtVerify(token, secretKey, {
+      issuer: config.issuer,
+      audience: config.issuer,
+    });
+
+    const guid = payload.sub;
+    if (!guid) {
+      return null;
+    }
+
+    return guid;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}

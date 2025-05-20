@@ -13,19 +13,13 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
-import { authClient } from "@/lib/auth-client";
-import { Skeleton } from "../ui/skeleton";
+import { useAuth, signOut } from "@/lib/auth-client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
-  const user = authClient.useSession();
-  console.log(user);
+  const { user, isPending } = useAuth();
 
-  if (user.isPending) {
-    return <Skeleton className="size-4 rounded-full" />;
-  }
-
-  if (user.data) {
+  if (!isPending && user.guid) {
     return <UserMenu />;
   }
 
@@ -55,12 +49,9 @@ function UserMenu() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Subscriptions</Link>
+          <Link href="/">Tracked Sections</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => authClient.signOut()}
-          variant="destructive"
-        >
+        <DropdownMenuItem onClick={() => signOut()} variant="destructive">
           Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -15,9 +15,16 @@ export function signOut(redirectUri: string = window.location.toString()) {
   window.location.assign(`/api/auth/signout?${params.toString()}`);
 }
 
+interface User {
+  guid: string | null;
+  name?: string;
+  email?: string;
+  image?: string;
+}
+
 export function useAuth() {
   const [isPending, setIsPending] = useState(true);
-  const [user, setUser] = useState<{ guid: string | null }>({ guid: null });
+  const [user, setUser] = useState<User>({ guid: null });
 
   useEffect(() => {
     async function getUser() {
@@ -31,9 +38,3 @@ export function useAuth() {
 
   return { user, isPending };
 }
-
-// function getBaseUrl(req) {
-//   const protocol = req.headers['x-forwarded-proto'];
-//   const host = req.headers['x-forwarded-host'];
-//   return `${protocol}://${host}`;
-// }

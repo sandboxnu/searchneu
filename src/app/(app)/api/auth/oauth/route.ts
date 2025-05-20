@@ -1,6 +1,6 @@
 import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
-import { google } from "@/lib/auth";
+import { config, googleProvider } from "@/lib/auth";
 import { type NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,9 +11,13 @@ export async function GET(req: NextRequest) {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
   const scopes = ["openid", "profile", "email"];
-  const url = google.createAuthorizationURL(state, codeVerifier, scopes);
+  const url = googleProvider.createAuthorizationURL(
+    state,
+    codeVerifier,
+    scopes,
+  );
 
-  url.searchParams.set("hd", "husky.neu.edu");
+  url.searchParams.set("hd", config.hostedDomain);
 
   cookieJar.set("goa_state", state, {
     path: "/",

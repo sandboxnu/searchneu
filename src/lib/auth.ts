@@ -5,25 +5,32 @@ import { createSecretKey } from "node:crypto";
 import { jwtVerify, SignJWT } from "jose";
 
 export const config = {
-  callback: "",
+  callback:
+    process.env.NODE_ENV === "production"
+      ? "https://search2-beta.vercel.app/api/auth/callback"
+      : "http://localhost:3000/api/auth/callback",
+  issuer: "https://searchneu.com",
+  cookieName: "searchneu.session",
+  expiration: 60 * 60 * 24 * 7 * 7,
+  hostedDomain: "husky.neu.edu",
 } as const;
 
-export const google = new Google(
+export const googleProvider = new Google(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!,
-  "http://localhost:3000/api/auth/callback",
+  config.callback,
 );
 
-export async function createJWT(uid: string, exp: number) {
+export async function createJWT(uid: string) {
   const secretKey = createSecretKey(process.env.JWT_SECRET!, "utf-8");
 
   return await new SignJWT()
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(uid)
     .setIssuedAt()
-    .setExpirationTime(Math.floor(Date.now() / 1000) + exp)
-    .setIssuer("https://searchneu.com")
-    .setAudience("https://searchneu.com")
+    .setExpirationTime(Math.floor(Date.now() / 1000) + config.expiration)
+    .setIssuer(config.issuer)
+    .setAudience(config.issuer)
     .setJti("")
     .sign(secretKey);
 }
@@ -33,8 +40,8 @@ export async function verifyJWT(token: string) {
 
   try {
     const { payload } = await jwtVerify(token, secretKey, {
-      issuer: "https://searchneu.com",
-      audience: "https://searchneu.com",
+      issuer: config.issuer,
+      audience: config.issuer,
     });
 
     const guid = payload.sub;

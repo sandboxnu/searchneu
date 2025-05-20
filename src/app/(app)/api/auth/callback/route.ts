@@ -1,11 +1,12 @@
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { createJWT, google } from "@/lib/auth";
+import { createJWT, googleProvider } from "@/lib/auth";
 import { decodeIdToken, type OAuth2Tokens } from "arctic";
 import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
+import { config } from "@/lib/auth";
 
 interface GoogleOauthClaims {
   sub: string;
@@ -48,7 +49,7 @@ export async function GET(req: NextRequest) {
 
   let tokens: OAuth2Tokens;
   try {
-    tokens = await google.validateAuthorizationCode(code, codeVerifier);
+    tokens = await googleProvider.validateAuthorizationCode(code, codeVerifier);
   } catch (e) {
     // Invalid code or client credentials
     return new Response(null, {
@@ -58,7 +59,7 @@ export async function GET(req: NextRequest) {
 
   const claims = decodeIdToken(tokens.idToken()) as GoogleOauthClaims;
 
-  if (claims.hd !== "husky.neu.edu") {
+  if (claims.hd !== config.hostedDomain) {
     return new Response(null, {
       status: 400,
     });
@@ -92,14 +93,13 @@ export async function GET(req: NextRequest) {
 
   const user = users[0];
 
-  const exp = 60 * 60 * 24 * 7 * 7;
-  const jwt = await createJWT(user.guid, exp);
-  cookieJar.set("searchneu.session", jwt, {
+  const jwt = await createJWT(user.guid);
+  cookieJar.set(config.cookieName, jwt, {
     path: "/",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: exp,
+    maxAge: config.expiration,
   });
 
   // 5) oauth proxy

@@ -29,9 +29,9 @@ export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
         <DialogHeader className="flex w-full items-center">
           <DialogTitle>One More Step</DialogTitle>
           <DialogDescription className="text-center">
-            Sign in to be the first to know when seats open up! Note that we
-            currently only support valid{" "}
-            <span className="font-bold">husky.neu.edu</span> email addresses
+            Sign in to be the first to know when seats open up! We currently
+            only support valid <span className="font-bold">husky.neu.edu</span>{" "}
+            accounts.
           </DialogDescription>
         </DialogHeader>
         <div className="flex w-full items-center justify-center py-4">

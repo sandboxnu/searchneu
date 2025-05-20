@@ -49,7 +49,7 @@ function UserMenu() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Subscriptions</Link>
+          <Link href="/">Tracked Sections</Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} variant="destructive">
           Sign Out

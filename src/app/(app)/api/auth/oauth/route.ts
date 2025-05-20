@@ -1,8 +1,11 @@
 import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
 import { google } from "@/lib/auth";
+import { type NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const reqUrl = new URL(req.url);
+  const redirectURI = reqUrl.searchParams.get("redirect_uri") ?? "/";
   const cookieJar = await cookies();
 
   const state = generateState();
@@ -12,7 +15,7 @@ export async function GET() {
 
   url.searchParams.set("hd", "husky.neu.edu");
 
-  cookieJar.set("gh_oauth_state", state, {
+  cookieJar.set("goa_state", state, {
     path: "/",
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
@@ -20,7 +23,15 @@ export async function GET() {
     sameSite: "lax",
   });
 
-  cookieJar.set("gh_oauth_codeverify", codeVerifier, {
+  cookieJar.set("goa_codeverify", codeVerifier, {
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    maxAge: 60 * 10,
+    sameSite: "lax",
+  });
+
+  cookieJar.set("goa_redirecturi", redirectURI, {
     path: "/",
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,

@@ -1,7 +1,19 @@
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { google } from "@/lib/auth";
+import { createJWT, google } from "@/lib/auth";
 import { decodeIdToken, type OAuth2Tokens } from "arctic";
+import { db } from "@/db";
+import { usersT } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
+
+interface GoogleOauthClaims {
+  sub: string;
+  hd: string;
+  name: string;
+  email: string;
+  picture?: string;
+}
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -9,8 +21,13 @@ export async function GET(req: NextRequest) {
   const state = url.searchParams.get("state");
 
   const cookieJar = await cookies();
-  const storedState = cookieJar.get("gh_oauth_state")?.value ?? null;
-  const codeVerifier = cookieJar.get("gh_oauth_codeverify")?.value ?? null;
+  const storedState = cookieJar.get("goa_state")?.value ?? null;
+  const codeVerifier = cookieJar.get("goa_codeverify")?.value ?? null;
+  const redirectURI = cookieJar.get("goa_redirecturi")?.value ?? null;
+
+  cookieJar.delete("goa_state");
+  cookieJar.delete("goa_codeverify");
+  cookieJar.delete("goa_redirecturi");
 
   if (
     code === null ||
@@ -39,20 +56,58 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const claims = decodeIdToken(tokens.idToken());
-  console.log(claims);
+  const claims = decodeIdToken(tokens.idToken()) as GoogleOauthClaims;
 
-  // TODO:
-  // 1) verify hd
-  // 2) check if user exixts / onbaord
-  // 3) create jwt
-  // 4) preserve redirect state throughout
+  if (claims.hd !== "husky.neu.edu") {
+    return new Response(null, {
+      status: 400,
+    });
+  }
+
+  let users = await db
+    .select({
+      id: usersT.id,
+      guid: usersT.guid,
+    })
+    .from(usersT)
+    .where(eq(usersT.subject, claims.sub));
+
+  if (users.length === 0) {
+    // TODO: redirect to onboarding - for now create user
+
+    users = await db
+      .insert(usersT)
+      .values({
+        guid: randomUUID(),
+        subject: claims.sub,
+        name: claims.name,
+        email: claims.email,
+        image: claims.picture,
+      })
+      .returning({
+        id: usersT.id,
+        guid: usersT.guid,
+      });
+  }
+
+  const user = users[0];
+
+  const exp = 60 * 60 * 24 * 7 * 7;
+  const jwt = await createJWT(user.guid, exp);
+  cookieJar.set("searchneu.session", jwt, {
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: exp,
+  });
+
   // 5) oauth proxy
 
   return new Response(null, {
     status: 302,
     headers: {
-      location: "/",
+      location: redirectURI ?? "/",
     },
   });
 }

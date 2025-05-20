@@ -51,6 +51,8 @@ export async function GET(req: NextRequest) {
   try {
     tokens = await googleProvider.validateAuthorizationCode(code, codeVerifier);
   } catch (e) {
+    console.log(e);
+
     // Invalid code or client credentials
     return new Response(null, {
       status: 400,

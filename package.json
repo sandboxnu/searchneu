@@ -14,7 +14,7 @@
     "@neondatabase/serverless": "^1.0.0",
     "@tanstack/react-virtual": "^3.13.8",
     "@vercel/toolbar": "^0.1.36",
-    "better-auth": "^1.2.8",
+    "arctic": "^3.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

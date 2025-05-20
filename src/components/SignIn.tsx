@@ -11,21 +11,16 @@ import {
 import { Button } from "./ui/button";
 import { Chairskie } from "./icons/Chairskie";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function signIn() {
     setLoading(true);
-    const a = await authClient.signIn.social({
-      provider: "github",
-      // newUserCallbackURL: "/on",
-      callbackURL: window.location.toString(),
-    });
-    console.log("a");
-    console.log(JSON.stringify(a));
+    router.push("/api/auth/google");
   }
 
   return (

@@ -9,42 +9,53 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Chairskie } from "./icons/Chairskie";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import { GoogleLogo } from "./icons/Google";
+import Link from "next/link";
+import { Magoskie } from "./icons/Magoskie";
 
-export function SignIn(props: { oneMoreStep?: boolean; closeFn: () => void }) {
-  const [loading, setLoading] = useState(false);
+export function SignIn({ closeFn }: { closeFn: () => void }) {
+  const [isPending, setIsPending] = useState(false);
 
   async function doSignIn() {
-    setLoading(true);
+    setIsPending(true);
     signIn();
   }
 
   return (
-    <Dialog onOpenChange={() => props.closeFn()} defaultOpen={true}>
+    <Dialog onOpenChange={() => closeFn()} defaultOpen={true}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="flex w-full items-center">
-          <DialogTitle>One More Step</DialogTitle>
+          <DialogTitle>Sign In</DialogTitle>
           <DialogDescription className="text-center">
             Sign in to be the first to know when seats open up! We currently
             only support valid <span className="font-bold">husky.neu.edu</span>{" "}
-            accounts.
+            accounts.{" "}
           </DialogDescription>
         </DialogHeader>
         <div className="flex w-full items-center justify-center py-4">
-          <Chairskie className="w-32" />
+          <Magoskie className="w-32" />
         </div>
+        <DialogDescription className="text-center">
+          By signing up, you agree to our{" "}
+          <Link href="/terms" className="text-b2 underline">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="text-b2 underline">
+            Privacy Policy
+          </Link>
+        </DialogDescription>
         <DialogFooter>
           <Button
             type="submit"
             className="w-full"
             onClick={() => doSignIn()}
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading && <Loader2 />}
+            {isPending && <Loader2 className="animate-spin" />}
             Sign in with{" "}
             <span className="bg-neu1 rounded p-0.5">
               <GoogleLogo className="" />

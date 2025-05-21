@@ -106,3 +106,20 @@ export const usersT = pgTable(
     uniqueIndex("sub_idx").on(table.subject),
   ],
 );
+
+export const trackersT = pgTable("trackers", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer()
+    .notNull()
+    .references(() => usersT.id),
+  crn: varchar({ length: 5 })
+    .notNull()
+    .references(() => sectionsT.crn),
+  messageCount: integer().notNull().default(0),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+  deletedAt: timestamp(),
+});

@@ -75,8 +75,9 @@ export async function GET(req: NextRequest) {
     .from(usersT)
     .where(eq(usersT.subject, claims.sub));
 
+  let needsOnboarding = false;
   if (users.length === 0) {
-    // TODO: redirect to onboarding - for now create user
+    needsOnboarding = true;
 
     users = await db
       .insert(usersT)
@@ -104,7 +105,19 @@ export async function GET(req: NextRequest) {
     maxAge: config.expiration,
   });
 
-  // 5) oauth proxy
+  // TODO: oauth proxy
+
+  if (needsOnboarding) {
+    const params = new URLSearchParams();
+    params.set("redirect_uri", redirectURI ?? "/");
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        location: `/me/onboarding?${params.toString()}`,
+      },
+    });
+  }
 
   return new Response(null, {
     status: 302,

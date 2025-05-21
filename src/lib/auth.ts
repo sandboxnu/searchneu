@@ -31,7 +31,7 @@ export async function createJWT(uid: string) {
     .setExpirationTime(Math.floor(Date.now() / 1000) + config.expiration)
     .setIssuer(config.issuer)
     .setAudience(config.issuer)
-    .setJti("")
+    .setJti(`${Date.now()}-${Math.random().toString(36).substring(2, 10)}`)
     .sign(secretKey);
 }
 

@@ -12,9 +12,7 @@ async function main() {
 
 // doBannerSpec generates the files for the Banner OpenAPI spec
 async function doBannerSpec() {
-  const input = [
-    "https://raw.githubusercontent.com/sandboxnu/search2/refs/heads/main/content/api/banner-openapi.yaml?token=GHSAT0AAAAAAC2A6DS6DISCOSMKONUW5YMW2A6SJ3Q",
-  ];
+  const input = ["./content/api/banner-openapi.yaml"];
   const output = "./content/docs/banner-api";
 
   await cleanOutput(output);

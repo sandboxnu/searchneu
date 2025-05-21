@@ -4,26 +4,17 @@ import { config, verifyJWT } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 
-const unauthorizardRes = Response.json(
-  {
-    guid: null,
-  },
-  {
-    status: 400,
-  },
-);
-
 export async function GET() {
   const cookieJar = await cookies();
   const jwt = cookieJar.get(config.cookieName)?.value;
 
   if (!jwt) {
-    return unauthorizardRes;
+    return Response.json({ guid: null });
   }
 
   const guid = await verifyJWT(jwt);
   if (!guid) {
-    return unauthorizardRes;
+    return Response.json({ guid: null });
   }
 
   const users = await db
@@ -36,7 +27,7 @@ export async function GET() {
     .where(eq(usersT.guid, guid));
 
   if (users.length === 0) {
-    return unauthorizardRes;
+    return Response.json({ guid: null });
   }
 
   const user = users[0];

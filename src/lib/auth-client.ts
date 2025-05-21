@@ -29,6 +29,7 @@ export function useAuth() {
   useEffect(() => {
     async function getUser() {
       const res = await fetch("/api/auth/me").then((r) => r.json());
+
       setUser(res);
       setIsPending(false);
     }

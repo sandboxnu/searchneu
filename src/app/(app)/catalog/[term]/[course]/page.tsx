@@ -83,7 +83,7 @@ export default async function Page(props: {
   }
 
   return (
-    <div className="flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll px-6 pt-8 pb-8">
+    <div className="flex h-[calc(100vh-56px)] flex-col gap-4 overflow-y-scroll px-6 pt-8 pb-8">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{course}</h1>
@@ -129,6 +129,7 @@ export default async function Page(props: {
       </div>
       <Separator />
       <div className="w-full">
+        <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3>
         {/* <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3> */}
         {/* @ts-expect-error: need to parse out the meetingTimes */}
         <SectionTable sections={sections} />

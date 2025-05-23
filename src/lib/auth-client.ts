@@ -17,6 +17,7 @@ export function signOut(redirectUri: string = window.location.toString()) {
 
 interface User {
   guid: string | null;
+  phoneVerified?: boolean;
   name?: string;
   email?: string;
   image?: string;

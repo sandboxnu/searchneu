@@ -20,6 +20,7 @@ export async function GET() {
   const users = await db
     .select({
       name: usersT.name,
+      phoneVerified: usersT.phoneNumberVerified,
       email: usersT.email,
       image: usersT.image,
     })
@@ -34,6 +35,7 @@ export async function GET() {
 
   return Response.json({
     guid: guid,
+    phoneVerified: user.phoneVerified,
     name: user.name,
     email: user.email,
     image: user.image,

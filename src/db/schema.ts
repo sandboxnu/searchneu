@@ -92,6 +92,7 @@ export const usersT = pgTable(
     image: text(),
     subject: varchar({ length: 255 }).notNull().unique(),
     role: varchar({ length: 100 }).notNull().default("user"),
+    trackingLimit: integer().notNull().default(12),
     acceptedTerms: timestamp(),
     phoneNumber: text("phone_number").unique(),
     phoneNumberVerified: boolean("phone_number_verified"),

@@ -1,5 +1,22 @@
-import { Switch } from "@/components/ui/switch";
+"use client";
+
 import { cn } from "@/lib/cn";
+import {
+  Armchair,
+  CalendarDays,
+  GraduationCap,
+  Hash,
+  School,
+  Sparkles,
+} from "lucide-react";
+import { useState } from "react";
+import { TrackingSwitch } from "../auth/TrackingSwitch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface meetingTime {
   building: string;
@@ -23,84 +40,125 @@ interface section {
   waitlistRemaining: number;
 }
 
-export function SectionTable(props: { sections: section[] }) {
+export function SectionTable({ sections }: { sections: section[] }) {
   return (
-    <table className="w-full rounded-t">
-      <thead className="bg-muted shadow-sm">
-        <tr className="">
-          <th className="w-16 py-3 pl-3 text-left text-sm font-medium">CRN</th>
-          <th className="w-12 py-3 text-left text-sm font-medium">NOTIF</th>
-          <th className="w-24 py-3 text-left text-sm font-medium">SEATS</th>
-          <th className="w-80 py-3 text-left text-sm font-medium">MEETINGS</th>
-          {/* <th className="w-36 py-3 text-left text-sm font-medium">ROOM</th> */}
-          <th className="w-36 py-3 text-left text-sm font-medium">PROFESSOR</th>
-          <th className="w-20 py-3 text-left text-sm font-medium">CAMPUS</th>
-        </tr>
-      </thead>
-      <tbody className="divide-y">
-        {props.sections.map((s, i) => (
-          <SectionRow key={i} section={s} />
+    <TooltipProvider delayDuration={700}>
+      <div className="flex w-full flex-col gap-2">
+        {sections.map((s, i) => (
+          <SectionCard key={i} s={s} />
         ))}
-      </tbody>
-    </table>
+      </div>
+    </TooltipProvider>
   );
 }
 
-function SectionRow(props: { section: section }) {
-  const seatDelta = props.section.seatRemaining / props.section.seatCapacity;
-
+function SectionCard({ s }: { s: section }) {
+  const [tracked, setTracked] = useState(false);
   return (
-    <tr className="h-16">
-      <td className="pl-3">
-        <span>
-          <p className="text-accent underline">{props.section.crn}</p>
-          {props.section.honors && <p>honors</p>}
-        </span>
-      </td>
-      <td className="">
-        <Switch disabled={seatDelta > 0} />
-      </td>
-      <td className="">
-        <div className="flex flex-col">
+    <div
+      data-tracked={tracked}
+      className="data-[tracked=true]:border-neu border-neu2 bg-neu1 grid grid-cols-3 rounded-lg border p-2 transition duration-300"
+    >
+      <div className="col-start-1">
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Hash className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Course Reference Number (CRN)</p>
+            </TooltipContent>
+          </Tooltip>
+          <h3 className="font-medium">{s.crn}</h3>
+          {s.honors && (
+            <span className="flex items-center gap-1">
+              <Sparkles className="size-4" strokeWidth={1.5} />
+              <p className="text-sm">Honors section</p>
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <GraduationCap className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Teaching faculty</p>
+            </TooltipContent>
+          </Tooltip>
+          <p>{s.faculty}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Armchair className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                Remaining seats; this can be negative b/c of advisor overrides
+              </p>
+            </TooltipContent>
+          </Tooltip>
           <span className="flex items-center gap-1">
             <p
               className={cn(
                 "text-md",
-                seatDelta > 0.2
+                s.seatRemaining / s.seatCapacity > 0.2
                   ? "text-green-500"
-                  : seatDelta > 0.05
+                  : s.seatRemaining / s.seatCapacity > 0.05
                     ? "text-yellow-500"
                     : "text-red-500",
               )}
             >
-              {props.section.seatRemaining} / {props.section.seatCapacity}
+              {s.seatRemaining} / {s.seatCapacity}
             </p>
             {/* TODO: this should be a hover i for neg seat counts */}
             {/* {seatDelta < 0 && <p className="text-sm">i</p>} */}
           </span>
-          {props.section.waitlistCapacity > 0 && (
+
+          {s.waitlistCapacity > 0 && (
             <p className="text-sm">
-              {props.section.waitlistRemaining} /{" "}
-              {props.section.waitlistCapacity} waitlist
+              {s.waitlistRemaining} / {s.waitlistCapacity} waitlist
             </p>
           )}
         </div>
-      </td>
-      <td>
-        <MeetingBlocks
-          meetings={props.section.meetingTimes}
-          crn={props.section.crn}
+      </div>
+      <div className="col-span-2 col-start-2">
+        <TrackingSwitch
+          crn={s.crn}
+          inital={false}
+          disabled={s.seatRemaining / s.seatCapacity > 0}
+          onCheckedChange={(c) => setTracked(c)}
         />
-      </td>
-      {/* <td> */}
-      {/*   <RoomBlocks */}
-      {/*     meetings={props.section.meetingTimes} */}
-      {/*     crn={props.section.crn} */}
-      {/*   /> */}
-      {/* </td> */}
-      <td>{props.section.faculty}</td>
-      <td>{props.section.campus}</td>
-    </tr>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <School className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Campus</p>
+            </TooltipContent>
+          </Tooltip>
+          <p>{s.campus}</p>
+        </div>
+
+        <div className="flex gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CalendarDays className="mt-2 size-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Meeting times and locations</p>
+            </TooltipContent>
+          </Tooltip>
+          <div className="flex w-full items-center justify-between">
+            <MeetingBlocks meetings={s.meetingTimes} crn={s.crn} />
+            <RoomBlocks meetings={s.meetingTimes} crn={s.crn} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -111,16 +169,35 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   props.meetings.sort((a) => (a.final ? 1 : -1));
 
   if (!props.meetings || props.meetings[0].days.length === 0) {
-    return <p className="text-sm">Online</p>;
+    return <p className="text-sm">TBA</p>;
   }
 
+  const hasWeekendEvents = props.meetings.some((meeting) =>
+    meeting.days.some((day) => day === 0 || day === 6),
+  );
+
+  const getDaysToShow = () => {
+    if (hasWeekendEvents) {
+      return [...Array(7).keys()]; // Show all days including weekends
+    } else {
+      return [1, 2, 3, 4, 5]; // Show only weekdays (M-F)
+    }
+  };
+
+  const daysToShow = getDaysToShow();
+
   return (
-    <div className="flex flex-col gap-3 py-2">
+    <div className="flex flex-col gap-1 py-2">
       {props.meetings.map((m, i) => (
         <span key={props.crn + i} className="flex gap-2">
           <span className="flex items-center gap-1">
-            <span className="bg-neu2 flex h-5 w-[140px] items-center justify-between rounded">
-              {[...Array(7).keys()].map((j) => (
+            <span
+              className={cn(
+                "bg-neu2 flex h-5 items-center justify-between rounded-l",
+                daysToShow.length > 6 ? "w-[140px]" : "w-[100px]",
+              )}
+            >
+              {daysToShow.map((j) => (
                 <span
                   key={props.crn + i + j}
                   className={cn(
@@ -164,19 +241,19 @@ function MeetingBlocks(props: { meetings: meetingTime[]; crn: string }) {
   );
 }
 
-// function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
-//   return (
-//     <div className="flex flex-col gap-2">
-//       {props.meetings.map((m, i) => (
-//         <span key={props.crn + i} className="flex items-center gap-2">
-//           <p className="text-sm">
-//             {m.building} {m.room}
-//           </p>
-//         </span>
-//       ))}
-//     </div>
-//   );
-// }
+function RoomBlocks(props: { meetings: meetingTime[]; crn: string }) {
+  return (
+    <div className="flex flex-col gap-2">
+      {props.meetings.map((m, i) => (
+        <span key={props.crn + i} className="flex items-center gap-2">
+          <p className="text-sm">
+            {m.building} {m.room}
+          </p>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function formatTimeRange(startTime: number, endTime: number) {
   const startHours = Math.floor(startTime / 100);

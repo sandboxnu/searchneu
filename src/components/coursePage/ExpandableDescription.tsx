@@ -20,7 +20,7 @@ export function ExpandableDescription(props: { description: string }) {
       {needsExpansion && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-b2 hover:text-b2/80 focus:outline-none"
+          className="text-blue hover:text-blue/80 focus:outline-none"
         >
           {isExpanded ? "show less" : "show more"}
         </button>

@@ -1,7 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   useParams,
   usePathname,
@@ -33,10 +31,8 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="flex flex-col gap-2 overflow-y-scroll px-4 py-4 xl:h-[calc(100vh-56px)]">
-      <SearchBar />
-
-      <div className="hidden space-y-6 xl:block">
+    <div className="bg-neu1 flex flex-col overflow-y-scroll rounded-tr-lg px-4 xl:h-[calc(100vh-108px)]">
+      <div className="hidden space-y-4 xl:block">
         <Suspense fallback={<ToggleSkeleton />}>
           <CollegeToggle terms={props.terms} />
         </Suspense>
@@ -44,7 +40,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-term-select"
-            className="pb-2 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Semester
           </Label>
@@ -56,7 +52,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-subject-select"
-            className="pb-2 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Subjects
           </Label>
@@ -74,7 +70,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-campus-select"
-            className="pb-2 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             NUPaths
           </Label>
@@ -92,7 +88,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-campus-select"
-            className="pb-2 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Campus
           </Label>
@@ -110,7 +106,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-classtype-select"
-            className="pb-2 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Class Type
           </Label>
@@ -128,7 +124,7 @@ export function SearchPanel(props: {
         <div className="flex items-center justify-between">
           <Label
             htmlFor="course-honors-toggle"
-            className="text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Honors
           </Label>
@@ -138,7 +134,7 @@ export function SearchPanel(props: {
         <div className="">
           <Label
             htmlFor="course-id-range"
-            className="pb-3 text-base font-semibold"
+            className="text-neu7 pb-2 text-sm font-medium"
           >
             Course Id
           </Label>
@@ -159,76 +155,6 @@ export function SearchPanel(props: {
   );
 }
 
-function SearchBar() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { course } = useParams();
-  const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const params = new URLSearchParams(searchParams);
-      if (!query.trim()) {
-        params.delete("q");
-        window.history.replaceState(
-          null,
-          "",
-          `${pathname}?${params.toString()}`,
-        );
-        return;
-      }
-
-      params.set("q", query);
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-    };
-
-    const timeoutId = setTimeout(() => {
-      fetchData();
-    }, 300);
-
-    if (!course) {
-      if (!query.trim()) {
-        document.title = `SearchNEU`;
-      } else {
-        document.title = `${query} | SearchNEU`;
-      }
-    }
-
-    return () => clearTimeout(timeoutId);
-  }, [query]);
-
-  function handleSubmit() {
-    const params = new URLSearchParams(searchParams);
-    if (!query.trim()) {
-      params.delete("q");
-      window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-      return;
-    }
-
-    params.set("q", query);
-    window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-  }
-
-  return (
-    <div className="flex w-full">
-      <Input
-        className="bg-background rounded-l-lg rounded-r-none border-[0.5px] border-r-0"
-        placeholder="Search for a course, CRN, or phrase"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-      />
-      <Button
-        size="icon"
-        className="rounded-l-none rounded-r-lg"
-        onClick={() => handleSubmit()}
-      >
-        🔍
-      </Button>
-    </div>
-  );
-}
-
 function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
   const terms = use(props.terms);
   const router = useRouter();
@@ -239,6 +165,10 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
     terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
   );
 
+  // HACK: this will blink but for now its fine
+  if (typeof window !== "undefined")
+    document.body.setAttribute("data-theme", activeCollege ?? "neu");
+
   return (
     <ToggleGroup
       variant="default"
@@ -246,18 +176,34 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
       size="sm"
       defaultValue={activeCollege}
       onValueChange={(val) => {
+        if (val === "") {
+          return;
+        }
         const newestTerm = terms[val as keyof GroupedTerms][0];
+        document.body.setAttribute("data-theme", val);
         router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
       }}
       className="bg-neu2 w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3 *:data-[slot=toggle-group-item]:font-bold"
     >
-      <ToggleGroupItem value="neu" aria-label="Toggle last 24 hours">
+      <ToggleGroupItem
+        value="neu"
+        aria-label="Toggle NEU college"
+        className="data-[state=on]:text-neu"
+      >
         NEU
       </ToggleGroupItem>
-      <ToggleGroupItem value="cps" aria-label="Toggle last 7 days">
+      <ToggleGroupItem
+        value="cps"
+        aria-label="Toggle CPS college"
+        className="data-[state=on]:text-cps"
+      >
         CPS
       </ToggleGroupItem>
-      <ToggleGroupItem value="law" aria-label="Toggle last 7 days">
+      <ToggleGroupItem
+        value="law"
+        aria-label="Toggle LAW college"
+        className="data-[state=on]:text-law"
+      >
         LAW
       </ToggleGroupItem>
     </ToggleGroup>
@@ -283,7 +229,7 @@ function TermSelect(
       value={term?.toString()}
     >
       <SelectTrigger
-        className="bg-neu2 rounded-full md:w-40 xl:w-full"
+        className="bg-neu2 rounded-lg md:w-40 xl:w-full"
         {...props}
       >
         <SelectValue placeholder="Select term" />
@@ -360,7 +306,7 @@ function SPMultiselect<T>(
       onChange={updateSearchParams}
       defaultOptions={options as Option[]}
       hidePlaceholderWhenSelected
-      className="bg-neu2 rounded-full md:w-40 xl:w-full"
+      className="bg-neu2 rounded-lg md:w-40 xl:w-full"
       emptyIndicator={
         <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
           no results found
@@ -390,6 +336,7 @@ function HonorsSwitch(props: ComponentProps<typeof Switch>) {
   return (
     <Switch
       checked={Boolean(searchParams.get("honors"))}
+      className="data-[state=checked]:bg-accent"
       onCheckedChange={updateSearchParams}
       {...props}
     />
@@ -430,6 +377,7 @@ function RangeSlider() {
 
   return (
     <Slider
+      className="**:data-[slot=slider-thumb]:bg-accent **:data-[slot=slider-range]:bg-accent"
       id="course-id-range"
       value={d}
       onValueChange={setD}

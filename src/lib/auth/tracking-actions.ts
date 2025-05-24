@@ -22,15 +22,26 @@ async function getGuid() {
   return guid;
 }
 
-export async function createSeatTrackerAction(crn: string) {
+export async function createTrackerAction(crn: string) {
   const guid = await getGuid();
-  if (!guid) return { ok: false, msg: "no valid session" };
+  if (!guid) {
+    const cookieJar = await cookies();
+    cookieJar.delete(config.cookieName);
+
+    return { ok: false, msg: "no valid session" };
+  }
 
   const user = await db.query.usersT.findFirst({
     where: eq(usersT.guid, guid),
   });
 
-  if (!user) return { ok: false, msg: "no user found matching session" };
+  if (!user) {
+    const cookieJar = await cookies();
+    cookieJar.delete(config.cookieName);
+
+    return { ok: false, msg: "no user found matching session" };
+  }
+
   if (!user.phoneNumberVerified)
     return { ok: false, msg: "phone number not verified" };
 
@@ -57,17 +68,25 @@ export async function createSeatTrackerAction(crn: string) {
   return { ok: true };
 }
 
-export async function deleteSeatTrackerAction(crn: string) {
+export async function deleteTrackerAction(crn: string) {
   const guid = await getGuid();
-  if (!guid) return { ok: false };
+  if (!guid) {
+    const cookieJar = await cookies();
+    cookieJar.delete(config.cookieName);
 
-  const users = await db
-    .select({ id: usersT.id })
-    .from(usersT)
-    .where(eq(usersT.guid, guid));
+    return { ok: false, msg: "no valid session" };
+  }
 
-  if (users.length === 0) return { ok: false };
-  const user = users[0];
+  const user = await db.query.usersT.findFirst({
+    where: eq(usersT.guid, guid),
+  });
+
+  if (!user) {
+    const cookieJar = await cookies();
+    cookieJar.delete(config.cookieName);
+
+    return { ok: false, msg: "no user found matching session" };
+  }
 
   await db
     .update(trackersT)

@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
     sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${">= " + minCourseId}`);
   }
 
+  // BUG: max course id should be up to the next highest id (ie 4 should be upto 5, not including)
   if (maxCourseId) {
     sqlChunks.push(sql`and`);
     sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${"<= " + maxCourseId}`);

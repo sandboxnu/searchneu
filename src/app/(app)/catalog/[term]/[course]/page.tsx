@@ -1,14 +1,17 @@
 import { db } from "@/db";
-import { coursesT, sectionsT } from "@/db/schema";
+import { coursesT } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { SectionTable } from "@/components/coursePage/SectionTable";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { convertNupathToLongform } from "@/lib/banner/nupaths";
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
+import { Suspense } from "react";
 
 // PERF: switch to ISR (need to pull seat data out first)
 // export const revalidate = 3600;
+// or at least agressively cache the course data
 
 export async function generateMetadata(props: {
   params: Promise<{ term: string; course: string }>;
@@ -47,21 +50,6 @@ export default async function Page(props: {
 
   const c = result[0];
 
-  const sections = await db
-    .select({
-      crn: sectionsT.crn,
-      campus: sectionsT.campus,
-      seatCapacity: sectionsT.seatCapacity,
-      seatRemaining: sectionsT.seatRemaining,
-      waitlistCapacity: sectionsT.waitlistCapacity,
-      waitlistRemaining: sectionsT.waitlistRemaining,
-      meetingTimes: sectionsT.meetingTimes,
-      faculty: sectionsT.faculty,
-      honors: sectionsT.honors,
-    })
-    .from(sectionsT)
-    .where(eq(sectionsT.courseId, c.id));
-
   if (result.length === 0) {
     return <p>course {course} not found</p>;
   }
@@ -94,17 +82,16 @@ export default async function Page(props: {
             {creditRange} {creditLabel}
           </h2>
           <Link
-            className="text-b2 hover:text-b2/80"
+            className="text-blue hover:text-blue/80 flex items-center gap-1"
             href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${term}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
           >
-            View on NEU
+            View on Banner
+            <ExternalLink className="size-4" />
           </Link>
         </div>
       </div>
       <div className="">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">
-          Course Description
-        </h3>
+        <h3 className="text-neu7 pb-2 text-sm font-medium">Description</h3>
         <ExpandableDescription description={result[0].description} />
       </div>
       <Separator />
@@ -112,27 +99,29 @@ export default async function Page(props: {
         <h3 className="text-neu7 pb-2 text-sm font-medium">NUPaths</h3>
         <div className="flex gap-2">
           {c.nupaths.map((n) => (
-            <span key={n} className="bg-neu3 rounded px-2 py-1 text-sm">
+            <span key={n} className="bg-neu3 rounded px-2 py-0.5 text-sm">
               {convertNupathToLongform(n)}
             </span>
           ))}
           {c.nupaths.length === 0 && <p>None</p>}
         </div>
       </div>
-      <div className="">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
-        <p>None</p>
-      </div>
-      <div className="">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">Coreqs</h3>
-        <p>None</p>
+      <div className="grid grid-cols-2">
+        <div className="">
+          <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
+          <p>None</p>
+        </div>
+        <div className="">
+          <h3 className="text-neu7 pb-2 text-sm font-medium">Coreqs</h3>
+          <p>None</p>
+        </div>
       </div>
       <Separator />
       <div className="w-full">
         <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3>
-        {/* <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3> */}
-        {/* @ts-expect-error: need to parse out the meetingTimes */}
-        <SectionTable sections={sections} />
+        <Suspense>
+          <SectionTable courseId={c.id} />
+        </Suspense>
       </div>
     </div>
   );

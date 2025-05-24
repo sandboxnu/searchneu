@@ -29,7 +29,10 @@ export function useAuth() {
 
   useEffect(() => {
     async function getUser() {
-      const res = await fetch("/api/auth/me").then((r) => r.json());
+      const res = await fetch("/api/auth/me", {
+        cache: "force-cache",
+        next: { revalidate: 3600, tags: ["auth.me"] },
+      }).then((r) => r.json());
 
       setUser(res);
       setIsPending(false);

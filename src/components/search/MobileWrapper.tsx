@@ -5,6 +5,7 @@ import { GroupedTerms, Subject } from "@/lib/types";
 import { useParams } from "next/navigation";
 import { Option } from "../ui/multi-select";
 import dynamic from "next/dynamic";
+import { SearchBar } from "./SearchBar";
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
@@ -24,10 +25,13 @@ export function MobileWrapper(props: {
   return (
     <div
       data-show={!Boolean(course)}
-      className="col-span-12 hidden data-[show=true]:block xl:col-span-5 xl:block!"
+      className="col-span-12 hidden rounded-t-lg data-[show=true]:block xl:col-span-5 xl:block!"
     >
       <div className="flex grid-cols-12 flex-col xl:grid!">
-        <div className="col-span-5">
+        <div className="bg-neu1 col-span-12 py-2 pl-4">
+          <SearchBar />
+        </div>
+        <div className="bg-neu1 col-span-5">
           <SearchPanel {...props} />
         </div>
         <div className="col-span-7">

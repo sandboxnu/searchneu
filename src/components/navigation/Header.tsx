@@ -13,9 +13,15 @@ export async function Header() {
         <Logo className="h-6 w-40" />
       </Link>
       <div className="flex items-center gap-8">
-        <nav className="space-x-4 font-semibold">
-          <Link href="/catalog">Catalog</Link>
-          {enableFaqPage && <Link href="/faq">FAQ</Link>}
+        <nav className="space-x-2 font-semibold">
+          <Link href="/catalog" className="hover:bg-neu2 rounded-lg p-2">
+            Catalog
+          </Link>
+          {enableFaqPage && (
+            <Link href="/faq" className="hover:bg-neu2 rounded-lg p-2">
+              FAQ
+            </Link>
+          )}
         </nav>
         <UserIcon />
       </div>

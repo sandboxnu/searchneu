@@ -23,7 +23,7 @@ export default function SearchResults() {
   const stale = deferred !== params.toString();
 
   return (
-    <div className="bg-neu2 flex h-[calc(100vh-108px)] flex-col xl:h-[calc(100vh-56px)]">
+    <div className="bg-neu2 flex h-[calc(100vh-160px)] flex-col rounded-t-lg xl:h-[calc(100vh-108px)]">
       <div className={stale ? "opacity-60" : ""}>
         <Suspense fallback={<ResultsListSkeleton />}>
           <ResultsList
@@ -82,48 +82,53 @@ function ResultsList(props: { params: string; term: string; course: string }) {
 
   if (results.length === 0) {
     return (
-      <div
-        ref={parentRef}
-        className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 pt-2 xl:h-[calc(100vh-56px)]"
-      >
-        <p className="text-neu6 mb-2 w-full text-center text-sm">No Results</p>
-      </div>
+      <>
+        <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
+        <div
+          ref={parentRef}
+          className="h-[calc(100vh-186px)] w-full overflow-y-auto px-1 pt-2 xl:h-[calc(100vh-136px)]"
+        ></div>
+      </>
     );
   }
 
   return (
-    <div
-      ref={parentRef}
-      className="h-[calc(100vh-108px)] w-full overflow-y-auto px-2 pt-2 xl:h-[calc(100vh-56px)]"
-    >
-      <p className="text-neu6 mb-2 w-full text-center text-sm">
+    <>
+      <p className="text-neu6 w-full py-1 text-center text-sm">
         {results.length} Results
       </p>
-      <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
-        <ul
-          className="absolute top-0 left-0 w-full"
-          style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}
-        >
-          {items.map((v) => (
-            <li
-              className={`mb-2`}
-              key={v.index}
-              data-index={v.index}
-              ref={virtual.measureElement}
-            >
-              <ResultCard
-                result={results[v.index]}
-                link={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
-                active={
-                  decodeURIComponent(props.course) ===
-                  results[v.index].subject + " " + results[v.index].courseNumber
-                }
-              />
-            </li>
-          ))}
-        </ul>
+      <div
+        ref={parentRef}
+        className="h-[calc(100vh-186px)] w-full overflow-y-auto px-2 xl:h-[calc(100vh-136px)]"
+      >
+        <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
+          <ul
+            className="absolute top-0 left-0 w-full"
+            style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}
+          >
+            {items.map((v) => (
+              <li
+                className={`mb-2`}
+                key={v.index}
+                data-index={v.index}
+                ref={virtual.measureElement}
+              >
+                <ResultCard
+                  result={results[v.index]}
+                  link={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+                  active={
+                    decodeURIComponent(props.course) ===
+                    results[v.index].subject +
+                      " " +
+                      results[v.index].courseNumber
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

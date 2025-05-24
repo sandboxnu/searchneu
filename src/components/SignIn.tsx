@@ -51,7 +51,7 @@ export function SignIn({ closeFn }: { closeFn: () => void }) {
         <DialogFooter>
           <Button
             type="submit"
-            className="w-full"
+            className="bg-accent hover:bg-accent/80 w-full"
             onClick={() => doSignIn()}
             disabled={isPending}
           >

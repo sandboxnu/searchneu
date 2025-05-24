@@ -43,12 +43,12 @@ export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
           <StartPage next={() => setPage(1)} abort={abortOnboarding} />
         )}
         {page === 1 && (
-          <ConsentPage next={() => setPage(2)} abort={abortOnboarding} />
+          <ConsentPage next={() => setPage(2)} abort={() => setPage(0)} />
         )}
         {page === 2 && (
           <PhoneNumberPage
             next={() => setPage(3)}
-            abort={abortOnboarding}
+            abort={() => setPage(1)}
             value={phoneNumber}
             onChange={setPhoneNumber}
           />
@@ -56,7 +56,7 @@ export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
         {page === 3 && (
           <OTPPage
             next={() => setPage(4)}
-            abort={abortOnboarding}
+            abort={() => setPage(2)}
             phoneNumber={phoneNumber}
           />
         )}
@@ -147,7 +147,7 @@ function ConsentPage({ next, abort }: { next: () => void; abort: () => void }) {
             className="w-full"
             onClick={abort}
           >
-            Cancel
+            Back
           </Button>
         </div>
       </AlertDialogFooter>
@@ -230,7 +230,7 @@ function PhoneNumberPage({
             className="w-full"
             onClick={abort}
           >
-            Cancel
+            Back
           </Button>
         </div>
       </AlertDialogFooter>
@@ -316,7 +316,7 @@ function OTPPage({
             className="w-full"
             onClick={abort}
           >
-            Cancel
+            Back
           </Button>
         </div>
       </AlertDialogFooter>

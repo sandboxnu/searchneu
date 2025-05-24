@@ -457,11 +457,6 @@ const MultipleSelector = React.forwardRef<
               "cursor-text": !disabled && selected.length !== 0,
             },
             className,
-            // HACK: this undoes the full rounding so the element can grow correctly. This
-            // should be pulled into a prop tho as an option rather than be hardcoded
-            {
-              "rounded-3xl": selected.length > 1,
-            },
           )}
           onClick={() => {
             if (disabled) return;

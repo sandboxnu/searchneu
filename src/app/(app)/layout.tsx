@@ -3,6 +3,7 @@ import { Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/navigation/Header";
 import { DebugTools } from "@/components/DebugTools";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -32,11 +33,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         data-theme="neu"
-        className={`${lato.className} ${geistMono.variable} flex min-h-screen flex-col font-sans antialiased`}
+        className={`${lato.className} ${geistMono.variable} flex flex-col font-sans antialiased`}
       >
         <DebugTools />
-        <Header />
-        <main className="h-[calc(100vh-56px)] w-screen grow">{children}</main>
+        <main className="min-h-screen w-screen grow">{children}</main>
+        <Toaster closeButton />
       </body>
     </html>
   );

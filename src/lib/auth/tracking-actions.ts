@@ -1,26 +1,11 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { config } from "../auth";
-import { verifyJWT } from "../auth";
+import { config } from "./auth";
+import { getGuid } from "./utils";
 import { db } from "@/db";
 import { trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
-
-async function getGuid() {
-  const cookieJar = await cookies();
-  const jwt = cookieJar.get(config.cookieName)?.value;
-  if (!jwt) {
-    return null;
-  }
-
-  const guid = await verifyJWT(jwt);
-  if (!guid) {
-    return null;
-  }
-
-  return guid;
-}
 
 export async function createTrackerAction(crn: string) {
   const guid = await getGuid();

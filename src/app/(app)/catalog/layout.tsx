@@ -1,13 +1,11 @@
-import { Footer } from "@/components/navigation/Footer";
 import { Header } from "@/components/navigation/Header";
-import { type ReactNode } from "react";
+import { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <div className="prose max-w-full p-4">{children}</div>
-      <Footer />
+      <div className="h-[calc(100vh-56px)]">{children}</div>
     </>
   );
 }

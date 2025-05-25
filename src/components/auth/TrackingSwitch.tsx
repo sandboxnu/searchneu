@@ -5,7 +5,7 @@ import {
   deleteTrackerAction,
 } from "@/lib/auth/tracking-actions";
 import { Switch } from "../ui/switch";
-import { Bell, BellOff, BellRing } from "lucide-react";
+import { Bell, BellOff, BellRing, TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-client";
@@ -22,6 +22,8 @@ import { Button } from "../ui/button";
 import { Chairskie } from "../icons/Chairskie";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
+import { toast } from "sonner";
+import Link from "next/link";
 
 export function TrackingSwitch({
   crn,
@@ -38,8 +40,6 @@ export function TrackingSwitch({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  // TODO: error handling and user feedback
-
   function onCheck() {
     startTransition(async () => {
       let res;
@@ -52,8 +52,30 @@ export function TrackingSwitch({
       if (!res.ok) {
         if (res.msg === "phone number not verified") {
           setOneMoreStep(true);
+          return;
         }
 
+        if (res.msg === "tracker limit reached") {
+          toast(
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="size-4" />
+              <p>
+                Seat tracking limit reached.{" "}
+                <Link href="/" className="text-blue hover:text-blue/80">
+                  Learn More
+                </Link>
+              </p>
+            </div>,
+          );
+          return;
+        }
+
+        toast(
+          <div className="flex items-center gap-2">
+            <TriangleAlert className="size-4" />
+            <p>Internal server error. Try again later.</p>
+          </div>,
+        );
         return;
       }
 

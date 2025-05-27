@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 
-export async function createTrackerAction(crn: string) {
+export async function createTrackerAction(id: number) {
   const guid = await getGuid();
   if (!guid) {
     const cookieJar = await cookies();
@@ -41,19 +41,19 @@ export async function createTrackerAction(crn: string) {
   if (user.trackingLimit <= existingTrackers.length)
     return { ok: false, msg: "tracker limit reached" };
 
-  if (existingTrackers.filter((t) => t.crn === crn).length > 0) {
+  if (existingTrackers.filter((t) => t.sectionId === id).length > 0) {
     return { ok: false, msg: "existing tracker found" };
   }
 
   await db.insert(trackersT).values({
     userId: user.id,
-    crn: crn,
+    sectionId: id,
   });
 
   return { ok: true };
 }
 
-export async function deleteTrackerAction(crn: string) {
+export async function deleteTrackerAction(id: number) {
   const guid = await getGuid();
   if (!guid) {
     const cookieJar = await cookies();
@@ -81,7 +81,7 @@ export async function deleteTrackerAction(crn: string) {
     .where(
       and(
         eq(trackersT.userId, user.id),
-        eq(trackersT.crn, crn),
+        eq(trackersT.sectionId, id),
         isNull(trackersT.deletedAt),
       ),
     );

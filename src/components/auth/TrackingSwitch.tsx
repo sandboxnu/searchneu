@@ -26,12 +26,12 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 export function TrackingSwitch({
-  crn,
+  sectionId,
   inital,
   onCheckedChange,
   ...props
 }: {
-  crn: string;
+  sectionId: number;
   inital: boolean;
 } & React.ComponentProps<typeof Switch>) {
   const { user, isPending: loading } = useAuth();
@@ -44,9 +44,9 @@ export function TrackingSwitch({
     startTransition(async () => {
       let res;
       if (!checked) {
-        res = await createTrackerAction(crn);
+        res = await createTrackerAction(sectionId);
       } else {
-        res = await deleteTrackerAction(crn);
+        res = await deleteTrackerAction(sectionId);
       }
 
       if (!res.ok) {

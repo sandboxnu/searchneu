@@ -24,6 +24,7 @@ interface MeetingTime {
 }
 
 export interface Section {
+  id: number;
   crn: string;
   faculty: string;
   meetingTimes: MeetingTime[];
@@ -115,7 +116,7 @@ export function SectionCard({
       </div>
       <div className="col-span-2 col-start-2">
         <TrackingSwitch
-          crn={section.crn}
+          sectionId={section.id}
           inital={tracked}
           disabled={section.seatRemaining / section.seatCapacity > 0}
           onCheckedChange={(c) => setTracked(c)}

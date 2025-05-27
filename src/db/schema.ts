@@ -2,6 +2,7 @@ import {
   boolean,
   decimal,
   foreignKey,
+  index,
   integer,
   json,
   jsonb,
@@ -9,6 +10,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
   varchar,
@@ -30,34 +32,51 @@ export const coursesT = pgTable(
     nupaths: varchar({ length: 200 }).array().notNull(),
     prereqs: jsonb().notNull(),
     coreqs: jsonb().notNull(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     foreignKey({
       columns: [table.term, table.subject],
       foreignColumns: [subjectsT.term, subjectsT.code],
     }),
+    unique("term_course").on(table.term, table.subject, table.courseNumber),
   ],
 );
 
-export const sectionsT = pgTable("sections", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  term: varchar({ length: 6 })
-    .notNull()
-    .references(() => termsT.term),
-  courseId: integer()
-    .notNull()
-    .references(() => coursesT.id),
-  crn: varchar({ length: 5 }).notNull().unique(),
-  faculty: text().notNull(), // TODO: support multiple faculty
-  seatCapacity: integer().notNull(),
-  seatRemaining: integer().notNull(),
-  waitlistCapacity: integer().notNull(),
-  waitlistRemaining: integer().notNull(),
-  classType: text().notNull(),
-  honors: boolean().notNull(),
-  campus: text().notNull(),
-  meetingTimes: json().notNull(),
-});
+export const sectionsT = pgTable(
+  "sections",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    term: varchar({ length: 6 })
+      .notNull()
+      .references(() => termsT.term),
+    courseId: integer()
+      .notNull()
+      .references(() => coursesT.id),
+    crn: varchar({ length: 5 }).notNull(),
+    faculty: text().notNull(), // TODO: support multiple faculty
+    seatCapacity: integer().notNull(),
+    seatRemaining: integer().notNull(),
+    waitlistCapacity: integer().notNull(),
+    waitlistRemaining: integer().notNull(),
+    classType: text().notNull(),
+    honors: boolean().notNull(),
+    campus: text().notNull(),
+    meetingTimes: json().notNull(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("crn_idx").on(table.crn),
+    index("term_idx").on(table.term),
+    unique("term_crn").on(table.term, table.crn),
+  ],
+);
 
 export const termsT = pgTable("terms", {
   term: varchar({ length: 6 }).primaryKey(),
@@ -108,19 +127,27 @@ export const usersT = pgTable(
   ],
 );
 
-export const trackersT = pgTable("trackers", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer()
-    .notNull()
-    .references(() => usersT.id),
-  crn: varchar({ length: 5 })
-    .notNull()
-    .references(() => sectionsT.crn),
-  messageCount: integer().notNull().default(0),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp()
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  deletedAt: timestamp(),
-});
+export const trackersT = pgTable(
+  "trackers",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: integer()
+      .notNull()
+      .references(() => usersT.id),
+    sectionId: integer()
+      .notNull()
+      .references(() => sectionsT.id),
+    notificationMethod: varchar({ length: 10 }).notNull().default("SMS"),
+    messageCount: integer().notNull().default(0),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    deletedAt: timestamp(),
+  },
+  (table) => [
+    index("tracker_user_idx").on(table.userId),
+    index("tracker_section_idx").on(table.sectionId),
+  ],
+);

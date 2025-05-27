@@ -74,6 +74,8 @@ async function insertCourseData(
         set: { name: data.term.description },
       });
 
+    console.log("term done");
+
     // upsert subjects
     const subjectInserts = data.subjects.map((subjectCode) => ({
       term: data.term.code,
@@ -84,6 +86,8 @@ async function insertCourseData(
     if (subjectInserts.length > 0) {
       await tx.insert(subjectsT).values(subjectInserts).onConflictDoNothing();
     }
+
+    console.log("subjects done");
 
     for (const course of data.courses) {
       const courseInsertResult = await tx
@@ -101,6 +105,8 @@ async function insertCourseData(
           coreqs: {},
         })
         .returning({ id: coursesT.id });
+
+      console.log("courses done");
 
       const courseId = courseInsertResult[0]?.id;
 
@@ -144,7 +150,7 @@ async function insertCourseData(
               meetingTimes: section.meetingTimes,
             })
             .onConflictDoUpdate({
-              target: sectionsT.crn,
+              target: [sectionsT.term, sectionsT.crn],
               set: {
                 faculty: section.faculty,
                 seatCapacity: section.seatCapacity,
@@ -181,7 +187,7 @@ async function insertCourseData(
               meetingTimes: section.meetingTimes,
             })
             .onConflictDoUpdate({
-              target: sectionsT.crn,
+              target: [sectionsT.term, sectionsT.crn],
               set: {
                 faculty: section.faculty,
                 seatCapacity: section.seatCapacity,

@@ -27,7 +27,7 @@ async function getTermInfo(term: string) {
 
 // getCourseDescriptions goes through and scrapes the course descriptions for
 // every course
-async function getCourseDescriptions(courses: Course[]) {
+export async function getCourseDescriptions(courses: Course[]) {
   console.log("getting course descriptions");
   const batchSize = 50;
   const term = courses[0].term;
@@ -69,7 +69,7 @@ async function getCourseDescriptions(courses: Course[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-function arrangeCourses(sections: BannerSection[]) {
+export function arrangeCourses(sections: BannerSection[]) {
   const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
 
@@ -110,7 +110,7 @@ function arrangeCourses(sections: BannerSection[]) {
   return { courses: Object.values(courses), subjects };
 }
 
-function parseMeetingTimes(section: BannerSection) {
+export function parseMeetingTimes(section: BannerSection) {
   const meetings = [];
   for (const meetingFaculty of section.meetingsFaculty) {
     const meetingTime = meetingFaculty?.meetingTime;
@@ -160,8 +160,12 @@ function parseMeetingTimes(section: BannerSection) {
 // getSectionFaculty scrapes the faculty for the sections. Banner does not
 // return the faculty on the search page so these have to be gathered from
 // seperate requests
-async function getSectionFaculty(sections: BannerSection[]) {
+export async function getSectionFaculty(sections: BannerSection[]) {
   console.log("getting section faculty");
+  if (sections.length === 0) {
+    return sections;
+  }
+
   const batchSize = 50;
   const term = sections[0].term;
   const numBatches = Math.ceil(sections.length / batchSize);

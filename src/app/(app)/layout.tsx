@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/navigation/Header";
 import { DebugTools } from "@/components/DebugTools";
 import { Toaster } from "@/components/ui/toaster";
 

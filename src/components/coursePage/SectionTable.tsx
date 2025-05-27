@@ -26,12 +26,13 @@ async function getTrackedSections() {
     where: and(eq(trackersT.userId, user.id), isNull(trackersT.deletedAt)),
   });
 
-  return trackedSections.map((t) => t.crn);
+  return trackedSections.map((t) => t.sectionId);
 }
 
 export async function SectionTable({ courseId }: { courseId: number }) {
   const sections = await db
     .select({
+      id: sectionsT.id,
       crn: sectionsT.crn,
       campus: sectionsT.campus,
       seatCapacity: sectionsT.seatCapacity,
@@ -63,7 +64,7 @@ export async function SectionTable({ courseId }: { courseId: number }) {
           <SectionCard
             key={i}
             section={section as Section}
-            initalTracked={trackedSections?.includes(section.crn) ?? false}
+            initalTracked={trackedSections?.includes(section.id) ?? false}
           />
         ))}
       </div>

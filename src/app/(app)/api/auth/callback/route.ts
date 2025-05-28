@@ -1,6 +1,7 @@
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { config, googleProvider } from "@/lib/auth/auth";
+import { createJWT } from "@/lib/auth/utils";
 import { decodeIdToken, type OAuth2Tokens } from "arctic";
 import { db } from "@/db";
 import { usersT } from "@/db/schema";

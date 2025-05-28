@@ -1,11 +1,12 @@
 import { db } from "@/db";
 import { TooltipProvider } from "../ui/tooltip";
-import { Section, SectionCard } from "./SectionCard";
 import { cookies } from "next/headers";
 import { verifyJWT } from "@/lib/auth/utils";
 import { config } from "@/lib/auth/auth";
 import { and, eq, isNull } from "drizzle-orm";
 import { trackersT, usersT, sectionsT } from "@/db/schema";
+import { SectionFilterWrapper } from "./SectionFilterWrapper";
+import { Section } from "./SectionCard";
 
 async function getTrackedSections() {
   const cookieJar = await cookies();
@@ -43,6 +44,7 @@ export async function SectionTable({ courseId }: { courseId: number }) {
       meetingTimes: sectionsT.meetingTimes,
       faculty: sectionsT.faculty,
       honors: sectionsT.honors,
+      classType: sectionsT.classType,
     })
     .from(sectionsT)
     .where(eq(sectionsT.courseId, courseId));
@@ -61,13 +63,10 @@ export async function SectionTable({ courseId }: { courseId: number }) {
           {seatsRemaining !== 1 && "s"} Remaining
         </p>
 
-        {sections.map((section, i) => (
-          <SectionCard
-            key={i}
-            section={section as Section}
-            initalTracked={trackedSections?.includes(section.id) ?? false}
-          />
-        ))}
+        <SectionFilterWrapper
+          sections={sections as Section[]}
+          trackedSections={trackedSections ?? []}
+        />
       </div>
     </TooltipProvider>
   );

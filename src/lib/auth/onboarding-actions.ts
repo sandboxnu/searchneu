@@ -1,8 +1,8 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { config } from "../auth";
-import { verifyJWT } from "../auth";
+import { config } from "../auth/auth";
+import { verifyJWT } from "../auth/utils";
 import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";

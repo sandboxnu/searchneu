@@ -30,6 +30,7 @@ export interface Section {
   meetingTimes: MeetingTime[];
   campus: string;
   honors: boolean;
+  classType: string;
   seatRemaining: number;
   seatCapacity: number;
   waitlistCapacity: number;

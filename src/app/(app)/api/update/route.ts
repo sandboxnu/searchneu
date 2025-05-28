@@ -139,6 +139,19 @@ export async function GET(req: NextRequest) {
     );
 
     // TODO: get subscription info and send notifications
+    // const trackers = await db
+    //   .select({
+    //     sectionCrn: sectionsT.crn,
+    //     uid: trackersT.userId,
+    //     method: trackersT.notificationMethod,
+    //     count: trackersT.messageCount,
+    //     phoneNumber: usersT.phoneNumber,
+    //     phoneNumberVerified: usersT.phoneNumberVerified,
+    //   })
+    //   .from(trackersT)
+    //   .leftJoin(sectionsT, eq(sectionsT.id, trackersT.sectionId))
+    //   .leftJoin(usersT, eq(usersT.id, trackersT.userId))
+    //   .where(eq(sectionsT.term, term));
 
     // update the seat counts in the database
     const values = seats

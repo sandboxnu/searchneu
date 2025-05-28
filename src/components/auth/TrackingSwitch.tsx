@@ -8,7 +8,7 @@ import { Switch } from "../ui/switch";
 import { Bell, BellOff, BellRing, TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-client";
+import { useAuth } from "@/lib/auth/client";
 import { TooltipContent, Tooltip, TooltipTrigger } from "../ui/tooltip";
 import {
   Dialog,

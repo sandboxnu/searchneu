@@ -148,6 +148,7 @@ export function SearchPanel(props: {
             <p>6k</p>
             <p>7k</p>
             <p>8k</p>
+            <p>9k</p>
           </div>
         </div>
       </div>
@@ -349,14 +350,14 @@ function RangeSlider() {
 
   const [d, setD] = useState([
     Number.parseInt(searchParams.get("nci") ?? "1"),
-    Number.parseInt(searchParams.get("xci") ?? "8"),
+    Number.parseInt(searchParams.get("xci") ?? "9"),
   ]);
 
   // debounce the range slider (avoid request every notch)
   useEffect(() => {
     function updateSearchParams(range: number[]) {
       const params = new URLSearchParams(searchParams);
-      if (range[0] === 1 && range[1] === 8) {
+      if (range[0] === 1 && range[1] === 9) {
         params.delete("nci");
         params.delete("xci");
         window.history.pushState(null, "", `${pathname}?${params.toString()}`);
@@ -382,7 +383,7 @@ function RangeSlider() {
       value={d}
       onValueChange={setD}
       min={1}
-      max={8}
+      max={9}
       step={1}
     />
   );

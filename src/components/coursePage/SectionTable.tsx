@@ -2,7 +2,8 @@ import { db } from "@/db";
 import { TooltipProvider } from "../ui/tooltip";
 import { Section, SectionCard } from "./SectionCard";
 import { cookies } from "next/headers";
-import { config, verifyJWT } from "@/lib/auth";
+import { verifyJWT } from "@/lib/auth/utils";
+import { config } from "@/lib/auth/auth";
 import { and, eq, isNull } from "drizzle-orm";
 import { trackersT, usersT, sectionsT } from "@/db/schema";
 

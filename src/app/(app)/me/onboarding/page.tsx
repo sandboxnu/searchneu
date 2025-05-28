@@ -1,7 +1,7 @@
-import { config } from "@/lib/auth";
+import { config } from "@/lib/auth/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { verifyJWT } from "@/lib/auth";
+import { verifyJWT } from "@/lib/auth/utils";
 import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -50,10 +50,12 @@ export default async function Page({
   }
 
   return (
-    <div className="relative flex h-full min-h-[500px] w-full flex-col justify-center">
+    <div className="flex h-screen min-h-[500px] w-full flex-col justify-center">
       <div className="sunset absolute top-0 -z-20 h-full w-full"></div>
       <City className="absolute bottom-0 -z-10 min-h-48 max-w-screen" />
-      <OnboardingFlow redirectUri={redirectUri ?? "/"} />
+      <div className="ml-[10%] w-[80%] max-w-[800px] space-y-2">
+        <OnboardingFlow redirectUri={redirectUri ?? "/"} />
+      </div>
     </div>
   );
 }

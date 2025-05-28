@@ -11,7 +11,7 @@ import {
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
+import { signIn } from "@/lib/auth/client";
 import { GoogleLogo } from "./icons/Google";
 import Link from "next/link";
 import { Magoskie } from "./icons/Magoskie";

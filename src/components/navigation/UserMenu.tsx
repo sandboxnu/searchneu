@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
-import { useAuth, signOut } from "@/lib/auth-client";
+import { useAuth, signOut } from "@/lib/auth/client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);

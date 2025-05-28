@@ -3,6 +3,7 @@ import { Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import { DebugTools } from "@/components/DebugTools";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/lib/auth/client";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -34,9 +35,11 @@ export default function RootLayout({
         data-theme="neu"
         className={`${lato.className} ${geistMono.variable} flex flex-col font-sans antialiased`}
       >
-        <DebugTools />
-        <main className="min-h-screen w-screen grow">{children}</main>
-        <Toaster closeButton />
+        <AuthProvider>
+          <DebugTools />
+          <main className="min-h-screen w-screen grow">{children}</main>
+          <Toaster closeButton />
+        </AuthProvider>
       </body>
     </html>
   );

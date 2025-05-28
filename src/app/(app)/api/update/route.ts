@@ -11,9 +11,6 @@ import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
 
-// NOTE: this route is special since it should only be called by the Vercel cron service,
-// and has custom configuration specified in the `vercel.json` file
-
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update
   const authHeader = req.headers.get("authorization");
@@ -162,7 +159,6 @@ export async function GET(req: NextRequest) {
     // this can be fixed with the pro plan (which we are going to get)
     const dbReconn = drizzle(process.env.DATABASE_URL_DIRECT!);
 
-    // this uses a cool postgres feature where multiple rows can be updated
     if (values.length > 0) {
       await dbReconn.execute(sql`
         UPDATE ${sectionsT}
@@ -183,7 +179,6 @@ export async function GET(req: NextRequest) {
     `);
     }
 
-    // insert new sections
     if (parsedNewSections.length > 0) {
       await db.insert(sectionsT).values(
         parsedNewSections.map((s, i) => ({
@@ -202,6 +197,11 @@ export async function GET(req: NextRequest) {
         })),
       );
     }
+
+    await db
+      .update(termsT)
+      .set({ updatedAt: new Date() })
+      .where(eq(termsT.term, term));
   }
 
   return Response.json({ success: true });

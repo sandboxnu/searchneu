@@ -3,16 +3,20 @@
 import { useState } from "react";
 
 // yes this is ai code yes it is bad but it was fast alright?
-export function ExpandableDescription(props: { description: string }) {
+export function ExpandableDescription({
+  description,
+}: {
+  description: string;
+}) {
   const charLimit = 300;
-  const needsExpansion = props.description.length > charLimit;
+  const needsExpansion = description.length > charLimit;
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   const displayText =
     isExpanded || !needsExpansion
-      ? props.description
-      : `${props.description.substring(0, charLimit)}...`;
+      ? description
+      : `${description.substring(0, charLimit)}...`;
 
   return (
     <p>

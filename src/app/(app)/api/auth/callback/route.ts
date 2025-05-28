@@ -1,12 +1,11 @@
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { createJWT, googleProvider } from "@/lib/auth";
+import { config, googleProvider } from "@/lib/auth/auth";
 import { decodeIdToken, type OAuth2Tokens } from "arctic";
 import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
-import { config } from "@/lib/auth";
 
 interface GoogleOauthClaims {
   sub: string;

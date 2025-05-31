@@ -6,7 +6,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <div className="prose max-w-full p-4">{children}</div>
+      <div className="prose [&_ol]:marker:text-neu9 max-w-full p-4 [&_ol]:list-[lower-alpha]">
+        {children}
+      </div>
+
       <Footer />
     </>
   );

@@ -10,10 +10,9 @@ import Link from "next/link";
 import { Footer } from "@/components/navigation/Footer";
 import { Sandbox } from "@/components/icons/Sandbox";
 
-// cache the terms - every request does not need to hit the db
 const cachedTerms = unstable_cache(async () => getTerms(), ["banner.terms"], {
-  revalidate: 3600, // revalidate every hour
-  tags: ["terms"],
+  revalidate: 3600,
+  tags: ["banner.terms"],
 });
 
 export default async function Home() {

@@ -40,9 +40,11 @@ export interface Section {
 export function SectionCard({
   section,
   initalTracked,
+  isTermActive,
 }: {
   section: Section;
   initalTracked: boolean;
+  isTermActive: boolean;
 }) {
   const [tracked, setTracked] = useState(initalTracked);
   return (
@@ -104,8 +106,6 @@ export function SectionCard({
             >
               {section.seatRemaining} / {section.seatCapacity}
             </p>
-            {/* TODO: this should be a hover i for neg seat counts */}
-            {/* {seatDelta < 0 && <p className="text-sm">i</p>} */}
           </span>
 
           {section.waitlistCapacity > 0 && (
@@ -121,6 +121,7 @@ export function SectionCard({
           inital={tracked}
           disabled={section.seatRemaining / section.seatCapacity > 0}
           onCheckedChange={(c) => setTracked(c)}
+          isTermActive={isTermActive}
         />
         <div className="flex items-center gap-2">
           <Tooltip>

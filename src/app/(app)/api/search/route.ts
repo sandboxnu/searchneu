@@ -18,13 +18,17 @@ export async function GET(req: NextRequest) {
   const maxCourseId = params.get("xci");
   const honorsFilter = params.get("honors");
 
+  if (query?.length && query.length > 0 && query.length < 4) {
+    return Response.json({ error: "insufficient query length" });
+  }
+
   // construct the where clause based on what params are present
   const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
 
   if (query) {
     sqlChunks.push(sql`and`);
     sqlChunks.push(
-      sql`${coursesT.id} @@@ paradedb.match('name', ${query}, distance => 0)`,
+      sql`${coursesT.id} @@@ paradedb.match('name', ${query}, distance => 0) OR ${coursesT.courseNumber} @@@ ${query.trim() + "^2"}`,
     );
   }
 
@@ -36,14 +40,19 @@ export async function GET(req: NextRequest) {
   }
 
   if (minCourseId) {
+    const parsed = parseInt(minCourseId, 10);
     sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${">= " + minCourseId}`);
+    sqlChunks.push(
+      sql`${coursesT.courseNumber} @@@ ${">= " + String(parsed * 1000)}`,
+    );
   }
 
-  // BUG: max course id should be up to the next highest id (ie 4 should be upto 5, not including)
   if (maxCourseId) {
+    const parsed = parseInt(maxCourseId, 10);
     sqlChunks.push(sql`and`);
-    sqlChunks.push(sql`${coursesT.courseNumber} @@@ ${"<= " + maxCourseId}`);
+    sqlChunks.push(
+      sql`${coursesT.courseNumber} @@@ ${"<= " + String(parsed * 1000 + 999)}`,
+    );
   }
 
   const result = await db

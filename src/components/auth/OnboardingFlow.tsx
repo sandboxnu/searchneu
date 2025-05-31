@@ -118,7 +118,7 @@ function ConsentPage({ next, abort }: { next: () => void; abort: () => void }) {
       <AlertDialogHeader className="flex w-full items-center">
         <AlertDialogTitle>Legal</AlertDialogTitle>
         <AlertDialogDescription className="text-center">
-          By continuing you agree to the SMS Policies in the{" "}
+          By continuing you agree to the SMS Notification Policies in the{" "}
           <Link href="/terms" className="text-b2 underline">
             Terms of Service
           </Link>{" "}

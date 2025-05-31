@@ -62,23 +62,44 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
 
   const results = use(
-    fetcher<searchResult[]>(props.params + props.term, () => {
-      const searchP = new URLSearchParams(props.params);
-      searchP.set("term", props.term);
-      return `/api/search?${searchP.toString()}`;
-    }),
+    fetcher<searchResult[] | { error: string }>(
+      props.params + props.term,
+      () => {
+        const searchP = new URLSearchParams(props.params);
+        searchP.set("term", props.term);
+        return `/api/search?${searchP.toString()}`;
+      },
+    ),
   );
 
   const parentRef = useRef(null);
 
   const virtual = useVirtualizer({
-    count: results.length,
+    count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 90,
     overscan: 5,
   });
 
   const items = virtual.getVirtualItems();
+
+  if (!Array.isArray(results)) {
+    if (results.error === "insufficient query length") {
+      return (
+        <>
+          <p className="text-neu6 w-full py-1 text-center text-sm">
+            Type more to search
+          </p>
+          <div
+            ref={parentRef}
+            className="h-[calc(100vh-186px)] w-full overflow-y-auto px-1 pt-2 xl:h-[calc(100vh-136px)]"
+          ></div>
+        </>
+      );
+    }
+
+    throw new Error("");
+  }
 
   if (results.length === 0) {
     return (

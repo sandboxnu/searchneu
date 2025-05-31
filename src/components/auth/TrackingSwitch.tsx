@@ -28,17 +28,21 @@ import Link from "next/link";
 export function TrackingSwitch({
   sectionId,
   inital,
+  isTermActive,
   onCheckedChange,
   ...props
 }: {
   sectionId: number;
   inital: boolean;
+  isTermActive: boolean;
 } & React.ComponentProps<typeof Switch>) {
   const { user, isPending: loading } = useAuth();
   const [checked, setChecked] = useState(inital);
   const [oneMoreStep, setOneMoreStep] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const disabled = checked ? false : props.disabled;
 
   function onCheck() {
     startTransition(async () => {
@@ -84,6 +88,24 @@ export function TrackingSwitch({
     });
   }
 
+  if (!isTermActive) {
+    return (
+      <div className="flex w-full justify-end">
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2">
+              {/* <Switch disabled={true} /> */}
+              <BellOff className="size-4" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Term is view only</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex w-full justify-end">
@@ -124,6 +146,7 @@ export function TrackingSwitch({
               onClick={() => onCheck()}
               className="data-[state=checked]:bg-accent"
               {...props}
+              disabled={disabled}
             />
             {checked ? (
               <BellRing className="text-accent size-4" />
@@ -135,8 +158,9 @@ export function TrackingSwitch({
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          {props.disabled && <p>Sections with open seats cannot be tracked</p>}
-          {!props.disabled && (
+          {disabled ? (
+            <p>Sections with open seats cannot be tracked</p>
+          ) : (
             <p>Track this class to be notified when a seat opens</p>
           )}
         </TooltipContent>

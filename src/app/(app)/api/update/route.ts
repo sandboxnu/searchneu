@@ -1,4 +1,4 @@
-import { coursesT, sectionsT, termsT } from "@/db/schema";
+import { coursesT, sectionsT, termsT, trackersT, usersT } from "@/db/schema";
 import {
   getSectionFaculty,
   parseMeetingTimes,
@@ -10,6 +10,7 @@ import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
+import { twilio } from "@/lib/twilio";
 
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update
@@ -139,19 +140,66 @@ export async function GET(req: NextRequest) {
     );
 
     // TODO: get subscription info and send notifications
-    // const trackers = await db
-    //   .select({
-    //     sectionCrn: sectionsT.crn,
-    //     uid: trackersT.userId,
-    //     method: trackersT.notificationMethod,
-    //     count: trackersT.messageCount,
-    //     phoneNumber: usersT.phoneNumber,
-    //     phoneNumberVerified: usersT.phoneNumberVerified,
-    //   })
-    //   .from(trackersT)
-    //   .leftJoin(sectionsT, eq(sectionsT.id, trackersT.sectionId))
-    //   .leftJoin(usersT, eq(usersT.id, trackersT.userId))
-    //   .where(eq(sectionsT.term, term));
+    const trackers = await db
+      .select({
+        sectionCrn: sectionsT.crn,
+        uid: trackersT.userId,
+        method: trackersT.notificationMethod,
+        count: trackersT.messageCount,
+        phoneNumber: usersT.phoneNumber,
+        phoneNumberVerified: usersT.phoneNumberVerified,
+      })
+      .from(trackersT)
+      .innerJoin(sectionsT, eq(sectionsT.id, trackersT.sectionId))
+      .innerJoin(usersT, eq(usersT.id, trackersT.userId))
+      .where(eq(sectionsT.term, term));
+
+    const seatCrns = seats.map((s) => s.courseReferenceNumber);
+    const seatNotifs = trackers.filter((t) => seatCrns.includes(t.sectionCrn));
+
+    const waitlistCrns = waitlistSeats
+      .filter((s) => !seatCrns.includes(s.courseReferenceNumber))
+      .map((s) => s.courseReferenceNumber);
+    const waitlistNotifs = trackers.filter((t) =>
+      waitlistCrns.includes(t.sectionCrn),
+    );
+
+    seatNotifs.forEach((t) => {
+      if (!t.phoneNumber || !t.phoneNumberVerified) {
+        return;
+      }
+
+      twilio.messages
+        .create({
+          body: "",
+          from: process.env.TWILIO_PHONE_NUMBER!,
+          to: t.phoneNumber,
+        })
+
+        .then(() => {
+          console.log(`Sent notification text to ${t.phoneNumber}`);
+          // TODO: db
+          return;
+        })
+        .catch(async (err) => {
+          switch (err.code) {
+            case 21610:
+              console.warn(
+                `${t.phoneNumber} has unsubscribed from notifications`,
+              );
+              // TODO:
+              // await notificationsManager.deleteAllUserSubscriptions(
+              //   recipientNumber,
+              // );
+              return;
+            default:
+              console.error(
+                `Error trying to send notification text to ${t.phoneNumber}`,
+                err,
+              );
+          }
+        });
+    });
 
     // update the seat counts in the database
     const values = seats

@@ -1,6 +1,7 @@
 import { isValidNupath } from "@/lib/banner/nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
+import { parseCoreqs, parsePrereqs } from "./reqs";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -9,6 +10,7 @@ export async function scrapeTerm(term: string) {
 
   const { courses, subjects } = arrangeCourses(sections);
   await getCourseDescriptions(courses);
+  await getReqs(courses);
 
   const termDef = await getTermInfo(term);
 
@@ -23,6 +25,65 @@ async function getTermInfo(term: string) {
   ).then((resp) => resp.json());
 
   return resp[0];
+}
+
+async function getReqs(courses: Course[]) {
+  console.log("getting course reqs");
+  const batchSize = 50;
+  const term = courses[0].term;
+  const numBatches = Math.ceil(courses.length / batchSize);
+  console.log(`running ${numBatches} batches`);
+
+  console.log("fetching coreqs");
+  for (let i = 0; i < numBatches; i++) {
+    console.log(`batch ${i}`);
+
+    const offset = batchSize * i;
+    const promises = courses.slice(offset, offset + 50).map((c) =>
+      fetch(
+        "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getCorequisites",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `term=${term}&courseReferenceNumber=${c.sections[0].crn}`,
+        },
+      ).then((resp) => resp.text()),
+    );
+
+    const coreqs = await Promise.allSettled(promises);
+    coreqs
+      .filter((p) => p.status === "fulfilled")
+      .forEach((p, j) => {
+        courses[offset + j].coreqs = parseCoreqs(decode(decode(p.value)));
+      });
+  }
+
+  for (let i = 0; i < numBatches; i++) {
+    console.log(`batch ${i}`);
+
+    const offset = batchSize * i;
+    const promises = courses.slice(offset, offset + 50).map((c) =>
+      fetch(
+        "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getSectionPrerequisites",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `term=${term}&courseReferenceNumber=${c.sections[0].crn}`,
+        },
+      ).then((resp) => resp.text()),
+    );
+
+    const prereqs = await Promise.allSettled(promises);
+    prereqs
+      .filter((p) => p.status === "fulfilled")
+      .forEach((p, j) => {
+        courses[offset + j].coreqs = parsePrereqs(decode(decode(p.value)));
+      });
+  }
 }
 
 // getCourseDescriptions goes through and scrapes the course descriptions for
@@ -87,6 +148,8 @@ export function arrangeCourses(sections: BannerSection[]) {
           .filter((a) => isValidNupath(a.code))
           .map((a) => a.description.trim()),
         sections: [],
+        prereqs: null,
+        coreqs: null,
       };
     }
 

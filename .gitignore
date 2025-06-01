@@ -43,3 +43,6 @@ next-env.d.ts
 # docs
 .source
 .env*.local
+
+# ide
+.vscode

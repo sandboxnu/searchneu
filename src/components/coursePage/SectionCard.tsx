@@ -50,7 +50,7 @@ export function SectionCard({
   return (
     <div
       data-tracked={tracked}
-      className="data-[tracked=true]:border-accent data-[tracked=true]:bg-accent/5 border-neu2 bg-neu1 grid grid-cols-3 rounded-lg border p-2 transition duration-300"
+      className="data-[tracked=true]:border-accent data-[tracked=true]:bg-accent/5 border-neu2 bg-neu1 grid-cols-3 rounded-lg border p-2 transition duration-300 xl:grid"
     >
       <div className="col-start-1">
         <div className="flex items-center gap-2">

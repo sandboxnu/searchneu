@@ -31,125 +31,123 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-neu1 flex flex-col overflow-y-scroll rounded-tr-lg px-4 xl:h-[calc(100vh-108px)]">
-      <div className="hidden space-y-4 xl:block">
-        <Suspense fallback={<ToggleSkeleton />}>
-          <CollegeToggle terms={props.terms} />
+    <div className="space-y-4">
+      <Suspense fallback={<ToggleSkeleton />}>
+        <CollegeToggle terms={props.terms} />
+      </Suspense>
+
+      <div className="">
+        <Label
+          htmlFor="course-term-select"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Semester
+        </Label>
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <TermSelect terms={props.terms} id="course-term-select" />
         </Suspense>
+      </div>
 
-        <div className="">
-          <Label
-            htmlFor="course-term-select"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Semester
-          </Label>
-          <Suspense fallback={<MultiselectSkeleton />}>
-            <TermSelect terms={props.terms} id="course-term-select" />
-          </Suspense>
-        </div>
+      <div className="">
+        <Label
+          htmlFor="course-subject-select"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Subjects
+        </Label>
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselect
+            opts={props.subjects}
+            commandProps={{ id: "course-subject-select" }}
+            spCode="subj"
+            placeholder="Select subjects"
+            transform={(opts) => opts as Option[]}
+          />
+        </Suspense>
+      </div>
 
-        <div className="">
-          <Label
-            htmlFor="course-subject-select"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Subjects
-          </Label>
-          <Suspense fallback={<MultiselectSkeleton />}>
-            <SPMultiselect
-              opts={props.subjects}
-              commandProps={{ id: "course-subject-select" }}
-              spCode="subj"
-              placeholder="Select subjects"
-              transform={(opts) => opts as Option[]}
-            />
-          </Suspense>
-        </div>
+      <div className="">
+        <Label
+          htmlFor="course-campus-select"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          NUPaths
+        </Label>
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselect
+            opts={props.nupaths}
+            commandProps={{ id: "course-nupath-select" }}
+            spCode="nupath"
+            placeholder="Select NUPaths"
+            transform={(opts) => opts as Option[]}
+          />
+        </Suspense>
+      </div>
 
-        <div className="">
-          <Label
-            htmlFor="course-campus-select"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            NUPaths
-          </Label>
-          <Suspense fallback={<MultiselectSkeleton />}>
-            <SPMultiselect
-              opts={props.nupaths}
-              commandProps={{ id: "course-nupath-select" }}
-              spCode="nupath"
-              placeholder="Select NUPaths"
-              transform={(opts) => opts as Option[]}
-            />
-          </Suspense>
-        </div>
+      <div className="">
+        <Label
+          htmlFor="course-campus-select"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Campus
+        </Label>
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselect
+            opts={props.campuses}
+            commandProps={{ id: "course-campus-select" }}
+            spCode="camp"
+            placeholder="Select campus"
+            transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
+          />
+        </Suspense>
+      </div>
 
-        <div className="">
-          <Label
-            htmlFor="course-campus-select"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Campus
-          </Label>
-          <Suspense fallback={<MultiselectSkeleton />}>
-            <SPMultiselect
-              opts={props.campuses}
-              commandProps={{ id: "course-campus-select" }}
-              spCode="camp"
-              placeholder="Select campus"
-              transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
-            />
-          </Suspense>
-        </div>
+      <div className="">
+        <Label
+          htmlFor="course-classtype-select"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Class Type
+        </Label>
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselect
+            opts={props.classTypes}
+            commandProps={{ id: "course-classtype-select" }}
+            spCode="clty"
+            placeholder="Select class type"
+            transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
+          />
+        </Suspense>
+      </div>
 
-        <div className="">
-          <Label
-            htmlFor="course-classtype-select"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Class Type
-          </Label>
-          <Suspense fallback={<MultiselectSkeleton />}>
-            <SPMultiselect
-              opts={props.classTypes}
-              commandProps={{ id: "course-classtype-select" }}
-              spCode="clty"
-              placeholder="Select class type"
-              transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
-            />
-          </Suspense>
-        </div>
+      <div className="flex items-center justify-between">
+        <Label
+          htmlFor="course-honors-toggle"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Honors
+        </Label>
+        <HonorsSwitch id="course-honors-toggle" />
+      </div>
 
-        <div className="flex items-center justify-between">
-          <Label
-            htmlFor="course-honors-toggle"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Honors
-          </Label>
-          <HonorsSwitch id="course-honors-toggle" />
-        </div>
-
-        <div className="">
-          <Label
-            htmlFor="course-id-range"
-            className="text-neu7 pb-2 text-sm font-medium"
-          >
-            Course Id
-          </Label>
-          <RangeSlider />
-          <div className="text-neu6 flex w-full justify-between pt-2 text-sm">
-            <p>1k</p>
-            <p>2k</p>
-            <p>3k</p>
-            <p>4k</p>
-            <p>5k</p>
-            <p>6k</p>
-            <p>7k</p>
-            <p>8k</p>
-            <p>9k</p>
-          </div>
+      <div className="">
+        <Label
+          htmlFor="course-id-range"
+          className="text-neu7 pb-2 text-sm font-medium"
+        >
+          Course Id
+        </Label>
+        <RangeSlider />
+        <div className="text-neu6 flex w-full justify-between pt-2 text-sm">
+          <p>1k</p>
+          <p>2k</p>
+          <p>3k</p>
+          <p>4k</p>
+          <p>5k</p>
+          <p>6k</p>
+          <p>7k</p>
+          <p>8k</p>
+          <p>9k</p>
         </div>
       </div>
     </div>
@@ -229,10 +227,7 @@ function TermSelect(
       }
       value={term?.toString()}
     >
-      <SelectTrigger
-        className="bg-neu2 rounded-lg md:w-40 xl:w-full"
-        {...props}
-      >
+      <SelectTrigger className="bg-neu2 w-full rounded-lg" {...props}>
         <SelectValue placeholder="Select term" />
       </SelectTrigger>
       <SelectContent className="">
@@ -307,7 +302,7 @@ function SPMultiselect<T>(
       onChange={updateSearchParams}
       defaultOptions={options as Option[]}
       hidePlaceholderWhenSelected
-      className="bg-neu2 rounded-lg md:w-40 xl:w-full"
+      className="bg-neu2 w-full rounded-lg"
       emptyIndicator={
         <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
           no results found

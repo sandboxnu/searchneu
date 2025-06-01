@@ -4,6 +4,7 @@ import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { cn } from "@/lib/cn";
 
 interface searchResult {
   name: string;
@@ -23,16 +24,19 @@ export default function SearchResults() {
   const stale = deferred !== params.toString();
 
   return (
-    <div className="bg-neu2 flex h-[calc(100vh-160px)] flex-col rounded-t-lg xl:h-[calc(100vh-108px)]">
-      <div className={stale ? "opacity-60" : ""}>
-        <Suspense fallback={<ResultsListSkeleton />}>
-          <ResultsList
-            params={deferred}
-            term={term?.toString() ?? ""}
-            course={course?.toString() ?? ""}
-          />
-        </Suspense>
-      </div>
+    <div
+      className={cn(
+        "bg-neu2 flex h-[calc(100vh-108px)] flex-col rounded-t-lg",
+        stale ? "opacity-60" : "",
+      )}
+    >
+      <Suspense fallback={<ResultsListSkeleton />}>
+        <ResultsList
+          params={deferred}
+          term={term?.toString() ?? ""}
+          course={course?.toString() ?? ""}
+        />
+      </Suspense>
     </div>
   );
 }
@@ -92,7 +96,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
           </p>
           <div
             ref={parentRef}
-            className="h-[calc(100vh-186px)] w-full overflow-y-auto px-1 pt-2 xl:h-[calc(100vh-136px)]"
+            className="h-[calc(100vh-136px)] w-full overflow-y-auto px-1 pt-2"
           ></div>
         </>
       );
@@ -107,7 +111,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
         <div
           ref={parentRef}
-          className="h-[calc(100vh-186px)] w-full overflow-y-auto px-1 pt-2 xl:h-[calc(100vh-136px)]"
+          className="h-[calc(100vh-136px)] w-full overflow-y-auto px-1 pt-2"
         ></div>
       </>
     );
@@ -120,7 +124,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
       </p>
       <div
         ref={parentRef}
-        className="h-[calc(100vh-186px)] w-full overflow-y-auto px-2 xl:h-[calc(100vh-136px)]"
+        className="h-[calc(100vh-136px)] w-full overflow-y-auto px-2"
       >
         <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
           <ul
@@ -155,7 +159,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
 
 function ResultsListSkeleton() {
   return (
-    <ul className="space-y-2 p-2">
+    <ul className="h-[calc(100vh-136px)] space-y-2 overflow-y-clip p-2">
       {Array.from({ length: 10 }).map((_, i) => (
         <li key={i} className="bg-neu3 h-20 w-full animate-pulse rounded"></li>
       ))}

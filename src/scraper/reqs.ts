@@ -1,3 +1,5 @@
+import { parse } from 'node-html-parser';
+
 // INSTRUCTIONS - fill out the functions. its not thaaaat hard...
 //
 // some notes for your help:
@@ -8,6 +10,7 @@
 interface Condition {
   type: "and" | "or";
   next: (Condition | Course)[];
+  prev: Condition | null;
 }
 
 interface Course {
@@ -82,6 +85,68 @@ export function parseCoreqs(rawHtml: string): Requisite {
 // PERF: remove the below line when the variable is used!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function parsePrereqs(rawHtml: string): Requisite {
+  // Always start with an unknown condition
+  let curCondition: Condition = {
+    type: "or", // default to OR
+    next: [],
+    prev: null,
+  };
+
+  const root = parse(rawHtml);
+
+  const tbody = root.querySelector('tbody');
+
+  const rows = tbody?.querySelectorAll('tr');
+
+  rows?.forEach((tr, index) => {
+    // console.log(`Row ${index + 1}: ${tr.toString()}`)
+    const data = tr.querySelectorAll('td');
+    
+    // And/Or
+    if (data[0].innerText.trim() !== '') {
+      if (data[0].innerText === "And") {
+        curCondition.type = "and";
+      }
+      else {
+        curCondition.type = "or";
+      }
+    }
+
+    // Opening (
+    if (data[1].innerText.trim() !== '') {
+      const newCondition: Condition = {
+        type: "or", // default to or
+        next: [],
+        prev: curCondition
+      };
+      curCondition.next.push(newCondition);
+      curCondition = newCondition;
+    }
+
+    const newCourse: Course = {
+      subject: data[4].innerText,
+      courseNumber: data[5].innerText,
+    };
+    curCondition.next.push(newCourse);
+
+    // Closing (
+    if (data[8].innerText.trim() !== '') {
+      if (curCondition.prev) { // should always have one
+        curCondition = curCondition.prev;
+      }
+    }
+
+  })
+
+  
+  while (curCondition.prev) {
+    curCondition = curCondition.prev;
+  }
+
+  console.log(curCondition)
+
+
+
   // the input (`rawHtml`) will be formatted like the examples below.
   //
   // EXAMPLE 1 - no preqs
@@ -228,3 +293,136 @@ export function parsePrereqs(rawHtml: string): Requisite {
 
   return null;
 }
+
+const html = `<section aria-labelledby="preReqs">
+   <h3>Catalog Prerequisites</h3>
+   <table class="basePreqTable">
+     <thead>
+       <tr>
+         <th>And/Or</th>
+         <th></th>  <----- this is for opening ( in prereq groups
+         <th>Test</th>
+         <th>Score</th>
+         <th>Subject</th>
+         <th>Course Number</th>
+         <th>Level</th>
+         <th>Grade</th>
+         <th></th>  <----- this is for closing ( in prereq groups
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Architecture</td>
+         <td>2260</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Art - Media Arts</td>
+         <td>2000</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Art - Fundamentals</td>
+         <td>1124</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td>(</td>
+         <td></td>
+         <td></td>
+         <td>Art - Fundamentals</td>
+         <td>1230</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>And</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Art - Fundamentals</td>
+         <td>1231</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td>)</td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Art - Design</td>
+         <td>2260</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td>(</td>
+         <td></td>
+         <td></td>
+         <td>Art - Design</td>
+         <td>2262</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>And</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Art - Design</td>
+         <td>2263</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td>)</td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Computer Science</td>
+         <td>2510</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       <tr>
+         <td>Or</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>General Engineering</td>
+         <td>1502</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+     </tbody>
+   </table>
+  </section>`
+
+parsePrereqs(html);

@@ -21,7 +21,7 @@ export function parseCoreqs(rawHtml: string): Requisite {
     return null;
   }
 
-  let curCondition: Condition = { type: "and", next: [], prev: null };
+  const curCondition: Condition = { type: "and", next: [], prev: null };
   const tableRows = tbody.querySelectorAll('tr');
   tableRows.forEach((tr) => {
     const data = tr.querySelectorAll('td');

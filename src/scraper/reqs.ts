@@ -82,218 +82,101 @@ export function parseCoreqs(rawHtml: string): Requisite {
   return null;
 }
 
-// PERF: remove the below line when the variable is used!!!
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function parsePrereqs(rawHtml: string): Requisite {
-  // Always start with an unknown condition
-  let curCondition: Condition = {
-    type: "or", // default to OR
-    next: [],
-    prev: null,
-  };
-
   const root = parse(rawHtml);
-
   const tbody = root.querySelector('tbody');
 
-  const rows = tbody?.querySelectorAll('tr');
-
-  rows?.forEach((tr, index) => {
-    // console.log(`Row ${index + 1}: ${tr.toString()}`)
+  if (!tbody) {
+    // If there is no table body, then there are no prereqs.
+    return null;
+  }
+   
+  // Start with default condition
+  let curCondition: Condition = { type: "or", next: [], prev: null };
+  const tableRows = tbody.querySelectorAll('tr');
+  tableRows.forEach((tr) => {
     const data = tr.querySelectorAll('td');
     
-    // And/Or
-    if (data[0].innerText.trim() !== '') {
-      if (data[0].innerText === "And") {
-        curCondition.type = "and";
-      }
-      else {
-        curCondition.type = "or";
-      }
+    // If the And/Or column has a value, update the current condition type accordingly
+    if (notEmpty(data[0].innerText)) {
+      curCondition.type = data[0].innerText.toLowerCase() as "and" | "or";
     }
 
-    // Opening (
-    if (data[1].innerText.trim() !== '') {
-      const newCondition: Condition = {
-        type: "or", // default to or
-        next: [],
-        prev: curCondition
-      };
+    // Handle (
+    if (notEmpty(data[1].innerText)) {
+      const newCondition: Condition = { type: "or", next: [], prev: curCondition };
       curCondition.next.push(newCondition);
       curCondition = newCondition;
     }
 
-    const newCourse: Course = {
-      subject: data[4].innerText,
-      courseNumber: data[5].innerText,
-    };
-    curCondition.next.push(newCourse);
-
-    // Closing (
-    if (data[8].innerText.trim() !== '') {
-      if (curCondition.prev) { // should always have one
+    // Handle course information
+    if (notEmpty(data[4].innerText) && notEmpty(data[5].innerText)) {
+      const newCourse: Course = { subject: data[4].innerText, courseNumber: data[5].innerText };
+      curCondition.next.push(newCourse);
+    }
+    
+    // Handle )
+    if (notEmpty(data[8].innerText)) {
+      if (curCondition.prev) {
         curCondition = curCondition.prev;
       }
     }
-
   })
-
   
-  
+  // Make sure we get the top-most condition
   while (curCondition.prev) {
     curCondition = curCondition.prev;
   }
 
-  console.log(curCondition)
+  // Get final result
+  let prereqs: Requisite = curCondition;
+  if (curCondition.next.length == 1) {
+    prereqs = curCondition.next[0];
+  }
 
-
-
-  // the input (`rawHtml`) will be formatted like the examples below.
-  //
-  // EXAMPLE 1 - no preqs
-  // <section aria-labelledby="preReqs">
-  //  <h3>Catalog Prerequisites</h3>
-  //  No prerequisite information available.
-  // </section>
-  //
-  // EXAMPLE 2 - some preq mess
-  // <section aria-labelledby="preReqs">
-  //  <h3>Catalog Prerequisites</h3>
-  //  <table class="basePreqTable">
-  //    <thead>
-  //      <tr>
-  //        <th>And/Or</th>
-  //        <th></th>  <----- this is for opening ( in prereq groups
-  //        <th>Test</th>
-  //        <th>Score</th>
-  //        <th>Subject</th>
-  //        <th>Course Number</th>
-  //        <th>Level</th>
-  //        <th>Grade</th>
-  //        <th></th>  <----- this is for closing ( in prereq groups
-  //      </tr>
-  //    </thead>
-  //    <tbody>
-  //      <tr>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Architecture</td>
-  //        <td>2260</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Media Arts</td>
-  //        <td>2000</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Fundamentals</td>
-  //        <td>1124</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td>(</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Fundamentals</td>
-  //        <td>1230</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>And</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Fundamentals</td>
-  //        <td>1231</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td>)</td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Design</td>
-  //        <td>2260</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td>(</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Design</td>
-  //        <td>2262</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>And</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Art - Design</td>
-  //        <td>2263</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td>)</td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>Computer Science</td>
-  //        <td>2510</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //      <tr>
-  //        <td>Or</td>
-  //        <td></td>
-  //        <td></td>
-  //        <td></td>
-  //        <td>General Engineering</td>
-  //        <td>1502</td>
-  //        <td>Undergraduate</td>
-  //        <td>D-</td>
-  //        <td></td>
-  //      </tr>
-  //    </tbody>
-  //  </table>
-  // </section>
-  //
-  // some notes on the grouping of prereqs - banner pretty much does whatever the f it wants.
-  // sometimes the group symbols are on lines of their own. sometimes not. sometimes the outermost
-  // group has parentheticals. sometimes it does not. just be prepared for a mess of surprises :)
-
-  return null;
+  return prereqs;
 }
+
+function notEmpty(val: string) {
+  return val.trim() !== '';
+}
+
+const htmlThree = `<section aria-labelledby="preReqs">
+   <h3>Catalog Prerequisites</h3>
+   No information
+   </section>`
+
+const htmlTwo = `<section aria-labelledby="preReqs">
+   <h3>Catalog Prerequisites</h3>
+   <table class="basePreqTable">
+     <thead>
+       <tr>
+         <th>And/Or</th>
+         <th></th>  <----- this is for opening ( in prereq groups
+         <th>Test</th>
+         <th>Score</th>
+         <th>Subject</th>
+         <th>Course Number</th>
+         <th>Level</th>
+         <th>Grade</th>
+         <th></th>  <----- this is for closing ( in prereq groups
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td>Architecture</td>
+         <td>2260</td>
+         <td>Undergraduate</td>
+         <td>D-</td>
+         <td></td>
+       </tr>
+       </tbody>
+   </table>
+  </section>`
 
 const html = `<section aria-labelledby="preReqs">
    <h3>Catalog Prerequisites</h3>
@@ -426,4 +309,4 @@ const html = `<section aria-labelledby="preReqs">
    </table>
   </section>`
 
-parsePrereqs(html);
+console.log(parsePrereqs(htmlThree));

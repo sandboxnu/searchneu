@@ -139,6 +139,7 @@ export function parsePrereqs(rawHtml: string): Requisite {
   })
 
   
+  
   while (curCondition.prev) {
     curCondition = curCondition.prev;
   }

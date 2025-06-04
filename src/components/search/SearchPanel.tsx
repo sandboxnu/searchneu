@@ -31,7 +31,7 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="h-[calc(100vh-108px)] w-full space-y-4 overflow-y-scroll">
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>

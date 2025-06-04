@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   if (query) {
     sqlChunks.push(sql`and`);
     sqlChunks.push(
-      sql`${coursesT.id} @@@ paradedb.match('name', ${query}, distance => 0) OR ${coursesT.courseNumber} @@@ ${query.trim() + "^2"}`,
+      sql`${coursesT.id} @@@ paradedb.match('name', ${query}, distance => 0)`,
     );
   }
 

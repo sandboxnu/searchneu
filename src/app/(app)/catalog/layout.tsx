@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <div className="h-screen">
       <Header />
-      <div className="h-[calc(100vh-56px)]">{children}</div>
-    </>
+      <div className="">{children}</div>
+    </div>
   );
 }

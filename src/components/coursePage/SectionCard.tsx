@@ -181,43 +181,41 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   return (
     <div className="flex flex-col gap-1 py-2">
       {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex gap-2">
-          <span className="flex items-center gap-1">
-            <span
-              className={cn(
-                "bg-neu2 flex h-5 items-center justify-between rounded-l",
-                daysToShow.length > 6 ? "w-[140px]" : "w-[100px]",
-              )}
-            >
-              {daysToShow.map((j) => (
-                <span
-                  key={props.crn + i + j}
-                  className={cn(
-                    "h-full w-5 py-0.5 text-center text-xs",
-                    m.days.includes(j)
-                      ? m.final
-                        ? "bg-accent"
-                        : "bg-neu9"
-                      : null,
-                    m.days.includes(j) && "text-background font-semibold",
-                    m.days.includes(j + 1) &&
-                      !m.days.includes(j - 1) &&
-                      "rounded-l",
-                    m.days.includes(j - 1) &&
-                      !m.days.includes(j + 1) &&
-                      "rounded-r",
+        <div key={props.crn + i} className="flex gap-2">
+          <span
+            className={cn(
+              "bg-neu2 flex h-5 items-center justify-between rounded-l",
+              daysToShow.length > 6 ? "w-[140px]" : "w-[100px]",
+            )}
+          >
+            {daysToShow.map((j) => (
+              <span
+                key={props.crn + i + j}
+                className={cn(
+                  "h-full w-5 py-0.5 text-center text-xs",
+                  m.days.includes(j)
+                    ? m.final
+                      ? "bg-accent"
+                      : "bg-neu9"
+                    : null,
+                  m.days.includes(j) && "text-background font-semibold",
+                  m.days.includes(j + 1) &&
                     !m.days.includes(j - 1) &&
-                      !m.days.includes(j + 1) &&
-                      "rounded",
-                  )}
-                >
-                  {days[j]}
-                </span>
-              ))}
-            </span>
-            {/* TODO: this should be a hover i to say talk to the prof! */}
-            {/* {m.final ? <p className="text-sm">i</p> : null} */}
+                    "rounded-l",
+                  m.days.includes(j - 1) &&
+                    !m.days.includes(j + 1) &&
+                    "rounded-r",
+                  !m.days.includes(j - 1) &&
+                    !m.days.includes(j + 1) &&
+                    "rounded",
+                )}
+              >
+                {days[j]}
+              </span>
+            ))}
           </span>
+          {/* TODO: this should be a hover i to say talk to the prof! */}
+          {/* {m.final ? <p className="text-sm">i</p> : null} */}
           <span className="flex items-center gap-1 text-sm">
             {m.final && <p className="font-semibold">Final Exam</p>}
             {m.final && <p className="">|</p>}
@@ -227,7 +225,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
             {/*   {m.building} {m.room} */}
             {/* </p> */}
           </span>
-        </span>
+        </div>
       ))}
     </div>
   );

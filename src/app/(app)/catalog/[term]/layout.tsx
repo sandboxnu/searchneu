@@ -64,9 +64,7 @@ export default async function Layout(props: {
         classTypes={classTypes}
         nupaths={nupaths}
       />
-      <div className="col-span-12 h-[calc(100vh-56px)] overflow-y-scroll xl:col-span-7">
-        {props.children}
-      </div>
+      <div className="col-span-12 xl:col-span-7">{props.children}</div>
     </div>
   );
 }

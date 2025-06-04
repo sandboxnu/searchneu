@@ -6,6 +6,15 @@ import { useParams } from "next/navigation";
 import { Option } from "../ui/multi-select";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./SearchBar";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
+import { Button } from "../ui/button";
+import { Filter } from "lucide-react";
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
@@ -28,8 +37,23 @@ export function MobileWrapper(props: {
       className="col-span-12 hidden rounded-t-lg data-[show=true]:block xl:col-span-5 xl:block!"
     >
       <div className="h-full grid-cols-12 md:grid!">
-        <div className="bg-neu1 col-span-12 px-2 py-2 xl:pr-0 xl:pl-4">
+        <div className="bg-neu1 col-span-12 flex gap-1 px-2 py-2 xl:pr-0 xl:pl-4">
           <SearchBar />
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="default" size="icon" className="md:hidden">
+                <Filter className="size-4" />{" "}
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Search Filters</DrawerTitle>
+              </DrawerHeader>
+              <div className="overflow-y-scroll px-4">
+                <SearchPanel {...props} />
+              </div>
+            </DrawerContent>
+          </Drawer>
         </div>
         <div className="bg-neu1 hidden w-full px-2 md:col-span-5 md:flex lg:col-span-3 xl:col-span-5 xl:px-4">
           <SearchPanel {...props} />

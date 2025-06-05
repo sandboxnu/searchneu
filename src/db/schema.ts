@@ -139,6 +139,7 @@ export const trackersT = pgTable(
       .references(() => sectionsT.id),
     notificationMethod: varchar({ length: 10 }).notNull().default("SMS"),
     messageCount: integer().notNull().default(0),
+    messageLimit: integer().notNull().default(3),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
@@ -151,3 +152,12 @@ export const trackersT = pgTable(
     index("tracker_section_idx").on(table.sectionId),
   ],
 );
+
+export const notificationsT = pgTable("notifications", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer().notNull(),
+  trackerId: integer().notNull(),
+  method: varchar({ length: 10 }).notNull(),
+  message: text(),
+  sentAt: timestamp().notNull().defaultNow(),
+});

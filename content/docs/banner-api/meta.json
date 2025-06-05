@@ -6,8 +6,10 @@
   "pages": [
     "index",
     "---Registration Listings---",
-    "...registration-listings",
+    "...term",
+    "...classsearch",
+    "...contactcard",
     "---Search Results---",
-    "...search-results"
+    "...searchresults"
   ]
 }

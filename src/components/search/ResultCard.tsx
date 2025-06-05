@@ -1,5 +1,5 @@
 import { cn } from "@/lib/cn";
-import { convertNupathToCode } from "@/lib/banner/nupaths";
+import { convertNupathToCode } from "@/scraper/nupaths";
 import Link from "next/link";
 
 export function ResultCard(props: {

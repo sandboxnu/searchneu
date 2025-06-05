@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/search/MobileWrapper";
 import type { Option } from "@/components/ui/multi-select";
-import { NUPATH_OPTIONS } from "@/lib/banner/nupaths";
+import { NUPATH_OPTIONS } from "@/scraper/nupaths";
 import { db } from "@/db";
 import { subjectsT, sectionsT } from "@/db/schema";
 import { eq } from "drizzle-orm";

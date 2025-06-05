@@ -1,4 +1,4 @@
-import { isValidNupath } from "@/lib/banner/nupaths";
+import { isValidNupath } from "./nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";

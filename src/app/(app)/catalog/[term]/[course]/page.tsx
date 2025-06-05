@@ -4,7 +4,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
-import { convertNupathToLongform } from "@/lib/banner/nupaths";
+import { convertNupathToLongform } from "@/scraper/nupaths";
 import Link from "next/link";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { Suspense } from "react";

@@ -21,7 +21,7 @@ export default async function Home() {
 
   return (
     <>
-      <header className="absolute top-0 z-50 flex h-14 w-full items-center justify-between p-4">
+      <header className="absolute top-0 z-40 flex h-14 w-full items-center justify-between p-4">
         <a href="https://www.sandboxnu.com/">
           <Sandbox className="mt-8" />
         </a>

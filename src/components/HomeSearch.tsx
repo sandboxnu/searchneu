@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -34,7 +35,7 @@ export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
         <TermSelect terms={terms} handler={termState} />
         <div className="flex w-full">
           <Input
-            className="bg-background h-10 rounded-r-none md:rounded-none"
+            className="bg-neu1 h-10 rounded-r-none md:rounded-none"
             placeholder="Search for a course, CRN, or phrase"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -45,7 +46,7 @@ export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
             className="size-10 rounded-l-none shadow-sm"
             onClick={() => handleSubmit()}
           >
-            🔍
+            <Search className="size-4" transform="scale(-1, 1)" />
           </Button>
         </div>
       </div>
@@ -62,7 +63,7 @@ function TermSelect(props: {
 }) {
   return (
     <Select value={props.handler[0]} onValueChange={(v) => props.handler[1](v)}>
-      <SelectTrigger className="bg-background ring-0 data-[size=default]:h-10 md:w-40 md:rounded-r-none md:border-none xl:w-52">
+      <SelectTrigger className="bg-neu1 ring-0 data-[size=default]:h-10 md:w-40 md:rounded-r-none md:border-none xl:w-52">
         <SelectValue placeholder="Select term" />
       </SelectTrigger>
       <SelectContent className="">

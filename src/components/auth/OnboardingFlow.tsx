@@ -26,6 +26,7 @@ import {
   startPhoneVerificationAction,
   verifyPhoneAction,
 } from "@/lib/auth/onboarding-actions";
+import { Searchskie } from "../icons/Searchskie";
 
 export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
   const [page, setPage] = useState(0);
@@ -38,7 +39,7 @@ export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
 
   return (
     <AlertDialog defaultOpen={true}>
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent className="max-w-[85vh] md:max-w-[60vh]">
         {page === 0 && (
           <StartPage next={() => setPage(1)} abort={abortOnboarding} />
         )}
@@ -77,7 +78,7 @@ function StartPage({ next, abort }: { next: () => void; abort: () => void }) {
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="flex w-full items-center justify-center py-4">
-        <SquareDashed className="text-neu size-32" />
+        <Searchskie className="w-[20vh]" />
       </div>
       <AlertDialogFooter>
         <div className="flex w-full flex-col gap-1">

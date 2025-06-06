@@ -68,7 +68,7 @@ export function SearchBar() {
         className="bg-accent rounded-l-none rounded-r-lg"
         onClick={() => handleSubmit()}
       >
-        <Search className="size-4" />
+        <Search className="size-4" transform="scale(-1, 1)" />
       </Button>
     </div>
   );

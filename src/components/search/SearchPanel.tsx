@@ -9,16 +9,17 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
-import MultipleSelector, { Option } from "@/components/ui/multi-select";
+import MultipleSelector, {
+  NMultiselect,
+  Option,
+} from "@/components/ui/multi-select";
 import { Switch } from "../ui/switch";
 import { Slider } from "../ui/slider";
 import { Label } from "../ui/label";
@@ -220,6 +221,11 @@ function TermSelect(
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const activeCollege =
+    Object.keys(terms).find((k) =>
+      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
+    ) ?? "neu";
+
   return (
     <Select
       onValueChange={(e) =>
@@ -231,30 +237,11 @@ function TermSelect(
         <SelectValue placeholder="Select term" />
       </SelectTrigger>
       <SelectContent className="">
-        <SelectGroup>
-          <SelectLabel>NEU</SelectLabel>
-          {terms.neu.map((t) => (
-            <SelectItem key={t.term} value={t.term}>
-              {t.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>CPS</SelectLabel>
-          {terms.cps.map((t) => (
-            <SelectItem key={t.term} value={t.term}>
-              {t.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>LAW</SelectLabel>
-          {terms.law.map((t) => (
-            <SelectItem key={t.term} value={t.term}>
-              {t.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
+        {terms[activeCollege as keyof GroupedTerms].map((t) => (
+          <SelectItem key={t.term} value={t.term}>
+            {t.name}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
@@ -274,7 +261,10 @@ function SPMultiselect<T>(
   } & ComponentProps<typeof MultipleSelector>,
 ) {
   const resolved = use(props.opts);
-  const options = props.transform(resolved);
+  const options = props
+    .transform(resolved)
+    // put in alphabetical order
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -297,19 +287,27 @@ function SPMultiselect<T>(
   const selected = options.filter((s) => spSelected.indexOf(s.value) > -1);
 
   return (
-    <MultipleSelector
-      value={selected as Option[]}
-      onChange={updateSearchParams}
-      defaultOptions={options as Option[]}
-      hidePlaceholderWhenSelected
-      className="bg-neu2 w-full rounded-lg"
-      emptyIndicator={
-        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-          no results found
-        </p>
-      }
-      {...props}
-    />
+    <>
+      {/* <MultipleSelector */}
+      {/*   value={selected as Option[]} */}
+      {/*   onChange={updateSearchParams} */}
+      {/*   defaultOptions={options as Option[]} */}
+      {/*   hidePlaceholderWhenSelected */}
+      {/*   className="bg-neu2 w-full rounded-lg" */}
+      {/*   emptyIndicator={ */}
+      {/*     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400"> */}
+      {/*       no results found */}
+      {/*     </p> */}
+      {/*   } */}
+      {/*   {...props} */}
+      {/* /> */}
+      <NMultiselect
+        options={options}
+        placeholder={props.placeholder}
+        value={selected as Option[]}
+        onChange={updateSearchParams}
+      />
+    </>
   );
 }
 
@@ -385,7 +383,7 @@ function RangeSlider() {
 }
 
 function MultiselectSkeleton() {
-  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-full"></div>;
+  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-lg"></div>;
 }
 
 function ToggleSkeleton() {

@@ -198,7 +198,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
                       ? "bg-accent"
                       : "bg-neu9"
                     : null,
-                  m.days.includes(j) && "text-background font-semibold",
+                  m.days.includes(j) && "text-neu1 font-semibold",
                   m.days.includes(j + 1) &&
                     !m.days.includes(j - 1) &&
                     "rounded-l",

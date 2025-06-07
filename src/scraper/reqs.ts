@@ -2,7 +2,7 @@ import { parse } from 'node-html-parser';
 
 interface Condition {
   type: "and" | "or";
-  next: (Condition | Course)[];
+  next: (Condition | Course | Test)[];
   prev: Condition | null;
 }
 
@@ -11,7 +11,12 @@ interface Course {
   courseNumber: string;
 }
 
-export type Requisite = Condition | Course | null;
+interface Test {
+  name: string;
+  score: number;
+}
+
+export type Requisite = Condition | Course | Test | null;
 
 export function parseCoreqs(rawHtml: string): Requisite {
   const root = parse(rawHtml);
@@ -69,6 +74,12 @@ export function parsePrereqs(rawHtml: string): Requisite {
       curCondition = newCondition;
     }
 
+    // Handle test information
+    if (notEmpty(data[2].innerText) && notEmpty(data[3].innerText)) {
+      const newTest: Test = { name: data[2].innerText, score: parseInt(data[3].innerText)}
+      curCondition.next.push(newTest);
+    }
+
     // Handle course information
     if (notEmpty(data[4].innerText) && notEmpty(data[5].innerText)) {
       const newCourse: Course = { subject: data[4].innerText, courseNumber: data[5].innerText };
@@ -109,7 +120,7 @@ function mergeSameConditionTypes(condition: Condition) {
   })
 
   // Do the actual merge
-  let itemsToMerge: (Condition | Course)[] = []
+  let itemsToMerge: (Condition | Course | Test)[] = []
   condition.next.forEach((item) => {
     if (isCondition(item) && item.type === condition.type) {
       itemsToMerge = itemsToMerge.concat(item.next);
@@ -124,7 +135,7 @@ function mergeSameConditionTypes(condition: Condition) {
   condition.next = condition.next.filter(item => !(isCondition(item) && item.type === condition.type));
 }
 
-function isCondition(obj: Condition | Course | null): obj is Condition {
+function isCondition(obj: Condition | Course | Test | null): obj is Condition {
   return obj !== null && 'type' in obj;
 }
 

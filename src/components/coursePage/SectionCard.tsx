@@ -138,7 +138,7 @@ export function SectionCard({
         <div className="flex gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <CalendarDays className="mt-2 size-4" />
+              <CalendarDays className="mt-2.5 size-4" />
             </TooltipTrigger>
             <TooltipContent>
               <p>Meeting times and locations</p>
@@ -146,7 +146,6 @@ export function SectionCard({
           </Tooltip>
           <div className="flex w-full items-center justify-between">
             <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
-            <RoomBlocks meetings={section.meetingTimes} crn={section.crn} />
           </div>
         </div>
       </div>
@@ -161,7 +160,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   props.meetings.sort((a) => (a.final ? 1 : -1));
 
   if (!props.meetings || props.meetings[0].days.length === 0) {
-    return <p className="text-sm">TBA</p>;
+    return <p className="py-2 text-sm">TBA</p>;
   }
 
   const hasWeekendEvents = props.meetings.some((meeting) =>
@@ -179,67 +178,54 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   const daysToShow = getDaysToShow();
 
   return (
-    <div className="flex flex-col gap-1 py-2">
+    <div className="flex w-full flex-col gap-1 py-2">
       {props.meetings.map((m, i) => (
-        <div key={props.crn + i} className="flex gap-2">
-          <span
-            className={cn(
-              "bg-neu2 flex h-5 items-center justify-between rounded-l",
-              daysToShow.length > 6 ? "w-[140px]" : "w-[100px]",
-            )}
-          >
-            {daysToShow.map((j) => (
-              <span
-                key={props.crn + i + j}
-                className={cn(
-                  "h-full w-5 py-0.5 text-center text-xs",
-                  m.days.includes(j)
-                    ? m.final
-                      ? "bg-accent"
-                      : "bg-neu9"
-                    : null,
-                  m.days.includes(j) && "text-neu1 font-semibold",
-                  m.days.includes(j + 1) &&
+        <div key={props.crn + i} className="flex w-full justify-between">
+          <div className="flex gap-2">
+            <span
+              className={cn(
+                "bg-neu2 flex h-5 items-center justify-between rounded-md",
+                daysToShow.length > 6 ? "w-[140px]" : "w-[100px]",
+              )}
+            >
+              {daysToShow.map((j) => (
+                <span
+                  key={props.crn + i + j}
+                  className={cn(
+                    "h-full w-5 py-0.5 text-center text-xs",
+                    m.days.includes(j)
+                      ? m.final
+                        ? "bg-accent"
+                        : "bg-neu9"
+                      : null,
+                    m.days.includes(j) && "text-neu1 font-semibold",
+                    m.days.includes(j + 1) &&
+                      !m.days.includes(j - 1) &&
+                      "rounded-l",
+                    m.days.includes(j - 1) &&
+                      !m.days.includes(j + 1) &&
+                      "rounded-r",
                     !m.days.includes(j - 1) &&
-                    "rounded-l",
-                  m.days.includes(j - 1) &&
-                    !m.days.includes(j + 1) &&
-                    "rounded-r",
-                  !m.days.includes(j - 1) &&
-                    !m.days.includes(j + 1) &&
-                    "rounded",
-                )}
-              >
-                {days[j]}
-              </span>
-            ))}
-          </span>
-          {/* TODO: this should be a hover i to say talk to the prof! */}
-          {/* {m.final ? <p className="text-sm">i</p> : null} */}
-          <span className="flex items-center gap-1 text-sm">
-            {m.final && <p className="font-semibold">Final Exam</p>}
-            {m.final && <p className="">|</p>}
-            <p className="">{formatTimeRange(m.startTime, m.endTime)}</p>
-            {/* <p className="">|</p> */}
-            {/* <p className=""> */}
-            {/*   {m.building} {m.room} */}
-            {/* </p> */}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function RoomBlocks(props: { meetings: MeetingTime[]; crn: string }) {
-  return (
-    <div className="flex flex-col gap-2">
-      {props.meetings.map((m, i) => (
-        <span key={props.crn + i} className="flex items-center gap-2">
+                      !m.days.includes(j + 1) &&
+                      "rounded",
+                  )}
+                >
+                  {days[j]}
+                </span>
+              ))}
+            </span>
+            {/* TODO: this should be a hover i to say talk to the prof! */}
+            {/* {m.final ? <p className="text-sm">i</p> : null} */}
+            <span className="flex items-center gap-1 text-sm">
+              {m.final && <p className="font-semibold">Final Exam</p>}
+              {m.final && <p className="">|</p>}
+              <p className="">{formatTimeRange(m.startTime, m.endTime)}</p>
+            </span>
+          </div>
           <p className="text-sm">
-            {m.building} {m.room}
+            {m.building ? `${m.building} ${m.room}` : "Check Syllabus"}
           </p>
-        </span>
+        </div>
       ))}
     </div>
   );

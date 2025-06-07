@@ -120,7 +120,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   return (
     <>
       <p className="text-neu6 w-full py-1 text-center text-sm">
-        {results.length} Results
+        {results.length} Result{results.length > 1 && "s"}
       </p>
       <div
         ref={parentRef}

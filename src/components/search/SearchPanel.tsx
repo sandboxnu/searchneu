@@ -16,10 +16,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
-import MultipleSelector, {
-  NMultiselect,
-  Option,
-} from "@/components/ui/multi-select";
+import { NMultiselect, Option } from "@/components/ui/multi-select";
 import { Switch } from "../ui/switch";
 import { Slider } from "../ui/slider";
 import { Label } from "../ui/label";
@@ -253,13 +250,13 @@ function TermSelect(
 
 // SPMultiselect is a multiselect component that stores the state in the
 // search params
-function SPMultiselect<T>(
-  props: {
-    opts: Promise<T[]>;
-    spCode: string;
-    transform: (opts: T[]) => Option[];
-  } & ComponentProps<typeof MultipleSelector>,
-) {
+function SPMultiselect<T>(props: {
+  opts: Promise<T[]>;
+  spCode: string;
+  transform: (opts: T[]) => Option[];
+  commandProps: { id: string };
+  placeholder: string;
+}) {
   const resolved = use(props.opts);
   const options = props
     .transform(resolved)
@@ -288,19 +285,6 @@ function SPMultiselect<T>(
 
   return (
     <>
-      {/* <MultipleSelector */}
-      {/*   value={selected as Option[]} */}
-      {/*   onChange={updateSearchParams} */}
-      {/*   defaultOptions={options as Option[]} */}
-      {/*   hidePlaceholderWhenSelected */}
-      {/*   className="bg-neu2 w-full rounded-lg" */}
-      {/*   emptyIndicator={ */}
-      {/*     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400"> */}
-      {/*       no results found */}
-      {/*     </p> */}
-      {/*   } */}
-      {/*   {...props} */}
-      {/* /> */}
       <NMultiselect
         options={options}
         placeholder={props.placeholder}

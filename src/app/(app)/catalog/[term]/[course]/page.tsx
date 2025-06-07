@@ -5,7 +5,6 @@ import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { convertNupathToLongform } from "@/scraper/nupaths";
-import Link from "next/link";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
@@ -94,13 +93,15 @@ export default async function Page(props: {
           <h2 className="text-xl font-medium">
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
-          <Link
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-blue hover:text-blue/80 flex items-center justify-end gap-1"
             href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${termId}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
           >
             View on Banner
             <ExternalLink className="size-4" />
-          </Link>
+          </a>
           <span className="flex items-center gap-1">
             {isTermActive ? (
               <>

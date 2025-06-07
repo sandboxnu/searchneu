@@ -1,6 +1,7 @@
 import { cn } from "@/lib/cn";
 import { convertNupathToCode } from "@/scraper/nupaths";
 import Link from "next/link";
+import { Badge } from "../ui/badge";
 
 export function ResultCard(props: {
   link: string;
@@ -55,8 +56,8 @@ export function ResultCard(props: {
             sectionCapacity <= 0 && "text-red",
           )}
         >
-          {props.result.sectionsWithSeats}/{props.result.totalSections} sections
-          available
+          {props.result.sectionsWithSeats}/{props.result.totalSections} section
+          {props.result.totalSections > 1 && "s"} available
         </span>
         <NUPathBadges nupaths={props.result.nupaths} />
       </div>
@@ -76,14 +77,21 @@ function NUPathBadges(props: { nupaths: string[] }) {
   return (
     <ul className="flex gap-0.5">
       {paths.map((n) => (
-        <span key={n} className="bg-neu3 rounded px-2 text-xs font-bold">
+        <Badge key={n} className="px-2 py-0 text-xs font-bold">
           {n}
-        </span>
+        </Badge>
       ))}
       {plusMore > 0 && (
-        <span className="bg-neu3 rounded px-2 text-xs font-bold">
-          +{plusMore}
-        </span>
+        <Badge className="px-2 py-0 text-xs font-bold">+{plusMore}</Badge>
+      )}
+      {/* NOTE: is the empty badge good? */}
+      {paths.length === 0 && (
+        <Badge
+          variant="secondary"
+          className="text-neu6 px-2 py-0 text-xs font-bold"
+        >
+          No NUPaths
+        </Badge>
       )}
     </ul>
   );

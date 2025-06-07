@@ -39,7 +39,8 @@ export function SectionFilterWrapper({
     <TooltipProvider delayDuration={700}>
       <div className="bg-neu2 flex w-full flex-col gap-1 rounded-lg p-1">
         <p className="text-neu6 w-full text-center text-sm">
-          {sections.length} Sections | {totalSeats} Seat
+          {sections.length} Section{sections.length > 1 && "s"} | {totalSeats}{" "}
+          Seat
           {totalSeats !== 1 && "s"} | {seatsRemaining} Seat
           {seatsRemaining !== 1 && "s"} Remaining
         </p>

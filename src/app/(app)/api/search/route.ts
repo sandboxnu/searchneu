@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   if (subjects && subjects.length > 0) {
     sqlChunks.push(sql`and`);
     sqlChunks.push(
-      sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + s, "") + "]"}`,
+      sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + `'${s}'`, "") + "]"}`,
     );
   }
 

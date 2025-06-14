@@ -8,10 +8,11 @@ export async function scrapeTerm(term: string) {
   const sections = await scrapeSections(term);
   await getSectionFaculty(sections);
 
-  const { courses, subjects } = arrangeCourses(sections);
+  const { courses, subjects: subjectCodes } = arrangeCourses(sections);
   await getCourseDescriptions(courses);
   await getReqs(courses);
 
+  const subjects = await getSubjects(term, subjectCodes);
   const termDef = await getTermInfo(term);
 
   return { term: termDef, courses, subjects } as TermScrape;
@@ -25,6 +26,21 @@ async function getTermInfo(term: string) {
   ).then((resp) => resp.json());
 
   return resp[0];
+}
+
+async function getSubjects(term: string, codes: string[]) {
+  console.log("getting subjects");
+  const resp = await fetch(
+    `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/get_subject?term=${term}&offset=1&max=900`,
+  ).then((r) => r.json());
+
+  return resp
+    .filter((subj: { code: string; description: string }) =>
+      codes.includes(subj.code),
+    )
+    .map((subj: { code: string; description: string }) =>
+      decode(subj.description),
+    );
 }
 
 async function getReqs(courses: Course[]) {

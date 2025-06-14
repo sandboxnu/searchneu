@@ -127,5 +127,5 @@ export interface TermScrape {
     description: string;
   };
   courses: Course[];
-  subjects: string[];
+  subjects: { code: string; description: string }[];
 }

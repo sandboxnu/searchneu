@@ -77,10 +77,10 @@ async function insertCourseData(
     console.log("term done");
 
     // upsert subjects
-    const subjectInserts = data.subjects.map((subjectCode) => ({
+    const subjectInserts = data.subjects.map((subj) => ({
       term: data.term.code,
-      code: subjectCode,
-      name: subjectCode, // TODO: get subject name
+      code: subj.code,
+      name: subj.description,
     }));
 
     if (subjectInserts.length > 0) {
@@ -101,12 +101,10 @@ async function insertCourseData(
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),
           nupaths: course.nupath,
-          prereqs: {},
-          coreqs: {},
+          prereqs: course.prereqs ?? {},
+          coreqs: course.coreqs ?? {},
         })
         .returning({ id: coursesT.id });
-
-      console.log("courses done");
 
       const courseId = courseInsertResult[0]?.id;
 

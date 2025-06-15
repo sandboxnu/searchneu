@@ -1,3 +1,5 @@
+import { Requisite } from "./reqs";
+
 export interface BannerSection {
   id: number;
   term: string;
@@ -114,11 +116,8 @@ export interface Course {
   minCredits: number;
   sections: Section[];
   nupath: string[];
-  // PERF: remove the below line once requisites are finalized
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  coreqs: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  prereqs: any;
+  coreqs: Requisite;
+  prereqs: Requisite;
   // TODO: pre / co reqs for
 }
 

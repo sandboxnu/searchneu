@@ -64,7 +64,7 @@ export function parsePrereqs(rawHtml: string): Requisite {
     
     // If the And/Or column has a value, update the current condition type accordingly
     if (notEmpty(data[0].innerText)) {
-      curCondition.type = data[0].innerText.toLowerCase() as "and" | "or";
+      curCondition.type = data[0].innerText.trim().toLowerCase() as "and" | "or";
     }
 
     // Handle (

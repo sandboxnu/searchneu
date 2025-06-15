@@ -76,7 +76,7 @@ export function parsePrereqs(rawHtml: string): Requisite {
 
     // Handle test information
     if (notEmpty(data[2].innerText) && notEmpty(data[3].innerText)) {
-      const newTest: Test = { name: data[2].innerText, score: parseInt(data[3].innerText)}
+      const newTest: Test = { name: data[2].innerText, score: Number(data[3].innerText)}
       curCondition.next.push(newTest);
     }
 

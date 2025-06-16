@@ -2,6 +2,7 @@ import { isValidNupath } from "./nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
+import { $fetch } from "./utils";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -9,10 +10,11 @@ export async function scrapeTerm(term: string) {
   await getSectionFaculty(sections);
 
   const { courses, subjects: subjectCodes } = arrangeCourses(sections);
-  await getCourseDescriptions(courses);
-  await getReqs(courses);
-
   const subjects = await getSubjects(term, subjectCodes);
+
+  await getCourseDescriptions(courses);
+  await getReqs(courses, subjects);
+
   const termDef = await getTermInfo(term);
 
   return { term: termDef, courses, subjects } as TermScrape;
@@ -38,12 +40,16 @@ async function getSubjects(term: string, codes: string[]) {
     .filter((subj: { code: string; description: string }) =>
       codes.includes(subj.code),
     )
-    .map((subj: { code: string; description: string }) =>
-      decode(subj.description),
-    );
+    .map((subj: { code: string; description: string }) => ({
+      code: subj.code,
+      description: decode(subj.description),
+    }));
 }
 
-async function getReqs(courses: Course[]) {
+async function getReqs(
+  courses: Course[],
+  subjects: { code: string; description: string }[],
+) {
   console.log("getting course reqs");
   const batchSize = 50;
   const term = courses[0].term;
@@ -72,7 +78,10 @@ async function getReqs(courses: Course[]) {
     coreqs
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        courses[offset + j].coreqs = parseCoreqs(decode(decode(p.value)));
+        courses[offset + j].coreqs = parseCoreqs(
+          decode(decode(p.value)),
+          subjects,
+        );
       });
   }
 
@@ -97,7 +106,10 @@ async function getReqs(courses: Course[]) {
     prereqs
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        courses[offset + j].coreqs = parsePrereqs(decode(decode(p.value)));
+        courses[offset + j].prereqs = parsePrereqs(
+          decode(decode(p.value)),
+          subjects,
+        );
       });
   }
 }
@@ -257,8 +269,9 @@ export async function getSectionFaculty(sections: BannerSection[]) {
     const promises = sections
       .slice(offset, offset + 50)
       .map((s) =>
-        fetch(
+        $fetch(
           `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getFacultyMeetingTimes?term=${term}&courseReferenceNumber=${s.courseReferenceNumber}`,
+          {},
         ).then((resp) => resp.json()),
       );
 

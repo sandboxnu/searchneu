@@ -1,9 +1,8 @@
-import { parse } from 'node-html-parser';
+import { parse } from "node-html-parser";
 
 interface Condition {
   type: "and" | "or";
-  next: (Condition | Course | Test)[];
-  prev: Condition | null;
+  items: RequisiteItem[];
 }
 
 interface Course {
@@ -16,129 +15,164 @@ interface Test {
   score: number;
 }
 
-export type Requisite = Condition | Course | Test | null;
+type RequisiteItem = Condition | Course | Test;
+export type Requisite = RequisiteItem | null;
 
-export function parseCoreqs(rawHtml: string): Requisite {
+export function parseCoreqs(
+  rawHtml: string,
+  subjects: { code: string; description: string }[],
+): Requisite {
   const root = parse(rawHtml);
-  const tbody = root.querySelector('tbody');
-
+  const tbody = root.querySelector("tbody");
   if (!tbody) {
     return null;
   }
 
-  const curCondition: Condition = { type: "and", next: [], prev: null };
-  const tableRows = tbody.querySelectorAll('tr');
+  const items: RequisiteItem[] = [];
+  const tableRows = tbody.querySelectorAll("tr");
+
   tableRows.forEach((tr) => {
-    const data = tr.querySelectorAll('td');
-
+    const data = tr.querySelectorAll("td");
     if (data.length === 3) {
-      const newCourse: Course = { subject: data[0].innerText, courseNumber: data[1].innerText }
-      curCondition.next.push(newCourse);
+      const newCourse: Course = {
+        subject: getSubjectCode(data[0].innerText, subjects),
+        courseNumber: data[1].innerText,
+      };
+      items.push(newCourse);
     } else {
-      const newCourse: Course = { subject: data[1].innerText, courseNumber: data[2].innerText }
-      curCondition.next.push(newCourse);
+      const newCourse: Course = {
+        subject: getSubjectCode(data[1].innerText, subjects),
+        courseNumber: data[2].innerText,
+      };
+      items.push(newCourse);
     }
-  })
+  });
 
-  let coreqs: Requisite = curCondition;
-  if (curCondition.next.length == 1) {
-    coreqs = curCondition.next[0];
+  // Return single item or wrap in condition
+  if (items.length === 0) {
+    return null;
+  } else if (items.length === 1) {
+    return items[0];
+  } else {
+    return { type: "and", items };
   }
-
-  return coreqs;
 }
 
-export function parsePrereqs(rawHtml: string): Requisite {
+export function parsePrereqs(
+  rawHtml: string,
+  subjects: { code: string; description: string }[],
+): Requisite {
   const root = parse(rawHtml);
-  const tbody = root.querySelector('tbody');
-
+  const tbody = root.querySelector("tbody");
   if (!tbody) {
     return null;
   }
-   
-  // Start with default condition
-  let curCondition: Condition = { type: "or", next: [], prev: null };
-  const tableRows = tbody.querySelectorAll('tr');
+
+  // Use a stack to track nested conditions
+  const stack: Condition[] = [];
+  let currentCondition: Condition = { type: "or", items: [] };
+  stack.push(currentCondition);
+
+  const tableRows = tbody.querySelectorAll("tr");
   tableRows.forEach((tr) => {
-    const data = tr.querySelectorAll('td');
-    
-    // If the And/Or column has a value, update the current condition type accordingly
+    const data = tr.querySelectorAll("td");
+
+    // If the And/Or column has a value, update the current condition type
     if (notEmpty(data[0].innerText)) {
-      curCondition.type = data[0].innerText.trim().toLowerCase() as "and" | "or";
+      currentCondition.type = data[0].innerText.trim().toLowerCase() as
+        | "and"
+        | "or";
     }
 
-    // Handle (
+    // Handle opening parenthesis - create new nested condition
     if (notEmpty(data[1].innerText)) {
-      const newCondition: Condition = { type: "or", next: [], prev: curCondition };
-      curCondition.next.push(newCondition);
-      curCondition = newCondition;
+      const newCondition: Condition = { type: "or", items: [] };
+      currentCondition.items.push(newCondition);
+      stack.push(newCondition);
+      currentCondition = newCondition;
     }
 
     // Handle test information
     if (notEmpty(data[2].innerText) && notEmpty(data[3].innerText)) {
-      const newTest: Test = { name: data[2].innerText, score: Number(data[3].innerText)}
-      curCondition.next.push(newTest);
+      const newTest: Test = {
+        name: data[2].innerText,
+        score: Number(data[3].innerText),
+      };
+      currentCondition.items.push(newTest);
     }
 
     // Handle course information
     if (notEmpty(data[4].innerText) && notEmpty(data[5].innerText)) {
-      const newCourse: Course = { subject: data[4].innerText, courseNumber: data[5].innerText };
-      curCondition.next.push(newCourse);
+      const newCourse: Course = {
+        subject: getSubjectCode(data[4].innerText, subjects),
+        courseNumber: data[5].innerText,
+      };
+      currentCondition.items.push(newCourse);
     }
-    
-    // Handle )
+
+    // Handle closing parenthesis - pop from stack
     if (notEmpty(data[8].innerText)) {
-      if (curCondition.prev) {
-        curCondition = curCondition.prev;
+      stack.pop();
+      if (stack.length > 0) {
+        currentCondition = stack[stack.length - 1];
       }
     }
-  })
-  
-  // Make sure we get the top-most condition
-  while (curCondition.prev) {
-    curCondition = curCondition.prev;
-  }
+  });
+
+  // Get the root condition
+  const rootCondition = stack[0];
 
   // Merge same condition types on adjacent layers
-  mergeSameConditionTypes(curCondition);
+  mergeSameConditionTypes(rootCondition);
 
-  // Get final result
-  let prereqs: Requisite = curCondition;
-  if (curCondition.next.length == 1) {
-    prereqs = curCondition.next[0];
+  // Return final result
+  if (rootCondition.items.length === 0) {
+    return null;
+  } else if (rootCondition.items.length === 1) {
+    return rootCondition.items[0];
+  } else {
+    return rootCondition;
   }
-
-  return prereqs;
 }
 
-function mergeSameConditionTypes(condition: Condition) {
-  // First merge everything below
-  condition.next.forEach((item) => {
+function mergeSameConditionTypes(condition: Condition): void {
+  // First, recursively merge all nested conditions
+  condition.items = condition.items.map((item) => {
     if (isCondition(item)) {
       mergeSameConditionTypes(item);
     }
-  })
+    return item;
+  });
 
-  // Do the actual merge
-  let itemsToMerge: (Condition | Course | Test)[] = []
-  condition.next.forEach((item) => {
+  // Collect items to merge
+  const itemsToKeep: RequisiteItem[] = [];
+  const itemsToMerge: RequisiteItem[] = [];
+
+  condition.items.forEach((item) => {
     if (isCondition(item) && item.type === condition.type) {
-      itemsToMerge = itemsToMerge.concat(item.next);
+      // If child condition has same type, merge its items up
+      itemsToMerge.push(...item.items);
+    } else {
+      itemsToKeep.push(item);
     }
-  })
-  itemsToMerge.forEach((item) => {
-    if (isCondition(item)) {
-      item.prev = condition;
-    }
-  })
-  condition.next = condition.next.concat(itemsToMerge);
-  condition.next = condition.next.filter(item => !(isCondition(item) && item.type === condition.type));
+  });
+
+  // Update the condition's items
+  condition.items = [...itemsToKeep, ...itemsToMerge];
 }
 
-function isCondition(obj: Condition | Course | Test | null): obj is Condition {
-  return obj !== null && 'type' in obj;
+function isCondition(obj: RequisiteItem | null): obj is Condition {
+  return obj !== null && "type" in obj && "items" in obj;
 }
 
-function notEmpty(val: string) {
-  return val.trim() !== '';
+function notEmpty(val: string): boolean {
+  return val.trim() !== "";
 }
+
+function getSubjectCode(
+  name: string,
+  subjects: { code: string; description: string }[],
+) {
+  return subjects.find((s) => s.description === name)?.code ?? "??";
+}
+

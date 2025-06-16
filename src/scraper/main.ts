@@ -8,7 +8,8 @@ import { TermScrape } from "./types";
 import path from "node:path";
 
 const CACHE_PATH = "cache/";
-const TERMS = ["202610", "202530", "202534", "202532"];
+// const TERMS = ["202610", "202530", "202534", "202532"];
+const TERMS = ["202610"];
 
 // always assume this file is only every called directy
 (async () => {

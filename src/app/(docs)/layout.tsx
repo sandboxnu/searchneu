@@ -54,7 +54,7 @@ export default function RootLayout({
         className={`${geist} ${geistMono.variable} flex flex-col antialiased`}
       >
         <DebugTools />
-        {/* These className overrides required b/c of a bug in the Banner component */}
+        {/* these className overrides required b/c of a bug in the Banner component */}
         <Banner className="sticky shrink-0">
           Heads up! These docs are still in development! Mind our mess 🏗️
         </Banner>

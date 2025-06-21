@@ -50,15 +50,17 @@ export function NMultiselect({
             className,
           )}
         >
-          {selected.length > 0 && (
-            <Badge onClick={() => setSelected([])}>
-              <X className="size-2" />
-              {selected.length} selected
-            </Badge>
-          )}
-          <p className="text-neu6 min-w-0 overflow-hidden overflow-ellipsis">
-            {placeholder}
-          </p>
+          <span className="flex items-center gap-2">
+            {selected.length > 0 && (
+              <Badge onClick={() => setSelected([])}>
+                <X className="size-2" />
+                {selected.length} selected
+              </Badge>
+            )}
+            <p className="text-neu6 min-w-0 overflow-hidden overflow-ellipsis">
+              {placeholder}
+            </p>
+          </span>
           <ChevronDown className="text-neu6/50" />
         </Button>
       </PopoverTrigger>

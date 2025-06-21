@@ -159,7 +159,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   // always have the final be the last row
   props.meetings.sort((a) => (a.final ? 1 : -1));
 
-  if (!props.meetings || props.meetings[0].days.length === 0) {
+  if (props.meetings.length === 0 || props.meetings[0].days.length === 0) {
     return <p className="py-2 text-sm">TBA</p>;
   }
 

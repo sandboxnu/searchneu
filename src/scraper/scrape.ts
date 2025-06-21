@@ -2,7 +2,7 @@ import { isValidNupath } from "./nupaths";
 import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
-import { $fetch } from "./utils";
+import { $fetch, processWithConcurrency } from "./utils";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -257,51 +257,54 @@ export async function getSectionFaculty(sections: BannerSection[]) {
     return sections;
   }
 
-  const batchSize = 50;
   const term = sections[0].term;
-  const numBatches = Math.ceil(sections.length / batchSize);
-  console.log(`running ${numBatches} batches`);
+  const concurrencyLimit = 20;
 
-  for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+  console.log(
+    `Processing ${sections.length} sections with concurrency limit of ${concurrencyLimit}`,
+  );
 
-    const offset = batchSize * i;
-    const promises = sections
-      .slice(offset, offset + 50)
-      .map((s) =>
-        $fetch(
-          `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getFacultyMeetingTimes?term=${term}&courseReferenceNumber=${s.courseReferenceNumber}`,
-          {},
-        ).then((resp) => resp.json()),
+  // Create a promise for each section with retry logic
+  const fetchPromises = sections.map((section, index) => async () => {
+    try {
+      const response = await $fetch(
+        `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getFacultyMeetingTimes?term=${term}&courseReferenceNumber=${section.courseReferenceNumber}`,
+        {},
+        {
+          maxRetries: 5,
+          initialDelay: 2000,
+          maxDelay: 10000,
+          retryOn: [429, 500, 502, 503, 504, 302],
+          onRetry: (_, attempt) => {
+            console.log(
+              `retrying section ${section.courseReferenceNumber}, attempt ${attempt}`,
+            );
+          },
+        },
       );
+      const data = await response.json();
+      return { index, data, success: true };
+    } catch (error) {
+      console.error(
+        `failed to fetch faculty for section ${section.courseReferenceNumber}:`,
+        error,
+      );
+      return { index, data: null, success: false };
+    }
+  });
 
-    const results = await Promise.allSettled(promises);
+  // Process with concurrency limit
+  const results = await processWithConcurrency(fetchPromises, concurrencyLimit);
 
-    results
-      .filter((p) => p.status === "fulfilled")
-      .forEach((p, j) => {
-        // TODO: support multiple faculty
-        try {
-          if (p.value.fmt.length < 0) {
-            sections[offset + j].f = "TBA";
-          }
-
-          const faculty = p.value.fmt[0]?.faculty;
-          if (!faculty || !faculty?.length) {
-            sections[offset + j].f = "TBA";
-          }
-
-          if (faculty?.length > 0) {
-            sections[offset + j].f =
-              decode(decode(faculty[0].displayName)) ?? "TBA";
-          } else {
-            sections[offset + j].f = "TBA";
-          }
-        } catch {
-          sections[offset + j].f = "TBA";
-        }
-      });
-  }
+  // Update sections with faculty data
+  results.forEach(({ index, data, success }) => {
+    if (!success || !data?.fmt?.length || !data.fmt[0]?.faculty?.length) {
+      sections[index].f = "TBA";
+    } else {
+      sections[index].f =
+        decode(decode(data.fmt[0].faculty[0].displayName)) ?? "TBA";
+    }
+  });
 
   return sections;
 }

@@ -39,7 +39,7 @@ export function NMultiselect({
   }, [selected]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

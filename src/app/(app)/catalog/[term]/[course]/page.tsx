@@ -6,11 +6,12 @@ import { ExpandableDescription } from "@/components/coursePage/ExpandableDescrip
 import { Separator } from "@/components/ui/separator";
 import { convertNupathToLongform } from "@/scraper/nupaths";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
-import { JSX, Suspense } from "react";
+import { type JSX, Suspense } from "react";
 import { unstable_cache } from "next/cache";
 import { SectionFilterWrapper } from "@/components/coursePage/SectionFilterWrapper";
 import { Section } from "@/components/coursePage/SectionCard";
 import Link from "next/link";
+import { type Requisite } from "@/scraper/reqs";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
@@ -210,24 +211,8 @@ function formatLastUpdatedString(date: Date) {
   return str;
 }
 
-interface Condition {
-  type: "and" | "or";
-  items: RequisiteItem[];
-}
-
-interface Course {
-  subject: string;
-  courseNumber: string;
-}
-
-interface Test {
-  name: string;
-  score: number;
-}
-
-type RequisiteItem = Condition | Course | Test;
-type Requisite = RequisiteItem | null;
-
+// renderRequisite parses the requisite structure and creates the JSX elements
+// that then can be rendered (ie "CS 2500 and CS 2501")
 function renderRequisite(requisite: Requisite, term: string): JSX.Element {
   if (!requisite || Object.keys(requisite).length === 0) {
     return <span>None</span>;
@@ -237,7 +222,7 @@ function renderRequisite(requisite: Requisite, term: string): JSX.Element {
 }
 
 function renderRequisiteItem(
-  item: RequisiteItem,
+  item: Requisite,
   isTopLevel: boolean = false,
   term: string,
 ): JSX.Element {
@@ -288,7 +273,7 @@ function renderRequisiteItem(
     return isTopLevel ? content : <span className="">({content})</span>;
   }
 
-  throw new Error("Unknown requisite item type");
+  throw new Error("unknown requisite item type");
 }
 
 function SectionsTableSkeleton() {

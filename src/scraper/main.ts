@@ -102,8 +102,8 @@ async function insertCourseData(
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),
           nupaths: course.nupath,
-          prereqs: course.prereqs ?? {},
-          coreqs: course.coreqs ?? {},
+          prereqs: course.prereqs,
+          coreqs: course.coreqs,
         })
         .returning({ id: coursesT.id });
 

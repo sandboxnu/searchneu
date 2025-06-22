@@ -16,7 +16,7 @@ interface Test {
 }
 
 type RequisiteItem = Condition | Course | Test;
-export type Requisite = RequisiteItem | null;
+export type Requisite = RequisiteItem | Record<string, never>;
 
 export function parseCoreqs(
   rawHtml: string,
@@ -25,7 +25,7 @@ export function parseCoreqs(
   const root = parse(rawHtml);
   const tbody = root.querySelector("tbody");
   if (!tbody) {
-    return null;
+    return {};
   }
 
   const items: RequisiteItem[] = [];
@@ -50,7 +50,7 @@ export function parseCoreqs(
 
   // Return single item or wrap in condition
   if (items.length === 0) {
-    return null;
+    return {};
   } else if (items.length === 1) {
     return items[0];
   } else {
@@ -65,7 +65,7 @@ export function parsePrereqs(
   const root = parse(rawHtml);
   const tbody = root.querySelector("tbody");
   if (!tbody) {
-    return null;
+    return {};
   }
 
   // Use a stack to track nested conditions
@@ -127,7 +127,7 @@ export function parsePrereqs(
 
   // Return final result
   if (rootCondition.items.length === 0) {
-    return null;
+    return {};
   } else if (rootCondition.items.length === 1) {
     return rootCondition.items[0];
   } else {
@@ -175,4 +175,3 @@ function getSubjectCode(
 ) {
   return subjects.find((s) => s.description === name)?.code ?? "??";
 }
-

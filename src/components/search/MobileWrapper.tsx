@@ -49,13 +49,13 @@ export function MobileWrapper(props: {
               <DrawerHeader>
                 <DrawerTitle>Search Filters</DrawerTitle>
               </DrawerHeader>
-              <div className="overflow-y-scroll px-4">
+              <div className="overflow-y-scroll">
                 <SearchPanel {...props} />
               </div>
             </DrawerContent>
           </Drawer>
         </div>
-        <div className="bg-neu1 hidden w-full px-2 md:col-span-5 md:flex lg:col-span-3 xl:col-span-5 xl:px-4">
+        <div className="bg-neu1 hidden w-full md:col-span-5 md:flex lg:col-span-3 xl:col-span-5">
           <SearchPanel {...props} />
         </div>
         <div className="col-span-12 pr-2 md:col-span-7 lg:col-span-9 xl:col-span-7 xl:px-0">

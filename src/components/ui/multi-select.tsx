@@ -50,7 +50,7 @@ export function NMultiselect({
             className,
           )}
         >
-          <span className="flex items-center gap-2">
+          <span className="flex w-full items-center gap-2 overflow-hidden">
             {selected.length > 0 && (
               <Badge onClick={() => setSelected([])}>
                 <X className="size-2" />

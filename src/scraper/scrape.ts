@@ -176,8 +176,8 @@ export function arrangeCourses(sections: BannerSection[]) {
           .filter((a) => isValidNupath(a.code))
           .map((a) => a.description.trim()),
         sections: [],
-        prereqs: null,
-        coreqs: null,
+        prereqs: {},
+        coreqs: {},
       };
     }
 

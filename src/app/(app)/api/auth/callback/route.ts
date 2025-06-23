@@ -114,7 +114,7 @@ export async function GET(req: NextRequest) {
     return new Response(null, {
       status: 302,
       headers: {
-        location: `/me/onboarding?${params.toString()}`,
+        location: `/me/link?${params.toString()}`,
       },
     });
   }

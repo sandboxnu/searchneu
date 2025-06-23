@@ -185,7 +185,7 @@ export function TrackingSwitch({
                 onClick={() => {
                   const params = new URLSearchParams();
                   params.set("redirect_uri", window.location.toString());
-                  router.push("/me/onboarding?" + params.toString());
+                  router.push("/me/link?" + params.toString());
                 }}
               >
                 Verify Phone Number

@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
-import { useAuth, signOut, User } from "@/lib/auth/client";
+import { useAuth, signOut, type User } from "@/lib/auth/client";
 import { BadgeCheck } from "lucide-react";
 
 export function UserIcon() {

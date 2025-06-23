@@ -11,13 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { PhoneInput } from "../ui/phone-input";
 import { InputOTP, InputOTPSlot, InputOTPGroup } from "../ui/input-otp";
-import {
-  SquareDashed,
-  Loader2,
-  OctagonAlert,
-  CheckCircle,
-  BadgeCheck,
-} from "lucide-react";
+import { Loader2, OctagonAlert, BadgeCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   type Dispatch,

@@ -50,7 +50,7 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
   if (phoneNumber.length !== 12 || phoneNumber.substring(0, 2) !== "+1") {
     return {
       ok: false,
-      msg: "Non US / CA numbers are not currently supported",
+      msg: "Non US / CA numbers not currently supported",
     };
   }
 

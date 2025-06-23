@@ -11,7 +11,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { PhoneInput } from "../ui/phone-input";
 import { InputOTP, InputOTPSlot, InputOTPGroup } from "../ui/input-otp";
-import { SquareDashed, Loader2 } from "lucide-react";
+import {
+  SquareDashed,
+  Loader2,
+  OctagonAlert,
+  CheckCircle,
+  BadgeCheck,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   type Dispatch,
@@ -27,6 +33,7 @@ import {
   verifyPhoneAction,
 } from "@/lib/auth/onboarding-actions";
 import { Searchskie } from "../icons/Searchskie";
+import { Alert, AlertTitle } from "../ui/alert";
 
 export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
   const [page, setPage] = useState(0);
@@ -71,7 +78,7 @@ function StartPage({ next, abort }: { next: () => void; abort: () => void }) {
   return (
     <>
       <AlertDialogHeader className="flex w-full items-center">
-        <AlertDialogTitle>Link Phone Number</AlertDialogTitle>
+        <AlertDialogTitle>Notification Method</AlertDialogTitle>
         <AlertDialogDescription className="text-center">
           Link your phone number to receive seat tracking notifications. This
           can be done later.
@@ -193,7 +200,7 @@ function PhoneNumberPage({
   return (
     <>
       <AlertDialogHeader className="flex w-full items-center">
-        <AlertDialogTitle>Sign In</AlertDialogTitle>
+        <AlertDialogTitle>Phone Number</AlertDialogTitle>
         <AlertDialogDescription className="text-center">
           Your phone number will be used for class notifications and nothing
           else.
@@ -208,10 +215,13 @@ function PhoneNumberPage({
           value={value}
           placeholder="(123) 456-7890"
           defaultCountry="US"
-          className="text-foreground h-12 w-full text-lg"
+          className="text-neu9 h-12 w-full text-lg"
         />
         {errorMsg && (
-          <p className="text-xs font-semibold text-red-400">{errorMsg}</p>
+          <Alert variant="destructive">
+            <OctagonAlert />
+            <AlertTitle className="">{errorMsg}</AlertTitle>
+          </Alert>
         )}
       </div>
       <AlertDialogFooter>
@@ -274,7 +284,7 @@ function OTPPage({
   return (
     <>
       <AlertDialogHeader className="flex w-full items-center">
-        <AlertDialogTitle>Sign In</AlertDialogTitle>
+        <AlertDialogTitle>Verify Phone Number</AlertDialogTitle>
         <AlertDialogDescription className="text-center">
           Enter the code sent to {phoneNumber}
         </AlertDialogDescription>
@@ -298,7 +308,10 @@ function OTPPage({
         </InputOTP>
       </div>
       {errorMsg && (
-        <p className="text-xs font-semibold text-red-400">{errorMsg}</p>
+        <Alert variant="destructive">
+          <OctagonAlert />
+          <AlertTitle className="">{errorMsg}</AlertTitle>
+        </Alert>
       )}
       <AlertDialogFooter>
         <div className="flex w-full flex-col gap-1">
@@ -329,13 +342,13 @@ function SuccessPage({ next }: { next: () => void }) {
   return (
     <>
       <AlertDialogHeader className="flex w-full items-center">
-        <AlertDialogTitle>Phone Number Verification Success</AlertDialogTitle>
+        <AlertDialogTitle>Verification Success</AlertDialogTitle>
         <AlertDialogDescription className="text-center">
           Your phone number is successfully verified!
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div className="flex w-full items-center justify-center py-4">
-        <SquareDashed className="text-neu size-32" />
+        <BadgeCheck className="text-neu size-16" />
       </div>
       <AlertDialogFooter>
         <Button type="submit" className="w-full" onClick={next}>

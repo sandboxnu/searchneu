@@ -14,14 +14,15 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
-import { useAuth, signOut } from "@/lib/auth/client";
+import { useAuth, signOut, User } from "@/lib/auth/client";
+import { BadgeCheck } from "lucide-react";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
   const { user, isPending } = useAuth();
 
   if (!isPending && user.guid) {
-    return <UserMenu />;
+    return <UserMenu user={user} />;
   }
 
   return (
@@ -37,7 +38,7 @@ export function UserIcon() {
   );
 }
 
-function UserMenu() {
+function UserMenu({ user }: { user: User }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -50,7 +51,10 @@ function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel className="flex items-center justify-between">
+          My Account
+          {user.phoneVerified && <BadgeCheck className="text-neu size-4" />}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/">Tracked Sections</Link>

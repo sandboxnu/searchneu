@@ -22,7 +22,7 @@ export function signOut(redirectUri: string = window.location.toString()) {
   window.location.assign(`/api/auth/signout?${params.toString()}`);
 }
 
-interface User {
+export interface User {
   guid: string | null;
   phoneVerified?: boolean;
   name?: string;

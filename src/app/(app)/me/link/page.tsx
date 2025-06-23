@@ -8,6 +8,12 @@ import { eq } from "drizzle-orm";
 import { City } from "@/components/icons/city";
 import { OnboardingFlow } from "@/components/auth/OnboardingFlow";
 
+export function generateMetadata() {
+  return {
+    title: "Link",
+  };
+}
+
 export default async function Page({
   searchParams,
 }: {

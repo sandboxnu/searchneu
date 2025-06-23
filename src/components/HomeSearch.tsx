@@ -35,7 +35,7 @@ export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
         <TermSelect terms={terms} handler={termState} />
         <div className="flex w-full">
           <Input
-            className="bg-neu1 h-10 rounded-r-none md:rounded-none"
+            className="bg-neu1 h-10 rounded-r-none border-0 border-l-[0.5px] md:rounded-none"
             placeholder="Search for a course, CRN, or phrase"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

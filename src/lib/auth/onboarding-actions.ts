@@ -45,6 +45,15 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
     return { ok: false };
   }
 
+  console.log(phoneNumber);
+
+  if (phoneNumber.length !== 12 || phoneNumber.substring(0, 2) !== "+1") {
+    return {
+      ok: false,
+      msg: "Non US / CA numbers are not currently supported",
+    };
+  }
+
   try {
     await twilio.verify.v2
       .services(process.env.TWILIO_VERIFY_SID!)

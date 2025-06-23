@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export function Footer() {
@@ -5,7 +7,33 @@ export function Footer() {
     <footer className="flex h-16 justify-between p-2">
       <div className="flex h-full flex-col justify-center">
         <p>
-          Made with ❤️ by{" "}
+          Made with{" "}
+          <span
+            className="cursor-pointer"
+            onMouseOver={async () => {
+              const d = document.getElementById("footer-heart");
+              if (!d) return;
+
+              const hearts = ["❤️", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤"];
+              let currentIndex = 0;
+
+              const cycleColors = () => {
+                if (currentIndex < hearts.length) {
+                  d.textContent = hearts[currentIndex];
+                  currentIndex++;
+                  setTimeout(cycleColors, 100);
+                } else {
+                  d.textContent = "❤️";
+                }
+              };
+
+              cycleColors();
+            }}
+            id="footer-heart"
+          >
+            ❤️
+          </span>{" "}
+          by{" "}
           <a
             href="https://www.sandboxnu.com/"
             className="text-blue hover:text-blue/80"

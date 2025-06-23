@@ -37,7 +37,7 @@ export function MobileWrapper(props: {
       className="col-span-12 hidden rounded-t-lg data-[show=true]:block xl:col-span-5 xl:block!"
     >
       <div className="h-full grid-cols-12 md:grid!">
-        <div className="bg-neu1 col-span-12 flex gap-1 px-2 py-2 xl:pr-0 xl:pl-4">
+        <div className="bg-neu1 col-span-12 flex gap-1 px-2 py-2 xl:pr-0">
           <SearchBar />
           <Drawer>
             <DrawerTrigger asChild>

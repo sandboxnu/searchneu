@@ -12,6 +12,8 @@ import { SectionFilterWrapper } from "@/components/coursePage/SectionFilterWrapp
 import { Section } from "@/components/coursePage/SectionCard";
 import Link from "next/link";
 import { type Requisite } from "@/scraper/reqs";
+import { Badge } from "@/components/ui/badge";
+import { notFound } from "next/navigation";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
@@ -75,7 +77,7 @@ export default async function Page(props: {
   const course = await cachedCourse(termId, subject, courseNumber);
 
   if (!course) {
-    return <p>course {courseName} not found</p>;
+    notFound();
   }
 
   const sections = db.query.sectionsT.findMany({
@@ -132,11 +134,18 @@ export default async function Page(props: {
         <h3 className="text-neu7 pb-2 text-sm font-medium">NUPaths</h3>
         <div className="flex gap-2">
           {course.nupaths.map((n) => (
-            <span key={n} className="bg-neu3 rounded px-2 py-0.5 text-sm">
+            <Badge key={n} className="px-2 py-0 text-xs font-bold">
               {convertNupathToLongform(n)}
-            </span>
+            </Badge>
           ))}
-          {course.nupaths.length === 0 && <p>None</p>}
+          {course.nupaths.length === 0 && (
+            <Badge
+              variant="secondary"
+              className="text-neu6 px-2 py-0 text-xs font-bold"
+            >
+              No NUPaths
+            </Badge>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-2">

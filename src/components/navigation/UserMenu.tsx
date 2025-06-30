@@ -57,7 +57,7 @@ function UserMenu({ user }: { user: User }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Tracked Sections</Link>
+          <Link href="/me/trackers">Tracked Sections</Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} variant="destructive">
           Sign Out

@@ -13,8 +13,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 import { Button } from "../ui/button";
-import { Filter } from "lucide-react";
+import { Ellipsis, Filter } from "lucide-react";
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
@@ -54,6 +61,25 @@ export function MobileWrapper(props: {
               </div>
             </DrawerContent>
           </Drawer>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="">
+                <Ellipsis className="size-4" />{" "}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <span
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(window.location.href);
+                  }}
+                >
+                  Copy link to search
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="bg-neu1 hidden w-full md:col-span-5 md:flex lg:col-span-3 xl:col-span-5">
           <SearchPanel {...props} />

@@ -65,7 +65,15 @@ export function NMultiselect({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" align="start">
-        <Command>
+        <Command
+          filter={(value, search, keywords) => {
+            const label = keywords?.join(" ");
+            if (value === search) return 1;
+            if (value.includes(search)) return 0.8;
+            if (label?.includes(search)) return 0.7;
+            return 0;
+          }}
+        >
           <CommandInput placeholder="Search options..." />
           <CommandList>
             <CommandEmpty>No results found</CommandEmpty>
@@ -74,6 +82,7 @@ export function NMultiselect({
                 <CommandItem
                   key={opt.value}
                   value={opt.value}
+                  keywords={[opt.label]}
                   onSelect={(currentValue) => {
                     setSelected(
                       selected.some((f) => f.value === currentValue)

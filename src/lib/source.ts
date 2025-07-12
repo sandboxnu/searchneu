@@ -2,14 +2,13 @@ import { docs } from "../../.source";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { createOpenAPI } from "fumadocs-openapi/server";
+import { createOpenAPI, attachFile } from "fumadocs-openapi/server";
 
 export const source = loader({
   baseUrl: "/docs",
   source: docs.toFumadocsSource(),
   pageTree: {
-    // BUG: looks like a fuma issue with typing
-    // attachFile,
+    attachFile,
   },
   icon(icon) {
     if (!icon) {

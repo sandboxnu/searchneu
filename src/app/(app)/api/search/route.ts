@@ -64,6 +64,8 @@ export async function GET(req: NextRequest) {
       maxCredits: coursesT.maxCredits,
       minCredits: coursesT.minCredits,
       nupaths: coursesT.nupaths,
+      prereqs: coursesT.prereqs,
+      coreqs: coursesT.coreqs,
       totalSections: countDistinct(sectionsT.id),
       sectionsWithSeats: sql<number>`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
       campus: sql<string[]>`array_agg(distinct ${sectionsT.campus})`,

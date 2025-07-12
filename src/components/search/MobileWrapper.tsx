@@ -19,7 +19,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
 import { Button } from "../ui/button";
 import { Ellipsis, Filter } from "lucide-react";
 

@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  outputFileTracingIncludes: {
+    "/content/api/": ["./content/api/*"],
+  },
 };
 
 const vercelToolbar = withVercelToolbar();

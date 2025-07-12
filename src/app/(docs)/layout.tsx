@@ -55,7 +55,7 @@ export default function RootLayout({
       >
         <DebugTools />
         {/* these className overrides required b/c of a bug in the Banner component */}
-        <Banner className="sticky shrink-0">
+        <Banner>
           Heads up! These docs are still in development! Mind our mess 🏗️
         </Banner>
         <RootProvider>

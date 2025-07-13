@@ -9,7 +9,6 @@ import { UserIcon } from "@/components/navigation/UserMenu";
 import Link from "next/link";
 import { Footer } from "@/components/navigation/Footer";
 import { Sandbox } from "@/components/icons/Sandbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PartyPopper } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 

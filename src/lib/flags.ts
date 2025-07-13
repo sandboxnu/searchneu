@@ -15,3 +15,11 @@ export const faqFlag = flag({
     return false;
   },
 });
+
+export const schedulerFlag = flag({
+  key: "scheduler",
+  description: "Enable experimental scheduler",
+  decide() {
+    return false;
+  },
+});

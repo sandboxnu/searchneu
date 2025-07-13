@@ -82,6 +82,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
     count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 90,
+    scrollPaddingStart: 28,
     overscan: 5,
   });
 
@@ -129,7 +130,9 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
           <ul
             className="absolute top-0 left-0 w-full"
-            style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}
+            style={{
+              transform: `translateY(${items[0]?.start ?? 0 - virtual.options.scrollMargin - 16}px)`,
+            }}
           >
             {items.map((v) => (
               <li

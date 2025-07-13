@@ -9,6 +9,9 @@ import { UserIcon } from "@/components/navigation/UserMenu";
 import Link from "next/link";
 import { Footer } from "@/components/navigation/Footer";
 import { Sandbox } from "@/components/icons/Sandbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { PartyPopper } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const cachedTerms = unstable_cache(async () => getTerms(), ["banner.terms"], {
   revalidate: 3600,
@@ -27,11 +30,17 @@ export default async function Home() {
         </a>
         <div className="flex items-center gap-4">
           <nav className="space-x-2 font-semibold">
-            <Link href="/catalog" className="rounded-lg px-3 py-2">
+            <Link
+              href="/catalog"
+              className="hover:bg-neu4/60 rounded-lg px-3 py-2"
+            >
               Catalog
             </Link>
             {enableFaqPage && (
-              <Link href="/faq" className="rounded-lg px-2 py-2">
+              <Link
+                href="/faq"
+                className="hover:bg-neu4/60 rounded-lg px-3 py-2"
+              >
                 FAQ
               </Link>
             )}
@@ -42,8 +51,11 @@ export default async function Home() {
       <div className="flex h-screen min-h-[500px] w-full flex-col justify-center">
         <div className="sunset absolute top-0 -z-20 h-full w-full"></div>
         <City className="absolute bottom-0 -z-10 min-h-48 max-w-screen" />
-        <div className="ml-[10%] w-[80%] max-w-[800px] space-y-2">
+        <div className="ml-[10%] w-[80%] max-w-[800px] space-y-4">
           <Logo className="w-2/3 max-w-[450px] min-w-[220px]" />
+          <Badge variant="accent">
+            New desgin! Learn more <PartyPopper />
+          </Badge>
           <Suspense fallback={<p>loading...</p>}>
             <HomeSearch terms={terms} />
           </Suspense>

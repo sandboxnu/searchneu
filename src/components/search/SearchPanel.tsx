@@ -55,8 +55,8 @@ export function SearchPanel(props: {
         </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
+            id="course-subject-select"
             opts={props.subjects}
-            commandProps={{ id: "course-subject-select" }}
             spCode="subj"
             placeholder="Select subjects"
             transform={(opts) => opts as Option[]}
@@ -73,8 +73,8 @@ export function SearchPanel(props: {
         </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
+            id="course-campus-select"
             opts={props.nupaths}
-            commandProps={{ id: "course-nupath-select" }}
             spCode="nupath"
             placeholder="Select NUPaths"
             transform={(opts) => opts as Option[]}
@@ -91,8 +91,8 @@ export function SearchPanel(props: {
         </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
+            id="course-campus-select"
             opts={props.campuses}
-            commandProps={{ id: "course-campus-select" }}
             spCode="camp"
             placeholder="Select campus"
             transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
@@ -109,8 +109,8 @@ export function SearchPanel(props: {
         </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
+            id="course-classtype-select"
             opts={props.classTypes}
-            commandProps={{ id: "course-classtype-select" }}
             spCode="clty"
             placeholder="Select class type"
             transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
@@ -251,10 +251,10 @@ function TermSelect(
 // SPMultiselect is a multiselect component that stores the state in the
 // search params
 function SPMultiselect<T>(props: {
+  id?: string;
   opts: Promise<T[]>;
   spCode: string;
   transform: (opts: T[]) => Option[];
-  commandProps: { id: string };
   placeholder: string;
 }) {
   const resolved = use(props.opts);
@@ -286,6 +286,7 @@ function SPMultiselect<T>(props: {
   return (
     <>
       <NMultiselect
+        id={props.id}
         options={options}
         placeholder={props.placeholder}
         value={selected as Option[]}

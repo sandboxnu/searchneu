@@ -24,12 +24,14 @@ export function NMultiselect({
   value,
   onChange,
   className,
+  id,
 }: {
   options: Option[];
   placeholder?: string;
   value: Option[];
   onChange: (arg1: Option[]) => void;
   className?: string;
+  id?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<Option[]>(value);
@@ -39,7 +41,7 @@ export function NMultiselect({
   }, [selected]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal={true}>
+    <Popover open={open} onOpenChange={setOpen} modal={true} id={id}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

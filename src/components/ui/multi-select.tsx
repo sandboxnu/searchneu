@@ -41,12 +41,13 @@ export function NMultiselect({
   }, [selected]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal={true} id={id}>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           role="combobox"
           aria-expanded={open}
+          id={id ?? ""}
           className={cn(
             "bg-neu2 hover:bg-neu2 w-full justify-between rounded-lg",
             className,

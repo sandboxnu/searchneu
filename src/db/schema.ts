@@ -26,6 +26,7 @@ export const coursesT = pgTable(
     name: text().notNull(),
     subject: varchar({ length: 6 }).notNull(),
     courseNumber: varchar({ length: 6 }).notNull(),
+    register: text().notNull(),
     description: text().notNull(),
     minCredits: decimal().notNull(),
     maxCredits: decimal().notNull(),

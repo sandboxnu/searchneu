@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   if (query) {
     sqlChunks.push(sql`and`);
     sqlChunks.push(
-      sql`${coursesT.id} @@@ paradedb.match('name', ${query}, distance => 0)`,
+      sql`${coursesT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('name', ${query}, distance => 0), paradedb.boost(2.0, paradedb.match('register', ${query}))])`,
     );
   }
 

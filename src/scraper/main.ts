@@ -98,6 +98,7 @@ async function insertCourseData(
           subject: course.subject,
           name: course.name,
           courseNumber: course.courseNumber,
+          register: course.subject + " " + course.courseNumber,
           description: course.description,
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),

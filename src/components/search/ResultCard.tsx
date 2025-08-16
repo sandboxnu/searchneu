@@ -39,14 +39,16 @@ export function ResultCard(props: {
       className="bg-neu1 hover:bg-neu3/30 data-[active=true]:bg-neu3/30 flex flex-col gap-0.5 rounded-lg border-1 px-4 py-2"
     >
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">
+        <h1 className="text-base font-black">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
-        <span className="text-neu6 text-sm">
+        <span className="text-muted-foreground text-sm">
           {creditRange} {creditLabel}
         </span>
       </div>
-      <p className="text-neu6 -mt-1 pb-1 text-sm">{props.result.name}</p>
+      <p className="text-muted-foreground -mt-1 pb-1 text-sm">
+        {props.result.name}
+      </p>
       <div className="flex items-center justify-between">
         <span
           className={cn(

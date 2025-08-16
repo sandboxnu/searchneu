@@ -20,6 +20,23 @@ import { NMultiselect, Option } from "@/components/ui/multi-select";
 import { Switch } from "../ui/switch";
 import { Slider } from "../ui/slider";
 import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import {
+  Command,
+  CommandInput,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  CommandEmpty,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CheckIcon, PlusIcon } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 export function SearchPanel(props: {
   terms: Promise<GroupedTerms>;
@@ -29,7 +46,8 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-background h-[calc(100vh-108px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-2 md:px-2">
+    <div className="bg-background h-[calc(100vh-108px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
+      <h3 className="text-muted-foreground text-xs font-bold">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>
@@ -37,9 +55,9 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-term-select"
-          className="text-neu7 pb-2 text-sm font-medium"
+          className="text-muted-foreground text-xs font-bold"
         >
-          Semester
+          SEMESTER
         </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <TermSelect terms={props.terms} id="course-term-select" />
@@ -47,15 +65,23 @@ export function SearchPanel(props: {
       </div>
 
       <div className="">
-        <Label
-          htmlFor="course-subject-select"
-          className="text-neu7 pb-2 text-sm font-medium"
-        >
-          Subjects
-        </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
-            id="course-subject-select"
+            label="CAMPUSES"
+            opts={props.campuses}
+            spCode="camp"
+            placeholder="Select campus"
+            transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
+          />
+        </Suspense>
+      </div>
+
+      <Separator />
+
+      <div className="">
+        <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselect
+            label="SUBJECTS"
             opts={props.subjects}
             spCode="subj"
             placeholder="Select subjects"
@@ -65,15 +91,9 @@ export function SearchPanel(props: {
       </div>
 
       <div className="">
-        <Label
-          htmlFor="course-campus-select"
-          className="text-neu7 pb-2 text-sm font-medium"
-        >
-          NUPaths
-        </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
-            id="course-campus-select"
+            label="NUPATHS"
             opts={props.nupaths}
             spCode="nupath"
             placeholder="Select NUPaths"
@@ -82,50 +102,28 @@ export function SearchPanel(props: {
         </Suspense>
       </div>
 
-      <div className="">
+      <div className="flex items-center justify-between">
         <Label
-          htmlFor="course-campus-select"
-          className="text-neu7 pb-2 text-sm font-medium"
+          htmlFor="course-honors-toggle"
+          className="text-muted-foreground text-xs font-bold"
         >
-          Campus
+          HONORS
         </Label>
-        <Suspense fallback={<MultiselectSkeleton />}>
-          <SPMultiselect
-            id="course-campus-select"
-            opts={props.campuses}
-            spCode="camp"
-            placeholder="Select campus"
-            transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
-          />
-        </Suspense>
+        <HonorsSwitch id="course-honors-toggle" />
       </div>
 
+      <Separator />
+
       <div className="">
-        <Label
-          htmlFor="course-classtype-select"
-          className="text-neu7 pb-2 text-sm font-medium"
-        >
-          Class Type
-        </Label>
         <Suspense fallback={<MultiselectSkeleton />}>
           <SPMultiselect
-            id="course-classtype-select"
+            label="CLASS TYPE"
             opts={props.classTypes}
             spCode="clty"
             placeholder="Select class type"
             transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
           />
         </Suspense>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <Label
-          htmlFor="course-honors-toggle"
-          className="text-neu7 pb-2 text-sm font-medium"
-        >
-          Honors
-        </Label>
-        <HonorsSwitch id="course-honors-toggle" />
       </div>
 
       <div className="">
@@ -224,23 +222,34 @@ function TermSelect(
     ) ?? "neu";
 
   return (
-    <Select
-      onValueChange={(e) =>
-        router.push(`/catalog/${e}?${searchParams.toString()}`)
-      }
-      value={term?.toString()}
-    >
-      <SelectTrigger className="bg-neu2 w-full rounded-lg" {...props}>
-        <SelectValue placeholder="Select term" />
-      </SelectTrigger>
-      <SelectContent className="">
-        {terms[activeCollege as keyof GroupedTerms].map((t) => (
-          <SelectItem key={t.term} value={t.term}>
-            {t.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="space-y-2 pt-3">
+      <Tabs defaultValue="Spring" onValueChange={(tab) => console.log(tab)}>
+        <TabsList className="w-full">
+          <TabsTrigger value="Spring">Spring</TabsTrigger>
+          <TabsTrigger value="Summer I">Summer I</TabsTrigger>
+          <TabsTrigger value="Summer II">Summer II</TabsTrigger>
+          <TabsTrigger value="Fall">Fall</TabsTrigger>
+          {/* <TabsTrigger value="Summer Full">Summer Full</TabsTrigger> */}
+        </TabsList>
+      </Tabs>
+      <Select
+        onValueChange={(e) =>
+          router.push(`/catalog/${e}?${searchParams.toString()}`)
+        }
+        value={term?.toString()}
+      >
+        <SelectTrigger className="bg-secondary w-full" {...props}>
+          <SelectValue placeholder="Select term" />
+        </SelectTrigger>
+        <SelectContent className="">
+          {terms[activeCollege as keyof GroupedTerms].map((t) => (
+            <SelectItem key={t.term} value={t.term}>
+              {t.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
 
@@ -256,6 +265,7 @@ function SPMultiselect<T>(props: {
   spCode: string;
   transform: (opts: T[]) => Option[];
   placeholder: string;
+  label: string;
 }) {
   const resolved = use(props.opts);
   const options = props
@@ -283,15 +293,95 @@ function SPMultiselect<T>(props: {
   const spSelected = searchParams.getAll(props.spCode);
   const selected = options.filter((s) => spSelected.indexOf(s.value) > -1);
 
+  const [open, setOpen] = useState(false);
+
   return (
     <>
-      <NMultiselect
-        id={props.id}
-        options={options}
-        placeholder={props.placeholder}
-        value={selected as Option[]}
-        onChange={updateSearchParams}
-      />
+      <div className="flex items-center justify-between">
+        <Label className="text-muted-foreground text-xs font-bold">
+          {props.label}
+        </Label>
+        <div className="flex items-center gap-2">
+          {selected.length > 0 && (
+            <p
+              className="text-blue hover:text-blue/80 cursor-pointer text-xs"
+              onClick={() => updateSearchParams([])}
+            >
+              Clear all
+            </p>
+          )}
+
+          <Popover open={open} onOpenChange={setOpen} modal={true}>
+            <PopoverTrigger asChild>
+              <PlusIcon
+                className={cn(
+                  "text-muted-foreground size-4",
+                  open && "rotate-45",
+                )}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-[280px] p-0" align="end">
+              <Command
+                filter={(value, search, keywords) => {
+                  const v = value.toLowerCase();
+                  const s = search.toLowerCase();
+                  const label = keywords?.join(" ").toLowerCase();
+                  if (v === s) return 1;
+                  if (v.includes(s)) return 0.8;
+                  if (label?.includes(s)) return 0.7;
+                  return 0;
+                }}
+              >
+                <CommandInput placeholder="Search options..." />
+                <CommandList>
+                  <CommandEmpty>No results found</CommandEmpty>
+                  <CommandGroup>
+                    {options.map((opt) => (
+                      <CommandItem
+                        key={opt.value}
+                        value={opt.value}
+                        keywords={[opt.label]}
+                        onSelect={(currentValue) => {
+                          updateSearchParams(
+                            selected.some((f) => f.value === currentValue)
+                              ? selected.filter((f) => f.value !== currentValue)
+                              : [...selected, opt],
+                          );
+                        }}
+                      >
+                        <div
+                          className="data-[selected=true]:bg-neu9 data-[selected=true]:text-neu1 data-[selected=true]:border-neu9 pointer-events-none size-4 shrink-0 rounded-[4px] border transition-all select-none *:[svg]:opacity-0 data-[selected=true]:*:[svg]:opacity-100"
+                          data-selected={selected.some(
+                            (f) => f.value === opt.value,
+                          )}
+                        >
+                          <CheckIcon className="size-3.5 text-current" />
+                        </div>
+                        {opt.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+      <div className="block space-y-2 space-x-2 pt-3">
+        {selected.slice(0, 3).map((s, i) => (
+          <span
+            key={i}
+            className="bg-secondary inline-flex w-fit shrink-0 items-center rounded-full border px-3 py-1 text-sm"
+          >
+            {s.label}
+          </span>
+        ))}
+        {selected.length > 3 && (
+          <span className="rounded-full border px-3 py-1">
+            +{selected.length - 3}
+          </span>
+        )}
+      </div>
     </>
   );
 }

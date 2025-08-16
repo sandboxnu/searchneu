@@ -100,14 +100,14 @@ export default async function Page(props: {
           <span className="text-muted-foreground flex items-center gap-1 italic">
             {isTermActive ? (
               <>
-                <Globe className="text-foreground size-4" />
+                <Globe className="size-4" />
                 <h2 className="text-sm">
                   {formatLastUpdatedString(term?.updatedAt)}
                 </h2>
               </>
             ) : (
               <>
-                <GlobeLock className="text-foreground size-4" />
+                <GlobeLock className="size-4" />
                 <h2 className="text-sm">
                   {"Last updated on " + term.updatedAt.toLocaleDateString()}
                 </h2>

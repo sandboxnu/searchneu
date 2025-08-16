@@ -87,7 +87,7 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="flex h-[calc(100vh-56px)] flex-col gap-4 overflow-y-scroll px-2 pt-4 pb-8 xl:px-4">
+    <div className="bg-neu1 flex h-[calc(100vh-56px)] flex-col gap-4 overflow-y-scroll rounded px-2 pt-4 pb-8 xl:px-4">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{courseName}</h1>

@@ -97,7 +97,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
           </p>
           <div
             ref={parentRef}
-            className="h-[calc(100vh-136px)] w-full overflow-y-auto px-1 pt-2"
+            className="h-[calc(100vh-136px)] w-full overflow-y-auto pt-2 pr-2"
           ></div>
         </>
       );
@@ -112,7 +112,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
         <div
           ref={parentRef}
-          className="h-[calc(100vh-136px)] w-full overflow-y-auto px-1 pt-2"
+          className="h-[calc(100vh-136px)] w-full overflow-y-auto pt-2 pr-2"
         ></div>
       </>
     );
@@ -120,12 +120,12 @@ function ResultsList(props: { params: string; term: string; course: string }) {
 
   return (
     <>
-      <p className="text-neu6 w-full py-1 text-center text-sm">
-        {results.length} Result{results.length > 1 && "s"}
-      </p>
+      {/* <p className="text-neu6 w-full py-1 text-center text-sm"> */}
+      {/*   {results.length} Result{results.length > 1 && "s"} */}
+      {/* </p> */}
       <div
         ref={parentRef}
-        className="h-[calc(100vh-136px)] w-full overflow-y-auto px-2"
+        className="h-[calc(100vh-136px)] w-full overflow-y-auto pr-2"
       >
         <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
           <ul

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Ellipsis, Filter } from "lucide-react";
+import { type ReactNode } from "react";
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
@@ -34,59 +35,65 @@ export function MobileWrapper(props: {
   campuses: Promise<string[]>;
   classTypes: Promise<string[]>;
   nupaths: Promise<Option[]>;
+  coursePage: ReactNode;
 }) {
   const { course } = useParams();
 
   return (
-    <div
-      data-show={!Boolean(course)}
-      className="col-span-12 hidden rounded-t-lg data-[show=true]:block xl:col-span-5 xl:block!"
-    >
-      <div className="h-full grid-cols-12 md:grid!">
-        <div className="bg-neu1 col-span-12 flex gap-1 px-2 py-2 xl:pr-0">
-          <SearchBar />
-          <Drawer>
-            <DrawerTrigger asChild>
-              <Button variant="default" size="icon" className="md:hidden">
-                <Filter className="size-4" />{" "}
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>Search Filters</DrawerTitle>
-              </DrawerHeader>
-              <div className="overflow-y-scroll">
-                <SearchPanel {...props} />
+    <>
+      <div
+        data-show={!Boolean(course)}
+        className="hidden rounded-t-lg data-[show=true]:block xl:block!"
+      >
+        <div className="grid h-full w-full grid-cols-5 px-6 py-2">
+          <div className="col-span-1 w-full">
+            <SearchPanel {...props} />
+          </div>
+          <div className="col-span-4 flex flex-col gap-4 pl-6">
+            <SearchBar />
+            <div className="grid grid-cols-12">
+              <div className="col-span-4">
+                <SearchResults />
               </div>
-            </DrawerContent>
-          </Drawer>
+              <div className="col-span-8">{props.coursePage}</div>
+            </div>
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button variant="default" size="icon" className="md:hidden">
+                  <Filter className="size-4" />{" "}
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Search Filters</DrawerTitle>
+                </DrawerHeader>
+                <div className="overflow-y-scroll">
+                  <SearchPanel {...props} />
+                </div>
+              </DrawerContent>
+            </Drawer>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="">
-                <Ellipsis className="size-4" />{" "}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <span
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(window.location.href);
-                  }}
-                >
-                  Copy link to search
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div className="bg-neu1 hidden w-full md:col-span-5 md:flex lg:col-span-3 xl:col-span-5">
-          <SearchPanel {...props} />
-        </div>
-        <div className="col-span-12 pr-2 md:col-span-7 lg:col-span-9 xl:col-span-7 xl:px-0">
-          <SearchResults />
+            {/* <DropdownMenu> */}
+            {/*   <DropdownMenuTrigger asChild> */}
+            {/*     <Button variant="outline" size="icon" className=""> */}
+            {/*       <Ellipsis className="size-4" />{" "} */}
+            {/*     </Button> */}
+            {/*   </DropdownMenuTrigger> */}
+            {/*   <DropdownMenuContent> */}
+            {/*     <DropdownMenuItem asChild> */}
+            {/*       <span */}
+            {/*         onClick={async () => { */}
+            {/*           await navigator.clipboard.writeText(window.location.href); */}
+            {/*         }} */}
+            {/*       > */}
+            {/*         Copy link to search */}
+            {/*       </span> */}
+            {/*     </DropdownMenuItem> */}
+            {/*   </DropdownMenuContent> */}
+            {/* </DropdownMenu> */}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

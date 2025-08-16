@@ -70,10 +70,12 @@ export function NMultiselect({
       <PopoverContent className="p-0" align="start">
         <Command
           filter={(value, search, keywords) => {
-            const label = keywords?.join(" ");
-            if (value === search) return 1;
-            if (value.includes(search)) return 0.8;
-            if (label?.includes(search)) return 0.7;
+            const v = value.toLowerCase();
+            const s = search.toLowerCase();
+            const label = keywords?.join(" ").toLowerCase();
+            if (v === s) return 1;
+            if (v.includes(s)) return 0.8;
+            if (label?.includes(s)) return 0.7;
             return 0;
           }}
         >

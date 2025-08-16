@@ -57,21 +57,22 @@ export function MobileWrapper(props: {
               </div>
               <div className="col-span-8">{props.coursePage}</div>
             </div>
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button variant="default" size="icon" className="md:hidden">
-                  <Filter className="size-4" />{" "}
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent>
-                <DrawerHeader>
-                  <DrawerTitle>Search Filters</DrawerTitle>
-                </DrawerHeader>
-                <div className="overflow-y-scroll">
-                  <SearchPanel {...props} />
-                </div>
-              </DrawerContent>
-            </Drawer>
+
+            {/* <Drawer> */}
+            {/*   <DrawerTrigger asChild> */}
+            {/*     <Button variant="default" size="icon" className="md:hidden"> */}
+            {/*       <Filter className="size-4" />{" "} */}
+            {/*     </Button> */}
+            {/*   </DrawerTrigger> */}
+            {/*   <DrawerContent> */}
+            {/*     <DrawerHeader> */}
+            {/*       <DrawerTitle>Search Filters</DrawerTitle> */}
+            {/*     </DrawerHeader> */}
+            {/*     <div className="overflow-y-scroll"> */}
+            {/*       <SearchPanel {...props} /> */}
+            {/*     </div> */}
+            {/*   </DrawerContent> */}
+            {/* </Drawer> */}
 
             {/* <DropdownMenu> */}
             {/*   <DropdownMenuTrigger asChild> */}

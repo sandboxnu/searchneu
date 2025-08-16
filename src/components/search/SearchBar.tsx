@@ -57,19 +57,12 @@ export function SearchBar() {
   return (
     <div className="flex w-full">
       <Input
-        className="rounded-l-lg rounded-r-none border-[0.5px] border-r-0"
-        placeholder="Search for a course, CRN, or phrase"
+        className="bg-background"
+        placeholder="Search for a course, CRN, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
       />
-      <Button
-        size="icon"
-        className="bg-accent rounded-l-none rounded-r-lg"
-        onClick={() => handleSubmit()}
-      >
-        <Search className="size-4" transform="scale(-1, 1)" />
-      </Button>
     </div>
   );
 }

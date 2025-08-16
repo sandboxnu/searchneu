@@ -87,16 +87,50 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex h-[calc(100vh-56px)] flex-col gap-4 overflow-y-scroll rounded px-2 pt-4 pb-8 xl:px-4">
+    <div className="bg-neu1 flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll rounded-lg border-1 px-10 pt-10 pb-8">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{courseName}</h1>
-          <h2 className="">{course.name}</h2>
+          <h2 className="text-lg">{course.name}</h2>
         </div>
         <div className="text-end">
-          <h2 className="text-xl font-medium">
+          <h2 className="text-lg font-bold">
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
+          <span className="text-muted-foreground flex items-center gap-1 italic">
+            {isTermActive ? (
+              <>
+                <Globe className="text-foreground size-4" />
+                <h2 className="text-sm">
+                  {formatLastUpdatedString(term?.updatedAt)}
+                </h2>
+              </>
+            ) : (
+              <>
+                <GlobeLock className="text-foreground size-4" />
+                <h2 className="text-sm">
+                  {"Last updated on " + term.updatedAt.toLocaleDateString()}
+                </h2>
+              </>
+            )}
+          </span>
+        </div>
+      </div>
+      <div className="">
+        <h3 className="text-muted-foreground pb-2 text-xs font-bold">
+          COURSE DESCRIPTION
+        </h3>
+        <ExpandableDescription description={course.description} />
+      </div>
+      <div className="flex gap-8">
+        <div>
+          <h3 className="text-muted-foreground pb-2 text-xs font-bold">
+            COURSE LEVEL
+          </h3>
+          <p className="">Undergrad</p>
+        </div>
+        <div>
+          <h3 className="text-muted-foreground pb-2 text-xs font-bold">LINK</h3>
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -106,32 +140,13 @@ export default async function Page(props: {
             View on Banner
             <ExternalLink className="size-4" />
           </a>
-          <span className="flex items-center gap-1">
-            {isTermActive ? (
-              <>
-                <h2 className="text-sm">
-                  {formatLastUpdatedString(term?.updatedAt)}
-                </h2>
-                <Globe className="size-4" />
-              </>
-            ) : (
-              <>
-                <h2 className="text-sm">
-                  {"Last updated on " + term.updatedAt.toLocaleDateString()}
-                </h2>
-                <GlobeLock className="size-4" />
-              </>
-            )}
-          </span>
         </div>
-      </div>
-      <div className="">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">Description</h3>
-        <ExpandableDescription description={course.description} />
       </div>
       <Separator />
       <div className="">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">NUPaths</h3>
+        <h3 className="text-muted-foreground pb-2 text-xs font-bold">
+          NUPATHS
+        </h3>
         <div className="flex gap-2">
           {course.nupaths.map((n) => (
             <Badge key={n} className="px-2 py-0 text-xs font-bold">
@@ -149,6 +164,9 @@ export default async function Page(props: {
         </div>
       </div>
       <div className="grid grid-cols-2">
+        <h3 className="text-muted-foreground col-span-12 pb-2 text-xs font-bold">
+          REQUIREMENTS
+        </h3>
         <div className="">
           <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
           <p>{renderRequisite(course.prereqs as Requisite, termId)}</p>

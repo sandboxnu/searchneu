@@ -8,7 +8,7 @@ export function ExpandableDescription({
 }: {
   description: string;
 }) {
-  const charLimit = 300;
+  const charLimit = 200;
   const needsExpansion = description.length > charLimit;
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,7 +26,7 @@ export function ExpandableDescription({
           onClick={() => setIsExpanded(!isExpanded)}
           className="text-blue hover:text-blue/80 focus:outline-none"
         >
-          {isExpanded ? "show less" : "show more"}
+          {isExpanded ? "see less" : "see more"}
         </button>
       )}
     </p>

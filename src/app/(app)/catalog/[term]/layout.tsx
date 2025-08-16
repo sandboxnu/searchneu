@@ -56,7 +56,7 @@ export default async function Layout(props: {
   const nupaths = new Promise((r) => r(NUPATH_OPTIONS)) as Promise<Option[]>;
 
   return (
-    <div className="bg-neu2 h-full w-full">
+    <div className="bg-secondary h-full w-full">
       <MobileWrapper
         terms={terms}
         subjects={subjects}

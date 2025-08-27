@@ -6,21 +6,6 @@ import { useParams } from "next/navigation";
 import { Option } from "../ui/multi-select";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./SearchBar";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { Ellipsis, Filter } from "lucide-react";
 import { type ReactNode } from "react";
 
 // BUG: ssr on the results list w/ query params causes hydration error

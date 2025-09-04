@@ -7,8 +7,9 @@ import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { City } from "@/components/icons/city";
 import { OnboardingFlow } from "@/components/auth/OnboardingFlow";
+import type { Metadata } from "next";
 
-export function generateMetadata() {
+export function generateMetadata(): Metadata {
   return {
     title: "Link",
   };
@@ -46,7 +47,7 @@ export default async function Page({
     .where(eq(usersT.guid, guid));
 
   if (users.length === 0) {
-    return Response.json({ guid: null });
+    return <span>NaN</span>;
   }
 
   const user = users[0];

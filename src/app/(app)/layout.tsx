@@ -5,6 +5,7 @@ import { DebugTools } from "@/components/DebugTools";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth/client";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Analytics />
+      <SpeedInsights />
       <body
         data-theme="neu"
         className={`${lato.className} ${geistMono.variable} flex flex-col font-sans antialiased`}

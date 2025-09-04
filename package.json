@@ -13,6 +13,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@tanstack/react-virtual": "^3.13.12",
+    "@vercel/analytics": "^1.5.0",
     "@vercel/toolbar": "^0.1.38",
     "arctic": "^3.7.0",
     "class-variance-authority": "^0.7.1",

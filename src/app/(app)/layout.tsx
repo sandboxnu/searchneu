@@ -33,12 +33,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Analytics />
-      <SpeedInsights />
       <body
         data-theme="neu"
         className={`${lato.className} ${geistMono.variable} flex flex-col font-sans antialiased`}
       >
+        <Analytics />
+        <SpeedInsights />
         <AuthProvider>
           <DebugTools />
           <main className="min-h-screen w-screen grow">{children}</main>

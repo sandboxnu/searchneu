@@ -16,12 +16,11 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
-import { NMultiselect, Option } from "@/components/ui/multi-select";
+import { Option } from "@/components/ui/multi-select";
 import { Switch } from "../ui/switch";
 import { Slider } from "../ui/slider";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import {
   Command,
   CommandInput,
@@ -46,7 +45,7 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-background h-[calc(100vh-108px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
       <h3 className="text-muted-foreground text-xs font-bold">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
@@ -223,15 +222,6 @@ function TermSelect(
 
   return (
     <div className="space-y-2 pt-3">
-      <Tabs defaultValue="Spring" onValueChange={(tab) => console.log(tab)}>
-        <TabsList className="w-full">
-          <TabsTrigger value="Spring">Spring</TabsTrigger>
-          <TabsTrigger value="Summer I">Summer I</TabsTrigger>
-          <TabsTrigger value="Summer II">Summer II</TabsTrigger>
-          <TabsTrigger value="Fall">Fall</TabsTrigger>
-          {/* <TabsTrigger value="Summer Full">Summer Full</TabsTrigger> */}
-        </TabsList>
-      </Tabs>
       <Select
         onValueChange={(e) =>
           router.push(`/catalog/${e}?${searchParams.toString()}`)

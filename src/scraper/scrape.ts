@@ -9,7 +9,7 @@ export async function scrapeTerm(term: string) {
   const sections = await scrapeSections(term);
   await getSectionFaculty(sections);
 
-  const { courses, subjects: subjectCodes } = arrangeCourses(sections);
+  const { courses, subjects: subjectCodes } = await arrangeCourses(sections);
   const subjects = await getSubjects(term, subjectCodes);
 
   await getCourseDescriptions(courses);
@@ -114,6 +114,26 @@ async function getReqs(
   }
 }
 
+async function getCourseName(section: BannerSection) {
+  console.log("getting course name from section catalog");
+  const response = await fetch(
+    "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getSectionCatalogDetails",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `term=${section.term}&courseReferenceNumber=${section.courseReferenceNumber}`,
+        },
+      ).then((resp) => resp.text());
+
+  const title = decode(decode(response))
+    .replace(/<[^>]*>/g, "") // Remove HTML tags
+    .trim()
+    .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
+  return title;
+}
+
 // getCourseDescriptions goes through and scrapes the course descriptions for
 // every course
 export async function getCourseDescriptions(courses: Course[]) {
@@ -158,14 +178,14 @@ export async function getCourseDescriptions(courses: Course[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-export function arrangeCourses(sections: BannerSection[]) {
+export async function arrangeCourses(sections: BannerSection[]) {
   const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
 
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
-        name: decode(decode(s.courseTitle)),
+        name: await getCourseName(s),
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,

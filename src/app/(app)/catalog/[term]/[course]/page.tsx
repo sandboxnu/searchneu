@@ -1,5 +1,12 @@
 import { db } from "@/db";
-import { coursesT, termsT, sectionsT, trackersT, usersT } from "@/db/schema";
+import {
+  coursesT,
+  termsT,
+  sectionsT,
+  trackersT,
+  usersT,
+  meetingTimesT,
+} from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
@@ -8,12 +15,15 @@ import { convertNupathToLongform } from "@/scraper/nupaths";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { type JSX, Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import { SectionFilterWrapper } from "@/components/coursePage/SectionFilterWrapper";
-import { Section } from "@/components/coursePage/SectionCard";
 import Link from "next/link";
 import { type Requisite } from "@/scraper/reqs";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
+import {
+  SectionTable,
+  type Section,
+} from "@/components/coursePage/SectionTable";
+import { type Metadata } from "next";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
@@ -49,7 +59,7 @@ async function getTrackedSections() {
 
 export async function generateMetadata(props: {
   params: Promise<{ term: string; course: string }>;
-}) {
+}): Promise<Metadata> {
   return {
     title: decodeURIComponent((await props.params)?.course) ?? "",
   };
@@ -80,14 +90,68 @@ export default async function Page(props: {
     notFound();
   }
 
-  const sections = db.query.sectionsT.findMany({
-    where: eq(sectionsT.courseId, course.id),
-  });
+  const sections = db
+    .select({
+      id: sectionsT.id,
+      crn: sectionsT.crn,
+      faculty: sectionsT.faculty,
+      campus: sectionsT.campus,
+      honors: sectionsT.honors,
+      classType: sectionsT.classType,
+      seatRemaining: sectionsT.seatRemaining,
+      seatCapacity: sectionsT.seatCapacity,
+      waitlistCapacity: sectionsT.waitlistCapacity,
+      waitlistRemaining: sectionsT.waitlistRemaining,
+      // Meeting time data
+      meetingTimeId: meetingTimesT.id,
+      days: meetingTimesT.days,
+      startTime: meetingTimesT.startTime,
+      endTime: meetingTimesT.endTime,
+    })
+    .from(sectionsT)
+    .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+    .where(eq(sectionsT.courseId, course.id))
+    .then((rows) => {
+      // Group the rows by section and reconstruct the meetingTimes array
+      const sectionMap = new Map<number, Section>();
+
+      for (const row of rows) {
+        if (!sectionMap.has(row.id)) {
+          sectionMap.set(row.id, {
+            id: row.id,
+            crn: row.crn,
+            faculty: row.faculty,
+            campus: row.campus,
+            honors: row.honors,
+            classType: row.classType,
+            seatRemaining: row.seatRemaining,
+            seatCapacity: row.seatCapacity,
+            waitlistCapacity: row.waitlistCapacity,
+            waitlistRemaining: row.waitlistRemaining,
+            meetingTimes: [],
+          });
+        }
+
+        // Add meeting time if it exists
+        if (row.meetingTimeId && row.days && row.startTime && row.endTime) {
+          const section = sectionMap.get(row.id)!;
+          section.meetingTimes.push({
+            days: row.days,
+            startTime: row.startTime,
+            endTime: row.endTime,
+            final: false, // You'll need to add this field to meetingTimesT if needed
+            finalDate: undefined,
+          });
+        }
+      }
+
+      return Array.from(sectionMap.values());
+    });
 
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex h-[calc(100vh-56px)] flex-col gap-8 overflow-y-scroll rounded-lg border-1 px-10 pt-10 pb-8">
+    <div className="bg-neu1 flex h-[calc(100vh-124px)] flex-col gap-8 overflow-y-scroll rounded-lg border-1 px-10 pt-10 pb-8">
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{courseName}</h1>
@@ -178,9 +242,8 @@ export default async function Page(props: {
       </div>
       <Separator />
       <div className="w-full">
-        <h3 className="text-neu7 pb-2 text-sm font-medium">Sections</h3>
         <Suspense fallback={<SectionsTableSkeleton />}>
-          <SectionFilterWrapper
+          <SectionTable
             sectionsPromise={sections as Promise<Section[]>}
             trackedSectionsPromise={trackedSections as Promise<number[]>}
             isTermActive={isTermActive}

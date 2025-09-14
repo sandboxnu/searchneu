@@ -4,7 +4,6 @@ import {
   foreignKey,
   index,
   integer,
-  json,
   jsonb,
   pgTable,
   primaryKey,
@@ -66,7 +65,6 @@ export const sectionsT = pgTable(
     classType: text().notNull(),
     honors: boolean().notNull(),
     campus: text().notNull(),
-    meetingTimes: json().notNull(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
@@ -162,3 +160,60 @@ export const notificationsT = pgTable("notifications", {
   message: text(),
   sentAt: timestamp().notNull().defaultNow(),
 });
+
+export const buildingsT = pgTable("buildings", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull(),
+  campus: text().notNull(),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const roomsT = pgTable(
+  "rooms",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    buildingId: integer()
+      .notNull()
+      .references(() => buildingsT.id),
+    number: varchar({ length: 10 }).notNull(),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    unique("building_room").on(table.buildingId, table.number),
+    index("building_idx").on(table.buildingId),
+  ],
+);
+
+export const meetingTimesT = pgTable(
+  "meeting_times",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    term: varchar({ length: 6 })
+      .notNull()
+      .references(() => termsT.term),
+    sectionId: integer()
+      .notNull()
+      .references(() => sectionsT.id),
+    roomId: integer().references(() => roomsT.id),
+    days: integer().array().notNull(),
+    startTime: integer().notNull(),
+    endTime: integer().notNull(),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("section_meeting_idx").on(table.sectionId),
+    index("room_meeting_idx").on(table.roomId),
+  ],
+);

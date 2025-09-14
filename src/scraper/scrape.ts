@@ -3,6 +3,7 @@ import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
+import { parseRooms } from "./rooms";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -15,9 +16,17 @@ export async function scrapeTerm(term: string) {
   await getCourseDescriptions(courses);
   await getReqs(courses, subjects);
 
+  const rooms = await parseRooms(courses);
+
   const termDef = await getTermInfo(term);
 
-  return { term: termDef, courses, subjects } as TermScrape;
+  return {
+    term: termDef,
+    courses,
+    subjects,
+    rooms: rooms[0],
+    buildingCampuses: rooms[1],
+  } as TermScrape;
 }
 
 // getTermInfo gets the name for the term being scraped from banner

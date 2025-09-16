@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { sendFeedbackToSlack } from "./slack-action";
 
 export default function Page() {
   const router = useRouter();
@@ -16,10 +17,7 @@ export default function Page() {
     if (!message.trim()) return;
     setSubmitting(true);
     try {
-      // Placeholder submit; wire to your API if needed.
-      // Example: await fetch("/api/feedback", { method: "POST", body: JSON.stringify({ message, contact }) })
-      
-      console.log({ message, contact });
+      await sendFeedbackToSlack(message, contact);
       setMessage("");
       setContact("");
     } finally {

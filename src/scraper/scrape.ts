@@ -13,6 +13,7 @@ export async function scrapeTerm(term: string) {
   const { courses, subjects: subjectCodes } = await arrangeCourses(sections);
   const subjects = await getSubjects(term, subjectCodes);
 
+  await getCourseNames(courses);
   await getCourseDescriptions(courses);
   await getReqs(courses, subjects);
 
@@ -123,24 +124,45 @@ async function getReqs(
   }
 }
 
-async function getCourseName(section: BannerSection) {
-  console.log("getting course name from section catalog");
-  const response = await fetch(
-    "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getSectionCatalogDetails",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `term=${section.term}&courseReferenceNumber=${section.courseReferenceNumber}`,
-        },
-      ).then((resp) => resp.text());
+// getCourseNames goes through and scrapes the course names for
+// every course
+export async function getCourseNames(courses: Course[]) {
+  console.log("getting course names");
+  const batchSize = 50;
+  const term = courses[0].term;
+  const numBatches = Math.ceil(courses.length / batchSize);
+  console.log(`running ${numBatches} batches`);
 
-  const title = decode(decode(response))
-    .replace(/<[^>]*>/g, "") // Remove HTML tags
-    .trim()
-    .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
-  return title;
+  for (let i = 0; i < numBatches; i++) {
+    console.log(`batch ${i}`);
+
+    const offset = batchSize * i;
+    const promises = courses.slice(offset, offset + 50).map((c) =>
+      fetch(
+        "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getSectionCatalogDetails",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `term=${term}&courseReferenceNumber=${c.sections[0].crn}`,
+        },
+      ).then((resp) => resp.text()),
+    );
+
+    const results = await Promise.allSettled(promises);
+
+    results
+      .filter((p) => p.status === "fulfilled")
+      .forEach((p, j) => {
+        courses[offset + j].name = decode(decode(p.value))
+          .replace(/<[^>]*>/g, "") // Remove HTML tags
+          .trim()
+          .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
+      });
+  }
+
+  return courses;
 }
 
 // getCourseDescriptions goes through and scrapes the course descriptions for
@@ -194,7 +216,7 @@ export async function arrangeCourses(sections: BannerSection[]) {
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
-        name: await getCourseName(s),
+        name: "", // note - this will be filled in later when the names are scraped
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,

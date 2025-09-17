@@ -18,7 +18,7 @@ COPY STARTS HERE
 COPY ENDS HERE
 -->
 
-## V2.0.0 Created Changelog  
+## V2.0.0 Created Changelog (Created by [Aidan Szeto](https://github.com/szetoai))
     - Date: 09/14/2025
     - Commit: xxxxx
     - Features Added:

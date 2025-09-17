@@ -48,6 +48,10 @@ export function Footer() {
             Feedback
           </Link>
           <p>·</p>
+          <Link href="/changelog" className="text-blue hover:text-blue/80">
+            Changelog
+          </Link>
+          <p>·</p>
           <Link href="/docs" className="text-blue hover:text-blue/80">
             Docs
           </Link>

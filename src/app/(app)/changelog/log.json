@@ -1,0 +1,15 @@
+{
+    "changes": [
+        {
+            "version": "2.0.0",
+            "title": "Created Changelog",
+            "features": {
+                "title": "changelog"
+            },
+            "bugs": {},
+            "notes": {
+
+            }
+        }
+    ]
+}

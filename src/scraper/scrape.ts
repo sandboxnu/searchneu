@@ -10,7 +10,7 @@ export async function scrapeTerm(term: string) {
   const sections = await scrapeSections(term);
   await getSectionFaculty(sections);
 
-  const { courses, subjects: subjectCodes } = await arrangeCourses(sections);
+  const { courses, subjects: subjectCodes } = arrangeCourses(sections);
   const subjects = await getSubjects(term, subjectCodes);
 
   await getCourseNames(courses);
@@ -209,7 +209,7 @@ export async function getCourseDescriptions(courses: Course[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-export async function arrangeCourses(sections: BannerSection[]) {
+export function arrangeCourses(sections: BannerSection[]) {
   const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
 

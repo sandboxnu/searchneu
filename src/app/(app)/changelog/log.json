@@ -1,17 +1,32 @@
 {
     "changes": [
         {
-            "version": "2.0.0",
-            "title": "Created Changelog",
-            "features": [
+            "version": "2.0.1",
+            "title": "Created Dynamic Changelog",
+            "date": "09/18/2025",
+            "changes": [
                 {
-                    "title": "changelog",
-                    "contributors": ["https://github.com/szetoai"],
-                    "description": "changelog for searchNEU"
+                    "contributors": ["https://github.com/szetoai", "http://github.com/jpnortonwastaken"],
+                    "description": "typescript (dynamic) changelog for searchNEU"
+                },
+                {
+                    "contributors": ["https://github.com/szetoai", "http://github.com/jpnortonwastaken"],
+                    "description": "created json to parse for each entry in the changelog"
                 }
             ],
-            "bugs": [{}],
-            "notes": ["This is the first entry :D"]
+            "notes": "testing stuff"
+        },
+        {
+            "version": "2.0.0",
+            "title": "Created Manual Changelog",
+            "date": "09/14/2025",
+            "changes": [
+                {
+                    "contributors": ["https://github.com/szetoai", "http://github.com/jpnortonwastaken"],
+                    "description": "manual changelog for searchNEU"
+                }
+            ],
+            "notes": "This is the first entry :D"
         }
     ]
 }

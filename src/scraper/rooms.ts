@@ -9,17 +9,15 @@ export async function parseRooms(courses: Course[]) {
         const { building, room, startTime, endTime, days } = meetingTime;
 
         if (!building || !room) {
+          const courseId = course.subject ?? course.courseNumber;
+
           logger.warn(
-            "Skipping meetingTime with missing building/room:" +
-              {
-                course: course.subject || course.courseNumber,
-                section: section.crn,
-                meetingTime,
-              },
+            { courseId, sectionCrn: section.crn, meetingTime },
+            "Skipping meetingTime with missing building/room",
           );
           return;
         }
-
+``
         if (!acc[building]) {
           acc[building] = {};
           buildingCampuses[building] = section.campus;

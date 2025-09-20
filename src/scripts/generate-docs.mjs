@@ -1,9 +1,7 @@
 import { generateFiles } from "fumadocs-openapi";
 
-void main().catch((err) => {
-  logger.error({ err }, "Fatal error");
-  process.exitCode = 1;
-});
+// TODO: Not sure what to change this to
+void main().catch(console.error);
 
 async function main() {
   const input = [

@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  logger.info(req.url)
+  logger.info(req.url);
 
   // get active terms
   const dbterms = await db

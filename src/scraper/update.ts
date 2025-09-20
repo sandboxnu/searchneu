@@ -12,7 +12,7 @@ import logger from "@/lib/logger";
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
 export async function updateTerm(term: string) {
-  logger.info("updating term " + term);
+  logger.info({ term }, "updating term");
   const scrapedSections = await scrapeSections(term);
 
   const staleSections = await db

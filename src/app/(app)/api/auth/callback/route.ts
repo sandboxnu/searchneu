@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
   try {
     tokens = await googleProvider.validateAuthorizationCode(code, codeVerifier);
   } catch (e) {
-    logger.info(e)
+    logger.info(e);
 
     // Invalid code or client credentials
     return new Response(null, {

@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { twilio } from "../twilio";
 import { notificationsT, trackersT } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
+import logger from "../logger";
 
 interface Notif {
   id: number;
@@ -55,7 +56,7 @@ export async function sendNotifications(
       })
 
       .then(() => {
-        console.log(`Sent notification text to ${t.phoneNumber}`);
+        logger.info(`Sent notification text to ${t.phoneNumber}`);
 
         db.insert(notificationsT)
           .values({
@@ -64,7 +65,7 @@ export async function sendNotifications(
             method: "SMS",
             message: messages[i],
           })
-          .catch((err) => console.error("failed to log notification", err));
+          .catch((err) => logger.error("failed to log notification", err));
 
         db.update(trackersT)
           .set({
@@ -72,12 +73,12 @@ export async function sendNotifications(
             deletedAt: t.count + 1 >= t.limit ? new Date() : null,
           })
           .where(eq(trackersT.id, t.id))
-          .catch((err) => console.error("failed to update message count", err));
+          .catch((err) => logger.error("failed to update message count", err));
       })
       .catch(async (err) => {
         switch (err.code) {
           case 21610:
-            console.warn(
+            logger.warn(
               `${t.phoneNumber} has unsubscribed from notifications`,
             );
 
@@ -90,7 +91,7 @@ export async function sendNotifications(
 
             return;
           default:
-            console.error(
+            logger.error(
               `Error trying to send notification text to ${t.phoneNumber}`,
               err,
             );

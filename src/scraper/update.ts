@@ -7,11 +7,12 @@ import {
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
+import logger from "@/lib/logger";
 
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
 export async function updateTerm(term: string) {
-  console.log("updating term ", term);
+  logger.info("updating term " + term);
   const scrapedSections = await scrapeSections(term);
 
   const staleSections = await db
@@ -92,31 +93,28 @@ export async function updateTerm(term: string) {
   }));
 
   if (missingSections) {
-    console.log("orphaned sections! ", missingSections);
+    logger.info("orphaned sections! " + missingSections);
   }
 
   if (rootedNewSections.length !== rawNewSections.length) {
     const unrootedSections = rawNewSections.filter(
       (_, i) => rawCourseKeys[i] === -1,
     );
-    console.log(
-      "unrooted sections! ",
-      unrootedSections.map((s) => s.courseReferenceNumber),
+    logger.info(
+      "unrooted sections! " +
+        unrootedSections.map((s) => s.courseReferenceNumber),
     );
   }
 
-  console.log(
-    "Sections with open seats: ",
-    sectionsWithNewSeats.map((s) => s.courseReferenceNumber),
+  logger.info(
+    "Sections with open seats: " +
+      sectionsWithNewSeats.map((s) => s.courseReferenceNumber),
   );
-  console.log(
-    "Sections with open waitlist spots: ",
-    sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber),
+  logger.info(
+    "Sections with open waitlist spots: " +
+      sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber),
   );
-  console.log(
-    "New sections: ",
-    newSections.map((s) => s.crn),
-  );
+  logger.info("New sections: " + newSections.map((s) => s.crn));
 
   return {
     sectionsWithNewSeats,

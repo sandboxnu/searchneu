@@ -9,6 +9,7 @@ import {
   meetingTimesT,
 } from "@/db/schema";
 import { TermScrape } from "./types";
+import logger from "@/lib/logger";
 
 export async function insertCourseData(
   data: TermScrape,
@@ -21,7 +22,7 @@ export async function insertCourseData(
       name: data.term.description,
       activeUntil: new Date("2025-10-05T17:41:35+00:00"),
     });
-    console.log("term done");
+    logger.info("term done");
 
     // Insert subjects
     const subjectInserts = data.subjects.map((subj) => ({
@@ -32,7 +33,7 @@ export async function insertCourseData(
     if (subjectInserts.length > 0) {
       await tx.insert(subjectsT).values(subjectInserts);
     }
-    console.log("subjects done");
+    logger.info("subjects done");
 
     // Insert buildings
     const buildingNames = Object.keys(data.rooms);
@@ -47,7 +48,7 @@ export async function insertCourseData(
       .returning({ id: buildingsT.id, name: buildingsT.name });
 
     const buildingMap = new Map(buildingResults.map((b) => [b.name, b.id]));
-    console.log("buildings done");
+    logger.info("buildings done");
 
     // Insert rooms
     const roomInserts: { buildingId: number; number: string }[] = [];
@@ -74,7 +75,7 @@ export async function insertCourseData(
     const roomMap = new Map(
       roomResults.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
     );
-    console.log("rooms done");
+    logger.info("rooms done");
 
     // Insert courses and sections, track CRN to section ID mapping
     const crnToSectionIdMap = new Map<string, number>();
@@ -101,7 +102,7 @@ export async function insertCourseData(
 
       for (const section of course.sections) {
         if (!section.faculty) {
-          console.log(section);
+          logger.info(section);
           continue;
         }
 
@@ -128,7 +129,7 @@ export async function insertCourseData(
         }
       }
     }
-    console.log("courses and sections done");
+    logger.info("courses and sections done");
 
     // Insert meeting times
     const meetingTimeInserts: {
@@ -175,6 +176,6 @@ export async function insertCourseData(
     if (meetingTimeInserts.length > 0) {
       await tx.insert(meetingTimesT).values(meetingTimeInserts);
     }
-    console.log("meeting times done");
+    logger.info("meeting times done");
   });
 }

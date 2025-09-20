@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { twilio } from "../twilio";
+import logger from "../logger";
 
 async function getGuid() {
   const cookieJar = await cookies();
@@ -45,7 +46,7 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
     return { ok: false };
   }
 
-  console.log(phoneNumber);
+  logger.info(phoneNumber);
 
   if (phoneNumber.length !== 12 || phoneNumber.substring(0, 2) !== "+1") {
     return {
@@ -84,7 +85,7 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
           msg: "You've attempted to send the verification code too many times. Either verify your code or wait 10 minutes for the verification code to expire.",
         };
       default:
-        console.error("error sending verification text");
+        logger.error("error sending verification text");
         throw err;
     }
   }
@@ -115,7 +116,7 @@ export async function verifyPhoneAction(phoneNumber: string, code: string) {
 
     return { ok: true };
   } catch (err) {
-    console.error("error confirming verification code");
+    logger.error("error confirming verification code");
     throw err;
   }
 }

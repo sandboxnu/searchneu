@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
+import logger from "@/lib/logger";
 
 interface GoogleOauthClaims {
   sub: string;
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest) {
   try {
     tokens = await googleProvider.validateAuthorizationCode(code, codeVerifier);
   } catch (e) {
-    console.log(e);
+    logger.info(e)
 
     // Invalid code or client credentials
     return new Response(null, {

@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { coursesT, sectionsT } from "@/db/schema";
+import logger from "@/lib/logger";
 import { convertCodeToLiteral } from "@/scraper/nupaths";
 import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { NextRequest } from "next/server";

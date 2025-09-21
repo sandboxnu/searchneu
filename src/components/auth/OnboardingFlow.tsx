@@ -28,6 +28,7 @@ import {
 } from "@/lib/auth/onboarding-actions";
 import { Searchskie } from "../icons/Searchskie";
 import { Alert, AlertTitle } from "../ui/alert";
+import logger from "@/lib/logger";
 
 export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
   const [page, setPage] = useState(0);
@@ -266,7 +267,7 @@ function OTPPage({
       const res = await verifyPhoneAction(phoneNumber, code);
 
       if (!res.ok) {
-        console.log(res.status);
+        logger.info(res.status);
         setErrorMsg("Invalid code");
         return;
       }

@@ -32,7 +32,7 @@ async function main(m: string) {
     term = await scrapeTerm(m);
 
     writeFile(cachename, JSON.stringify(term), (err) => {
-      if (err) logger.info(err);
+      if (err) logger.error(err);
     });
   }
 

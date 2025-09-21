@@ -1,8 +1,7 @@
 import pino from "pino";
 import "pino-pretty";
 
-const isDev = process.env.IS_PROD || true;
-console.log("IS DEV", isDev);
+const isDev = !process.env.IS_PROD;
 
 // TODO: Adding pino pretty target causes error
 const logger = pino({

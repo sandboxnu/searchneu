@@ -107,8 +107,8 @@ export async function updateTerm(term: string) {
   }
 
   logger.info(
-    "Sections with open seats: " +
-      sectionsWithNewSeats.map((s) => s.courseReferenceNumber),
+    { sections: sectionsWithNewSeats.map((s) => s.courseReferenceNumber) },
+    "Sections with open seats",
   );
   logger.info(
     { sections: sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber) },

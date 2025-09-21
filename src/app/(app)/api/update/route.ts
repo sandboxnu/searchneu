@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     .where(gt(termsT.activeUntil, new Date()));
 
   const terms = dbterms.map((t) => t.term);
-  logger.info("terms to update: " + terms);
+  logger.info({ terms }, "terms to update");
 
   // for each term perform an update
   for (const term of terms) {

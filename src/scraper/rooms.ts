@@ -17,7 +17,6 @@ export async function parseRooms(courses: Course[]) {
           );
           return;
         }
-``
         if (!acc[building]) {
           acc[building] = {};
           buildingCampuses[building] = section.campus;

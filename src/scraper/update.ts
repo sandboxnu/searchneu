@@ -93,7 +93,7 @@ export async function updateTerm(term: string) {
   }));
 
   if (missingSections) {
-    logger.info("orphaned sections! " + missingSections);
+    logger.info({ missingSections }, "orphaned sections!");
   }
 
   if (rootedNewSections.length !== rawNewSections.length) {
@@ -101,8 +101,8 @@ export async function updateTerm(term: string) {
       (_, i) => rawCourseKeys[i] === -1,
     );
     logger.info(
-      "unrooted sections! " +
-        unrootedSections.map((s) => s.courseReferenceNumber),
+      { unrootedSections: unrootedSections.map((s) => s.courseReferenceNumber) },
+      "unrooted sections!",
     );
   }
 
@@ -111,10 +111,10 @@ export async function updateTerm(term: string) {
       sectionsWithNewSeats.map((s) => s.courseReferenceNumber),
   );
   logger.info(
-    "Sections with open waitlist spots: " +
-      sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber),
+    { sections: sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber) },
+    "Sections with open waitlist spots",
   );
-  logger.info("New sections: " + newSections.map((s) => s.crn));
+  logger.info({ sections: newSections.map((s) => s.crn) }, "New sections");
 
   return {
     sectionsWithNewSeats,

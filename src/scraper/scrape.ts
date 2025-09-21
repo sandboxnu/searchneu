@@ -296,8 +296,8 @@ export async function getSectionFaculty(sections: BannerSection[]) {
       return { index, data, success: true };
     } catch (error) {
       logger.error(
-        `failed to fetch faculty for section ${section.courseReferenceNumber}:` +
-          error,
+        { courseReferenceNumber: section.courseReferenceNumber, error },
+        "failed to fetch faculty for section"
       );
       return { index, data: null, success: false };
     }

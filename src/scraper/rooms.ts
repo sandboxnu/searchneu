@@ -9,10 +9,12 @@ export async function parseRooms(courses: Course[]) {
         const { building, room, startTime, endTime, days } = meetingTime;
 
         if (!building || !room) {
-          const courseId = course.subject ?? course.courseNumber;
-
           logger.warn(
-            { courseId, sectionCrn: section.crn, meetingTime },
+            {
+              courseId: course.subject || course.courseNumber,
+              sectionCrn: section.crn,
+              meetingTime,
+            },
             "Skipping meetingTime with missing building/room",
           );
           return;

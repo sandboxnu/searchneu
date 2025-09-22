@@ -1,6 +1,8 @@
 export async function sendFeedbackToSlack(message: string, contact: string) {
-  const endPointUrl = process.env.SLACK_WEBHOOK_URL ?? "";
-
+  const endPointUrl = process.env.SLACK_WEBHOOK_URL;
+  if(!endPointUrl) {
+    return 
+  }
   const parsed_contact = contact === "" ? "No email provided" : contact;
 
   const data = {

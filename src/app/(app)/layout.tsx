@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth/client";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Footer } from "@/components/navigation/Footer";
+import Link from "next/link";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,8 +30,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -41,9 +45,13 @@ export default function RootLayout({
         <SpeedInsights />
         <AuthProvider>
           <DebugTools />
+          {modal}
+
           <main className="min-h-screen w-screen grow">{children}</main>
           <Toaster closeButton />
         </AuthProvider>
+
+        <Footer />
       </body>
     </html>
   );

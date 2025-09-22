@@ -58,9 +58,12 @@ export default async function Home() {
           <Suspense fallback={<p>loading...</p>}>
             <HomeSearch terms={terms} />
           </Suspense>
+
+          <Link href="/feedback" className="text-blue-600 hover:underline">
+            Open feedback modal
+          </Link>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

@@ -9,7 +9,7 @@ export async function Header() {
   // TODO: hamburger menu for mobile
 
   return (
-    <header className="bg-secondary sticky top-0 z-20 flex h-14 w-full items-center justify-between px-6 pt-6 pb-4">
+    <header className="bg-secondary z-20 flex h-14 w-full items-center justify-between px-6 pt-6 pb-4">
       <Link href="/">
         <Logo className="h-6 w-40" />
       </Link>

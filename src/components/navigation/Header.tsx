@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { faqFlag } from "@/lib/flags";
+import { faqFlag, roomsFlag } from "@/lib/flags";
 
 export async function Header() {
   const enableFaqPage = await faqFlag();
+  const enableRoomsPage = await roomsFlag();
   // TODO: hamburger menu for mobile
 
   return (
@@ -20,6 +21,14 @@ export async function Header() {
           >
             Catalog
           </Link>
+          {enableRoomsPage && (
+            <Link
+              href="/rooms"
+              className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
+            >
+              Rooms
+            </Link>
+          )}
           {enableFaqPage && (
             <Link href="/faq" className="hover:bg-neu3 rounded-lg p-2">
               FAQ

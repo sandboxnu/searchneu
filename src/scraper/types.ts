@@ -121,6 +121,19 @@ export interface Course {
   // TODO: pre / co reqs for
 }
 
+export interface RoomSchedule {
+  crn: string;
+  startTime: number;
+  endTime: number;
+  days: number[];
+}
+
+export interface BuildingSchedule {
+  [building: string]: {
+    [room: string]: RoomSchedule[];
+  };
+}
+
 export interface TermScrape {
   term: {
     code: string;
@@ -128,4 +141,8 @@ export interface TermScrape {
   };
   courses: Course[];
   subjects: { code: string; description: string }[];
+  rooms: BuildingSchedule;
+  buildingCampuses: {
+    [building: string]: string;
+  };
 }

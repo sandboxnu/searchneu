@@ -5,7 +5,7 @@ import {
   deleteTrackerAction,
 } from "@/lib/auth/tracking-actions";
 import { Switch } from "../ui/switch";
-import { Bell, BellOff, BellRing, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth/client";
@@ -90,12 +90,11 @@ export function TrackingSwitch({
 
   if (!isTermActive) {
     return (
-      <div className="flex w-full justify-end">
+      <div className="flex w-full">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">
               {/* <Switch disabled={true} /> */}
-              <BellOff className="size-4" />
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -108,10 +107,9 @@ export function TrackingSwitch({
 
   if (loading) {
     return (
-      <div className="flex w-full justify-end">
+      <div className="flex w-full">
         <div className="flex items-center gap-2">
           <Skeleton className="h-[1.125rem] w-8 rounded-full" />
-          <Bell className="size-4" />
         </div>
       </div>
     );
@@ -119,12 +117,11 @@ export function TrackingSwitch({
 
   if (!user.guid) {
     return (
-      <div className="flex w-full justify-end">
+      <div className="flex w-full">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">
               <Switch disabled={true} />
-              <BellOff className="size-4" />
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -136,11 +133,11 @@ export function TrackingSwitch({
   }
 
   return (
-    <div className="flex w-full justify-end">
+    <>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <div className="flex items-center gap-2">
-            {isPending && <Loader2 className="size-4 animate-spin" />}
+          <div className="">
+            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
             <Switch
               checked={checked}
               onClick={() => onCheck()}
@@ -148,13 +145,6 @@ export function TrackingSwitch({
               {...props}
               disabled={disabled}
             />
-            {checked ? (
-              <BellRing className="text-accent size-4" />
-            ) : !props.disabled ? (
-              <Bell className="size-4" />
-            ) : (
-              <BellOff className="size-4" />
-            )}
           </div>
         </TooltipTrigger>
         <TooltipContent>
@@ -194,6 +184,6 @@ export function TrackingSwitch({
           </DialogContent>
         </Dialog>
       )}
-    </div>
+    </>
   );
 }

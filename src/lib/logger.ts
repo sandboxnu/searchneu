@@ -1,20 +1,20 @@
+import "server-only";
 import pino from "pino";
-import "pino-pretty";
 
-const isDev = !process.env.IS_PROD;
+const isProd = process.env.IS_PROD;
 
-// TODO: Adding pino pretty target causes error
-const logger = pino({
-  // transport: isDev
-  //   ? {
-  //       target: "pino-pretty",
-  //       options: {
-  //         colorize: true,
-  //       },
-  //     }
-  //   : undefined,
-  timestamp: () => `,"time":"${new Date().toLocaleString()}"`,
-  level: process.env.LOG_LEVEL || "info",
-});
+const logger = isProd
+  ? pino({
+      level: process.env.LOG_LEVEL ?? "info",
+      timestamp: () => `,"time":"${new Date().toLocaleString()}"`,
+    })
+  : pino({
+      level: process.env.LOG_LEVEL ?? "debug",
+      timestamp: () => `,"time":"${new Date().toLocaleString()}"`,
+      transport: {
+        target: "pino-pretty",
+        options: { colorize: true },
+      },
+    });
 
 export default logger;

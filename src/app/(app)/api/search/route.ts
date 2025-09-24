@@ -101,6 +101,6 @@ export async function GET(req: NextRequest) {
         r.classType.some((x) => classTypeFilter.includes(x))) &&
       (!honorsFilter || r.honors),
   );
-
+  logger.info("TEST");
   return Response.json(processed);
 }

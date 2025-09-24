@@ -1,6 +1,7 @@
 import { scrapeTerm } from "./scrape";
 import { existsSync, readFileSync, writeFile } from "node:fs";
-import { drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from "@/db/schema";
 import { loadEnvConfig } from "@next/env";
 import path from "node:path";
 import { insertCourseData } from "./db";
@@ -39,6 +40,7 @@ async function main(m: string) {
   loadEnvConfig(projectDir);
   const db = drizzle({
     connection: process.env.DATABASE_URL_DIRECT!,
+    schema: schema,
   });
 
   console.log("connected");
@@ -56,14 +58,4 @@ async function main(m: string) {
   }
 
   await insertCourseData(term, db);
-
-  // generate the searching index
-  // BUG: this is being a little problematic - really we should just drop and reindex completely
-  //   await db.execute(sql`
-  //     CREATE INDEX IF NOT EXISTS courses_search_idx ON courses
-  //     USING bm25 (id, name, subject, "courseNumber")
-  //     WITH (key_field='id',
-  //         text_fields='{"name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}}}'
-  //     );
-  // `);
 }

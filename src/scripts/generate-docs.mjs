@@ -1,8 +1,9 @@
 import { generateFiles } from "fumadocs-openapi";
+import pino from "pino";
 
-// TODO: Not sure what to change this to
-void main().catch(console.error);
+const logger = pino();
 
+void main().catch(logger.error);
 async function main() {
   const input = [
     "https://raw.githubusercontent.com/sandboxnu/search2/refs/heads/main/content/api/banner-openapi.yaml",

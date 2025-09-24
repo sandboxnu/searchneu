@@ -43,6 +43,27 @@ export const coursesT = pgTable(
       foreignColumns: [subjectsT.term, subjectsT.code],
     }),
     unique("term_course").on(table.term, table.subject, table.courseNumber),
+    index("courses_search_idx")
+      .using(
+        "bm25",
+        table.id,
+        table.name,
+        table.register,
+        table.subject,
+        table.courseNumber,
+        table.term,
+      )
+      .with({
+        key_field: "id",
+        // NOTE: this template literal is interpreted as raw SQL and therefore must be escaped properly
+        text_fields: `'{
+          "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
+          "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
+          "subject": {"fast": true},
+          "courseNumber": {"fast": true},
+          "term": {"fast": true}
+        }'`,
+      }),
   ],
 );
 

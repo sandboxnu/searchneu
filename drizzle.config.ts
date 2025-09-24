@@ -1,7 +1,7 @@
 import { defineConfig } from "drizzle-kit";
 
 // HACK: saves from having two db connection strings
-let connectionString = process.env.DATABASE_URL!;
+const connectionString = process.env.DATABASE_URL!;
 if (connectionString.includes("neon.tech")) {
   connectionString.replace("-pooler", "");
 }

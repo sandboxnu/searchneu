@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { neon, neonConfig } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
-let connectionString = process.env.DATABASE_URL!;
+const connectionString = process.env.DATABASE_URL!;
 
 // local postgres proxy configuration
 if (!connectionString.includes("neon.tech")) {

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "store-scrape": "tsx ./src/scraper/storescrape.ts",
+    "scrape-push": "tsx ./src/scraper/main.ts",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {

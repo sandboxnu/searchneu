@@ -38,8 +38,15 @@ async function main(m: string) {
 
   const projectDir = process.cwd();
   loadEnvConfig(projectDir);
+
+  // HACK: saves from having two db connection strings
+  let connectionString = process.env.DATABASE_URL!;
+  if (connectionString.includes("neon.tech")) {
+    connectionString.replace("-pooler", "");
+  }
+
   const db = drizzle({
-    connection: process.env.DATABASE_URL_DIRECT!,
+    connection: connectionString,
     schema: schema,
   });
 

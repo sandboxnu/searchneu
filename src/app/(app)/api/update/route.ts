@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { updateTerm } from "@/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update

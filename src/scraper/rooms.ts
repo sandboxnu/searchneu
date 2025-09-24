@@ -1,4 +1,4 @@
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 import type { Course, BuildingSchedule } from "./types";
 
 export async function parseRooms(courses: Course[]) {

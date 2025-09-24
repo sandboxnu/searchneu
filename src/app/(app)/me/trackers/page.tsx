@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { coursesT, sectionsT, trackersT, usersT } from "@/db/schema";
 import { getGuid } from "@/lib/auth/utils";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 import { and, eq, isNull } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";

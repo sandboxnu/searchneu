@@ -7,7 +7,7 @@ import {
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
@@ -101,7 +101,9 @@ export async function updateTerm(term: string) {
       (_, i) => rawCourseKeys[i] === -1,
     );
     logger.info(
-      { unrootedSections: unrootedSections.map((s) => s.courseReferenceNumber) },
+      {
+        unrootedSections: unrootedSections.map((s) => s.courseReferenceNumber),
+      },
       "unrooted sections!",
     );
   }
@@ -111,7 +113,11 @@ export async function updateTerm(term: string) {
     "Sections with open seats",
   );
   logger.info(
-    { sections: sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber) },
+    {
+      sections: sectionsWithNewWaitlistSeats.map(
+        (s) => s.courseReferenceNumber,
+      ),
+    },
     "Sections with open waitlist spots",
   );
   logger.info({ sections: newSections.map((s) => s.crn) }, "New sections");

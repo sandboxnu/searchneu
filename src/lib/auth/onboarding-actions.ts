@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { twilio } from "../twilio";
-import logger from "../logger";
+import { logger } from "../logger";
 
 async function getGuid() {
   const cookieJar = await cookies();

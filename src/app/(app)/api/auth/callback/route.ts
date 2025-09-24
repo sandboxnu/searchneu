@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 interface GoogleOauthClaims {
   sub: string;

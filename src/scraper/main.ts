@@ -6,7 +6,7 @@ import path from "node:path";
 import { insertCourseData } from "./db";
 import { termsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 const CACHE_PATH = "cache/";
 // const TERMS = ["202610", "202530", "202534", "202532"];

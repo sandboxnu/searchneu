@@ -4,7 +4,7 @@ import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
 import { parseRooms } from "./rooms";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -297,7 +297,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
     } catch (error) {
       logger.error(
         { courseReferenceNumber: section.courseReferenceNumber, error },
-        "failed to fetch faculty for section"
+        "failed to fetch faculty for section",
       );
       return { index, data: null, success: false };
     }

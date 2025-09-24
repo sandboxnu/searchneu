@@ -28,7 +28,7 @@ import {
 } from "@/lib/auth/onboarding-actions";
 import { Searchskie } from "../icons/Searchskie";
 import { Alert, AlertTitle } from "../ui/alert";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
   const [page, setPage] = useState(0);

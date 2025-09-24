@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { twilio } from "../twilio";
 import { notificationsT, trackersT } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
-import logger from "../logger";
+import { logger } from "../logger";
 
 interface Notif {
   id: number;
@@ -78,9 +78,7 @@ export async function sendNotifications(
       .catch(async (err) => {
         switch (err.code) {
           case 21610:
-            logger.warn(
-              `${t.phoneNumber} has unsubscribed from notifications`,
-            );
+            logger.warn(`${t.phoneNumber} has unsubscribed from notifications`);
 
             // if a user has blocked the twilio number, unsub them from
             // all trackers

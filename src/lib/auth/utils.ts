@@ -4,7 +4,7 @@ import { createSecretKey } from "node:crypto";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { config } from "./auth";
-import logger from "../logger";
+import { logger } from "../logger";
 
 export async function getGuid() {
   const cookieJar = await cookies();

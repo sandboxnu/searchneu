@@ -9,7 +9,7 @@ import {
   meetingTimesT,
 } from "@/db/schema";
 import { TermScrape } from "./types";
-import logger from "@/lib/logger";
+import { logger } from "@/lib/logger";
 
 export async function insertCourseData(
   data: TermScrape,

@@ -6,12 +6,13 @@ import {
   trackersT,
   usersT,
   meetingTimesT,
+  courseNupathJoinT,
+  nupathsT,
 } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
-import { convertNupathToLongform } from "@/scraper/nupaths";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { type JSX, Suspense } from "react";
 import { unstable_cache } from "next/cache";
@@ -19,6 +20,7 @@ import Link from "next/link";
 import { type Requisite } from "@/scraper/reqs";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
+import { sql } from "drizzle-orm";
 import {
   SectionTable,
   type Section,
@@ -27,13 +29,49 @@ import { type Metadata } from "next";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
-    db.query.coursesT.findFirst({
-      where: and(
-        eq(coursesT.term, term),
-        eq(coursesT.subject, subject),
-        eq(coursesT.courseNumber, courseNumber),
+    db
+      .select({
+        id: coursesT.id,
+        name: coursesT.name,
+        subject: coursesT.subject,
+        courseNumber: coursesT.courseNumber,
+        register: coursesT.register,
+        description: coursesT.description,
+        minCredits: coursesT.minCredits,
+        maxCredits: coursesT.maxCredits,
+        prereqs: coursesT.prereqs,
+        coreqs: coursesT.coreqs,
+        updatedAt: coursesT.updatedAt,
+        nupaths: sql<
+          string[]
+        >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
+        nupathNames: sql<
+          string[]
+        >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
+      })
+      .from(coursesT)
+      .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
+      .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
+      .where(
+        and(
+          eq(coursesT.term, term),
+          eq(coursesT.subject, subject),
+          eq(coursesT.courseNumber, courseNumber),
+        ),
+      )
+      .groupBy(
+        coursesT.id,
+        coursesT.name,
+        coursesT.subject,
+        coursesT.courseNumber,
+        coursesT.register,
+        coursesT.description,
+        coursesT.minCredits,
+        coursesT.maxCredits,
+        coursesT.prereqs,
+        coursesT.coreqs,
+        coursesT.updatedAt,
       ),
-    }),
   ["banner.course"],
   {
     revalidate: 3600,
@@ -84,11 +122,13 @@ export default async function Page(props: {
   const now = new Date();
   const isTermActive = term.activeUntil > now;
 
-  const course = await cachedCourse(termId, subject, courseNumber);
+  const courseResp = await cachedCourse(termId, subject, courseNumber);
 
-  if (!course) {
+  if (!courseResp || courseResp.length === 0) {
     notFound();
   }
+
+  const course = courseResp[0];
 
   const sections = db
     .select({
@@ -212,9 +252,9 @@ export default async function Page(props: {
           NUPATHS
         </h3>
         <div className="flex gap-2">
-          {course.nupaths.map((n) => (
+          {course.nupathNames.map((n) => (
             <Badge key={n} className="px-2 py-0 text-xs font-bold">
-              {convertNupathToLongform(n)}
+              {n}
             </Badge>
           ))}
           {course.nupaths.length === 0 && (

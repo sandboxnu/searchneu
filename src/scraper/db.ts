@@ -9,11 +9,12 @@ import {
   roomsT,
   meetingTimesT,
 } from "@/db/schema";
-import { TermScrape } from "./types";
+import { TermScrape, Config } from "./types";
 import * as schema from "@/db/schema";
 
 export async function insertCourseData(
   data: TermScrape,
+  config: Config,
   db: NodePgDatabase<typeof schema> & {
     $client: Pool;
   },
@@ -26,6 +27,42 @@ export async function insertCourseData(
       activeUntil: new Date("2025-10-05T17:41:35+00:00"),
     });
     console.log("term done");
+
+    const filteredCampuses = config.attributes.campus.reduce(
+      (agg, c) => {
+        const count = agg.filter(
+          (s: Config["attributes"]["campus"][0]) =>
+            (s.name ?? s.code) === (c.name ?? c.code),
+        );
+
+        if (count.length > 0) return agg;
+        agg.push(c);
+        return agg;
+      },
+      [] as Config["attributes"]["campus"],
+    );
+
+    for (const campus of filteredCampuses) {
+      await tx.insert(schema.campusesT).values({
+        name: campus.name ?? campus.code,
+        group: campus.group,
+      });
+    }
+
+    const nupaths = [];
+    for (const nupath of config.attributes.nupath) {
+      const resp = await tx
+        .insert(schema.nupathsT)
+        .values({
+          short: nupath.short,
+          name: nupath.name,
+        })
+        .returning({
+          id: schema.nupathsT.id,
+          short: schema.nupathsT.short,
+        });
+      nupaths.push(resp[0]);
+    }
 
     // Insert subjects
     const subjectInserts = data.subjects.map((subj) => ({
@@ -95,11 +132,17 @@ export async function insertCourseData(
           description: course.description,
           minCredits: String(course.minCredits),
           maxCredits: String(course.maxCredits),
-          nupaths: course.nupath,
           prereqs: course.prereqs,
           coreqs: course.coreqs,
         })
         .returning({ id: coursesT.id });
+
+      for (const nupath of course.nupath) {
+        await tx.insert(schema.courseNupathJoinT).values({
+          courseId: courseInsertResult[0].id,
+          nupathId: nupaths?.find((c) => c.short === nupath)?.id ?? -1,
+        });
+      }
 
       const courseId = courseInsertResult[0]?.id;
 

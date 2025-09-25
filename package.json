@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "scrape": "tsx ./src/scraper/main.ts",
+    "scrape:gen": "tsx ./src/scripts/scrape.ts",
+    "scrape:push": "tsx ./src/scripts/scrape-push.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
@@ -69,7 +70,8 @@
     "server-only": "^0.0.1",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "yaml": "^2.8.1"
   },
   "prettier": {
     "plugins": [

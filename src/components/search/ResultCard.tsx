@@ -1,5 +1,4 @@
 import { cn } from "@/lib/cn";
-import { convertNupathToCode } from "@/scraper/nupaths";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 
@@ -68,8 +67,8 @@ export function ResultCard(props: {
 }
 
 function NUPathBadges(props: { nupaths: string[] }) {
-  let paths = props.nupaths.map((p) => convertNupathToCode(p.trim()));
   let plusMore = 0;
+  let paths = props.nupaths;
 
   if (paths.length > 3) {
     plusMore = paths.length - 2;

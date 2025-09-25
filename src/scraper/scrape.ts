@@ -1,16 +1,15 @@
-import { isValidNupath } from "./nupaths";
-import { BannerSection, Course, TermScrape } from "./types";
+import { BannerSection, Config, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
 import { parseRooms } from "./rooms";
 
 // scrapeTerm completely scrapes a term
-export async function scrapeTerm(term: string) {
+export async function scrapeTerm(term: string, config: Config) {
   const sections = await scrapeSections(term);
   await getSectionFaculty(sections);
 
-  const { courses, subjects: subjectCodes } = arrangeCourses(sections);
+  const { courses, subjects: subjectCodes } = arrangeCourses(sections, config);
   const subjects = await getSubjects(term, subjectCodes);
 
   await getCourseNames(courses);
@@ -155,10 +154,12 @@ export async function getCourseNames(courses: Course[]) {
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        courses[offset + j].name = decode(decode(p.value))
-          .replace(/<[^>]*>/g, "") // Remove HTML tags
-          .trim()
-          .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
+        courses[offset + j].name =
+          decode(decode(p.value))
+            .replace(/<[^>]*>/g, "") // Remove HTML tags
+            .trim()
+            .match(/^Title:(.*)$/m)?.[1]
+            .trim() || "Unknown Course Name";
       });
   }
 
@@ -209,9 +210,30 @@ export async function getCourseDescriptions(courses: Course[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-export function arrangeCourses(sections: BannerSection[]) {
+export function arrangeCourses(sections: BannerSection[], config: Config) {
   const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
+
+  function isValidNupath(code: string) {
+    return (
+      config.attributes.nupath.filter((n) => "NC" + n.short === code).length > 0
+    );
+  }
+
+  function convertNupath(code: string) {
+    return config.attributes.nupath.filter((n) => "NC" + n.short === code)[0]
+      .short;
+  }
+
+  function convertCampus(code: string) {
+    const count = config.attributes.campus.filter((c) => c.code === code);
+    if (count.length === 0) {
+      console.error("campus is invalid");
+      throw Error("campus error");
+    }
+
+    return count[0].name ?? count[0].code;
+  }
 
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
@@ -225,7 +247,7 @@ export function arrangeCourses(sections: BannerSection[]) {
         minCredits: s.creditHourLow,
         nupath: s.sectionAttributes
           .filter((a) => isValidNupath(a.code))
-          .map((a) => a.description.trim()),
+          .map((a) => convertNupath(a.code)),
         sections: [],
         prereqs: {},
         coreqs: {},
@@ -240,7 +262,7 @@ export function arrangeCourses(sections: BannerSection[]) {
       waitlistRemaining: s.waitAvailable,
       classType: s.scheduleTypeDescription,
       honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-      campus: s.campusDescription,
+      campus: convertCampus(s.campusDescription),
       meetingTimes: parseMeetingTimes(s),
 
       faculty: s.f ?? "TBA",

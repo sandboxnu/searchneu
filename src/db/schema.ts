@@ -29,7 +29,6 @@ export const coursesT = pgTable(
     description: text().notNull(),
     minCredits: decimal().notNull(),
     maxCredits: decimal().notNull(),
-    nupaths: varchar({ length: 200 }).array().notNull(),
     prereqs: jsonb().notNull(),
     coreqs: jsonb().notNull(),
     updatedAt: timestamp()
@@ -85,7 +84,9 @@ export const sectionsT = pgTable(
     waitlistRemaining: integer().notNull(),
     classType: text().notNull(),
     honors: boolean().notNull(),
-    campus: text().notNull(),
+    campus: text()
+      .notNull()
+      .references(() => campusesT.name),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
@@ -171,6 +172,36 @@ export const trackersT = pgTable(
     index("tracker_user_idx").on(table.userId),
     index("tracker_section_idx").on(table.sectionId),
   ],
+);
+
+export const campusesT = pgTable(
+  "campuses",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: text().unique(),
+    group: text(),
+  },
+  (table) => [uniqueIndex("campus_name_idx").on(table.name)],
+);
+
+export const nupathsT = pgTable(
+  "nupaths",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    short: varchar({ length: 3 }).notNull().unique(),
+    name: text().notNull().unique(),
+  },
+  (table) => [uniqueIndex("nupath_short_idx").on(table.short)],
+);
+
+export const courseNupathJoinT = pgTable(
+  "course_nupath_join",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    courseId: integer().notNull(),
+    nupathId: integer().notNull(),
+  },
+  (table) => [index("course_nupath_join_course_idx").on(table.courseId)],
 );
 
 export const notificationsT = pgTable("notifications", {

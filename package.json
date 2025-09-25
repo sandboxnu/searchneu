@@ -10,7 +10,8 @@
     "scrape:gen": "tsx ./src/scripts/scrape.ts",
     "scrape:push": "tsx ./src/scripts/scrape-push.ts",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",

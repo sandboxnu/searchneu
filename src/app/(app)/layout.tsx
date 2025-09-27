@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/navigation/Footer";
 import Link from "next/link";
+import Toggle from "@/components/feedback/Toggle";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -48,10 +49,10 @@ export default function RootLayout({
           {modal}
 
           <main className="min-h-screen w-screen grow">{children}</main>
+          <Toggle />
+
           <Toaster closeButton />
         </AuthProvider>
-
-        <Footer />
       </body>
     </html>
   );

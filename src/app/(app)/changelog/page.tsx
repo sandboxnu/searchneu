@@ -14,6 +14,32 @@ type Release = {
     notes: string
 }
 
+function formatDate(dateString: string): string {
+    const [month, day, year] = dateString.split('/');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function ChangelogHero() {
+    return (
+        <div className="bg-red-400 text-white py-16 px-6 text-center mb-8 rounded-lg">
+            <div className="max-w-4xl mx-auto">
+                <p className="text-sm uppercase tracking-wider mb-2 opacity-90">CHANGELOG</p>
+                <h1 className="text-4xl font-bold mb-4">See what's new with SearchNEU</h1>
+                <p className="text-lg opacity-90 max-w-2xl mx-auto">
+                    What's new with you? Our amazing team at Sandbox is always adding features 
+                    and improvements, so stay up to date with all of our updates here.
+                </p>
+            </div>
+        </div>
+    );
+}
+
 function TimelineDot() {
     return (
         <div className="absolute w-5 h-5 bg-red-500 border-5 border-red-200 rounded-full transform -translate-x-[39px] translate-y-[2px]" />
@@ -59,19 +85,19 @@ function ReleaseCard({ release }: { release: Release }) {
         <div className="mb-8 max-w-[625px] w-full relative z-10">
             <TimelineDot />
             
-            <h2 className="text-gray-600">{release.date} - v{release.version}</h2>
+            <h2 className="text-gray-600">{formatDate(release.date)} - v{release.version}</h2>
             <div className="bg-white p-4 rounded-lg mt-2 border border-gray-300 shadow-gray-200 shadow-md">
                 <div 
-                    className="w-full bg-red-500 rounded-sm mb-2" 
-                    style={{ aspectRatio: '475/180' }}
+                    className="w-full rounded-sm mb-2" 
+                    style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}
                 />
                 <h3 className="text-lg font-bold mb-2">{release.title}</h3>
+                <h4 className="text-gray-600 mb-2">{release.notes}</h4>
                 <ul className="list-none mb-2">
                     {release.features.map((feature: Feature, index: number) => (
                         <FeatureItem key={index} feature={feature} />
                     ))}
                 </ul>
-                <h4 className="text-gray-600">Additional Notes: {release.notes}</h4>
             </div>
         </div>
     );
@@ -95,10 +121,9 @@ function Changelog() {
         <>
             <Header />
             <div className="bg-gray-100 min-h-screen p-6">
+                <ChangelogHero />
+                
                 <div className="relative z-10">
-                    <h1 className="text-4xl font-bold text-center mb-2">Changelog</h1>
-                    <p className="text-center text-gray-600 mb-8">See all updates and changes to SearchNEU</p>
-                    
                     <div className="flex flex-col items-center relative">
                         <Timeline />
                         

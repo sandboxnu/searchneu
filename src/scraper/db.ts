@@ -1,4 +1,5 @@
-import { NeonClient, NeonDatabase } from "drizzle-orm/neon-serverless";
+import { type NodePgDatabase } from "drizzle-orm/node-postgres";
+import type { Pool } from "pg";
 import {
   termsT,
   coursesT,
@@ -9,10 +10,13 @@ import {
   meetingTimesT,
 } from "@/db/schema";
 import { TermScrape } from "./types";
+import * as schema from "@/db/schema";
 
 export async function insertCourseData(
   data: TermScrape,
-  db: NeonDatabase<Record<string, never>> & { $client: NeonClient },
+  db: NodePgDatabase<typeof schema> & {
+    $client: Pool;
+  },
 ) {
   await db.transaction(async (tx) => {
     // Insert term

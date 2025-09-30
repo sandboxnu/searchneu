@@ -1,3 +1,5 @@
+"use server"
+
 export async function sendFeedbackToSlack(message: string, contact: string) {
   const endPointUrl = process.env.SLACK_WEBHOOK_URL;
   console.log(endPointUrl)

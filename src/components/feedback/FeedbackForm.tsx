@@ -11,6 +11,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { FeedbackFormHusky } from "../icons/FeedbackFormHusky";
+import { sendFeedbackToSlack } from "@/app/(app)/feedback/slack-action";
 
 export default function FeedbackForm() {
   const [feedbackType, setFeedbackType] = useState("");
@@ -18,13 +19,6 @@ export default function FeedbackForm() {
   const [contact, setContact] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-
-  // Mock function - replace with your actual implementation
-  const sendFeedbackToSlack = async (message: string, contact: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Sending to Slack:", { message, contact });
-  };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

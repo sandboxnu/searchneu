@@ -26,9 +26,43 @@ function formatDate(dateString: string): string {
 }
 
 function ChangelogHero() {
+    const numberOfCircles = 30;
+    const circleSize = 400;
+    
     return (
-        <div className="bg-red-400 text-white py-16 px-6 text-center mb-8 rounded-lg">
-            <div className="max-w-4xl mx-auto">
+        <div 
+            className="text-white py-24 px-6 text-center mb-8 rounded-lg relative overflow-hidden"
+            style={{
+                background: 'radial-gradient(circle, #CF333F 0%, #F08890 150%)'
+            }}
+        >
+            {/* Background circles */}
+            <div className="absolute inset-0 pointer-events-none">
+                {Array.from({ length: numberOfCircles }, (_, index) => {
+                    // Calculate spacing so circles are evenly distributed and overlap naturally
+                    const totalWidth = 120;
+                    const startPosition = -10; // Make first circle start further left
+                    const leftPosition = startPosition + (index / (numberOfCircles - 1)) * totalWidth;
+                    
+                    return (
+                        <div 
+                            key={index}
+                            className="absolute top-1/2 rounded-full"
+                            style={{
+                                width: `${circleSize}px`,
+                                height: `${circleSize}px`,
+                                left: `${leftPosition}%`,
+                                transform: `translateX(-50%) translateY(-50%)`,
+                                background: `linear-gradient(to right, rgba(255,255,255,0.0), rgba(255,255,255,0.04))`,
+                                zIndex: Math.max(1, numberOfCircles - index)
+                            }}
+                        />
+                    );
+                })}
+            </div>
+
+            {/* Banner content */}
+            <div className="max-w-4xl mx-auto relative" style={{ zIndex: numberOfCircles + 10 }}>
                 <p className="text-sm uppercase tracking-wider mb-2 opacity-90">CHANGELOG</p>
                 <h1 className="text-4xl font-bold mb-4">See what's new with SearchNEU</h1>
                 <p className="text-lg opacity-90 max-w-2xl mx-auto">

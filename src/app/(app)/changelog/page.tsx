@@ -31,9 +31,10 @@ function ChangelogHero() {
     
     return (
         <div 
-            className="text-white py-24 px-6 text-center mb-8 rounded-lg relative overflow-hidden"
+            className="text-white px-6 text-center mb-16 rounded-lg relative overflow-hidden flex items-center justify-center"
             style={{
-                background: 'radial-gradient(circle, #CF333F 0%, #F08890 150%)'
+                background: 'radial-gradient(circle, #CF333F 0%, #F08890 150%)',
+                height: '288px'
             }}
         >
             {/* Background circles */}
@@ -63,9 +64,9 @@ function ChangelogHero() {
 
             {/* Banner content */}
             <div className="max-w-4xl mx-auto relative" style={{ zIndex: numberOfCircles + 10 }}>
-                <p className="text-sm uppercase tracking-wider mb-2 opacity-90">CHANGELOG</p>
+                <p className="text-base uppercase tracking-wider mb-2 opacity-90 font-bold">CHANGELOG</p>
                 <h1 className="text-4xl font-bold mb-4">See what's new with SearchNEU</h1>
-                <p className="text-lg opacity-90 max-w-2xl mx-auto">
+                <p className="text-base opacity-90 max-w-2xl mx-auto">
                     What's new with you? Our amazing team at Sandbox is always adding features 
                     and improvements, so stay up to date with all of our updates here.
                 </p>
@@ -76,7 +77,7 @@ function ChangelogHero() {
 
 function TimelineDot() {
     return (
-        <div className="absolute w-5 h-5 bg-[#E63946] border-5 border-[#FAD7DA] rounded-full transform -translate-x-[39px] translate-y-[2px]" />
+        <div className="absolute w-4 h-4 bg-[#E63946] border-4 border-[#FAD7DA] rounded-full transform -translate-x-[37px] translate-y-[4px]" />
     );
 }
 
@@ -119,7 +120,7 @@ function ReleaseCard({ release }: { release: Release }) {
         <div className="mb-8 max-w-[625px] w-full relative z-10">
             <TimelineDot />
             
-            <h2 className="text-[#5F5F5F] text-[14px]">{formatDate(release.date)} - v{release.version}</h2>
+            <h2 className="text-[#5F5F5F] text-xs mb-2">{formatDate(release.date)} - v{release.version}</h2>
             <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-gray-200 shadow-md">
                 <div 
                     className="w-full rounded-sm mb-5" 
@@ -154,7 +155,7 @@ function Changelog() {
     return (
         <>
             <Header />
-            <div className="bg-gray-100 min-h-screen p-6">
+            <div className="bg-gray-100 min-h-screen py-6 px-8">
                 <ChangelogHero />
                 
                 <div className="relative z-10">

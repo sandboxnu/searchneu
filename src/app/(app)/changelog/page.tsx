@@ -76,7 +76,7 @@ function ChangelogHero() {
 
 function TimelineDot() {
     return (
-        <div className="absolute w-5 h-5 bg-red-500 border-5 border-red-200 rounded-full transform -translate-x-[39px] translate-y-[2px]" />
+        <div className="absolute w-5 h-5 bg-[#E63946] border-5 border-[#FAD7DA] rounded-full transform -translate-x-[39px] translate-y-[2px]" />
     );
 }
 
@@ -119,10 +119,10 @@ function ReleaseCard({ release }: { release: Release }) {
         <div className="mb-8 max-w-[625px] w-full relative z-10">
             <TimelineDot />
             
-            <h2 className="text-gray-600">{formatDate(release.date)} - v{release.version}</h2>
-            <div className="bg-white p-4 rounded-lg mt-2 border border-gray-300 shadow-gray-200 shadow-md">
+            <h2 className="text-[#5F5F5F] text-[14px]">{formatDate(release.date)} - v{release.version}</h2>
+            <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-gray-200 shadow-md">
                 <div 
-                    className="w-full rounded-sm mb-2" 
+                    className="w-full rounded-sm mb-5" 
                     style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}
                 />
                 <h3 className="text-lg font-bold mb-2">{release.title}</h3>

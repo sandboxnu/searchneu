@@ -25,6 +25,34 @@ function formatDate(dateString: string): string {
     });
 }
 
+function parseDescription(description: string, contributorUrls: string[]) {
+    const parts = description.split(/(\*\*@[^*]+\*\*)/g);
+    let contributorIndex = 0;
+    
+    return parts.map((part, index) => {
+        if (part.startsWith('**@') && part.endsWith('**')) {
+            const mentionText = part.slice(2, -2);
+            const githubUrl = contributorUrls[contributorIndex++];
+            
+            return githubUrl ? (
+                <a 
+                    key={index}
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-black font-bold hover:text-gray-700"
+                >
+                    {mentionText}
+                </a>
+            ) : (
+                <span key={index} className="font-bold">{mentionText}</span>
+            );
+        }
+        
+        return <span key={index}>{part}</span>;
+    });
+}
+
 function ChangelogHero() {
     const numberOfCircles = 30;
     const circleSize = 400;
@@ -75,34 +103,13 @@ function ChangelogHero() {
     );
 }
 
-function ContributorTag({ contributorUrl }: { contributorUrl: string }) {
-    const username = contributorUrl.split("/").at(-1);
-    
-    return (
-        <a 
-            href={contributorUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-white border border-gray-300 rounded-full px-4 py-0.5 text-xs mr-1 mb-1 hover:bg-gray-100 transition-colors"
-        >
-            {username}
-        </a>
-    );
-}
-
 function FeatureItem({ feature }: { feature: Feature }) {
     return (
         <li className="flex items-start">
-            <span className="text-sm mt-[3px] mr-2">•</span>
+            <span className="text-sm mr-2">•</span>
             <div className="flex-1">
-                <p className="text-sm">{feature.description}</p>
-                <p>
-                    {feature.contributorUrls.map((contributorUrl: string, index: number) => (
-                        <ContributorTag 
-                            key={index} 
-                            contributorUrl={contributorUrl} 
-                        />
-                    ))}
+                <p className="text-sm">
+                    {parseDescription(feature.description, feature.contributorUrls)}
                 </p>
             </div>
         </li>

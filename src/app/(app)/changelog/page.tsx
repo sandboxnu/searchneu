@@ -31,7 +31,7 @@ function ChangelogHero() {
     
     return (
         <div 
-            className="text-white px-6 text-center mb-16 rounded-lg relative overflow-hidden flex items-center justify-center"
+            className="text-white px-6 text-center mb-16 rounded-xl relative overflow-hidden flex items-center justify-center"
             style={{
                 background: 'radial-gradient(circle, #CF333F 0%, #F08890 150%)',
                 height: '288px'
@@ -66,18 +66,12 @@ function ChangelogHero() {
             <div className="max-w-4xl mx-auto relative" style={{ zIndex: numberOfCircles + 10 }}>
                 <p className="text-base uppercase tracking-wider mb-2 opacity-90 font-bold">CHANGELOG</p>
                 <h1 className="text-4xl font-bold mb-4">See what's new with SearchNEU</h1>
-                <p className="text-base opacity-90 max-w-2xl mx-auto">
+                <p className="font-medium opacity-90 max-w-2xl mx-auto">
                     What's new with you? Our amazing team at Sandbox is always adding features 
                     and improvements, so stay up to date with all of our updates here.
                 </p>
             </div>
         </div>
-    );
-}
-
-function TimelineDot() {
-    return (
-        <div className="absolute w-4 h-4 bg-[#E63946] border-4 border-[#FAD7DA] rounded-full transform -translate-x-[37px] translate-y-[4px]" />
     );
 }
 
@@ -101,7 +95,7 @@ function FeatureItem({ feature }: { feature: Feature }) {
         <li className="flex items-start">
             <span className="text-sm mt-[3px] mr-2">•</span>
             <div className="flex-1">
-                <p>{feature.description}</p>
+                <p className="text-sm">{feature.description}</p>
                 <p>
                     {feature.contributorUrls.map((contributorUrl: string, index: number) => (
                         <ContributorTag 
@@ -117,18 +111,18 @@ function FeatureItem({ feature }: { feature: Feature }) {
 
 function ReleaseCard({ release }: { release: Release }) {
     return (
-        <div className="mb-8 max-w-[625px] w-full relative z-10">
+        <div className="mb-8 max-w-[538px] w-full relative z-10">
             <TimelineDot />
             
             <h2 className="text-[#5F5F5F] text-xs mb-2">{formatDate(release.date)} - v{release.version}</h2>
             <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-gray-200 shadow-md">
                 <div 
-                    className="w-full rounded-sm mb-5" 
+                    className="w-full rounded-sm mb-6" 
                     style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}
                 />
-                <h3 className="text-lg font-bold mb-2">{release.title}</h3>
-                <h4 className="text-gray-600 mb-2">{release.notes}</h4>
-                <ul className="list-none mb-2">
+                <h3 className="text-base font-black mb-4">{release.title}</h3>
+                <h4 className="text-sm text-gray-600 mb-4">{release.notes}</h4>
+                <ul className="list-none">
                     {release.features.map((feature: Feature, index: number) => (
                         <FeatureItem key={index} feature={feature} />
                     ))}
@@ -138,10 +132,16 @@ function ReleaseCard({ release }: { release: Release }) {
     );
 }
 
+function TimelineDot() {
+    return (
+        <div className="absolute w-4 h-4 bg-[#E63946] border-4 border-[#FAD7DA] rounded-full transform -translate-x-[30px] translate-y-[1px]" />
+    );
+}
+
 function Timeline() {
     return (
         <div 
-            className="absolute left-1/2 top-5 h-full w-0.5 bg-gray-300 transform -translate-x-[342.5px]" 
+            className="absolute left-1/2 top-5 h-full w-0.5 bg-gray-300 transform -translate-x-[292px]" 
             style={{
                 backgroundImage: 'repeating-linear-gradient(to bottom, #d1d5db 0px, #d1d5db 4px, #f3f4f6 4px, #f3f4f6 8px)'
             }}

@@ -9,9 +9,10 @@ type Feature = {
 type Release = {
     version: string
     title: string
-    date: string
-    features: Feature[]
     notes: string
+    date: string
+    image: string
+    features: Feature[]
 }
 
 function formatDate(dateString: string): string {
@@ -122,11 +123,8 @@ function ReleaseCard({ release }: { release: Release }) {
             <TimelineDot />
             
             <h2 className="text-[#5F5F5F] text-xs mb-2">{formatDate(release.date)} - v{release.version}</h2>
-            <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-gray-200 shadow-md">
-                <div 
-                    className="w-full rounded-sm mb-6" 
-                    style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}
-                />
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-gray-100 shadow-md">
+                <img src={"/images/changelog/" + release.image} alt="Changelog_Image_1.png" className="w-full rounded-sm mb-6" style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}/>
                 <h3 className="text-base font-black mb-4">{release.title}</h3>
                 <h4 className="text-sm text-gray-600 mb-4">{release.notes}</h4>
                 <ul className="list-none">
@@ -162,8 +160,30 @@ function Changelog() {
     return (
         <>
             <Header />
-            <div className="bg-gray-100 min-h-screen py-6 px-8">
+
+            <div className="min-h-screen py-6 px-8">
                 <ChangelogHero />
+
+                <div className="bg-gray-100 fixed -z-1 inset-0 pointer-events-none overflow-hidden">
+                    <div className="grid grid-cols-16 gap-4 w-full h-full p-8">
+                        {Array.from({ length: 128 }, (_, index) => {
+                            const row = Math.floor(index / 16);
+                            const staggerOffset = (row % 2) * 25;
+                            
+                            return (
+                                <img 
+                                    key={index}
+                                    src="/svgs/changelog/NEU.svg" 
+                                    alt="" 
+                                    className="w-full h-full object-contain max-w-[120px] max-h-[120px] mx-auto opacity-50"
+                                    style={{
+                                        transform: `translateX(${staggerOffset}px)`
+                                    }}
+                                />
+                            );
+                        })}
+                    </div>
+                </div>
                 
                 <div className="relative z-10">
                     <div className="flex flex-col items-center relative">

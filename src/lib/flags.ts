@@ -23,3 +23,11 @@ export const roomsFlag = flag({
     return false;
   },
 });
+
+export const schedulerFlag = flag({
+  key: "scheduler",
+  description: "Enable plan page",
+  decide() {
+    return false;
+  },
+});

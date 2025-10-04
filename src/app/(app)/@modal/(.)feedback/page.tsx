@@ -5,7 +5,6 @@ import { Modal } from "@/components/feedback/Modal";
 export default function Page() {
   return (
     <Modal>
-      {" "}
       <FeedbackForm />{" "}
     </Modal>
   );

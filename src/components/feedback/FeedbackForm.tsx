@@ -23,6 +23,7 @@ export default function FeedbackForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!message.trim()) return;
+    if (!contact) return;
     setSubmitting(true);
     try {
       await sendFeedbackToSlack(message, contact);
@@ -40,28 +41,23 @@ export default function FeedbackForm() {
   }
 
   return (
-    <div className="relative w-full">
-      {/* Close button */}
-
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-          <div className="text-xl">
-            <FeedbackFormHusky />
-          </div>
+    <>
+      <form onSubmit={onSubmit} className="flex flex-col gap-6 space-y-4">
+        <div className="m-auto">
+          <FeedbackFormHusky />
         </div>
-        <h2 className="mb-2 text-lg font-semibold">Feedback Form</h2>
-        <p className="text-sm text-gray-600">
-          Found a bug? Search's #1 fan? Let our devs know through this form.
-        </p>
-      </div>
-
-      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="m-0 flex flex-col gap-3">
+          <h1 className="text-lg/tight font-bold"> Feedback Form</h1>
+          <p className="text-sm/tight text-gray-500">
+            Found a bug? Search’s #1 fan? Let our devs know through this form.
+          </p>
+        </div>
         <div>
-          <div className="mb-1 text-xs font-medium tracking-wide uppercase">
+          <div className="mb-1 text-xs font-medium tracking-wide">
             TYPE OF FEEDBACK <span className="text-red-500">*</span>
           </div>
           <Select value={feedbackType} onValueChange={setFeedbackType}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-9 w-full">
               <SelectValue placeholder="Bug Report" />
             </SelectTrigger>
             <SelectContent>
@@ -86,7 +82,7 @@ export default function FeedbackForm() {
           />
         </div>
 
-        <div>
+        <div className="mt-6">
           <div className="mb-1 text-xs font-medium tracking-wide uppercase">
             EMAIL (OPTIONAL)
           </div>
@@ -102,11 +98,11 @@ export default function FeedbackForm() {
         <Button
           type="submit"
           disabled={submitting}
-          className="h-9 w-full bg-red-500 font-medium text-white hover:bg-red-600 disabled:opacity-50"
+          className="m-auto h-9 w-1/4 bg-red-500 font-medium text-white hover:bg-red-600 disabled:opacity-50"
         >
           {submitting ? "Submitting..." : "Submit"}
         </Button>
       </form>
-    </div>
+    </>
   );
 }

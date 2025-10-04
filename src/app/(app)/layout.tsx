@@ -47,9 +47,9 @@ export default function RootLayout({
         <AuthProvider>
           <DebugTools />
           {modal}
-
           <main className="min-h-screen w-screen grow">{children}</main>
           <Toggle />
+          
 
           <Toaster closeButton />
         </AuthProvider>

@@ -11,6 +11,7 @@ import { Footer } from "@/components/navigation/Footer";
 import { Sandbox } from "@/components/icons/Sandbox";
 import { PartyPopper } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Toggle from "@/components/feedback/Toggle";
 
 const cachedTerms = unstable_cache(async () => getTerms(), ["banner.terms"], {
   revalidate: 3600,
@@ -53,14 +54,11 @@ export default async function Home() {
         <div className="ml-[10%] w-[80%] max-w-[800px] space-y-4">
           <Logo className="w-2/3 max-w-[450px] min-w-[220px]" />
           <Badge variant="accent">
-            New desgin! Learn more <PartyPopper />
+            New design! Learn more <PartyPopper />
           </Badge>
           <Suspense fallback={<p>loading...</p>}>
             <HomeSearch terms={terms} />
           </Suspense>
-          <Link href="/feedback" className="text-blue-600 hover:underline">
-            Open feedback modal
-          </Link>
         </div>
       </div>
       <Footer />

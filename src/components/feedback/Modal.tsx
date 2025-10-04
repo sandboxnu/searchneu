@@ -1,23 +1,56 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function Modal({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [isVisible, setIsVisible] = useState(false);
 
-  const close = () => router.back();
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 10);
+
+    return () => {
+      document.body.style.overflow = "unset";
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const close = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      router.back();
+    }, 300);
+  };
 
   return (
-    <div className="fixed right-0 bottom-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 opacity-50" onClick={close} />
-      <div className="relative z-40 w-[360px] max-w-md rounded-2xl bg-white p-6 shadow-lg">
-        <button
-          onClick={close}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-        >
-          ✕
-        </button>
-        {children}
+    <>
+      <div
+        onClick={close}
+        className={`fixed inset-0 z-40 bg-black transition-opacity duration-300 ${
+          isVisible ? "opacity-25" : "opacity-0"
+        }`}
+      />
+      
+      <div
+        className={`fixed right-6 bottom-6 z-50 w-96 transition-transform duration-300 ease-out ${
+          isVisible ? "translate-x-0" : "translate-x-[calc(100%+24px)]"
+        }`}
+      >
+        <div className="flex flex-col items-center justify-center gap-6 rounded-lg bg-white p-6 shadow-lg">
+          <div className="flex w-full justify-end">
+            <button
+              onClick={close}
+              className="text-gray-500 transition-colors hover:text-gray-700"
+            >
+              ✕
+            </button>
+          </div>
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

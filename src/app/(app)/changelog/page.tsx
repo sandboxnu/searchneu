@@ -122,11 +122,11 @@ function ReleaseCard({ release }: { release: Release }) {
         <div className="mb-8 max-w-[538px] w-full relative z-10">
             <TimelineDot />
             
-            <h2 className="text-[#5F5F5F] text-xs mb-2">{formatDate(release.date)} - v{release.version}</h2>
+            <h2 className="text-[#5F5F5F] text-sm mb-2">{formatDate(release.date)} - v{release.version}</h2>
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-gray-100 shadow-md">
-                <img src={"/images/changelog/" + release.image} alt="Changelog_Image_1.png" className="w-full rounded-sm mb-6" style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}/>
-                <h3 className="text-base font-black mb-4">{release.title}</h3>
-                <h4 className="text-sm text-gray-600 mb-4">{release.notes}</h4>
+                <img src={"/images/changelog/" + release.image} alt="Changelog_Image_1.png" className="w-full rounded-sm mb-4" style={{ aspectRatio: '475/180', backgroundColor: '#1C313F' }}/>
+                <h3 className="text-base font-black mb-2">{release.title}</h3>
+                <h4 className="text-sm text-gray-600 mb-2">{release.notes}</h4>
                 <ul className="list-none">
                     {release.features.map((feature: Feature, index: number) => (
                         <FeatureItem key={index} feature={feature} />

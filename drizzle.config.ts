@@ -10,6 +10,7 @@ export default defineConfig({
   out: "./drizzle",
   schema: "./src/db/schema.ts",
   dialect: "postgresql",
+  extensionsFilters: ["postgis"], // figure out why I needed this to db:push for local
   dbCredentials: {
     url: connectionString,
   },

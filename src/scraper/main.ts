@@ -7,6 +7,7 @@ import path from "node:path";
 import { insertCourseData } from "./db";
 import { termsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 const CACHE_PATH = "cache/";
 // const TERMS = ["202610", "202530", "202534", "202532"];
@@ -25,14 +26,14 @@ async function main(m: string) {
 
   let term;
   if (existingCache) {
-    console.log("existing cache found");
+    logger.info("existing cache found");
     term = JSON.parse(readFileSync(cachename, "utf8"));
   } else {
-    console.log("generating new scrape");
+    logger.info("generating new scrape");
     term = await scrapeTerm(m);
 
     writeFile(cachename, JSON.stringify(term), (err) => {
-      if (err) console.log(err);
+      if (err) logger.error(err);
     });
   }
 
@@ -50,7 +51,7 @@ async function main(m: string) {
     schema: schema,
   });
 
-  console.log("connected");
+  logger.info("connected");
 
   const existingTerm = await db
     .select({})
@@ -58,9 +59,9 @@ async function main(m: string) {
     .where(eq(termsT.term, m));
 
   if (existingTerm.length > 0) {
-    console.log("term already exists... skipping");
-    console.log("paritally updating terms maybe coming?");
-    console.log("it needs to happen but that's so much work rn lowkey");
+    logger.info("term already exists... skipping");
+    logger.info("paritally updating terms maybe coming?");
+    logger.info("it needs to happen but that's so much work rn lowkey");
     return;
   }
 

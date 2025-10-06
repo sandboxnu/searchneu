@@ -4,6 +4,7 @@ import { createSecretKey } from "node:crypto";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { config } from "./auth";
+import { logger } from "../logger";
 
 export async function getGuid() {
   const cookieJar = await cookies();
@@ -50,7 +51,7 @@ export async function verifyJWT(token: string) {
 
     return guid;
   } catch (e) {
-    console.log(e);
+    logger.info(e);
     return null;
   }
 }

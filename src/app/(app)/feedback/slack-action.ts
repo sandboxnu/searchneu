@@ -1,22 +1,26 @@
-"use server"
+"use server";
 
-export async function sendFeedbackToSlack(message: string, contact: string) {
+export async function sendFeedbackToSlack(
+  typeOfFeedback: string,
+  message: string,
+  contact: string,
+) {
   const endPointUrl = process.env.SLACK_WEBHOOK_URL;
-  console.log(endPointUrl)
-  if(!endPointUrl) {
-    return 
+  if (!endPointUrl) {
+    return;
   }
   const parsed_contact = contact === "" ? "No email provided" : contact;
 
+  const text = {
+    type: "mrkdwn",
+    text: `Someone submitted some feedback:\n> Feedback Type: ${typeOfFeedback} \n> *Contact*: \`${parsed_contact}\` \n> *Message*: ${message}`,
+  };
   const data = {
     text: "Someone submitted some feedback",
     blocks: [
       {
         type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `Someone submitted some feedback:\n> *Contact*: \`${parsed_contact}\` \n> *Message*: ${message}`,
-        },
+        text,
       },
     ],
   };
@@ -29,6 +33,5 @@ export async function sendFeedbackToSlack(message: string, contact: string) {
       "Content-Type": "application/json",
     },
   });
-
-  return response;
+  return response.status;
 }

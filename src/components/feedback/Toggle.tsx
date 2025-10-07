@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 export default function Toggle() {
   const router = useRouter();
   const openModal = () => {
-    router.push("/feedback");
+    router.push("/feedback", {scroll: false});
   };
 
   return (

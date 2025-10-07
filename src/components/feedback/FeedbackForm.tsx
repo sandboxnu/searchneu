@@ -18,31 +18,47 @@ export default function FeedbackForm() {
   const [message, setMessage] = useState("");
   const [contact, setContact] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!message.trim()) return;
-    if (!contact) return;
+
     setSubmitting(true);
     try {
-      await sendFeedbackToSlack(message, contact);
-      setMessage("");
-      setContact("");
-      setFeedbackType("");
-      setIsOpen(false); // Close form after successful submission
+      const res = await sendFeedbackToSlack(feedbackType, message, contact);
+      if (res == 200) {
+        setMessage("");
+        setContact("");
+        setFeedbackType("");
+        setSuccess(true);
+        setSubmitting(false);
+      }
     } finally {
-      setSubmitting(false);
+      setSubmitting(true);
     }
   }
 
-  if (!isOpen) {
-    return null;
+  if (success) {
+    return (
+      <div className="mb-12 flex h-[60vh] min-h-[600px] flex-col items-center justify-center gap-6">
+        <FeedbackFormHusky />
+        <div className="m-0 flex flex-col gap-3">
+          <h1 className="text-center text-lg/[1] font-bold"> Submitted!</h1>
+          <p className="text-center text-sm/[1] text-gray-500">
+            Thank you for feeding our (big) backs.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
-      <form onSubmit={onSubmit} className="flex flex-col gap-6 space-y-4">
+      <form
+        onSubmit={onSubmit}
+        className="flex h-[60vh] min-h-[600px] flex-col gap-6 space-y-4 overflow-scroll"
+      >
         <div className="m-auto">
           <FeedbackFormHusky />
         </div>
@@ -52,12 +68,12 @@ export default function FeedbackForm() {
             Found a bug? Search’s #1 fan? Let our devs know through this form.
           </p>
         </div>
-        <div>
+        <div className="mb-0">
           <div className="mb-1 text-xs font-medium tracking-wide">
             TYPE OF FEEDBACK <span className="text-red-500">*</span>
           </div>
           <Select value={feedbackType} onValueChange={setFeedbackType}>
-            <SelectTrigger className="h-9 w-full">
+            <SelectTrigger className="h-9 w-full border border-gray-300">
               <SelectValue placeholder="Bug Report" />
             </SelectTrigger>
             <SelectContent>
@@ -69,7 +85,7 @@ export default function FeedbackForm() {
           </Select>
         </div>
 
-        <div>
+        <div className="mb-0 flex h-full flex-col">
           <div className="mb-1 text-xs font-medium tracking-wide uppercase">
             DESCRIPTION <span className="text-red-500">*</span>
           </div>
@@ -77,12 +93,13 @@ export default function FeedbackForm() {
             placeholder="Say more about bugs, suggestions, etc."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="min-h-[80px] resize-none text-sm"
+            className="h-full resize-none text-sm"
             required
           />
         </div>
+        <div className="border-border m-0 border-t" />
 
-        <div className="mt-6">
+        <div>
           <div className="mb-1 text-xs font-medium tracking-wide uppercase">
             EMAIL (OPTIONAL)
           </div>

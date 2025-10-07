@@ -33,7 +33,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
           isVisible ? "opacity-25" : "opacity-0"
         }`}
       />
-      
+
       <div
         className={`fixed right-6 bottom-6 z-50 w-96 transition-transform duration-300 ease-out ${
           isVisible ? "translate-x-0" : "translate-x-[calc(100%+24px)]"
@@ -43,7 +43,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
           <div className="flex w-full justify-end">
             <button
               onClick={close}
-              className="text-gray-500 transition-colors hover:text-gray-700"
+              className="text-md h-3 p-0 text-gray-500 transition-colors hover:text-gray-700"
             >
               ✕
             </button>

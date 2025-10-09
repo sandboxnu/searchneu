@@ -10,7 +10,19 @@ interface MeetingTime {
   startTime: number;
   endTime: number;
   final: boolean;
+  room?: Room;
   finalDate?: string;
+}
+
+export interface Room {
+  id: number;
+  number: string;
+  building?: Building;
+}
+
+interface Building {
+  id: number;
+  name: string;
 }
 
 export interface Section {
@@ -62,20 +74,20 @@ export function SectionTable({
         <colgroup>
           <col className="w-16" /> {/* NOTIF */}
           <col className="w-20" /> {/* CRN */}
-          <col className="w-40" /> {/* SEATS | WAITLIST */}
-          <col className="w-40" /> {/* MEETINGS */}
-          <col className="w-40" /> {/* PROFESSOR */}
-          <col className="w-28" /> {/* CAMPUS */}
+          <col className="w-35" /> {/* SEATS | WAITLIST */}
+          <col className="w-35" /> {/* MEETING TIMES */}
+          <col className="w-35" /> {/* ROOMS */}
+          <col className="w-30" /> {/* PROFESSOR */}
         </colgroup>
 
         <thead>
           <tr className="bg-secondary text-neu6 border-b text-xs">
-            <th className="px-4 py-4 text-center font-bold">NOTIF</th>
+            <th className="px-4 py-4 text-center font-bold">NOTIFY</th>
             <th className="px-4 py-4 text-center font-bold">CRN</th>
             <th className="px-4 py-4 text-left font-bold">SEATS | WAITLIST</th>
-            <th className="px-4 py-4 text-left font-bold">MEETINGS</th>
+            <th className="px-4 py-4 text-left font-bold">MEETING TIMES</th>
+            <th className="px-4 py-4 text-left font-bold">ROOMS</th>
             <th className="px-4 py-4 text-left font-bold">PROFESSOR</th>
-            <th className="px-4 py-4 text-center font-bold">CAMPUS</th>
           </tr>
         </thead>
 
@@ -154,17 +166,14 @@ function TableRow({
       </td>
 
       <td className="px-4 py-5 align-top">
-        <div className="text-sm text-gray-700">
-          {formatFaculty(section.faculty)}
+        <div className="flex flex-col text-sm">
+          <div>{section.meetingTimes[0].room?.building?.name ?? "NA"}</div>
+          <div>{section.meetingTimes[0].room?.number ?? "NA"}</div>
         </div>
       </td>
 
       <td className="px-4 py-5 align-top">
-        <div className="flex justify-center">
-          <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600">
-            {section.campus}
-          </span>
-        </div>
+        <div className="text-sm">{formatFaculty(section.faculty)}</div>
       </td>
     </tr>
   );

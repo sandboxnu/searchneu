@@ -6,6 +6,8 @@ import {
   trackersT,
   usersT,
   meetingTimesT,
+  roomsT,
+  buildingsT,
 } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
@@ -22,6 +24,7 @@ import { notFound } from "next/navigation";
 import {
   SectionTable,
   type Section,
+  type Room,
 } from "@/components/coursePage/SectionTable";
 import { type Metadata } from "next";
 
@@ -107,9 +110,17 @@ export default async function Page(props: {
       days: meetingTimesT.days,
       startTime: meetingTimesT.startTime,
       endTime: meetingTimesT.endTime,
+      // Room data
+      roomId: roomsT.id,
+      roomNumber: roomsT.number,
+      // Building data
+      buildingId: buildingsT.id,
+      buildingName: buildingsT.name,
     })
     .from(sectionsT)
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+    .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
+    .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
     .where(eq(sectionsT.courseId, course.id))
     .then((rows) => {
       // Group the rows by section and reconstruct the meetingTimes array
@@ -135,11 +146,25 @@ export default async function Page(props: {
         // Add meeting time if it exists
         if (row.meetingTimeId && row.days && row.startTime && row.endTime) {
           const section = sectionMap.get(row.id)!;
+
+          const room: Room | undefined =
+            row.roomId && row.roomNumber
+              ? {
+                  id: row.roomId,
+                  number: row.roomNumber,
+                  building:
+                    row.buildingId && row.buildingName
+                      ? { id: row.buildingId, name: row.buildingName }
+                      : undefined,
+                }
+              : undefined;
+
           section.meetingTimes.push({
             days: row.days,
             startTime: row.startTime,
             endTime: row.endTime,
             final: false, // You'll need to add this field to meetingTimesT if needed
+            room,
             finalDate: undefined,
           });
         }

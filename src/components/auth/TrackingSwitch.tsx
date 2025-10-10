@@ -88,7 +88,7 @@ export function TrackingSwitch({
     });
   }
 
-  if (!isTermActive) {
+  if (isTermActive) {
     return (
       <div className="flex w-full">
         <Tooltip delayDuration={0}>

@@ -76,8 +76,8 @@ export function SectionTable({
           <col className="w-20" /> {/* CRN */}
           <col className="w-35" /> {/* SEATS | WAITLIST */}
           <col className="w-35" /> {/* MEETING TIMES */}
-          <col className="w-35" /> {/* ROOMS */}
-          <col className="w-30" /> {/* PROFESSOR */}
+          <col className="w-30" /> {/* ROOMS */}
+          <col className="w-34" /> {/* PROFESSOR */}
         </colgroup>
 
         <thead>
@@ -116,6 +116,9 @@ function TableRow({
   isTermActive: boolean;
 }) {
   const seatDelta = section.seatRemaining / section.seatCapacity;
+  const building = section.meetingTimes[0]?.room?.building?.name;
+  const room = section.meetingTimes[0]?.room?.number;
+
   const [tracked, setTracked] = useState(initialTracked);
 
   return (
@@ -167,8 +170,14 @@ function TableRow({
 
       <td className="px-4 py-5 align-top">
         <div className="flex flex-col text-sm">
-          <div>{section.meetingTimes[0].room?.building?.name ?? "NA"}</div>
-          <div>{section.meetingTimes[0].room?.number ?? "NA"}</div>
+          {building ? (
+            <>
+              <div>{building}</div>
+              <div>{room ?? "NA"}</div>
+            </>
+          ) : (
+            <p className="text-neu4 py-2 text-sm font-bold">TBA</p>
+          )}
         </div>
       </td>
 
@@ -186,7 +195,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   props.meetings.sort((a) => (a.final ? 1 : -1));
 
   if (props.meetings.length === 0 || props.meetings[0].days.length === 0) {
-    return <p className="text-neu4 py-2 text-xs font-bold">TBA</p>;
+    return <p className="text-neu4 py-2 text-sm font-bold">TBA</p>;
   }
 
   const hasWeekendEvents = props.meetings.some((meeting) =>

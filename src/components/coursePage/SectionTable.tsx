@@ -172,7 +172,7 @@ function TableRow({
         <div className="flex flex-col text-sm">
           {building ? (
             <>
-              <div>{building}</div>
+              <div className="font-bold">{building}</div>
               <div>{room ?? "NA"}</div>
             </>
           ) : (

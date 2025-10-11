@@ -30,7 +30,7 @@ export function MobileWrapper(props: {
         data-show={!Boolean(course)}
         className="hidden rounded-t-lg data-[show=true]:block xl:block!"
       >
-        <div className="grid h-full w-full grid-cols-5 px-6 py-2">
+        <div className="grid h-full w-full grid-cols-5 px-6 pt-3">
           <div className="col-span-1 w-full">
             <SearchPanel {...props} />
           </div>

@@ -150,29 +150,31 @@ export default async function Page(props: {
 
   const trackedSections = getTrackedSections();
 
+
+
   return (
-    <div className="bg-neu1 flex h-[calc(100vh-124px)] flex-col gap-8 overflow-y-scroll rounded-lg border-1 px-10 pt-10 pb-8">
-      <div className="flex justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">{courseName}</h1>
-          <h2 className="text-lg">{course.name}</h2>
+    <div className="bg-neu1 flex flex-1 flex-shrink-0 h-[calc(100vh-124px)] flex-col gap-8 items-center self-stretch overflow-y-scroll rounded-t-lg border border-border pt-10 pb-8">
+      <div className="flex justify-between items-end px-10 self-stretch ">
+        <div className="flex flex-col align-start gap-1">
+          <h1 style={{lineHeight: 1.2}} className="text-expanded-system-neu8 font-bold text-2xl">{courseName}</h1>
+          <h2 style={{lineHeight: 1.3}} className="text-expanded-system-neu8 text-lg">{course.name}</h2>
         </div>
-        <div className="text-end">
-          <h2 className="text-lg font-bold">
+        <div className="flex flex-col justify-end items-end gap-1">
+          <h2 style={{lineHeight: 1.2}} className="text-expanded-system-neu8 text-right text-lg font-bold">
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
-          <span className="text-muted-foreground flex items-center gap-1 italic">
+          <span className="flex items-center gap-1">
             {isTermActive ? (
               <>
-                <Globe className="size-4" />
-                <h2 className="text-sm">
+                <Globe className="size-5" />
+                <h2 style={{lineHeight: 1.3}} className="text-expanded-system-neu6 text-sm italic">
                   {formatLastUpdatedString(term?.updatedAt)}
                 </h2>
               </>
             ) : (
               <>
-                <GlobeLock className="size-4" />
-                <h2 className="text-sm">
+                <GlobeLock className="size-5" />
+                <h2 style={{lineHeight: 1.3}} className="text-expanded-system-neu6 text-sm italic">
                   {"Last updated on " + term.updatedAt.toLocaleDateString()}
                 </h2>
               </>
@@ -180,28 +182,24 @@ export default async function Page(props: {
           </span>
         </div>
       </div>
-      <div className="">
-        <h3 className="text-muted-foreground pb-2 text-xs font-bold">
+      
+      <div className="flex px-10 flex-col items-start gap-2 self-stretch">
+        <h3 style={{lineHeight: 1.16667}} className="text-expanded-system-neu5 text-xs uppercase font-bold">
           COURSE DESCRIPTION
         </h3>
         <ExpandableDescription description={course.description} />
       </div>
-      <div className="flex gap-8">
-        <div>
-          <h3 className="text-muted-foreground pb-2 text-xs font-bold">
-            COURSE LEVEL
-          </h3>
-          <p className="">Undergrad</p>
-        </div>
-        <div>
-          <h3 className="text-muted-foreground pb-2 text-xs font-bold">LINK</h3>
+      <div className="flex px-10 items-start gap-8 self-stretch">
+        <div className="flex flex-col items-start gap-1 self-stretch">
+          <h3 style={{lineHeight: 1.16667}} className="text-expanded-system-neu5 text-xs font-bold">LINK</h3>
           <a
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue hover:text-blue/80 flex items-center justify-end gap-1"
+            style={{lineHeight: 1.3}}
+            className="text-brand-palette-links-blue hover:text-brand-palette-links-blue/80 flex items-center justify-end gap-1"
             href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${termId}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
           >
-            View on Banner
+            View on the Northeastern website
             <ExternalLink className="size-4" />
           </a>
         </div>

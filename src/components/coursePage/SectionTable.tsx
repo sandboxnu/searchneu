@@ -69,8 +69,8 @@ export function SectionTable({
   );
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
-      <table className="w-full table-fixed">
+    <div className="w-full overflow-x-auto rounded-lg border">
+      <table className="w-full min-w-[1000px] table-fixed">
         <colgroup>
           <col className="w-16" /> {/* NOTIF */}
           <col className="w-20" /> {/* CRN */}
@@ -78,6 +78,7 @@ export function SectionTable({
           <col className="w-35" /> {/* MEETING TIMES */}
           <col className="w-30" /> {/* ROOMS */}
           <col className="w-34" /> {/* PROFESSOR */}
+          <col className="w-30" /> {/* CAMPUS */}
         </colgroup>
 
         <thead>
@@ -88,6 +89,7 @@ export function SectionTable({
             <th className="px-4 py-4 text-left font-bold">MEETING TIMES</th>
             <th className="px-4 py-4 text-left font-bold">ROOMS</th>
             <th className="px-4 py-4 text-left font-bold">PROFESSOR</th>
+            <th className="px-4 py-4 text-center font-bold">CAMPUS</th>
           </tr>
         </thead>
 
@@ -123,7 +125,7 @@ function TableRow({
 
   return (
     <tr className="hover:bg-neu2">
-      <td className="px-4 py-5 align-top">
+      <td className="align-center px-4 py-5">
         <div className="flex justify-center">
           <TrackingSwitch
             sectionId={section.id}
@@ -135,16 +137,16 @@ function TableRow({
         </div>
       </td>
 
-      <td className="px-4 py-5 text-center align-top">
+      <td className="align-center px-4 py-5 text-center">
         <div>
-          <p className="text-neu9 font-medium">{section.crn}</p>
+          <p className="text-neu9">{section.crn}</p>
           {section.honors && (
             <p className="mt-1 text-xs text-gray-500">honors</p>
           )}
         </div>
       </td>
 
-      <td className="px-4 py-5 align-top">
+      <td className="align-center px-4 py-5">
         <div className="flex flex-wrap gap-2">
           <span
             className={cn(
@@ -168,23 +170,40 @@ function TableRow({
         <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
       </td>
 
-      <td className="px-4 py-5 align-top">
-        <div className="flex flex-col text-sm">
-          {building ? (
-            <>
-              <div className="font-bold">{building}</div>
-              <div>{room ?? "NA"}</div>
-            </>
-          ) : (
-            <p className="text-neu4 py-2 text-sm font-bold">TBA</p>
-          )}
-        </div>
+      <td className="align-center px-4 py-5">
+        <RoomBlocks section={section} key={section.crn} />
       </td>
 
-      <td className="px-4 py-5 align-top">
-        <div className="text-sm">{formatFaculty(section.faculty)}</div>
+      <td className="align-center px-4 py-5">
+        <div className="text-neu9">{formatFaculty(section.faculty)}</div>
+      </td>
+
+      <td className="align-center px-4 py-5 text-center">
+        <div className="flex justify-center">
+          <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600">
+            {section.campus}
+          </span>
+        </div>
       </td>
     </tr>
+  );
+}
+
+function RoomBlocks(props: { section: Section }) {
+  const building = props.section.meetingTimes[0]?.room?.building?.name;
+  const room = props.section.meetingTimes[0]?.room?.number;
+
+  return (
+    <div className="flex flex-col text-sm">
+      {building ? (
+        <div className="flex flex-col gap-1 text-sm">
+          <div className="text-xs font-bold">{building}</div>
+          <div>{room ?? "NA"}</div>
+        </div>
+      ) : (
+        <p className="text-neu4 py-2 text-sm">TBA</p>
+      )}
+    </div>
   );
 }
 
@@ -195,7 +214,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
   props.meetings.sort((a) => (a.final ? 1 : -1));
 
   if (props.meetings.length === 0 || props.meetings[0].days.length === 0) {
-    return <p className="text-neu4 py-2 text-sm font-bold">TBA</p>;
+    return <p className="text-neu4 py-2 text-sm">TBA</p>;
   }
 
   const hasWeekendEvents = props.meetings.some((meeting) =>
@@ -233,7 +252,9 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
           <span className="flex items-center gap-1 text-sm">
             {m.final && <p className="font-semibold">Final Exam</p>}
             {m.final && <p className="">|</p>}
-            <p className="">{formatTimeRange(m.startTime, m.endTime)}</p>
+            <p className="text-neu9 font-medium">
+              {formatTimeRange(m.startTime, m.endTime)}
+            </p>
           </span>
         </div>
       ))}
@@ -256,14 +277,7 @@ function formatTimeRange(startTime: number, endTime: number) {
   let formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
   let formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
 
-  formattedStart = formattedStart.replace(":00", "");
-  formattedEnd = formattedEnd.replace(":00", "");
-
-  if (startIsPM === endIsPM) {
-    return `${formattedStart} - ${formattedEnd}${endIsPM ? "pm" : "am"}`;
-  } else {
-    return `${formattedStart}${startIsPM ? "pm" : "am"} - ${formattedEnd}${endIsPM ? "pm" : "am"}`;
-  }
+  return `${formattedStart}${startIsPM ? "pm" : "am"} — ${formattedEnd}${endIsPM ? "pm" : "am"}`;
 }
 
 function formatFaculty(f: string) {

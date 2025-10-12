@@ -274,8 +274,8 @@ function formatTimeRange(startTime: number, endTime: number) {
   const start12Hour = startHours % 12 || 12;
   const end12Hour = endHours % 12 || 12;
 
-  let formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
-  let formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
+  const formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
+  const formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
 
   return `${formattedStart}${startIsPM ? "pm" : "am"} — ${formattedEnd}${endIsPM ? "pm" : "am"}`;
 }

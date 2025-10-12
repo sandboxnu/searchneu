@@ -74,7 +74,7 @@ export function SectionTable({
         <table className="w-full min-w-[1000px] table-auto">
           <thead>
             <tr className="bg-secondary text-neu6 border-b text-xs">
-              <th className="px-4 py-4 text-center font-bold">NOTIFY</th>
+              <th className="px-6 py-4 text-left font-bold">NOTIFY</th>
               <th className="px-4 py-4 text-center font-bold">CRN</th>
               <th className="px-4 py-4 text-center font-bold">
                 SEATS | WAITLIST
@@ -119,8 +119,8 @@ function TableRow({
 
   return (
     <tr className="hover:bg-neu2">
-      <td className="align-center py-5">
-        <div className="flex px-4">
+      <td className="align-center py-5 text-center">
+        <div className="flex px-6">
           <TrackingSwitch
             sectionId={section.id}
             inital={tracked}

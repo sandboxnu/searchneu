@@ -69,41 +69,35 @@ export function SectionTable({
   );
 
   return (
-    <div className="w-full overflow-x-auto rounded-lg border">
-      <table className="w-full min-w-[1000px] table-fixed">
-        <colgroup>
-          <col className="w-16" /> {/* NOTIF */}
-          <col className="w-20" /> {/* CRN */}
-          <col className="w-35" /> {/* SEATS | WAITLIST */}
-          <col className="w-35" /> {/* MEETING TIMES */}
-          <col className="w-30" /> {/* ROOMS */}
-          <col className="w-34" /> {/* PROFESSOR */}
-          <col className="w-30" /> {/* CAMPUS */}
-        </colgroup>
+    <div className="-mx-10 overflow-x-auto px-10 [&::-webkit-scrollbar]:hidden">
+      <div className="inline-block min-w-full rounded-lg border">
+        <table className="w-full min-w-[1000px] table-auto">
+          <thead>
+            <tr className="bg-secondary text-neu6 border-b text-xs">
+              <th className="px-4 py-4 text-center font-bold">NOTIFY</th>
+              <th className="px-4 py-4 text-center font-bold">CRN</th>
+              <th className="px-4 py-4 text-center font-bold">
+                SEATS | WAITLIST
+              </th>
+              <th className="px-4 py-4 text-left font-bold">MEETING TIMES</th>
+              <th className="px-4 py-4 text-left font-bold">ROOMS</th>
+              <th className="px-4 py-4 text-left font-bold">PROFESSOR</th>
+              <th className="px-4 py-4 text-center font-bold">CAMPUS</th>
+            </tr>
+          </thead>
 
-        <thead>
-          <tr className="bg-secondary text-neu6 border-b text-xs">
-            <th className="px-4 py-4 text-center font-bold">NOTIFY</th>
-            <th className="px-4 py-4 text-center font-bold">CRN</th>
-            <th className="px-4 py-4 text-left font-bold">SEATS | WAITLIST</th>
-            <th className="px-4 py-4 text-left font-bold">MEETING TIMES</th>
-            <th className="px-4 py-4 text-left font-bold">ROOMS</th>
-            <th className="px-4 py-4 text-left font-bold">PROFESSOR</th>
-            <th className="px-4 py-4 text-center font-bold">CAMPUS</th>
-          </tr>
-        </thead>
-
-        <tbody className="divide-y divide-gray-200">
-          {sections.map((s) => (
-            <TableRow
-              key={s.crn}
-              section={s}
-              initialTracked={trackedSections?.includes(s.id) ?? false}
-              isTermActive={isTermActive}
-            />
-          ))}
-        </tbody>
-      </table>
+          <tbody className="divide-y divide-gray-200">
+            {sections.map((s) => (
+              <TableRow
+                key={s.crn}
+                section={s}
+                initialTracked={trackedSections?.includes(s.id) ?? false}
+                isTermActive={isTermActive}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -125,8 +119,8 @@ function TableRow({
 
   return (
     <tr className="hover:bg-neu2">
-      <td className="align-center px-4 py-5">
-        <div className="flex justify-center">
+      <td className="align-center py-5">
+        <div className="flex px-4">
           <TrackingSwitch
             sectionId={section.id}
             inital={tracked}
@@ -137,7 +131,7 @@ function TableRow({
         </div>
       </td>
 
-      <td className="align-center px-4 py-5 text-center">
+      <td className="align-center py-5 text-center">
         <div>
           <p className="text-neu9">{section.crn}</p>
           {section.honors && (
@@ -146,8 +140,8 @@ function TableRow({
         </div>
       </td>
 
-      <td className="align-center px-4 py-5">
-        <div className="flex flex-wrap gap-2">
+      <td className="px-4 py-5">
+        <div className="align-center flex flex-wrap justify-center gap-2">
           <span
             className={cn(
               "inline-block rounded-full px-3 py-1 text-xs font-medium",

@@ -1,7 +1,8 @@
 import { Section } from "@/components/coursePage/SectionTable";
 import { db } from "@/db";
-import { meetingTimesT, sectionsT } from "@/db/schema";
+import { coursesT, meetingTimesT, sectionsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { filterSchedules, ScheduleFilters, SectionWithCourse } from "./filters";
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -17,6 +18,10 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       seatCapacity: sectionsT.seatCapacity,
       waitlistCapacity: sectionsT.waitlistCapacity,
       waitlistRemaining: sectionsT.waitlistRemaining,
+      // Course data
+      courseName: coursesT.name,
+      courseSubject: coursesT.subject,
+      courseNumber: coursesT.courseNumber,
       // Meeting time data
       meetingTimeId: meetingTimesT.id,
       days: meetingTimesT.days,
@@ -24,11 +29,12 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       endTime: meetingTimesT.endTime,
     })
     .from(sectionsT)
+    .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
     .where(eq(sectionsT.courseId, courseId))
     .then((rows) => {
       // Group the rows by section and reconstruct the meetingTimes array
-      const sectionMap = new Map<number, Section>();
+      const sectionMap = new Map<number, SectionWithCourse>();
 
       for (const row of rows) {
         if (!sectionMap.has(row.id)) {
@@ -43,6 +49,9 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
             seatCapacity: row.seatCapacity,
             waitlistCapacity: row.waitlistCapacity,
             waitlistRemaining: row.waitlistRemaining,
+            courseName: row.courseName,
+            courseSubject: row.courseSubject,
+            courseNumber: row.courseNumber,
             meetingTimes: [],
           });
         }
@@ -64,13 +73,15 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
     });
 
   return sections;
-}
+};
 
 // Helper function to check if two meeting times conflict
-const hasTimeConflict = (time1: { days: number[]; startTime: number; endTime: number },
-  time2: { days: number[]; startTime: number; endTime: number }): boolean => {
+const hasTimeConflict = (
+  time1: { days: number[]; startTime: number; endTime: number },
+  time2: { days: number[]; startTime: number; endTime: number }
+): boolean => {
   // Check if they share any days
-  const sharedDays = time1.days.filter(day => time2.days.includes(day));
+  const sharedDays = time1.days.filter((day) => time2.days.includes(day));
   if (sharedDays.length === 0) return false;
 
   // Check if time ranges overlap
@@ -78,7 +89,7 @@ const hasTimeConflict = (time1: { days: number[]; startTime: number; endTime: nu
 };
 
 // Helper function to check if two sections have any time conflicts
-const sectionsHaveConflict = (section1: Section, section2: Section): boolean => {
+const sectionsHaveConflict = (section1: SectionWithCourse, section2: SectionWithCourse): boolean => {
   for (const time1 of section1.meetingTimes) {
     for (const time2 of section2.meetingTimes) {
       if (hasTimeConflict(time1, time2)) {
@@ -90,7 +101,7 @@ const sectionsHaveConflict = (section1: Section, section2: Section): boolean => 
 };
 
 // Helper function to check if a combination of sections has any conflicts
-const isValidSchedule = (sections: Section[]): boolean => {
+const isValidSchedule = (sections: SectionWithCourse[]): boolean => {
   for (let i = 0; i < sections.length; i++) {
     for (let j = i + 1; j < sections.length; j++) {
       if (sectionsHaveConflict(sections[i], sections[j])) {
@@ -102,13 +113,13 @@ const isValidSchedule = (sections: Section[]): boolean => {
 };
 
 // Helper function to generate all combinations of sections
-const generateCombinations = (sectionsByCourse: Section[][]): Section[][] => {
+const generateCombinations = (sectionsByCourse: SectionWithCourse[][]): SectionWithCourse[][] => {
   if (sectionsByCourse.length === 0) return [];
-  if (sectionsByCourse.length === 1) return sectionsByCourse[0].map(section => [section]);
+  if (sectionsByCourse.length === 1) return sectionsByCourse[0].map((section) => [section]);
 
-  const result: Section[][] = [];
+  const result: SectionWithCourse[][] = [];
 
-  const generateRecursive = (currentCombination: Section[], courseIndex: number) => {
+  const generateRecursive = (currentCombination: SectionWithCourse[], courseIndex: number) => {
     if (courseIndex === sectionsByCourse.length) {
       result.push([...currentCombination]);
       return;
@@ -125,7 +136,10 @@ const generateCombinations = (sectionsByCourse: Section[][]): Section[][] => {
   return result;
 };
 
-export const generateSchedules = async (courseIds: number[]): Promise<string[][]> => {
+export const generateSchedules = async (
+  courseIds: number[],
+  filters?: ScheduleFilters
+): Promise<SectionWithCourse[][]> => {
   // assume that all courseIds are from the same term, add logic to check this later
   const sectionsByCourse = await Promise.all(courseIds.map(getSectionsAndMeetingTimes));
 
@@ -133,12 +147,12 @@ export const generateSchedules = async (courseIds: number[]): Promise<string[][]
   const allCombinations = generateCombinations(sectionsByCourse);
 
   // Filter to only valid schedules (no time conflicts)
-  const validSchedules = allCombinations.filter(isValidSchedule);
+  let validSchedules = allCombinations.filter(isValidSchedule);
 
-  // Extract CRNs from each valid schedule
-  const crnSchedules = validSchedules.map(schedule =>
-    schedule.map(section => section.crn)
-  );
+  // Apply additional filters if provided
+  if (filters && Object.keys(filters).length > 0) {
+    validSchedules = filterSchedules(validSchedules, filters);
+  }
 
-  return crnSchedules;
+  return validSchedules;
 };

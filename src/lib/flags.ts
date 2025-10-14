@@ -16,9 +16,17 @@ export const faqFlag = flag({
   },
 });
 
+export const roomsFlag = flag({
+  key: "rooms",
+  description: "Enable experimental rooms page",
+  decide() {
+    return false;
+  },
+});
+
 export const schedulerFlag = flag({
   key: "scheduler",
-  description: "Enable experimental scheduler",
+  description: "Enable plan page",
   decide() {
     return false;
   },

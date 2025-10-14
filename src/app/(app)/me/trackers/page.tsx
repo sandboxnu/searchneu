@@ -1,7 +1,7 @@
-import { type Section, SectionCard } from "@/components/coursePage/SectionCard";
 import { db } from "@/db";
 import { coursesT, sectionsT, trackersT, usersT } from "@/db/schema";
 import { getGuid } from "@/lib/auth/utils";
+import { logger } from "@/lib/logger";
 import { and, eq, isNull } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -29,7 +29,6 @@ export default async function Page() {
       courseName: coursesT.name,
 
       faculty: sectionsT.faculty,
-      meetingTimes: sectionsT.meetingTimes,
       campus: sectionsT.campus,
       honors: sectionsT.honors,
       classType: sectionsT.classType,
@@ -56,7 +55,7 @@ export default async function Page() {
     {} as { [key: string]: typeof trackedSections },
   );
 
-  console.log(courses);
+  logger.info(courses);
 
   return (
     <div className="space-y-6 px-10 py-2">
@@ -87,16 +86,7 @@ export default async function Page() {
                 View in Catalog
               </Link>
             </div>
-            <div className="flex flex-col gap-1 pt-2">
-              {courses[s].map((s) => (
-                <SectionCard
-                  key={s.crn}
-                  section={s as Section}
-                  initalTracked={true}
-                  isTermActive={true}
-                />
-              ))}
-            </div>
+            <div className="flex flex-col gap-1 pt-2"></div>
           </div>
         ))}
       </div>

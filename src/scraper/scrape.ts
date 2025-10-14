@@ -3,6 +3,8 @@ import { BannerSection, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
+import { parseRooms } from "./rooms";
+import { logger } from "@/lib/logger";
 
 // scrapeTerm completely scrapes a term
 export async function scrapeTerm(term: string) {
@@ -12,17 +14,26 @@ export async function scrapeTerm(term: string) {
   const { courses, subjects: subjectCodes } = arrangeCourses(sections);
   const subjects = await getSubjects(term, subjectCodes);
 
+  await getCourseNames(courses);
   await getCourseDescriptions(courses);
   await getReqs(courses, subjects);
 
+  const rooms = await parseRooms(courses);
+
   const termDef = await getTermInfo(term);
 
-  return { term: termDef, courses, subjects } as TermScrape;
+  return {
+    term: termDef,
+    courses,
+    subjects,
+    rooms: rooms[0],
+    buildingCampuses: rooms[1],
+  } as TermScrape;
 }
 
 // getTermInfo gets the name for the term being scraped from banner
 async function getTermInfo(term: string) {
-  console.log("getting term info");
+  logger.info("getting term info");
   const resp = await fetch(
     `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/getTerms?offset=1&max=10&searchTerm=${term}`,
   ).then((resp) => resp.json());
@@ -31,7 +42,7 @@ async function getTermInfo(term: string) {
 }
 
 async function getSubjects(term: string, codes: string[]) {
-  console.log("getting subjects");
+  logger.info("getting subjects");
   const resp = await fetch(
     `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/get_subject?term=${term}&offset=1&max=900`,
   ).then((r) => r.json());
@@ -50,15 +61,15 @@ async function getReqs(
   courses: Course[],
   subjects: { code: string; description: string }[],
 ) {
-  console.log("getting course reqs");
+  logger.info("getting course reqs");
   const batchSize = 50;
   const term = courses[0].term;
   const numBatches = Math.ceil(courses.length / batchSize);
-  console.log(`running ${numBatches} batches`);
+  logger.info(`running ${numBatches} batches`);
 
-  console.log("fetching coreqs");
+  logger.info("fetching coreqs");
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -86,7 +97,7 @@ async function getReqs(
   }
 
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -114,10 +125,10 @@ async function getReqs(
   }
 }
 
-// getCourseDescriptions goes through and scrapes the course descriptions for
+// getCourseNames goes through and scrapes the course names for
 // every course
-export async function getCourseDescriptions(courses: Course[]) {
-  console.log("getting course descriptions");
+export async function getCourseNames(courses: Course[]) {
+  console.log("getting course names");
   const batchSize = 50;
   const term = courses[0].term;
   const numBatches = Math.ceil(courses.length / batchSize);
@@ -125,6 +136,47 @@ export async function getCourseDescriptions(courses: Course[]) {
 
   for (let i = 0; i < numBatches; i++) {
     console.log(`batch ${i}`);
+
+    const offset = batchSize * i;
+    const promises = courses.slice(offset, offset + 50).map((c) =>
+      fetch(
+        "https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/getSectionCatalogDetails",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `term=${term}&courseReferenceNumber=${c.sections[0].crn}`,
+        },
+      ).then((resp) => resp.text()),
+    );
+
+    const results = await Promise.allSettled(promises);
+
+    results
+      .filter((p) => p.status === "fulfilled")
+      .forEach((p, j) => {
+        courses[offset + j].name = decode(decode(p.value))
+          .replace(/<[^>]*>/g, "") // Remove HTML tags
+          .trim()
+          .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
+      });
+  }
+
+  return courses;
+}
+
+// getCourseDescriptions goes through and scrapes the course descriptions for
+// every course
+export async function getCourseDescriptions(courses: Course[]) {
+  logger.info("getting course descriptions");
+  const batchSize = 50;
+  const term = courses[0].term;
+  const numBatches = Math.ceil(courses.length / batchSize);
+  logger.info(`running ${numBatches} batches`);
+
+  for (let i = 0; i < numBatches; i++) {
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -165,7 +217,7 @@ export function arrangeCourses(sections: BannerSection[]) {
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       courses[s.subjectCourse] = {
-        name: decode(decode(s.courseTitle)),
+        name: "", // note - this will be filled in later when the names are scraped
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,
@@ -206,7 +258,7 @@ export function parseMeetingTimes(section: BannerSection) {
   for (const meetingFaculty of section.meetingsFaculty) {
     const meetingTime = meetingFaculty?.meetingTime;
     if (!meetingTime) {
-      console.log("no meeting time " + section.courseReferenceNumber);
+      logger.info("no meeting time " + section.courseReferenceNumber);
       continue;
     }
 
@@ -252,7 +304,7 @@ export function parseMeetingTimes(section: BannerSection) {
 // return the faculty on the search page so these have to be gathered from
 // seperate requests
 export async function getSectionFaculty(sections: BannerSection[]) {
-  console.log("getting section faculty");
+  logger.info("getting section faculty");
   if (sections.length === 0) {
     return sections;
   }
@@ -260,7 +312,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
   const term = sections[0].term;
   const concurrencyLimit = 20;
 
-  console.log(
+  logger.info(
     `Processing ${sections.length} sections with concurrency limit of ${concurrencyLimit}`,
   );
 
@@ -276,7 +328,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
           maxDelay: 10000,
           retryOn: [429, 500, 502, 503, 504, 302],
           onRetry: (_, attempt) => {
-            console.log(
+            logger.info(
               `retrying section ${section.courseReferenceNumber}, attempt ${attempt}`,
             );
           },
@@ -285,9 +337,9 @@ export async function getSectionFaculty(sections: BannerSection[]) {
       const data = await response.json();
       return { index, data, success: true };
     } catch (error) {
-      console.error(
-        `failed to fetch faculty for section ${section.courseReferenceNumber}:`,
-        error,
+      logger.error(
+        { courseReferenceNumber: section.courseReferenceNumber, error },
+        "failed to fetch faculty for section",
       );
       return { index, data: null, success: false };
     }
@@ -314,7 +366,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
 // (ie number of concurrent requests to send in a batch)
 export async function scrapeSections(term: string, cookiePool = 10) {
   const cookies = await getAuthCookies(term, cookiePool);
-  console.log("have cookies");
+  logger.info("have cookies");
 
   // get just the first section to see how many are in a term
   const resp = await fetch(
@@ -325,17 +377,17 @@ export async function scrapeSections(term: string, cookiePool = 10) {
       },
     },
   ).then((resp) => resp.json());
-  console.log(`need to scrape ${resp.totalCount} sections`);
+  logger.info(`need to scrape ${resp.totalCount} sections`);
 
   // Number of batches we have to do. Each page can return up to 500 sections and
   // we only have `cookiePool` number of cookies
   const numBatches = Math.ceil(Math.ceil(resp.totalCount / 500) / cookiePool);
-  console.log(`running ${numBatches} batches`);
+  logger.info(`running ${numBatches} batches`);
 
   const rawSections: BannerSection[] = [];
 
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
     const promises = Array.from([...Array(cookiePool).keys()], (j) =>
       fetch(
         `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_term=${term}&pageOffset=${(i * cookiePool + j) * 500}&pageMaxSize=500`,
@@ -348,18 +400,18 @@ export async function scrapeSections(term: string, cookiePool = 10) {
     );
 
     const results = await Promise.allSettled(promises);
-    console.log(`batch ${i} responses received`);
+    logger.info(`batch ${i} responses received`);
 
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p) => {
         rawSections.push(...p.value.data);
       });
-    console.log(`batch ${i} scraped`);
+    logger.info(`batch ${i} scraped`);
   }
 
   if (rawSections.length !== resp.totalCount) {
-    console.log(
+    logger.info(
       `difference in scraped sections - expected ${resp.totalCount} received ${rawSections.length}`,
     );
   }

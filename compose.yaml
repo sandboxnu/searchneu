@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17
+    image: paradedb/paradedb:latest
     command: "-d 1"
     volumes:
       - db_data:/var/lib/postgresql/data

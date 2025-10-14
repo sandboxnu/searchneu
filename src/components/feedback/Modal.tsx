@@ -2,8 +2,13 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function Modal({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+export function Modal({
+  setOpen,
+  children,
+}: {
+  setOpen: (open: boolean) => void;
+  children: React.ReactNode;
+}) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -21,7 +26,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
   const close = () => {
     setIsVisible(false);
     setTimeout(() => {
-      router.back();
+      setOpen(false);
     }, 300);
   };
 

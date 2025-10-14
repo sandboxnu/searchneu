@@ -11,7 +11,6 @@ import { Footer } from "@/components/navigation/Footer";
 import { Sandbox } from "@/components/icons/Sandbox";
 import { PartyPopper } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import Toggle from "@/components/feedback/Toggle";
 
 const cachedTerms = unstable_cache(async () => getTerms(), ["banner.terms"], {
   revalidate: 3600,

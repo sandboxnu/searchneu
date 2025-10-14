@@ -44,9 +44,6 @@ export function Footer() {
       </div>
       <div className="flex flex-col">
         <div className="flex justify-end gap-2">
-          <Link href="/feedback" className="text-blue hover:text-blue/80">
-            Feedback
-          </Link>
           <p>·</p>
           <Link href="/docs" className="text-blue hover:text-blue/80">
             Docs

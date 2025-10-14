@@ -94,9 +94,9 @@ function ChangelogHero() {
             {/* Banner content */}
             <div className="max-w-4xl mx-auto relative" style={{ zIndex: numberOfCircles + 10 }}>
                 <p className="text-base uppercase tracking-wider mb-2 opacity-90 font-bold">CHANGELOG</p>
-                <h1 className="text-4xl font-bold mb-4">See what's new with SearchNEU</h1>
+                <h1 className="text-4xl font-bold mb-4">See what&apos;s new with SearchNEU</h1>
                 <p className="font-medium opacity-90 max-w-2xl mx-auto">
-                    What's new with you? Our amazing team at Sandbox is always adding features 
+                    What&apos;s new with you? Our amazing team at Sandbox is always adding features 
                     and improvements, so stay up to date with all of our updates here.
                 </p>
             </div>

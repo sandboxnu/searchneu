@@ -2,7 +2,7 @@ import { Section } from "@/components/coursePage/SectionTable";
 import { db } from "@/db";
 import { coursesT, meetingTimesT, sectionsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { filterSchedules, ScheduleFilters, SectionWithCourse } from "./filters";
+import { SectionWithCourse } from "./filters";
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -137,8 +137,7 @@ const generateCombinations = (sectionsByCourse: SectionWithCourse[][]): SectionW
 };
 
 export const generateSchedules = async (
-  courseIds: number[],
-  filters?: ScheduleFilters
+  courseIds: number[]
 ): Promise<SectionWithCourse[][]> => {
   // assume that all courseIds are from the same term, add logic to check this later
   const sectionsByCourse = await Promise.all(courseIds.map(getSectionsAndMeetingTimes));
@@ -147,12 +146,7 @@ export const generateSchedules = async (
   const allCombinations = generateCombinations(sectionsByCourse);
 
   // Filter to only valid schedules (no time conflicts)
-  let validSchedules = allCombinations.filter(isValidSchedule);
-
-  // Apply additional filters if provided
-  if (filters && Object.keys(filters).length > 0) {
-    validSchedules = filterSchedules(validSchedules, filters);
-  }
+  const validSchedules = allCombinations.filter(isValidSchedule);
 
   return validSchedules;
 };

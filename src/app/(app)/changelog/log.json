@@ -1,0 +1,34 @@
+{
+    "releases": [
+        {
+            "version": "2.0.1",
+            "title": "Created Manual Changelog",
+            "notes": "This is the first entry :D",
+            "date": "09/14/2025",
+            "image": "Changelog_Image_2.png",
+            "features": [
+                {
+                    "description": "**@Aidan Szeto** and **@JP Norton** created manual changelog for searchNEU. The quick brown fox jumps over the lazy dog. I need this to be super long so I'm just writing nonsense.",
+                    "contributorUrls": ["https://github.com/szetoai", "https://github.com/jpnortonwastaken"]
+                }
+            ]
+        },
+        {
+            "version": "2.0.0",
+            "title": "Feedback Modal",
+            "notes": "We need your help! Through our new Feedback Modal, tell us about the bugs you find or features you love.",
+            "date": "06/22/2025",
+            "image": "Changelog_Image_1.png",
+            "features": [
+                {
+                    "description": "**@Aidan Szeto** created the blah blah blah drop-down",
+                    "contributorUrls": ["https://github.com/szetoai"]
+                },
+                {
+                    "description": "**@JP Norton** linked up emails to update our database",
+                    "contributorUrls": ["https://github.com/jpnortonwastaken"]
+                }
+            ]
+        }
+    ]
+}

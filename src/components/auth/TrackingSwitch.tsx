@@ -90,7 +90,7 @@ export function TrackingSwitch({
 
   if (isTermActive) {
     return (
-      <div className="flex w-full">
+      <div className="flex w-full justify-center">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">
@@ -107,7 +107,7 @@ export function TrackingSwitch({
 
   if (loading) {
     return (
-      <div className="flex w-full">
+      <div className="flex w-full justify-center">
         <div className="flex items-center gap-2">
           <Skeleton className="h-[1.125rem] w-8 rounded-full" />
         </div>
@@ -117,7 +117,7 @@ export function TrackingSwitch({
 
   if (!user.guid) {
     return (
-      <div className="flex w-full">
+      <div className="flex w-full justify-center">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">

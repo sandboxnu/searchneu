@@ -74,7 +74,7 @@ export function SectionTable({
         <table className="w-full min-w-[1000px] table-auto">
           <thead>
             <tr className="bg-secondary text-neu6 border-b text-xs">
-              <th className="px-6 py-4 text-left font-bold">NOTIFY</th>
+              <th className="px-6 py-4 text-center font-bold">NOTIFY</th>
               <th className="px-4 py-4 text-center font-bold">CRN</th>
               <th className="px-4 py-4 text-center font-bold">
                 SEATS | WAITLIST
@@ -119,7 +119,7 @@ function TableRow({
 
   return (
     <tr className="hover:bg-neu2">
-      <td className="align-center py-5 text-center">
+      <td className="py-5 text-right">
         <div className="flex px-6">
           <TrackingSwitch
             sectionId={section.id}
@@ -131,7 +131,7 @@ function TableRow({
         </div>
       </td>
 
-      <td className="align-center py-5 text-center">
+      <td className="py-5 text-center">
         <div>
           <p className="text-neu9">{section.crn}</p>
           {section.honors && (
@@ -141,10 +141,10 @@ function TableRow({
       </td>
 
       <td className="px-4 py-5">
-        <div className="align-center flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-2">
           <span
             className={cn(
-              "inline-block rounded-full px-3 py-1 text-xs font-medium",
+              "inline-block rounded-full px-3 py-1 text-sm font-medium",
               seatDelta > 0.2 && "bg-green-100 text-green-700",
               seatDelta <= 0.2 &&
                 seatDelta > 0.05 &&
@@ -154,7 +154,7 @@ function TableRow({
           >
             {section.seatRemaining} / {section.seatCapacity}
           </span>
-          <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+          <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
             {section.waitlistRemaining} / {section.waitlistCapacity}
           </span>
         </div>
@@ -164,17 +164,17 @@ function TableRow({
         <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
       </td>
 
-      <td className="align-center px-4 py-5">
+      <td className="px-4 py-5 align-top">
         <RoomBlocks section={section} key={section.crn} />
       </td>
 
-      <td className="align-center px-4 py-5">
+      <td className="px-4 py-5">
         <div className="text-neu9">{formatFaculty(section.faculty)}</div>
       </td>
 
-      <td className="align-center px-4 py-5 text-center">
+      <td className="px-4 py-5 text-center">
         <div className="flex justify-center">
-          <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600">
+          <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600">
             {section.campus}
           </span>
         </div>
@@ -191,7 +191,7 @@ function RoomBlocks(props: { section: Section }) {
     <div className="flex flex-col text-sm">
       {building ? (
         <div className="flex flex-col gap-1 text-sm">
-          <div className="text-xs font-bold">{building}</div>
+          <div className="font-bold">{building}</div>
           <div>{room ?? "NA"}</div>
         </div>
       ) : (
@@ -234,7 +234,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
               <span
                 key={props.crn + i + j}
                 className={cn(
-                  "text-neu4 text-center text-xs font-bold",
+                  "text-neu4 text-center text-sm font-bold",
                   m.days.includes(j) && "text-neu9",
                 )}
               >

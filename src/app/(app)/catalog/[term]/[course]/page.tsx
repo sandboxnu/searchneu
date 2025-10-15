@@ -163,17 +163,17 @@ export default async function Page(props: {
           <h2 style={{lineHeight: 1.2}} className="text-expanded-system-neu8 text-right text-lg font-bold">
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
-          <span className="flex items-center gap-1">
+          <span className="flex text-neu6 items-center gap-1">
             {isTermActive ? (
               <>
-                <Globe className="size-5" />
+                <Globe className="size-4" />
                 <h2 style={{lineHeight: 1.3}} className="text-expanded-system-neu6 text-sm italic">
                   {formatLastUpdatedString(term?.updatedAt)}
                 </h2>
               </>
             ) : (
               <>
-                <GlobeLock className="size-5" />
+                <GlobeLock className="size-4" />
                 <h2 style={{lineHeight: 1.3}} className="text-expanded-system-neu6 text-sm italic">
                   {"Last updated on " + term.updatedAt.toLocaleDateString()}
                 </h2>

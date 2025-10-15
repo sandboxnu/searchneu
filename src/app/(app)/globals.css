@@ -7,6 +7,7 @@
 
 :root {
   --neu9: oklch(0.25 0 0); /* text */
+  --neu8: oklch(0.33 0.027 245.9);
   --neu7: oklch(0.49 0 0); /* label text */
   --neu6: oklch(0.62 0 0); /* placeholder text */
   --neu4: oklch(0.81 0 0); /* rings (at /50) */
@@ -22,12 +23,18 @@
   --yellow: oklch(0.7828 0.168 66.2); /* seat yellow status */
   --red: oklch(0.6122 0.2082 22.24); /* seat red status */
   --blue: oklch(0.6 0.1786 254.7); /* links (hover at /80) */
-
   --neu: oklch(0.61 0.2082 22.24);
   --cps: oklch(0.78 0.168 66.2);
   --law: oklch(0.56 0.0781 237.98);
 
   --navy: oklch(0.33 0.0678 257.27);
+
+  --expanded-system-neu8: oklch(0.3211 0 0);
+  --expanded-system-neu6: oklch(0.6167 0 0);
+  --expanded-system-neu5: oklch(0.7155 0 0);
+  --search-utility-colors-dark-grey: oklch(0.4379 0.0141 264.42);
+  --expanded-system-b5: oklch(0.643 0.1706 253.64);
+  --brand-palette-links-blue: oklch(0.6027 0.1786 254.7);
 
   /* ShadCN style variables - these enforce some degree of consistency across components */
   --background: oklch(1 0 0); /* NEU 1 */
@@ -67,12 +74,21 @@
 
 @theme inline {
   --color-neu9: var(--neu9);
+  --color-neu8: var(--neu8);
   --color-neu7: var(--neu7);
   --color-neu6: var(--neu6);
   --color-neu4: var(--neu4);
   --color-neu3: var(--neu3);
   --color-neu2: var(--neu2);
   --color-neu1: var(--neu1);
+
+  --color-expanded-system-neu8: var(--expanded-system-neu8);
+  --color-expanded-system-neu6: var(--expanded-system-neu6);
+  --color-expanded-system-neu5: var(--expanded-system-neu5);
+
+  --color-search-utility-colors-dark-grey: var(--search-utility-colors-dark-grey);
+  --color-expanded-system-b5: var(--expanded-system-b5);
+  --color-brand-palette-links-blue: var(--brand-palette-links-blue);
 
   --color-green: var(--green);
   --color-yellow: var(--yellow);

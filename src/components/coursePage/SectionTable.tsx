@@ -60,12 +60,12 @@ export function SectionTable({
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full table-fixed">
         <colgroup>
-          <col className="w-16" /> {/* NOTIF */}
-          <col className="w-20" /> {/* CRN */}
-          <col className="w-40" /> {/* SEATS | WAITLIST */}
-          <col className="w-40" /> {/* MEETINGS */}
-          <col className="w-40" /> {/* PROFESSOR */}
-          <col className="w-28" /> {/* CAMPUS */}
+          <col className="w-16" />{/* NOTIF */}
+          <col className="w-20" />{/* CRN */}
+          <col className="w-40" />{/* SEATS | WAITLIST */}
+          <col className="w-40" />{/* MEETINGS */}
+          <col className="w-40" />{/* PROFESSOR */}
+          <col className="w-28" />{/* CAMPUS */}
         </colgroup>
 
         <thead>

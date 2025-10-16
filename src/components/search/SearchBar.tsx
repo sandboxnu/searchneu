@@ -1,8 +1,7 @@
 import { usePathname, useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Search } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
 export function SearchBar() {
   const searchParams = useSearchParams();
@@ -55,14 +54,21 @@ export function SearchBar() {
   }
 
   return (
-    <div className="flex w-full">
+    <div className="relative w-full">
+      <SearchIcon
+        color="red"
+        className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 -scale-x-100 transform"
+      />
       <Input
-        className="bg-background"
-        placeholder="Search for a course, CRN, or phrase..."
+        className="bg-background pl-10"
+        placeholder="Search by course, professor, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
       />
+      <span className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+        type / to search
+      </span>
     </div>
   );
 }

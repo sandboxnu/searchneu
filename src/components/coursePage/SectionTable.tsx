@@ -73,7 +73,7 @@ export function SectionTable({
       <div className="inline-block min-w-full rounded-lg border">
         <table className="w-full min-w-[1000px] table-auto">
           <thead>
-            <tr className="bg-secondary text-neu6 border-b text-xs">
+            <tr className="bg-secondary text-neu6 border-b text-sm">
               <th className="px-6 py-4 text-center font-bold">NOTIFY</th>
               <th className="px-4 py-4 text-center font-bold">CRN</th>
               <th className="px-4 py-4 text-center font-bold">
@@ -188,9 +188,9 @@ function RoomBlocks(props: { section: Section }) {
   const room = props.section.meetingTimes[0]?.room?.number;
 
   return (
-    <div className="flex flex-col text-sm">
+    <div className="flex flex-col">
       {building ? (
-        <div className="flex flex-col gap-1 text-sm">
+        <div className="flex flex-col gap-1">
           <div className="font-bold">{building}</div>
           <div>{room ?? "NA"}</div>
         </div>
@@ -234,7 +234,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
               <span
                 key={props.crn + i + j}
                 className={cn(
-                  "text-neu4 text-center text-sm font-bold",
+                  "text-neu4 text-center font-bold",
                   m.days.includes(j) && "text-neu9",
                 )}
               >
@@ -243,7 +243,7 @@ function MeetingBlocks(props: { meetings: MeetingTime[]; crn: string }) {
             ))}
           </span>
           {/* TODO: this should be a hover i to say talk to the prof! */}
-          <span className="flex items-center gap-1 text-sm">
+          <span className="flex items-center gap-1">
             {m.final && <p className="font-semibold">Final Exam</p>}
             {m.final && <p className="">|</p>}
             <p className="text-neu9 font-medium">

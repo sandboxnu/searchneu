@@ -1,14 +1,5 @@
 import { type NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { Pool } from "pg";
-import {
-  termsT,
-  coursesT,
-  sectionsT,
-  subjectsT,
-  buildingsT,
-  roomsT,
-  meetingTimesT,
-} from "@/db/schema";
 import { TermScrape, Config } from "./types";
 import { logger } from "@/lib/logger";
 import * as schema from "@/db/schema";
@@ -22,11 +13,17 @@ export async function insertCourseData(
 ) {
   await db.transaction(async (tx) => {
     // Insert term
-    await tx.insert(termsT).values({
-      term: data.term.code,
-      name: data.term.description,
-      activeUntil: new Date("2025-10-05T17:41:35+00:00"),
-    });
+    await tx
+      .insert(schema.termsT)
+      .values({
+        term: data.term.code,
+        name: data.term.description,
+        activeUntil: new Date(
+          config.terms.find((t) => t.term.toString() === data.term.code)
+            ?.activeUntil ?? "2000-01-01",
+        ),
+      })
+      .onConflictDoNothing();
     logger.info("term done");
 
     const filteredCampuses = config.attributes.campus.reduce(
@@ -44,26 +41,28 @@ export async function insertCourseData(
     );
 
     for (const campus of filteredCampuses) {
-      await tx.insert(schema.campusesT).values({
-        name: campus.name ?? campus.code,
-        group: campus.group,
-      });
+      await tx
+        .insert(schema.campusesT)
+        .values({
+          name: campus.name ?? campus.code,
+          group: campus.group,
+        })
+        .onConflictDoNothing();
     }
 
-    const nupaths = [];
     for (const nupath of config.attributes.nupath) {
-      const resp = await tx
+      await tx
         .insert(schema.nupathsT)
         .values({
           short: nupath.short,
           name: nupath.name,
         })
-        .returning({
-          id: schema.nupathsT.id,
-          short: schema.nupathsT.short,
-        });
-      nupaths.push(resp[0]);
+        .onConflictDoNothing();
     }
+
+    const nupaths = await tx
+      .select({ id: schema.nupathsT.id, short: schema.nupathsT.short })
+      .from(schema.nupathsT);
 
     // Insert subjects
     const subjectInserts = data.subjects.map((subj) => ({
@@ -72,7 +71,10 @@ export async function insertCourseData(
       name: subj.description,
     }));
     if (subjectInserts.length > 0) {
-      await tx.insert(subjectsT).values(subjectInserts);
+      await tx
+        .insert(schema.subjectsT)
+        .values(subjectInserts)
+        .onConflictDoNothing();
     }
     logger.info("subjects done");
 
@@ -83,12 +85,21 @@ export async function insertCourseData(
       campus: data.buildingCampuses[name],
     }));
 
-    const buildingResults = await tx
-      .insert(buildingsT)
+    await tx
+      .insert(schema.buildingsT)
       .values(buildingInserts)
-      .returning({ id: buildingsT.id, name: buildingsT.name });
+      .onConflictDoNothing({
+        target: [schema.buildingsT.campus, schema.buildingsT.name],
+      });
 
-    const buildingMap = new Map(buildingResults.map((b) => [b.name, b.id]));
+    const buildings = await tx
+      .select({
+        id: schema.buildingsT.id,
+        name: schema.buildingsT.name,
+      })
+      .from(schema.buildingsT);
+
+    const buildingMap = new Map(buildings.map((b) => [b.name, b.id]));
     logger.info("buildings done");
 
     // Insert rooms
@@ -106,15 +117,24 @@ export async function insertCourseData(
       }
     }
 
-    const roomResults = await tx.insert(roomsT).values(roomInserts).returning({
-      id: roomsT.id,
-      buildingId: roomsT.buildingId,
-      number: roomsT.number,
-    });
+    await tx
+      .insert(schema.roomsT)
+      .values(roomInserts)
+      .onConflictDoNothing({
+        target: [schema.roomsT.buildingId, schema.roomsT.number],
+      });
+
+    const rooms = await tx
+      .select({
+        id: schema.roomsT.id,
+        buildingId: schema.roomsT.buildingId,
+        number: schema.roomsT.number,
+      })
+      .from(schema.roomsT);
 
     // Create room lookup map: "buildingId-roomNumber" -> roomId
     const roomMap = new Map(
-      roomResults.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
+      rooms.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
     );
     logger.info("rooms done");
 
@@ -123,7 +143,7 @@ export async function insertCourseData(
 
     for (const course of data.courses) {
       const courseInsertResult = await tx
-        .insert(coursesT)
+        .insert(schema.coursesT)
         .values({
           term: course.term,
           subject: course.subject,
@@ -136,13 +156,29 @@ export async function insertCourseData(
           prereqs: course.prereqs,
           coreqs: course.coreqs,
         })
-        .returning({ id: coursesT.id });
+        .returning({ id: schema.coursesT.id })
+        .onConflictDoUpdate({
+          target: [
+            schema.coursesT.term,
+            schema.coursesT.subject,
+            schema.coursesT.courseNumber,
+          ],
+          set: { updatedAt: new Date() },
+        });
 
       for (const nupath of course.nupath) {
-        await tx.insert(schema.courseNupathJoinT).values({
-          courseId: courseInsertResult[0].id,
-          nupathId: nupaths?.find((c) => c.short === nupath)?.id ?? -1,
-        });
+        await tx
+          .insert(schema.courseNupathJoinT)
+          .values({
+            courseId: courseInsertResult[0].id,
+            nupathId: nupaths?.find((c) => c.short === nupath)?.id ?? -1,
+          })
+          .onConflictDoNothing({
+            target: [
+              schema.courseNupathJoinT.courseId,
+              schema.courseNupathJoinT.nupathId,
+            ],
+          });
       }
 
       const courseId = courseInsertResult[0]?.id;
@@ -154,7 +190,7 @@ export async function insertCourseData(
         }
 
         const sectionResult = await tx
-          .insert(sectionsT)
+          .insert(schema.sectionsT)
           .values({
             courseId: courseId,
             term: course.term,
@@ -168,7 +204,11 @@ export async function insertCourseData(
             honors: section.honors,
             campus: section.campus,
           })
-          .returning({ id: sectionsT.id });
+          .returning({ id: schema.sectionsT.id })
+          .onConflictDoUpdate({
+            target: [schema.sectionsT.term, schema.sectionsT.crn],
+            set: { updatedAt: new Date() },
+          });
 
         const sectionId = sectionResult[0]?.id;
         if (sectionId) {
@@ -221,7 +261,19 @@ export async function insertCourseData(
     }
 
     if (meetingTimeInserts.length > 0) {
-      await tx.insert(meetingTimesT).values(meetingTimeInserts);
+      await tx
+        .insert(schema.meetingTimesT)
+        .values(meetingTimeInserts)
+        .onConflictDoNothing({
+          target: [
+            schema.meetingTimesT.term,
+            schema.meetingTimesT.sectionId,
+            schema.meetingTimesT.roomId,
+            schema.meetingTimesT.days,
+            schema.meetingTimesT.startTime,
+            schema.meetingTimesT.endTime,
+          ],
+        });
     }
     logger.info("meeting times done");
   });

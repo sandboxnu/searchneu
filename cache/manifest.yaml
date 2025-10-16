@@ -1,8 +1,8 @@
 terms:
-  # - term: <number>
-  #   name: <name>   will override the generated name
   - term: 202610
-    # activeUntil: 1
+    activeUntil: 2025-10-01
+  # - term: 202620
+  #   activeUntil: 2026-2-01
 
 attributes:
   campus:

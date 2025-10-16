@@ -2,8 +2,6 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "@/db/schema";
 import { loadEnvConfig } from "@next/env";
 import { insertCourseData } from "@/scraper/db";
-import { termsT } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { TermScrape } from "@/scraper/types";
 import { Config } from "@/scraper/types";
 import { readFileSync } from "node:fs";
@@ -42,18 +40,6 @@ void (async () => {
     const cache = JSON.parse(existingCache) as TermScrape;
 
     console.log("connected");
-
-    const existingTerm = await db
-      .select({})
-      .from(termsT)
-      .where(eq(termsT.term, term.term.toString()));
-
-    if (existingTerm.length > 0) {
-      console.log("term already exists... skipping");
-      console.log("paritally updating terms maybe coming?");
-      console.log("it needs to happen but that's so much work rn lowkey");
-      return;
-    }
 
     await insertCourseData(cache, config, db);
   }

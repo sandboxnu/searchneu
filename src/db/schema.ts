@@ -198,10 +198,17 @@ export const courseNupathJoinT = pgTable(
   "course_nupath_join",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    courseId: integer().notNull(),
-    nupathId: integer().notNull(),
+    courseId: integer()
+      .notNull()
+      .references(() => coursesT.id),
+    nupathId: integer()
+      .notNull()
+      .references(() => nupathsT.id),
   },
-  (table) => [index("course_nupath_join_course_idx").on(table.courseId)],
+  (table) => [
+    index("course_nupath_join_course_idx").on(table.courseId),
+    unique("course_nupath_join_unique").on(table.courseId, table.nupathId),
+  ],
 );
 
 export const notificationsT = pgTable("notifications", {
@@ -213,16 +220,20 @@ export const notificationsT = pgTable("notifications", {
   sentAt: timestamp().notNull().defaultNow(),
 });
 
-export const buildingsT = pgTable("buildings", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: text().notNull(),
-  campus: text().notNull(),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp()
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+export const buildingsT = pgTable(
+  "buildings",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: text().notNull(),
+    campus: text().notNull(),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique("buildings_campus").on(table.campus, table.name)],
+);
 
 export const roomsT = pgTable(
   "rooms",
@@ -267,5 +278,13 @@ export const meetingTimesT = pgTable(
   (table) => [
     index("section_meeting_idx").on(table.sectionId),
     index("room_meeting_idx").on(table.roomId),
+    unique("meeting_time").on(
+      table.term,
+      table.sectionId,
+      table.roomId,
+      table.days,
+      table.startTime,
+      table.endTime,
+    ),
   ],
 );

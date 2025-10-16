@@ -80,7 +80,7 @@ export function SearchBar() {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
       />
-      <span className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+      <span className="absolute top-2 right-2 bottom-2 flex items-center rounded-full bg-gray-100 px-3 text-xs font-medium text-gray-600">
         type / to search
       </span>
     </div>

@@ -1,5 +1,5 @@
 import { usePathname, useParams, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "../ui/input";
 import { SearchIcon } from "lucide-react";
 
@@ -8,6 +8,7 @@ export function SearchBar() {
   const pathname = usePathname();
   const { course } = useParams();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +42,18 @@ export function SearchBar() {
     return () => clearTimeout(timeoutId);
   }, [query]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   function handleSubmit() {
     const params = new URLSearchParams(searchParams);
     if (!query.trim()) {
@@ -60,6 +73,7 @@ export function SearchBar() {
         className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 -scale-x-100 transform"
       />
       <Input
+        ref={searchInputRef}
         className="bg-background pl-10"
         placeholder="Search by course, professor, or phrase..."
         value={query}

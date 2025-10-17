@@ -81,7 +81,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   const virtual = useVirtualizer({
     count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 90,
+    estimateSize: () => 110,
     scrollPaddingStart: 28,
     overscan: 5,
   });

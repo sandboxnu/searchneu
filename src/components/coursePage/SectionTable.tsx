@@ -148,10 +148,10 @@ function TableRow({
       </td>
 
       <td className="px-4 py-5">
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex min-w-0 flex-nowrap justify-center gap-2">
           <span
             className={cn(
-              "inline-block rounded-full px-3 py-1 text-sm font-medium",
+              "inline-block shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap",
               seatDelta > 0.2 && "bg-green-100 text-green-700",
               seatDelta <= 0.2 &&
                 seatDelta > 0.05 &&
@@ -161,7 +161,7 @@ function TableRow({
           >
             {section.seatRemaining} / {section.seatCapacity}
           </span>
-          <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
+          <span className="inline-block shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600">
             {section.waitlistRemaining} / {section.waitlistCapacity}
           </span>
         </div>

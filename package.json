@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "scrape:gen": "tsx ./src/scripts/scrape.ts",
-    "scrape:push": "tsx ./src/scripts/scrape-push.ts",
+    "scrape:gen": "tsx ./src/scripts/scrape-gen.ts",
+    "scrape:up": "tsx ./src/scripts/scrape-up.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "postinstall": "fumadocs-mdx"

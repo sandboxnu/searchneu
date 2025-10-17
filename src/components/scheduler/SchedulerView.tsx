@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { filterSchedules, type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -19,175 +18,15 @@ function formatDays(days: number[]): string {
   return days.map((d) => dayNames[d]).join(", ");
 }
 
-// Convert time string (e.g., "09:00") to military format (e.g., 900)
-function timeStringToMilitary(timeStr: string): number {
-  const [hours, minutes] = timeStr.split(":").map(Number);
-  return hours * 100 + minutes;
+interface SchedulerViewProps {
+  schedules: SectionWithCourse[][];
+  totalSchedules: number;
+  filters: ScheduleFilters;
 }
 
-// Convert military time to time string
-function militaryToTimeString(time: number): string {
-  const hours = Math.floor(time / 100);
-  const minutes = time % 100;
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-}
-
-export function SchedulerView({ allSchedules }: { allSchedules: SectionWithCourse[][] }) {
-  const [filters, setFilters] = useState<ScheduleFilters>({});
-  const [showFilters, setShowFilters] = useState(true);
-
-  // Apply filters
-  const filteredSchedules = Object.keys(filters).length > 0
-    ? filterSchedules(allSchedules, filters)
-    : allSchedules;
-
-  const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
-    setFilters(prev => {
-      if (value === undefined || (Array.isArray(value) && value.length === 0)) {
-        const { [key]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [key]: value };
-    });
-  };
-
-  const clearFilters = () => setFilters({});
-
+export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerViewProps) {
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Generated Schedules</h1>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium"
-        >
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </button>
-      </div>
-
-      {/* Filter Panel */}
-      {showFilters && (
-        <div className="mb-6 p-6 bg-white border border-gray-300 rounded-lg shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Filters</h2>
-            <button
-              onClick={clearFilters}
-              className="px-3 py-1 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded"
-            >
-              Clear All
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Start Time Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Earliest Start Time
-              </label>
-              <input
-                type="time"
-                value={filters.startTime ? militaryToTimeString(filters.startTime) : ""}
-                onChange={(e) => updateFilter("startTime", e.target.value ? timeStringToMilitary(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* End Time Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Latest End Time
-              </label>
-              <input
-                type="time"
-                value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
-                onChange={(e) => updateFilter("endTime", e.target.value ? timeStringToMilitary(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Min Days Free */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Min Days Free
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="7"
-                value={filters.minDaysFree ?? ""}
-                onChange={(e) => updateFilter("minDaysFree", e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="0-7"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Min Seats Left */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Min Seats Available
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={filters.minSeatsLeft ?? ""}
-                onChange={(e) => updateFilter("minSeatsLeft", e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="Any"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Min Honors Courses */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Min Honors Courses
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={filters.minHonorsCourses ?? ""}
-                onChange={(e) => updateFilter("minHonorsCourses", e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="Any"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* Days Free Checkboxes */}
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Specific Days Free
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { value: 0, label: "Sun" },
-                { value: 1, label: "Mon" },
-                { value: 2, label: "Tue" },
-                { value: 3, label: "Wed" },
-                { value: 4, label: "Thu" },
-                { value: 5, label: "Fri" },
-                { value: 6, label: "Sat" },
-              ].map((day) => (
-                <label key={day.value} className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="checkbox"
-                    checked={filters.specificDaysFree?.includes(day.value) ?? false}
-                    onChange={(e) => {
-                      const currentDays = filters.specificDaysFree || [];
-                      const newDays = e.target.checked
-                        ? [...currentDays, day.value]
-                        : currentDays.filter(d => d !== day.value);
-                      updateFilter("specificDaysFree", newDays.length > 0 ? newDays : undefined);
-                    }}
-                    className="rounded"
-                  />
-                  <span className="text-sm">{day.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
+    <div className="h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-6 py-4">
       {/* Active Filters Summary */}
       {Object.keys(filters).length > 0 && (
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -216,15 +55,14 @@ export function SchedulerView({ allSchedules }: { allSchedules: SectionWithCours
       )}
 
       {/* Results Count */}
-      <p className="text-gray-600 mb-4">
-        Found {filteredSchedules.length} valid schedule{filteredSchedules.length !== 1 ? "s" : ""} 
-        {allSchedules.length !== filteredSchedules.length && ` (filtered from ${allSchedules.length} total)`}
-        {" "}(showing first 5)
+      <p className="text-gray-600">
+        Found {schedules.length} valid schedule{schedules.length !== 1 ? "s" : ""}
+        {totalSchedules !== schedules.length && ` (filtered from ${totalSchedules} total)`}
       </p>
 
       {/* Schedules */}
       <div className="space-y-8">
-        {filteredSchedules.slice(0, 5).map((schedule, scheduleIndex) => (
+        {schedules.map((schedule, scheduleIndex) => (
           <div
             key={scheduleIndex}
             className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"

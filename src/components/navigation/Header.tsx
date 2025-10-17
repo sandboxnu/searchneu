@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
 import { faqFlag, roomsFlag } from "@/lib/flags";
-import { Bookmark, CircleQuestionMark } from "lucide-react"; // 👈 Add icons
+import { Bookmark, CircleQuestionMark, DoorOpen } from "lucide-react";
 
 export async function Header() {
   const enableFaqPage = await faqFlag();
@@ -19,15 +19,15 @@ export async function Header() {
           {enableRoomsPage && (
             <Link
               href="/rooms"
-              className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-4 py-2"
+              className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-6 py-2"
             >
-              <Bookmark className="h-6" />
+              <DoorOpen className="h-6" />
               <span>Rooms</span>
             </Link>
           )}
           <Link
             href="/catalog"
-            className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-4 py-2 leading-none"
+            className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-6 py-2"
           >
             <Bookmark className="h-6" />
             <span>Catalog</span>
@@ -37,7 +37,7 @@ export async function Header() {
               href="/faq"
               className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-2 py-2"
             >
-              <CircleQuestionMark color="red" />
+              <CircleQuestionMark color="red" className="h-6"/>
             </Link>
           )}
         </nav>

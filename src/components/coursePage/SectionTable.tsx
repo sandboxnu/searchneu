@@ -93,7 +93,6 @@ export function SectionTable({
               <th className="px-4 py-4 text-center font-bold">CAMPUS</th>
             </tr>
           </thead>
-
           <tbody className="divide-y divide-gray-200">
             {sections.map((s) => (
               <TableRow

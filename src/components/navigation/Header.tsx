@@ -14,12 +14,12 @@ export async function Header() {
       <Link href="/">
         <Logo className="h-6 w-40" />
       </Link>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <nav className="flex gap-2 font-semibold">
           {enableRoomsPage && (
             <Link
               href="/rooms"
-              className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-6 py-2"
+              className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-4 py-2"
             >
               <DoorOpen className="h-6" />
               <span>Rooms</span>
@@ -27,7 +27,7 @@ export async function Header() {
           )}
           <Link
             href="/catalog"
-            className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-6 py-2"
+            className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-4 py-2"
           >
             <Bookmark className="h-6" />
             <span>Catalog</span>
@@ -37,7 +37,7 @@ export async function Header() {
               href="/faq"
               className="hover:bg-neu3 bg-background flex items-center gap-2 rounded-full border-1 px-2 py-2"
             >
-              <CircleQuestionMark color="red" className="h-6"/>
+              <CircleQuestionMark color="red" className="h-6" />
             </Link>
           )}
         </nav>

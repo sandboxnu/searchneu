@@ -46,6 +46,8 @@ export function SearchBar() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "/") {
+        if (document.activeElement === searchInputRef.current) return;
+
         e.preventDefault();
         searchInputRef.current?.focus();
         setPopped(true);
@@ -72,7 +74,7 @@ export function SearchBar() {
   return (
     <div
       className={`relative w-full transition-transform ${
-        popped ? "scale-[1.01]" : "scale-100"
+        popped ? "scale-[1.05]" : "scale-100"
       }`}
     >
       <SearchIcon
@@ -81,7 +83,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-background border-neu2 focus:border-neu3 border pl-10"
+        className="bg-background border-border focus:border-border border border-1 pl-10"
         placeholder="Search by course, professor, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}

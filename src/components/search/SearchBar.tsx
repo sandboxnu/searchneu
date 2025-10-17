@@ -83,7 +83,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-background border-border focus:border-border border border-1 pl-10"
+        className="bg-background border-border focus:border-neu3 border border-1 pl-10"
         placeholder="Search by course, professor, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}

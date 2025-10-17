@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { DebugTools } from "@/components/DebugTools";
 import { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { source } from "@/lib/source";
 import { DocsLayout, DocsLayoutProps } from "fumadocs-ui/layouts/docs";
@@ -53,7 +52,6 @@ export default function RootLayout({
       <body
         className={`${geist} ${geistMono.variable} flex flex-col antialiased`}
       >
-        <DebugTools />
         {/* these className overrides required b/c of a bug in the Banner component */}
         <Banner>
           Heads up! These docs are still in development! Mind our mess 🏗️

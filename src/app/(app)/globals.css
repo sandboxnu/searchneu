@@ -10,6 +10,7 @@
   --neu8: oklch(0.33 0.027 245.9);
   --neu7: oklch(0.49 0 0); /* label text */
   --neu6: oklch(0.62 0 0); /* placeholder text */
+  --neu5: oklch(0.7155 0 0);
   --neu4: oklch(0.81 0 0); /* rings (at /50) */
   --neu3: oklch(
     0.91 0 0
@@ -77,6 +78,7 @@
   --color-neu8: var(--neu8);
   --color-neu7: var(--neu7);
   --color-neu6: var(--neu6);
+  --color-neu5: var(--neu5);
   --color-neu4: var(--neu4);
   --color-neu3: var(--neu3);
   --color-neu2: var(--neu2);
@@ -86,7 +88,9 @@
   --color-expanded-system-neu6: var(--expanded-system-neu6);
   --color-expanded-system-neu5: var(--expanded-system-neu5);
 
-  --color-search-utility-colors-dark-grey: var(--search-utility-colors-dark-grey);
+  --color-search-utility-colors-dark-grey: var(
+    --search-utility-colors-dark-grey
+  );
   --color-expanded-system-b5: var(--expanded-system-b5);
   --color-brand-palette-links-blue: var(--brand-palette-links-blue);
 

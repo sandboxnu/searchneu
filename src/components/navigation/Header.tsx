@@ -84,6 +84,12 @@ async function NavBar() {
         <Bookmark className="size-4" />
         <span>Catalog</span>
       </Link>
+      <Link
+            href="/scheduler"
+            className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
+          >
+            Plan
+      </Link>
       {enableFaqPage && (
         <Link
           href="/faq"

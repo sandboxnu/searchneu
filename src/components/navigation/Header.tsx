@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { faqFlag, roomsFlag } from "@/lib/flags";
+import { faqFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
 import { Bookmark, CircleQuestionMark } from "lucide-react"; // 👈 Add icons
 
 export async function Header() {
   const enableFaqPage = await faqFlag();
   const enableRoomsPage = await roomsFlag();
+  const enableSchedulerPage = await schedulerFlag();
   // TODO: hamburger menu for mobile
 
   return (
@@ -32,12 +33,14 @@ export async function Header() {
             <Bookmark className="h-6" />
             <span>Catalog</span>
           </Link>
-          <Link
-            href="/scheduler"
-            className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
-          >
-            Plan
-          </Link>
+          {enableSchedulerPage && (
+            <Link
+              href="/scheduler"
+              className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
+            >
+              Plan
+            </Link>
+          )}
           {enableFaqPage && (
             <Link
               href="/faq"

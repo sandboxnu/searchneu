@@ -2,9 +2,8 @@ import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/search/MobileWrapper";
 import type { Option } from "@/components/ui/multi-select";
-import { NUPATH_OPTIONS } from "@/scraper/nupaths";
 import { db } from "@/db";
-import { subjectsT, sectionsT } from "@/db/schema";
+import { subjectsT, sectionsT, nupathsT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
@@ -41,6 +40,16 @@ const cachedClassTypes = unstable_cache(
   { revalidate: 3600, tags: ["banner.classTypes"] },
 );
 
+const cachedNupaths = unstable_cache(
+  async () =>
+    db
+      .selectDistinct({ short: nupathsT.short, name: nupathsT.name })
+      .from(nupathsT)
+      .then((c) => c.map((e) => ({ label: e.name, value: e.short }))),
+  [],
+  { revalidate: 3600, tags: ["banner.nupaths"] },
+);
+
 export default async function Layout(props: {
   params: Promise<{ term: string; course?: string }>;
   children: ReactNode;
@@ -51,9 +60,7 @@ export default async function Layout(props: {
   const subjects = cachedSubjects(term);
   const campuses = cachedCampuses(term);
   const classTypes = cachedClassTypes(term);
-
-  // NOTE: the static nupaths needs a promise b/c the use hook is called on it later
-  const nupaths = new Promise((r) => r(NUPATH_OPTIONS)) as Promise<Option[]>;
+  const nupaths = cachedNupaths();
 
   return (
     <div className="bg-secondary h-full w-full">

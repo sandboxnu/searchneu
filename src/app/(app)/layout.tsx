@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
-import { DebugTools } from "@/components/DebugTools";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth/client";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import FeedbackModal from "@/components/feedback/FeedbackModal";
+import { VercelToolbar } from "@vercel/toolbar/next";
+import Script from "next/script";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -40,8 +41,14 @@ export default function RootLayout({
       >
         <Analytics />
         <SpeedInsights />
+        {process.env.NODE_ENV === "development" && <VercelToolbar />}
+        {process.env.REACT_SCAN && (
+          <Script
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+            crossOrigin="anonymous"
+          />
+        )}
         <AuthProvider>
-          <DebugTools />
           <main className="min-h-screen w-screen grow">{children}</main>
           <FeedbackModal />
 

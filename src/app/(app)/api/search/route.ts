@@ -1,6 +1,5 @@
 import { db } from "@/db";
-import { coursesT, sectionsT } from "@/db/schema";
-import { convertCodeToLiteral } from "@/scraper/nupaths";
+import { coursesT, sectionsT, courseNupathJoinT, nupathsT } from "@/db/schema";
 import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
@@ -63,7 +62,12 @@ export async function GET(req: NextRequest) {
       subject: coursesT.subject,
       maxCredits: coursesT.maxCredits,
       minCredits: coursesT.minCredits,
-      nupaths: coursesT.nupaths,
+      nupaths: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
+      nupathNames: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
       prereqs: coursesT.prereqs,
       coreqs: coursesT.coreqs,
       totalSections: countDistinct(sectionsT.id),
@@ -75,6 +79,8 @@ export async function GET(req: NextRequest) {
     })
     .from(coursesT)
     .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
+    .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
+    .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
     .where(sql.join(sqlChunks, sql.raw(" ")))
     .groupBy(
       coursesT.id,
@@ -83,23 +89,18 @@ export async function GET(req: NextRequest) {
       coursesT.subject,
       coursesT.maxCredits,
       coursesT.minCredits,
-      coursesT.nupaths,
     )
     .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
 
   // filter through the results to find the other filters (not in db index!)
   const processed = result.filter(
     (r) =>
-      (nupaths.length === 0 ||
-        nupaths
-          .map((n) => convertCodeToLiteral(n))
-          .every((x) => r.nupaths.includes(x))) &&
+      (nupaths.length === 0 || nupaths.every((x) => r.nupaths.includes(x))) &&
       (campusFilter.length === 0 ||
         r.campus.some((x) => campusFilter.includes(x))) &&
       (classTypeFilter.length === 0 ||
         r.classType.some((x) => classTypeFilter.includes(x))) &&
       (!honorsFilter || r.honors),
   );
-
   return Response.json(processed);
 }

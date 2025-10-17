@@ -1,16 +1,16 @@
-import { isValidNupath } from "./nupaths";
-import { BannerSection, Course, TermScrape } from "./types";
+import { BannerSection, Config, Course, TermScrape } from "./types";
 import { decode } from "he";
 import { parseCoreqs, parsePrereqs } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
 import { parseRooms } from "./rooms";
+import { logger } from "@/lib/logger";
 
 // scrapeTerm completely scrapes a term
-export async function scrapeTerm(term: string) {
+export async function scrapeTerm(term: string, config: Config) {
   const sections = await scrapeSections(term);
   await getSectionFaculty(sections);
 
-  const { courses, subjects: subjectCodes } = arrangeCourses(sections);
+  const { courses, subjects: subjectCodes } = arrangeCourses(sections, config);
   const subjects = await getSubjects(term, subjectCodes);
 
   await getCourseNames(courses);
@@ -32,7 +32,7 @@ export async function scrapeTerm(term: string) {
 
 // getTermInfo gets the name for the term being scraped from banner
 async function getTermInfo(term: string) {
-  console.log("getting term info");
+  logger.info("getting term info");
   const resp = await fetch(
     `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/getTerms?offset=1&max=10&searchTerm=${term}`,
   ).then((resp) => resp.json());
@@ -41,7 +41,7 @@ async function getTermInfo(term: string) {
 }
 
 async function getSubjects(term: string, codes: string[]) {
-  console.log("getting subjects");
+  logger.info("getting subjects");
   const resp = await fetch(
     `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/get_subject?term=${term}&offset=1&max=900`,
   ).then((r) => r.json());
@@ -60,15 +60,15 @@ async function getReqs(
   courses: Course[],
   subjects: { code: string; description: string }[],
 ) {
-  console.log("getting course reqs");
+  logger.info("getting course reqs");
   const batchSize = 50;
   const term = courses[0].term;
   const numBatches = Math.ceil(courses.length / batchSize);
-  console.log(`running ${numBatches} batches`);
+  logger.info(`running ${numBatches} batches`);
 
-  console.log("fetching coreqs");
+  logger.info("fetching coreqs");
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -96,7 +96,7 @@ async function getReqs(
   }
 
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -155,10 +155,12 @@ export async function getCourseNames(courses: Course[]) {
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p, j) => {
-        courses[offset + j].name = decode(decode(p.value))
-          .replace(/<[^>]*>/g, "") // Remove HTML tags
-          .trim()
-          .match(/^Title:(.*)$/m)?.[1].trim() || "Unknown Course Name";
+        courses[offset + j].name =
+          decode(decode(p.value))
+            .replace(/<[^>]*>/g, "") // Remove HTML tags
+            .trim()
+            .match(/^Title:(.*)$/m)?.[1]
+            .trim() || "Unknown Course Name";
       });
   }
 
@@ -168,14 +170,14 @@ export async function getCourseNames(courses: Course[]) {
 // getCourseDescriptions goes through and scrapes the course descriptions for
 // every course
 export async function getCourseDescriptions(courses: Course[]) {
-  console.log("getting course descriptions");
+  logger.info("getting course descriptions");
   const batchSize = 50;
   const term = courses[0].term;
   const numBatches = Math.ceil(courses.length / batchSize);
-  console.log(`running ${numBatches} batches`);
+  logger.info(`running ${numBatches} batches`);
 
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
 
     const offset = batchSize * i;
     const promises = courses.slice(offset, offset + 50).map((c) =>
@@ -209,9 +211,30 @@ export async function getCourseDescriptions(courses: Course[]) {
 // arrangeCourses takes the raw sections scraped from banner and
 // pulls out the courses, arranging the sections in those courses,
 // pulls out the right fields, etc.
-export function arrangeCourses(sections: BannerSection[]) {
+export function arrangeCourses(sections: BannerSection[], config: Config) {
   const courses: { [key: string]: Course } = {};
   const subjects: string[] = [];
+
+  function isValidNupath(code: string) {
+    return (
+      config.attributes.nupath.filter((n) => "NC" + n.short === code).length > 0
+    );
+  }
+
+  function convertNupath(code: string) {
+    return config.attributes.nupath.filter((n) => "NC" + n.short === code)[0]
+      .short;
+  }
+
+  function convertCampus(code: string) {
+    const count = config.attributes.campus.filter((c) => c.code === code);
+    if (count.length === 0) {
+      console.error("campus is invalid");
+      throw Error("campus error");
+    }
+
+    return count[0].name ?? count[0].code;
+  }
 
   for (const s of sections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
@@ -225,7 +248,7 @@ export function arrangeCourses(sections: BannerSection[]) {
         minCredits: s.creditHourLow,
         nupath: s.sectionAttributes
           .filter((a) => isValidNupath(a.code))
-          .map((a) => a.description.trim()),
+          .map((a) => convertNupath(a.code)),
         sections: [],
         prereqs: {},
         coreqs: {},
@@ -240,7 +263,7 @@ export function arrangeCourses(sections: BannerSection[]) {
       waitlistRemaining: s.waitAvailable,
       classType: s.scheduleTypeDescription,
       honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-      campus: s.campusDescription,
+      campus: convertCampus(s.campusDescription),
       meetingTimes: parseMeetingTimes(s),
 
       faculty: s.f ?? "TBA",
@@ -257,7 +280,7 @@ export function parseMeetingTimes(section: BannerSection) {
   for (const meetingFaculty of section.meetingsFaculty) {
     const meetingTime = meetingFaculty?.meetingTime;
     if (!meetingTime) {
-      console.log("no meeting time " + section.courseReferenceNumber);
+      logger.info("no meeting time " + section.courseReferenceNumber);
       continue;
     }
 
@@ -303,7 +326,7 @@ export function parseMeetingTimes(section: BannerSection) {
 // return the faculty on the search page so these have to be gathered from
 // seperate requests
 export async function getSectionFaculty(sections: BannerSection[]) {
-  console.log("getting section faculty");
+  logger.info("getting section faculty");
   if (sections.length === 0) {
     return sections;
   }
@@ -311,7 +334,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
   const term = sections[0].term;
   const concurrencyLimit = 20;
 
-  console.log(
+  logger.info(
     `Processing ${sections.length} sections with concurrency limit of ${concurrencyLimit}`,
   );
 
@@ -327,7 +350,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
           maxDelay: 10000,
           retryOn: [429, 500, 502, 503, 504, 302],
           onRetry: (_, attempt) => {
-            console.log(
+            logger.info(
               `retrying section ${section.courseReferenceNumber}, attempt ${attempt}`,
             );
           },
@@ -336,9 +359,9 @@ export async function getSectionFaculty(sections: BannerSection[]) {
       const data = await response.json();
       return { index, data, success: true };
     } catch (error) {
-      console.error(
-        `failed to fetch faculty for section ${section.courseReferenceNumber}:`,
-        error,
+      logger.error(
+        { courseReferenceNumber: section.courseReferenceNumber, error },
+        "failed to fetch faculty for section",
       );
       return { index, data: null, success: false };
     }
@@ -365,7 +388,7 @@ export async function getSectionFaculty(sections: BannerSection[]) {
 // (ie number of concurrent requests to send in a batch)
 export async function scrapeSections(term: string, cookiePool = 10) {
   const cookies = await getAuthCookies(term, cookiePool);
-  console.log("have cookies");
+  logger.info("have cookies");
 
   // get just the first section to see how many are in a term
   const resp = await fetch(
@@ -376,17 +399,17 @@ export async function scrapeSections(term: string, cookiePool = 10) {
       },
     },
   ).then((resp) => resp.json());
-  console.log(`need to scrape ${resp.totalCount} sections`);
+  logger.info(`need to scrape ${resp.totalCount} sections`);
 
   // Number of batches we have to do. Each page can return up to 500 sections and
   // we only have `cookiePool` number of cookies
   const numBatches = Math.ceil(Math.ceil(resp.totalCount / 500) / cookiePool);
-  console.log(`running ${numBatches} batches`);
+  logger.info(`running ${numBatches} batches`);
 
   const rawSections: BannerSection[] = [];
 
   for (let i = 0; i < numBatches; i++) {
-    console.log(`batch ${i}`);
+    logger.info(`batch ${i}`);
     const promises = Array.from([...Array(cookiePool).keys()], (j) =>
       fetch(
         `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_term=${term}&pageOffset=${(i * cookiePool + j) * 500}&pageMaxSize=500`,
@@ -399,18 +422,18 @@ export async function scrapeSections(term: string, cookiePool = 10) {
     );
 
     const results = await Promise.allSettled(promises);
-    console.log(`batch ${i} responses received`);
+    logger.info(`batch ${i} responses received`);
 
     results
       .filter((p) => p.status === "fulfilled")
       .forEach((p) => {
         rawSections.push(...p.value.data);
       });
-    console.log(`batch ${i} scraped`);
+    logger.info(`batch ${i} scraped`);
   }
 
   if (rawSections.length !== resp.totalCount) {
-    console.log(
+    logger.info(
       `difference in scraped sections - expected ${resp.totalCount} received ${rawSections.length}`,
     );
   }

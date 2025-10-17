@@ -53,7 +53,7 @@ export default async function Home() {
         <div className="ml-[10%] w-[80%] max-w-[800px] space-y-4">
           <Logo className="w-2/3 max-w-[450px] min-w-[220px]" />
           <Badge variant="accent">
-            New desgin! Learn more <PartyPopper />
+            New design! Learn more <PartyPopper />
           </Badge>
           <Suspense fallback={<p>loading...</p>}>
             <HomeSearch terms={terms} />

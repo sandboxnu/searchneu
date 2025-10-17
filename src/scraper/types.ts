@@ -1,5 +1,25 @@
 import { Requisite } from "./reqs";
 
+export interface Config {
+  terms: {
+    term: number;
+    name?: string;
+    activeUntil: Date;
+  }[];
+  attributes: {
+    campus: {
+      code: string;
+      name?: string;
+      group: string;
+    }[];
+    nupath: {
+      code: string;
+      short: string;
+      name: string;
+    }[];
+  };
+}
+
 export interface BannerSection {
   id: number;
   term: string;

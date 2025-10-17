@@ -363,15 +363,7 @@ function SPMultiselect<T>(props: {
                             "font-bold",
                         )}
                       >
-                        <div
-                          className="data-[selected=true]:bg-neu9 data-[selected=true]:text-neu1 data-[selected=true]:border-neu9 pointer-events-none size-4 shrink-0 rounded-[4px] border transition-all select-none *:[svg]:opacity-0 data-[selected=true]:*:[svg]:opacity-100"
-                          data-selected={selected.some(
-                            (f) => f.value === opt.value,
-                          )}
-                        >
-                          <CheckIcon className="size-3.5 text-current" />
-                        </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 pl-2">
                           {opt.value !== opt.label && (
                             <div
                               className={cn(

@@ -50,6 +50,9 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
             {filters.minHonorsCourses !== undefined && (
               <div>• Minimum honors courses: {filters.minHonorsCourses}</div>
             )}
+            {filters.nupaths && filters.nupaths.length > 0 && (
+              <div>• NUPath requirements: {filters.nupaths.join(", ")}</div>
+            )}
           </div>
         </div>
       )}

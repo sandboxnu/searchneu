@@ -24,9 +24,10 @@ interface FilterPanelProps {
   onFiltersChange: (filters: ScheduleFilters) => void;
   onGenerateSchedules: (courseIds: number[]) => void;
   isGenerating: boolean;
+  nupathOptions: { label: string; value: string }[];
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating }: FilterPanelProps) {
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions }: FilterPanelProps) {
   const [courseIdsInput, setCourseIdsInput] = useState("17500, 16048, 15783, 17501");
 
   const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
@@ -194,6 +195,36 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           placeholder="Any"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
         />
+      </div>
+
+      <Separator />
+
+      {/* NUPath Requirement */}
+      <div>
+        <Label className="text-muted-foreground text-xs font-bold block mb-2">
+          NUPATH REQUIREMENTS
+        </Label>
+        <div className="flex flex-wrap gap-2">
+          {nupathOptions.map((nupath) => (
+            <label key={nupath.value} className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+              <input
+                type="checkbox"
+                checked={filters.nupaths?.includes(nupath.value) ?? false}
+                onChange={(e) => {
+                  const currentNupaths = filters.nupaths || [];
+                  const newNupaths = e.target.checked
+                    ? [...currentNupaths, nupath.value]
+                    : currentNupaths.filter(n => n !== nupath.value);
+                  updateFilter("nupaths", newNupaths.length > 0 ? newNupaths: undefined);
+                }}
+                className="rounded"
+              />
+              <span className="text-sm">
+                {nupath.label}
+              </span>
+            </label>
+          ))}
+        </div>
       </div>
     </div>
   );

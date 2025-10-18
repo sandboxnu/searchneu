@@ -4,6 +4,7 @@ export type SectionWithCourse = Section & {
   courseName: string;
   courseSubject: string;
   courseNumber: string;
+  courseNupaths?: string[];
 };
 
 export type ScheduleFilters = {
@@ -13,6 +14,7 @@ export type ScheduleFilters = {
   minDaysFree?: number;
   minSeatsLeft?: number;
   minHonorsCourses?: number;
+  nupaths?: string[];
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -87,6 +89,25 @@ const getOccupiedDays = (schedule: SectionWithCourse[]): Set<number> => {
   return occupiedDays;
 };
 
+// Check if a schedule fulfills all required NUPaths
+const scheduleHasRequiredNupaths = (
+  schedule: SectionWithCourse[],
+  requiredNupaths: string[]
+): boolean => {
+  if (requiredNupaths.length === 0) return true;
+  
+  // Get all NUPaths fulfilled by courses in this schedule
+  const scheduleNupaths = new Set<string>();
+  for (const section of schedule) {
+    if (section.courseNupaths) {
+      section.courseNupaths.forEach(nupath => scheduleNupaths.add(nupath));
+    }
+  }
+  
+  // Check if all required NUPaths are fulfilled
+  return requiredNupaths.every(nupath => scheduleNupaths.has(nupath));
+};
+
 // Check if a complete schedule passes all filters
 export const schedulePassesFilters = (
   schedule: SectionWithCourse[],
@@ -112,6 +133,13 @@ export const schedulePassesFilters = (
   if (filters.minHonorsCourses !== undefined) {
     const honorsCount = schedule.filter(section => section.honors).length;
     if (honorsCount < filters.minHonorsCourses) {
+      return false;
+    }
+  }
+
+  // Check NUPath requirements (only if provided)
+  if (filters.nupaths && filters.nupaths.length > 0) {
+    if (!scheduleHasRequiredNupaths(schedule, filters.nupaths)) {
       return false;
     }
   }

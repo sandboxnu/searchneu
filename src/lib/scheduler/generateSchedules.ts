@@ -1,7 +1,7 @@
 import { Section } from "@/components/coursePage/SectionTable";
 import { db } from "@/db";
-import { coursesT, meetingTimesT, sectionsT } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { coursesT, meetingTimesT, sectionsT, nupathsT, courseNupathJoinT } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
@@ -22,6 +22,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       courseName: coursesT.name,
       courseSubject: coursesT.subject,
       courseNumber: coursesT.courseNumber,
+      courseNupaths: sql<string[]>`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
       // Meeting time data
       meetingTimeId: meetingTimesT.id,
       days: meetingTimesT.days,
@@ -31,7 +32,28 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
     .from(sectionsT)
     .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+    .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
+    .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
     .where(eq(sectionsT.courseId, courseId))
+    .groupBy(
+      sectionsT.id,
+      sectionsT.crn,
+      sectionsT.faculty,
+      sectionsT.campus,
+      sectionsT.honors,
+      sectionsT.classType,
+      sectionsT.seatRemaining,
+      sectionsT.seatCapacity,
+      sectionsT.waitlistCapacity,
+      sectionsT.waitlistRemaining,
+      coursesT.name,
+      coursesT.subject,
+      coursesT.courseNumber,
+      meetingTimesT.id,
+      meetingTimesT.days,
+      meetingTimesT.startTime,
+      meetingTimesT.endTime,
+    )
     .then((rows) => {
       // Group the rows by section and reconstruct the meetingTimes array
       const sectionMap = new Map<number, SectionWithCourse>();
@@ -52,6 +74,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
             courseName: row.courseName,
             courseSubject: row.courseSubject,
             courseNumber: row.courseNumber,
+            courseNupaths: row.courseNupaths,
             meetingTimes: [],
           });
         }

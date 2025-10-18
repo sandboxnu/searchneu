@@ -3,7 +3,6 @@
 import { useState, use } from "react";
 import { cn } from "@/lib/cn";
 import { TrackingSwitch } from "../auth/TrackingSwitch";
-import { useSearchParams } from "next/navigation";
 
 interface MeetingTime {
   days: number[];
@@ -48,25 +47,8 @@ export function SectionTable({
   trackedSectionsPromise: Promise<number[]>;
   isTermActive: boolean;
 }) {
-  const [showAll, setShowAll] = useState(false);
-  const searchParams = useSearchParams();
-
   const sections = use(sectionsPromise);
   const trackedSections = use(trackedSectionsPromise);
-
-  const totalSeats = sections.reduce((agg, s) => agg + s.seatCapacity, 0);
-  const seatsRemaining = sections.reduce((agg, s) => agg + s.seatRemaining, 0);
-
-  const campusFilter = searchParams.getAll("camp");
-  const classTypeFilter = searchParams.getAll("clty");
-  const honorsFilter = searchParams.get("honors");
-
-  const filteredSections = sections.filter(
-    (s) =>
-      (campusFilter.length === 0 || campusFilter.includes(s.campus)) &&
-      (classTypeFilter.length === 0 || classTypeFilter.includes(s.classType)) &&
-      (!honorsFilter || s.honors),
-  );
 
   return (
     <div className="-mx-10 overflow-x-auto px-10 [&::-webkit-scrollbar]:hidden">
@@ -119,9 +101,6 @@ function TableRow({
   isTermActive: boolean;
 }) {
   const seatDelta = section.seatRemaining / section.seatCapacity;
-  const building = section.meetingTimes[0]?.room?.building?.name;
-  const room = section.meetingTimes[0]?.room?.number;
-
   const [tracked, setTracked] = useState(initialTracked);
 
   return (

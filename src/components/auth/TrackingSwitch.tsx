@@ -7,7 +7,6 @@ import {
 import { Switch } from "../ui/switch";
 import { TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
-import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth/client";
 import { TooltipContent, Tooltip, TooltipTrigger } from "../ui/tooltip";
 import {
@@ -39,7 +38,7 @@ export function TrackingSwitch({
   const { user, isPending: loading } = useAuth();
   const [checked, setChecked] = useState(inital);
   const [oneMoreStep, setOneMoreStep] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const router = useRouter();
 
   const disabled = checked ? false : props.disabled;

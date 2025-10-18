@@ -125,15 +125,15 @@ export function SearchPanel(props: {
         </Suspense>
       </div>
 
-      <div className="">
+      <div>
         <Label
           htmlFor="course-id-range"
-          className="text-neu7 pb-2 text-sm font-medium"
+          className="text-neutral-700 pb-2 text-sm font-medium"
         >
           Course Id
         </Label>
         <RangeSlider />
-        <div className="text-neu6 flex w-full justify-between pt-2 text-sm">
+        <div className="text-neutral-600 flex w-full justify-between pt-2 text-sm">
           <p>1k</p>
           <p>2k</p>
           <p>3k</p>
@@ -159,7 +159,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
     terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
   );
 
-  // HACK: this will blink but for now its fine
+  // Update theme attribute when college changes
   if (typeof window !== "undefined")
     document.body.setAttribute("data-theme", activeCollege ?? "neu");
 
@@ -177,26 +177,26 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
         document.body.setAttribute("data-theme", val);
         router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
       }}
-      className="bg-neu2 w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3 *:data-[slot=toggle-group-item]:font-bold"
+      className="bg-secondary w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3 *:data-[slot=toggle-group-item]:font-bold"
     >
       <ToggleGroupItem
         value="neu"
         aria-label="Toggle NEU college"
-        className="data-[state=on]:text-neu"
+        className="data-[state=on]:text-brand-neu"
       >
         NEU
       </ToggleGroupItem>
       <ToggleGroupItem
         value="cps"
         aria-label="Toggle CPS college"
-        className="data-[state=on]:text-cps"
+        className="data-[state=on]:text-brand-cps"
       >
         CPS
       </ToggleGroupItem>
       <ToggleGroupItem
         value="law"
         aria-label="Toggle LAW college"
-        className="data-[state=on]:text-law"
+        className="data-[state=on]:text-brand-law"
       >
         LAW
       </ToggleGroupItem>
@@ -294,7 +294,7 @@ function SPMultiselect<T>(props: {
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <p
-              className="text-blue hover:text-blue/80 cursor-pointer text-xs"
+              className="text-status-info hover:text-status-info/80 cursor-pointer text-xs"
               onClick={() => updateSearchParams([])}
             >
               Clear all
@@ -339,8 +339,7 @@ function SPMultiselect<T>(props: {
                           );
                         }}
                       >
-                        <div
-                          className="data-[selected=true]:bg-neu9 data-[selected=true]:text-neu1 data-[selected=true]:border-neu9 pointer-events-none size-4 shrink-0 rounded-[4px] border transition-all select-none *:[svg]:opacity-0 data-[selected=true]:*:[svg]:opacity-100"
+                        <div className="data-[selected=true]:bg-foreground data-[selected=true]:text-background data-[selected=true]:border-foreground pointer-events-none size-4 shrink-0 rounded-[4px] border transition-all select-none *:[svg]:opacity-0 data-[selected=true]:*:[svg]:opacity-100"
                           data-selected={selected.some(
                             (f) => f.value === opt.value,
                           )}
@@ -448,9 +447,9 @@ function RangeSlider() {
 }
 
 function MultiselectSkeleton() {
-  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-lg"></div>;
+  return <div className="bg-primary h-9 w-full animate-pulse rounded-lg" />;
 }
 
 function ToggleSkeleton() {
-  return <div className="bg-neu3 h-10 w-full animate-pulse rounded-lg"></div>;
+  return <div className="bg-primary h-10 w-full animate-pulse rounded-lg" />;
 }

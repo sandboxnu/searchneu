@@ -17,6 +17,10 @@ const cachedTerms = unstable_cache(async () => getTerms(), ["banner.terms"], {
   tags: ["banner.terms"],
 });
 
+/**
+ * Home Page
+ * Landing page with search interface and branding
+ */
 export default async function Home() {
   const terms = cachedTerms();
   const enableFaqPage = await faqFlag();
@@ -24,42 +28,50 @@ export default async function Home() {
   return (
     <>
       <header className="absolute top-0 z-40 flex h-14 w-full items-center justify-between p-4">
-        <a href="https://www.sandboxnu.com/">
+        <a href="https://www.sandboxnu.com/" aria-label="Sandbox NU">
           <Sandbox className="mt-8" />
         </a>
+        
         <div className="flex items-center gap-4">
           <nav className="space-x-2 font-semibold">
             <Link
               href="/catalog"
-              className="hover:bg-neu4/60 rounded-lg px-3 py-2"
+              className="hover:bg-neutral-400/60 rounded-lg px-3 py-2"
             >
               Catalog
             </Link>
+            
             {enableFaqPage && (
               <Link
                 href="/faq"
-                className="hover:bg-neu4/60 rounded-lg px-3 py-2"
+                className="hover:bg-neutral-400/60 rounded-lg px-3 py-2"
               >
                 FAQ
               </Link>
             )}
           </nav>
+          
           <UserIcon />
         </div>
       </header>
+      
       <div className="flex h-screen min-h-[500px] w-full flex-col justify-center">
-        <div className="sunset absolute top-0 -z-20 h-full w-full"></div>
+        <div className="sunset absolute top-0 -z-20 h-full w-full" />
         <City className="absolute bottom-0 -z-10 min-h-48 max-w-screen" />
+        
         <div className="ml-[10%] w-[80%] max-w-[800px] space-y-4">
           <Logo className="w-2/3 max-w-[450px] min-w-[220px]" />
+          
           <Badge variant="accent">
             New design! Learn more <PartyPopper />
           </Badge>
+          
           <Suspense fallback={<p>loading...</p>}>
             <HomeSearch terms={terms} />
           </Suspense>
         </div>
       </div>
+      
       <Footer />
     </>
   );

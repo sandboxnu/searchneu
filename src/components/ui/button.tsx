@@ -1,21 +1,26 @@
 import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/cn";
 
+/**
+ * Button Variants
+ * Defines the visual styles for different button states and sizes
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-neu4 focus-visible:ring-neu4/50 focus-visible:ring-[3px] aria-invalid:ring-red/20 aria-invalid:border-red",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-neutral-400 focus-visible:ring-neutral-400/50 focus-visible:ring-[3px] aria-invalid:ring-status-error/20 aria-invalid:border-status-error",
   {
     variants: {
       variant: {
-        default: "bg-neu text-neu1 hover:bg-neu/90",
+        default: "bg-brand-neu text-neutral-100 hover:bg-brand-neu/90",
         destructive:
-          "bg-red text-neu1 hover:bg-red/90 focus-visible:ring-red/20",
-        outline: "border bg-neu1 hover:bg-neu3 hover:text-neu9",
-        secondary: "bg-neu3 text-neu9 hover:bg-neu3/80",
-        ghost: "hover:bg-neu3 hover:text-neu9",
-        link: "text-neu9 underline-offset-4 hover:underline",
+          "bg-status-error text-neutral-100 hover:bg-status-error/90 focus-visible:ring-status-error/20",
+        outline:
+          "border bg-background hover:bg-primary hover:text-foreground",
+        secondary:
+          "bg-primary text-foreground hover:bg-primary/80",
+        ghost: "hover:bg-primary hover:text-foreground",
+        link: "text-foreground underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -31,20 +36,38 @@ const buttonVariants = cva(
   },
 );
 
+/**
+ * Button Props
+ * Combines standard button props with variant options
+ */
+interface ButtonProps
+  extends React.ComponentProps<"button">,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+/**
+ * Button Component
+ * A flexible button component with multiple variants and sizes
+ * 
+ * @example
+ * ```tsx
+ * <Button variant="default" size="lg">Click me</Button>
+ * <Button variant="destructive">Delete</Button>
+ * <Button asChild><Link href="/">Home</Link></Button>
+ * ```
+ */
 function Button({
   className,
   variant,
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
-  const Comp = asChild ? Slot.Slot : "button";
+}: ButtonProps) {
+  const Component = asChild ? Slot.Slot : "button";
 
   return (
-    <Comp
+    <Component
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
@@ -53,3 +76,4 @@ function Button({
 }
 
 export { Button, buttonVariants };
+export type { ButtonProps };

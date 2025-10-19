@@ -41,7 +41,7 @@ export function Requisites({
           className="flex w-full flex-col gap-2"
         >
           {i > 1 && <DashedLine />}
-          <div className="text-center text-base font-medium text-gray-600">
+          <div className="font-xs text-center text-xs text-gray-600">
             {i > 1 && "and"} 1 of the following:
           </div>
         </div>
@@ -53,7 +53,7 @@ export function Requisites({
         <Link
           key={`${item.subject}-${item.courseNumber}-${keyPrefix}-${i}`}
           href={`/catalog/${termId}/${item.subject}%20${item.courseNumber}`}
-          className="rounded-lg bg-white p-2.5 text-left transition-colors hover:bg-gray-200"
+          className="rounded-lg bg-white p-2.5 text-left outline-1 outline-[#F1F2F2] transition-colors hover:bg-gray-200"
         >
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold whitespace-nowrap text-gray-900">

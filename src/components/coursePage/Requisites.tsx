@@ -91,7 +91,6 @@ export function Requisites({
       <h3 className="mb-2 text-xs font-semibold tracking-wide text-[#5F5F5F] uppercase">
         {title}
       </h3>
-
       <div className="flex flex-col gap-2">
         {limitedItems.length == 0 && (
           <p className="text-xs text-[#A3A3A3] italic"> None </p>
@@ -110,7 +109,6 @@ export function Requisites({
           </div>
         </div>
       </div>
-
       {total > limit && (
         <button
           onClick={() => setShowAll(!showAll)}

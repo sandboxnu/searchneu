@@ -333,8 +333,8 @@ export default async function Page(props: {
           />
         </div>
       </div>
-      <Separator />
-      <div className="w-full">
+      <Separator/>
+      <div className="w-full px-10">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable
             sectionsPromise={sections as Promise<Section[]>}

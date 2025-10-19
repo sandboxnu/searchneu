@@ -171,7 +171,7 @@ function TableRow({
         <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
       </td>
 
-      <td className="px-4 py-5 align-top">
+      <td className="px-4 py-5 align-center">
         <RoomBlocks section={section} key={section.crn} />
       </td>
 

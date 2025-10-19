@@ -320,7 +320,7 @@ export default async function Page(props: {
         <h3 className="col-span-12 text-xs font-bold text-[#A3A3A3]">
           REQUIREMENTS
         </h3>
-        <div className="flex gap-2">
+        <div className="flex items-start gap-2">
           <ReqsWrapper
             title="prerequisites"
             reqs={course.prereqs as Requisite}

@@ -29,6 +29,7 @@ import {
   type Room,
 } from "@/components/coursePage/SectionTable";
 import { type Metadata } from "next";
+import { ReqsWrapper } from "@/components/coursePage/ReqsWrapper";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
@@ -315,17 +316,21 @@ export default async function Page(props: {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="flex w-full flex-col gap-2 pr-10 pl-10">
         <h3 className="text-muted-foreground col-span-12 pb-2 text-xs font-bold">
           REQUIREMENTS
         </h3>
-        <div className="">
-          <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
-          <p>{renderRequisite(course.prereqs as Requisite, termId)}</p>
-        </div>
-        <div className="">
-          <h3 className="text-neu7 pb-2 text-sm font-medium">Coreqs</h3>
-          <p>{renderRequisite(course.coreqs as Requisite, termId)}</p>
+        <div className="flex gap-2">
+          <ReqsWrapper
+            title="prerequisites"
+            reqs={course.prereqs as Requisite}
+            termId={termId}
+          />
+          <ReqsWrapper
+            title="corequisites"
+            reqs={course.coreqs as Requisite}
+            termId={termId}
+          />
         </div>
       </div>
       <Separator />
@@ -387,71 +392,6 @@ function formatLastUpdatedString(date: Date) {
   const days = Math.floor(hours / 24);
   str += days === 1 ? "1 day ago" : `${days} days ago`;
   return str;
-}
-
-// renderRequisite parses the requisite structure and creates the JSX elements
-// that then can be rendered (ie "CS 2500 and CS 2501")
-function renderRequisite(requisite: Requisite, term: string): JSX.Element {
-  if (!requisite || Object.keys(requisite).length === 0) {
-    return <span>None</span>;
-  }
-
-  return renderRequisiteItem(requisite, true, term);
-}
-
-function renderRequisiteItem(
-  item: Requisite,
-  isTopLevel: boolean = false,
-  term: string,
-): JSX.Element {
-  if ("subject" in item && "courseNumber" in item) {
-    return (
-      <Link
-        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}`}
-        className="text-blue hover:text-blue/80"
-      >
-        {item.subject} {item.courseNumber}
-      </Link>
-    );
-  }
-
-  if ("name" in item && "score" in item) {
-    return (
-      <span className="">
-        {item.name}: {item.score}
-      </span>
-    );
-  }
-
-  if ("type" in item && "items" in item) {
-    const renderedItems = item.items.map((subItem) =>
-      renderRequisiteItem(subItem, false, term),
-    );
-
-    if (item.items.length === 1) {
-      return renderedItems[0];
-    }
-
-    const operator = item.type === "and" ? " and " : " or ";
-    const elements: JSX.Element[] = [];
-
-    renderedItems.forEach((renderedItem, index) => {
-      elements.push(<span key={`item-${index}`}>{renderedItem}</span>);
-      if (index < renderedItems.length - 1) {
-        elements.push(
-          <span key={`op-${index}`} className="">
-            {operator}
-          </span>,
-        );
-      }
-    });
-
-    const content = <>{elements}</>;
-
-    return isTopLevel ? content : <span className="">({content})</span>;
-  }
-
-  throw new Error("unknown requisite item type");
 }
 
 function SectionsTableSkeleton() {

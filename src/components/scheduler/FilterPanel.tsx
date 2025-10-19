@@ -28,7 +28,7 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions }: FilterPanelProps) {
-  const [courseIdsInput, setCourseIdsInput] = useState("17500, 16048, 15783, 17501");
+  const [courseIdsInput, setCourseIdsInput] = useState("");
 
   const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
     if (value === undefined || (Array.isArray(value) && value.length === 0)) {

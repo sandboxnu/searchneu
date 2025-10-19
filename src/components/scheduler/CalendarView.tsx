@@ -127,7 +127,7 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
                   return (
                     <div
                       key={`${sectionIndex}-${meetingIndex}`}
-                      className={`absolute w-[calc(100%-8px)] mx-1 rounded-md ${courseColor} p-2 overflow-hidden cursor-pointer`}
+                      className={`absolute w-[calc(100%-8px)] mx-1 rounded-md ${courseColor} p-2 overflow-hidden`}
                       style={position}
                     >
                       <div className="text-base font-bold truncate text-black">

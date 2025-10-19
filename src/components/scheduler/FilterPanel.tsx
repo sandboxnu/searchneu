@@ -54,7 +54,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   };
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:hidden">
       {/* Course IDs Input */}
       <div>
         <Label className="text-muted-foreground text-xs font-bold">

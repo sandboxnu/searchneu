@@ -295,9 +295,9 @@ export default async function Page(props: {
           </a>
         </div>
       </div>
-      <Separator/>
+      <Separator />
       <div className="flex flex-col items-start self-stretch px-10">
-        <h3 className="text-muted-foreground pb-2 text-xs font-bold">
+        <h3 className="text-expanded-system-neu5 pb-2 text-xs font-bold">
           NUPATHS
         </h3>
         <div className="flex gap-2">
@@ -317,7 +317,7 @@ export default async function Page(props: {
         </div>
       </div>
       <div className="flex w-full flex-col gap-2 pr-10 pl-10">
-        <h3 className="col-span-12 text-xs font-bold text-[#A3A3A3]">
+        <h3 className="text-expanded-system-neu5 col-span-12 text-xs font-bold">
           REQUIREMENTS
         </h3>
         <div className="flex items-start gap-2">
@@ -333,7 +333,7 @@ export default async function Page(props: {
           />
         </div>
       </div>
-      <Separator/>
+      <Separator />
       <div className="w-full px-10">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable

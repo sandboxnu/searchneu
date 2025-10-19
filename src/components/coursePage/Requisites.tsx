@@ -38,11 +38,11 @@ export function Requisites({
       return (
         <div
           key={`sep-${keyPrefix}-${i}`}
-          className="flex w-full flex-col gap-2"
+          className="flex w-full flex-col gap-1.5"
         >
-          {i > 1 && <DashedLine />}
-          <div className="font-xs text-center text-xs text-gray-600">
-            {i > 1 && "and"} 1 of the following:
+          <DashedLine />
+          <div className="font-xs text-neu6 text-center text-xs">
+            {i > 1 && "and"} (1) of the following:
           </div>
         </div>
       );
@@ -53,14 +53,14 @@ export function Requisites({
         <Link
           key={`${item.subject}-${item.courseNumber}-${keyPrefix}-${i}`}
           href={`/catalog/${termId}/${item.subject}%20${item.courseNumber}`}
-          className="rounded-lg bg-white p-2.5 text-left outline-1 outline-[#F1F2F2] transition-colors hover:bg-gray-200"
+          className="outline-border rounded-lg bg-white p-2.5 text-left outline-1 transition-colors hover:bg-gray-200"
         >
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold whitespace-nowrap text-gray-900">
+            <span className="text-expanded-system-neu8 text-xs font-bold whitespace-nowrap">
               {item.subject} {item.courseNumber}
             </span>
             {item.name && (
-              <span className="truncate text-xs text-gray-600">
+              <span className="text-expanded-system-neu6 truncate text-xs">
                 {item.name}
               </span>
             )}
@@ -87,13 +87,13 @@ export function Requisites({
   const hiddenItems = items.slice(limitedItems.length);
 
   return (
-    <div className="flex flex-1 flex-col gap-1 rounded-lg bg-[#F8F9F9] p-4">
-      <h3 className="mb-2 text-xs font-semibold tracking-wide text-[#5F5F5F] uppercase">
+    <div className="bg-utility-colors-off-white flex flex-1 flex-col rounded-lg p-4 pb-2">
+      <h3 className="text-neu7 mb-2 text-xs font-semibold tracking-wide uppercase">
         {title}
       </h3>
       <div className="flex flex-col gap-2">
         {limitedItems.length == 0 && (
-          <p className="text-xs text-[#A3A3A3] italic"> None </p>
+          <p className="text-expanded-system-neu5 text-xs italic"> None </p>
         )}
         {limitedItems.map((item, i) => renderItem(item, i, "limited"))}
 
@@ -112,21 +112,19 @@ export function Requisites({
       {total > limit && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium tracking-wide text-gray-600 uppercase transition-colors hover:bg-gray-50"
+          className="text-neu6 flex w-full items-center justify-center gap-1 px-3 py-1.5 pb-[-4px] text-sm font-bold tracking-wide uppercase transition-colors hover:bg-gray-50"
         >
           <span>{showAll ? "Collapse" : "Expand"}</span>
           <svg
-            className={`h-4 w-4 transition-transform duration-500 ${showAll ? "rotate-180" : ""}`}
+            width="8"
+            height="5"
+            viewBox="0 0 8 5"
             fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
+              d="M7.07209 4.45978C6.93625 4.59559 6.75203 4.67188 6.55995 4.67188C6.36787 4.67188 6.18365 4.59559 6.04781 4.45978L3.66241 2.07439L1.27701 4.45978C1.14039 4.59174 0.957411 4.66475 0.767479 4.6631C0.577548 4.66145 0.395863 4.58527 0.261556 4.45096C0.127249 4.31665 0.0510659 4.13497 0.0494156 3.94504C0.0477653 3.75511 0.12078 3.57213 0.252732 3.4355L3.15027 0.537966C3.28611 0.402164 3.47033 0.325876 3.66241 0.325876C3.85449 0.325876 4.03871 0.402164 4.17455 0.537966L7.07209 3.4355C7.20789 3.57135 7.28418 3.75556 7.28418 3.94765C7.28418 4.13973 7.20789 4.32394 7.07209 4.45978Z"
+              fill="#A3A3A3"
             />
           </svg>
         </button>

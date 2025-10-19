@@ -19,13 +19,16 @@ export function ExpandableDescription({
       : `${description.substring(0, charLimit)}...`;
 
   return (
-    <p style={{lineHeight: 1.3}} className="self-stretch text-search-utility-colors-dark-grey text-base">
+    <p
+      style={{ lineHeight: 1.3 }}
+      className="text-utility-colors-dark-grey self-stretch text-base"
+    >
       {displayText}{" "}
       {needsExpansion && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          style={{lineHeight: 1.13}}
-          className="text-sm text-expanded-system-b5 hover:text-expanded-system-b5/80 focus:outline-none"
+          style={{ lineHeight: 1.13 }}
+          className="text-expanded-system-b5 hover:text-expanded-system-b5/80 text-sm focus:outline-none"
         >
           {isExpanded ? "see less" : "see more"}
         </button>

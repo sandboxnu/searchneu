@@ -295,8 +295,8 @@ export default async function Page(props: {
           </a>
         </div>
       </div>
-      <Separator />
-      <div className="">
+      <Separator/>
+      <div className="flex flex-col items-start self-stretch px-10">
         <h3 className="text-muted-foreground pb-2 text-xs font-bold">
           NUPATHS
         </h3>

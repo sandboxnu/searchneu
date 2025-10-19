@@ -317,7 +317,7 @@ export default async function Page(props: {
         </div>
       </div>
       <div className="flex w-full flex-col gap-2 pr-10 pl-10">
-        <h3 className="text-muted-foreground col-span-12 pb-2 text-xs font-bold">
+        <h3 className="col-span-12 text-xs font-bold text-[#A3A3A3]">
           REQUIREMENTS
         </h3>
         <div className="flex gap-2">

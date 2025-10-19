@@ -53,14 +53,14 @@ export function Requisites({
         <Link
           key={`${item.subject}-${item.courseNumber}-${keyPrefix}-${i}`}
           href={`/catalog/${termId}/${item.subject}%20${item.courseNumber}`}
-          className="rounded-lg bg-white px-4 py-3 text-left transition-colors hover:bg-gray-200"
+          className="rounded-lg bg-white p-2.5 text-left transition-colors hover:bg-gray-200"
         >
           <div className="flex items-center gap-2">
-            <span className="font-semibold whitespace-nowrap text-gray-900">
+            <span className="text-xs font-semibold whitespace-nowrap text-gray-900">
               {item.subject} {item.courseNumber}
             </span>
             {item.name && (
-              <span className="truncate text-sm text-gray-600">
+              <span className="truncate text-xs text-gray-600">
                 {item.name}
               </span>
             )}
@@ -88,11 +88,14 @@ export function Requisites({
 
   return (
     <div className="flex flex-1 flex-col gap-1 rounded-lg bg-[#F8F9F9] p-4">
-      <h3 className="mb-2 text-sm font-semibold tracking-wide text-gray-500 uppercase">
+      <h3 className="mb-2 text-xs font-semibold tracking-wide text-[#5F5F5F] uppercase">
         {title}
       </h3>
 
       <div className="flex flex-col gap-2">
+        {limitedItems.length == 0 && (
+          <p className="text-xs text-[#A3A3A3] italic"> None </p>
+        )}
         {limitedItems.map((item, i) => renderItem(item, i, "limited"))}
 
         <div

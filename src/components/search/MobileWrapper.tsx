@@ -28,19 +28,19 @@ export function MobileWrapper(props: {
     <>
       <div
         data-show={!Boolean(course)}
-        className="hidden rounded-t-lg data-[show=true]:block xl:block!"
+        className="hidden rounded-t-lg data-[show=true]:block lg:block!"
       >
-        <div className="grid h-full w-full grid-cols-5 px-6 py-2">
+        <div className="grid h-full w-full grid-cols-6 px-6 py-2">
           <div className="col-span-1 w-full">
             <SearchPanel {...props} />
           </div>
-          <div className="col-span-4 flex flex-col gap-4 pl-6">
+          <div className="col-span-5 flex flex-col gap-4 pl-6">
             <SearchBar />
-            <div className="grid grid-cols-12">
-              <div className="col-span-4">
+            <div className="grid grid-cols-4">
+              <div className="col-span-1">
                 <SearchResults />
               </div>
-              <div className="col-span-8">{props.coursePage}</div>
+              <div className="col-span-3">{props.coursePage}</div>
             </div>
 
             {/* <Drawer> */}

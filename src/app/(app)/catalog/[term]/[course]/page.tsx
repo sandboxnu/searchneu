@@ -216,8 +216,8 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 border-border flex h-[calc(100vh-124px)] flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg border pt-10 pb-8">
-      <div className="flex items-end justify-between self-stretch px-10">
+    <div className="bg-neu1 border-border flex h-[calc(100vh-128px)] flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg border px-10 pt-10 pb-8">
+      <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
             style={{ lineHeight: 1.2 }}
@@ -265,7 +265,7 @@ export default async function Page(props: {
         </div>
       </div>
 
-      <div className="flex flex-col items-start gap-2 self-stretch px-10">
+      <div className="flex flex-col items-start gap-2 self-stretch">
         <h3
           style={{ lineHeight: 1.16667 }}
           className="text-expanded-system-neu5 text-xs font-bold uppercase"
@@ -274,7 +274,7 @@ export default async function Page(props: {
         </h3>
         <ExpandableDescription description={course.description} />
       </div>
-      <div className="flex items-start gap-8 self-stretch px-10">
+      <div className="flex items-start gap-8 self-stretch">
         <div className="flex flex-col items-start gap-1 self-stretch">
           <h3
             style={{ lineHeight: 1.16667 }}

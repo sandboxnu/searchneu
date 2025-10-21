@@ -8,6 +8,7 @@ export function SearchBar() {
   const pathname = usePathname();
   const { course } = useParams();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
+  const [popped, setPopped] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -45,8 +46,12 @@ export function SearchBar() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "/") {
+        if (document.activeElement === searchInputRef.current) return;
+
         e.preventDefault();
         searchInputRef.current?.focus();
+        setPopped(true);
+        setTimeout(() => setPopped(false), 200);
       }
     };
 
@@ -67,14 +72,18 @@ export function SearchBar() {
   }
 
   return (
-    <div className="relative w-full">
+    <div
+      className={`relative w-full transition-transform ${
+        popped ? "scale-[1.05]" : "scale-100"
+      }`}
+    >
       <SearchIcon
         color="red"
         className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 -scale-x-100 transform"
       />
       <Input
         ref={searchInputRef}
-        className="bg-background pl-10"
+        className="bg-background border-border focus:border-neu3 border border-1 pl-10"
         placeholder="Search by course, professor, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}

@@ -183,3 +183,19 @@
     rgba(255, 159, 28, 0.67) 103.17%
   );
 }
+
+::-webkit-scrollbar {
+  width: 0.25rem;
+  
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.8853 0 0);
+  border-radius: 100vh;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neu6);
+}
+
+

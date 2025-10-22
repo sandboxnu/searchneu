@@ -35,19 +35,17 @@ export function ResultCard(props: {
     <Link
       href={props.link}
       data-active={props.active}
-      className="bg-neu1 hover:bg-neu3/30 data-[active=true]:bg-neu3/30 flex flex-col gap-0.5 rounded-lg border-1 px-4 py-2"
+      className="bg-neu1 data-[active=true]:border-neu3 flex flex-col gap-1 rounded-lg border-1 p-4"
     >
       <div className="flex items-center justify-between">
-        <h1 className="text-base font-black">
+        <h1 className="text-base leading-tight font-black">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
         <span className="text-muted-foreground text-sm">
           {creditRange} {creditLabel}
         </span>
       </div>
-      <p className="text-muted-foreground -mt-1 pb-1 text-sm">
-        {props.result.name}
-      </p>
+      <p className="text-muted-foreground pb-1 text-sm">{props.result.name}</p>
       <div className="flex items-center justify-between">
         <span
           className={cn(
@@ -78,18 +76,23 @@ function NUPathBadges(props: { nupaths: string[] }) {
   return (
     <ul className="flex gap-0.5">
       {paths.map((n) => (
-        <Badge key={n} className="px-2 py-0 text-xs font-bold">
+        <Badge
+          key={n}
+          className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
+        >
           {n}
         </Badge>
       ))}
       {plusMore > 0 && (
-        <Badge className="px-2 py-0 text-xs font-bold">+{plusMore}</Badge>
+        <Badge className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold">
+          +{plusMore}
+        </Badge>
       )}
       {/* NOTE: is the empty badge good? */}
       {paths.length === 0 && (
         <Badge
           variant="secondary"
-          className="text-neu6 px-2 py-0 text-xs font-bold"
+          className="text-neu5 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
         >
           No NUPaths
         </Badge>

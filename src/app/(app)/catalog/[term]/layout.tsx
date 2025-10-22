@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/search/MobileWrapper";
-import type { Option } from "@/components/ui/multi-select";
 import { db } from "@/db";
 import { subjectsT, sectionsT, nupathsT } from "@/db/schema";
 import { eq } from "drizzle-orm";

@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Modal } from "./Modal";
 import FeedbackForm from "./FeedbackForm";
@@ -13,7 +11,7 @@ export default function FeedbackModal() {
       <div className="fixed right-0 bottom-56 flex origin-bottom-right rotate-[-90deg] flex-col rounded-t-sm bg-[#F15B50]">
         <button
           onClick={() => setOpen(!open)}
-          className="bg-transparent px-4 py-1 text-white uppercase"
+          className="bg-transparent px-4 py-1 text-xs text-white uppercase"
         >
           Feedback
         </button>

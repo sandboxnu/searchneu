@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <>
-      <NeuSearchskiePattern count={100} />
+      <NeuSearchskiePattern count={200} />
       <ClickSpark
         sparkColor="#333"
         sparkSize={10}

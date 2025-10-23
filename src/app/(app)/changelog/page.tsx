@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="relative min-h-screen px-6 py-4">
       <Header />
-      <NeuSearchskiePattern count={data.releases.length * 20 + 100} />
+      <NeuSearchskiePattern count={data.releases.length * 20 + 200} />
 
       <ChangelogHero />
       <div className="relative z-10">

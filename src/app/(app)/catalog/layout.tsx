@@ -1,11 +1,11 @@
 import { Header } from "@/components/navigation/Header";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <div className="pt-4">
       <Header />
-      {children}
-    </>
+      <Suspense>{children}</Suspense>
+    </div>
   );
 }

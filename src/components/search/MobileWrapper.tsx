@@ -7,6 +7,15 @@ import { Option } from "../ui/multi-select";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./SearchBar";
 import { type ReactNode } from "react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
+import { FilterIcon, ListFilter } from "lucide-react";
+import { Button } from "../ui/button";
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
@@ -28,55 +37,53 @@ export function MobileWrapper(props: {
     <>
       <div
         data-show={!Boolean(course)}
-        className="hidden rounded-t-lg data-[show=true]:block lg:block!"
+        className="rounded-t-lg data-[show=true]:block"
       >
-        <div className="grid h-full w-full grid-cols-6 px-6 py-2">
-          <div className="col-span-1 w-full">
+        <div className="grid h-full w-full grid-cols-6">
+          <div className="col-span-1 hidden w-full xl:block!">
             <SearchPanel {...props} />
           </div>
-          <div className="col-span-5 flex flex-col gap-4 pl-6">
-            <SearchBar />
+          <div className="col-span-6 flex flex-col gap-4 md:pl-6 xl:col-span-5">
+            <div
+              data-show={!Boolean(course)}
+              className="flex items-center gap-2 md:block"
+            >
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="bg-neu1 rounded-full md:hidden"
+                  >
+                    <ListFilter className="text-neu6 size-4" strokeWidth={2} />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className="data-[vaul-drawer-direction=bottom]:max-h-[95vh]">
+                  <DrawerTitle className="text-center">
+                    Catalog Filters
+                  </DrawerTitle>
+                  <div className="overflow-y-scroll">
+                    <SearchPanel {...props} />
+                  </div>
+                </DrawerContent>
+              </Drawer>
+
+              <SearchBar />
+            </div>
             <div className="grid grid-cols-4">
-              <div className="col-span-1">
+              <div
+                data-show={!Boolean(course)}
+                className="col-span-4 data-[show=false]:hidden data-[show=true]:block md:col-span-1 md:block!"
+              >
                 <SearchResults />
               </div>
-              <div className="col-span-3">{props.coursePage}</div>
+              <div
+                className="col-span-4 data-[show=true]:block! md:col-span-3"
+                data-show={Boolean(course)}
+              >
+                {props.coursePage}
+              </div>
             </div>
-
-            {/* <Drawer> */}
-            {/*   <DrawerTrigger asChild> */}
-            {/*     <Button variant="default" size="icon" className="md:hidden"> */}
-            {/*       <Filter className="size-4" />{" "} */}
-            {/*     </Button> */}
-            {/*   </DrawerTrigger> */}
-            {/*   <DrawerContent> */}
-            {/*     <DrawerHeader> */}
-            {/*       <DrawerTitle>Search Filters</DrawerTitle> */}
-            {/*     </DrawerHeader> */}
-            {/*     <div className="overflow-y-scroll"> */}
-            {/*       <SearchPanel {...props} /> */}
-            {/*     </div> */}
-            {/*   </DrawerContent> */}
-            {/* </Drawer> */}
-
-            {/* <DropdownMenu> */}
-            {/*   <DropdownMenuTrigger asChild> */}
-            {/*     <Button variant="outline" size="icon" className=""> */}
-            {/*       <Ellipsis className="size-4" />{" "} */}
-            {/*     </Button> */}
-            {/*   </DropdownMenuTrigger> */}
-            {/*   <DropdownMenuContent> */}
-            {/*     <DropdownMenuItem asChild> */}
-            {/*       <span */}
-            {/*         onClick={async () => { */}
-            {/*           await navigator.clipboard.writeText(window.location.href); */}
-            {/*         }} */}
-            {/*       > */}
-            {/*         Copy link to search */}
-            {/*       </span> */}
-            {/*     </DropdownMenuItem> */}
-            {/*   </DropdownMenuContent> */}
-            {/* </DropdownMenu> */}
           </div>
         </div>
       </div>

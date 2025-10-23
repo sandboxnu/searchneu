@@ -216,18 +216,18 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 border-border flex h-[calc(100vh-128px)] flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg border px-10 pt-10 pb-8">
+    <div className="bg-neu1 flex flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:h-[calc(100vh-128px)] md:overflow-y-scroll">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
             style={{ lineHeight: 1.2 }}
-            className="text-expanded-system-neu8 text-2xl font-bold"
+            className="text-neu8 text-lg font-bold md:text-2xl"
           >
             {courseName}
           </h1>
           <h2
             style={{ lineHeight: 1.3 }}
-            className="text-expanded-system-neu8 text-lg"
+            className="text-neu8 text-sm md:text-lg"
           >
             {course.name}
           </h2>
@@ -235,7 +235,7 @@ export default async function Page(props: {
         <div className="flex flex-col items-end justify-end gap-1">
           <h2
             style={{ lineHeight: 1.2 }}
-            className="text-expanded-system-neu8 text-right text-lg font-bold"
+            className="text-neu8 text-right text-sm font-bold md:text-lg"
           >
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
@@ -245,7 +245,7 @@ export default async function Page(props: {
                 <Globe className="size-4" />
                 <h2
                   style={{ lineHeight: 1.3 }}
-                  className="text-expanded-system-neu6 text-sm italic"
+                  className="text-neu6 text-xs italic md:text-sm"
                 >
                   {formatLastUpdatedString(term?.updatedAt)}
                 </h2>
@@ -255,9 +255,9 @@ export default async function Page(props: {
                 <GlobeLock className="size-4" />
                 <h2
                   style={{ lineHeight: 1.3 }}
-                  className="text-expanded-system-neu6 text-sm italic"
+                  className="text-neu6 text-xs italic md:text-sm"
                 >
-                  {"Last updated on " + term.updatedAt.toLocaleDateString()}
+                  {"Last updated " + term.updatedAt.toLocaleDateString()}
                 </h2>
               </>
             )}
@@ -268,7 +268,7 @@ export default async function Page(props: {
       <div className="flex flex-col items-start gap-2 self-stretch">
         <h3
           style={{ lineHeight: 1.16667 }}
-          className="text-expanded-system-neu5 text-xs font-bold uppercase"
+          className="text-neu5 text-xs font-bold uppercase"
         >
           COURSE DESCRIPTION
         </h3>
@@ -278,7 +278,7 @@ export default async function Page(props: {
         <div className="flex flex-col items-start gap-1 self-stretch">
           <h3
             style={{ lineHeight: 1.16667 }}
-            className="text-expanded-system-neu5 text-xs font-bold"
+            className="text-neu5 text-xs font-bold"
           >
             LINK
           </h3>
@@ -286,7 +286,7 @@ export default async function Page(props: {
             target="_blank"
             rel="noopener noreferrer"
             style={{ lineHeight: 1.3 }}
-            className="text-brand-palette-links-blue hover:text-brand-palette-links-blue/80 flex items-center justify-end gap-1"
+            className="text-blue hover:text-blue/80 flex items-center justify-end gap-1"
             href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${termId}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
           >
             View on the Northeastern website

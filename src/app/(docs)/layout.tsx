@@ -4,8 +4,9 @@ import "./globals.css";
 import { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { source } from "@/lib/source";
 import { DocsLayout, DocsLayoutProps } from "fumadocs-ui/layouts/docs";
-import { RootProvider } from "fumadocs-ui/provider";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import { Banner } from "fumadocs-ui/components/banner";
+import { Suspense } from "react";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -42,11 +43,7 @@ const docsOptions: DocsLayoutProps = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -57,7 +54,9 @@ export default function RootLayout({
           Heads up! These docs are still in development! Mind our mess 🏗️
         </Banner>
         <RootProvider>
-          <DocsLayout {...docsOptions}>{children}</DocsLayout>
+          <Suspense>
+            <DocsLayout {...docsOptions}>{children}</DocsLayout>
+          </Suspense>
         </RootProvider>
       </body>
     </html>

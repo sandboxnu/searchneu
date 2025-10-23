@@ -7,28 +7,24 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import Link from "next/link";
 import { Iconskie } from "../icons/Iconskie";
-import { useAuth, signOut, type User } from "@/lib/auth/client";
-import { BadgeCheck } from "lucide-react";
+import { useAuth, signOut } from "@/lib/auth/client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
   const { user, isPending } = useAuth();
 
   if (!isPending && user.guid) {
-    return <UserMenu user={user} />;
+    return <UserMenu />;
   }
 
   return (
     <>
       <Button
-        className="bg-accent hover:bg-accent/80 font-bold rounded-full"
+        className="bg-accent hover:bg-accent/80 h-9 rounded-full font-bold"
         onClick={() => setShowSI(!showSI)}
       >
         Sign In
@@ -38,7 +34,7 @@ export function UserIcon() {
   );
 }
 
-function UserMenu({ user }: { user: User }) {
+function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,14 +47,6 @@ function UserMenu({ user }: { user: User }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="flex items-center justify-between">
-          My Account
-          {user.phoneVerified && <BadgeCheck className="text-neu size-4" />}
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/me/trackers">Tracked Sections</Link>
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} variant="destructive">
           Sign Out
         </DropdownMenuItem>

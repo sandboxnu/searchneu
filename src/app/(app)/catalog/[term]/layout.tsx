@@ -62,7 +62,7 @@ export default async function Layout(props: {
   const nupaths = cachedNupaths();
 
   return (
-    <div className="bg-secondary h-full w-full">
+    <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
       <MobileWrapper
         terms={terms}
         subjects={subjects}

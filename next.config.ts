@@ -5,12 +5,11 @@ import { createMDX } from "fumadocs-mdx/next";
 const nextConfig: NextConfig = {
   /* config options here */
   serverExternalPackages: ["typescript", "twoslash"],
-  experimental: {
-    reactCompiler: true,
-  },
   outputFileTracingIncludes: {
     "/content/api/": ["./content/api/*"],
   },
+  cacheComponents: true,
+  reactCompiler: true,
 };
 
 const vercelToolbar = withVercelToolbar();

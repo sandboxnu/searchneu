@@ -10,7 +10,7 @@ export default function FeedbackModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="bg-r4 fixed right-0 bottom-56 flex origin-bottom-right rotate-[-90deg] flex-col rounded-t-sm px-4 py-1 text-xs text-white uppercase">
+        <button className="bg-r4 fixed right-0 bottom-56 z-10 flex origin-bottom-right rotate-[-90deg] flex-col rounded-t-sm px-4 py-1 text-xs text-white uppercase">
           Feedback
         </button>
       </DialogTrigger>

@@ -1,20 +1,18 @@
 import { cn } from "@/lib/cn";
-import Link from "next/link";
 import { Badge } from "../ui/badge";
 
 export function ResultCard(props: {
-  link: string;
   result: {
     name: string;
     courseNumber: string;
     subject: string;
-    minCredits: number;
-    maxCredits: number;
+    minCredits: string;
+    maxCredits: string;
     sectionsWithSeats: number;
     totalSections: number;
     nupaths: string[];
   };
-  active: boolean;
+  className?: string;
 }) {
   let creditRange = "";
   if (props.result.minCredits === props.result.maxCredits) {
@@ -32,11 +30,7 @@ export function ResultCard(props: {
     props.result.sectionsWithSeats / props.result.totalSections;
 
   return (
-    <Link
-      href={props.link}
-      data-active={props.active}
-      className="bg-neu1 data-[active=true]:border-neu3 flex flex-col gap-1 rounded-lg border-1 p-4"
-    >
+    <>
       <div className="flex items-center justify-between">
         <h1 className="text-base leading-tight font-black">
           {props.result.subject + " " + props.result.courseNumber}
@@ -60,7 +54,7 @@ export function ResultCard(props: {
         </span>
         <NUPathBadges nupaths={props.result.nupaths} />
       </div>
-    </Link>
+    </>
   );
 }
 

@@ -22,6 +22,12 @@
 
   --r4: oklch(0.6663 0.1868 27.46);
 
+  --r1: oklch(0.9093 0.0392 12.03);
+
+  --c1: oklch(0.9516 0.0399 75.8);
+
+  --l1: oklch(0.9154 0.0144 231.22);
+
   --green: oklch(0.7038 0.1481 160); /* seat green status */
   --yellow: oklch(0.7828 0.168 66.2); /* seat yellow status */
   --red: oklch(0.6122 0.2082 22.24); /* seat red status */
@@ -89,6 +95,10 @@
   --color-neu: var(--neu);
   --color-cps: var(--cps);
   --color-law: var(--law);
+
+  --color-r1: var(--r1);
+  --color-l1: var(--l1);
+  --color-c1: var(--c1);
 
   --color-navy: var(--navy);
 

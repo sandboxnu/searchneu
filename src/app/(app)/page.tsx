@@ -1,30 +1,48 @@
 import { Suspense } from "react";
 import { NeuSearchskiePattern } from "@/components/home/NeuSearchskiePattern";
 import { Header } from "@/components/navigation/Header";
+import { CourseCards } from "@/components/home/CourseCards";
+import type { Metadata } from "next";
+import { Search } from "@/components/home/Search";
+import ClickSpark from "@/components/ui/click-spark";
+
+export const metadata: Metadata = {
+  title: "SearchNEU",
+  description: "Search courses at Northeastern University",
+};
 
 export default async function Home() {
   return (
-    <div className="px-4 py-6">
-      <NeuSearchskiePattern count={300} />
-      <Header />
+    <>
+      <NeuSearchskiePattern count={100} />
+      <ClickSpark
+        sparkColor="#333"
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+      >
+        <div className="px-4 py-6">
+          <Header />
 
-      <div className="mt-[10%] flex flex-col items-center gap-3 text-6xl font-bold">
-        <span className="flex gap-3">
-          <p className="text-neu italic">Never</p>
-          <p>miss an open</p>
-        </span>
-        <span>
-          <p>waitlist seat again</p>
-        </span>
-      </div>
+          <div className="mt-[10%] flex flex-col items-center gap-3 text-4xl font-bold md:text-7xl">
+            <span className="flex">
+              <p className="text-neu mr-5 italic">Never</p>miss an open
+            </span>
+            <span>waitlist seat again</span>
+          </div>
 
-      <div>
-        {/* <Suspense> */}
-        {/*   <CourseCards /> */}
-        {/* </Suspense> */}
-      </div>
+          <div className="mt-[5%] flex items-center justify-center">
+            <Search />
+          </div>
 
-      <div></div>
-    </div>
+          <div className="mt-[5%]">
+            <Suspense>
+              <CourseCards />
+            </Suspense>
+          </div>
+        </div>
+      </ClickSpark>
+    </>
   );
 }

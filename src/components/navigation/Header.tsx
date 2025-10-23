@@ -57,7 +57,7 @@ async function NavBar() {
       {enableRoomsPage && (
         <Link
           href="/rooms"
-          className="hover:bg-neu3 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
+          className="hover:bg-neu2 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
         >
           <DoorOpen className="size-4" />
           <span>Rooms</span>
@@ -65,7 +65,7 @@ async function NavBar() {
       )}
       <Link
         href="/catalog"
-        className="hover:bg-neu3 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
+        className="hover:bg-neu2 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
       >
         <Bookmark className="size-4" />
         <span>Catalog</span>
@@ -73,7 +73,7 @@ async function NavBar() {
       {enableFaqPage && (
         <Link
           href="/faq"
-          className="hover:bg-neu3 bg-neu1 flex items-center rounded-full border-1 p-2 text-sm"
+          className="hover:bg-neu2 bg-neu1 flex items-center rounded-full border-1 p-2 text-sm"
         >
           <CircleQuestionMark className="text-red size-5" />
         </Link>

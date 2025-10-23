@@ -22,7 +22,7 @@ void (async () => {
 
     if (existingCache) {
       console.log("cache already exists");
-      return;
+      continue;
     }
 
     const out = await scrapeTerm(term.term.toString(), config);

@@ -230,7 +230,9 @@ export function arrangeCourses(sections: BannerSection[], config: Config) {
     const count = config.attributes.campus.filter((c) => c.code === code);
     if (count.length === 0) {
       console.error("campus is invalid");
-      throw Error("campus error");
+      logger.error("campus is invalid " + code);
+      return "Unknown";
+      // throw Error("campus error");
     }
 
     return count[0].name ?? count[0].code;

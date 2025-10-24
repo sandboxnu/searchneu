@@ -46,7 +46,7 @@ export function SearchPanel(props: {
 }) {
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
-      <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
+      <h3 className="text-neu7 text-xs font-bold ">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>
@@ -178,7 +178,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
         value={activeCollege}
       >
         <SelectTrigger
-          className={`bg-secondary h-[40px] w-full ${
+          className={`bg-secondary h-[40px] w-full font-bold ${
             activeCollege === "neu"
               ? "bg-[#FAD7DA33] text-[#E63946]"
               : activeCollege === "cps"
@@ -193,7 +193,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
             <SelectItem
               key={college.value}
               value={college.value}
-              className={`text-[14px] font-[600] ${
+              className={`text-[14px] font-bold ${
                 college.value === "neu"
                   ? "text-[#E63946]"
                   : college.value === "cps"
@@ -242,7 +242,7 @@ function TermSelect(
         }
         value={term?.toString()}
       >
-        <SelectTrigger className="bg-secondary w-full" {...props}>
+        <SelectTrigger className="bg-secondary w-full border border-solid border-[#F1F2F2]" {...props}>
           <SelectValue placeholder="Select term" />
         </SelectTrigger>
         <SelectContent className="">

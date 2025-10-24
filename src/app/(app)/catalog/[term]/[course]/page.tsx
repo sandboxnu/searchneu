@@ -16,10 +16,9 @@ import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
-import { type JSX, Suspense } from "react";
+import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import Link from "next/link";
-import { RequisiteItem, type Requisite } from "@/scraper/reqs";
+import { type Requisite } from "@/scraper/reqs";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { sql } from "drizzle-orm";
@@ -29,7 +28,6 @@ import {
   type Room,
 } from "@/components/coursePage/SectionTable";
 import { type Metadata } from "next";
-import { ReqsWrapper } from "@/components/coursePage/ReqsWrapper";
 import { RequisiteBlock } from "@/components/coursePage/Requisites";
 
 const cachedCourse = unstable_cache(

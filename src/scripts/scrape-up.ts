@@ -141,6 +141,7 @@ void (async () => {
     await insertTermData(
       termData,
       db,
+      config.attributes,
       new Date(termConfig?.activeUntil ?? "2000-01-01"),
     );
     console.log(`✅ Completed term ${termConfig.term}\n`);

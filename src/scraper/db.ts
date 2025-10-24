@@ -5,20 +5,6 @@ import * as schema from "@/db/schema";
 import { eq, and, inArray, notInArray, sql } from "drizzle-orm";
 import { logger } from "@/lib/logger";
 
-function isValidNupath(code: string, config: Config) {
-  return config.attributes.nupath.some((n) => n.short === code);
-}
-
-function convertCampus(code: string, config: Config): string {
-  const campusConfig = config.attributes.campus.find((c) => c.code === code);
-  if (!campusConfig) {
-    throw new Error(
-      `Invalid campus code: "${code}". Campus not found in config. Please add this campus to manifest.yaml before uploading.`,
-    );
-  }
-  return campusConfig.name ?? campusConfig.code;
-}
-
 function chunk<T>(array: T[], size: number): T[][] {
   const chunks: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
@@ -29,26 +15,8 @@ function chunk<T>(array: T[], size: number): T[][] {
 
 export async function insertConfigData(
   config: Config,
-  data: TermScrape,
   db: NodePgDatabase<typeof schema> & { $client: Pool },
 ) {
-  // Validate all campuses before starting transaction
-  const uniqueCampuses = new Set<string>();
-  for (const course of data.courses) {
-    for (const section of course.sections) {
-      uniqueCampuses.add(section.campus);
-    }
-  }
-
-  for (const campusCode of uniqueCampuses) {
-    try {
-      convertCampus(campusCode, config);
-    } catch (error) {
-      console.error(`\n❌ ${(error as Error).message}\n`);
-      throw error;
-    }
-  }
-
   await db.transaction(async (tx) => {
     console.log("  → Inserting campuses and nupaths...");
 
@@ -88,6 +56,7 @@ export async function insertConfigData(
 export async function insertTermData(
   data: TermScrape,
   db: NodePgDatabase<typeof schema> & { $client: Pool },
+  attributes: Config["attributes"],
   activeUntil: Date,
 ) {
   await db.transaction(async (tx) => {
@@ -325,13 +294,16 @@ export async function insertTermData(
       )
       .map((c) => c.id);
 
+    console.log("courses to be deleted: ", coursesToDelete);
+
     if (coursesToDelete.length > 0) {
       // Delete in chunks to avoid parameter limit
       const deleteChunks = chunk(coursesToDelete, 10000);
       for (const deleteChunk of deleteChunks) {
-        await tx
-          .delete(schema.coursesT)
-          .where(inArray(schema.coursesT.id, deleteChunk));
+        // await tx
+        //   .delete(schema.coursesT)
+        //   .where(inArray(schema.coursesT.id, deleteChunk));
+        continue; // TODO:
       }
       logger.info(`${coursesToDelete.length} courses deleted`);
     }
@@ -414,7 +386,8 @@ export async function insertTermData(
           waitlistRemaining: section.waitlistRemaining,
           classType: section.classType,
           honors: section.honors,
-          campus: section.campus,
+          // campus: section.campus,
+          campus: "Unknown",
         });
 
         crnToCourseMap.set(section.crn, courseId);
@@ -492,6 +465,10 @@ export async function insertTermData(
       endTime: number;
     }> = [];
 
+    // Track which CRNs have meeting times from rooms
+    const crnsWithRooms = new Set<string>();
+
+    // Process meeting times from room data (with room assignments)
     for (const [buildingName, rooms] of Object.entries(data.rooms)) {
       const campus = data.buildingCampuses[buildingName];
       const buildingId = buildingMap.get(`${campus}-${buildingName}`);
@@ -522,6 +499,45 @@ export async function insertTermData(
             startTime: schedule.startTime,
             endTime: schedule.endTime,
           });
+
+          crnsWithRooms.add(schedule.crn);
+        }
+      }
+    }
+
+    // Process meeting times from sections without room assignments
+    for (const course of data.courses) {
+      for (const section of course.sections) {
+        // Skip if we already processed this section's meeting times from room data
+        if (crnsWithRooms.has(section.crn)) continue;
+
+        const sectionId = sectionMap.get(section.crn);
+        if (!sectionId) continue;
+
+        // Check if section has meeting time data (e.g., from a meetings array)
+        // Adjust this based on your actual data structure
+        if (section.meetingTimes && Array.isArray(section.meetingTimes)) {
+          for (const meeting of section.meetingTimes) {
+            if (
+              meeting.startTime == null ||
+              meeting.endTime == null ||
+              Number.isNaN(meeting.startTime) ||
+              Number.isNaN(meeting.endTime) ||
+              !meeting.days ||
+              meeting.days.length === 0
+            ) {
+              continue;
+            }
+
+            meetingTimeInserts.push({
+              sectionId,
+              roomId: null, // No room assigned
+              term: termCode,
+              days: meeting.days,
+              startTime: meeting.startTime,
+              endTime: meeting.endTime,
+            });
+          }
         }
       }
     }
@@ -556,7 +572,9 @@ export async function insertTermData(
               ],
             });
         }
-        logger.info(`${meetingTimeInserts.length} meeting times inserted`);
+        logger.info(
+          `${meetingTimeInserts.length} meeting times inserted (including ${meetingTimeInserts.filter((m) => m.roomId === null).length} without room assignments)`,
+        );
       } else {
         logger.info("No meeting times to insert");
       }

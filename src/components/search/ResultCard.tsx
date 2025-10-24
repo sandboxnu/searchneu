@@ -35,17 +35,19 @@ export function ResultCard(props: {
     <Link
       href={props.link}
       data-active={props.active}
-      className="bg-neu1 data-[active=true]:border-neu3 flex flex-col gap-1 rounded-lg border-1 p-4"
+      className="bg-neu1 flex flex-col rounded-lg border-1 data-[active=true]:border-neu3 p-4"
     >
-      <div className="flex items-center justify-between">
-        <h1 className="text-base leading-tight font-black">
-          {props.result.subject + " " + props.result.courseNumber}
-        </h1>
-        <span className="text-muted-foreground text-sm">
-          {creditRange} {creditLabel}
-        </span>
+      <div className="flex flex-col gap-1 pb-2">
+        <div className="flex items-center justify-between">
+          <h1 className="text-neu8 leading-tight font-bold">
+            {props.result.subject + " " + props.result.courseNumber}
+          </h1>
+          <span className="text-neu6 text-sm">
+            {creditRange} {creditLabel}
+          </span>
+        </div>
+        <p className="text-neu6 text-sm">{props.result.name}</p>
       </div>
-      <p className="text-muted-foreground pb-1 text-sm">{props.result.name}</p>
       <div className="flex items-center justify-between">
         <span
           className={cn(
@@ -74,17 +76,19 @@ function NUPathBadges(props: { nupaths: string[] }) {
   }
 
   return (
-    <ul className="flex gap-0.5">
+    <ul style={{gap: "0.3125rem"}} className="flex">
       {paths.map((n) => (
         <Badge
           key={n}
+          style={{lineHeight : 1.2}}
           className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
         >
           {n}
         </Badge>
       ))}
       {plusMore > 0 && (
-        <Badge className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold">
+        <Badge style={{lineHeight : 1.2}} 
+        className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold">
           +{plusMore}
         </Badge>
       )}
@@ -92,6 +96,7 @@ function NUPathBadges(props: { nupaths: string[] }) {
       {paths.length === 0 && (
         <Badge
           variant="secondary"
+          style={{lineHeight : 1.2}}
           className="text-neu5 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
         >
           No NUPaths

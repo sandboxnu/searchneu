@@ -2,6 +2,8 @@ import { type NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { Pool } from "pg";
 import { TermScrape, Config } from "./types";
 import * as schema from "@/db/schema";
+import { eq, and, inArray, notInArray, sql } from "drizzle-orm";
+import { logger } from "@/lib/logger";
 
 function isValidNupath(code: string, config: Config) {
   return config.attributes.nupath.some((n) => n.short === code);
@@ -17,12 +19,18 @@ function convertCampus(code: string, config: Config): string {
   return campusConfig.name ?? campusConfig.code;
 }
 
-export async function insertCourseData(
-  data: TermScrape,
+function chunk<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
+export async function insertConfigData(
   config: Config,
-  db: NodePgDatabase<typeof schema> & {
-    $client: Pool;
-  },
+  data: TermScrape,
+  db: NodePgDatabase<typeof schema> & { $client: Pool },
 ) {
   // Validate all campuses before starting transaction
   const uniqueCampuses = new Set<string>();
@@ -42,119 +50,174 @@ export async function insertCourseData(
   }
 
   await db.transaction(async (tx) => {
+    console.log("  → Inserting campuses and nupaths...");
+
+    // Insert campuses (deduplicated)
+    const uniqueCampuses = config.attributes.campus.reduce((acc, c) => {
+      const key = c.name ?? c.code;
+      if (!acc.has(key)) {
+        acc.set(key, { name: key, group: c.group });
+      }
+      return acc;
+    }, new Map<string, { name: string; group: string }>());
+
+    if (uniqueCampuses.size > 0) {
+      await tx
+        .insert(schema.campusesT)
+        .values(Array.from(uniqueCampuses.values()))
+        .onConflictDoNothing();
+    }
+
+    // Insert NUPaths
+    if (config.attributes.nupath.length > 0) {
+      await tx
+        .insert(schema.nupathsT)
+        .values(
+          config.attributes.nupath.map((n) => ({
+            short: n.short,
+            name: n.name,
+          })),
+        )
+        .onConflictDoNothing();
+    }
+
+    logger.info("Config data inserted");
+  });
+}
+
+export async function insertTermData(
+  data: TermScrape,
+  db: NodePgDatabase<typeof schema> & { $client: Pool },
+  activeUntil: Date,
+) {
+  await db.transaction(async (tx) => {
+    const termCode = data.term.code;
+
     // Insert term
     console.log("  → Inserting term...");
+
+    // Insert or update term
     await tx
       .insert(schema.termsT)
       .values({
-        term: data.term.code,
+        term: termCode,
         name: data.term.description,
-        activeUntil: new Date(
-          config.terms.find((t) => t.term.toString() === data.term.code)
-            ?.activeUntil ?? "2000-01-01",
-        ),
+        activeUntil: activeUntil,
       })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: schema.termsT.term,
+        set: {
+          name: data.term.description,
+          activeUntil: activeUntil,
+          updatedAt: new Date(),
+        },
+      });
 
-    const filteredCampuses = config.attributes.campus.reduce(
-      (agg, c) => {
-        const count = agg.filter(
-          (s: Config["attributes"]["campus"][0]) =>
-            (s.name ?? s.code) === (c.name ?? c.code),
-        );
-
-        if (count.length > 0) return agg;
-        agg.push(c);
-        return agg;
-      },
-      [] as Config["attributes"]["campus"],
-    );
-
-    console.log("  → Inserting campuses and nupaths...");
-    for (const campus of filteredCampuses) {
-      await tx
-        .insert(schema.campusesT)
-        .values({
-          name: campus.name ?? campus.code,
-          group: campus.group,
-        })
-        .onConflictDoNothing();
-    }
-
-    for (const nupath of config.attributes.nupath) {
-      await tx
-        .insert(schema.nupathsT)
-        .values({
-          short: nupath.short,
-          name: nupath.name,
-        })
-        .onConflictDoNothing();
-    }
-
+    // Fetch NUPath mappings once
     const nupaths = await tx
       .select({ id: schema.nupathsT.id, short: schema.nupathsT.short })
       .from(schema.nupathsT);
+    const nupathMap = new Map(nupaths.map((n) => [n.short, n.id]));
 
-    // Insert subjects
     console.log("  → Inserting subjects...");
-    const subjectInserts = data.subjects.map((subj) => ({
-      term: data.term.code,
-      code: subj.code,
-      name: subj.description,
-    }));
-    if (subjectInserts.length > 0) {
+
+    // Insert subjects for this term
+    if (data.subjects.length > 0) {
+      const subjectChunks = chunk(
+        data.subjects.map((s) => ({
+          term: termCode,
+          code: s.code,
+          name: s.description,
+        })),
+        1000,
+      );
+
+      for (const subjectChunk of subjectChunks) {
+        await tx
+          .insert(schema.subjectsT)
+          .values(subjectChunk)
+          .onConflictDoNothing();
+      }
+
+      // Remove subjects not in the scrape
+      const scrapedSubjectCodes = data.subjects.map((s) => s.code);
+      if (scrapedSubjectCodes.length > 0) {
+        await tx
+          .delete(schema.subjectsT)
+          .where(
+            and(
+              eq(schema.subjectsT.term, termCode),
+              notInArray(schema.subjectsT.code, scrapedSubjectCodes),
+            ),
+          );
+      }
+    } else {
       await tx
-        .insert(schema.subjectsT)
-        .values(subjectInserts)
-        .onConflictDoNothing();
+        .delete(schema.subjectsT)
+        .where(eq(schema.subjectsT.term, termCode));
     }
 
-    // Insert buildings
+    logger.info(`Subjects for ${termCode} synced`);
     console.log("  → Inserting buildings...");
-    const buildingNames = Object.keys(data.rooms);
-    const buildingInserts = buildingNames.map((name) => ({
-      name,
-      campus: data.buildingCampuses[name],
-    }));
 
-    await tx
-      .insert(schema.buildingsT)
-      .values(buildingInserts)
-      .onConflictDoNothing({
-        target: [schema.buildingsT.campus, schema.buildingsT.name],
-      });
+    const buildingNames = Object.keys(data.rooms);
+    if (buildingNames.length > 0) {
+      const buildingChunks = chunk(
+        buildingNames.map((name) => ({
+          name,
+          campus: data.buildingCampuses[name],
+        })),
+        1000,
+      );
+
+      for (const buildingChunk of buildingChunks) {
+        await tx
+          .insert(schema.buildingsT)
+          .values(buildingChunk)
+          .onConflictDoNothing({
+            target: [schema.buildingsT.campus, schema.buildingsT.name],
+          });
+      }
+    }
 
     const buildings = await tx
       .select({
         id: schema.buildingsT.id,
         name: schema.buildingsT.name,
+        campus: schema.buildingsT.campus,
       })
       .from(schema.buildingsT);
 
-    const buildingMap = new Map(buildings.map((b) => [b.name, b.id]));
+    const buildingMap = new Map(
+      buildings.map((b) => [`${b.campus}-${b.name}`, b.id]),
+    );
+
+    logger.info("Buildings synced");
 
     // Insert rooms
     console.log("  → Inserting rooms...");
     const roomInserts: { buildingId: number; number: string }[] = [];
     for (const [buildingName, rooms] of Object.entries(data.rooms)) {
-      const buildingId = buildingMap.get(buildingName);
+      const campus = data.buildingCampuses[buildingName];
+      const buildingId = buildingMap.get(`${campus}-${buildingName}`);
       if (!buildingId) continue;
 
-      const roomNumbers = Object.keys(rooms);
-      for (const roomNumber of roomNumbers) {
-        roomInserts.push({
-          buildingId,
-          number: roomNumber,
-        });
+      for (const roomNumber of Object.keys(rooms)) {
+        roomInserts.push({ buildingId, number: roomNumber });
       }
     }
 
-    await tx
-      .insert(schema.roomsT)
-      .values(roomInserts)
-      .onConflictDoNothing({
-        target: [schema.roomsT.buildingId, schema.roomsT.number],
-      });
+    if (roomInserts.length > 0) {
+      const roomChunks = chunk(roomInserts, 5000);
+      for (const roomChunk of roomChunks) {
+        await tx
+          .insert(schema.roomsT)
+          .values(roomChunk)
+          .onConflictDoNothing({
+            target: [schema.roomsT.buildingId, schema.roomsT.number],
+          });
+      }
+    }
 
     const rooms = await tx
       .select({
@@ -164,136 +227,297 @@ export async function insertCourseData(
       })
       .from(schema.roomsT);
 
-    // Create room lookup map: "buildingId-roomNumber" -> roomId
     const roomMap = new Map(
       rooms.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
     );
 
-    // Insert courses and sections, track CRN to section ID mapping
+    logger.info("Rooms synced");
     console.log("  → Inserting courses and sections...");
-    const crnToSectionIdMap = new Map<string, number>();
 
-    for (const course of data.courses) {
-      // Filter nupaths to only include valid ones from config
-      const validNupaths = course.nupath.filter((n) =>
-        isValidNupath(n, config),
-      );
+    // Prepare course data
+    if (data.courses.length === 0) {
+      logger.info("No courses to process");
+      await tx
+        .delete(schema.coursesT)
+        .where(eq(schema.coursesT.term, termCode));
+      return;
+    }
 
-      const courseInsertResult = await tx
+    // Prepare course and section data
+    const courseInserts = data.courses.map((c) => ({
+      term: termCode,
+      subject: c.subject,
+      name: c.name,
+      courseNumber: c.courseNumber,
+      register: `${c.subject} ${c.courseNumber}`,
+      description: c.description,
+      minCredits: String(c.minCredits),
+      maxCredits: String(c.maxCredits),
+      prereqs: c.prereqs,
+      coreqs: c.coreqs,
+    }));
+
+    // Bulk upsert courses
+    const courseChunks = chunk(courseInserts, 1000);
+    const allCourseResults: Array<{
+      id: number;
+      subject: string;
+      courseNumber: string;
+    }> = [];
+
+    for (const courseChunk of courseChunks) {
+      const courseResults = await tx
         .insert(schema.coursesT)
-        .values({
-          term: course.term,
-          subject: course.subject,
-          name: course.name,
-          courseNumber: course.courseNumber,
-          register: course.subject + " " + course.courseNumber,
-          description: course.description,
-          minCredits: String(course.minCredits),
-          maxCredits: String(course.maxCredits),
-          prereqs: course.prereqs,
-          coreqs: course.coreqs,
-        })
-        .returning({ id: schema.coursesT.id })
+        .values(courseChunk)
         .onConflictDoUpdate({
           target: [
             schema.coursesT.term,
             schema.coursesT.subject,
             schema.coursesT.courseNumber,
           ],
-          set: { updatedAt: new Date() },
+          set: {
+            name: sql.raw(`excluded.${schema.coursesT.name.name}`),
+            description: sql.raw(
+              `excluded."${schema.coursesT.description.name}"`,
+            ),
+            minCredits: sql.raw(
+              `excluded."${schema.coursesT.minCredits.name}"`,
+            ),
+            maxCredits: sql.raw(
+              `excluded."${schema.coursesT.maxCredits.name}"`,
+            ),
+            prereqs: sql.raw(`excluded."${schema.coursesT.prereqs.name}"`),
+            coreqs: sql.raw(`excluded."${schema.coursesT.coreqs.name}"`),
+            updatedAt: new Date(),
+          },
+        })
+        .returning({
+          id: schema.coursesT.id,
+          subject: schema.coursesT.subject,
+          courseNumber: schema.coursesT.courseNumber,
         });
 
-      for (const nupath of validNupaths) {
-        const nupathId = nupaths?.find((c) => c.short === nupath)?.id;
-        if (nupathId) {
-          await tx
-            .insert(schema.courseNupathJoinT)
-            .values({
-              courseId: courseInsertResult[0].id,
-              nupathId: nupathId,
-            })
-            .onConflictDoNothing({
-              target: [
-                schema.courseNupathJoinT.courseId,
-                schema.courseNupathJoinT.nupathId,
-              ],
-            });
-        }
+      allCourseResults.push(...courseResults);
+    }
+
+    const courseMap = new Map(
+      allCourseResults.map((c) => [`${c.subject}-${c.courseNumber}`, c.id]),
+    );
+
+    logger.info(`${allCourseResults.length} courses for ${termCode} upserted`);
+
+    // Remove courses not in scrape
+    const scrapedCourseKeys = data.courses.map(
+      (c) => `${c.subject}-${c.courseNumber}`,
+    );
+    const allTermCourses = await tx
+      .select({
+        id: schema.coursesT.id,
+        subject: schema.coursesT.subject,
+        courseNumber: schema.coursesT.courseNumber,
+      })
+      .from(schema.coursesT)
+      .where(eq(schema.coursesT.term, termCode));
+
+    const coursesToDelete = allTermCourses
+      .filter(
+        (c) => !scrapedCourseKeys.includes(`${c.subject}-${c.courseNumber}`),
+      )
+      .map((c) => c.id);
+
+    if (coursesToDelete.length > 0) {
+      // Delete in chunks to avoid parameter limit
+      const deleteChunks = chunk(coursesToDelete, 10000);
+      for (const deleteChunk of deleteChunks) {
+        await tx
+          .delete(schema.coursesT)
+          .where(inArray(schema.coursesT.id, deleteChunk));
       }
+      logger.info(`${coursesToDelete.length} courses deleted`);
+    }
 
-      const courseId = courseInsertResult[0]?.id;
+    // Bulk insert course-nupath relationships
+    const courseNupathInserts: { courseId: number; nupathId: number }[] = [];
+    for (const course of data.courses) {
+      const courseId = courseMap.get(
+        `${course.subject}-${course.courseNumber}`,
+      );
+      if (!courseId) continue;
 
-      for (const section of course.sections) {
-        if (!section.faculty) {
-          continue;
-        }
-
-        // Apply campus transformation here during upload
-        const campusName = convertCampus(section.campus, config);
-
-        const sectionResult = await tx
-          .insert(schema.sectionsT)
-          .values({
-            courseId: courseId,
-            term: course.term,
-            crn: section.crn,
-            faculty: section.faculty,
-            seatCapacity: section.seatCapacity,
-            seatRemaining: section.seatRemaining,
-            waitlistCapacity: section.waitlistCapacity,
-            waitlistRemaining: section.waitlistRemaining,
-            classType: section.classType,
-            honors: section.honors,
-            campus: campusName,
-          })
-          .returning({ id: schema.sectionsT.id })
-          .onConflictDoUpdate({
-            target: [schema.sectionsT.term, schema.sectionsT.crn],
-            set: { updatedAt: new Date() },
-          });
-
-        const sectionId = sectionResult[0]?.id;
-        if (sectionId) {
-          crnToSectionIdMap.set(section.crn, sectionId);
+      for (const nupathShort of course.nupath) {
+        const nupathId = nupathMap.get(nupathShort);
+        if (nupathId) {
+          courseNupathInserts.push({ courseId, nupathId });
         }
       }
     }
 
-    // Insert meeting times
     console.log("  → Inserting meeting times...");
-    const meetingTimeInserts: {
+
+    // Delete existing course-nupath joins for this term's courses
+    const courseIds = Array.from(courseMap.values());
+    if (courseIds.length > 0) {
+      const deleteChunks = chunk(courseIds, 10000);
+      for (const deleteChunk of deleteChunks) {
+        await tx
+          .delete(schema.courseNupathJoinT)
+          .where(inArray(schema.courseNupathJoinT.courseId, deleteChunk));
+      }
+
+      if (courseNupathInserts.length > 0) {
+        const nupathChunks = chunk(courseNupathInserts, 10000);
+        for (const nupathChunk of nupathChunks) {
+          await tx.insert(schema.courseNupathJoinT).values(nupathChunk);
+        }
+        logger.info(
+          `${courseNupathInserts.length} course-nupath relationships inserted`,
+        );
+      }
+    }
+
+    logger.info(`Course NUPaths for ${termCode} synced`);
+
+    // Bulk upsert sections
+    const sectionInserts: Array<{
+      courseId: number;
+      term: string;
+      crn: string;
+      faculty: string;
+      seatCapacity: number;
+      seatRemaining: number;
+      waitlistCapacity: number;
+      waitlistRemaining: number;
+      classType: string;
+      honors: boolean;
+      campus: string;
+    }> = [];
+
+    const crnToCourseMap = new Map<string, number>();
+
+    for (const course of data.courses) {
+      const courseId = courseMap.get(
+        `${course.subject}-${course.courseNumber}`,
+      );
+      if (!courseId) continue;
+
+      for (const section of course.sections) {
+        // if (!section.faculty) continue;
+
+        sectionInserts.push({
+          courseId,
+          term: termCode,
+          crn: section.crn,
+          faculty: section.faculty,
+          seatCapacity: section.seatCapacity,
+          seatRemaining: section.seatRemaining,
+          waitlistCapacity: section.waitlistCapacity,
+          waitlistRemaining: section.waitlistRemaining,
+          classType: section.classType,
+          honors: section.honors,
+          campus: section.campus,
+        });
+
+        crnToCourseMap.set(section.crn, courseId);
+      }
+    }
+
+    const sectionChunks = chunk(sectionInserts, 1000);
+    const allSectionResults: Array<{ id: number; crn: string }> = [];
+
+    for (const sectionChunk of sectionChunks) {
+      const sectionResults = await tx
+        .insert(schema.sectionsT)
+        .values(sectionChunk)
+        .onConflictDoUpdate({
+          target: [schema.sectionsT.term, schema.sectionsT.crn],
+          set: {
+            faculty: sql.raw(`excluded."${schema.sectionsT.faculty.name}"`),
+            seatCapacity: sql.raw(
+              `excluded."${schema.sectionsT.seatCapacity.name}"`,
+            ),
+            seatRemaining: sql.raw(
+              `excluded."${schema.sectionsT.seatRemaining.name}"`,
+            ),
+            waitlistCapacity: sql.raw(
+              `excluded."${schema.sectionsT.waitlistCapacity.name}"`,
+            ),
+            waitlistRemaining: sql.raw(
+              `excluded."${schema.sectionsT.waitlistRemaining.name}"`,
+            ),
+            classType: sql.raw(`excluded."${schema.sectionsT.classType.name}"`),
+            honors: sql.raw(`excluded.${schema.sectionsT.honors.name}`),
+            campus: sql.raw(`excluded.${schema.sectionsT.campus.name}`),
+            updatedAt: new Date(),
+          },
+        })
+        .returning({ id: schema.sectionsT.id, crn: schema.sectionsT.crn });
+
+      allSectionResults.push(...sectionResults);
+    }
+
+    const sectionMap = new Map(allSectionResults.map((s) => [s.crn, s.id]));
+
+    logger.info(
+      `${allSectionResults.length} sections for ${termCode} upserted`,
+    );
+
+    // Remove sections not in scrape
+    const scrapedCrns = sectionInserts.map((s) => s.crn);
+    const allTermSections = await tx
+      .select({ id: schema.sectionsT.id, crn: schema.sectionsT.crn })
+      .from(schema.sectionsT)
+      .where(eq(schema.sectionsT.term, termCode));
+
+    const sectionsToDelete = allTermSections
+      .filter((s) => !scrapedCrns.includes(s.crn))
+      .map((s) => s.id);
+
+    if (sectionsToDelete.length > 0) {
+      const deleteChunks = chunk(sectionsToDelete, 10000);
+      for (const deleteChunk of deleteChunks) {
+        await tx
+          .delete(schema.sectionsT)
+          .where(inArray(schema.sectionsT.id, deleteChunk));
+      }
+      logger.info(`${sectionsToDelete.length} sections deleted`);
+    }
+
+    // Bulk insert meeting times
+    const meetingTimeInserts: Array<{
       sectionId: number;
       roomId: number | null;
-      days: number[];
       term: string;
+      days: number[];
       startTime: number;
       endTime: number;
-    }[] = [];
+    }> = [];
 
     for (const [buildingName, rooms] of Object.entries(data.rooms)) {
-      const buildingId = buildingMap.get(buildingName);
-      if (!buildingId) continue;
+      const campus = data.buildingCampuses[buildingName];
+      const buildingId = buildingMap.get(`${campus}-${buildingName}`);
 
       for (const [roomNumber, schedules] of Object.entries(rooms)) {
-        const roomId = roomMap.get(`${buildingId}-${roomNumber}`);
-        if (!roomId) continue;
+        const roomId = buildingId
+          ? (roomMap.get(`${buildingId}-${roomNumber}`) ?? null)
+          : null;
 
         for (const schedule of schedules) {
-          const sectionId = crnToSectionIdMap.get(schedule.crn);
+          const sectionId = sectionMap.get(schedule.crn);
           if (!sectionId) continue;
 
           if (
-            Number.isNaN(schedule.startTime) ||
-            Number.isNaN(schedule.endTime) ||
             schedule.startTime == null ||
-            schedule.endTime == null
-          )
+            schedule.endTime == null ||
+            Number.isNaN(schedule.startTime) ||
+            Number.isNaN(schedule.endTime)
+          ) {
             continue;
+          }
 
           meetingTimeInserts.push({
             sectionId,
             roomId,
-            term: data.term.code,
+            term: termCode,
             days: schedule.days,
             startTime: schedule.startTime,
             endTime: schedule.endTime,
@@ -302,20 +526,42 @@ export async function insertCourseData(
       }
     }
 
-    if (meetingTimeInserts.length > 0) {
-      await tx
-        .insert(schema.meetingTimesT)
-        .values(meetingTimeInserts)
-        .onConflictDoNothing({
-          target: [
-            schema.meetingTimesT.term,
-            schema.meetingTimesT.sectionId,
-            schema.meetingTimesT.roomId,
-            schema.meetingTimesT.days,
-            schema.meetingTimesT.startTime,
-            schema.meetingTimesT.endTime,
-          ],
-        });
+    const sectionIds = Array.from(sectionMap.values());
+    if (sectionIds.length > 0) {
+      const deleteChunks = chunk(sectionIds, 10000);
+      for (const deleteChunk of deleteChunks) {
+        await tx
+          .delete(schema.meetingTimesT)
+          .where(
+            and(
+              eq(schema.meetingTimesT.term, termCode),
+              inArray(schema.meetingTimesT.sectionId, deleteChunk),
+            ),
+          );
+      }
+
+      if (meetingTimeInserts.length > 0) {
+        const meetingChunks = chunk(meetingTimeInserts, 5000);
+        for (const meetingChunk of meetingChunks) {
+          await tx
+            .insert(schema.meetingTimesT)
+            .values(meetingChunk)
+            .onConflictDoNothing({
+              target: [
+                schema.meetingTimesT.term,
+                schema.meetingTimesT.sectionId,
+                schema.meetingTimesT.days,
+                schema.meetingTimesT.startTime,
+                schema.meetingTimesT.endTime,
+              ],
+            });
+        }
+        logger.info(`${meetingTimeInserts.length} meeting times inserted`);
+      } else {
+        logger.info("No meeting times to insert");
+      }
     }
+
+    logger.info(`Meeting times for ${termCode} synced`);
   });
 }

@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "@/db/schema";
 import { loadEnvConfig } from "@next/env";
-import { insertCourseData } from "@/scraper/db";
+import { insertTermData, insertConfigData } from "@/scraper/db";
 import { TermScrape } from "@/scraper/types";
 import { Config } from "@/scraper/types";
 import { existsSync, readFileSync } from "node:fs";
@@ -85,9 +85,7 @@ void (async () => {
   // Check that cache files exist
   const missingCaches = termsToUpload.filter(
     (term) =>
-      !existsSync(
-        path.resolve(CACHE_PATH, CACHE_FORMAT(term.term.toString())),
-      ),
+      !existsSync(path.resolve(CACHE_PATH, CACHE_FORMAT(term.term.toString()))),
   );
 
   if (missingCaches.length > 0) {
@@ -118,25 +116,40 @@ void (async () => {
 
   console.log("🔌 Connected to database");
 
-  for (const term of termsToUpload) {
-    const cachename = path.resolve(
-      CACHE_PATH,
-      CACHE_FORMAT(term.term.toString()),
-    );
-    const existingCache = readFileSync(cachename, { encoding: "utf8" });
-    const cache = JSON.parse(existingCache) as TermScrape;
+  // Insert config data once
+  console.log("Inserting config data...");
+  await insertConfigData(config, db);
+  console.log("Config data inserted");
 
-    console.log(`📦 Uploading term ${term.term}...`);
-    if (cache.timestamp) {
-      console.log(`   Cache generated: ${new Date(cache.timestamp).toLocaleString()}`);
+  // Process each term
+  for (const termConfig of config.terms) {
+    const cachePath = path.resolve(
+      CACHE_PATH,
+      CACHE_FORMAT(termConfig.term.toString()),
+    );
+
+    const cacheContent = readFileSync(cachePath, { encoding: "utf8" });
+    const termData = JSON.parse(cacheContent) as TermScrape;
+
+    console.log(`📦 Uploading term ${termConfig.term}...`);
+    if (termData.timestamp) {
+      console.log(
+        `   Cache generated: ${new Date(termData.timestamp).toLocaleString()}`,
+      );
     }
 
-    await insertCourseData(cache, config, db);
-    console.log(`✅ Completed term ${term.term}\n`);
+    await insertTermData(
+      termData,
+      db,
+      new Date(termConfig?.activeUntil ?? "2000-01-01"),
+    );
+    console.log(`✅ Completed term ${termConfig.term}\n`);
+
+    console.log(
+      `🎉 Successfully uploaded ${termsToUpload.length} term${termsToUpload.length > 1 ? "s" : ""}`,
+    );
   }
 
-  console.log(
-    `🎉 Successfully uploaded ${termsToUpload.length} term${termsToUpload.length > 1 ? "s" : ""}`,
-  );
+  console.log("\nAll terms processed successfully");
   process.exit(0);
 })();

@@ -9,8 +9,8 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-transparent bg-neu3 text-neu9 [a&]:hover:bg-neu/90",
-        secondary: "border-transparent bg-neu2 text-neu9 [a&]:hover:bg-neu3/90",
+        default: "border-transparent bg-border text-neu9 [a&]:hover:bg-neu/90",
+        secondary: "border-transparent bg-secondary text-neu9 [a&]:hover:bg-neu3/90",
         destructive:
           "border-transparent bg-red text-neu1 [a&]:hover:bg-red/90 focus-visible:ring-red/20",
         outline: "text-neu9 [a&]:hover:bg-navy [a&]:hover:text-neu1",

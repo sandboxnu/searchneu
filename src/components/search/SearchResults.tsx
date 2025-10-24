@@ -127,7 +127,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         ref={parentRef}
         className="h-[calc(100vh-128px)] w-full overflow-y-auto pr-1"
       >
-        <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
+        <div className={`relative min-w-xs`} style={{ height: virtual.getTotalSize() }}>
           <ul
             className="absolute top-0 left-0 w-full"
             style={{

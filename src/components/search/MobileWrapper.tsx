@@ -34,10 +34,10 @@ export function MobileWrapper(props: {
           <div className="col-span-1 w-full pl-6">
             <SearchPanel {...props} />
           </div>
-          <div className="col-span-5 flex flex-col gap-3" style={{ paddingRight: "2rem" }}>
+          <div className="col-span-5 gap-3" style={{ paddingRight: "2rem" }}>
             <SearchBar />
-            <div className="grid grid-cols-4">
-              <div className="col-span-1">
+            <div className="grid grid-cols-4 pt-3">
+              <div className="col-span-1 flex flex-col">
                 <SearchResults />
               </div>
               <div className="col-span-3 pl-1">{props.coursePage}</div>

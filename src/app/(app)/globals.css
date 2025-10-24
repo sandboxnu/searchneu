@@ -20,9 +20,10 @@
   ); /* input backgrounds & accent backgrounds */
   --neu1: oklch(1 0 0); /* background */
 
+
   --green: oklch(0.7038 0.1481 160); /* seat green status */
-  --yellow: oklch(0.7828 0.168 66.2); /* seat yellow status */
-  --red: oklch(0.6122 0.2082 22.24); /* seat red status */
+  --yellow: oklch(0.7912 0.169 69.48); /* seat yellow status */
+  --red:  oklch(0.6663 0.1868 27.46); /* seat red status */
   --blue: oklch(0.6 0.1786 254.7); /* links (hover at /80) */
   --neu: oklch(0.61 0.2082 22.24);
   --cps: oklch(0.78 0.168 66.2);
@@ -186,7 +187,7 @@
 
 ::-webkit-scrollbar {
   width: 0.25rem;
-  
+  height: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb {

@@ -165,4 +165,5 @@ export interface TermScrape {
   buildingCampuses: {
     [building: string]: string;
   };
+  timestamp?: string;
 }

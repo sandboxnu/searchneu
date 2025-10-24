@@ -1,161 +1,186 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ReqBoxItem } from "./ReqsWrapper";
+import { Fragment, useState, useEffect, useRef } from "react";
+import type {
+  Requisite,
+  Condition,
+  Course,
+  Test,
+  RequisiteItem,
+} from "@/scraper/reqs";
+import { cn } from "@/lib/cn";
+import { Button } from "../ui/button";
+import { ChevronDown } from "lucide-react";
 
-export function Requisites({
-  title,
-  items,
+// Type guards
+const isCondition = (item: RequisiteItem): item is Condition => {
+  return "type" in item && "items" in item;
+};
+
+const isCourse = (item: RequisiteItem): item is Course => {
+  return "subject" in item && "courseNumber" in item;
+};
+
+const isTest = (item: RequisiteItem): item is Test => {
+  return "name" in item && "score" in item;
+};
+
+const isEmpty = (requisite: Requisite): requisite is Record<string, never> => {
+  return Object.keys(requisite).length === 0;
+};
+
+export function RequisiteBlock({
+  req,
   termId,
+  coreqMode,
 }: {
-  title: string;
-  items: ReqBoxItem[];
+  req: Requisite;
   termId: string;
+  coreqMode: boolean;
 }) {
-  const [showAll, setShowAll] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  const limit = 4;
-  const total = items.filter((item) => item.type !== "separator").length;
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
-  const getItemsUpToLimit = (items: ReqBoxItem[]) => {
-    let itemCount = 0;
-    const reducedItems = [];
-    for (const item of items) {
-      if (item.type !== "separator") {
-        itemCount++;
-      }
-      reducedItems.push(item);
-      if (itemCount >= limit) {
-        break;
-      }
+  useEffect(() => {
+    if (contentRef && contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
     }
-    return reducedItems;
+  }, []);
+
+  const handleToggle = () => {
+    setIsAnimating(true);
+    setExpanded(!expanded);
+    setTimeout(() => setIsAnimating(false), 500); // Match duration-500
   };
 
-  const renderItem = (item: ReqBoxItem, i: number, keyPrefix: string = "") => {
-    if (item.type === "separator") {
-      return (
-        <div
-          key={`sep-${keyPrefix}-${i}`}
-          className="flex w-full flex-col gap-1.5"
-        >
-          <DashedLine />
-          <div className="font-xs text-neu6 text-center text-xs">
-            {i > 1 && "and"} (1) of the following:
-          </div>
-        </div>
-      );
-    }
+  if (isEmpty(req)) {
+    return <p className="text-neu5 mb-2 text-sm italic">None</p>;
+  }
 
-    if (item.type === "course") {
-      return (
-        <Link
-          key={`${item.subject}-${item.courseNumber}-${keyPrefix}-${i}`}
-          href={`/catalog/${termId}/${item.subject}%20${item.courseNumber}`}
-          className="outline-border hover:bg-border rounded-lg bg-white p-2.5 text-left outline-1 transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-expanded-system-neu8 text-xs font-bold whitespace-nowrap">
-              {item.subject} {item.courseNumber}
-            </span>
-            {item.name && (
-              <span className="text-expanded-system-neu6 truncate text-xs">
-                {item.name}
-              </span>
-            )}
-          </div>
-        </Link>
-      );
-    }
-
-    if (item.type === "test") {
-      return (
-        <div
-          key={`${item.name}-${keyPrefix}-${i}`}
-          className="rounded-lg bg-white px-4 py-3 text-gray-700"
-        >
-          {item.name} {item.score}
-        </div>
-      );
-    }
-
-    return null;
-  };
-
-  const limitedItems = getItemsUpToLimit(items);
-  const hiddenItems = items.slice(limitedItems.length);
+  const tree = RequisiteItemComponent({
+    item: req,
+    term: termId,
+    depth: 0,
+    coreqMode: coreqMode,
+  });
 
   return (
-    <div>
-      <div className="bg-utility-colors-off-white flex flex-1 flex-col rounded-t-lg pt-4 pr-4 pl-4">
-        <h3 className="text-neu7 mb-2 text-xs font-semibold tracking-wide uppercase">
-          {title}
-        </h3>
-        <div className="flex flex-col gap-2">
-          {limitedItems.length == 0 && (
-            <p className="text-expanded-system-neu5 text-xs italic"> None </p>
-          )}
-          {limitedItems.map((item, i) => renderItem(item, i, "limited"))}
-
-          <div
-            className={`grid transition-all duration-500 ease-in-out ${
-              showAll ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="overflow-hidden">
-              <div className="flex flex-col gap-2">
-                {hiddenItems.map((item, i) => renderItem(item, i, "hidden"))}
-              </div>
-            </div>
-          </div>
-        </div>
+    <>
+      <div
+        ref={contentRef}
+        className={cn("", {
+          "transition-all duration-500 ease-in-out":
+            isCondition(req) && contentHeight > 120,
+          "overflow-hidden": isAnimating || !expanded,
+          "overflow-visible": !isAnimating && expanded,
+        })}
+        style={{
+          maxHeight:
+            isCondition(req) && !expanded ? "120px" : `${contentHeight}px`,
+        }}
+      >
+        {tree}
       </div>
-      {total > limit && (
-        <div className="bg-utility-colors-off-white rounded-b-lg p-2">
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="group text-neu6 hover:text-neu7 hover:bg-border box-border flex w-full items-center justify-center gap-1 rounded-lg pt-1.5 pr-4 pb-1.5 pl-4 text-sm font-bold tracking-wide uppercase transition-colors"
-          >
-            <span>{showAll ? "Collapse" : `See All (${total})`}</span>
-            <svg
-              width="8"
-              height="5"
-              viewBox="0 0 8 5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.07209 4.45978C6.93625 4.59559 6.75203 4.67188 6.55995 4.67188C6.36787 4.67188 6.18365 4.59559 6.04781 4.45978L3.66241 2.07439L1.27701 4.45978C1.14039 4.59174 0.957411 4.66475 0.767479 4.6631C0.577548 4.66145 0.395863 4.58527 0.261556 4.45096C0.127249 4.31665 0.0510659 4.13497 0.0494156 3.94504C0.0477653 3.75511 0.12078 3.57213 0.252732 3.4355L3.15027 0.537966C3.28611 0.402164 3.47033 0.325876 3.66241 0.325876C3.85449 0.325876 4.03871 0.402164 4.17455 0.537966L7.07209 3.4355C7.20789 3.57135 7.28418 3.75556 7.28418 3.94765C7.28418 4.13973 7.20789 4.32394 7.07209 4.45978Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-        </div>
+      {contentHeight > 120 && isCondition(req) && (
+        <Button
+          className={cn(
+            "text-neu6 hover:bg-neu3/30 hover:text-neu6 mt-2 py-1.5 text-xs font-bold",
+          )}
+          variant="ghost"
+          onClick={handleToggle}
+        >
+          {expanded ? <>Collapse</> : <>See More ({req.items.length})</>}
+          <ChevronDown
+            className={cn("transform transition duration-200", {
+              "rotate-180": expanded,
+            })}
+          />
+        </Button>
       )}
-    </div>
+    </>
   );
 }
 
-function DashedLine() {
-  return (
-    <svg
-      width="100%"
-      height="1"
-      viewBox="0 0 176 1"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="none"
-    >
-      <line
-        x1="0.5"
-        y1="0.5"
-        x2="174.833"
-        y2="0.5"
-        stroke="#C2C2C2"
-        strokeLinecap="round"
-        strokeDasharray="1 4"
-      />
-    </svg>
-  );
+function RequisiteItemComponent({
+  item,
+  term,
+  depth,
+  coreqMode,
+}: {
+  item: RequisiteItem;
+  term: string;
+  depth: number;
+  coreqMode: boolean;
+}) {
+  if (isCondition(item)) {
+    return (
+      <div
+        className={cn("space-y-1", {
+          "border-neu3 border-l-2 pl-1": depth > 0,
+        })}
+      >
+        {depth > 0 && item.type === "or" && (
+          <div className="text-neu6 py-1 text-xs font-semibold">
+            one of the following ({item.items.length})
+          </div>
+        )}
+        {item.items.map((subItem, index) => (
+          <Fragment key={index}>
+            <RequisiteItemComponent
+              item={subItem}
+              term={term}
+              depth={depth + 1}
+              coreqMode={false}
+            />
+            {depth > 0 &&
+              item.type === "and" &&
+              index < item.items.length - 1 && (
+                <div className="text-neu6 py-1 text-xs font-semibold uppercase">
+                  {item.type}
+                </div>
+              )}
+            {!coreqMode && depth === 0 && index < item.items.length - 1 && (
+              <div className="text-neu6 py-1 text-xs font-semibold uppercase">
+                {item.type}
+              </div>
+            )}
+          </Fragment>
+        ))}
+      </div>
+    );
+  }
+
+  if (isCourse(item)) {
+    return (
+      <Link
+        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}`}
+        className="bg-neu1 flex items-center rounded-lg border p-2.5"
+      >
+        <span className="text-neu8 text-xs font-bold whitespace-nowrap">
+          {item.subject} {item.courseNumber}
+        </span>
+        {/* {item.name && ( */}
+        {/*   <span className="text-expanded-system-neu6 truncate text-xs"> */}
+        {/*     {item.name} */}
+        {/*   </span> */}
+        {/* )} */}
+      </Link>
+    );
+  }
+
+  if (isTest(item)) {
+    return (
+      <div className="bg-neu1 flex items-center rounded-lg border p-2.5">
+        <span className="text-neu8 text-xs font-bold whitespace-nowrap">
+          {item.name}
+        </span>
+      </div>
+    );
+  }
+
+  return null;
 }

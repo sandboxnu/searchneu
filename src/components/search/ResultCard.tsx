@@ -31,15 +31,15 @@ export function ResultCard(props: {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-1">
         <h1 className="text-base leading-tight font-black">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
-        <span className="text-muted-foreground text-sm">
+        <span className="text-neu6 text-sm">
           {creditRange} {creditLabel}
         </span>
       </div>
-      <p className="text-muted-foreground pb-1 text-sm">{props.result.name}</p>
+      <p className="text-neu6 pb-1 text-sm">{props.result.name}</p>
       <div className="flex items-center justify-between">
         <span
           className={cn(
@@ -72,17 +72,16 @@ function NUPathBadges(props: { nupaths: string[] }) {
       {paths.map((n) => (
         <Badge
           key={n}
-          className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
+          className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold"
         >
           {n}
         </Badge>
       ))}
       {plusMore > 0 && (
-        <Badge className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold">
+        <Badge className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold">
           +{plusMore}
         </Badge>
       )}
-      {/* NOTE: is the empty badge good? */}
       {paths.length === 0 && (
         <Badge
           variant="secondary"

@@ -19,7 +19,7 @@ import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { type JSX, Suspense } from "react";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
-import { type Requisite } from "@/scraper/reqs";
+import { RequisiteItem, type Requisite } from "@/scraper/reqs";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { sql } from "drizzle-orm";
@@ -30,6 +30,7 @@ import {
 } from "@/components/coursePage/SectionTable";
 import { type Metadata } from "next";
 import { ReqsWrapper } from "@/components/coursePage/ReqsWrapper";
+import { RequisiteBlock } from "@/components/coursePage/Requisites";
 
 const cachedCourse = unstable_cache(
   async (term: string, subject: string, courseNumber: string) =>
@@ -296,45 +297,57 @@ export default async function Page(props: {
         </div>
       </div>
       <Separator />
-      <div className="flex flex-col items-start self-stretch px-10">
-        <h3 className="text-expanded-system-neu5 pb-2 text-xs font-bold">
-          NUPATHS
-        </h3>
-        <div className="flex gap-2">
-          {course.nupathNames.map((n) => (
-            <Badge key={n} className="px-2 py-0 text-xs font-bold">
+      <div className="flex flex-col items-start self-stretch">
+        <h3 className="text-neu5 col-span-12 text-xs font-bold">NUPATHS</h3>
+        <div className="mt-2 flex flex-col gap-2 md:flex-row">
+          {course.nupathNames.map((n, i) => (
+            <Badge
+              key={n}
+              className="text-neu6 bg-neu2 border-neu25 flex gap-2 rounded-full border px-3 py-1 text-sm"
+            >
+              <span className="text-neu7 font-bold">{course.nupaths[i]}</span>
               {n}
             </Badge>
           ))}
           {course.nupaths.length === 0 && (
             <Badge
               variant="secondary"
-              className="text-neu6 px-2 py-0 text-xs font-bold"
+              className="text-neu4 bg-neu2 rounded-full px-3 py-1 text-xs font-bold"
             >
               No NUPaths
             </Badge>
           )}
         </div>
       </div>
-      <div className="flex w-full flex-col gap-2 pr-10 pl-10">
-        <h3 className="text-expanded-system-neu5 col-span-12 text-xs font-bold">
+      <div className="flex w-full flex-col gap-2">
+        <h3 className="text-neu5 col-span-12 text-xs font-bold">
           REQUIREMENTS
         </h3>
-        <div className="flex items-start gap-2">
-          <ReqsWrapper
-            title="prerequisites"
-            reqs={course.prereqs as Requisite}
-            termId={termId}
-          />
-          <ReqsWrapper
-            title="corequisites"
-            reqs={course.coreqs as Requisite}
-            termId={termId}
-          />
+        <div className="flex flex-col gap-2 md:flex-row">
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              PREREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.prereqs as Requisite}
+              termId={termId}
+              coreqMode={false}
+            />
+          </div>
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              COREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.coreqs as Requisite}
+              termId={termId}
+              coreqMode={true}
+            />
+          </div>
         </div>
       </div>
       <Separator />
-      <div className="w-full px-10">
+      <div className="w-full">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable
             sectionsPromise={sections as Promise<Section[]>}

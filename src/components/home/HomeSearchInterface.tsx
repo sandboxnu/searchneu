@@ -1,7 +1,7 @@
 "use client";
 
 import { GroupedTerms } from "@/lib/types";
-import { use, useState } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/cn";
@@ -18,6 +18,21 @@ export function HomeSearchInterface({
   const [selectedCollege, setSelectedCollege] = useState<"neu" | "cps" | "law">(
     "neu",
   );
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "/") {
+        if (document.activeElement === searchInputRef.current) return;
+
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   function onSubmit(query: string) {
     let term = "";
@@ -82,6 +97,7 @@ export function HomeSearchInterface({
         />
         <Input
           placeholder="Search by course, professor, or phrase..."
+          ref={searchInputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               onSubmit(e.currentTarget.value);

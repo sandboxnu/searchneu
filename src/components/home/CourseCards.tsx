@@ -19,7 +19,7 @@ export async function CourseCards() {
     node: (
       <div
         key={s.id}
-        className="bg-neu1 flex w-[320px] flex-col gap-1 rounded-lg border p-4"
+        className="bg-neu1 flex w-[320px] flex-col rounded-lg border p-4"
       >
         <ResultCard result={s} />
       </div>
@@ -32,7 +32,7 @@ export async function CourseCards() {
     node: (
       <div
         key={s.id}
-        className="bg-neu1 flex w-[320px] flex-col gap-1 rounded-lg border p-4"
+        className="bg-neu1 flex w-[320px] flex-col rounded-lg border p-4"
       >
         <ResultCard result={s} />
       </div>

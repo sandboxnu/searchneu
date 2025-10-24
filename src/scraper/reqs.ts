@@ -1,21 +1,21 @@
 import { parse } from "node-html-parser";
 
-interface Condition {
+export interface Condition {
   type: "and" | "or";
   items: RequisiteItem[];
 }
 
-interface Course {
+export interface Course {
   subject: string;
   courseNumber: string;
 }
 
-interface Test {
+export interface Test {
   name: string;
   score: number;
 }
 
-type RequisiteItem = Condition | Course | Test;
+export type RequisiteItem = Condition | Course | Test;
 export type Requisite = RequisiteItem | Record<string, never>;
 
 export function parseCoreqs(

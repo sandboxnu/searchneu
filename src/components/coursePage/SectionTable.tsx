@@ -301,5 +301,8 @@ function formatTimeRange(startTime: number, endTime: number) {
 
 function formatFaculty(f: string) {
   const [lastName, firstName] = f.split(",");
+  if (!lastName || !firstName) {
+    return "NA";
+  }
   return `${firstName.trim()[0]}. ${lastName}`;
 }

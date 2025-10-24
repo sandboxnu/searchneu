@@ -46,7 +46,7 @@ export function SearchPanel(props: {
 }) {
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
-      <h3 className="text-neu7 text-xs font-bold ">SCHOOL</h3>
+      <h3 className="text-neu7 text-xs font-[700]">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>
@@ -54,7 +54,7 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-term-select"
-          className="text-neu7 text-xs font-bold"
+          className="text-neu7 text-xs font-[700]"
         >
           SEMESTER
         </Label>
@@ -73,6 +73,7 @@ export function SearchPanel(props: {
             transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
           />
         </Suspense>
+        <p>{props.}</p>
       </div>
 
       <Separator />
@@ -104,7 +105,7 @@ export function SearchPanel(props: {
       <div className="flex items-center justify-between">
         <Label
           htmlFor="course-honors-toggle"
-          className="text-neu7 text-xs font-bold"
+          className="text-neu7 text-xs font-[700]"
         >
           HONORS
         </Label>
@@ -128,7 +129,7 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-id-range"
-          className="text-neu7 pb-3 text-sm font-bold"
+          className="text-neu7 pb-3 text-sm font-[700]"
         >
           COURSE ID RANGE
         </Label>
@@ -178,7 +179,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
         value={activeCollege}
       >
         <SelectTrigger
-          className={`bg-secondary h-[40px] w-full font-bold ${
+          className={`bg-secondary h-[40px] w-full font-[700] ${
             activeCollege === "neu"
               ? "bg-[#FAD7DA33] text-[#E63946]"
               : activeCollege === "cps"
@@ -193,7 +194,7 @@ function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
             <SelectItem
               key={college.value}
               value={college.value}
-              className={`text-[14px] font-bold ${
+              className={`text-[14px] font-[700] ${
                 college.value === "neu"
                   ? "text-[#E63946]"
                   : college.value === "cps"
@@ -234,30 +235,76 @@ function TermSelect(
       terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
     ) ?? "neu";
 
+  // Group terms by year and sort them
+  const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
+    (acc, t) => {
+      const year = t.name.split(" ")[1];
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(t);
+      return acc;
+    },
+    {} as Record<string, (typeof terms)[keyof GroupedTerms]>,
+  );
+
+  // Sort terms within each year
+  const termOrder = { Fall: 0, Spring: 1, "Full Summer": 2, "Summer 1": 3, "Summer 2": 4 };
+  Object.values(groupedByYear).forEach((yearTerms) => {
+    yearTerms.sort((a, b) => {
+      const aName = a.name.replace(" Semester", "").split(" ")[0];
+      const bName = b.name.replace(" Semester", "").split(" ")[0];
+      return (
+        termOrder[aName as keyof typeof termOrder] -
+        termOrder[bName as keyof typeof termOrder]
+      );
+    });
+  });
+
+  // Sort years in reverse chronological order
+  const sortedYears = Object.keys(groupedByYear).sort(
+    (a, b) => Number(b) - Number(a),
+  );
+
   return (
-    <div className="text-neu8 space-y-2 pt-3 font-bold">
+    <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select
         onValueChange={(e) =>
           router.push(`/catalog/${e}?${searchParams.toString()}`)
         }
         value={term?.toString()}
       >
-        <SelectTrigger className="bg-secondary w-full border border-solid border-[#F1F2F2]" {...props}>
+        <SelectTrigger
+          className="bg-secondary w-full border border-solid border-[#F1F2F2]"
+          {...props}
+        >
           <SelectValue placeholder="Select term" />
         </SelectTrigger>
-        <SelectContent className="">
-          {terms[activeCollege as keyof GroupedTerms].map((t) => (
-            <SelectItem
-              key={t.term}
-              value={t.term}
-              className={cn(
-                t.term === term?.toString()
-                  ? "text-neu8 font-bold"
-                  : "text-neu6",
-              )}
-            >
-              {t.name.replace(" Semester", "")}
-            </SelectItem>
+        <SelectContent className="max-h-[300px]">
+          {sortedYears.map((year) => (
+            <div key={year}>
+              <SelectItem
+                value={`header-${year}`}
+                disabled
+                className="text-neu6 text-xs font-[700] uppercase"
+              >
+                {year}
+              </SelectItem>
+              {groupedByYear[year].map((t) => (
+                <SelectItem
+                  key={t.term}
+                  value={t.term}
+                  className={cn(
+                    "pl-6",
+                    t.term === term?.toString()
+                      ? "text-neu8 font-[700]"
+                      : "text-neu6",
+                  )}
+                >
+                  {t.name.replace(" Semester", "")}
+                </SelectItem>
+              ))}
+            </div>
           ))}
         </SelectContent>
       </Select>
@@ -310,7 +357,7 @@ function SPMultiselect<T>(props: {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Label className="text-neu7 text-xs font-bold">{props.label}</Label>
+        <Label className="text-neu7 text-xs font-[700]">{props.label}</Label>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <p
@@ -360,7 +407,7 @@ function SPMultiselect<T>(props: {
                         }}
                         className={cn(
                           selected.some((f) => f.value === opt.value) &&
-                            "font-bold",
+                            "font-[700]",
                         )}
                       >
                         <div className="flex items-center gap-2 pl-2">
@@ -369,7 +416,7 @@ function SPMultiselect<T>(props: {
                               className={cn(
                                 selected.some((f) => f.value === opt.value)
                                   ? "text-neu8"
-                                  : "text-neu6 font-bold",
+                                  : "text-neu6 font-[700]",
                               )}
                             >
                               {opt.value}
@@ -401,12 +448,11 @@ function SPMultiselect<T>(props: {
             className="bg-secondary inline-flex w-fit shrink-0 items-center rounded-full border px-3 py-1 text-sm"
           >
             <span className="flex items-center gap-2">
-              {s.value !== s.label && <span className="text-neu8 font-bold">{s.value}</span>}
-              <span className={cn(
-                              s.value === s.label
-                                ? "text-neu8"
-                                : "text-neu7"
-                              )}
+              {s.value !== s.label && (
+                <span className="text-neu8 font-[700]">{s.value}</span>
+              )}
+              <span
+                className={cn(s.value === s.label ? "text-neu8" : "text-neu7")}
               >
                 {s.label}
               </span>

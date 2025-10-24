@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/content/api/": ["./content/api/*"],
   },
-  cacheComponents: true,
+  // cacheComponents: true, /* BUG: unstable for the time being */
   reactCompiler: true,
 };
 

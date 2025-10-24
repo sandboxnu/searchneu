@@ -25,8 +25,8 @@ export default async function Home() {
         <div className="px-4 py-6">
           <Header />
 
-          <div className="mt-[10%] flex flex-col items-center gap-3 text-4xl font-bold md:text-7xl">
-            <span className="flex">
+          <div className="text-neu8 mt-[10%] flex flex-col items-center text-4xl font-bold md:text-7xl">
+            <span className="-mb-2 flex">
               <p className="text-neu mr-5 italic">Never</p>miss an open
             </span>
             <span>waitlist seat again</span>

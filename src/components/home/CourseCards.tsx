@@ -2,12 +2,8 @@ import { getSearch } from "@/lib/controllers/getSearch";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { ResultCard } from "@/components/search/ResultCard";
 import LogoLoop from "@/components/ui/logo-loop";
-import { cacheLife } from "next/cache";
 
 export async function CourseCards() {
-  "use cache";
-  cacheLife("weeks");
-
   const terms = await getTerms();
   const term = terms.neu[0].term;
   const courses = await getSearch(term, "", [], -1, -1, [], [], [], false);

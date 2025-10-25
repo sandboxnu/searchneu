@@ -39,14 +39,16 @@ export default function RootLayout({
         data-theme="neu"
         className={`${lato.className} ${geistMono.variable} flex flex-col font-sans antialiased`}
       >
-        <Script
-          src="//unpkg.com/react-scan/dist/auto.global.js"
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
         <Analytics />
         <SpeedInsights />
         {process.env.NODE_ENV === "development" && <VercelToolbar />}
+        {process.env.REACT_SCAN && (
+          <Script
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
         <AuthProvider>
           <main className="min-h-screen w-screen grow">{children}</main>
 

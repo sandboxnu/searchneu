@@ -88,13 +88,13 @@ export function TrackingSwitch({
     });
   }
 
-  if (isTermActive) {
+  if (!isTermActive) {
     return (
       <div className="flex w-full justify-center">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">
-              {/* <Switch disabled={true} /> */}
+              <Switch disabled={true} />
             </div>
           </TooltipTrigger>
           <TooltipContent>

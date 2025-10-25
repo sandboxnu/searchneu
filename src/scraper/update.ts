@@ -86,7 +86,7 @@ export async function updateTerm(term: string) {
     waitlistRemaining: s.waitAvailable,
     classType: s.scheduleTypeDescription,
     honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-    campus: s.campusDescription,
+    // campus: s.campusDescription,
     meetingTimes: parseMeetingTimes(s),
 
     faculty: s.f ?? "TBA",

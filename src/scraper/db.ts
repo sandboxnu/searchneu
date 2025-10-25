@@ -88,6 +88,24 @@ export async function insertTermData(
       .from(schema.nupathsT);
     const nupathMap = new Map(nupaths.map((n) => [n.short, n.id]));
 
+    // Build campus code to name mapping from attributes
+    // The scraped data uses "code" but the database uses "name ?? code"
+    const campusCodeToName = new Map<string, string>();
+    for (const campus of attributes.campus) {
+      const dbName = campus.name ?? campus.code;
+      campusCodeToName.set(campus.code, dbName);
+      // Also map the name to itself for direct matches
+      if (campus.name) {
+        campusCodeToName.set(campus.name, dbName);
+      }
+    }
+
+    // Fetch all valid campuses from the database
+    const campuses = await tx
+      .select({ name: schema.campusesT.name })
+      .from(schema.campusesT);
+    const validCampusNames = new Set(campuses.map((c) => c.name));
+
     console.log("  → Inserting subjects...");
 
     // Insert subjects for this term
@@ -349,6 +367,15 @@ export async function insertTermData(
 
     logger.info(`Course NUPaths for ${termCode} synced`);
 
+    const normalizeCampus = (campus: string | undefined | null): string => {
+      if (!campus) return "Unknown";
+
+      const mappedName = campusCodeToName.get(campus) ?? campus;
+      if (validCampusNames.has(mappedName)) return mappedName;
+
+      return "Unknown";
+    };
+
     // Bulk upsert sections
     const sectionInserts: Array<{
       courseId: number;
@@ -387,7 +414,7 @@ export async function insertTermData(
           classType: section.classType,
           honors: section.honors,
           // campus: section.campus,
-          campus: "Unknown",
+          campus: normalizeCampus(section.campus),
         });
 
         crnToCourseMap.set(section.crn, courseId);

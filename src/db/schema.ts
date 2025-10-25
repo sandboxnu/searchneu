@@ -179,6 +179,7 @@ export const campusesT = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text().unique(),
+    // code: text().array().notNull(),
     group: text(),
   },
   (table) => [uniqueIndex("campus_name_idx").on(table.name)],
@@ -329,4 +330,3 @@ export const generatedScheduleSectionsT = pgTable(
     index("gss_section_idx").on(table.sectionId),
   ],
 );
-

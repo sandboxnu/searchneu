@@ -88,7 +88,7 @@ async function NavBar() {
             href="/scheduler"
             className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
           >
-            Plan
+            Scheduler
       </Link>
       {enableFaqPage && (
         <Link

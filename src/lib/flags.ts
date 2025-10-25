@@ -26,7 +26,7 @@ export const roomsFlag = flag({
 
 export const schedulerFlag = flag({
   key: "scheduler",
-  description: "Enable plan page",
+  description: "Enable scheduler page",
   decide() {
     return false;
   },

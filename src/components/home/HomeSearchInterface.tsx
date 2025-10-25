@@ -49,7 +49,7 @@ export function HomeSearchInterface({
 
   return (
     <div className="w-full sm:px-24 md:w-auto">
-      <div className="mb-4 flex w-full flex-col gap-2 md:flex-row">
+      <div className="mb-4 flex w-full flex-col justify-center gap-2 md:flex-row">
         <Button
           className={cn("rounded-full border transition duration-200", {
             "border-r1 bg-r1/30 text-neu hover:bg-r1/50":
@@ -104,7 +104,7 @@ export function HomeSearchInterface({
             }
           }}
           className={cn(
-            "bg-neu1 w-full rounded-3xl pl-12 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-xl! lg:placeholder:text-lg xl:w-[800px]",
+            "bg-neu1 w-full rounded-full pl-12 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-xl! lg:placeholder:text-lg xl:w-[800px]",
             {
               "border-r1": selectedCollege === "neu",
               "border-c1": selectedCollege === "cps",

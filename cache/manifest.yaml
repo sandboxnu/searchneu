@@ -1,8 +1,22 @@
 terms:
+  # NEU Fall 2025
   - term: 202610
     activeUntil: 2025-10-01
-  # - term: 202620
-  #   activeUntil: 2026-2-01
+  # NEU Spring 2026
+  - term: 202630
+    activeUntil: 2026-2-01
+  # CPS Winter Quarter 2026
+  - term: 202625
+    activeUntil: 2026-2-01
+  # CPS Fall Quarter 2025
+  - term: 202615
+    activeUntil: 2025-12-10
+  # NEU Summer II 2025
+  - term: 202560
+    activeUntil: 2025-08-01
+  # LAW Summer Semester
+  - term: 202552
+    activeUntil: 2025-08-01
 
 attributes:
   campus:
@@ -46,6 +60,8 @@ attributes:
       group: "Other"
     - code: "Study Abroad"
       name: "Study Abroad"
+      group: "Other"
+    - code: "Unknown"
       group: "Other"
 
   nupath:

@@ -122,11 +122,17 @@ function TableRow({
   const building = section.meetingTimes[0]?.room?.building?.name;
   const room = section.meetingTimes[0]?.room?.number;
 
+  const numMeetingTimes = section.meetingTimes.length;
+
   const [tracked, setTracked] = useState(initialTracked);
 
   return (
     <tr className="hover:bg-neu2">
-      <td className="py-5 text-right">
+      <td
+        className={cn("py-5 text-right", {
+          "py-[23px] align-top": numMeetingTimes > 1,
+        })}
+      >
         <div className="flex px-6">
           <TrackingSwitch
             sectionId={section.id}
@@ -138,7 +144,11 @@ function TableRow({
         </div>
       </td>
 
-      <td className="py-5 text-center">
+      <td
+        className={cn("py-5 text-center", {
+          "py-[22px] align-top": numMeetingTimes > 1,
+        })}
+      >
         <div>
           <p className="text-neu9">{section.crn}</p>
           {section.honors && (
@@ -147,7 +157,7 @@ function TableRow({
         </div>
       </td>
 
-      <td className="px-4 py-5">
+      <td className={cn("px-4 py-5", { "align-top": numMeetingTimes > 1 })}>
         <div className="flex min-w-0 flex-nowrap justify-center gap-2">
           <span
             className={cn(
@@ -171,15 +181,23 @@ function TableRow({
         <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
       </td>
 
-      <td className="px-4 py-5 align-center">
+      <td
+        className={cn("align-center px-4 py-5", {
+          "align-top": numMeetingTimes > 1,
+        })}
+      >
         <RoomBlocks section={section} key={section.crn} />
       </td>
 
-      <td className="px-4 py-5">
+      <td className={cn("px-4 py-5", { "align-top": numMeetingTimes > 1 })}>
         <div className="text-neu9">{formatFaculty(section.faculty)}</div>
       </td>
 
-      <td className="px-4 py-5 text-center">
+      <td
+        className={cn("px-4 py-5 text-center", {
+          "align-top": numMeetingTimes > 1,
+        })}
+      >
         <div className="flex justify-center">
           <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600">
             {section.campus}
@@ -283,5 +301,8 @@ function formatTimeRange(startTime: number, endTime: number) {
 
 function formatFaculty(f: string) {
   const [lastName, firstName] = f.split(",");
+  if (!lastName || !firstName) {
+    return "NA";
+  }
   return `${firstName.trim()[0]}. ${lastName}`;
 }

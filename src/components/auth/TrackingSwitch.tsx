@@ -88,13 +88,13 @@ export function TrackingSwitch({
     });
   }
 
-  if (isTermActive) {
+  if (!isTermActive) {
     return (
       <div className="flex w-full justify-center">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-2">
-              {/* <Switch disabled={true} /> */}
+              <Switch disabled={true} />
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -136,8 +136,7 @@ export function TrackingSwitch({
     <>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <div className="">
-            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
+          <div className="flex items-center gap-1">
             <Switch
               checked={checked}
               onClick={() => onCheck()}
@@ -145,6 +144,7 @@ export function TrackingSwitch({
               {...props}
               disabled={disabled}
             />
+            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
           </div>
         </TooltipTrigger>
         <TooltipContent>

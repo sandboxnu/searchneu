@@ -14,5 +14,6 @@ In the root of the project, run `docker compose up -d`; this will spin up the lo
 db container and a proxy allowing us to use the same driver as the prod database.
 
 Once the local database is spun up, it needs to first have the schema applied by
-running `pnpm db:push`. The database then needs data to be added from a scrape
-[TODO THAT].
+running `pnpm db:push`. The database then needs data to be added from a scrape.
+See the [Scraping documentation](/docs/dev-guide/development/scraping) for details
+on how to scrape and upload course data.

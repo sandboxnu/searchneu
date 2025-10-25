@@ -1,14 +1,12 @@
-import { db } from "@/db";
-import { coursesT, sectionsT, courseNupathJoinT, nupathsT } from "@/db/schema";
-import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
+import { getSearch } from "@/lib/controllers/getSearch";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
 
   // parse all the potential params
-  const query = params.get("q");
   const term = params.get("term");
+  const query = params.get("q");
   const subjects = params.getAll("subj");
   const nupaths = params.getAll("nupath");
   const campusFilter = params.getAll("camp");
@@ -17,90 +15,51 @@ export async function GET(req: NextRequest) {
   const maxCourseId = params.get("xci");
   const honorsFilter = params.get("honors");
 
+  if (!term) {
+    return Response.json({ error: "term is required" });
+  }
+
   if (query?.length && query.length > 0 && query.length < 4) {
     return Response.json({ error: "insufficient query length" });
   }
 
-  // construct the where clause based on what params are present
-  const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
-
-  if (query) {
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(
-      sql`${coursesT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('name', ${query}, distance => 0), paradedb.boost(6.0, paradedb.match('register', ${query}))])`,
-    );
-  }
-
-  if (subjects && subjects.length > 0) {
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(
-      sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + `'${s}'`, "") + "]"}`,
-    );
-  }
-
+  let parsedMinId = -1;
   if (minCourseId) {
-    const parsed = parseInt(minCourseId, 10);
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(
-      sql`${coursesT.courseNumber} @@@ ${">= " + String(parsed * 1000)}`,
-    );
+    try {
+      const parsed = parseInt(minCourseId, 10);
+      if (isNaN(parsed)) {
+        return Response.json({ error: "minCourseId is NaN" });
+      }
+      parsedMinId = parsed;
+    } catch {
+      return Response.json({ error: "minCourseId is NaN" });
+    }
   }
 
+  let parsedMaxId = -1;
   if (maxCourseId) {
-    const parsed = parseInt(maxCourseId, 10);
-    sqlChunks.push(sql`and`);
-    sqlChunks.push(
-      sql`${coursesT.courseNumber} @@@ ${"<= " + String(parsed * 1000 + 999)}`,
-    );
+    try {
+      const parsed = parseInt(maxCourseId, 10);
+      if (isNaN(parsed)) {
+        return Response.json({ error: "maxCourseId is NaN" });
+      }
+      parsedMaxId = parsed;
+    } catch {
+      return Response.json({ error: "maxCourseId is NaN" });
+    }
   }
 
-  const result = await db
-    .select({
-      id: coursesT.id,
-      name: coursesT.name,
-      courseNumber: coursesT.courseNumber,
-      subject: coursesT.subject,
-      maxCredits: coursesT.maxCredits,
-      minCredits: coursesT.minCredits,
-      nupaths: sql<
-        string[]
-      >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
-      nupathNames: sql<
-        string[]
-      >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
-      prereqs: coursesT.prereqs,
-      coreqs: coursesT.coreqs,
-      totalSections: countDistinct(sectionsT.id),
-      sectionsWithSeats: sql<number>`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
-      campus: sql<string[]>`array_agg(distinct ${sectionsT.campus})`,
-      classType: sql<string[]>`array_agg(distinct ${sectionsT.classType})`,
-      honors: sql<boolean>`bool_or(${sectionsT.honors})`,
-      score: sql<number>`paradedb.score(${coursesT.id})`,
-    })
-    .from(coursesT)
-    .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
-    .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
-    .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
-    .where(sql.join(sqlChunks, sql.raw(" ")))
-    .groupBy(
-      coursesT.id,
-      coursesT.name,
-      coursesT.courseNumber,
-      coursesT.subject,
-      coursesT.maxCredits,
-      coursesT.minCredits,
-    )
-    .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
-
-  // filter through the results to find the other filters (not in db index!)
-  const processed = result.filter(
-    (r) =>
-      (nupaths.length === 0 || nupaths.every((x) => r.nupaths.includes(x))) &&
-      (campusFilter.length === 0 ||
-        r.campus.some((x) => campusFilter.includes(x))) &&
-      (classTypeFilter.length === 0 ||
-        r.classType.some((x) => classTypeFilter.includes(x))) &&
-      (!honorsFilter || r.honors),
+  const searchResults = await getSearch(
+    term,
+    query ?? "",
+    subjects,
+    parsedMinId,
+    parsedMinId,
+    nupaths,
+    campusFilter,
+    classTypeFilter,
+    Boolean(honorsFilter),
   );
-  return Response.json(processed);
+
+  return Response.json(searchResults);
 }

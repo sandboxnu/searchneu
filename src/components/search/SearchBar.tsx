@@ -83,13 +83,13 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-background border-border focus:border-neu3 border border-1 pl-10"
+        className="bg-neu1 focus:border-neu3 border pl-10"
         placeholder="Search by course, professor, or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
       />
-      <span className="absolute top-2 right-2 bottom-2 flex items-center rounded-full bg-gray-100 px-3 text-xs font-medium text-gray-600">
+      <span className="bg-neu2 text-neu7 absolute top-2 right-2 bottom-2 hidden items-center rounded-full px-3 text-xs font-medium md:flex">
         type / to search
       </span>
     </div>

@@ -2,14 +2,12 @@ import { docs } from "../../.source";
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { createOpenAPI, attachFile } from "fumadocs-openapi/server";
+import { createOpenAPI, openapiPlugin } from "fumadocs-openapi/server";
 
 export const source = loader({
   baseUrl: "/docs",
+  plugins: [openapiPlugin()],
   source: docs.toFumadocsSource(),
-  pageTree: {
-    attachFile,
-  },
   icon(icon) {
     if (!icon) {
       return;

@@ -12,7 +12,7 @@ export const faqFlag = flag({
   key: "faq-page",
   description: "Enable FAQ page",
   decide() {
-    return true;
+    return false;
   },
 });
 
@@ -20,7 +20,7 @@ export const roomsFlag = flag({
   key: "rooms",
   description: "Enable experimental rooms page",
   decide() {
-    return true;
+    return false;
   },
 });
 

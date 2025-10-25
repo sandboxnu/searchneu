@@ -15,27 +15,28 @@
   --neu3: oklch(
     0.91 0 0
   ); /* focus items (cards against neu2 at /30) & badges */
+  --neu25: oklch(0.9604 0.0011 197.14);
   --neu2: oklch(
     0.98 0.0011 197.14
   ); /* input backgrounds & accent backgrounds */
   --neu1: oklch(1 0 0); /* background */
 
+  --neu: oklch(0.61 0.2082 22.24);
+  --r4: oklch(0.6663 0.1868 27.46);
+  --r1: oklch(0.9093 0.0392 12.03);
+
+  --c1: oklch(0.9516 0.0399 75.8);
+
+  --l1: oklch(0.9154 0.0144 231.22);
+
   --green: oklch(0.7038 0.1481 160); /* seat green status */
   --yellow: oklch(0.7828 0.168 66.2); /* seat yellow status */
   --red: oklch(0.6122 0.2082 22.24); /* seat red status */
   --blue: oklch(0.6 0.1786 254.7); /* links (hover at /80) */
-  --neu: oklch(0.61 0.2082 22.24);
   --cps: oklch(0.78 0.168 66.2);
   --law: oklch(0.56 0.0781 237.98);
 
   --navy: oklch(0.33 0.0678 257.27);
-
-  --expanded-system-neu8: oklch(0.3211 0 0);
-  --expanded-system-neu6: oklch(0.6167 0 0);
-  --expanded-system-neu5: oklch(0.7155 0 0);
-  --search-utility-colors-dark-grey: oklch(0.4379 0.0141 264.42);
-  --expanded-system-b5: oklch(0.643 0.1706 253.64);
-  --brand-palette-links-blue: oklch(0.6027 0.1786 254.7);
 
   /* ShadCN style variables - these enforce some degree of consistency across components */
   --background: oklch(1 0 0); /* NEU 1 */
@@ -81,27 +82,24 @@
   --color-neu5: var(--neu5);
   --color-neu4: var(--neu4);
   --color-neu3: var(--neu3);
+  --color-neu25: var(--neu25);
   --color-neu2: var(--neu2);
   --color-neu1: var(--neu1);
 
-  --color-expanded-system-neu8: var(--expanded-system-neu8);
-  --color-expanded-system-neu6: var(--expanded-system-neu6);
-  --color-expanded-system-neu5: var(--expanded-system-neu5);
-
-  --color-search-utility-colors-dark-grey: var(
-    --search-utility-colors-dark-grey
-  );
-  --color-expanded-system-b5: var(--expanded-system-b5);
-  --color-brand-palette-links-blue: var(--brand-palette-links-blue);
+  --color-neu: var(--neu);
+  --color-r4: var(--r4);
+  --color-r1: var(--r1);
 
   --color-green: var(--green);
   --color-yellow: var(--yellow);
   --color-red: var(--red);
   --color-blue: var(--blue);
 
-  --color-neu: var(--neu);
   --color-cps: var(--cps);
   --color-law: var(--law);
+
+  --color-l1: var(--l1);
+  --color-c1: var(--c1);
 
   --color-navy: var(--navy);
 
@@ -151,7 +149,10 @@
     @apply border-border outline-neu4/50;
   }
   body {
-    @apply bg-neu1 text-neu9;
+    @apply bg-neu2 text-neu9;
+  }
+  * {
+    @apply leading-tight;
   }
 }
 

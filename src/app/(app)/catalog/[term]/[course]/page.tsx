@@ -1,86 +1,27 @@
 import { db } from "@/db";
-import {
-  coursesT,
-  termsT,
-  sectionsT,
-  trackersT,
-  usersT,
-  meetingTimesT,
-  courseNupathJoinT,
-  nupathsT,
-  roomsT,
-  buildingsT,
-} from "@/db/schema";
+import { termsT, trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
-import { type JSX, Suspense } from "react";
+import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import Link from "next/link";
 import { type Requisite } from "@/scraper/reqs";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
-import { sql } from "drizzle-orm";
 import {
   SectionTable,
   type Section,
-  type Room,
 } from "@/components/coursePage/SectionTable";
 import { type Metadata } from "next";
+import { RequisiteBlock } from "@/components/coursePage/Requisites";
+import { getCourse, getCourseSections } from "@/lib/controllers/getCourse";
 
-const cachedCourse = unstable_cache(
-  async (term: string, subject: string, courseNumber: string) =>
-    db
-      .select({
-        id: coursesT.id,
-        name: coursesT.name,
-        subject: coursesT.subject,
-        courseNumber: coursesT.courseNumber,
-        register: coursesT.register,
-        description: coursesT.description,
-        minCredits: coursesT.minCredits,
-        maxCredits: coursesT.maxCredits,
-        prereqs: coursesT.prereqs,
-        coreqs: coursesT.coreqs,
-        updatedAt: coursesT.updatedAt,
-        nupaths: sql<
-          string[]
-        >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
-        nupathNames: sql<
-          string[]
-        >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
-      })
-      .from(coursesT)
-      .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
-      .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
-      .where(
-        and(
-          eq(coursesT.term, term),
-          eq(coursesT.subject, subject),
-          eq(coursesT.courseNumber, courseNumber),
-        ),
-      )
-      .groupBy(
-        coursesT.id,
-        coursesT.name,
-        coursesT.subject,
-        coursesT.courseNumber,
-        coursesT.register,
-        coursesT.description,
-        coursesT.minCredits,
-        coursesT.maxCredits,
-        coursesT.prereqs,
-        coursesT.coreqs,
-        coursesT.updatedAt,
-      ),
-  ["banner.course"],
-  {
-    revalidate: 3600,
-    tags: ["banner.course"],
-  },
-);
+const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
+  revalidate: 3600,
+  tags: ["banner.course"],
+});
 
 async function getTrackedSections() {
   const guid = await getGuid();
@@ -133,101 +74,22 @@ export default async function Page(props: {
 
   const course = courseResp[0];
 
-  const sections = db
-    .select({
-      id: sectionsT.id,
-      crn: sectionsT.crn,
-      faculty: sectionsT.faculty,
-      campus: sectionsT.campus,
-      honors: sectionsT.honors,
-      classType: sectionsT.classType,
-      seatRemaining: sectionsT.seatRemaining,
-      seatCapacity: sectionsT.seatCapacity,
-      waitlistCapacity: sectionsT.waitlistCapacity,
-      waitlistRemaining: sectionsT.waitlistRemaining,
-      // Meeting time data
-      meetingTimeId: meetingTimesT.id,
-      days: meetingTimesT.days,
-      startTime: meetingTimesT.startTime,
-      endTime: meetingTimesT.endTime,
-      // Room data
-      roomId: roomsT.id,
-      roomNumber: roomsT.number,
-      // Building data
-      buildingId: buildingsT.id,
-      buildingName: buildingsT.name,
-    })
-    .from(sectionsT)
-    .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
-    .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
-    .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
-    .where(eq(sectionsT.courseId, course.id))
-    .then((rows) => {
-      // Group the rows by section and reconstruct the meetingTimes array
-      const sectionMap = new Map<number, Section>();
-
-      for (const row of rows) {
-        if (!sectionMap.has(row.id)) {
-          sectionMap.set(row.id, {
-            id: row.id,
-            crn: row.crn,
-            faculty: row.faculty,
-            campus: row.campus,
-            honors: row.honors,
-            classType: row.classType,
-            seatRemaining: row.seatRemaining,
-            seatCapacity: row.seatCapacity,
-            waitlistCapacity: row.waitlistCapacity,
-            waitlistRemaining: row.waitlistRemaining,
-            meetingTimes: [],
-          });
-        }
-
-        // Add meeting time if it exists
-        if (row.meetingTimeId && row.days && row.startTime && row.endTime) {
-          const section = sectionMap.get(row.id)!;
-
-          const room: Room | undefined =
-            row.roomId && row.roomNumber
-              ? {
-                  id: row.roomId,
-                  number: row.roomNumber,
-                  building:
-                    row.buildingId && row.buildingName
-                      ? { id: row.buildingId, name: row.buildingName }
-                      : undefined,
-                }
-              : undefined;
-
-          section.meetingTimes.push({
-            days: row.days,
-            startTime: row.startTime,
-            endTime: row.endTime,
-            final: false, // You'll need to add this field to meetingTimesT if needed
-            room,
-            finalDate: undefined,
-          });
-        }
-      }
-
-      return Array.from(sectionMap.values());
-    });
-
+  const sections = getCourseSections(course.id);
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 border-border flex h-[calc(100vh-128px)] flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg border px-10 pt-10 pb-8">
+    <div className="bg-neu1 flex flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:h-[calc(100vh-128px)] md:overflow-y-scroll">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
             style={{ lineHeight: 1.2 }}
-            className="text-expanded-system-neu8 text-2xl font-bold"
+            className="text-neu8 text-lg font-bold md:text-2xl"
           >
             {courseName}
           </h1>
           <h2
             style={{ lineHeight: 1.3 }}
-            className="text-expanded-system-neu8 text-lg"
+            className="text-neu8 text-sm md:text-lg"
           >
             {course.name}
           </h2>
@@ -235,7 +97,7 @@ export default async function Page(props: {
         <div className="flex flex-col items-end justify-end gap-1">
           <h2
             style={{ lineHeight: 1.2 }}
-            className="text-expanded-system-neu8 text-right text-lg font-bold"
+            className="text-neu8 text-right text-sm font-bold md:text-lg"
           >
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
@@ -245,7 +107,7 @@ export default async function Page(props: {
                 <Globe className="size-4" />
                 <h2
                   style={{ lineHeight: 1.3 }}
-                  className="text-expanded-system-neu6 text-sm italic"
+                  className="text-neu6 text-xs italic md:text-sm"
                 >
                   {formatLastUpdatedString(term?.updatedAt)}
                 </h2>
@@ -255,9 +117,9 @@ export default async function Page(props: {
                 <GlobeLock className="size-4" />
                 <h2
                   style={{ lineHeight: 1.3 }}
-                  className="text-expanded-system-neu6 text-sm italic"
+                  className="text-neu6 text-xs italic md:text-sm"
                 >
-                  {"Last updated on " + term.updatedAt.toLocaleDateString()}
+                  {"Last updated " + term.updatedAt.toLocaleDateString()}
                 </h2>
               </>
             )}
@@ -268,7 +130,7 @@ export default async function Page(props: {
       <div className="flex flex-col items-start gap-2 self-stretch">
         <h3
           style={{ lineHeight: 1.16667 }}
-          className="text-expanded-system-neu5 text-xs font-bold uppercase"
+          className="text-neu5 text-xs font-bold uppercase"
         >
           COURSE DESCRIPTION
         </h3>
@@ -278,7 +140,7 @@ export default async function Page(props: {
         <div className="flex flex-col items-start gap-1 self-stretch">
           <h3
             style={{ lineHeight: 1.16667 }}
-            className="text-expanded-system-neu5 text-xs font-bold"
+            className="text-neu5 text-xs font-bold"
           >
             LINK
           </h3>
@@ -286,7 +148,7 @@ export default async function Page(props: {
             target="_blank"
             rel="noopener noreferrer"
             style={{ lineHeight: 1.3 }}
-            className="text-brand-palette-links-blue hover:text-brand-palette-links-blue/80 flex items-center justify-end gap-1"
+            className="text-blue hover:text-blue/80 flex items-center justify-end gap-1"
             href={`https://bnrordsp.neu.edu/ssb-prod/bwckctlg.p_disp_course_detail?cat_term_in=${termId}&subj_code_in=${subject}&crse_numb_in=${courseNumber}`}
           >
             View on the Northeastern website
@@ -295,37 +157,53 @@ export default async function Page(props: {
         </div>
       </div>
       <Separator />
-      <div className="">
-        <h3 className="text-muted-foreground pb-2 text-xs font-bold">
-          NUPATHS
-        </h3>
-        <div className="flex gap-2">
-          {course.nupathNames.map((n) => (
-            <Badge key={n} className="px-2 py-0 text-xs font-bold">
+      <div className="flex flex-col items-start self-stretch">
+        <h3 className="text-neu5 col-span-12 text-xs font-bold">NUPATHS</h3>
+        <div className="mt-2 flex flex-col gap-2 md:flex-row">
+          {course.nupathNames.map((n, i) => (
+            <Badge
+              key={n}
+              className="text-neu6 bg-neu2 border-neu25 flex gap-2 rounded-full border px-3 py-1 text-sm"
+            >
+              <span className="text-neu7 font-bold">{course.nupaths[i]}</span>
               {n}
             </Badge>
           ))}
           {course.nupaths.length === 0 && (
             <Badge
               variant="secondary"
-              className="text-neu6 px-2 py-0 text-xs font-bold"
+              className="text-neu4 bg-neu2 rounded-full px-3 py-1 text-xs font-bold"
             >
               No NUPaths
             </Badge>
           )}
         </div>
       </div>
-      <div className="grid grid-cols-2">
-        <h3 className="text-muted-foreground col-span-12 pb-2 text-xs font-bold">
+      <div className="flex w-full flex-col gap-2">
+        <h3 className="text-neu5 col-span-12 text-xs font-bold">
           REQUIREMENTS
         </h3>
-        <div className="">
-          <h3 className="text-neu7 pb-2 text-sm font-medium">Prereqs</h3>
-          <p>{renderRequisite(course.prereqs as Requisite, termId)}</p>
-        </div>
-        <div className="">
-          <h3 className="text-neu7 pb-2 text-sm font-medium">Coreqs</h3>
-          <p>{renderRequisite(course.coreqs as Requisite, termId)}</p>
+        <div className="flex flex-col gap-2 md:flex-row">
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              PREREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.prereqs as Requisite}
+              termId={termId}
+              coreqMode={false}
+            />
+          </div>
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              COREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.coreqs as Requisite}
+              termId={termId}
+              coreqMode={true}
+            />
+          </div>
         </div>
       </div>
       <Separator />
@@ -387,71 +265,6 @@ function formatLastUpdatedString(date: Date) {
   const days = Math.floor(hours / 24);
   str += days === 1 ? "1 day ago" : `${days} days ago`;
   return str;
-}
-
-// renderRequisite parses the requisite structure and creates the JSX elements
-// that then can be rendered (ie "CS 2500 and CS 2501")
-function renderRequisite(requisite: Requisite, term: string): JSX.Element {
-  if (!requisite || Object.keys(requisite).length === 0) {
-    return <span>None</span>;
-  }
-
-  return renderRequisiteItem(requisite, true, term);
-}
-
-function renderRequisiteItem(
-  item: Requisite,
-  isTopLevel: boolean = false,
-  term: string,
-): JSX.Element {
-  if ("subject" in item && "courseNumber" in item) {
-    return (
-      <Link
-        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}`}
-        className="text-blue hover:text-blue/80"
-      >
-        {item.subject} {item.courseNumber}
-      </Link>
-    );
-  }
-
-  if ("name" in item && "score" in item) {
-    return (
-      <span className="">
-        {item.name}: {item.score}
-      </span>
-    );
-  }
-
-  if ("type" in item && "items" in item) {
-    const renderedItems = item.items.map((subItem) =>
-      renderRequisiteItem(subItem, false, term),
-    );
-
-    if (item.items.length === 1) {
-      return renderedItems[0];
-    }
-
-    const operator = item.type === "and" ? " and " : " or ";
-    const elements: JSX.Element[] = [];
-
-    renderedItems.forEach((renderedItem, index) => {
-      elements.push(<span key={`item-${index}`}>{renderedItem}</span>);
-      if (index < renderedItems.length - 1) {
-        elements.push(
-          <span key={`op-${index}`} className="">
-            {operator}
-          </span>,
-        );
-      }
-    });
-
-    const content = <>{elements}</>;
-
-    return isTopLevel ? content : <span className="">({content})</span>;
-  }
-
-  throw new Error("unknown requisite item type");
 }
 
 function SectionsTableSkeleton() {

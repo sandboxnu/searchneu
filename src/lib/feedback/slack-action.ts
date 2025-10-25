@@ -13,7 +13,7 @@ export async function sendFeedbackToSlack(
 
   const text = {
     type: "mrkdwn",
-    text: `Someone submitted some feedback:\n> Feedback Type: ${typeOfFeedback} \n> *Contact*: \`${parsed_contact}\` \n> *Message*: ${message}`,
+    text: `Someone submitted some feedback:\n> *Feedback Type*: ${typeOfFeedback} \n> *Contact*: \`${parsed_contact}\` \n> *Message*: ${message}`,
   };
   const data = {
     text: "Someone submitted some feedback",

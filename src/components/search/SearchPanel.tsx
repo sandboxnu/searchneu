@@ -36,17 +36,18 @@ import {
 } from "@/components/ui/popover";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { SPMultiselectGroups } from "./SPMultiselectGroups";
 
 export function SearchPanel(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
-  campuses: Promise<string[]>;
+  campuses: Promise<{ name: string | null; group: string | null }[]>;
   classTypes: Promise<string[]>;
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-neu1 h-[calc(100vh-76px)] w-full space-y-4 overflow-y-scroll rounded-lg px-4 py-4 md:border">
-      <h3 className="text-muted-foreground text-xs font-bold">SCHOOL</h3>
+    <div className="bg-background h-[calc(100vh-76px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
+      <h3 className="text-neu7 text-xs font-[700]">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>
@@ -54,7 +55,7 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-term-select"
-          className="text-muted-foreground text-xs font-bold"
+          className="text-neu7 text-xs font-[700]"
         >
           SEMESTER
         </Label>
@@ -65,12 +66,11 @@ export function SearchPanel(props: {
 
       <div className="">
         <Suspense fallback={<MultiselectSkeleton />}>
-          <SPMultiselect
+          <SPMultiselectGroups
             label="CAMPUSES"
             opts={props.campuses}
             spCode="camp"
             placeholder="Select campus"
-            transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
           />
         </Suspense>
       </div>
@@ -104,7 +104,7 @@ export function SearchPanel(props: {
       <div className="flex items-center justify-between">
         <Label
           htmlFor="course-honors-toggle"
-          className="text-muted-foreground text-xs font-bold"
+          className="text-neu7 text-xs font-[700]"
         >
           HONORS
         </Label>
@@ -128,79 +128,93 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-id-range"
-          className="text-neu7 pb-2 text-sm font-medium"
+          className="text-neu7 pb-3 text-sm font-[700]"
         >
-          Course Id
+          COURSE ID RANGE
         </Label>
         <RangeSlider />
         <div className="text-neu6 flex w-full justify-between pt-2 text-sm">
-          <p>1k</p>
-          <p>2k</p>
-          <p>3k</p>
-          <p>4k</p>
-          <p>5k</p>
-          <p>6k</p>
-          <p>7k</p>
-          <p>8k</p>
-          <p>9k</p>
+          <RangeTicks />
+        </div>
+        <div className="text-neu6 flex w-full justify-between text-sm">
+          <RangeLabels />
         </div>
       </div>
     </div>
   );
 }
 
+// Replace the existing CollegeToggle function with this:
 function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
   const terms = use(props.terms);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { term } = useParams();
 
-  const activeCollege = Object.keys(terms).find((k) =>
-    terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-  );
+  const activeCollege =
+    Object.keys(terms).find((k) =>
+      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
+    ) ?? "neu";
 
   // HACK: this will blink but for now its fine
   if (typeof window !== "undefined")
-    document.body.setAttribute("data-theme", activeCollege ?? "neu");
+    document.body.setAttribute("data-theme", activeCollege);
+
+  const collegeOptions = [
+    { value: "neu", label: "Northeastern University" },
+    { value: "cps", label: "College of Professional Studies" },
+    { value: "law", label: "School of Law" },
+  ];
 
   return (
-    <ToggleGroup
-      variant="default"
-      type="single"
-      size="sm"
-      defaultValue={activeCollege}
-      onValueChange={(val) => {
-        if (val === "") {
-          return;
-        }
-        const newestTerm = terms[val as keyof GroupedTerms][0];
-        document.body.setAttribute("data-theme", val);
-        router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
-      }}
-      className="bg-neu2 w-full gap-2 rounded-lg p-1 *:data-[slot=toggle-group-item]:rounded-md *:data-[slot=toggle-group-item]:px-3 *:data-[slot=toggle-group-item]:font-bold"
-    >
-      <ToggleGroupItem
-        value="neu"
-        aria-label="Toggle NEU college"
-        className="data-[state=on]:text-neu"
+    <div className="space-y-2">
+      <Select
+        onValueChange={(val) => {
+          if (val === "") return;
+          const newestTerm = terms[val as keyof GroupedTerms][0];
+          document.body.setAttribute("data-theme", val);
+          router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
+        }}
+        value={activeCollege}
       >
-        NEU
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="cps"
-        aria-label="Toggle CPS college"
-        className="data-[state=on]:text-cps"
-      >
-        CPS
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="law"
-        aria-label="Toggle LAW college"
-        className="data-[state=on]:text-law"
-      >
-        LAW
-      </ToggleGroupItem>
-    </ToggleGroup>
+        <SelectTrigger
+          className={`bg-secondary h-[40px] w-full font-[700] ${
+            activeCollege === "neu"
+              ? "bg-[#FAD7DA33] text-[#E63946]"
+              : activeCollege === "cps"
+                ? "bg-[#FFECD233] text-[#FF9F1C]"
+                : "bg-[#DAE5EB4D] text-[#457B9D]"
+          }`}
+        >
+          <SelectValue placeholder="Select school" />
+        </SelectTrigger>
+        <SelectContent>
+          {collegeOptions.map((college) => (
+            <SelectItem
+              key={college.value}
+              value={college.value}
+              className={`text-[14px] font-[700] ${
+                college.value === "neu"
+                  ? "text-[#E63946]"
+                  : college.value === "cps"
+                    ? "text-[#FF9F1C]"
+                    : "text-[#457B9D]"
+              } ${
+                activeCollege === "neu" && college.value === "neu"
+                  ? "bg-[#FAD7DA33]"
+                  : activeCollege === "cps" && college.value === "cps"
+                    ? "bg-[#FFECD233]"
+                    : activeCollege === "law" && college.value === "law"
+                      ? "bg-[#DAE5EB4D]"
+                      : ""
+              }`}
+            >
+              {college.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
 
@@ -220,22 +234,82 @@ function TermSelect(
       terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
     ) ?? "neu";
 
+  // Group terms by year and sort them
+  const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
+    (acc, t) => {
+      const year = t.name.split(" ")[1];
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(t);
+      return acc;
+    },
+    {} as Record<string, (typeof terms)[keyof GroupedTerms]>,
+  );
+
+  // Sort terms within each year
+  const termOrder = {
+    Fall: 0,
+    Spring: 1,
+    "Full Summer": 2,
+    "Summer 1": 3,
+    "Summer 2": 4,
+  };
+  Object.values(groupedByYear).forEach((yearTerms) => {
+    yearTerms.sort((a, b) => {
+      const aName = a.name.replace(" Semester", "").split(" ")[0];
+      const bName = b.name.replace(" Semester", "").split(" ")[0];
+      return (
+        termOrder[aName as keyof typeof termOrder] -
+        termOrder[bName as keyof typeof termOrder]
+      );
+    });
+  });
+
+  // Sort years in reverse chronological order
+  const sortedYears = Object.keys(groupedByYear).sort(
+    (a, b) => Number(b) - Number(a),
+  );
+
   return (
-    <div className="space-y-2 pt-3">
+    <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select
         onValueChange={(e) =>
           router.push(`/catalog/${e}?${searchParams.toString()}`)
         }
         value={term?.toString()}
       >
-        <SelectTrigger className="bg-secondary w-full" {...props}>
+        <SelectTrigger
+          className="bg-secondary w-full border border-solid border-[#F1F2F2]"
+          {...props}
+        >
           <SelectValue placeholder="Select term" />
         </SelectTrigger>
-        <SelectContent className="">
-          {terms[activeCollege as keyof GroupedTerms].map((t) => (
-            <SelectItem key={t.term} value={t.term}>
-              {t.name}
-            </SelectItem>
+        <SelectContent className="max-h-[300px]">
+          {sortedYears.map((year) => (
+            <div key={year}>
+              <SelectItem
+                value={`header-${year}`}
+                disabled
+                className="text-neu6 text-xs font-[700] uppercase"
+              >
+                {year}
+              </SelectItem>
+              {groupedByYear[year].map((t) => (
+                <SelectItem
+                  key={t.term}
+                  value={t.term}
+                  className={cn(
+                    "pl-4",
+                    t.term === term?.toString()
+                      ? "text-neu8 font-[600]"
+                      : "text-neu6 font-[400]",
+                  )}
+                >
+                  {t.name.replace(" Semester", "")}
+                </SelectItem>
+              ))}
+            </div>
           ))}
         </SelectContent>
       </Select>
@@ -288,9 +362,7 @@ function SPMultiselect<T>(props: {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Label className="text-muted-foreground text-xs font-bold">
-          {props.label}
-        </Label>
+        <Label className="text-neu7 text-xs font-[700]">{props.label}</Label>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <p
@@ -338,16 +410,33 @@ function SPMultiselect<T>(props: {
                               : [...selected, opt],
                           );
                         }}
+                        className={cn(
+                          selected.some((f) => f.value === opt.value) &&
+                            "font-[700]",
+                        )}
                       >
-                        <div
-                          className="data-[selected=true]:bg-neu9 data-[selected=true]:text-neu1 data-[selected=true]:border-neu9 pointer-events-none size-4 shrink-0 rounded-[4px] border transition-all select-none *:[svg]:opacity-0 data-[selected=true]:*:[svg]:opacity-100"
-                          data-selected={selected.some(
-                            (f) => f.value === opt.value,
+                        <div className="flex items-center gap-2 pl-2">
+                          {opt.value !== opt.label && (
+                            <div
+                              className={cn(
+                                selected.some((f) => f.value === opt.value)
+                                  ? "text-neu8"
+                                  : "text-neu6 font-[700]",
+                              )}
+                            >
+                              {opt.value}
+                            </div>
                           )}
-                        >
-                          <CheckIcon className="size-3.5 text-current" />
+                          <div
+                            className={cn(
+                              selected.some((f) => f.value === opt.value)
+                                ? "text-neu7"
+                                : "text-neu6",
+                            )}
+                          >
+                            {opt.label}
+                          </div>
                         </div>
-                        {opt.label}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -363,7 +452,25 @@ function SPMultiselect<T>(props: {
             key={i}
             className="bg-secondary inline-flex w-fit shrink-0 items-center rounded-full border px-3 py-1 text-sm"
           >
-            {s.label}
+            <span className="flex items-center gap-2">
+              {s.value !== s.label && (
+                <span className="text-neu8 font-[700]">{s.value}</span>
+              )}
+              <span
+                className={cn(s.value === s.label ? "text-neu8" : "text-neu7")}
+              >
+                {s.label}
+              </span>
+            </span>
+            <button
+              onClick={() =>
+                updateSearchParams(selected.filter((f) => f.value !== s.value))
+              }
+              aria-label={`Remove ${s.label}`}
+              className="text-neu6 hover:text-neu7 ml-2 rounded-full py-0.5 text-lg leading-none"
+            >
+              ×
+            </button>
           </span>
         ))}
         {selected.length > 3 && (
@@ -447,6 +554,47 @@ function RangeSlider() {
   );
 }
 
+function RangeTicks() {
+  function GenerateTicks(n: number) {
+    return (
+      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
+        <span
+          className={cn(
+            "text-muted-foreground border-l",
+            n % 2 === 0 ? "h-3 border-current" : "h-2 border-current",
+          )}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-[5px] flex w-full justify-between">
+      {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateTicks)}
+    </div>
+  );
+}
+
+function RangeLabels() {
+  function GenerateLabels(n: number) {
+    return (
+      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
+        {n % 2 === 0 ? (
+          <span className="text-muted-foreground text-sm">{n * 1000}</span>
+        ) : (
+          <span>&nbsp;</span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-[5px] flex w-full justify-between px-0">
+      {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateLabels)}
+    </div>
+  );
+}
+
 function MultiselectSkeleton() {
   return <div className="bg-neu3 h-9 w-full animate-pulse rounded-lg"></div>;
 }
@@ -454,3 +602,4 @@ function MultiselectSkeleton() {
 function ToggleSkeleton() {
   return <div className="bg-neu3 h-10 w-full animate-pulse rounded-lg"></div>;
 }
+

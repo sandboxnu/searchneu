@@ -26,7 +26,7 @@ const SearchResults = dynamic(() => import("./SearchResults"), {
 export function MobileWrapper(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
-  campuses: Promise<string[]>;
+  campuses: Promise<{ name: string | null; group: string | null }[]>;
   classTypes: Promise<string[]>;
   nupaths: Promise<Option[]>;
   coursePage: ReactNode;

@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/search/MobileWrapper";
 import { db } from "@/db";
-import { subjectsT, sectionsT, nupathsT } from "@/db/schema";
+import { subjectsT, sectionsT, nupathsT, campusesT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
@@ -18,12 +18,10 @@ const cachedSubjects = unstable_cache(
 );
 
 const cachedCampuses = unstable_cache(
-  async (term: string) =>
+  async () =>
     db
-      .selectDistinct({ campus: sectionsT.campus })
-      .from(sectionsT)
-      .where(eq(sectionsT.term, term))
-      .then((c) => c.map((e) => e.campus)),
+      .select({ name: campusesT.name, group: campusesT.group })
+      .from(campusesT),
   [],
   { revalidate: 3600, tags: ["banner.campuses"] },
 );
@@ -57,7 +55,7 @@ export default async function Layout(props: {
   const term = (await props.params)?.term ?? "";
 
   const subjects = cachedSubjects(term);
-  const campuses = cachedCampuses(term);
+  const campuses = cachedCampuses();
   const classTypes = cachedClassTypes(term);
   const nupaths = cachedNupaths();
 

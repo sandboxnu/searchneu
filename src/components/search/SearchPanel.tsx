@@ -46,8 +46,8 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-background h-[calc(100vh-76px)] w-full space-y-4 overflow-y-scroll rounded-lg border-1 px-4 py-4">
-      <h3 className="text-neu7 text-xs font-[700]">SCHOOL</h3>
+    <div className="bg-background h-[calc(100vh-76px)] w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+      <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeToggle terms={props.terms} />
       </Suspense>
@@ -55,7 +55,7 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-term-select"
-          className="text-neu7 text-xs font-[700]"
+          className="text-neu7 text-xs font-bold"
         >
           SEMESTER
         </Label>
@@ -104,7 +104,7 @@ export function SearchPanel(props: {
       <div className="flex items-center justify-between">
         <Label
           htmlFor="course-honors-toggle"
-          className="text-neu7 text-xs font-[700]"
+          className="text-neu7 text-xs font-bold"
         >
           HONORS
         </Label>
@@ -128,7 +128,7 @@ export function SearchPanel(props: {
       <div className="">
         <Label
           htmlFor="course-id-range"
-          className="text-neu7 pb-3 text-sm font-[700]"
+          className="text-neu7 pb-3 text-xs font-bold"
         >
           COURSE ID RANGE
         </Label>
@@ -569,7 +569,7 @@ function RangeTicks() {
   }
 
   return (
-    <div className="mx-[5px] flex w-full justify-between">
+    <div className="mx-[5px] flex w-full justify-between px-0.5">
       {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateTicks)}
     </div>
   );
@@ -602,4 +602,3 @@ function MultiselectSkeleton() {
 function ToggleSkeleton() {
   return <div className="bg-neu3 h-10 w-full animate-pulse rounded-lg"></div>;
 }
-

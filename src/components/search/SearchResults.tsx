@@ -150,7 +150,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
                       " " +
                       results[v.index].courseNumber
                   }
-                  className="bg-neu1 data-[active=true]:border-neu3 flex flex-col rounded-lg border-1 p-4"
+                  className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
                 >
                   <ResultCard result={results[v.index]} />
                 </Link>

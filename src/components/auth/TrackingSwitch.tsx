@@ -136,8 +136,7 @@ export function TrackingSwitch({
     <>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <div className="">
-            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
+          <div className="flex items-center gap-1">
             <Switch
               checked={checked}
               onClick={() => onCheck()}
@@ -145,6 +144,7 @@ export function TrackingSwitch({
               {...props}
               disabled={disabled}
             />
+            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
           </div>
         </TooltipTrigger>
         <TooltipContent>

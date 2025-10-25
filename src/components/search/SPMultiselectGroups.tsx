@@ -22,12 +22,16 @@ import { cn } from "@/lib/cn";
 
 export function SPMultiselectGroups<T>(props: {
   id?: string;
-  opts: Promise<{ name: string; group: string }[]>;
+  opts: Promise<{ name: string | null; group: string | null }[]>;
   spCode: string;
   placeholder: string;
   label: string;
 }) {
-  const resolved = use(props.opts);
+  const resolved = use(props.opts).map((x) => {
+    const name = x.name ?? "";
+    const group = x.group ?? "";
+    return { name, group };
+  });
 
   const pathname = usePathname();
   const searchParams = useSearchParams();

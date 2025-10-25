@@ -41,7 +41,7 @@ import { SPMultiselectGroups } from "./SPMultiselectGroups";
 export function SearchPanel(props: {
   terms: Promise<GroupedTerms>;
   subjects: Promise<Subject[]>;
-  campuses: Promise<{ name: string; group: string }[]>;
+  campuses: Promise<{ name: string | null; group: string | null }[]>;
   classTypes: Promise<string[]>;
   nupaths: Promise<Option[]>;
 }) {

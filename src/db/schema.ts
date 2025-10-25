@@ -179,6 +179,7 @@ export const campusesT = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text().unique(),
+    // code: text().array().notNull(),
     group: text(),
   },
   (table) => [uniqueIndex("campus_name_idx").on(table.name)],
@@ -200,7 +201,7 @@ export const courseNupathJoinT = pgTable(
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     courseId: integer()
       .notNull()
-      .references(() => coursesT.id),
+      .references(() => coursesT.id, { onDelete: "cascade" }),
     nupathId: integer()
       .notNull()
       .references(() => nupathsT.id),
@@ -264,7 +265,7 @@ export const meetingTimesT = pgTable(
       .references(() => termsT.term),
     sectionId: integer()
       .notNull()
-      .references(() => sectionsT.id),
+      .references(() => sectionsT.id, { onDelete: "cascade" }),
     roomId: integer().references(() => roomsT.id),
     days: integer().array().notNull(),
     startTime: integer().notNull(),
@@ -281,7 +282,6 @@ export const meetingTimesT = pgTable(
     unique("meeting_time").on(
       table.term,
       table.sectionId,
-      table.roomId,
       table.days,
       table.startTime,
       table.endTime,
@@ -303,7 +303,10 @@ export const generatedSchedulesT = pgTable(
     name: text().notNull().default("Schedule"),
 
     createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp().notNull().defaultNow().$onUpdate(() => new Date()),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
     deletedAt: timestamp(),
   },
   (table) => [

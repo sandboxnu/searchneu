@@ -1,20 +1,18 @@
 import { cn } from "@/lib/cn";
-import Link from "next/link";
 import { Badge } from "../ui/badge";
 
 export function ResultCard(props: {
-  link: string;
   result: {
     name: string;
     courseNumber: string;
     subject: string;
-    minCredits: number;
-    maxCredits: number;
+    minCredits: string;
+    maxCredits: string;
     sectionsWithSeats: number;
     totalSections: number;
     nupaths: string[];
   };
-  active: boolean;
+  className?: string;
 }) {
   let creditRange = "";
   if (props.result.minCredits === props.result.maxCredits) {
@@ -32,20 +30,16 @@ export function ResultCard(props: {
     props.result.sectionsWithSeats / props.result.totalSections;
 
   return (
-    <Link
-      href={props.link}
-      data-active={props.active}
-      className="bg-neu1 data-[active=true]:border-neu3 flex flex-col gap-1 rounded-lg border-1 p-4"
-    >
-      <div className="flex items-center justify-between">
+    <>
+      <div className="flex items-center justify-between pb-1">
         <h1 className="text-base leading-tight font-black">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
-        <span className="text-muted-foreground text-sm">
+        <span className="text-neu6 text-sm">
           {creditRange} {creditLabel}
         </span>
       </div>
-      <p className="text-muted-foreground pb-1 text-sm">{props.result.name}</p>
+      <p className="text-neu6 pb-1 text-sm">{props.result.name}</p>
       <div className="flex items-center justify-between">
         <span
           className={cn(
@@ -60,7 +54,7 @@ export function ResultCard(props: {
         </span>
         <NUPathBadges nupaths={props.result.nupaths} />
       </div>
-    </Link>
+    </>
   );
 }
 
@@ -78,17 +72,16 @@ function NUPathBadges(props: { nupaths: string[] }) {
       {paths.map((n) => (
         <Badge
           key={n}
-          className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
+          className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold"
         >
           {n}
         </Badge>
       ))}
       {plusMore > 0 && (
-        <Badge className="text-neu7 rounded border-none px-2 py-1 text-xs leading-tight font-bold">
+        <Badge className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold">
           +{plusMore}
         </Badge>
       )}
-      {/* NOTE: is the empty badge good? */}
       {paths.length === 0 && (
         <Badge
           variant="secondary"

@@ -5,13 +5,14 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
+import Link from "next/link";
 
 interface searchResult {
   name: string;
   courseNumber: string;
   subject: string;
-  minCredits: number;
-  maxCredits: number;
+  minCredits: string;
+  maxCredits: string;
   sectionsWithSeats: number;
   totalSections: number;
   nupaths: string[];
@@ -97,7 +98,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
           </p>
           <div
             ref={parentRef}
-            className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 pr-2"
+            className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 md:pr-2"
           ></div>
         </>
       );
@@ -112,7 +113,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
         <div
           ref={parentRef}
-          className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 pr-2"
+          className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 md:pr-2"
         ></div>
       </>
     );
@@ -125,7 +126,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
       {/* </p> */}
       <div
         ref={parentRef}
-        className="h-[calc(100vh-128px)] w-full overflow-y-auto pr-2"
+        className="h-[calc(100vh-128px)] w-full overflow-y-auto md:pr-2"
       >
         <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
           <ul
@@ -141,16 +142,18 @@ function ResultsList(props: { params: string; term: string; course: string }) {
                 data-index={v.index}
                 ref={virtual.measureElement}
               >
-                <ResultCard
-                  result={results[v.index]}
-                  link={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
-                  active={
+                <Link
+                  href={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+                  data-active={
                     decodeURIComponent(props.course) ===
                     results[v.index].subject +
                       " " +
                       results[v.index].courseNumber
                   }
-                />
+                  className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
+                >
+                  <ResultCard result={results[v.index]} />
+                </Link>
               </li>
             ))}
           </ul>

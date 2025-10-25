@@ -87,7 +87,7 @@ export async function updateTerm(term: string) {
     classType: s.scheduleTypeDescription,
     honors: s.sectionAttributes.some((a) => a.description === "Honors"),
     // campus: s.campusDescription,
-    meetingTimes: parseMeetingTimes(s),
+    // meetingTimes: parseMeetingTimes(s),
 
     faculty: s.f ?? "TBA",
   }));

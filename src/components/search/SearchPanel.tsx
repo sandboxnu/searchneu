@@ -237,7 +237,7 @@ function TermSelect(
   // Group terms by year and sort them
   const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
     (acc, t) => {
-      const year = t.name.split(" ")[1];
+      const year = t.name.split(" ").filter((s) => s.length === 4 && !isNaN(Number(s)))[0];
       if (!acc[year]) {
         acc[year] = [];
       }

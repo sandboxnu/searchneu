@@ -5,6 +5,8 @@ import { type ScheduleFilters } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { NMultiselect } from "@/components/ui/multi-select";
+import type { Option } from "@/components/ui/multi-select";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -199,32 +201,21 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       <Separator />
 
-      {/* NUPath Requirement */}
+      {/* NUPath Requirements */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold block mb-2">
+        <Label className="text-muted-foreground text-xs font-bold">
           NUPATH REQUIREMENTS
         </Label>
-        <div className="flex flex-wrap gap-2">
-          {nupathOptions.map((nupath) => (
-            <label key={nupath.value} className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="checkbox"
-                checked={filters.nupaths?.includes(nupath.value) ?? false}
-                onChange={(e) => {
-                  const currentNupaths = filters.nupaths || [];
-                  const newNupaths = e.target.checked
-                    ? [...currentNupaths, nupath.value]
-                    : currentNupaths.filter(n => n !== nupath.value);
-                  updateFilter("nupaths", newNupaths.length > 0 ? newNupaths: undefined);
-                }}
-                className="rounded"
-              />
-              <span className="text-sm">
-                {nupath.label}
-              </span>
-            </label>
-          ))}
-        </div>
+        <NMultiselect
+          options={nupathOptions}
+          value={nupathOptions.filter(opt => filters.nupaths?.includes(opt.value))}
+          onChange={(options: Option[]) => {
+            const values = options.map(opt => opt.value);
+            updateFilter("nupaths", values.length > 0 ? values : undefined);
+          }}
+          placeholder="Select NUPaths..."
+          className="mt-2"
+        />
       </div>
     </div>
   );

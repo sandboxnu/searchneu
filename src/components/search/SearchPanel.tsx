@@ -73,7 +73,6 @@ export function SearchPanel(props: {
             transform={(opts) => opts.map((c) => ({ value: c, label: c }))}
           />
         </Suspense>
-        <p>{props.}</p>
       </div>
 
       <Separator />

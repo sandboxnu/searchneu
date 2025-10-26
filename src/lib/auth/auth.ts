@@ -5,7 +5,7 @@ import { Google } from "arctic";
 export const config = {
   callback:
     process.env.NODE_ENV === "production"
-      ? "https://search2-beta.vercel.app/api/auth/callback"
+      ? "https://searchNEU.vercel.app/api/auth/callback"
       : "http://localhost:3000/api/auth/callback",
   issuer: "https://searchneu.com",
   cookieName: "searchneu.session",

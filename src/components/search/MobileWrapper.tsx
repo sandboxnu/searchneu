@@ -45,7 +45,10 @@ export function MobileWrapper(props: {
         data-show={Boolean(course)}
         className="col-span-6 flex flex-col gap-4 md:col-span-4 md:data-[show=false]:pl-6 md:data-[show=true]:col-span-6 md:data-[show=true]:pl-0 xl:col-span-5! xl:pl-6!"
       >
-        <div data-show={Boolean(course)} className="flex items-center gap-2">
+        <div
+          data-show={Boolean(course)}
+          className="hidden items-center gap-2 data-[show=false]:flex md:flex"
+        >
           <Drawer>
             <DrawerTrigger asChild>
               <Button

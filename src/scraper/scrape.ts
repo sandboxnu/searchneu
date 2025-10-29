@@ -290,10 +290,17 @@ export function parseMeetingTimes(section: BannerSection) {
     if (isFinal && meetingTime.startDate) {
       finalDate = meetingTime.startDate;
     }
+    
+    let actualRoom;
+    if (!meetingTime.room) {
+      actualRoom = "";
+    } else {
+      actualRoom = meetingTime.room == "ROOM" ? "" : meetingTime.room;
+    }
 
     meetings.push({
       building: meetingTime.buildingDescription || meetingTime.building || "",
-      room: meetingTime.room || "",
+      room: actualRoom,
       days: days,
       startTime: startTime,
       endTime: endTime,

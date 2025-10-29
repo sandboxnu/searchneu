@@ -211,6 +211,19 @@ function TableRow({
 function RoomBlocks(props: { section: Section }) {
   const building = props.section.meetingTimes[0]?.room?.building?.name;
   const room = props.section.meetingTimes[0]?.room?.number;
+  const section = props.section;
+
+  //if the entire campus is online, display online for rooms
+  //otherwise, logic that exists
+  if (section.campus == "Online") {
+    return (
+    <div className="flex flex-col text-sm">
+      <div className="flex flex-col gap-1 text-sm">
+        <div className="font-bold">{section.campus}</div>
+      </div>
+    </div>
+  );
+  }
 
   return (
     <div className="flex flex-col text-sm">

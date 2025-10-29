@@ -152,7 +152,7 @@ export function populatePostReqs(courses: PopulatedCourse[]) {
       c.postreqs = {};
     } else {
       c.postreqs = {
-        type: "or",
+        type: "and",
         items: Array.from(reqs).map((key) => {
           const [subject, courseNumber] = key.split(" ");
           return { subject, courseNumber };
@@ -160,29 +160,23 @@ export function populatePostReqs(courses: PopulatedCourse[]) {
       };
     }
   }
-
-  for (const c of courses) {
-    if (c.postreqs == null) {
-      console.log("NULL COURSE POSTREQ", c);
-    }
-  }
 }
 
 function getAllPrereqs(req: Requisite): string[] {
   const allPrereqs = new Set<string>();
-  const visit = (node: Requisite) => {
-    if (!node) {
+  const visit = (req: Requisite) => {
+    if (!req) {
       return;
     }
-    if (isCourse(node)) {
-      allPrereqs.add(`${node.subject} ${node.courseNumber}`);
+    if (isCourse(req)) {
+      allPrereqs.add(`${req.subject} ${req.courseNumber}`);
     }
-    if (isCondition(node)) {
-      node.items.forEach((item) => visit(item));
+    if (isCondition(req)) {
+      req.items.forEach((item) => visit(item));
     }
-    if (isTest(node)) {
-      // TODO: What should I do for a test node
-      console.log("TEST NODE", node);
+    if (isTest(req)) {
+      // TODO: What should I do for a test req
+      console.log("TEST REQ", req);
     }
   };
   visit(req);

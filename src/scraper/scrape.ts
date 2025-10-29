@@ -134,7 +134,6 @@ async function getReqs(
   }
 
   populatePostReqs(courses);
-  console.log(courses.forEach((course) => course.postreqs));
 }
 
 // getCourseNames goes through and scrapes the course names for

@@ -31,6 +31,7 @@ export const coursesT = pgTable(
     maxCredits: decimal().notNull(),
     prereqs: jsonb().notNull(),
     coreqs: jsonb().notNull(),
+    postreqs: jsonb(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()

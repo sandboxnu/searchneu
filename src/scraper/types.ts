@@ -138,6 +138,7 @@ export interface Course {
   nupath: string[];
   coreqs: Requisite;
   prereqs: Requisite;
+  postreqs: Requisite;
   // TODO: pre / co reqs for
 }
 

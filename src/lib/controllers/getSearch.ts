@@ -61,6 +61,7 @@ export const getSearch = cache(
         >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
         prereqs: coursesT.prereqs,
         coreqs: coursesT.coreqs,
+        postreqs: coursesT.postreqs,
         totalSections: countDistinct(sectionsT.id),
         sectionsWithSeats: sql<number>`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
         campus: sql<string[]>`array_agg(distinct ${sectionsT.campus})`,

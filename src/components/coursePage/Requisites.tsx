@@ -33,11 +33,11 @@ const isEmpty = (requisite: Requisite): requisite is Record<string, never> => {
 export function RequisiteBlock({
   req,
   termId,
-  coreqMode,
+  prereqMode,
 }: {
   req: Requisite;
   termId: string;
-  coreqMode: boolean;
+  prereqMode: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -65,7 +65,7 @@ export function RequisiteBlock({
     item: req,
     term: termId,
     depth: 0,
-    coreqMode: coreqMode,
+    prereqMode: prereqMode,
   });
 
   return (
@@ -109,12 +109,12 @@ function RequisiteItemComponent({
   item,
   term,
   depth,
-  coreqMode,
+  prereqMode,
 }: {
   item: RequisiteItem;
   term: string;
   depth: number;
-  coreqMode: boolean;
+  prereqMode: boolean;
 }) {
   if (isCondition(item)) {
     return (
@@ -134,7 +134,7 @@ function RequisiteItemComponent({
               item={subItem}
               term={term}
               depth={depth + 1}
-              coreqMode={false}
+              prereqMode={true}
             />
             {depth > 0 &&
               item.type === "and" &&
@@ -143,7 +143,7 @@ function RequisiteItemComponent({
                   {item.type}
                 </div>
               )}
-            {!coreqMode && depth === 0 && index < item.items.length - 1 && (
+            {prereqMode && depth === 0 && index < item.items.length - 1 && (
               <div className="text-neu6 py-1 text-xs font-semibold uppercase">
                 {item.type}
               </div>

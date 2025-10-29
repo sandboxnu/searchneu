@@ -191,7 +191,7 @@ export default async function Page(props: {
             <RequisiteBlock
               req={course.prereqs as Requisite}
               termId={termId}
-              coreqMode={false}
+              prereqMode={true}
             />
           </div>
           <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
@@ -201,7 +201,17 @@ export default async function Page(props: {
             <RequisiteBlock
               req={course.coreqs as Requisite}
               termId={termId}
-              coreqMode={true}
+              prereqMode={false}
+            />
+          </div>
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              POSTREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.postreqs as Requisite}
+              termId={termId}
+              prereqMode={false}
             />
           </div>
         </div>

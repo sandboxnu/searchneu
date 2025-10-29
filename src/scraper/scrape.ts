@@ -1,6 +1,6 @@
 import { BannerSection, Config, Course, TermScrape } from "./types";
 import { decode } from "he";
-import { parseCoreqs, parsePrereqs } from "./reqs";
+import { parseCoreqs, parsePrereqs, populatePostReqs, Requisite } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
 import { parseRooms } from "./rooms";
 import { logger } from "@/lib/logger";
@@ -132,6 +132,9 @@ async function getReqs(
         );
       });
   }
+
+  populatePostReqs(courses);
+  console.log(courses.forEach((course) => course.postreqs));
 }
 
 // getCourseNames goes through and scrapes the course names for
@@ -234,6 +237,7 @@ export function arrangeCourses(sections: BannerSection[]) {
         sections: [],
         prereqs: {},
         coreqs: {},
+        postreqs: {},
       };
     }
 

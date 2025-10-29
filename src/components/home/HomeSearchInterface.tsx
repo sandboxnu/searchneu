@@ -59,7 +59,7 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("neu")}
         >
-          Northeastern University
+          NEU
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -70,7 +70,7 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("cps")}
         >
-          College of Professional Studies
+          CPS
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -81,7 +81,7 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("law")}
         >
-          School of Law
+          LAW
         </Button>
       </div>
       <div className="relative">

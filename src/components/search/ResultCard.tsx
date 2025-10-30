@@ -39,7 +39,9 @@ export function ResultCard(props: {
           {creditRange} {creditLabel}
         </span>
       </div>
-      <p className="text-neu6 pb-1 text-sm">{props.result.name}</p>
+      <p className="text-neu6 truncate pr-14 pb-1 text-sm">
+        {props.result.name}
+      </p>
       <div className="flex items-center justify-between">
         <span
           className={cn(

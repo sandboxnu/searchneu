@@ -32,7 +32,7 @@ export function ResultCard(props: {
   return (
     <>
       <div className="flex items-center justify-between pb-1">
-        <h1 className="text-base leading-tight font-black">
+        <h1 className="text-base leading-tight font-bold">
           {props.result.subject + " " + props.result.courseNumber}
         </h1>
         <span className="text-neu6 text-sm">

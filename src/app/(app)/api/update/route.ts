@@ -85,12 +85,8 @@ export async function GET(req: NextRequest) {
       )
       .join(", ");
 
-    // PERF: neon scales to zero before we get here so we have to reconnect. ideally
-    // this can be fixed with the pro plan (which we are going to get)
-    const dbReconn = drizzle(process.env.DATABASE_URL_DIRECT!);
-
     if (values.length > 0) {
-      await dbReconn.execute(sql`
+      await db.execute(sql`
         UPDATE ${sectionsT}
         SET 
           "seatRemaining" = v.seat_remaining
@@ -100,7 +96,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (waitlistValues.length > 0) {
-      await dbReconn.execute(sql`
+      await db.execute(sql`
         UPDATE ${sectionsT}
         SET
           "waitlistRemaining" = v.waitlist_remaining

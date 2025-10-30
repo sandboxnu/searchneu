@@ -73,12 +73,12 @@ export function SectionTable({
       <div className="inline-block min-w-full rounded-lg border">
         <table className="w-full min-w-[1000px] table-auto">
           <colgroup>
-            <col className="w-16" />
-            <col className="w-20" />
-            <col className="w-40" />
-            <col className="w-40" />
-            <col className="w-40" />
-            <col className="w-28" />
+            <col className="max-w-16" />
+            <col className="max-w-20" />
+            <col className="max-w-40" />
+            <col className="max-w-40" />
+            <col className="max-w-40" />
+            <col className="max-w-28" />
           </colgroup>
           <thead>
             <tr className="bg-secondary text-neu6 border-b text-xs">

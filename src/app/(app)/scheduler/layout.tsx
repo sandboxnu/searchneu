@@ -5,12 +5,12 @@ import { Suspense, type ReactNode } from "react";
 
 export default async function Layout({ children }: LayoutProps<"/rooms">) {
   return (
-    <>
+    <div className="pt-4">
       <Header />
       <Suspense>
         <FlagCheck>{children}</FlagCheck>
       </Suspense>
-    </>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { faqFlag, roomsFlag } from "@/lib/flags";
+import { faqFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
 import {
   Bookmark,
   BugIcon,
@@ -65,9 +65,10 @@ export async function Header() {
 async function NavBar() {
   const enableFaqPage = await faqFlag();
   const enableRoomsPage = await roomsFlag();
+  const enableSchedulerPage = await schedulerFlag();
 
   return (
-    <nav className="gap-2 font-semibold">
+    <nav className="flex gap-2 font-semibold">
       {enableRoomsPage && (
         <Link
           href="/rooms"
@@ -84,12 +85,14 @@ async function NavBar() {
         <Bookmark className="size-4" />
         <span>Catalog</span>
       </Link>
-      <Link
-            href="/scheduler"
-            className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
-          >
-            Scheduler
-      </Link>
+      {enableSchedulerPage && (
+        <Link
+          href="/scheduler"
+          className="hover:bg-neu3 bg-background rounded-full border-1 px-4 py-2"
+        >
+          Scheduler
+        </Link>
+      )}
       {enableFaqPage && (
         <Link
           href="/faq"

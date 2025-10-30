@@ -25,5 +25,9 @@ export default async function Page({
     .from(nupathsT)
     .then((c) => c.map((e) => ({ label: e.name, value: e.short})));
 
-  return <SchedulerWrapper initialSchedules={allSchedules} nupathOptions={nupathOptions} />;
+  return (
+    <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
+      <SchedulerWrapper initialSchedules={allSchedules} nupathOptions={nupathOptions} />
+    </div>
+  );
 }

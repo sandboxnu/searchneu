@@ -30,9 +30,9 @@ export async function scrapeTerm(term: string) {
   await getCourseDescriptions(courses);
   console.log(`✓ Course descriptions retrieved`);
 
-  console.log(`🔗 Fetching prerequisites and corequisites...`);
+  console.log(`🔗 Fetching requisites...`);
   await getReqs(courses, subjects);
-  console.log(`✓ Requirements retrieved`);
+  console.log(`✓ Requisites processed`);
 
   console.log(`🏢 Processing room schedules...`);
   const rooms = await parseRooms(courses);

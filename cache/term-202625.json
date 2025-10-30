@@ -39,6 +39,53 @@
       ],
       "prereqs": {},
       "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "ACC",
+            "courseNumber": "6230"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Investigative Accounting and Fraud Examination",
+      "term": "202625",
+      "courseNumber": "6230",
+      "subject": "ACC",
+      "description": "Offers students an opportunity to learn how to identify and investigate accounting frauds and irregularities. Includes the in-depth review of sophisticated fraud schemes; how fraudulent conduct can be deterred; how allegations of fraud should be investigated and resolved; the recovery of assets; methods of writing effective reports; complying with SAS 82 and other fraud standards; and recent antiterrorist and money-laundering regulations, including the Patriot Act of 2002. Sessions are interactive, with students working through actual cases, developing investigative strategies, and seeking to prove how the fraud was committed. Topics covered include acts of skimming, cash larceny, check tampering, register disbursement schemes, billing schemes, payroll and expense reimbursement schemes, improper accounting of inventory and other assets, corruption, bribery, conflicts of interest, security fraud, and insurance fraud.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "21739",
+          "seatCapacity": 20,
+          "seatRemaining": 20,
+          "waitlistCapacity": 5,
+          "waitlistRemaining": 5,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [],
+          "faculty": "TBA"
+        }
+      ],
+      "prereqs": {
+        "type": "or",
+        "items": [
+          {
+            "subject": "ACC",
+            "courseNumber": "6210"
+          },
+          {
+            "subject": "ACC",
+            "courseNumber": "6220"
+          }
+        ]
+      },
+      "coreqs": {},
       "postreqs": {}
     },
     {
@@ -76,7 +123,7 @@
         {
           "crn": "20184",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 27,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -124,7 +171,7 @@
         {
           "crn": "20475",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 25,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -196,7 +243,7 @@
         {
           "crn": "20643",
           "seatCapacity": 30,
-          "seatRemaining": 17,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -220,7 +267,7 @@
         {
           "crn": "20780",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 27,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -317,7 +364,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -417,7 +464,7 @@
         {
           "crn": "20281",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 27,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -441,7 +488,7 @@
         {
           "crn": "20476",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 25,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -465,7 +512,7 @@
         {
           "crn": "20503",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -489,7 +536,7 @@
         {
           "crn": "20542",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 27,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -513,7 +560,7 @@
         {
           "crn": "20645",
           "seatCapacity": 30,
-          "seatRemaining": 17,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -532,7 +579,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Samea, Alireza"
         },
         {
           "crn": "20999",
@@ -613,7 +660,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -724,7 +771,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Tariri, Ghazal"
         },
         {
           "crn": "20260",
@@ -748,7 +795,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Guha, Paromita"
         },
         {
           "crn": "20282",
@@ -958,7 +1005,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1125,7 +1172,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1752,7 +1799,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1897,7 +1944,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1960,7 +2007,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Russo, Carolyn"
         },
         {
           "crn": "20387",
@@ -2238,7 +2285,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2333,7 +2380,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2444,7 +2491,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Subramanian, Ganesh"
         },
         {
           "crn": "21262",
@@ -2504,7 +2551,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2645,7 +2692,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -3573,7 +3620,7 @@
         {
           "crn": "20002",
           "seatCapacity": 30,
-          "seatRemaining": 27,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3614,12 +3661,12 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Centola, Michael"
         },
         {
           "crn": "20483",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -3643,7 +3690,7 @@
         {
           "crn": "20584",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 30,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3692,7 +3739,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -3950,7 +3997,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4046,7 +4093,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4093,7 +4140,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4193,7 +4240,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4240,7 +4287,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4661,7 +4708,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Whitten, Kirsten"
         },
         {
           "crn": "21719",
@@ -4683,7 +4730,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Zangerl, Carl"
         }
       ],
       "prereqs": {},
@@ -4720,13 +4767,13 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Zangerl, Carl"
         }
       ],
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CMN",
@@ -4809,7 +4856,7 @@
         {
           "crn": "21723",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -4826,7 +4873,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Goodman Hayward, Patricia"
         }
       ],
       "prereqs": {},
@@ -4927,7 +4974,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Goodman Hayward, Patricia"
         }
       ],
       "prereqs": {},
@@ -4988,6 +5035,30 @@
               "finalDate": null
             }
           ],
+          "faculty": "Goodman Hayward, Patricia"
+        },
+        {
+          "crn": "21740",
+          "seatCapacity": 28,
+          "seatRemaining": 28,
+          "waitlistCapacity": 5,
+          "waitlistRemaining": 5,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Portland, Maine",
+          "meetingTimes": [
+            {
+              "building": "Roux Institute 100 Fore St.",
+              "room": "138",
+              "days": [
+                3
+              ],
+              "startTime": 1335,
+              "endTime": 1655,
+              "final": false,
+              "finalDate": null
+            }
+          ],
           "faculty": "TBA"
         }
       ],
@@ -5025,7 +5096,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Zangerl, Carl"
         },
         {
           "crn": "20096",
@@ -5106,6 +5177,30 @@
               "days": [],
               "startTime": null,
               "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Goodman Hayward, Patricia"
+        },
+        {
+          "crn": "21741",
+          "seatCapacity": 20,
+          "seatRemaining": 20,
+          "waitlistCapacity": 5,
+          "waitlistRemaining": 5,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Portland, Maine",
+          "meetingTimes": [
+            {
+              "building": "Roux Institute 100 Fore St.",
+              "room": "201",
+              "days": [
+                3
+              ],
+              "startTime": 1335,
+              "endTime": 1655,
               "final": false,
               "finalDate": null
             }
@@ -5436,6 +5531,30 @@
       "nupath": [],
       "sections": [
         {
+          "crn": "20753",
+          "seatCapacity": 30,
+          "seatRemaining": 30,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Boston",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [
+                5
+              ],
+              "startTime": 1750,
+              "endTime": 1940,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "TBA"
+        },
+        {
           "crn": "21521",
           "seatCapacity": 30,
           "seatRemaining": 30,
@@ -5614,61 +5733,6 @@
               "endTime": 1900,
               "final": false,
               "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
             }
           ],
           "faculty": "TBA"
@@ -5681,11 +5745,11 @@
           "waitlistRemaining": 0,
           "classType": "Seminar",
           "honors": false,
-          "campus": "Seattle, WA",
+          "campus": "Boston",
           "meetingTimes": [
             {
-              "building": "225 Terry Ave",
-              "room": "220",
+              "building": "",
+              "room": "",
               "days": [
                 1
               ],
@@ -5705,86 +5769,7 @@
           "waitlistRemaining": 0,
           "classType": "Seminar",
           "honors": false,
-          "campus": "Portland, Maine",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            },
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                1
-              ],
-              "startTime": 1800,
-              "endTime": 1900,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "TBA"
-        },
-        {
-          "crn": "21733",
-          "seatCapacity": 20,
-          "seatRemaining": 20,
-          "waitlistCapacity": 0,
-          "waitlistRemaining": 0,
-          "classType": "Seminar",
-          "honors": false,
-          "campus": "Silicon Valley, CA",
+          "campus": "Boston",
           "meetingTimes": [
             {
               "building": "",
@@ -5946,7 +5931,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Paik, Min Jung"
         }
       ],
       "prereqs": {},
@@ -6039,7 +6024,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6048,6 +6033,10 @@
           {
             "subject": "DGM",
             "courseNumber": "6217"
+          },
+          {
+            "subject": "DGM",
+            "courseNumber": "6450"
           }
         ]
       }
@@ -6139,7 +6128,7 @@
         "courseNumber": "6109"
       },
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6332,7 +6321,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6418,7 +6407,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6476,7 +6465,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6629,7 +6618,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6898,7 +6887,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -6945,6 +6934,48 @@
       "prereqs": {
         "subject": "DGM",
         "courseNumber": "6405"
+      },
+      "coreqs": {},
+      "postreqs": {}
+    },
+    {
+      "name": "Animation Basics",
+      "term": "202625",
+      "courseNumber": "6450",
+      "subject": "DGM",
+      "description": "Explores the creative potential of animation. Exposes students to animation processes and techniques through lectures, demonstrations, and hands-on assignments. Provides a historical survey of animation art. Emphasizes using the computer to creatively develop concepts while learning the fundamental skills of constructing images and forms. Students collaborate on projects during the first half of the course and work individually on final projects.",
+      "maxCredits": 4,
+      "minCredits": 4,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "21744",
+          "seatCapacity": 18,
+          "seatRemaining": 18,
+          "waitlistCapacity": 5,
+          "waitlistRemaining": 5,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Vancouver, Canada",
+          "meetingTimes": [
+            {
+              "building": "West Georgia",
+              "room": "1418",
+              "days": [
+                3
+              ],
+              "startTime": 1800,
+              "endTime": 1950,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Toporek, Sergio"
+        }
+      ],
+      "prereqs": {
+        "subject": "DGM",
+        "courseNumber": "6105"
       },
       "coreqs": {},
       "postreqs": {}
@@ -6999,7 +7030,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -7143,7 +7174,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -7435,7 +7466,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -7488,7 +7519,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -7792,7 +7823,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -7848,7 +7879,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -7893,7 +7924,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8081,7 +8112,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8175,7 +8206,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8416,7 +8447,7 @@
       "postreqs": {}
     },
     {
-      "name": "Global and Historical Perspectives on Higher Education",
+      "name": "Practicum, Portfolio, and Panel Review",
       "term": "202625",
       "courseNumber": "6874",
       "subject": "EDU",
@@ -8453,7 +8484,7 @@
       "postreqs": {}
     },
     {
-      "name": "Foundations of Doctoral Studies",
+      "name": "Global and Historical Perspectives on Higher Education",
       "term": "202625",
       "courseNumber": "7204",
       "subject": "EDU",
@@ -8502,11 +8533,11 @@
       "postreqs": {}
     },
     {
-      "name": "Educational Systems: The Dynamics of Policy, Power, and Practice",
+      "name": "Foundations of Doctoral Studies",
       "term": "202625",
       "courseNumber": "7207",
       "subject": "EDU",
-      "description": "Introduces the policy process, education governance, and education policy issues. Critically analyzes professional practice and problems of practice within the broader context of local, state, and federal education policy systems. The course is divided into four units: the foundations of education policy; education governance and policy subsystems; the policy process; and analyzing policy to develop more just and equitable educational outcomes.",
+      "description": "Examines professional doctoral studies, the construct of scholar-practitioner, and the role of action research in creating change for social justice. Offers students an opportunity to define problems of practice and explore the basic components of action research.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8514,7 +8545,7 @@
         {
           "crn": "20347",
           "seatCapacity": 25,
-          "seatRemaining": 19,
+          "seatRemaining": 18,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -8537,7 +8568,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8565,11 +8596,7 @@
           },
           {
             "subject": "EDU",
-            "courseNumber": "7295"
-          },
-          {
-            "subject": "EDU",
-            "courseNumber": "7310"
+            "courseNumber": "7294"
           },
           {
             "subject": "EDU",
@@ -8582,16 +8609,28 @@
           {
             "subject": "EDU",
             "courseNumber": "7316"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7317"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7501"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7504"
           }
         ]
       }
     },
     {
-      "name": "Leadership for Social Justice",
+      "name": "Educational Systems: The Dynamics of Policy, Power, and Practice",
       "term": "202625",
       "courseNumber": "7217",
       "subject": "EDU",
-      "description": "Examines how knowledge is produced in the context of historical and contemporary understandings of power. Focuses on change agency through ongoing self-examination, context analysis, and development of an action plan.",
+      "description": "Introduces the policy process, education governance, and education policy issues. Critically analyzes professional practice and problems of practice within the broader context of local, state, and federal education policy systems. The course is divided into four units: the foundations of education policy; education governance and policy subsystems; the policy process; and analyzing policy to develop more just and equitable educational outcomes.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8627,11 +8666,11 @@
       "postreqs": {}
     },
     {
-      "name": "Foundations of Collaboration, Leadership, and Change",
+      "name": "Leadership for Social Justice",
       "term": "202625",
       "courseNumber": "7218",
       "subject": "EDU",
-      "description": "Focuses on the collaborative nature of leadership and the skills necessary to enact change. Considers the importance of teamwork in the collaboration process along with an understanding of what makes teams effective from both relational and task perspectives. Students examine their own role as a change agent and explore opportunities for social change from diverse and global perspectives. In combination with other foundation and research courses, offers students an opportunity to develop and execute action research plans.",
+      "description": "Examines how knowledge is produced in the context of historical and contemporary understandings of power. Focuses on change agency through ongoing self-examination, context analysis, and development of an action plan.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8696,7 +8735,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8705,16 +8744,20 @@
           {
             "subject": "EDU",
             "courseNumber": "7226"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7294"
           }
         ]
       }
     },
     {
-      "name": "Research Design",
+      "name": "Foundations of Collaboration, Leadership, and Change",
       "term": "202625",
       "courseNumber": "7219",
       "subject": "EDU",
-      "description": "Examines the theory and philosophy behind qualitative, quantitative, and mixed-methods approaches to action research. Additional course topics include understanding research paradigms, translating theory to practice, and exploring the roles of stakeholders. Offers learners an opportunity to gain skills in collecting data, creating research questions, and exploring ethical considerations of conducting research.",
+      "description": "Focuses on the collaborative nature of leadership and the skills necessary to enact change. Considers the importance of teamwork in the collaboration process along with an understanding of what makes teams effective from both relational and task perspectives. Students examine their own role as a change agent and explore opportunities for social change from diverse and global perspectives. In combination with other foundation and research courses, offers students an opportunity to develop and execute action research plans.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8756,14 +8799,22 @@
         ]
       },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "EDU",
+            "courseNumber": "7294"
+          }
+        ]
+      }
     },
     {
-      "name": "Thinking and Acting Entrepreneurially",
+      "name": "Fundamentals of Research",
       "term": "202625",
       "courseNumber": "7225",
       "subject": "EDU",
-      "description": "Introduces learners to qualitative and quantitative research methodology. Emphasizes qualitative data collection, making meaning of data, and creating an action plan for research. Offers students an opportunity to practice sharing data in a meaningful way to promote reflection on change.",
+      "description": "Examines the theory and philosophy behind qualitative, quantitative, and mixed-methods approaches to action research. Additional course topics include understanding research paradigms, translating theory to practice, and exploring the roles of stakeholders. Offers learners an opportunity to gain skills in collecting data, creating research questions, and exploring ethical considerations of conducting research.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8771,7 +8822,7 @@
         {
           "crn": "20362",
           "seatCapacity": 20,
-          "seatRemaining": 14,
+          "seatRemaining": 13,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -8797,7 +8848,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -8806,16 +8857,20 @@
           {
             "subject": "EDU",
             "courseNumber": "7226"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7294"
           }
         ]
       }
     },
     {
-      "name": "Collaboration and Networks in Teaching and Learning",
+      "name": "Research Design",
       "term": "202625",
       "courseNumber": "7226",
       "subject": "EDU",
-      "description": "Examines strategic management from multiple conceptual and intellectual traditions. Focuses on the latest research and situates strategic management within the context of higher education.",
+      "description": "Introduces learners to qualitative and quantitative research methodology. Emphasizes qualitative data collection, making meaning of data, and creating an action plan for research. Offers students an opportunity to practice sharing data in a meaningful way to promote reflection on change.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8884,21 +8939,25 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
             "courseNumber": "7219"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7294"
           }
         ]
       }
     },
     {
-      "name": "Diversity, Equity, and Inclusion in Workplace Learning",
+      "name": "Thinking and Acting Entrepreneurially",
       "term": "202625",
       "courseNumber": "7234",
       "subject": "EDU",
-      "description": "Offers students an opportunity to engage in cycle 1 of their action research project. Emphasizes techniques to support data collection and analysis, as well as communication of findings. Projects must be IRB-approved before students can enroll in this course.",
+      "description": "Considers theory, research, and case studies to critically analyze entrepreneurial thinking, behaviors, and pursuits. Explores insights as to how entrepreneurial thinking and activity can lead to the transformation of agency and organizational capacity. Offers students an opportunity to understand how the entrepreneurial mindset can lead to the transformation of one’s actions and an organization’s structures, practices, and use of resources to effect desired outcomes.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8943,11 +9002,11 @@
       "postreqs": {}
     },
     {
-      "name": "AI System Technologies",
+      "name": "Strategic Management in Higher Education",
       "term": "202625",
       "courseNumber": "7258",
       "subject": "EDU",
-      "description": "Introduces learners to the tools, skills, and practical aspects of constructing a dissertation proposal plan for completing action research for the dissertation in practice. Learners practice writing a literature review and construct a plan for completing their dissertation research.",
+      "description": "Examines strategic management from multiple conceptual and intellectual traditions. Focuses on the latest research and situates strategic management within the context of higher education.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -8975,19 +9034,16 @@
           "faculty": "Smith, Karen"
         }
       ],
-      "prereqs": {
-        "subject": "EDU",
-        "courseNumber": "7294"
-      },
+      "prereqs": {},
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "Advanced Analytical Utilization",
+      "name": "Advanced Research Design 1",
       "term": "202625",
       "courseNumber": "7294",
       "subject": "EDU",
-      "description": "Offers students an opportunity to extensively explore their problem of practice through expanded data collection and review. Students use analytical research tools to reveal insights into their problems of practice and inform future cycles of research. Project must be IRB-approved.",
+      "description": "Offers students an opportunity to engage in cycle 1 of their action research project. Emphasizes techniques to support data collection and analysis, as well as communication of findings. Projects must be IRB-approved before students can enroll in this course.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9016,30 +9072,51 @@
         }
       ],
       "prereqs": {
-        "subject": "EDU",
-        "courseNumber": "7294"
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
-            "courseNumber": "7258"
+            "courseNumber": "7207"
           },
           {
             "subject": "EDU",
-            "courseNumber": "7294"
+            "courseNumber": "7218"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7219"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7225"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7226"
+          }
+        ]
+      },
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "EDU",
+            "courseNumber": "7295"
+          },
+          {
+            "subject": "EDU",
+            "courseNumber": "7310"
           }
         ]
       }
     },
     {
-      "name": "AI Communication and Visualization",
+      "name": "Dissertation in Practice Seminar",
       "term": "202625",
       "courseNumber": "7295",
       "subject": "EDU",
-      "description": "Provides an overview of transformative educational models that center justice and equity across a diverse range of learning contexts. Education leaders across contexts must be innovators, capable of facilitating the generation and advancement of new ideas and strategic initiatives to promote greater learning and greater equity. Offers students an opportunity to engage with current and emerging theories and practices related to designing and transforming educational systems that are grounded in equity and justice.",
+      "description": "Introduces learners to the tools, skills, and practical aspects of constructing a dissertation proposal plan for completing action research for the dissertation in practice. Learners practice writing a literature review and construct a plan for completing their dissertation research.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9069,17 +9146,17 @@
       ],
       "prereqs": {
         "subject": "EDU",
-        "courseNumber": "7207"
+        "courseNumber": "7294"
       },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "Globalization and Global Politics and Economics",
+      "name": "Advanced Research Design 2",
       "term": "202625",
       "courseNumber": "7310",
       "subject": "EDU",
-      "description": "Examines current and emerging challenges across educational contexts. Focuses on building capacity for transformative leaders. Emphasizes three main areas related to leading change: developing a greater understanding of models for leading local and educational district change initiatives; developing leadership capability, including mentoring and coaching; and developing shared and collaborative leadership models. Explores potential supports and constraints, moving beyond the traditional paradigms, structures, policies, and practices. Offers direct application to school settings as students apply concepts to their practice of leading change.",
+      "description": "Offers students an opportunity to extensively explore their problem of practice through expanded data collection and review. Students use analytical research tools to reveal insights into their problems of practice and inform future cycles of research. Project must be IRB-approved.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9131,17 +9208,17 @@
       ],
       "prereqs": {
         "subject": "EDU",
-        "courseNumber": "7207"
+        "courseNumber": "7294"
       },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "Global Literacy, Culture, and Community",
+      "name": "Designing Educational Systems for Justice and Equity",
       "term": "202625",
       "courseNumber": "7311",
       "subject": "EDU",
-      "description": "Offers students an opportunity to practice leadership innovation through collaboration, planning, and implementation. Designed to merge conceptual knowledge with active and applied participation in real-world contexts. Explores contemporary initiatives intended to address challenges in K–12 educational contexts. Students collaborate with practicing educational leaders to investigate, plan, and implement solutions to complex issues being confronted by partner schools.",
+      "description": "Provides an overview of transformative educational models that center justice and equity across a diverse range of learning contexts. Education leaders across contexts must be innovators, capable of facilitating the generation and advancement of new ideas and strategic initiatives to promote greater learning and greater equity. Offers students an opportunity to engage with current and emerging theories and practices related to designing and transforming educational systems that are grounded in equity and justice.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9177,11 +9254,11 @@
       "postreqs": {}
     },
     {
-      "name": "Public Diplomacy",
+      "name": "Leading and Managing Change",
       "term": "202625",
       "courseNumber": "7313",
       "subject": "EDU",
-      "description": "Explores foundational theories and methods for learning in the workplace. Discusses fundamental learning tenets that support high-performing workplace learning programs, initiatives, and functions across modalities. Focuses on the promotion and design of successful and multilevel program outcomes that are strategically aligned to the organizational mission and support justice-oriented work.",
+      "description": "Examines current and emerging challenges across educational contexts. Focuses on building capacity for transformative leaders. Emphasizes three main areas related to leading change: developing a greater understanding of models for leading local and educational district change initiatives; developing leadership capability, including mentoring and coaching; and developing shared and collaborative leadership models. Explores potential supports and constraints, moving beyond the traditional paradigms, structures, policies, and practices. Offers direct application to school settings as students apply concepts to their practice of leading change.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9217,11 +9294,11 @@
       "postreqs": {}
     },
     {
-      "name": "Case Study in Global Studies",
+      "name": "Designing Transformative Curriculum and Professional Development",
       "term": "202625",
       "courseNumber": "7316",
       "subject": "EDU",
-      "description": "Focuses on developing a deeper understanding of the value of diversity, equity, and inclusion in workplace learning and development. Explores how to create learning experiences that recognize and influence social inequities experienced by marginalized populations and to create learning strategies for greater inclusivity and productivity across the organization.",
+      "description": "Examines transformative models for teaching and learning. Offers students an opportunity to develop competencies in designing and delivering curriculum in a variety of P–20 learning settings. Focuses on four main areas related to leading curriculum change: developing a greater understanding of transformative models for curriculum; designing curriculum; delivering professional development, including mentoring peers; and assessing the effectiveness of the design and delivery process. Embedded within the course are opportunities for experiential learning, so that students may apply concepts learned to practice by integrating and delivering innovative curriculum.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9257,11 +9334,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Collaboration and Networks in Teaching and Learning",
       "term": "202625",
       "courseNumber": "7317",
       "subject": "EDU",
-      "description": "Introduces the fundamental problems, theories, and algorithms of the artificial intelligence field. Topics include heuristic search and game trees, knowledge representation using predicate calculus, automated deduction and its applications, problem solving and planning, and an introduction to machine learning. Required course work includes the creation of working programs that solve problems, reason logically, and/or improve their own performance using techniques presented in the course.",
+      "description": "Offers students an opportunity to practice leadership innovation through collaboration, planning, and implementation. Designed to merge conceptual knowledge with active and applied participation in real-world contexts. Explores contemporary initiatives intended to address challenges in K–12 educational contexts. Students collaborate with practicing educational leaders to investigate, plan, and implement solutions to complex issues being confronted by partner schools.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9289,16 +9366,19 @@
           "faculty": "Hubert, Kristin"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "EDU",
+        "courseNumber": "7207"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Designing Workplace Learning",
       "term": "202625",
       "courseNumber": "7501",
       "subject": "EDU",
-      "description": "Explores numerous industry applications of AI with emphasis on solving specific needs or problems. Topics include neural networks, natural language processing, and implications of cybersecurity. Artificial Intelligence is actively developing in applications across numerous fields and industries, including finance, healthcare, education, and transportation.",
+      "description": "Explores foundational theories and methods for learning in the workplace. Discusses fundamental learning tenets that support high-performing workplace learning programs, initiatives, and functions across modalities. Focuses on the promotion and design of successful and multilevel program outcomes that are strategically aligned to the organizational mission and support justice-oriented work.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9327,27 +9407,18 @@
         }
       ],
       "prereqs": {
-        "type": "and",
-        "items": [
-          {
-            "subject": "EAI",
-            "courseNumber": "6000"
-          },
-          {
-            "subject": "EAI",
-            "courseNumber": "6010"
-          }
-        ]
+        "subject": "EDU",
+        "courseNumber": "7207"
       },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Diversity, Equity, and Inclusion in Workplace Learning",
       "term": "202625",
       "courseNumber": "7504",
       "subject": "EDU",
-      "description": "Presents a selection of systems technologies utilized in AI, including data visualization; file systems for a large data mart; applications of structured query language; and filtering and transforming to ingest data, predictions, etc. Covers mathematics/statistics and computation, machine learning, and privacy requirements.",
+      "description": "Focuses on developing a deeper understanding of the value of diversity, equity, and inclusion in workplace learning and development. Explores how to create learning experiences that recognize and influence social inequities experienced by marginalized populations and to create learning strategies for greater inclusivity and productivity across the organization.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9375,16 +9446,19 @@
           "faculty": "O'Bryant, Richard"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "EDU",
+        "courseNumber": "7207"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Fundamentals of Artificial Intelligence",
       "term": "202625",
       "courseNumber": "6000",
       "subject": "EAI",
-      "description": "Covers advanced data management technologies and management systems with a focus on the finance industry. Emphasizes evaluating the advantages and disadvantages of such technologies in different application contexts. Addresses specific application contexts of AI and presents the entity relationship to data management (including network hierarchical and object oriented), with an emphasis on processing, storing, and retrieval, while also including privacy requirements.",
+      "description": "Introduces the fundamental problems, theories, and algorithms of the artificial intelligence field. Topics include heuristic search and game trees, knowledge representation using predicate calculus, automated deduction and its applications, problem solving and planning, and an introduction to machine learning. Required course work includes the creation of working programs that solve problems, reason logically, and/or improve their own performance using techniques presented in the course.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9438,7 +9512,7 @@
         {
           "crn": "20825",
           "seatCapacity": 9,
-          "seatRemaining": 8,
+          "seatRemaining": 7,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -9607,7 +9681,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -9626,18 +9700,18 @@
             "courseNumber": "6980"
           },
           {
-            "subject": "EDU",
-            "courseNumber": "7501"
+            "subject": "EAI",
+            "courseNumber": "6020"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Applications of Artificial Intelligence",
       "term": "202625",
       "courseNumber": "6010",
       "subject": "EAI",
-      "description": "Covers advanced data management technologies and management systems with a focus on the healthcare industry. Emphasizes evaluating the advantages and disadvantages of such technologies in different application contexts. Addresses specific application contexts of AI and presents the entity relationship to data management (including network hierarchical and object oriented), with an emphasis on processing, storing, and retrieval, while including privacy requirements.",
+      "description": "Explores numerous industry applications of AI with emphasis on solving specific needs or problems. Topics include neural networks, natural language processing, and implications of cybersecurity. Artificial Intelligence is actively developing in applications across numerous fields and industries, including finance, healthcare, education, and transportation.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -9748,7 +9822,7 @@
           "meetingTimes": [
             {
               "building": "West Georgia",
-              "room": "1425",
+              "room": "1524",
               "days": [
                 1
               ],
@@ -9834,7 +9908,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -9853,18 +9927,18 @@
             "courseNumber": "6980"
           },
           {
-            "subject": "EDU",
-            "courseNumber": "7501"
+            "subject": "EAI",
+            "courseNumber": "6020"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "AI System Technologies",
       "term": "202625",
       "courseNumber": "6020",
       "subject": "EAI",
-      "description": "Offers an overview of key informational design concepts, emphasizing the relationship between information and audience in the context of communicating complex quantitative information. Encompasses three main context areas: exploratory data visualization, dashboard and scorecard design, and spatial data representation. Discusses ethical questions related to the communication and visualization of data analytics: storytelling; different techniques (such as R-spatial, GeoDa, GeoWave, GeoTrellis, GeoMesa, graph databases network visualization); and principles for visual design, including privacy requirements.",
+      "description": "Presents a selection of systems technologies utilized in AI, including data visualization; file systems for a large data mart; applications of structured query language; and filtering and transforming to ingest data, predictions, etc. Covers mathematics/statistics and computation, machine learning, and privacy requirements.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10108,16 +10182,28 @@
           "faculty": "Jones, Adam"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "EAI",
+            "courseNumber": "6000"
+          },
+          {
+            "subject": "EAI",
+            "courseNumber": "6010"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Finance Information Processing",
       "term": "202625",
       "courseNumber": "6050",
       "subject": "EAI",
-      "description": "Focuses on data ethics, data privacy, data integrity, and protecting data from the viewpoint of an organization’s internal and customer data. Covers the ethical challenges of AI and analytics systems, developing a model to provide a reliable and sustainable system complying with ethical standards, government regulations, and policies. Topics include data privacy, data regulations, bias in AI, and building a trustworthy AI system. Explores real-world scenarios and business cases, applying approaches to ethical issues organizations face throughout the complete lifecycle of analytics and AI models.",
+      "description": "Covers advanced data management technologies and management systems with a focus on the finance industry. Emphasizes evaluating the advantages and disadvantages of such technologies in different application contexts. Addresses specific application contexts of AI and presents the entity relationship to data management (including network hierarchical and object oriented), with an emphasis on processing, storing, and retrieval, while also including privacy requirements.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10152,11 +10238,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Healthcare Information Processing",
       "term": "202625",
       "courseNumber": "6060",
       "subject": "EAI",
-      "description": "Offers students an opportunity to apply the knowledge, skills, and best practices acquired throughout the Enterprise Artificial Intelligence program in the context of a practicum in the development and delivery of discipline-specific artificial intelligence projects. Students advance a project plan, conduct research, and create and deliver recommendations with the objective to apply artificial intelligence to real-world problems in organizations. Students develop and present the insights and recommendations for successful implementation of the capstone project.",
+      "description": "Covers advanced data management technologies and management systems with a focus on the healthcare industry. Emphasizes evaluating the advantages and disadvantages of such technologies in different application contexts. Addresses specific application contexts of AI and presents the entity relationship to data management (including network hierarchical and object oriented), with an emphasis on processing, storing, and retrieval, while including privacy requirements.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10191,11 +10277,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Advanced Analytical Utilization",
       "term": "202625",
       "courseNumber": "6080",
       "subject": "EAI",
-      "description": "Examines the multifaceted nature of politics and economics in an expanding global world. Analyzes the impact of globalization on political and economic systems, such as capitalism, democracy, socialism, nationalism, totalitarianism, and populism. Introduces students to the use of quantitative methods in the analysis of global relationships. Offers students an opportunity to use these tools to hypothesize the impact of future global trends on contemporary political and economic systems.",
+      "description": "Focuses on instrumental methods of data analysis and provides a foundation to the theory and application of modern analytical techniques for artificial intelligence. Explores the importance of instrumental analysis for specific uses of AI within various fields and context applications across numerous professional fields.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10252,11 +10338,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "AI Communication and Visualization",
       "term": "202625",
       "courseNumber": "6120",
       "subject": "EAI",
-      "description": "Introduces basic theories of culture, identity, and communication. Topics may include race, ethnicity, social class, gender, national identity, and religion. Explores these theories and topics through an in-depth study of a particular aspect of culture within a chosen country. Introduces students to the use of qualitative methods in the analysis of culture and communication. Offers students an opportunity to use these tools to hypothesize the impact of future global trends on contemporary cultures and identities.",
+      "description": "Offers an overview of key informational design concepts, emphasizing the relationship between information and audience in the context of communicating complex quantitative information. Encompasses three main context areas: exploratory data visualization, dashboard and scorecard design, and spatial data representation. Discusses ethical questions related to the communication and visualization of data analytics: storytelling; different techniques (such as R-spatial, GeoDa, GeoWave, GeoTrellis, GeoMesa, graph databases network visualization); and principles for visual design, including privacy requirements.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10291,11 +10377,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Data Governance and Responsible AI",
       "term": "202625",
       "courseNumber": "6400",
       "subject": "EAI",
-      "description": "Examines the social responsibilities of corporations and individuals in the global 21st century. Topics include outsourcing, offshoring, international labor laws, global environmental responsibility, global human rights, global citizenship, and sustainable development. Today’s global organizations understand that corporate social responsibility (CSR) must become central to their strategies in order to be truly sustainable. Explores the driving forces behind CSR, the ways that companies incorporate CSR into their growth strategies, and the risks of falling behind. Discusses how companies’ views of CSR have shifted from compliance and philanthropy to efficiency and growth opportunities. Focuses on the use of qualitative and quantitative methods in the analysis of current policies and practices of multinational corporations, nation-states, and international nongovernmental organizations.",
+      "description": "Focuses on data ethics, data privacy, data integrity, and protecting data from the viewpoint of an organization’s internal and customer data. Covers the ethical challenges of AI and analytics systems, developing a model to provide a reliable and sustainable system complying with ethical standards, government regulations, and policies. Topics include data privacy, data regulations, bias in AI, and building a trustworthy AI system. Explores real-world scenarios and business cases, applying approaches to ethical issues organizations face throughout the complete lifecycle of analytics and AI models.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10352,11 +10438,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Integrated Experiential Capstone",
       "term": "202625",
       "courseNumber": "6980",
       "subject": "EAI",
-      "description": "Focuses on research and analysis, which are a central part of scholarly learning. To understand the nature of how information is gathered, processed, and communicated, it is imperative that students familiarize themselves with and cultivate basic research methods used in the field of social sciences. Exposes students to the essentials of field research methods, covering various research methods as well as their applications, advantages and disadvantages, and limitations. Examines different types of studies and methods and seeks to help students prepare for field research work, effective online and library data retrieval, analyzing research data and information, and writing of a thesis paper.",
+      "description": "Offers students an opportunity to apply the knowledge, skills, and best practices acquired throughout the Enterprise Artificial Intelligence program in the context of a practicum in the development and delivery of discipline-specific artificial intelligence projects. Students advance a project plan, conduct research, and create and deliver recommendations with the objective to apply artificial intelligence to real-world problems in organizations. Students develop and present the insights and recommendations for successful implementation of the capstone project.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10446,11 +10532,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "GIS Customization",
       "term": "202625",
       "courseNumber": "6340",
       "subject": "GIS",
-      "description": "Examines peace and conflict from a variety of vantage points as the two interact and emerge from intrastate violence, terrorism, and extremism.",
+      "description": "Provides an in-depth introduction to the customization of Esri ArcGIS using Python with hands-on experience with ArcGIS, ModelBuilder, Python, geoprocessing, and ArcPy. The focus is on automating tasks and workflows in ArcMap using ModelBuilder; applying Python programming in ArcMap and for ModelBuilder; applying practical methods of debugging, tool input parameters, and tool and code documentation. Students will create a GIS data processing tool, useful to their work or area of interest, using Python or Python and ModelBuilder. The tool must be documented and capable of gracefully handling errors. Software: ArcGIS Desktop, Notepad++, IDLE - Python IDE, other Python IDE according to student choice.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -10478,16 +10564,28 @@
           "faculty": "Armstrong, James"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "or",
+        "items": [
+          {
+            "subject": "GIS",
+            "courseNumber": "5103"
+          },
+          {
+            "subject": "GIS",
+            "courseNumber": "5101"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Globalization and Global Politics and Economics",
       "term": "202625",
       "courseNumber": "6100",
       "subject": "GST",
-      "description": "Designed to provide students with a broad-based understanding of the global food system, while assessing its performance in terms of satisfying world food needs. Examines international dimensions of food system performance, including global trade and international aid; supply and demand trends and their implications for global food security; food and agricultural trade policies; ethics and safety regulations; and specific national food systems. Also examines specific commodity chains and their impact on economic development.",
+      "description": "Examines the multifaceted nature of politics and economics in an expanding global world. Analyzes the impact of globalization on political and economic systems, such as capitalism, democracy, socialism, nationalism, totalitarianism, and populism. Introduces students to the use of quantitative methods in the analysis of global relationships. Offers students an opportunity to use these tools to hypothesize the impact of future global trends on contemporary political and economic systems.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10515,27 +10613,28 @@
           "faculty": "Luedert, Jan"
         }
       ],
-      "prereqs": {
-        "subject": "GST",
-        "courseNumber": "6100"
-      },
+      "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
-            "courseNumber": "6100"
+            "courseNumber": "6505"
+          },
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Global Literacy, Culture, and Community",
       "term": "202625",
       "courseNumber": "6101",
       "subject": "GST",
-      "description": "Extends the traditional focus on Western Europe and the European Union eastward by including the blend of European and Asian cultures that has shaped the development of Russia and Central Eurasia, including Turkey, Russia, and other post-Soviet countries that form the eastern borderlands of Europe. Focuses on the persistence of historical tensions between authoritarian and democratic political cultures; the diversity of ethnic and other identities in the region; and the interconnectedness of Europe and Eurasia in policy areas such as energy, security, and immigration.",
+      "description": "Introduces basic theories of culture, identity, and communication. Topics may include race, ethnicity, social class, gender, national identity, and religion. Explores these theories and topics through an in-depth study of a particular aspect of culture within a chosen country. Introduces students to the use of qualitative methods in the analysis of culture and communication. Offers students an opportunity to use these tools to hypothesize the impact of future global trends on contemporary cultures and identities.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10589,14 +10688,22 @@
       ],
       "prereqs": {},
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Global Corporate Social Responsibility",
       "term": "202625",
       "courseNumber": "6102",
       "subject": "GST",
-      "description": "",
+      "description": "Examines the social responsibilities of corporations and individuals in the global 21st century. Topics include outsourcing, offshoring, international labor laws, global environmental responsibility, global human rights, global citizenship, and sustainable development. Today’s global organizations understand that corporate social responsibility (CSR) must become central to their strategies in order to be truly sustainable. Explores the driving forces behind CSR, the ways that companies incorporate CSR into their growth strategies, and the risks of falling behind. Discusses how companies’ views of CSR have shifted from compliance and philanthropy to efficiency and growth opportunities. Focuses on the use of qualitative and quantitative methods in the analysis of current policies and practices of multinational corporations, nation-states, and international nongovernmental organizations.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10653,11 +10760,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Basic Field Research Methods",
       "term": "202625",
       "courseNumber": "6109",
       "subject": "GST",
-      "description": "",
+      "description": "Focuses on research and analysis, which are a central part of scholarly learning. To understand the nature of how information is gathered, processed, and communicated, it is imperative that students familiarize themselves with and cultivate basic research methods used in the field of social sciences. Exposes students to the essentials of field research methods, covering various research methods as well as their applications, advantages and disadvantages, and limitations. Examines different types of studies and methods and seeks to help students prepare for field research work, effective online and library data retrieval, analyzing research data and information, and writing of a thesis paper.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10682,19 +10789,27 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Luedert, Jan"
         }
       ],
       "prereqs": {},
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Peace and Conflict",
       "term": "202625",
       "courseNumber": "6320",
       "subject": "GST",
-      "description": "",
+      "description": "Examines peace and conflict from a variety of vantage points as the two interact and emerge from intrastate violence, terrorism, and extremism.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10748,14 +10863,22 @@
       ],
       "prereqs": {},
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Conflict and Postconflict Development",
       "term": "202625",
       "courseNumber": "6327",
       "subject": "GST",
-      "description": "",
+      "description": "Focuses on causes of intrastate and interstate conflict and the role that international actors play in the process of conflict resolution and postconflict development. Presents case studies on reconciliation and confidence-building measures in societies and countries engaged in long-term conflict and how entities such as the NGOs and IGOs can hamper or facilitate resolution.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10812,11 +10935,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Global Economics of Food and Agriculture",
       "term": "202625",
       "courseNumber": "6350",
       "subject": "GST",
-      "description": "",
+      "description": "Designed to provide students with a broad-based understanding of the global food system, while assessing its performance in terms of satisfying world food needs. Examines international dimensions of food system performance, including global trade and international aid; supply and demand trends and their implications for global food security; food and agricultural trade policies; ethics and safety regulations; and specific national food systems. Also examines specific commodity chains and their impact on economic development.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10849,11 +10972,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Nuclear Nonproliferation",
       "term": "202625",
       "courseNumber": "6360",
       "subject": "GST",
-      "description": "",
+      "description": "Explores the history and development of all forms of nuclear weapons from World War II to the present. Decades after the invention of nuclear weapons, the issue of proliferation continues to occupy a significant position in both U.S. and global political discussions. Traces the history of arms control efforts; the role of science and technology; the impact of international organizations set up to monitor and regulate nuclear weapons; and the proliferation of nuclear weapons and their impact on international relations.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10886,11 +11009,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Regional Studies: Europe and Eurasia",
       "term": "202625",
       "courseNumber": "6504",
       "subject": "GST",
-      "description": "",
+      "description": "Extends the traditional focus on Western Europe and the European Union eastward by including the blend of European and Asian cultures that has shaped the development of Russia and Central Eurasia, including Turkey, Russia, and other post-Soviet countries that form the eastern borderlands of Europe. Focuses on the persistence of historical tensions between authoritarian and democratic political cultures; the diversity of ethnic and other identities in the region; and the interconnectedness of Europe and Eurasia in policy areas such as energy, security, and immigration.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10922,14 +11045,22 @@
       ],
       "prereqs": {},
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Regional Studies: Southwest and Central Asia",
       "term": "202625",
       "courseNumber": "6505",
       "subject": "GST",
-      "description": "",
+      "description": "Focuses on countries of Central Asia as well as the subcontinent. Explores economic development, political transition, education, security, health, environmental challenges, religion, and the changing role of women in this region.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -10957,16 +11088,27 @@
           "faculty": "Beshimov, Baktybek"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "GST",
+        "courseNumber": "6100"
+      },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6920"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "U.S. Foreign Policy",
       "term": "202625",
       "courseNumber": "6550",
       "subject": "GST",
-      "description": "",
+      "description": "Examines the U.S. role in the world by focusing on the dynamics of power in the international system. Explores the theoretical foundations, historical contexts, and domestic sources of past and present U.S. foreign policy choices. Evaluates the roles of nongovernment actors. Assesses the impact of inter-agency rivalries. Case materials and topics include humanitarian intervention; the militarization of U.S. foreign policy; the global economy; tensions in the Middle East; and bilateral relations between the United States and such nations as China, Russia, Iran, as well as the European Union. Debates the efficacy and ethics of U.S. global power and the future of the U.S.-dominated liberal world order.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -11023,11 +11165,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Public Diplomacy",
       "term": "202625",
       "courseNumber": "6590",
       "subject": "GST",
-      "description": "",
+      "description": "Examines how governments communicate directly with foreign publics for the purpose of improving image, advocating policy, and shaping public opinion. Explores radio and television broadcasting across borders, cultural programming, educational exchange programs, visitor programs, libraries and language institutes, and the impact of social media. Case studies illustrate topics such as global media and international journalism, propaganda, media in democracies and totalitarian states, media influence on foreign policy, the digital divide, intellectual property, and privacy.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -11084,11 +11226,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Global Health Perspectives, Politics, and Experiences in International Development",
       "term": "202625",
       "courseNumber": "6700",
       "subject": "GST",
-      "description": "",
+      "description": "Examines the linkages between health and development that can only be understood within the broader context of sociopolitical and economic factors. Begins with the recognition that poverty plays a central role in many preventable diseases. With the development of nations have come improvements in health. In the landscape of globalization and international development, there has emerged a vast international health regime. Focuses on these linkages in the context of this international political economy of health. Examines key aspects including the concepts and architecture of global health, the global burden and epidemiology of disease, health and development of nations, and political-economic determinants of health and development. Uses a variety of analytical perspectives including political, legal, economic, and epidemiological.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -11145,11 +11287,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Case Study in Global Studies",
       "term": "202625",
       "courseNumber": "6920",
       "subject": "GST",
-      "description": "",
+      "description": "Offers an integrative, summative course for the master’s degree that builds on the understanding and concepts of global studies learned throughout the program. The curriculum draws heavily upon learning outcomes and acquired skills from both the global studies core courses and advanced electives in the concentration. Throughout the course, the instructor leads students through a step-by-step process of researching and writing a well-defined project, from the initial construction of a research question through the final stages of editing and revision. Course assignments may include group projects and individual presentations. At the conclusion of the course, students should have finished a portfolio piece capable of demonstrating their application of concepts and methods learned throughout their studies.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -11177,16 +11319,65 @@
           "faculty": "Counter, Jennifer"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "GST",
+            "courseNumber": "6100"
+          },
+          {
+            "subject": "GST",
+            "courseNumber": "6101"
+          },
+          {
+            "subject": "GST",
+            "courseNumber": "6109"
+          },
+          {
+            "subject": "GST",
+            "courseNumber": "6320"
+          },
+          {
+            "type": "or",
+            "items": [
+              {
+                "subject": "GST",
+                "courseNumber": "6501"
+              },
+              {
+                "subject": "GST",
+                "courseNumber": "6502"
+              },
+              {
+                "subject": "GST",
+                "courseNumber": "6503"
+              },
+              {
+                "subject": "GST",
+                "courseNumber": "6504"
+              },
+              {
+                "subject": "GST",
+                "courseNumber": "6505"
+              },
+              {
+                "subject": "GST",
+                "courseNumber": "6506"
+              }
+            ]
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Topics",
       "term": "202625",
       "courseNumber": "7983",
       "subject": "GST",
-      "description": "",
+      "description": "Covers special topics in global studies. May be repeated without limit.",
       "maxCredits": 4,
       "minCredits": 1,
       "nupath": [],
@@ -11219,11 +11410,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Contemporary Threats to Homeland Security",
       "term": "202625",
       "courseNumber": "6010",
       "subject": "HLS",
-      "description": "",
+      "description": "Introduces the operational and organizational dynamics of terrorism and other threats facing the United States today. Considers those who act as individuals, in small groups, or in large organizations and indigenous actors, as well as those who come to the United States to raise money, recruit, or commit their acts of violence. Focuses on violent clandestine activity that, whatever its motivation, has a political purpose or effect. Addresses specific topics such as suicide terrorism, the role of the media, innovation and technology acquisition, and ways of measuring the effect of counterterrorism policies and strategies.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11280,11 +11471,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Essentials of Emergency Management",
       "term": "202625",
       "courseNumber": "6150",
       "subject": "HLS",
-      "description": "",
+      "description": "Examines the hazards and phases in emergency management and planning. Includes all levels of public and private sector involvement in discussing the definition of emergencies and disasters, both natural and man-made, and the issues involved with managing situations. Examines frameworks such as the National Preparedness System; the National Incident Management System; and others for organizing, responding, and mitigating crises from an all-hazards, all-threats perspective, including both U.S. and international concerns. Offers students an opportunity to learn a comprehensive understanding of the U.S. emergency management system; how communities mitigate against, respond to, and recover from all disaster events; as well as the U.S. involvement for international disaster response contingencies.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11317,11 +11508,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Introduction to Human Resources Management",
       "term": "202625",
       "courseNumber": "6015",
       "subject": "HRM",
-      "description": "",
+      "description": "Introduces students to the scope, vocabulary, and strategic environment of a rapidly evolving field. Examines the range of competencies that contribute to effective human capital management in support of organizational performance. Topics include human resources strategy, talent acquisition, performance management, and compensation and benefits.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11376,8 +11567,12 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
+          {
+            "subject": "HRM",
+            "courseNumber": "6025"
+          },
           {
             "subject": "HRM",
             "courseNumber": "6940"
@@ -11386,11 +11581,11 @@
       }
     },
     {
-      "name": "",
+      "name": "Talent Acquisition and Onboarding",
       "term": "202625",
       "courseNumber": "6020",
       "subject": "HRM",
-      "description": "",
+      "description": "Underscores the importance of linking recruitment goals with overall company strategy. Finding and hiring the right people is often cited as the number-one concern of businesses. Topics include approaches to job design, market analysis, recruiting and selecting employees, leveraging social media and hiring analytics to ensure better-quality hires, and effective onboarding practices.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11423,11 +11618,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Workforce Analytics",
       "term": "202625",
       "courseNumber": "6025",
       "subject": "HRM",
-      "description": "",
+      "description": "Examines the characteristics of high-quality data, key workforce metrics, and introduces common analysis techniques. Human resources management helps drive business performance by delivering competitive advantage through people. This requires a solid grasp of HR analytics: the systematic collection, analysis, and interpretation of data designed to improve decisions about talent and the organization as a whole.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11435,7 +11630,7 @@
         {
           "crn": "20490",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -11479,10 +11674,13 @@
           "faculty": "TBA"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "HRM",
+        "courseNumber": "6015"
+      },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -11496,11 +11694,11 @@
       }
     },
     {
-      "name": "",
+      "name": "The Employment Contract",
       "term": "202625",
       "courseNumber": "6030",
       "subject": "HRM",
-      "description": "",
+      "description": "Examines the legal relationship between employer and employee. Students will explore issues and topics such as discrimination, affirmative action, the Americans with Disabilities Act, sexual harassment, health and safety, AIDS in the workplace, compliance issues, and legal issues related to downsizing and terminations. Human Resource managers work in a highly complex environment with constantly changing laws and legislation that govern employee rights and employer obligations.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -11569,7 +11767,7 @@
         {
           "crn": "21663",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -11595,7 +11793,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -11679,7 +11877,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -11818,7 +12016,7 @@
         {
           "crn": "20863",
           "seatCapacity": 30,
-          "seatRemaining": 27,
+          "seatRemaining": 26,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -11842,7 +12040,7 @@
         {
           "crn": "21650",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 17,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11888,7 +12086,7 @@
         {
           "crn": "21683",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11906,12 +12104,24 @@
             }
           ],
           "faculty": "Yu, Na"
+        },
+        {
+          "crn": "21742",
+          "seatCapacity": 30,
+          "seatRemaining": 30,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [],
+          "faculty": "TBA"
         }
       ],
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -11933,7 +12143,7 @@
         {
           "crn": "20020",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11982,7 +12192,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -12065,7 +12275,7 @@
         {
           "crn": "20156",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -12090,7 +12300,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -12176,7 +12386,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -12475,7 +12685,7 @@
           "meetingTimes": [
             {
               "building": "375 Queen Street, Toronto",
-              "room": "314",
+              "room": "306",
               "days": [
                 2
               ],
@@ -12605,7 +12815,7 @@
         {
           "crn": "20201",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -12654,7 +12864,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -13044,47 +13254,15 @@
       "nupath": [],
       "sections": [
         {
-          "crn": "20577",
-          "seatCapacity": 20,
-          "seatRemaining": 19,
-          "waitlistCapacity": 6,
-          "waitlistRemaining": 6,
-          "classType": "Lab",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "TBA"
-        },
-        {
-          "crn": "21545",
+          "crn": "21745",
           "seatCapacity": 30,
           "seatRemaining": 30,
-          "waitlistCapacity": 0,
-          "waitlistRemaining": 0,
+          "waitlistCapacity": 5,
+          "waitlistRemaining": 5,
           "classType": "Lab",
           "honors": false,
           "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
+          "meetingTimes": [],
           "faculty": "TBA"
         }
       ],
@@ -13152,7 +13330,7 @@
         {
           "crn": "20563",
           "seatCapacity": 30,
-          "seatRemaining": 27,
+          "seatRemaining": 26,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13240,7 +13418,7 @@
         {
           "crn": "20582",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13350,7 +13528,7 @@
         {
           "crn": "20924",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13372,7 +13550,7 @@
         {
           "crn": "20925",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 25,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13416,7 +13594,7 @@
         {
           "crn": "20927",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13460,7 +13638,7 @@
         {
           "crn": "20930",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13614,7 +13792,7 @@
         {
           "crn": "21677",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Seminar",
@@ -13637,7 +13815,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "INT",
@@ -13645,43 +13823,6 @@
           }
         ]
       }
-    },
-    {
-      "name": "International Field Study Experience",
-      "term": "202625",
-      "courseNumber": "6900",
-      "subject": "INT",
-      "description": "Seeks to prepare students for an increasingly global workplace and to help them gain a deeper understanding of current issues in their fields of study in an international context. Includes a period of required on-site instruction in the region of study. Offers students an opportunity to conduct in-depth field study based on specific themes pertinent to the locality and to meet with representatives from local organizations such as schools, businesses, the arts, government officials, and others. Culminates in a professional-quality research project or presentation. May be repeated up to two times.",
-      "maxCredits": 4,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "21001",
-          "seatCapacity": 30,
-          "seatRemaining": 30,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Off-campus instruction",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "TBA"
-        }
-      ],
-      "prereqs": {},
-      "coreqs": {},
-      "postreqs": {}
     },
     {
       "name": "Experiential Learning Projects for Professionals",
@@ -13776,7 +13917,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -14257,7 +14398,7 @@
         {
           "crn": "20022",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 27,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14279,7 +14420,7 @@
         {
           "crn": "20023",
           "seatCapacity": 20,
-          "seatRemaining": 19,
+          "seatRemaining": 18,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14326,7 +14467,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
@@ -14393,7 +14534,7 @@
         {
           "crn": "20024",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14464,7 +14605,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
@@ -14486,7 +14627,7 @@
         {
           "crn": "20110",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14597,7 +14738,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
@@ -14619,7 +14760,7 @@
         {
           "crn": "20027",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 27,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14745,7 +14886,7 @@
       "term": "202625",
       "courseNumber": "6405",
       "subject": "LDR",
-      "description": "Examines the role sports plays in society. Emphasizes improving society through sports by creating and developing community service, drug awareness, and violence prevention programs. Discusses sports within sociological, economic, and political backgrounds. Topics include ethics, organizational code of conduct, and ethical behavior within competitive athletic settings.",
+      "description": "Examines the role sports plays in society. Emphasizes improving society through sports by creating and developing community service, drug awareness, and violence prevention programs. Discusses sports within sociological, economic, and political backgrounds. Topics include ethics, organizational code of conduct, and ethical behavior within competitive athletic settings.\r\n    \r\n    \r\n        Section information text:\r\n        Dates for Winter institute 2/2/26 - 2/6/26",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -14886,7 +15027,7 @@
       "term": "202625",
       "courseNumber": "6441",
       "subject": "LDR",
-      "description": "Studies the basic knowledge and understanding of media relations in sports. Emphasizes building and managing an effective media relations program on the intercollegiate and professional level. Examines news releases, hometown features, contest management, press conferences, statistics, and publications.",
+      "description": "Studies the basic knowledge and understanding of media relations in sports. Emphasizes building and managing an effective media relations program on the intercollegiate and professional level. Examines news releases, hometown features, contest management, press conferences, statistics, and publications.\r\n    \r\n    \r\n        Section information text:\r\n        Winter Institute dates 2/2/26-2/6/26",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -15199,7 +15340,7 @@
         {
           "crn": "20358",
           "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatRemaining": 29,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -15259,7 +15400,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "NPM",
@@ -15304,7 +15445,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "NPM",
@@ -15351,7 +15492,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "NPM",
@@ -15396,7 +15537,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "NPM",
@@ -15443,7 +15584,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "NPM",
@@ -15641,7 +15782,7 @@
         {
           "crn": "20050",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 18,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -15661,6 +15802,28 @@
             }
           ],
           "faculty": "Alexis, Jacques"
+        },
+        {
+          "crn": "20037",
+          "seatCapacity": 30,
+          "seatRemaining": 30,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "TBA"
         },
         {
           "crn": "20071",
@@ -15689,7 +15852,7 @@
         {
           "crn": "20447",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 26,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -15737,7 +15900,7 @@
         {
           "crn": "20536",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -15761,7 +15924,7 @@
         {
           "crn": "20794",
           "seatCapacity": 30,
-          "seatRemaining": 24,
+          "seatRemaining": 22,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -15804,7 +15967,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Fateh, Amir"
         },
         {
           "crn": "21300",
@@ -15857,7 +16020,7 @@
         {
           "crn": "21694",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 25,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -15882,7 +16045,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -16198,7 +16361,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -16459,7 +16622,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Chandrashekar, Bhagya"
         }
       ],
       "prereqs": {
@@ -16468,7 +16631,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -16613,8 +16776,8 @@
         },
         {
           "crn": "20452",
-          "seatCapacity": 30,
-          "seatRemaining": 30,
+          "seatCapacity": 22,
+          "seatRemaining": 22,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -16622,10 +16785,10 @@
           "campus": "Seattle, WA",
           "meetingTimes": [
             {
-              "building": "",
-              "room": "",
+              "building": "225 Terry Ave",
+              "room": "305",
               "days": [
-                1
+                3
               ],
               "startTime": 1800,
               "endTime": 2040,
@@ -16793,7 +16956,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -16973,6 +17136,30 @@
       "nupath": [],
       "sections": [
         {
+          "crn": "20203",
+          "seatCapacity": 30,
+          "seatRemaining": 30,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Boston",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [
+                4
+              ],
+              "startTime": 1750,
+              "endTime": 2030,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "TBA"
+        },
+        {
           "crn": "21604",
           "seatCapacity": 30,
           "seatRemaining": 30,
@@ -17001,7 +17188,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -17128,7 +17315,7 @@
         {
           "crn": "21501",
           "seatCapacity": 24,
-          "seatRemaining": 15,
+          "seatRemaining": 14,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -17147,7 +17334,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Bower, Douglas"
         },
         {
           "crn": "21681",
@@ -17361,7 +17548,7 @@
         {
           "crn": "20255",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17455,7 +17642,7 @@
         {
           "crn": "21699",
           "seatCapacity": 30,
-          "seatRemaining": 24,
+          "seatRemaining": 23,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17474,7 +17661,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Chandrashekar, Bhagya"
         }
       ],
       "prereqs": {},
@@ -17494,7 +17681,7 @@
         {
           "crn": "20743",
           "seatCapacity": 30,
-          "seatRemaining": 22,
+          "seatRemaining": 16,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17518,7 +17705,7 @@
         {
           "crn": "20798",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 27,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -17566,7 +17753,7 @@
         {
           "crn": "21303",
           "seatCapacity": 20,
-          "seatRemaining": 20,
+          "seatRemaining": 16,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17583,7 +17770,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Beal, Loyd"
         }
       ],
       "prereqs": {},
@@ -17762,8 +17949,12 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6620"
+          },
           {
             "subject": "PJM",
             "courseNumber": "6630"
@@ -17774,6 +17965,57 @@
           }
         ]
       }
+    },
+    {
+      "name": "Strategy Analysis and Needs Assessment",
+      "term": "202625",
+      "courseNumber": "6620",
+      "subject": "PJM",
+      "description": "Focuses on investigating needs and defining change strategy through quantitative and qualitative data collection and analysis techniques. Examines the design of data collection instruments and varied elicitation techniques. Applies theories and practices in strategy analysis using design thinking, agile analysis, behavior change design, and business architecture. Uses practical case studies to apply strategy analysis and needs assessments within a project, program, product, and organizational context.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "21746",
+          "seatCapacity": 30,
+          "seatRemaining": 30,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Portland, Maine",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [
+                3
+              ],
+              "startTime": 1800,
+              "endTime": 2040,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "TBA"
+        }
+      ],
+      "prereqs": {
+        "type": "or",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6610"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6710"
+          }
+        ]
+      },
+      "coreqs": {},
+      "postreqs": {}
     },
     {
       "name": "Requirements Analysis and Design",
@@ -17973,30 +18215,6 @@
             }
           ],
           "faculty": "Cote, Debra"
-        },
-        {
-          "crn": "21700",
-          "seatCapacity": 30,
-          "seatRemaining": 30,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Portland, Maine",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [
-                3
-              ],
-              "startTime": 1800,
-              "endTime": 2040,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Savage, Kim"
         }
       ],
       "prereqs": {
@@ -18186,7 +18404,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -18562,7 +18780,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
@@ -18991,7 +19209,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Porter, Andrew"
         },
         {
           "crn": "21716",
@@ -19013,7 +19231,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Whitten, Kirsten"
         }
       ],
       "prereqs": {},
@@ -19052,7 +19270,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Porter, Andrew"
         },
         {
           "crn": "21717",
@@ -19074,7 +19292,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Whitten, Kirsten"
         }
       ],
       "prereqs": {},
@@ -19094,7 +19312,7 @@
         {
           "crn": "20175",
           "seatCapacity": 30,
-          "seatRemaining": 23,
+          "seatRemaining": 22,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19165,7 +19383,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -19203,7 +19421,7 @@
         {
           "crn": "20709",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 26,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19227,7 +19445,7 @@
         {
           "crn": "20876",
           "seatCapacity": 30,
-          "seatRemaining": 28,
+          "seatRemaining": 29,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -19249,7 +19467,7 @@
         {
           "crn": "21152",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 27,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -19274,7 +19492,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -19340,7 +19558,7 @@
         {
           "crn": "20459",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 27,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19362,7 +19580,7 @@
         {
           "crn": "20899",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 24,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -19386,7 +19604,7 @@
         {
           "crn": "21269",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 25,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19411,7 +19629,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -19476,7 +19694,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -19565,7 +19783,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -19678,7 +19896,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -20482,7 +20700,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Shek, Yuen Lai"
         },
         {
           "crn": "21568",
@@ -21176,7 +21394,7 @@
         {
           "crn": "20484",
           "seatCapacity": 30,
-          "seatRemaining": 26,
+          "seatRemaining": 24,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -21200,7 +21418,7 @@
         {
           "crn": "21619",
           "seatCapacity": 30,
-          "seatRemaining": 23,
+          "seatRemaining": 21,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21225,7 +21443,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -21309,7 +21527,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "SIA",
@@ -21354,7 +21572,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "SIA",
@@ -21617,6 +21835,16 @@
           ]
         }
       ],
+      "1418": [
+        {
+          "crn": "21744",
+          "startTime": 1800,
+          "endTime": 1950,
+          "days": [
+            3
+          ]
+        }
+      ],
       "1425": [
         {
           "crn": "20643",
@@ -21632,14 +21860,6 @@
           "endTime": 1705,
           "days": [
             3
-          ]
-        },
-        {
-          "crn": "20836",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            1
           ]
         },
         {
@@ -21710,6 +21930,16 @@
           "endTime": 1150,
           "days": [
             2
+          ]
+        }
+      ],
+      "1524": [
+        {
+          "crn": "20836",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            1
           ]
         }
       ]
@@ -22013,6 +22243,14 @@
           ]
         },
         {
+          "crn": "21718",
+          "startTime": 900,
+          "endTime": 1140,
+          "days": [
+            2
+          ]
+        },
+        {
           "crn": "20871",
           "startTime": 1200,
           "endTime": 1440,
@@ -22132,14 +22370,6 @@
           "endTime": 1740,
           "days": [
             4
-          ]
-        },
-        {
-          "crn": "21718",
-          "startTime": 900,
-          "endTime": 1140,
-          "days": [
-            2
           ]
         },
         {
@@ -22354,14 +22584,24 @@
         }
       ]
     },
-    "225 Terry Ave": {
-      "220": [
+    "Roux Institute 100 Fore St.": {
+      "138": [
         {
-          "crn": "21731",
-          "startTime": 1800,
-          "endTime": 1900,
+          "crn": "21740",
+          "startTime": 1335,
+          "endTime": 1655,
           "days": [
-            1
+            3
+          ]
+        }
+      ],
+      "201": [
+        {
+          "crn": "21741",
+          "startTime": 1335,
+          "endTime": 1655,
+          "days": [
+            3
           ]
         }
       ]
@@ -22599,15 +22839,28 @@
           ]
         }
       ]
+    },
+    "225 Terry Ave": {
+      "305": [
+        {
+          "crn": "20452",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            3
+          ]
+        }
+      ]
     }
   },
   "buildingCampuses": {
     "West Georgia": "Vancouver, Canada",
     "375 Queen Street, Toronto": "Toronto, Canada",
-    "225 Terry Ave": "Seattle, WA",
+    "Roux Institute 100 Fore St.": "Portland, Maine",
     "Snell Library": "Boston",
     "Virtual Space- Online class": "Online",
-    "Miami Campus 230 NW 24th St": "Miami, FL"
+    "Miami Campus 230 NW 24th St": "Miami, FL",
+    "225 Terry Ave": "Seattle, WA"
   },
-  "timestamp": "2025-10-29T15:28:21.200Z"
+  "timestamp": "2025-10-30T23:35:31.246Z"
 }

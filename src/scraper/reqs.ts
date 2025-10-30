@@ -139,7 +139,7 @@ export function populatePostReqs(courses: PopulatedCourse[]) {
 
   for (const c of courses) {
     const courseKey = `${c.subject} ${c.courseNumber}`;
-    const leafKeys = getAllPrereqs(c.prereqs);
+    const leafKeys = getAllPrereqsForSingleCourse(c.prereqs);
     for (const prereqKey of leafKeys) {
       addPostreqToCourse(prereqKey, courseKey, postreqMap);
     }
@@ -159,10 +159,17 @@ export function populatePostReqs(courses: PopulatedCourse[]) {
         }),
       };
     }
+    if (c.postreqs == null) {
+      console.log("NULL POSTREQ", c);
+    }
   }
+
+  courses
+    .filter((course) => course.postreqs == null)
+    .forEach((course) => console.log("NULL COURSE", course.postreqs));
 }
 
-function getAllPrereqs(req: Requisite): string[] {
+function getAllPrereqsForSingleCourse(req: Requisite): string[] {
   const allPrereqs = new Set<string>();
   const visit = (req: Requisite) => {
     if (!req) {

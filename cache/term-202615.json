@@ -522,7 +522,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -600,7 +600,7 @@
         {
           "crn": "70344",
           "seatCapacity": 30,
-          "seatRemaining": 2,
+          "seatRemaining": 3,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -814,7 +814,7 @@
         {
           "crn": "70603",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 18,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -862,7 +862,7 @@
         {
           "crn": "70605",
           "seatCapacity": 30,
-          "seatRemaining": 11,
+          "seatRemaining": 13,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -958,7 +958,7 @@
         {
           "crn": "70767",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 22,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -986,7 +986,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1102,7 +1102,7 @@
         {
           "crn": "70836",
           "seatCapacity": 30,
-          "seatRemaining": 16,
+          "seatRemaining": 15,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -1161,7 +1161,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1219,7 +1219,7 @@
         {
           "crn": "70248",
           "seatCapacity": 30,
-          "seatRemaining": 13,
+          "seatRemaining": 12,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1400,7 +1400,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -1468,7 +1468,7 @@
         {
           "crn": "70226",
           "seatCapacity": 30,
-          "seatRemaining": 5,
+          "seatRemaining": 6,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1516,7 +1516,7 @@
         {
           "crn": "70582",
           "seatCapacity": 16,
-          "seatRemaining": 6,
+          "seatRemaining": 7,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -1540,7 +1540,7 @@
         {
           "crn": "70583",
           "seatCapacity": 29,
-          "seatRemaining": 16,
+          "seatRemaining": 17,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1585,8 +1585,8 @@
         },
         {
           "crn": "70817",
-          "seatCapacity": 24,
-          "seatRemaining": 0,
+          "seatCapacity": 30,
+          "seatRemaining": 5,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1595,7 +1595,7 @@
           "meetingTimes": [
             {
               "building": "West Georgia",
-              "room": "1418",
+              "room": "1426",
               "days": [
                 2
               ],
@@ -1733,7 +1733,7 @@
         {
           "crn": "70272",
           "seatCapacity": 30,
-          "seatRemaining": 7,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1757,7 +1757,7 @@
         {
           "crn": "70304",
           "seatCapacity": 30,
-          "seatRemaining": 27,
+          "seatRemaining": 26,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1968,7 +1968,7 @@
         {
           "crn": "70305",
           "seatCapacity": 30,
-          "seatRemaining": 23,
+          "seatRemaining": 24,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -1990,7 +1990,7 @@
         {
           "crn": "70459",
           "seatCapacity": 30,
-          "seatRemaining": 8,
+          "seatRemaining": 9,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -2014,7 +2014,7 @@
         {
           "crn": "70252",
           "seatCapacity": 30,
-          "seatRemaining": 9,
+          "seatRemaining": 10,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -2051,7 +2051,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2125,7 +2125,7 @@
         {
           "crn": "70808",
           "seatCapacity": 30,
-          "seatRemaining": 23,
+          "seatRemaining": 22,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -2149,7 +2149,7 @@
         {
           "crn": "70988",
           "seatCapacity": 24,
-          "seatRemaining": 14,
+          "seatRemaining": 15,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -2173,7 +2173,7 @@
         {
           "crn": "71298",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 21,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -2196,7 +2196,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2220,7 +2220,7 @@
           "seatCapacity": 28,
           "seatRemaining": 0,
           "waitlistCapacity": 10,
-          "waitlistRemaining": 9,
+          "waitlistRemaining": 10,
           "classType": "Lecture",
           "honors": false,
           "campus": "Boston",
@@ -2327,7 +2327,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2806,7 +2806,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -2900,7 +2900,7 @@
         {
           "crn": "70306",
           "seatCapacity": 30,
-          "seatRemaining": 18,
+          "seatRemaining": 20,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3018,7 +3018,7 @@
         {
           "crn": "70813",
           "seatCapacity": 30,
-          "seatRemaining": 2,
+          "seatRemaining": 3,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3097,7 +3097,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -3240,7 +3240,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -3286,7 +3286,7 @@
         {
           "crn": "70355",
           "seatCapacity": 23,
-          "seatRemaining": 5,
+          "seatRemaining": 6,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3310,7 +3310,7 @@
         {
           "crn": "70590",
           "seatCapacity": 30,
-          "seatRemaining": 29,
+          "seatRemaining": 28,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3419,7 +3419,7 @@
         {
           "crn": "70241",
           "seatCapacity": 30,
-          "seatRemaining": 15,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -3518,11 +3518,11 @@
           "waitlistRemaining": 10,
           "classType": "Lecture",
           "honors": false,
-          "campus": "Silicon Valley, CA",
+          "campus": "Online",
           "meetingTimes": [
             {
-              "building": "Northeastern San Jose",
-              "room": "1011",
+              "building": "Virtual Space- Online class",
+              "room": "ROOM",
               "days": [
                 4
               ],
@@ -3648,7 +3648,7 @@
         {
           "crn": "70693",
           "seatCapacity": 26,
-          "seatRemaining": 2,
+          "seatRemaining": 3,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -4272,7 +4272,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -4550,7 +4550,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4600,7 +4600,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4715,7 +4715,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4784,7 +4784,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CED",
@@ -4814,7 +4814,7 @@
         {
           "crn": "70302",
           "seatCapacity": 30,
-          "seatRemaining": 0,
+          "seatRemaining": 1,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -5244,7 +5244,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CMN",
@@ -5266,7 +5266,7 @@
         {
           "crn": "70147",
           "seatCapacity": 24,
-          "seatRemaining": 3,
+          "seatRemaining": 2,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -5313,7 +5313,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CMN",
@@ -5557,7 +5557,7 @@
         {
           "crn": "70481",
           "seatCapacity": 30,
-          "seatRemaining": 17,
+          "seatRemaining": 16,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -5627,7 +5627,7 @@
         {
           "crn": "70011",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 18,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -5658,7 +5658,7 @@
           "meetingTimes": [
             {
               "building": "Roux Institute 100 Fore St.",
-              "room": "213",
+              "room": "203",
               "days": [
                 3
               ],
@@ -5810,7 +5810,7 @@
         {
           "crn": "70635",
           "seatCapacity": 25,
-          "seatRemaining": 14,
+          "seatRemaining": 15,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -5947,7 +5947,7 @@
         {
           "crn": "70040",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 19,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -6012,7 +6012,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "CMN",
@@ -7381,7 +7381,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -7934,7 +7934,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -8106,7 +8106,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -8217,7 +8217,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -8318,7 +8318,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -8437,7 +8437,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "DGM",
@@ -9010,7 +9010,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9055,7 +9055,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9275,7 +9275,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9366,7 +9366,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9460,7 +9460,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9524,7 +9524,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9569,7 +9569,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9621,7 +9621,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -9678,7 +9678,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10187,7 +10187,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10276,7 +10276,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10341,7 +10341,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10433,7 +10433,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10502,7 +10502,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -10789,7 +10789,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "EDU",
@@ -11178,7 +11178,7 @@
         {
           "crn": "70369",
           "seatCapacity": 30,
-          "seatRemaining": 16,
+          "seatRemaining": 17,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -11465,7 +11465,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -11527,7 +11527,7 @@
         {
           "crn": "70408",
           "seatCapacity": 30,
-          "seatRemaining": 3,
+          "seatRemaining": 8,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -11551,7 +11551,7 @@
         {
           "crn": "70967",
           "seatCapacity": 30,
-          "seatRemaining": 4,
+          "seatRemaining": 1,
           "waitlistCapacity": 5,
           "waitlistRemaining": 5,
           "classType": "Lecture",
@@ -11575,7 +11575,7 @@
         {
           "crn": "71092",
           "seatCapacity": 30,
-          "seatRemaining": 7,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11584,7 +11584,7 @@
           "meetingTimes": [
             {
               "building": "West Georgia",
-              "room": "1426",
+              "room": "1425",
               "days": [
                 1
               ],
@@ -11623,7 +11623,7 @@
         {
           "crn": "71125",
           "seatCapacity": 30,
-          "seatRemaining": 13,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11632,7 +11632,7 @@
           "meetingTimes": [
             {
               "building": "Northeastern San Jose",
-              "room": "913",
+              "room": "1012",
               "days": [
                 1
               ],
@@ -11671,7 +11671,7 @@
         {
           "crn": "71120",
           "seatCapacity": 16,
-          "seatRemaining": 0,
+          "seatRemaining": 2,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11695,7 +11695,7 @@
         {
           "crn": "71374",
           "seatCapacity": 24,
-          "seatRemaining": 15,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -11832,7 +11832,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ALY",
@@ -12078,7 +12078,7 @@
         {
           "crn": "70410",
           "seatCapacity": 30,
-          "seatRemaining": 19,
+          "seatRemaining": 22,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -12202,7 +12202,7 @@
         {
           "crn": "70407",
           "seatCapacity": 30,
-          "seatRemaining": 3,
+          "seatRemaining": 5,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -12265,7 +12265,7 @@
         {
           "crn": "71133",
           "seatCapacity": 30,
-          "seatRemaining": 21,
+          "seatRemaining": 22,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -12437,7 +12437,7 @@
         {
           "crn": "71075",
           "seatCapacity": 30,
-          "seatRemaining": 22,
+          "seatRemaining": 21,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -12536,7 +12536,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GIS",
@@ -12700,7 +12700,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -12753,7 +12753,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -12822,7 +12822,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -12867,7 +12867,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -13017,7 +13017,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -13062,7 +13062,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "GST",
@@ -13454,7 +13454,7 @@
         {
           "crn": "70621",
           "seatCapacity": 30,
-          "seatRemaining": 21,
+          "seatRemaining": 22,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -13651,7 +13651,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -13788,7 +13788,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -13864,7 +13864,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "HRM",
@@ -14022,7 +14022,7 @@
         {
           "crn": "70187",
           "seatCapacity": 30,
-          "seatRemaining": 4,
+          "seatRemaining": 5,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14070,7 +14070,7 @@
         {
           "crn": "70370",
           "seatCapacity": 30,
-          "seatRemaining": 7,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14190,7 +14190,7 @@
         {
           "crn": "71207",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 19,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14238,7 +14238,7 @@
         {
           "crn": "71242",
           "seatCapacity": 30,
-          "seatRemaining": 18,
+          "seatRemaining": 19,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -14286,7 +14286,7 @@
         {
           "crn": "70998",
           "seatCapacity": 30,
-          "seatRemaining": 18,
+          "seatRemaining": 19,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -14359,7 +14359,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -14454,7 +14454,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -14476,7 +14476,7 @@
         {
           "crn": "70298",
           "seatCapacity": 30,
-          "seatRemaining": 16,
+          "seatRemaining": 17,
           "waitlistCapacity": 2,
           "waitlistRemaining": 2,
           "classType": "Lecture",
@@ -14564,7 +14564,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -14611,7 +14611,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -15041,7 +15041,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -15127,7 +15127,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -15589,7 +15589,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "INS",
@@ -15628,7 +15628,7 @@
               "finalDate": null
             }
           ],
-          "faculty": "Mocanu, Ovidiu"
+          "faculty": "Trubskyy, Mykhaylo"
         }
       ],
       "prereqs": {
@@ -16269,7 +16269,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "INT",
@@ -16417,7 +16417,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "ITC",
@@ -17178,7 +17178,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
@@ -17191,6 +17191,10 @@
           {
             "subject": "LDR",
             "courseNumber": "6150"
+          },
+          {
+            "subject": "LDR",
+            "courseNumber": "7980"
           }
         ]
       }
@@ -17210,7 +17214,7 @@
           "seatCapacity": 30,
           "seatRemaining": 0,
           "waitlistCapacity": 6,
-          "waitlistRemaining": 5,
+          "waitlistRemaining": 6,
           "classType": "Lecture",
           "honors": false,
           "campus": "Online",
@@ -17291,7 +17295,7 @@
         {
           "crn": "71047",
           "seatCapacity": 30,
-          "seatRemaining": 7,
+          "seatRemaining": 5,
           "waitlistCapacity": 0,
           "waitlistRemaining": 0,
           "classType": "Lecture",
@@ -17314,7 +17318,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
@@ -17425,11 +17429,15 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "LDR",
             "courseNumber": "6140"
+          },
+          {
+            "subject": "LDR",
+            "courseNumber": "7980"
           }
         ]
       }
@@ -17471,7 +17479,7 @@
         {
           "crn": "70800",
           "seatCapacity": 24,
-          "seatRemaining": 12,
+          "seatRemaining": 13,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17614,7 +17622,15 @@
         ]
       },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "LDR",
+            "courseNumber": "7980"
+          }
+        ]
+      }
     },
     {
       "name": "Innovation and Organizational Transformation",
@@ -17653,7 +17669,7 @@
         {
           "crn": "70553",
           "seatCapacity": 30,
-          "seatRemaining": 15,
+          "seatRemaining": 16,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -17690,7 +17706,7 @@
       "postreqs": {}
     },
     {
-      "name": "Event Management",
+      "name": "Leadership Coaching for Purpose and Performance",
       "term": "202615",
       "courseNumber": "6190",
       "subject": "LDR",
@@ -17729,7 +17745,7 @@
       "postreqs": {}
     },
     {
-      "name": "Sports Management",
+      "name": "Event Management",
       "term": "202615",
       "courseNumber": "6323",
       "subject": "LDR",
@@ -17790,11 +17806,11 @@
       "postreqs": {}
     },
     {
-      "name": "Sports Law",
+      "name": "Sports Management",
       "term": "202615",
       "courseNumber": "6400",
       "subject": "LDR",
-      "description": "Addresses the legal aspects of sports, recreation, and leisure services, with a focus on tort and contractual liability. Covers legal concepts of negligence and principles of risk management, legal issues related to equipment use, facility management, and accommodation for special populations. Offers sports managers an opportunity to obtain the fundamental legal knowledge necessary to operate in the increasingly complex sports environment.",
+      "description": "Provides an overview of management and administration pertaining to all levels of athletics. Focuses on basic theories of management and administration in athletic organizations. Addresses planning, scheduling, and financing aspects required to run a successful athletics program. Offers students an opportunity to learn to develop communication and management skills with an emphasis placed on decision making.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -17851,11 +17867,11 @@
       "postreqs": {}
     },
     {
-      "name": "Fiscal Practices in Sports",
+      "name": "Sports Law",
       "term": "202615",
       "courseNumber": "6430",
       "subject": "LDR",
-      "description": "Examines the financial and regulatory issues confronting sports, fitness, and recreation industry managers. Covers accounting principles, financial statements, and related concepts that help determine the viability and strength of financial decision making.",
+      "description": "Addresses the legal aspects of sports, recreation, and leisure services, with a focus on tort and contractual liability. Covers legal concepts of negligence and principles of risk management, legal issues related to equipment use, facility management, and accommodation for special populations. Offers sports managers an opportunity to obtain the fundamental legal knowledge necessary to operate in the increasingly complex sports environment.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -17912,11 +17928,11 @@
       "postreqs": {}
     },
     {
-      "name": "Ticket Sales and Strategies",
+      "name": "Fiscal Practices in Sports",
       "term": "202615",
       "courseNumber": "6435",
       "subject": "LDR",
-      "description": "Presents an overview of the various techniques and strategies used to meet consumers' wants and needs in the sports industry and an understanding Studies marketing and promotion strategies utilized in various aspects of the sports industry. Examines marketing sports as a product and marketing of nonsports products using sports as a promotional tool.",
+      "description": "Examines the financial and regulatory issues confronting sports, fitness, and recreation industry managers. Covers accounting principles, financial statements, and related concepts that help determine the viability and strength of financial decision making.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -17949,11 +17965,11 @@
       "postreqs": {}
     },
     {
-      "name": "Academic Advising for Student-Athletes",
+      "name": "Sports Marketing and Promotions",
       "term": "202615",
       "courseNumber": "6440",
       "subject": "LDR",
-      "description": "Introduces students to the basic concepts and evolution of the eSports industry. Investigates and explores the use of technology and social media platforms through sports. Explores the current state of this evolving sports enterprise, including trends relating to organizations that have entered this digital space to expand their global portfolios. Incorporates industry trends with appropriate readings that offer students an opportunity to understand this emerging sports industry segment.",
+      "description": "Presents an overview of the various techniques and strategies used to meet consumers' wants and needs in the sports industry and an understanding Studies marketing and promotion strategies utilized in various aspects of the sports industry. Examines marketing sports as a product and marketing of nonsports products using sports as a promotional tool.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -17986,11 +18002,11 @@
       "postreqs": {}
     },
     {
-      "name": "Capstone",
+      "name": "Ticket Sales and Strategies",
       "term": "202615",
       "courseNumber": "6443",
       "subject": "LDR",
-      "description": "Offers an overview of the foundations of academic advising and life-skill training as an essential component of student-athlete success and retention programs on higher education campuses. Topics include definitions and concepts for developmental advising; literature and research on the key concepts of academic advising; exploration of the various models and delivery systems for academic advising; skills for effective advising; advising diverse populations; and training, development, evaluation, assessment, and reward systems for advisers and advising programs.",
+      "description": "Provides an overview of ticket sales as a revenue source in athletics. Examines sales strategies for single-game, season ticket, and group sales; ticket office operations; and building a database for ticket sales.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -18023,11 +18039,11 @@
       "postreqs": {}
     },
     {
-      "name": "The Capstone: Demonstrating Leadership in Action",
+      "name": "The Business of eSports",
       "term": "202615",
       "courseNumber": "6480",
       "subject": "LDR",
-      "description": "Offers students an opportunity to complete their academic experience with an in-depth, sports leadership internship. Students share their experiences through a discussion board forum as well as deliver a final paper and develop a Web portfolio. The Web portfolio highlights the student’s skills, knowledge, development, quality of writing, and critical thinking by showcasing a comprehensive collection of work samples and artifacts from the student’s experiences in the sports leadership program. By selecting an assignment of academic and professional interest, students are offered an opportunity to deepen their knowledge of a particular area of sports leadership through the senior project option. Intended for students already employed in the sports field.",
+      "description": "Introduces students to the basic concepts and evolution of the eSports industry. Investigates and explores the use of technology and social media platforms through sports. Explores the current state of this evolving sports enterprise, including trends relating to organizations that have entered this digital space to expand their global portfolios. Incorporates industry trends with appropriate readings that offer students an opportunity to understand this emerging sports industry segment.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -18060,11 +18076,11 @@
       "postreqs": {}
     },
     {
-      "name": "Strategic Management and Leadership for Nonprofit Organizations",
+      "name": "Academic Advising for Student-Athletes",
       "term": "202615",
       "courseNumber": "6615",
       "subject": "LDR",
-      "description": "Offers students a culminating experience with several opportunities to further increase their impact and effectiveness as leaders and to demonstrate their leadership expertise, knowledge, and capability. Real-life options for the capstone experience include a leadership in action project, an Experiential Network project, and a consulting case study. Students critically reflect on the experiences they have gained through the leadership program; relate those experiences to their personal experiences; and refine their personal leadership models.",
+      "description": "Offers an overview of the foundations of academic advising and life-skill training as an essential component of student-athlete success and retention programs on higher education campuses. Topics include definitions and concepts for developmental advising; literature and research on the key concepts of academic advising; exploration of the various models and delivery systems for academic advising; skills for effective advising; advising diverse populations; and training, development, evaluation, assessment, and reward systems for advisers and advising programs.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -18097,11 +18113,11 @@
       "postreqs": {}
     },
     {
-      "name": "Legal and Governance Issues in Nonprofit Organizations",
+      "name": "Capstone",
       "term": "202615",
       "courseNumber": "6980",
       "subject": "LDR",
-      "description": "Introduces the nature and significant trends of the nonprofit sector, both in the United States and internationally. Aims to deepen student understanding of the nonprofit world and its organizations, looking at the intersection between managerial practices, policy decisions, and leadership. Offers students an opportunity to identify and interpret critical issues and challenges of sustainability experienced by stakeholders of the nonprofit world and consider their implications for managerial practice. Discusses the role of governing boards—details the role of board legal fiduciary responsibilities, board development, and ongoing management.",
+      "description": "Offers students an opportunity to complete their academic experience with an in-depth, sports leadership internship. Students share their experiences through a discussion board forum as well as deliver a final paper and develop a Web portfolio. The Web portfolio highlights the student’s skills, knowledge, development, quality of writing, and critical thinking by showcasing a comprehensive collection of work samples and artifacts from the student’s experiences in the sports leadership program. By selecting an assignment of academic and professional interest, students are offered an opportunity to deepen their knowledge of a particular area of sports leadership through the senior project option. Intended for students already employed in the sports field.",
       "maxCredits": 4,
       "minCredits": 1,
       "nupath": [],
@@ -18134,11 +18150,11 @@
       "postreqs": {}
     },
     {
-      "name": "Promoting Nonprofit Organizations",
+      "name": "The Capstone: Demonstrating Leadership in Action",
       "term": "202615",
       "courseNumber": "7980",
       "subject": "LDR",
-      "description": "Explores the uses of traditional and nontraditional ways to promote nonprofits to an array of actual and potential audiences for a variety of purposes. All nonprofit organizations at some point must be visible to the public in order to fulfill their missions; nonprofit managers must know how to promote their organizations to current and potential supporters, the broader public, and the mass media. Topics include program and organizational branding, targeting respective audiences, and preparing materials for greatest effect.",
+      "description": "Offers students a culminating experience with several opportunities to further increase their impact and effectiveness as leaders and to demonstrate their leadership expertise, knowledge, and capability. Real-life options for the capstone experience include a leadership in action project, an Experiential Network project, and a consulting case study. Students critically reflect on the experiences they have gained through the leadership program; relate those experiences to their personal experiences; and refine their personal leadership models.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -18166,16 +18182,32 @@
           "faculty": "Stein, Leslie"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "LDR",
+            "courseNumber": "6100"
+          },
+          {
+            "subject": "LDR",
+            "courseNumber": "6120"
+          },
+          {
+            "subject": "LDR",
+            "courseNumber": "6140"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "Fundraising and Development for Organizations",
+      "name": "Strategic Management and Leadership for Nonprofit Organizations",
       "term": "202615",
       "courseNumber": "6100",
       "subject": "NPM",
-      "description": "Examines sources of funding and strategies for development planning, including donor profiles, proposals and case statements, foundation and corporate philanthropy, government grant and contract programs, special events, marketing and public relations functions, direct mail and membership campaigns, planned giving, major gifts, and capital campaigns. Fundraising  and development are essential skills for managers because nonprofit organizations depend upon individual, government, and foundation resources to fulfill their mission.",
+      "description": "Introduces the nature and significant trends of the nonprofit sector, both in the United States and internationally. Aims to deepen student understanding of the nonprofit world and its organizations, looking at the intersection between managerial practices, policy decisions, and leadership. Offers students an opportunity to identify and interpret critical issues and challenges of sustainability experienced by stakeholders of the nonprofit world and consider their implications for managerial practice. Discusses the role of governing boards—details the role of board legal fiduciary responsibilities, board development, and ongoing management.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -18203,6 +18235,270 @@
             }
           ],
           "faculty": "Gorske, James"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {}
+    },
+    {
+      "name": "Legal and Governance Issues in Nonprofit Organizations",
+      "term": "202615",
+      "courseNumber": "6110",
+      "subject": "NPM",
+      "description": "Examines the U.S. federal and state laws under which nonprofit organizations operate and considers their effect on the establishment and operation of nonprofit organizations. Offers students an opportunity to learn about incorporation and tax-exempt status, general liability, regulatory compliance/reporting, and contracts. Emphasizes the roles, responsibilities, processes, and powers of boards of directors.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70035",
+          "seatCapacity": 30,
+          "seatRemaining": 21,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Boston",
+          "meetingTimes": [
+            {
+              "building": "Snell Library",
+              "room": "035",
+              "days": [
+                3
+              ],
+              "startTime": 1750,
+              "endTime": 2030,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Welton, Craig"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "NPM",
+            "courseNumber": "6980"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Promoting Nonprofit Organizations",
+      "term": "202615",
+      "courseNumber": "6125",
+      "subject": "NPM",
+      "description": "Explores the uses of traditional and nontraditional ways to promote nonprofits to an array of actual and potential audiences for a variety of purposes. All nonprofit organizations at some point must be visible to the public in order to fulfill their missions; nonprofit managers must know how to promote their organizations to current and potential supporters, the broader public, and the mass media. Topics include program and organizational branding, targeting respective audiences, and preparing materials for greatest effect.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70413",
+          "seatCapacity": 30,
+          "seatRemaining": 12,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Nicolato, Cortney"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "NPM",
+            "courseNumber": "6980"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fundraising and Development for Organizations",
+      "term": "202615",
+      "courseNumber": "6130",
+      "subject": "NPM",
+      "description": "Examines sources of funding and strategies for development planning, including donor profiles, proposals and case statements, foundation and corporate philanthropy, government grant and contract programs, special events, marketing and public relations functions, direct mail and membership campaigns, planned giving, major gifts, and capital campaigns. Fundraising  and development are essential skills for managers because nonprofit organizations depend upon individual, government, and foundation resources to fulfill their mission.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70634",
+          "seatCapacity": 30,
+          "seatRemaining": 4,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Esson, Simintha"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "NPM",
+            "courseNumber": "6980"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Grant and Report Writing",
+      "term": "202615",
+      "courseNumber": "6140",
+      "subject": "NPM",
+      "description": "Introduces grants and grant proposal writing. Knowledge of the grant writing cycle allows nonprofit professionals to use their time productively. Topics include effective research, creating a plan for the program, elements of a good proposal, components of the proposal package, and strategies for getting a proposal read by a foundation or corporation. Offers students an opportunity to research an RFP or identify a foundation, write a grant proposal, and ready it for submission to a funding source.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70017",
+          "seatCapacity": 30,
+          "seatRemaining": 19,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Shannon, Jacqueline"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "NPM",
+            "courseNumber": "6980"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Human Resources Management in Nonprofit Organizations",
+      "term": "202615",
+      "courseNumber": "6150",
+      "subject": "NPM",
+      "description": "Examines methods of developing, supervising, motivating, and recognizing volunteers and staff; communicating effectively within an organization; staff-volunteer relations; and stress, conflict, and crisis management. Managers in nonprofit organizations face the challenge of working with both paid and unpaid stakeholders in the organization’s future. Explores HRM topics such as legal employment issues, recruiting and hiring practices, diversity in the workplace, compensation and benefits, performance appraisal, and discipline.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70310",
+          "seatCapacity": 30,
+          "seatRemaining": 17,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Walsh, Marian"
+        }
+      ],
+      "prereqs": {},
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "NPM",
+            "courseNumber": "6980"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Capstone",
+      "term": "202615",
+      "courseNumber": "6980",
+      "subject": "NPM",
+      "description": "Integrates theory, practice, case studies, and experiential learning with operational and organizational concepts including, but not limited to, nonprofit law, financial management, human resource management, fund-raising and development, promotions, and grant writing. Aims to synthesize learning in a practical manner. Offers students an opportunity to prepare for working in or volunteering at a nonprofit organization. Presents an interrelationship of student learning and real-world practice through a series of pedagogical paradigms.",
+      "maxCredits": 3,
+      "minCredits": 3,
+      "nupath": [],
+      "sections": [
+        {
+          "crn": "70312",
+          "seatCapacity": 30,
+          "seatRemaining": 24,
+          "waitlistCapacity": 10,
+          "waitlistRemaining": 10,
+          "classType": "Lecture",
+          "honors": false,
+          "campus": "Online",
+          "meetingTimes": [
+            {
+              "building": "",
+              "room": "",
+              "days": [],
+              "startTime": null,
+              "endTime": null,
+              "final": false,
+              "finalDate": null
+            }
+          ],
+          "faculty": "Cantrell-Bruce, Tosha"
         }
       ],
       "prereqs": {
@@ -18240,300 +18536,9 @@
     {
       "name": "Foundations of Project Management",
       "term": "202615",
-      "courseNumber": "6110",
-      "subject": "NPM",
-      "description": "Introduces grants and grant proposal writing. Knowledge of the grant writing cycle allows nonprofit professionals to use their time productively. Topics include effective research, creating a plan for the program, elements of a good proposal, components of the proposal package, and strategies for getting a proposal read by a foundation or corporation. Offers students an opportunity to research an RFP or identify a foundation, write a grant proposal, and ready it for submission to a funding source.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70035",
-          "seatCapacity": 30,
-          "seatRemaining": 21,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Boston",
-          "meetingTimes": [
-            {
-              "building": "Snell Library",
-              "room": "035",
-              "days": [
-                3
-              ],
-              "startTime": 1750,
-              "endTime": 2030,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Welton, Craig"
-        }
-      ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "NPM",
-            "courseNumber": "6100"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Project Scope Management",
-      "term": "202615",
-      "courseNumber": "6125",
-      "subject": "NPM",
-      "description": "Examines methods of developing, supervising, motivating, and recognizing volunteers and staff; communicating effectively within an organization; staff-volunteer relations; and stress, conflict, and crisis management. Managers in nonprofit organizations face the challenge of working with both paid and unpaid stakeholders in the organization’s future. Explores HRM topics such as legal employment issues, recruiting and hiring practices, diversity in the workplace, compensation and benefits, performance appraisal, and discipline.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70413",
-          "seatCapacity": 30,
-          "seatRemaining": 12,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Nicolato, Cortney"
-        }
-      ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "NPM",
-            "courseNumber": "6100"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Project Risk Management",
-      "term": "202615",
-      "courseNumber": "6130",
-      "subject": "NPM",
-      "description": "Offers students an opportunity to learn to develop metrics for determining and reporting project performance. Examines both quantitative and qualitative approaches of evaluation, with an emphasis on earned value management. Examines stakeholder analysis and techniques for reporting performance results.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70634",
-          "seatCapacity": 30,
-          "seatRemaining": 5,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Esson, Simintha"
-        }
-      ],
-      "prereqs": {
-        "type": "and",
-        "items": [
-          {
-            "subject": "PJM",
-            "courseNumber": "5900"
-          },
-          {
-            "subject": "PJM",
-            "courseNumber": "6005"
-          }
-        ]
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "NPM",
-            "courseNumber": "6100"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Project Quality Management",
-      "term": "202615",
-      "courseNumber": "6140",
-      "subject": "NPM",
-      "description": "Introduces project quality management principles, processes, models, and methods necessary to deliver quality projects and products within organizations. Discusses how to integrate PQM processes into the overall project plan and how to prepare a PQM plan. Offers students an opportunity to work together in a team environment to complete a PQM plan for a project.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70017",
-          "seatCapacity": 30,
-          "seatRemaining": 19,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Shannon, Jacqueline"
-        }
-      ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "6025"
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "NPM",
-            "courseNumber": "6100"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Global Project Management",
-      "term": "202615",
-      "courseNumber": "6150",
-      "subject": "NPM",
-      "description": "Examines how to prevent failed and troubled projects, how to perform a project assessment/audit, how to develop a troubled project recovery plan, and how to develop a failed project shutdown plan. Includes team presentations of case study assignments to gain experience in managing and avoiding failed and troubled projects, one of the most significant assignments for a project manager.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70310",
-          "seatCapacity": 30,
-          "seatRemaining": 18,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Walsh, Marian"
-        }
-      ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
-      },
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "NPM",
-            "courseNumber": "6100"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Project Stakeholder Management",
-      "term": "202615",
-      "courseNumber": "6980",
-      "subject": "NPM",
-      "description": "Expands the detailed treatment of project management into the global areas of environmental factors, national differences, cultural differences, outsourcing, and virtual project management. The state of the art in project management has advanced to heavy use of global project management. Addresses the Project Management Institute’s Project Management Body of Knowledge practices as applied in the organization and the future of project management.",
-      "maxCredits": 3,
-      "minCredits": 3,
-      "nupath": [],
-      "sections": [
-        {
-          "crn": "70312",
-          "seatCapacity": 30,
-          "seatRemaining": 24,
-          "waitlistCapacity": 10,
-          "waitlistRemaining": 10,
-          "classType": "Lecture",
-          "honors": false,
-          "campus": "Online",
-          "meetingTimes": [
-            {
-              "building": "",
-              "room": "",
-              "days": [],
-              "startTime": null,
-              "endTime": null,
-              "final": false,
-              "finalDate": null
-            }
-          ],
-          "faculty": "Cantrell-Bruce, Tosha"
-        }
-      ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
-      },
-      "coreqs": {},
-      "postreqs": {}
-    },
-    {
-      "name": "Managing Innovation Projects",
-      "term": "202615",
       "courseNumber": "5900",
       "subject": "PJM",
-      "description": "Offers students an opportunity to learn the mechanisms necessary to effectively identify all stakeholders, including the people, groups, or organizations that are impacted or may have an impact on the project. Examines how to analyze stakeholder expectations and how to develop management strategies for effective stakeholder engagement throughout the project.",
+      "description": "Offers students an opportunity to learn foundational knowledge and concepts in project management. Analyzes various project management methodologies while presenting a structured approach to understanding key principles, models, and methods required to manage various project types through a complete project life cycle. Introduces project management software and emphasizes distinctions between project, program, and portfolio management. Strongly recommended for students with little or no formal project management experience.",
       "maxCredits": 4,
       "minCredits": 4,
       "nupath": [],
@@ -18969,51 +18974,56 @@
           "faculty": "Gohar, Reem"
         }
       ],
-      "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
-      },
+      "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
-            "subject": "NPM",
-            "courseNumber": "6110"
-          },
-          {
-            "subject": "NPM",
-            "courseNumber": "6125"
-          },
-          {
-            "subject": "NPM",
-            "courseNumber": "6130"
-          },
-          {
-            "subject": "NPM",
-            "courseNumber": "6150"
-          },
-          {
-            "subject": "NPM",
-            "courseNumber": "6980"
+            "subject": "PJM",
+            "courseNumber": "6005"
           },
           {
             "subject": "PJM",
-            "courseNumber": "5900"
+            "courseNumber": "6015"
           },
           {
             "subject": "PJM",
             "courseNumber": "6025"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6125"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6135"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6145"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6190"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6610"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6910"
           }
         ]
       }
     },
     {
-      "name": "Emerging Research in Project Management",
+      "name": "Project Scope Management",
       "term": "202615",
       "courseNumber": "6005",
       "subject": "PJM",
-      "description": "Examines theories and practices in managing innovation projects, while emphasizing the project manager’s role in product development, value proposition design, innovation experimentation, and business modeling. Offers students an opportunity to explore agile concepts in rapid prototyping and to develop skills in assessing innovations for feasibility, viability, desirability, and sustainability. Explores common impediments to innovation faced by project leaders.",
+      "description": "Offers insight into how projects are defined, evaluated, and ultimately translated into manageable project requirements and concrete deliverables. By learning how to identify stakeholder needs and convert those needs into viable, measurable project scope documentation, a project manager can successfully manage not only a project’s scope but also make informed recommendations when trade-offs between project scope, cost, and schedule become necessary.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -19021,7 +19031,7 @@
         {
           "crn": "70090",
           "seatCapacity": 30,
-          "seatRemaining": 11,
+          "seatRemaining": 12,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19137,7 +19147,7 @@
         {
           "crn": "70614",
           "seatCapacity": 30,
-          "seatRemaining": 13,
+          "seatRemaining": 14,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -19183,24 +19193,39 @@
           "faculty": "Hardy, Sharyn"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
-            "subject": "NPM",
-            "courseNumber": "6130"
+            "subject": "PJM",
+            "courseNumber": "6025"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6140"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6710"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6910"
           }
         ]
       }
     },
     {
-      "name": "Communication Skills for Project Managers",
+      "name": "Project Risk Management",
       "term": "202615",
       "courseNumber": "6015",
       "subject": "PJM",
-      "description": "Introduces concepts related to research and analysis that are integral to scholarly learning. Also introduces research methods, along with their applications, benefits, challenges, and limitations in the context of conducting meaningful inquiry and research in project management.Offers students an opportunity to explore research design, data collection, and statistical and interpretive analysis by completing a research project under faculty supervision in which they examine a relevant problem of practice in project management, conduct a literature review, analyze data, and present their findings.",
+      "description": "Examines quantitative techniques for risk assessment and decision making, as well as the steps and elements of a risk management plan, including the ongoing monitoring of risk factors. The accurate identification of risks, and understanding of how to account for the potential impact of risks, can greatly impact the likelihood of project success.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -19232,7 +19257,7 @@
         {
           "crn": "70448",
           "seatCapacity": 30,
-          "seatRemaining": -9,
+          "seatRemaining": -8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -19490,16 +19515,35 @@
           "faculty": "Faridani, Hamid"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6140"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6710"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6910"
+          }
+        ]
+      }
     },
     {
-      "name": "Strategy Analysis and Needs Assessment",
+      "name": "Project Scheduling and Cost Planning",
       "term": "202615",
       "courseNumber": "6025",
       "subject": "PJM",
-      "description": "Offers students an opportunity to learn about leadership and management skills and strategies needed to succeed in a demanding technical project environment. Many project managers understand the technical aspects of a particular project environment but lack these critical management and leadership skills. Topics covered include understanding the technical environment, managing and motivating team members, understanding organizational culture, interpersonal strategies, and developing a personal leadership approach.",
+      "description": "Builds on the project schedule to explore cost estimation methods, break-even analysis, and earned value management. Studies effective tools and techniques that can allow project managers to translate specifications to realistic project plans that lead to a resource-loaded schedule and baseline budget. These tools and techniques can be used to minimize bottlenecks and downtime, identify and plan for resource needs, develop contingencies, and manage risk and scope creep. Topics include schedule development, cost estimating, and cost and schedule management through earned value management. A well-thought-out and well-managed schedule is critical to successful project management and is integral to the efficient management of project costs. Offers students an opportunity to learn to manage the project budget, revise cost estimates, and develop confidence levels.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -19650,26 +19694,47 @@
         }
       ],
       "prereqs": {
-        "subject": "PJM",
-        "courseNumber": "5900"
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "5900"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6005"
+          }
+        ]
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
-            "subject": "NPM",
+            "subject": "PJM",
+            "courseNumber": "6075"
+          },
+          {
+            "subject": "PJM",
             "courseNumber": "6140"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6710"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6910"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Project Finance",
       "term": "202615",
       "courseNumber": "6075",
       "subject": "PJM",
-      "description": "Offers students an opportunity to learn strategies for communicating technical concepts in a clear, concise, and appropriate manner for both written and oral communication media. In all project environments, communication is critical for project success. The ability to craft project reports and to communicate with customers, clients, team members, and company executives is critical for anyone leading technical projects. Often, the project manager needs to communicate technical data to a nontechnical audience. Explores various communication models and approaches with a focus on applying those models in a real-world context.",
+      "description": "Explores real-world cases of project finance across industry sectors (e.g., energy, resource recovery, and mining) to examine how organizations structure their capital to mitigate various project risks and to secure scarce resources in the business environment. Topics include capital structure, discounted cash flow, financial instruments, capital budgeting, cost of capital, risk and return, project agreements, project cost accumulation, project cost allocation, and project investment ranking.Offers students an opportunity to develop a profound understanding of the principles of project finance.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -19677,7 +19742,7 @@
         {
           "crn": "70334",
           "seatCapacity": 30,
-          "seatRemaining": 19,
+          "seatRemaining": 18,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -19820,27 +19885,18 @@
         }
       ],
       "prereqs": {
-        "type": "or",
-        "items": [
-          {
-            "subject": "PJM",
-            "courseNumber": "6610"
-          },
-          {
-            "subject": "PJM",
-            "courseNumber": "6710"
-          }
-        ]
+        "subject": "PJM",
+        "courseNumber": "6025"
       },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Project Evaluation and Assessment",
       "term": "202615",
       "courseNumber": "6125",
       "subject": "PJM",
-      "description": "Offers students an opportunity to learn strategies for creating a cohesive, high-performing project team in a remote project environment. The challenges of leading a remote project team are apparent to anyone who has attempted it. The technological challenges are complicated by the reality that most teams have participants located around the world. Therefore, we face not only the standard fare of interpersonal challenges but also cultural challenges as well.",
+      "description": "Offers students an opportunity to learn to develop metrics for determining and reporting project performance. Examines both quantitative and qualitative approaches of evaluation, with an emphasis on earned value management. Examines stakeholder analysis and techniques for reporting performance results.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -19872,7 +19928,7 @@
         {
           "crn": "70360",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 21,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -20084,16 +20140,19 @@
           "faculty": "Ghazi, Sanaz"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Project Quality Management",
       "term": "202615",
       "courseNumber": "6135",
       "subject": "PJM",
-      "description": "Introduces techniques in requirements analysis, management, and design definition. Applies practices in the elicitation, analysis, and documentation of functional, nonfunctional, transitory, business, and stakeholder requirements. Applies tools and techniques in specifying, modeling, and prioritizing requirements. Evaluates strategies for determining design options and recommending solutions.",
+      "description": "Introduces project quality management principles, processes, models, and methods necessary to deliver quality projects and products within organizations. Discusses how to integrate PQM processes into the overall project plan and how to prepare a PQM plan. Offers students an opportunity to work together in a team environment to complete a PQM plan for a project.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20149,7 +20208,7 @@
           "seatCapacity": 30,
           "seatRemaining": 0,
           "waitlistCapacity": 10,
-          "waitlistRemaining": 8,
+          "waitlistRemaining": 10,
           "classType": "Lecture",
           "honors": false,
           "campus": "Boston",
@@ -20411,17 +20470,29 @@
       ],
       "prereqs": {
         "subject": "PJM",
-        "courseNumber": "6810"
+        "courseNumber": "5900"
       },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6140"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6910"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Managing Troubled Projects",
       "term": "202615",
       "courseNumber": "6140",
       "subject": "PJM",
-      "description": "",
+      "description": "Examines how to prevent failed and troubled projects, how to perform a project assessment/audit, how to develop a troubled project recovery plan, and how to develop a failed project shutdown plan. Includes team presentations of case study assignments to gain experience in managing and avoiding failed and troubled projects, one of the most significant assignments for a project manager.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20523,16 +20594,36 @@
           "faculty": "Faridani, Hamid"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6005"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6015"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6025"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6135"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Global Project Management",
       "term": "202615",
       "courseNumber": "6145",
       "subject": "PJM",
-      "description": "",
+      "description": "Expands the detailed treatment of project management into the global areas of environmental factors, national differences, cultural differences, outsourcing, and virtual project management. The state of the art in project management has advanced to heavy use of global project management. Addresses the Project Management Institute’s Project Management Body of Knowledge practices as applied in the organization and the future of project management.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20588,9 +20679,9 @@
         {
           "crn": "70482",
           "seatCapacity": 30,
-          "seatRemaining": 1,
+          "seatRemaining": 0,
           "waitlistCapacity": 6,
-          "waitlistRemaining": 5,
+          "waitlistRemaining": 6,
           "classType": "Lecture",
           "honors": false,
           "campus": "Toronto, Canada",
@@ -20636,7 +20727,7 @@
         {
           "crn": "71547",
           "seatCapacity": 24,
-          "seatRemaining": 0,
+          "seatRemaining": 1,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -20658,16 +20749,19 @@
           "faculty": "Shaheen, Ahmed"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Project Resource Management",
       "term": "202615",
       "courseNumber": "6175",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers an overview of procurement management and human resource management and studies how these two knowledge areas are key to a project’s success. Describes the processes necessary to effectively purchase or acquire products, services, or results for a given project through the lens of the project manager and procurement office. Examines how to effectively acquire, develop, and manage human resources in various organizational settings.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20768,11 +20862,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Project Stakeholder Management",
       "term": "202615",
       "courseNumber": "6180",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers students an opportunity to learn the mechanisms necessary to effectively identify all stakeholders, including the people, groups, or organizations that are impacted or may have an impact on the project. Examines how to analyze stakeholder expectations and how to develop management strategies for effective stakeholder engagement throughout the project.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20780,7 +20874,7 @@
         {
           "crn": "70871",
           "seatCapacity": 28,
-          "seatRemaining": 10,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -20873,11 +20967,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Managing Innovation Projects",
       "term": "202615",
       "courseNumber": "6185",
       "subject": "PJM",
-      "description": "",
+      "description": "Examines theories and practices in managing innovation projects, while emphasizing the project manager’s role in product development, value proposition design, innovation experimentation, and business modeling. Offers students an opportunity to explore agile concepts in rapid prototyping and to develop skills in assessing innovations for feasibility, viability, desirability, and sustainability. Explores common impediments to innovation faced by project leaders.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20909,7 +21003,7 @@
         {
           "crn": "71453",
           "seatCapacity": 30,
-          "seatRemaining": 5,
+          "seatRemaining": 6,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -20936,11 +21030,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Emerging Research in Project Management",
       "term": "202615",
       "courseNumber": "6190",
       "subject": "PJM",
-      "description": "",
+      "description": "Introduces concepts related to research and analysis that are integral to scholarly learning. Also introduces research methods, along with their applications, benefits, challenges, and limitations in the context of conducting meaningful inquiry and research in project management.Offers students an opportunity to explore research design, data collection, and statistical and interpretive analysis by completing a research project under faculty supervision in which they examine a relevant problem of practice in project management, conduct a literature review, analyze data, and present their findings.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -20948,7 +21042,7 @@
         {
           "crn": "71417",
           "seatCapacity": 30,
-          "seatRemaining": 25,
+          "seatRemaining": 26,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -20970,16 +21064,19 @@
           "faculty": "Zadeh, Adel"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Leading and Managing Technical Projects",
       "term": "202615",
       "courseNumber": "6205",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers students an opportunity to learn about leadership and management skills and strategies needed to succeed in a demanding technical project environment. Many project managers understand the technical aspects of a particular project environment but lack these critical management and leadership skills. Topics covered include understanding the technical environment, managing and motivating team members, understanding organizational culture, interpersonal strategies, and developing a personal leadership approach.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -21009,7 +21106,7 @@
         {
           "crn": "70180",
           "seatCapacity": 24,
-          "seatRemaining": 6,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21079,7 +21176,7 @@
         {
           "crn": "70595",
           "seatCapacity": 30,
-          "seatRemaining": 14,
+          "seatRemaining": 15,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21151,7 +21248,7 @@
         {
           "crn": "71068",
           "seatCapacity": 30,
-          "seatRemaining": 15,
+          "seatRemaining": 17,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21223,7 +21320,7 @@
         {
           "crn": "71598",
           "seatCapacity": 30,
-          "seatRemaining": 11,
+          "seatRemaining": 10,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21250,11 +21347,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Communication Skills for Project Managers",
       "term": "202615",
       "courseNumber": "6210",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers students an opportunity to learn strategies for communicating technical concepts in a clear, concise, and appropriate manner for both written and oral communication media. In all project environments, communication is critical for project success. The ability to craft project reports and to communicate with customers, clients, team members, and company executives is critical for anyone leading technical projects. Often, the project manager needs to communicate technical data to a nontechnical audience. Explores various communication models and approaches with a focus on applying those models in a real-world context.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -21380,7 +21477,7 @@
         {
           "crn": "70839",
           "seatCapacity": 30,
-          "seatRemaining": 13,
+          "seatRemaining": 12,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -21476,7 +21573,7 @@
         {
           "crn": "70900",
           "seatCapacity": 30,
-          "seatRemaining": 4,
+          "seatRemaining": 5,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -21599,11 +21696,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Leading Remote Project Teams",
       "term": "202615",
       "courseNumber": "6215",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers students an opportunity to learn strategies for creating a cohesive, high-performing project team in a remote project environment. The challenges of leading a remote project team are apparent to anyone who has attempted it. The technological challenges are complicated by the reality that most teams have participants located around the world. Therefore, we face not only the standard fare of interpersonal challenges but also cultural challenges as well.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -21611,7 +21708,7 @@
         {
           "crn": "70557",
           "seatCapacity": 30,
-          "seatRemaining": 7,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -21641,8 +21738,8 @@
           "campus": "Seattle, WA",
           "meetingTimes": [
             {
-              "building": "",
-              "room": "",
+              "building": "225 Terry Ave",
+              "room": "305",
               "days": [
                 2
               ],
@@ -21754,11 +21851,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Foundations of Project Business Analysis",
       "term": "202615",
       "courseNumber": "6610",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers a framework of business analysis. Topics include the role of the business analyst in the current organizational environment, understanding the business need, working with key stakeholders to identify the benefits of the project, and strategies to lead the organizational change necessary to harvest value.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -21812,24 +21909,35 @@
           "faculty": "Yu, Na"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "5900"
+      },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
-            "courseNumber": "6075"
+            "courseNumber": "6620"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6630"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6640"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Strategy Analysis and Needs Assessment",
       "term": "202615",
       "courseNumber": "6620",
       "subject": "PJM",
-      "description": "",
+      "description": "Focuses on investigating needs and defining change strategy through quantitative and qualitative data collection and analysis techniques. Examines the design of data collection instruments and varied elicitation techniques. Applies theories and practices in strategy analysis using design thinking, agile analysis, behavior change design, and business architecture. Uses practical case studies to apply strategy analysis and needs assessments within a project, program, product, and organizational context.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -21973,16 +22081,28 @@
           "faculty": "Savage, Kim"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "or",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6610"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6710"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Requirements Analysis and Design",
       "term": "202615",
       "courseNumber": "6630",
       "subject": "PJM",
-      "description": "",
+      "description": "Introduces techniques in requirements analysis, management, and design definition. Applies practices in the elicitation, analysis, and documentation of functional, nonfunctional, transitory, business, and stakeholder requirements. Applies tools and techniques in specifying, modeling, and prioritizing requirements. Evaluates strategies for determining design options and recommending solutions.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22036,7 +22156,7 @@
         {
           "crn": "71028",
           "seatCapacity": 30,
-          "seatRemaining": 2,
+          "seatRemaining": 3,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -22104,16 +22224,28 @@
           "faculty": "Savage, Kim"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "or",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6610"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6825"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Leadership Strategies for the Business Analyst",
       "term": "202615",
       "courseNumber": "6640",
       "subject": "PJM",
-      "description": "",
+      "description": "Introduces the techniques applied by the business analyst to work with stakeholders in the requirements process. Emphasizes the processes of facilitation, communication, problem solving, consensus building, and negotiation. A central part of the course requires students to participate in and evaluate facilitated simulations.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22121,7 +22253,7 @@
         {
           "crn": "70487",
           "seatCapacity": 28,
-          "seatRemaining": 15,
+          "seatRemaining": 14,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22167,16 +22299,19 @@
           "faculty": "Cote, Debra"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "6610"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Introduction to Program and Portfolio Management",
       "term": "202615",
       "courseNumber": "6710",
       "subject": "PJM",
-      "description": "",
+      "description": "Examines project, program, and portfolio management with a primary focus on the similarities and distinctions between program management and portfolio management. Offers students an opportunity to develop and evidence a foundational understanding of program and portfolio management and the critical role these play within today’s global environment.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22206,7 +22341,7 @@
         {
           "crn": "70666",
           "seatCapacity": 30,
-          "seatRemaining": 22,
+          "seatRemaining": 20,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22228,24 +22363,40 @@
           "faculty": "Orciuch, Raymond"
         }
       ],
-      "prereqs": {},
-      "coreqs": {},
-      "postreqs": {
-        "type": "or",
+      "prereqs": {
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
-            "courseNumber": "6075"
+            "courseNumber": "6005"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6015"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6025"
+          }
+        ]
+      },
+      "coreqs": {},
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6620"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Principles of Agile Project Management",
       "term": "202615",
       "courseNumber": "6810",
       "subject": "PJM",
-      "description": "",
+      "description": "Provides an overview of the fundamentals of agile project management. Topics include agile vs. traditional approaches, the agile manifesto, and the development of agile as a value-added business practice. Introduces key agile project management practices, including communication management planning and risk-management planning. Reviews agile-specific practices and method tailoring from an application perspective. Investigates agile project management tools.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22277,7 +22428,7 @@
         {
           "crn": "70207",
           "seatCapacity": 30,
-          "seatRemaining": 2,
+          "seatRemaining": 3,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22464,21 +22615,29 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "PJM",
-            "courseNumber": "6135"
+            "courseNumber": "6815"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6820"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6825"
           }
         ]
       }
     },
     {
-      "name": "",
+      "name": "Advanced Agile Project Management",
       "term": "202615",
       "courseNumber": "6815",
       "subject": "PJM",
-      "description": "",
+      "description": "Constitutes an advanced offering focusing on specific approaches to executing projects in an agile environment. Seeks to provide the student with a firm grounding and an applied, experiential understanding of specific agile approaches. Offers students an opportunity to engage in real-world-oriented case studies to evidence a strong understanding of the methodologies in a practical, experiential manner by planning and simulating an agile project using a methodology taught in the course.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22556,7 +22715,7 @@
         {
           "crn": "71061",
           "seatCapacity": 28,
-          "seatRemaining": 23,
+          "seatRemaining": 24,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22575,19 +22734,22 @@
               "finalDate": null
             }
           ],
-          "faculty": "TBA"
+          "faculty": "Kovela, Serhiy"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "6810"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Agile Implementation and Governance",
       "term": "202615",
       "courseNumber": "6820",
       "subject": "PJM",
-      "description": "",
+      "description": "Explores the implementation of agile within an organization and the governance structure to support agile projects. Studies the use of change management techniques to address stakeholder needs as the organization moves from a traditional to agile or blended approach to projects. Reviews and applies advanced topics in program/ portfolio management in agile environments. Offers students an opportunity to develop an implementation strategy and governance plan.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22639,7 +22801,7 @@
         {
           "crn": "70680",
           "seatCapacity": 24,
-          "seatRemaining": 8,
+          "seatRemaining": 9,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22685,16 +22847,19 @@
           "faculty": "Hakioglu, Munise"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "6810"
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Agile Lean Product Development",
       "term": "202615",
       "courseNumber": "6825",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers a practical overview of modern lean/agile product exposure based on contemporary industry practice. To win in today’s competitive market requires giving your business the ability to deliver highly profitable products faster than the competition. Covers the complete life cycle of product management, from identifying customers and users through to sales, marketing, and managing teams. Covers how to minimize investment and output while maximizing the information discovered in order to support effective decision making.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -22702,7 +22867,7 @@
         {
           "crn": "70400",
           "seatCapacity": 24,
-          "seatRemaining": 15,
+          "seatRemaining": 16,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -22794,16 +22959,27 @@
           "faculty": "Hakioglu, Munise"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PJM",
+        "courseNumber": "6810"
+      },
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "6630"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Capstone",
       "term": "202615",
       "courseNumber": "6910",
       "subject": "PJM",
-      "description": "",
+      "description": "Offers students an opportunity to utilize project management methodologies, principles, and tools acquired in the master’s program to develop plans that address stakeholder needs across the project life cycle.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -23023,16 +23199,40 @@
           "faculty": "Wan, Mimi"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PJM",
+            "courseNumber": "5900"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6005"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6015"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6025"
+          },
+          {
+            "subject": "PJM",
+            "courseNumber": "6135"
+          }
+        ]
+      },
       "coreqs": {},
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Special Topics",
       "term": "202615",
       "courseNumber": "6983",
       "subject": "PJM",
-      "description": "",
+      "description": "Covers special topics in project management. May be repeated four times for up to 20 semester hours.",
       "maxCredits": 4,
       "minCredits": 1,
       "nupath": [],
@@ -23091,11 +23291,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Communications Technology Lab",
       "term": "202615",
       "courseNumber": "6001",
       "subject": "PBR",
-      "description": "",
+      "description": "Focuses on the critical skill of using HubSpot to manage marketing communications. Marketing technology tools are the most in-demand skill set for marketers today. Introduces all key digital communications tools: content development, social media, PR, CRM, and email marketing. Offers students a weekly opportunity to build a comprehensive campaign that will become a portfolio piece, validating their experience with HubSpot to potential employers.",
       "maxCredits": 1,
       "minCredits": 1,
       "nupath": [],
@@ -23128,11 +23328,11 @@
       "postreqs": {}
     },
     {
-      "name": "",
+      "name": "Introduction to Public Relations",
       "term": "202615",
       "courseNumber": "6100",
       "subject": "PBR",
-      "description": "",
+      "description": "Introduces the ideas, skills, and principles that underlie the public relations craft. Designed for career changers and those new to public relations. Offers students an opportunity to study the role and contributions of public relations practitioners in contemporary society; to learn about potential legal and ethical aspects of the practice of public relations; to study the communication process and how persuasion is used with various audiences; and to learn how to develop a strategic communication plan to achieve specific goals and objectives. Also introduces students to specialized practice areas within the public relations field, such as business and industry, government, nonprofits and associations, and healthcare.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -23164,14 +23364,22 @@
       ],
       "prereqs": {},
       "coreqs": {},
-      "postreqs": {}
+      "postreqs": {
+        "type": "and",
+        "items": [
+          {
+            "subject": "PBR",
+            "courseNumber": "6710"
+          }
+        ]
+      }
     },
     {
-      "name": "",
+      "name": "Research: Understanding External Audiences",
       "term": "202615",
       "courseNumber": "6710",
       "subject": "PBR",
-      "description": "",
+      "description": "Focuses on the important role of market research and the use of existing data to gain insights into the attitudes of a wide range of external stakeholders, including journalists, investors, and customers, as well as the role environmental conditions play in the overall media campaign process. Offers students an opportunity to gain in-depth knowledge of research steps—including surveys, focus groups, and psychographic data—and to identify and analyze attitudinal patterns in target audiences as the foundation for effective public and media relations campaign strategies.",
       "maxCredits": 3,
       "minCredits": 3,
       "nupath": [],
@@ -23223,7 +23431,10 @@
           "faculty": "Porter, Andrew"
         }
       ],
-      "prereqs": {},
+      "prereqs": {
+        "subject": "PBR",
+        "courseNumber": "6100"
+      },
       "coreqs": {},
       "postreqs": {}
     },
@@ -23240,7 +23451,7 @@
         {
           "crn": "70186",
           "seatCapacity": 30,
-          "seatRemaining": 19,
+          "seatRemaining": 20,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -23288,7 +23499,7 @@
         {
           "crn": "70522",
           "seatCapacity": 30,
-          "seatRemaining": 23,
+          "seatRemaining": 22,
           "waitlistCapacity": 6,
           "waitlistRemaining": 6,
           "classType": "Lecture",
@@ -23312,7 +23523,7 @@
         {
           "crn": "70523",
           "seatCapacity": 30,
-          "seatRemaining": 20,
+          "seatRemaining": 21,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -23360,7 +23571,7 @@
         {
           "crn": "70636",
           "seatCapacity": 30,
-          "seatRemaining": 10,
+          "seatRemaining": 8,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -23410,7 +23621,7 @@
           "seatCapacity": 30,
           "seatRemaining": 0,
           "waitlistCapacity": 10,
-          "waitlistRemaining": 8,
+          "waitlistRemaining": 10,
           "classType": "Lecture",
           "honors": false,
           "campus": "Online",
@@ -23431,7 +23642,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -23517,9 +23728,9 @@
         {
           "crn": "71400",
           "seatCapacity": 30,
-          "seatRemaining": 0,
+          "seatRemaining": 2,
           "waitlistCapacity": 10,
-          "waitlistRemaining": 8,
+          "waitlistRemaining": 10,
           "classType": "Lecture",
           "honors": false,
           "campus": "Online",
@@ -23540,7 +23751,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "BTC",
@@ -23819,7 +24030,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -24000,7 +24211,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -24137,7 +24348,7 @@
       },
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -25034,7 +25245,7 @@
         {
           "crn": "70844",
           "seatCapacity": 30,
-          "seatRemaining": 9,
+          "seatRemaining": 10,
           "waitlistCapacity": 10,
           "waitlistRemaining": 10,
           "classType": "Lecture",
@@ -25617,7 +25828,7 @@
       "prereqs": {},
       "coreqs": {},
       "postreqs": {
-        "type": "or",
+        "type": "and",
         "items": [
           {
             "subject": "RGA",
@@ -26136,14 +26347,6 @@
           ]
         },
         {
-          "crn": "71125",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            1
-          ]
-        },
-        {
           "crn": "71398",
           "startTime": 1800,
           "endTime": 1950,
@@ -26286,14 +26489,6 @@
       ],
       "1011": [
         {
-          "crn": "70330",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            4
-          ]
-        },
-        {
           "crn": "70593",
           "startTime": 1800,
           "endTime": 2040,
@@ -26315,6 +26510,16 @@
           "endTime": 1730,
           "days": [
             3
+          ]
+        }
+      ],
+      "1012": [
+        {
+          "crn": "71125",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            1
           ]
         }
       ],
@@ -26667,6 +26872,14 @@
           "endTime": 2040,
           "days": [
             1
+          ]
+        },
+        {
+          "crn": "70596",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            2
           ]
         }
       ],
@@ -27996,6 +28209,14 @@
           ]
         },
         {
+          "crn": "71540",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            3
+          ]
+        },
+        {
           "crn": "71059",
           "startTime": 1800,
           "endTime": 2040,
@@ -28051,16 +28272,6 @@
           "endTime": 2040,
           "days": [
             4
-          ]
-        }
-      ],
-      "213": [
-        {
-          "crn": "71540",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            3
           ]
         }
       ],
@@ -28142,14 +28353,6 @@
       ],
       "1418": [
         {
-          "crn": "70817",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            2
-          ]
-        },
-        {
           "crn": "70814",
           "startTime": 1800,
           "endTime": 2040,
@@ -28198,6 +28401,14 @@
           "days": [
             1
           ]
+        },
+        {
+          "crn": "71092",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            1
+          ]
         }
       ],
       "1426": [
@@ -28218,6 +28429,14 @@
           ]
         },
         {
+          "crn": "70817",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            2
+          ]
+        },
+        {
           "crn": "70677",
           "startTime": 1800,
           "endTime": 2040,
@@ -28231,14 +28450,6 @@
           "endTime": 1750,
           "days": [
             4
-          ]
-        },
-        {
-          "crn": "71092",
-          "startTime": 1800,
-          "endTime": 2040,
-          "days": [
-            1
           ]
         },
         {
@@ -30525,6 +30736,208 @@
         }
       ]
     },
+    "Virtual Space- Online class": {
+      "ROOM": [
+        {
+          "crn": "70330",
+          "startTime": 1800,
+          "endTime": 2040,
+          "days": [
+            4
+          ]
+        },
+        {
+          "crn": "71534",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71441",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70864",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            3
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70858",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70022",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70022",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70022",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70022",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "70022",
+          "startTime": 1750,
+          "endTime": 2120,
+          "days": [
+            2
+          ]
+        },
+        {
+          "crn": "71232",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71261",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71264",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71278",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71289",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71340",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        },
+        {
+          "crn": "71553",
+          "startTime": null,
+          "endTime": null,
+          "days": []
+        }
+      ]
+    },
     "Graduate School of Business": {
       "109": [
         {
@@ -31035,200 +31448,6 @@
         }
       ]
     },
-    "Virtual Space- Online class": {
-      "ROOM": [
-        {
-          "crn": "71534",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71441",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70864",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            3
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70858",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70022",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70022",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70022",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70022",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "70022",
-          "startTime": 1750,
-          "endTime": 2120,
-          "days": [
-            2
-          ]
-        },
-        {
-          "crn": "71232",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71261",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71264",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71278",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71289",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71340",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        },
-        {
-          "crn": "71553",
-          "startTime": null,
-          "endTime": null,
-          "days": []
-        }
-      ]
-    },
     "West Village H": {
       "108": [
         {
@@ -31514,11 +31733,11 @@
     "Science Engineering Complex": "Boston",
     "Hurtig Hall": "Boston",
     "Ryder Hall": "Boston",
+    "Virtual Space- Online class": "Online",
     "Graduate School of Business": "Oakland, CA",
     "Cargill Hall": "Boston",
     "Forsyth Building": "Boston",
     "Behrakis Health Sciences Cntr": "Boston",
-    "Virtual Space- Online class": "Online",
     "West Village H": "Boston",
     "Vera Long": "Oakland, CA",
     "Unidentified campus": "Arlington, VA",
@@ -31527,5 +31746,5 @@
     "Boston": "Boston",
     "Miami Campus 230 NW 24th St": "Miami, FL"
   },
-  "timestamp": "2025-10-29T15:30:52.272Z"
+  "timestamp": "2025-10-30T23:36:28.494Z"
 }

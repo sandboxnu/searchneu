@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { faqFlag, roomsFlag } from "@/lib/flags";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
+import { faqFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
 import { BugIcon, MenuIcon } from "lucide-react";
 import { Suspense } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
@@ -12,10 +12,11 @@ import { NavBar } from "./NavBar";
 export function Header() {
   const enableFaqPage = faqFlag();
   const enableRoomsPage = roomsFlag();
+  const enableSchedulerPage = schedulerFlag();
 
   const Nav = (
     <Suspense>
-      <NavBar flags={{ rooms: enableRoomsPage, faq: enableFaqPage }} />
+      <NavBar flags={{ rooms: enableRoomsPage, faq: enableFaqPage, scheduler: enableSchedulerPage }} />
     </Suspense>
   );
 

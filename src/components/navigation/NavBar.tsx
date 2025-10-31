@@ -11,11 +11,12 @@ export function NavBar({
 }) {
   const roomsFlag = use(flags["rooms"]);
   const faqFlag = use(flags["faq"]);
+  const schedulerFlag = use(flags["scheduler"]);
 
   const pathname = usePathname();
 
   return (
-    <nav className="gap-2 font-semibold">
+    <nav className="flex gap-2 font-semibold">
       {roomsFlag && (
         <Link
           href="/rooms"
@@ -34,6 +35,15 @@ export function NavBar({
         <Bookmark className="size-4" />
         <span>Catalog</span>
       </Link>
+      {schedulerFlag && (
+        <Link
+          href="/scheduler"
+          data-active={pathname === "/scheduler"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+        >
+          Scheduler
+        </Link>
+      )}
       {faqFlag && (
         <Link
           href="/faq"

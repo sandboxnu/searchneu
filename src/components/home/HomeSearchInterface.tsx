@@ -59,7 +59,8 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("neu")}
         >
-          NEU
+          <span className="md:hidden">NEU</span>
+          <span className="hidden md:inline">Northeastern University</span>
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -70,7 +71,8 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("cps")}
         >
-          CPS
+          <span className="md:hidden">CPS</span>
+          <span className="hidden md:inline">College of Professional Studies</span>
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -81,7 +83,8 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("law")}
         >
-          LAW
+          <span className="md:hidden">LAW</span>
+          <span className="hidden md:inline">School of Law</span>
         </Button>
       </div>
       <div className="relative">

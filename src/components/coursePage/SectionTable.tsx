@@ -68,24 +68,29 @@ export function SectionTable({
       (!honorsFilter || s.honors),
   );
 
+  const totalWaitlistSeats = sections.reduce(
+    (agg, s) => agg + s.waitlistCapacity,
+    0,
+  );
+
   return (
     <div className="-mx-10 overflow-x-auto px-10 [&::-webkit-scrollbar]:hidden">
       <div className="inline-block min-w-full rounded-lg border">
         <table className="w-full min-w-[1000px] table-auto">
           <colgroup>
-            <col className="w-16" />
-            <col className="w-20" />
-            <col className="w-40" />
-            <col className="w-40" />
-            <col className="w-40" />
-            <col className="w-28" />
+            <col className="max-w-16" />
+            <col className="max-w-20" />
+            <col className="max-w-40" />
+            <col className="max-w-40" />
+            <col className="max-w-40" />
+            <col className="max-w-28" />
           </colgroup>
           <thead>
             <tr className="bg-secondary text-neu6 border-b text-xs">
               <th className="px-6 py-4 text-center font-bold">NOTIFY</th>
               <th className="px-4 py-4 text-center font-bold">CRN</th>
               <th className="px-4 py-4 text-center font-bold">
-                SEATS | WAITLIST
+                {totalWaitlistSeats > 0 ? "SEATS | WAITLIST" : "SEATS"}
               </th>
               <th className="px-4 py-4 text-left font-bold">MEETING TIMES</th>
               <th className="px-4 py-4 text-left font-bold">ROOMS</th>
@@ -100,6 +105,7 @@ export function SectionTable({
                 section={s}
                 initialTracked={trackedSections?.includes(s.id) ?? false}
                 isTermActive={isTermActive}
+                showWaitlist={totalWaitlistSeats > 0}
               />
             ))}
           </tbody>
@@ -113,10 +119,12 @@ function TableRow({
   section,
   initialTracked,
   isTermActive,
+  showWaitlist,
 }: {
   section: Section;
   initialTracked: boolean;
   isTermActive: boolean;
+  showWaitlist: boolean;
 }) {
   const seatDelta = section.seatRemaining / section.seatCapacity;
   const building = section.meetingTimes[0]?.room?.building?.name;
@@ -171,9 +179,11 @@ function TableRow({
           >
             {section.seatRemaining} / {section.seatCapacity}
           </span>
-          <span className="inline-block shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600">
-            {section.waitlistRemaining} / {section.waitlistCapacity}
-          </span>
+          {showWaitlist && (
+            <span className="inline-block shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600">
+              {section.waitlistRemaining} / {section.waitlistCapacity}
+            </span>
+          )}
         </div>
       </td>
 

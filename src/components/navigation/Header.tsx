@@ -1,20 +1,24 @@
 import Link from "next/link";
+import { faqFlag, roomsFlag } from "@/lib/flags";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { faqFlag, roomsFlag } from "@/lib/flags";
-import {
-  Bookmark,
-  BugIcon,
-  CircleQuestionMark,
-  DoorOpen,
-  MenuIcon,
-} from "lucide-react";
+import { BugIcon, MenuIcon } from "lucide-react";
 import { Suspense } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { NeuSearchskiePattern } from "../home/NeuSearchskiePattern";
+import { NavBar } from "./NavBar";
 
-export async function Header() {
+export function Header() {
+  const enableFaqPage = faqFlag();
+  const enableRoomsPage = roomsFlag();
+
+  const Nav = (
+    <Suspense>
+      <NavBar flags={{ rooms: enableRoomsPage, faq: enableFaqPage }} />
+    </Suspense>
+  );
+
   return (
     <header className="z-20 flex h-9 w-full items-center justify-between bg-transparent px-4 md:px-6">
       <Link href="/">
@@ -25,9 +29,7 @@ export async function Header() {
         Beta - unstable & experimental
       </span>
       <div className="hidden items-center gap-2 lg:flex">
-        <Suspense>
-          <NavBar />
-        </Suspense>
+        {Nav}
         <UserIcon />
       </div>
       <Sheet>
@@ -51,47 +53,11 @@ export async function Header() {
               <BugIcon className="size-4" />
               Beta - unstable & experimental
             </span>
-            <Suspense>
-              <NavBar />
-            </Suspense>
+            {Nav}
           </div>
           <UserIcon />
         </SheetContent>
       </Sheet>
     </header>
-  );
-}
-
-async function NavBar() {
-  const enableFaqPage = await faqFlag();
-  const enableRoomsPage = await roomsFlag();
-
-  return (
-    <nav className="gap-2 font-semibold">
-      {enableRoomsPage && (
-        <Link
-          href="/rooms"
-          className="hover:bg-neu2 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
-        >
-          <DoorOpen className="size-4" />
-          <span>Rooms</span>
-        </Link>
-      )}
-      <Link
-        href="/catalog"
-        className="hover:bg-neu2 bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
-      >
-        <Bookmark className="size-4" />
-        <span>Catalog</span>
-      </Link>
-      {enableFaqPage && (
-        <Link
-          href="/faq"
-          className="hover:bg-neu2 bg-neu1 flex items-center rounded-full border-1 p-2 text-sm"
-        >
-          <CircleQuestionMark className="text-red size-5" />
-        </Link>
-      )}
-    </nav>
   );
 }

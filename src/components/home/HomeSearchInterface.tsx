@@ -49,7 +49,7 @@ export function HomeSearchInterface({
 
   return (
     <div className="w-full sm:px-24 md:w-auto">
-      <div className="mb-4 flex w-full flex-col justify-center gap-2 md:flex-row">
+      <div className="mb-4 flex w-full flex-col flex-row justify-center gap-2">
         <Button
           className={cn("rounded-full border transition duration-200", {
             "border-r1 bg-r1/30 text-neu hover:bg-r1/50":
@@ -59,7 +59,8 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("neu")}
         >
-          Northeastern University
+          <span className="md:hidden">NEU</span>
+          <span className="hidden md:inline">Northeastern University</span>
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -70,7 +71,10 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("cps")}
         >
-          College of Professional Studies
+          <span className="md:hidden">CPS</span>
+          <span className="hidden md:inline">
+            College of Professional Studies
+          </span>
         </Button>
         <Button
           className={cn("rounded-full border transition duration-200", {
@@ -81,7 +85,8 @@ export function HomeSearchInterface({
           })}
           onClick={() => setSelectedCollege("law")}
         >
-          School of Law
+          <span className="md:hidden">LAW</span>
+          <span className="hidden md:inline">School of Law</span>
         </Button>
       </div>
       <div className="relative">
@@ -116,3 +121,4 @@ export function HomeSearchInterface({
     </div>
   );
 }
+

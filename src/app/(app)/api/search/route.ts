@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     query ?? "",
     subjects,
     parsedMinId,
-    parsedMinId,
+    parsedMaxId,
     nupaths,
     campusFilter,
     classTypeFilter,

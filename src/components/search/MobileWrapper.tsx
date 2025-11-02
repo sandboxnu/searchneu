@@ -60,6 +60,15 @@ export function MobileWrapper(props: {
               <DrawerTitle className="text-center">Catalog Filters</DrawerTitle>
               <div className="overflow-y-scroll">
                 <SearchPanel {...props} />
+                <DrawerTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-neu1 rounded-full md:hidden"
+              >
+                <ListFilter className="text-neu6 size-4" strokeWidth={2} />
+              </Button>
+            </DrawerTrigger>
               </div>
             </DrawerContent>
           </Drawer>

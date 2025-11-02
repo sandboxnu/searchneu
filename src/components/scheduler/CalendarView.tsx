@@ -1,11 +1,15 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 
 interface CalendarViewProps {
   schedule: SectionWithCourse[];
   scheduleNumber: number;
 }
+
+// Height per hour in pixels - increase this to make rows taller
+const HOUR_HEIGHT = 100;
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -29,10 +33,23 @@ function getCourseColor(): string {
 }
 
 export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
-  // Define time range (7 AM to 9 PM)
-  const startHour = 7;
-  const endHour = 21;
+  const calendarRef = useRef<HTMLDivElement>(null);
+  
+  // Define time range (12 AM to 11 PM - full 24 hours)
+  const startHour = 0;
+  const endHour = 24;
   const totalHours = endHour - startHour;
+  
+  // Calculate minimum height based on hour height
+  const minCalendarHeight = totalHours * HOUR_HEIGHT;
+  
+  // Auto-scroll to 7 AM on mount or when schedule changes
+  useEffect(() => {
+    if (calendarRef.current) {
+      const scrollPosition = 7 * HOUR_HEIGHT + 48 + 8;
+      calendarRef.current.scrollTop = scrollPosition;
+    }
+  }, [scheduleNumber]);
   
   // Define days
   const days = [
@@ -50,7 +67,7 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
 
   // Create time slots
   const timeSlots: string[] = [];
-  for (let hour = startHour; hour <= endHour; hour++) {
+  for (let hour = startHour; hour < endHour; hour++) {
     const period = hour >= 12 ? "PM" : "AM";
     const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
     timeSlots.push(`${displayHour} ${period}`);
@@ -70,22 +87,23 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
   };
 
   return (
-    <div className="h-full w-full rounded-lg border border-gray-300 bg-white overflow-hidden">
+    <div 
+      ref={calendarRef}
+      className="h-full w-full rounded-lg border border-gray-300 bg-white overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+    >
       {/* Calendar Grid */}
-      <div className="grid grid-cols-[65px_repeat(7,1fr)] h-full">
+      <div className="grid grid-cols-[65px_repeat(7,1fr)]" style={{ minHeight: `${minCalendarHeight}px` }}>
         {/* Time Column */}
         <div className="bg-white">
-          <div className="h-16 flex items-center justify-end pr-2 pb-3 text-xs font-semibold text-gray-500">
+          <div className="h-12 flex items-center justify-end pr-2 pb-1 text-xs font-semibold text-gray-500 sticky top-0 bg-white z-10">
             [EST]
           </div>
-          <div className="relative h-[calc(100%-4rem)]">
+          <div className="relative h-[calc(100%-3rem)] mt-2">
             {timeSlots.map((time, index) => {
-              const hour = startHour + index;
-              const isAfter8PM = hour > 20; // 20 is 8 PM
               return (
                 <div
                   key={time}
-                  className={`absolute w-full flex items-start justify-end pr-2 text-sm ${isAfter8PM ? 'text-transparent' : 'text-gray-600'}`}
+                  className="absolute w-full flex items-start justify-end pr-2 text-sm text-gray-600"
                   style={{ top: `${(index / totalHours) * 100}%`, height: `${(1 / totalHours) * 100}%` }}
                 >
                   <span className="-translate-y-1/2">{time}</span>
@@ -99,19 +117,21 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
         {days.map((day, idx) => (
           <div key={day.index} className="relative bg-white">
             {/* Day Header */}
-            <div className="h-16 border-b border-gray-300 flex items-center justify-center pb-3">
+            <div className="h-12 flex items-center justify-center pb-1 sticky top-0 bg-white z-10">
               <div className="text-sm font-semibold text-gray-500">{day.full}</div>
             </div>
 
             {/* Time Grid Lines */}
-            <div className="relative h-[calc(100%-4rem)]">
+            <div className="relative h-[calc(100%-3rem)] mt-2">
+              {/* Top border for 12 AM */}
+              <div className="absolute w-full border-t border-gray-200" style={{ top: '0%' }} />
+              
               {timeSlots.map((_, index) => {
-                const hour = startHour + index;
-                const isAfter8PM = hour > 20; // 20 is 8 PM
+                const isLastSlot = index === timeSlots.length - 1;
                 return (
                   <div
                     key={index}
-                    className={`absolute w-full ${isAfter8PM ? 'border-b border-transparent' : 'border-b border-gray-200'}`}
+                    className={`absolute w-full ${isLastSlot ? 'border-b border-transparent' : 'border-b border-gray-200'}`}
                     style={{ top: `${(index / totalHours) * 100}%`, height: `${(1 / totalHours) * 100}%` }}
                   />
                 );

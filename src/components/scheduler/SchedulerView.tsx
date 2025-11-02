@@ -30,7 +30,7 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
   const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(0);
 
   // Limit to first 8 schedules for tabs
-  const displaySchedules = schedules.slice(0, 8);
+  const displaySchedules = schedules;
   const currentSchedule = displaySchedules[selectedScheduleIndex];
 
   return (

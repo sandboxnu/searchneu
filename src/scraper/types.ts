@@ -139,7 +139,6 @@ export interface Course {
   coreqs: Requisite;
   prereqs: Requisite;
   postreqs: Requisite;
-  // TODO: pre / co reqs for
 }
 
 export interface RoomSchedule {

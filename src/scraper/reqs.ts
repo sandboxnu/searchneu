@@ -159,14 +159,7 @@ export function populatePostReqs(courses: PopulatedCourse[]) {
         }),
       };
     }
-    if (c.postreqs == null) {
-      console.log("NULL POSTREQ", c);
-    }
   }
-
-  courses
-    .filter((course) => course.postreqs == null)
-    .forEach((course) => console.log("NULL COURSE", course.postreqs));
 }
 
 function getAllPrereqsForSingleCourse(req: Requisite): string[] {
@@ -180,10 +173,6 @@ function getAllPrereqsForSingleCourse(req: Requisite): string[] {
     }
     if (isCondition(req)) {
       req.items.forEach((item) => visit(item));
-    }
-    if (isTest(req)) {
-      // TODO: What should I do for a test req
-      console.log("TEST REQ", req);
     }
   };
   visit(req);

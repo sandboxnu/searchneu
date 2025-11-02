@@ -116,6 +116,7 @@ export function HomeSearchInterface({
               "border-l1": selectedCollege === "law",
             },
           )}
+          autoFocus={true}
         />
       </div>
     </div>

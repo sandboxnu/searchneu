@@ -1,6 +1,6 @@
-import { Section } from "@/components/coursePage/SectionTable";
+import type { SectionTableSection } from "@/components/catalog/SectionTable";
 
-export type SectionWithCourse = Section & {
+export type SectionWithCourse = SectionTableSection & {
   courseName: string;
   courseSubject: string;
   courseNumber: string;
@@ -21,7 +21,7 @@ export type ScheduleFilters = {
 const sectionMeetsTimeConstraints = (
   section: SectionWithCourse,
   startTime?: number,
-  endTime?: number
+  endTime?: number,
 ): boolean => {
   if (startTime === undefined && endTime === undefined) return true;
 
@@ -38,7 +38,10 @@ const sectionMeetsTimeConstraints = (
 };
 
 // Helper function to check if a section has classes on specific days
-const sectionHasClassesOnDays = (section: SectionWithCourse, days: number[]): boolean => {
+const sectionHasClassesOnDays = (
+  section: SectionWithCourse,
+  days: number[],
+): boolean => {
   for (const meetingTime of section.meetingTimes) {
     for (const day of meetingTime.days) {
       if (days.includes(day)) {
@@ -52,11 +55,13 @@ const sectionHasClassesOnDays = (section: SectionWithCourse, days: number[]): bo
 // Check if a single section passes all filters
 export const sectionPassesFilters = (
   section: SectionWithCourse,
-  filters: ScheduleFilters
+  filters: ScheduleFilters,
 ): boolean => {
   // Check time constraints (only if provided)
   if (filters.startTime !== undefined || filters.endTime !== undefined) {
-    if (!sectionMeetsTimeConstraints(section, filters.startTime, filters.endTime)) {
+    if (
+      !sectionMeetsTimeConstraints(section, filters.startTime, filters.endTime)
+    ) {
       return false;
     }
   }
@@ -69,7 +74,10 @@ export const sectionPassesFilters = (
   }
 
   // Check minimum seats left (only if provided)
-  if (filters.minSeatsLeft !== undefined && section.seatRemaining < filters.minSeatsLeft) {
+  if (
+    filters.minSeatsLeft !== undefined &&
+    section.seatRemaining < filters.minSeatsLeft
+  ) {
     return false;
   }
 
@@ -92,29 +100,29 @@ const getOccupiedDays = (schedule: SectionWithCourse[]): Set<number> => {
 // Check if a schedule fulfills all required NUPaths
 const scheduleHasRequiredNupaths = (
   schedule: SectionWithCourse[],
-  requiredNupaths: string[]
+  requiredNupaths: string[],
 ): boolean => {
   if (requiredNupaths.length === 0) return true;
-  
+
   // Get all NUPaths fulfilled by courses in this schedule
   const scheduleNupaths = new Set<string>();
   for (const section of schedule) {
     if (section.courseNupaths) {
-      section.courseNupaths.forEach(nupath => scheduleNupaths.add(nupath));
+      section.courseNupaths.forEach((nupath) => scheduleNupaths.add(nupath));
     }
   }
-  
+
   // Check if all required NUPaths are fulfilled
-  return requiredNupaths.every(nupath => scheduleNupaths.has(nupath));
+  return requiredNupaths.every((nupath) => scheduleNupaths.has(nupath));
 };
 
 // Check if a complete schedule passes all filters
 export const schedulePassesFilters = (
   schedule: SectionWithCourse[],
-  filters: ScheduleFilters
+  filters: ScheduleFilters,
 ): boolean => {
   // First check that all sections individually pass
-  if (!schedule.every(section => sectionPassesFilters(section, filters))) {
+  if (!schedule.every((section) => sectionPassesFilters(section, filters))) {
     return false;
   }
 
@@ -123,7 +131,7 @@ export const schedulePassesFilters = (
     const occupiedDays = getOccupiedDays(schedule);
     const totalDays = 7; // Monday through Sunday
     const daysFree = totalDays - occupiedDays.size;
-    
+
     if (daysFree < filters.minDaysFree) {
       return false;
     }
@@ -131,7 +139,7 @@ export const schedulePassesFilters = (
 
   // Check minimum honors courses (only if provided)
   if (filters.minHonorsCourses !== undefined) {
-    const honorsCount = schedule.filter(section => section.honors).length;
+    const honorsCount = schedule.filter((section) => section.honors).length;
     if (honorsCount < filters.minHonorsCourses) {
       return false;
     }
@@ -150,7 +158,10 @@ export const schedulePassesFilters = (
 // Apply filters to a list of schedules
 export const filterSchedules = (
   schedules: SectionWithCourse[][],
-  filters: ScheduleFilters
+  filters: ScheduleFilters,
 ): SectionWithCourse[][] => {
-  return schedules.filter(schedule => schedulePassesFilters(schedule, filters));
+  return schedules.filter((schedule) =>
+    schedulePassesFilters(schedule, filters),
+  );
 };
+

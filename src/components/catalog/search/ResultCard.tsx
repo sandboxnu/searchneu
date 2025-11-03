@@ -1,5 +1,5 @@
 import { cn } from "@/lib/cn";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 export function ResultCard(props: {
   result: {

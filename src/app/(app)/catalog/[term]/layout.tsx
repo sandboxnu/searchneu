@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
-import { MobileWrapper } from "@/components/search/MobileWrapper";
+import { MobileWrapper } from "@/components/catalog/MobileWrapper";
 import { db } from "@/db";
 import { subjectsT, sectionsT, nupathsT, campusesT } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -19,9 +19,7 @@ const cachedSubjects = unstable_cache(
 
 const cachedCampuses = unstable_cache(
   async () =>
-    db
-      .select({ name: campusesT.name, group: campusesT.group })
-      .from(campusesT),
+    db.select({ name: campusesT.name, group: campusesT.group }).from(campusesT),
   [],
   { revalidate: 3600, tags: ["banner.campuses"] },
 );
@@ -60,15 +58,13 @@ export default async function Layout(props: {
   const nupaths = cachedNupaths();
 
   return (
-    <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
-      <MobileWrapper
-        terms={terms}
-        subjects={subjects}
-        campuses={campuses}
-        classTypes={classTypes}
-        nupaths={nupaths}
-        coursePage={props.children}
-      />
-    </div>
+    <MobileWrapper
+      terms={terms}
+      subjects={subjects}
+      campuses={campuses}
+      classTypes={classTypes}
+      nupaths={nupaths}
+      coursePage={props.children}
+    />
   );
 }

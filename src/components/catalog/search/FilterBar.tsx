@@ -1,26 +1,12 @@
 "use client";
 
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
 import { Option } from "@/components/ui/multi-select";
-import { Switch } from "../ui/switch";
-import { Slider } from "../ui/slider";
-import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import {
   Command,
   CommandInput,
@@ -37,6 +23,9 @@ import {
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { SPMultiselectGroups } from "./SPMultiselectGroups";
+import { CollegeSelect } from "./CollegeSelect";
+import { TermSelect } from "./TermSelect";
+import { RangeSlider } from "./RangeSlider";
 
 export function SearchPanel(props: {
   terms: Promise<GroupedTerms>;
@@ -46,10 +35,10 @@ export function SearchPanel(props: {
   nupaths: Promise<Option[]>;
 }) {
   return (
-    <div className="bg-background h-[calc(100vh-76px)] w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+    <div className="bg-neu1 h-full min-h-0 w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
       <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
-        <CollegeToggle terms={props.terms} />
+        <CollegeSelect terms={props.terms} />
       </Suspense>
 
       <div className="">
@@ -133,186 +122,7 @@ export function SearchPanel(props: {
           COURSE ID RANGE
         </Label>
         <RangeSlider />
-        <div className="text-neu6 flex w-full justify-between pt-2 text-sm">
-          <RangeTicks />
-        </div>
-        <div className="text-neu6 flex w-full justify-between text-sm">
-          <RangeLabels />
-        </div>
       </div>
-    </div>
-  );
-}
-
-// Replace the existing CollegeToggle function with this:
-function CollegeToggle(props: { terms: Promise<GroupedTerms> }) {
-  const terms = use(props.terms);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { term } = useParams();
-
-  const activeCollege =
-    Object.keys(terms).find((k) =>
-      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-    ) ?? "neu";
-
-  // HACK: this will blink but for now its fine
-  if (typeof window !== "undefined")
-    document.body.setAttribute("data-theme", activeCollege);
-
-  const collegeOptions = [
-    { value: "neu", label: "Northeastern University" },
-    { value: "cps", label: "College of Professional Studies" },
-    { value: "law", label: "School of Law" },
-  ];
-
-  return (
-    <div className="space-y-2">
-      <Select
-        onValueChange={(val) => {
-          if (val === "") return;
-          const newestTerm = terms[val as keyof GroupedTerms][0];
-          document.body.setAttribute("data-theme", val);
-          router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
-        }}
-        value={activeCollege}
-      >
-        <SelectTrigger
-          className={`bg-secondary h-[40px] w-full font-[700] ${
-            activeCollege === "neu"
-              ? "bg-[#FAD7DA33] text-[#E63946]"
-              : activeCollege === "cps"
-                ? "bg-[#FFECD233] text-[#FF9F1C]"
-                : "bg-[#DAE5EB4D] text-[#457B9D]"
-          }`}
-        >
-          <SelectValue placeholder="Select school" />
-        </SelectTrigger>
-        <SelectContent>
-          {collegeOptions.map((college) => (
-            <SelectItem
-              key={college.value}
-              value={college.value}
-              className={`text-[14px] font-[700] ${
-                college.value === "neu"
-                  ? "text-[#E63946]"
-                  : college.value === "cps"
-                    ? "text-[#FF9F1C]"
-                    : "text-[#457B9D]"
-              } ${
-                activeCollege === "neu" && college.value === "neu"
-                  ? "bg-[#FAD7DA33]"
-                  : activeCollege === "cps" && college.value === "cps"
-                    ? "bg-[#FFECD233]"
-                    : activeCollege === "law" && college.value === "law"
-                      ? "bg-[#DAE5EB4D]"
-                      : ""
-              }`}
-            >
-              {college.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-}
-
-function TermSelect(
-  props: { terms: Promise<GroupedTerms> } & ComponentProps<
-    typeof SelectTrigger
-  >,
-) {
-  const terms = use(props.terms);
-
-  const { term } = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const activeCollege =
-    Object.keys(terms).find((k) =>
-      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-    ) ?? "neu";
-
-  // Group terms by year and sort them
-  const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
-    (acc, t) => {
-      const year = t.name.split(" ").filter((s) => s.length === 4 && !isNaN(Number(s)))[0];
-      if (!acc[year]) {
-        acc[year] = [];
-      }
-      acc[year].push(t);
-      return acc;
-    },
-    {} as Record<string, (typeof terms)[keyof GroupedTerms]>,
-  );
-
-  // Sort terms within each year
-  const termOrder = {
-    Fall: 0,
-    Spring: 1,
-    "Full Summer": 2,
-    "Summer 1": 3,
-    "Summer 2": 4,
-  };
-  Object.values(groupedByYear).forEach((yearTerms) => {
-    yearTerms.sort((a, b) => {
-      const aName = a.name.replace(" Semester", "").split(" ")[0];
-      const bName = b.name.replace(" Semester", "").split(" ")[0];
-      return (
-        termOrder[aName as keyof typeof termOrder] -
-        termOrder[bName as keyof typeof termOrder]
-      );
-    });
-  });
-
-  // Sort years in reverse chronological order
-  const sortedYears = Object.keys(groupedByYear).sort(
-    (a, b) => Number(b) - Number(a),
-  );
-
-  return (
-    <div className="text-neu8 space-y-2 pt-3 font-[700]">
-      <Select
-        onValueChange={(e) =>
-          router.push(`/catalog/${e}?${searchParams.toString()}`)
-        }
-        value={term?.toString()}
-      >
-        <SelectTrigger
-          className="bg-secondary w-full border border-solid border-[#F1F2F2]"
-          {...props}
-        >
-          <SelectValue placeholder="Select term" />
-        </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
-          {sortedYears.map((year) => (
-            <div key={year}>
-              <SelectItem
-                value={`header-${year}`}
-                disabled
-                className="text-neu6 text-xs font-[700] uppercase"
-              >
-                {year}
-              </SelectItem>
-              {groupedByYear[year].map((t) => (
-                <SelectItem
-                  key={t.term}
-                  value={t.term}
-                  className={cn(
-                    "pl-4",
-                    t.term === term?.toString()
-                      ? "text-neu8 font-[600]"
-                      : "text-neu6 font-[400]",
-                  )}
-                >
-                  {t.name.replace(" Semester", "")}
-                </SelectItem>
-              ))}
-            </div>
-          ))}
-        </SelectContent>
-      </Select>
     </div>
   );
 }
@@ -382,7 +192,10 @@ function SPMultiselect<T>(props: {
                 )}
               />
             </PopoverTrigger>
-            <PopoverContent className="w-[280px] p-0" align="end">
+            <PopoverContent
+              className="w-[--radix-popover-trigger-width] p-0"
+              align="end"
+            >
               <Command
                 filter={(value, search, keywords) => {
                   const v = value.toLowerCase();
@@ -506,92 +319,6 @@ function HonorsSwitch(props: ComponentProps<typeof Switch>) {
       onCheckedChange={updateSearchParams}
       {...props}
     />
-  );
-}
-
-function RangeSlider() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  const [d, setD] = useState([
-    Number.parseInt(searchParams.get("nci") ?? "1"),
-    Number.parseInt(searchParams.get("xci") ?? "9"),
-  ]);
-
-  // debounce the range slider (avoid request every notch)
-  useEffect(() => {
-    function updateSearchParams(range: number[]) {
-      const params = new URLSearchParams(searchParams);
-      if (range[0] === 1 && range[1] === 9) {
-        params.delete("nci");
-        params.delete("xci");
-        window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-        return;
-      }
-
-      params.set("nci", String(range[0]));
-      params.set("xci", String(range[1]));
-      window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-    }
-
-    const timeoutId = setTimeout(() => {
-      updateSearchParams(d);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [d]);
-
-  return (
-    <Slider
-      className="**:data-[slot=slider-thumb]:bg-accent **:data-[slot=slider-range]:bg-accent"
-      id="course-id-range"
-      value={d}
-      onValueChange={setD}
-      min={1}
-      max={9}
-      step={1}
-    />
-  );
-}
-
-function RangeTicks() {
-  function GenerateTicks(n: number) {
-    return (
-      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
-        <span
-          className={cn(
-            "text-muted-foreground border-l",
-            n % 2 === 0 ? "h-3 border-current" : "h-2 border-current",
-          )}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-[5px] flex w-full justify-between px-0.5">
-      {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateTicks)}
-    </div>
-  );
-}
-
-function RangeLabels() {
-  function GenerateLabels(n: number) {
-    return (
-      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
-        {n % 2 === 0 ? (
-          <span className="text-muted-foreground text-sm">{n * 1000}</span>
-        ) : (
-          <span>&nbsp;</span>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-[5px] flex w-full justify-between px-0">
-      {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateLabels)}
-    </div>
   );
 }
 

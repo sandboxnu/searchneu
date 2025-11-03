@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { termsT, trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
-import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
+import { ExpandableDescription } from "@/components/catalog/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { Suspense } from "react";
@@ -12,10 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import {
   SectionTable,
-  type Section,
-} from "@/components/coursePage/SectionTable";
+  type SectionTableSection,
+} from "@/components/catalog/SectionTable";
 import { type Metadata } from "next";
-import { RequisiteBlock } from "@/components/coursePage/Requisites";
+import { RequisiteBlock } from "@/components/catalog/Requisites";
 import { getCourse, getCourseSections } from "@/lib/controllers/getCourse";
 
 const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
@@ -78,7 +78,7 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:h-[calc(100vh-128px)] md:overflow-y-scroll">
+    <div className="bg-neu1 flex h-full min-w-0 flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:overflow-y-scroll">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
@@ -217,10 +217,10 @@ export default async function Page(props: {
         </div>
       </div>
       <Separator />
-      <div className="w-full">
+      <div className="-mr-20 -ml-20 inline-block w-[calc(100%+5rem)] min-w-0">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable
-            sectionsPromise={sections as Promise<Section[]>}
+            sectionsPromise={sections as Promise<SectionTableSection[]>}
             trackedSectionsPromise={trackedSections as Promise<number[]>}
             isTermActive={isTermActive}
           />

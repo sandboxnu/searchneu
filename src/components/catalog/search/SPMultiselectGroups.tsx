@@ -3,7 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import { Option } from "@/components/ui/multi-select";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import {
   Command,
   CommandInput,

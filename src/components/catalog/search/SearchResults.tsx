@@ -27,7 +27,7 @@ export default function SearchResults() {
   return (
     <div
       className={cn(
-        "bg-neu2 flex h-[calc(100vh-128px)] flex-col rounded-t-lg",
+        "bg-neu2 flex h-full flex-col rounded-t-lg",
         stale ? "opacity-60" : "",
       )}
     >
@@ -98,7 +98,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
           </p>
           <div
             ref={parentRef}
-            className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 md:pr-2"
+            className="h-full w-full overflow-y-auto pt-2 md:pr-2"
           ></div>
         </>
       );
@@ -113,7 +113,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
         <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
         <div
           ref={parentRef}
-          className="h-[calc(100vh-128px)] w-full overflow-y-auto pt-2 md:pr-2"
+          className="h-full w-full overflow-y-auto pt-2 md:pr-2"
         ></div>
       </>
     );
@@ -124,10 +124,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
       {/* <p className="text-neu6 w-full py-1 text-center text-sm"> */}
       {/*   {results.length} Result{results.length > 1 && "s"} */}
       {/* </p> */}
-      <div
-        ref={parentRef}
-        className="h-[calc(100vh-128px)] w-full overflow-y-auto md:pr-2"
-      >
+      <div ref={parentRef} className="h-full w-full overflow-y-auto md:pr-2">
         <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
           <ul
             className="absolute top-0 left-0 w-full"

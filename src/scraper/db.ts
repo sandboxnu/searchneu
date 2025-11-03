@@ -242,6 +242,7 @@ export async function insertTermData(
       maxCredits: String(c.maxCredits),
       prereqs: c.prereqs,
       coreqs: c.coreqs,
+      postreqs: c.postreqs,
     }));
 
     // Bulk upsert courses
@@ -275,6 +276,7 @@ export async function insertTermData(
             ),
             prereqs: sql.raw(`excluded."${schema.coursesT.prereqs.name}"`),
             coreqs: sql.raw(`excluded."${schema.coursesT.coreqs.name}"`),
+            postreqs: sql.raw(`excluded."${schema.coursesT.postreqs.name}"`),
             updatedAt: new Date(),
           },
         })

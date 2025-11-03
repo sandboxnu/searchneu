@@ -1,5 +1,5 @@
 import { parse } from "node-html-parser";
-
+import { Course as PopulatedCourse } from "./types";
 export interface Condition {
   type: "and" | "or";
   items: RequisiteItem[];
@@ -134,6 +134,61 @@ export function parsePrereqs(
     return rootCondition;
   }
 }
+export function populatePostReqs(courses: PopulatedCourse[]) {
+  const postreqMap = new Map<string, Set<string>>();
+
+  for (const c of courses) {
+    const courseKey = `${c.subject} ${c.courseNumber}`;
+    const leafKeys = getAllPrereqsForSingleCourse(c.prereqs);
+    for (const prereqKey of leafKeys) {
+      addPostreqToCourse(prereqKey, courseKey, postreqMap);
+    }
+  }
+
+  for (const c of courses) {
+    const key = `${c.subject} ${c.courseNumber}`;
+    const reqs = postreqMap.get(key);
+    if (!reqs || reqs.size === 0) {
+      c.postreqs = {};
+    } else {
+      c.postreqs = {
+        type: "and",
+        items: Array.from(reqs).map((key) => {
+          const [subject, courseNumber] = key.split(" ");
+          return { subject, courseNumber };
+        }),
+      };
+    }
+  }
+}
+
+function getAllPrereqsForSingleCourse(req: Requisite): string[] {
+  const allPrereqs = new Set<string>();
+  const visit = (req: Requisite) => {
+    if (!req) {
+      return;
+    }
+    if (isCourse(req)) {
+      allPrereqs.add(`${req.subject} ${req.courseNumber}`);
+    }
+    if (isCondition(req)) {
+      req.items.forEach((item) => visit(item));
+    }
+  };
+  visit(req);
+  return Array.from(allPrereqs);
+}
+
+function addPostreqToCourse(
+  prereqKey: string,
+  courseKey: string,
+  postreqMap: Map<string, Set<string>>,
+) {
+  if (!postreqMap.has(prereqKey)) {
+    postreqMap.set(prereqKey, new Set());
+  }
+  postreqMap.get(prereqKey)!.add(courseKey);
+}
 
 function mergeSameConditionTypes(condition: Condition): void {
   // First, recursively merge all nested conditions
@@ -161,8 +216,16 @@ function mergeSameConditionTypes(condition: Condition): void {
   condition.items = [...itemsToKeep, ...itemsToMerge];
 }
 
-function isCondition(obj: RequisiteItem | null): obj is Condition {
+function isCondition(obj: Requisite | null): obj is Condition {
   return obj !== null && "type" in obj && "items" in obj;
+}
+
+function isCourse(obj: Requisite | null): obj is Course {
+  return obj !== null && "subject" in obj && "courseNumber" in obj;
+}
+
+function isTest(obj: Requisite | null): obj is Course {
+  return obj !== null && "name" in obj && "score" in obj;
 }
 
 function notEmpty(val: string): boolean {

@@ -27,6 +27,7 @@ export const getCourse = cache(
         maxCredits: coursesT.maxCredits,
         prereqs: coursesT.prereqs,
         coreqs: coursesT.coreqs,
+        postreqs: coursesT.postreqs,
         updatedAt: coursesT.updatedAt,
         nupaths: sql<
           string[]
@@ -56,6 +57,7 @@ export const getCourse = cache(
         coursesT.maxCredits,
         coursesT.prereqs,
         coursesT.coreqs,
+        coursesT.postreqs,
         coursesT.updatedAt,
       );
   },

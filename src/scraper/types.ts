@@ -138,7 +138,7 @@ export interface Course {
   nupath: string[];
   coreqs: Requisite;
   prereqs: Requisite;
-  // TODO: pre / co reqs for
+  postreqs: Requisite;
 }
 
 export interface RoomSchedule {

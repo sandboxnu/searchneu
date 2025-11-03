@@ -22,7 +22,7 @@ export default async function Home() {
         sparkCount={8}
         duration={400}
       >
-        <div className="px-4 py-6">
+        <div className="pt-4 pb-6">
           <Header />
 
           <div className="text-neu8 mt-[10%] flex flex-col items-center text-4xl font-bold md:text-7xl">

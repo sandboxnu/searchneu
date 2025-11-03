@@ -16,7 +16,13 @@ export function Header() {
 
   const Nav = (
     <Suspense>
-      <NavBar flags={{ rooms: enableRoomsPage, faq: enableFaqPage, scheduler: enableSchedulerPage }} />
+      <NavBar
+        flags={{
+          rooms: enableRoomsPage,
+          faq: enableFaqPage,
+          scheduler: enableSchedulerPage,
+        }}
+      />
     </Suspense>
   );
 

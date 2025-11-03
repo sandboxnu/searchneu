@@ -37,13 +37,13 @@ export function MobileWrapper(props: {
     <div className="bg-neu2 flex min-h-0 w-screen min-w-0 flex-1 px-4 pt-4 xl:px-6">
       <div
         data-show={Boolean(course)}
-        className="hidden h-full min-h-0 w-full max-w-[260px] md:block md:data-[show=true]:hidden xl:block!"
+        className="hidden h-full min-h-0 w-full max-w-[280px] min-w-[240px] md:block md:data-[show=true]:hidden xl:block!"
       >
         <SearchPanel {...props} />
       </div>
       <div
         data-show={Boolean(course)}
-        className="flex min-h-0 w-full min-w-0 flex-col gap-4 md:data-[show=false]:pl-6 md:data-[show=true]:pl-0 xl:pl-6!"
+        className="flex min-h-0 w-full min-w-0 flex-col gap-4 md:data-[show=false]:pl-3 md:data-[show=true]:pl-0 xl:pl-3!"
       >
         <div data-show={Boolean(course)} className="flex items-center gap-2">
           <Drawer>
@@ -78,7 +78,7 @@ export function MobileWrapper(props: {
         <div className="flex h-full min-h-0 w-full min-w-0">
           <div
             data-show={Boolean(course)}
-            className="w-full data-[show=false]:block data-[show=true]:hidden xl:block! xl:max-w-[320px] xl:min-w-[300px]"
+            className="w-full data-[show=false]:block data-[show=true]:hidden xl:block! xl:max-w-[280px] xl:min-w-[240px]"
           >
             <SearchResults />
           </div>

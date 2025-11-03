@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 
 export function TrackingSwitch({
   sectionId,
@@ -133,14 +134,16 @@ export function TrackingSwitch({
   }
 
   return (
-    <>
+    <div className="flex w-full justify-center">
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <div className="flex items-center gap-1">
             <Switch
               checked={checked}
               onClick={() => onCheck()}
-              className="data-[state=checked]:bg-accent"
+              className={cn("data-[state=checked]:bg-accent", {
+                "animate-pulse": isPending,
+              })}
               {...props}
               disabled={disabled}
             />
@@ -184,6 +187,6 @@ export function TrackingSwitch({
           </DialogContent>
         </Dialog>
       )}
-    </>
+    </div>
   );
 }

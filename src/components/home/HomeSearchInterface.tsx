@@ -48,7 +48,7 @@ export function HomeSearchInterface({
   }
 
   return (
-    <div className="w-full sm:px-24 md:w-auto">
+    <div className="w-full px-4 sm:px-24 md:w-auto">
       <div className="mb-4 flex w-full flex-row justify-center gap-2">
         <Button
           className={cn(
@@ -101,7 +101,7 @@ export function HomeSearchInterface({
       <div className="relative">
         <SearchIcon
           className={cn(
-            "absolute top-1/2 left-6 size-7 -translate-y-1/2 -scale-x-100 transform transition duration-200 lg:size-8",
+            "absolute top-1/2 left-3 size-7 -translate-y-1/2 -scale-x-100 transform transition duration-200 lg:left-6 lg:size-8",
             {
               "text-neu": selectedCollege === "neu",
               "text-cps": selectedCollege === "cps",
@@ -118,7 +118,7 @@ export function HomeSearchInterface({
             }
           }}
           className={cn(
-            "bg-neu1 w-full rounded-full pl-10 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-2xl! lg:placeholder:text-2xl xl:w-[800px]",
+            "bg-neu1 w-full rounded-full pl-12 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-2xl! lg:placeholder:text-2xl xl:w-[800px]",
             {
               "border-r1": selectedCollege === "neu",
               "border-c1": selectedCollege === "cps",

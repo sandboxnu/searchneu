@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
+import { useState, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
 import { Option } from "@/components/ui/multi-select";
 import { Switch } from "@/components/ui/switch";

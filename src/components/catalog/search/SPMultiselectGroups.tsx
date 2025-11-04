@@ -20,6 +20,11 @@ import {
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 
+interface Option {
+  label: string;
+  value: string;
+}
+
 export function SPMultiselectGroups<T>(props: {
   id?: string;
   opts: Promise<{ name: string | null; group: string | null }[]>;

@@ -48,8 +48,6 @@ export async function insertConfigData(
         )
         .onConflictDoNothing();
     }
-
-    logger.info("Config data inserted");
   });
 }
 
@@ -144,7 +142,6 @@ export async function insertTermData(
         .where(eq(schema.subjectsT.term, termCode));
     }
 
-    logger.info(`Subjects for ${termCode} synced`);
     console.log("  → Inserting buildings...");
 
     const buildingNames = Object.keys(data.rooms);
@@ -178,8 +175,6 @@ export async function insertTermData(
     const buildingMap = new Map(
       buildings.map((b) => [`${b.campus}-${b.name}`, b.id]),
     );
-
-    logger.info("Buildings synced");
 
     // Insert rooms
     console.log("  → Inserting rooms...");
@@ -218,7 +213,6 @@ export async function insertTermData(
       rooms.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
     );
 
-    logger.info("Rooms synced");
     console.log("  → Inserting courses and sections...");
 
     // Prepare course data
@@ -293,8 +287,6 @@ export async function insertTermData(
       allCourseResults.map((c) => [`${c.subject}-${c.courseNumber}`, c.id]),
     );
 
-    logger.info(`${allCourseResults.length} courses for ${termCode} upserted`);
-
     // Remove courses not in scrape
     const scrapedCourseKeys = data.courses.map(
       (c) => `${c.subject}-${c.courseNumber}`,
@@ -361,13 +353,8 @@ export async function insertTermData(
         for (const nupathChunk of nupathChunks) {
           await tx.insert(schema.courseNupathJoinT).values(nupathChunk);
         }
-        logger.info(
-          `${courseNupathInserts.length} course-nupath relationships inserted`,
-        );
       }
     }
-
-    logger.info(`Course NUPaths for ${termCode} synced`);
 
     const normalizeCampus = (campus: string | undefined | null): string => {
       if (!campus) return "Unknown";
@@ -459,10 +446,6 @@ export async function insertTermData(
 
     const sectionMap = new Map(allSectionResults.map((s) => [s.crn, s.id]));
 
-    logger.info(
-      `${allSectionResults.length} sections for ${termCode} upserted`,
-    );
-
     // Remove sections not in scrape
     const scrapedCrns = sectionInserts.map((s) => s.crn);
     const allTermSections = await tx
@@ -481,7 +464,6 @@ export async function insertTermData(
           .delete(schema.sectionsT)
           .where(inArray(schema.sectionsT.id, deleteChunk));
       }
-      logger.info(`${sectionsToDelete.length} sections deleted`);
     }
 
     // Bulk insert meeting times
@@ -601,14 +583,11 @@ export async function insertTermData(
               ],
             });
         }
-        logger.info(
-          `${meetingTimeInserts.length} meeting times inserted (including ${meetingTimeInserts.filter((m) => m.roomId === null).length} without room assignments)`,
-        );
       } else {
         logger.info("No meeting times to insert");
       }
     }
 
-    logger.info(`Meeting times for ${termCode} synced`);
+    // logger.info(`Meeting times for ${termCode} synced`);
   });
 }

@@ -8,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
+import { use } from "react";
 import type { GroupedTerms } from "@/lib/types";
+import { cn } from "@/lib/cn";
 
 export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
   const terms = use(props.terms);
@@ -44,13 +45,14 @@ export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
         value={activeCollege}
       >
         <SelectTrigger
-          className={`bg-secondary h-[40px] w-full font-[700] ${
-            activeCollege === "neu"
-              ? "bg-[#FAD7DA33] text-[#E63946]"
-              : activeCollege === "cps"
-                ? "bg-[#FFECD233] text-[#FF9F1C]"
-                : "bg-[#DAE5EB4D] text-[#457B9D]"
-          }`}
+          className={cn("bg-neu h-[40px] w-full font-semibold", {
+            "text-neu bg-r1/20 focus-visible:border-r1 [&>svg]:text-neu":
+              activeCollege === "neu",
+            "text-cps bg-c1/20 focus-visible:border-c1 [&>svg]:text-cps":
+              activeCollege === "cps",
+            "text-law bg-l1/20 focus-visible:border-l1 [&>svg]:text-law":
+              activeCollege === "law",
+          })}
         >
           <SelectValue placeholder="Select school" />
         </SelectTrigger>
@@ -59,21 +61,25 @@ export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
             <SelectItem
               key={college.value}
               value={college.value}
-              className={`text-[14px] font-[700] ${
-                college.value === "neu"
-                  ? "text-[#E63946]"
-                  : college.value === "cps"
-                    ? "text-[#FF9F1C]"
-                    : "text-[#457B9D]"
-              } ${
-                activeCollege === "neu" && college.value === "neu"
-                  ? "bg-[#FAD7DA33]"
-                  : activeCollege === "cps" && college.value === "cps"
-                    ? "bg-[#FFECD233]"
-                    : activeCollege === "law" && college.value === "law"
-                      ? "bg-[#DAE5EB4D]"
-                      : ""
-              }`}
+              className={cn(
+                "text-sm font-semibold",
+                {
+                  "text-neu focus:bg-r1/20 focus:text-neu":
+                    college.value === "neu",
+                  "text-cps focus:bg-c1/20 focus:text-cps":
+                    college.value === "cps",
+                  "text-law focus:bg-l1/20 focus:text-law":
+                    college.value === "law",
+                },
+                {
+                  "bg-r1/20":
+                    activeCollege === "neu" && college.value === "neu",
+                  "bg-c1/20":
+                    activeCollege === "cps" && college.value === "cps",
+                  "bg-l1/20":
+                    activeCollege === "law" && college.value === "law",
+                },
+              )}
             >
               {college.label}
             </SelectItem>

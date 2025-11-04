@@ -9,7 +9,9 @@ import { SearchBar } from "./search/SearchBar";
 import { type ReactNode } from "react";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -37,7 +39,7 @@ export function MobileWrapper(props: {
     <div className="bg-neu2 flex min-h-0 w-screen min-w-0 flex-1 px-4 pt-4 xl:px-6">
       <div
         data-show={Boolean(course)}
-        className="hidden h-full min-h-0 w-full max-w-[280px] min-w-[240px] md:block md:data-[show=true]:hidden xl:block!"
+        className="hidden h-full min-h-0 w-full max-w-[280px] md:block md:data-[show=true]:hidden xl:block!"
       >
         <SearchPanel {...props} />
       </div>
@@ -60,16 +62,12 @@ export function MobileWrapper(props: {
               <DrawerTitle className="text-center">Catalog Filters</DrawerTitle>
               <div className="overflow-y-scroll">
                 <SearchPanel {...props} />
-                <DrawerTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="bg-neu1 rounded-full md:hidden"
-                  >
-                    <ListFilter className="text-neu6 size-4" strokeWidth={2} />
-                  </Button>
-                </DrawerTrigger>
               </div>
+              <DrawerFooter className="">
+                <DrawerClose asChild>
+                  <Button className="rounded-full">View all results</Button>
+                </DrawerClose>
+              </DrawerFooter>
             </DrawerContent>
           </Drawer>
 

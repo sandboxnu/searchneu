@@ -148,7 +148,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-neu4/50;
+    @apply border-neu25 outline-neu4/50;
   }
   body {
     @apply bg-neu2 text-neu9;

@@ -76,7 +76,7 @@ export function TermSelect(
         value={term?.toString()}
       >
         <SelectTrigger
-          className="bg-secondary w-full border border-solid border-[#F1F2F2]"
+          className="bg-secondary border-neu25 w-full border border-solid"
           {...props}
         >
           <SelectValue placeholder="Select term" />

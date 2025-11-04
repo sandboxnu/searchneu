@@ -50,7 +50,7 @@ export default function RootLayout({
           />
         )}
         <AuthProvider>
-          <main className="min-h-screen w-screen grow">{children}</main>
+          <main className="min-h-[100dvh] w-screen grow">{children}</main>
 
           <FeedbackModal />
           <Toaster closeButton />

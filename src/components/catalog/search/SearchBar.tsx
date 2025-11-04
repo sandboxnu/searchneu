@@ -1,6 +1,8 @@
+"use client";
+
 import { usePathname, useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 
 export function SearchBar() {
@@ -73,8 +75,8 @@ export function SearchBar() {
 
   return (
     <div
-      className={`relative w-full transition-transform ${
-        popped ? "scale-[1.05]" : "scale-100"
+      className={`relative w-full transition-transform duration-200 ${
+        popped ? "scale-[1.017]" : "scale-100"
       }`}
     >
       <SearchIcon

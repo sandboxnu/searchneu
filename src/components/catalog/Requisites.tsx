@@ -58,7 +58,7 @@ export function RequisiteBlock({
   };
 
   if (isEmpty(req)) {
-    return <p className="text-neu5 mb-2 text-sm italic">None</p>;
+    return <p className="text-neu5 text-sm italic">None</p>;
   }
 
   const tree = RequisiteItemComponent({
@@ -88,12 +88,12 @@ export function RequisiteBlock({
       {contentHeight > 120 && isCondition(req) && (
         <Button
           className={cn(
-            "text-neu6 hover:bg-neu3/30 hover:text-neu6 mt-2 py-1.5 text-xs font-bold",
+            "text-neu6 hover:bg-neu3/30 hover:text-neu6 mt-2 -mb-2 h-6 py-1.5 text-[10px] font-bold",
           )}
           variant="ghost"
           onClick={handleToggle}
         >
-          {expanded ? <>Collapse</> : <>See More ({req.items.length})</>}
+          {expanded ? <>COLLAPSE</> : <>SEE ALL ({req.items.length})</>}
           <ChevronDown
             className={cn("transform transition duration-200", {
               "rotate-180": expanded,

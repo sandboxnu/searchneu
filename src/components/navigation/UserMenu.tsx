@@ -36,21 +36,40 @@ export function UserIcon() {
 
 function UserMenu() {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative size-10 rounded-full">
-          <Avatar className="size-10">
-            <AvatarFallback>
-              <Iconskie className="size-full" />
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => signOut()} variant="destructive">
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="relative hidden size-10 rounded-full md:flex"
+          >
+            <Avatar className="size-10">
+              <AvatarFallback>
+                <Iconskie className="size-full" />
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => signOut()} variant="destructive">
+            Sign Out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <div className="flex w-full min-w-0 gap-4 md:hidden">
+        <Avatar className="size-10">
+          <AvatarFallback>
+            <Iconskie className="size-full" />
+          </AvatarFallback>
+        </Avatar>
+        <Button
+          variant="destructive"
+          className="bg-neu1 border-red text-red hover:bg-r1/30 h-10 w-full flex-1 rounded-full border"
+          onClick={() => signOut()}
+        >
           Sign Out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </Button>
+      </div>
+    </>
   );
 }

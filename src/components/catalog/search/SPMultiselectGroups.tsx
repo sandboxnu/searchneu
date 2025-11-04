@@ -2,8 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect, use, Suspense, ComponentProps } from "react";
-import { Option } from "@/components/ui/multi-select";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import {
   Command,
   CommandInput,
@@ -19,6 +18,11 @@ import {
 } from "@/components/ui/popover";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+
+interface Option {
+  label: string;
+  value: string;
+}
 
 export function SPMultiselectGroups<T>(props: {
   id?: string;

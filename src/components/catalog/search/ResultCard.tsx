@@ -1,5 +1,5 @@
 import { cn } from "@/lib/cn";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 export function ResultCard(props: {
   result: {
@@ -74,20 +74,20 @@ function NUPathBadges(props: { nupaths: string[] }) {
       {paths.map((n) => (
         <Badge
           key={n}
-          className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold"
+          className="text-neu7 bg-neu25 rounded border-none px-1.5 py-0 text-xs leading-tight font-bold"
         >
           {n}
         </Badge>
       ))}
       {plusMore > 0 && (
-        <Badge className="text-neu7 bg-neu25 rounded border-none px-2 py-0.5 text-xs leading-tight font-bold">
+        <Badge className="text-neu7 bg-neu25 rounded border-none px-1.5 py-0 text-xs leading-tight font-bold">
           +{plusMore}
         </Badge>
       )}
       {paths.length === 0 && (
         <Badge
           variant="secondary"
-          className="text-neu5 rounded border-none px-2 py-1 text-xs leading-tight font-bold"
+          className="text-neu5 rounded border-none px-1.5 py-0.5 text-xs leading-tight font-bold"
         >
           No NUPaths
         </Badge>

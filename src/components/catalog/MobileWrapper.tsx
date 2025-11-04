@@ -3,7 +3,6 @@
 import { SearchPanel } from "./search/FilterBar";
 import { GroupedTerms, Subject } from "@/lib/types";
 import { useParams } from "next/navigation";
-import { Option } from "../ui/multi-select";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./search/SearchBar";
 import { type ReactNode } from "react";
@@ -18,6 +17,11 @@ import {
 } from "../ui/drawer";
 import { ListFilter } from "lucide-react";
 import { Button } from "../ui/button";
+
+interface Option {
+  label: string;
+  value: string;
+}
 
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error

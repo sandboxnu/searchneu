@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test --import tsx src/**/*.test.ts",
+    "test": "node src/scripts/run-tests.mjs",
     "test:watch": "node --test --watch --import tsx src/**/*.test.ts",
     "scrape:gen": "tsx ./src/scripts/scrape-gen.ts",
     "scrape:up": "tsx ./src/scripts/scrape-up.ts",

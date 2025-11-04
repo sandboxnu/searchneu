@@ -105,8 +105,11 @@ export function SPMultiselect<T>(props: {
                 }}
                 className=""
               >
-                <CommandInput placeholder="Search options..." className="" />
-                <CommandList className="bg-neu1">
+                <CommandInput
+                  placeholder="Search options..."
+                  className="text-lg md:text-sm"
+                />
+                <CommandList className="bg-neu1 max-h-[180px] md:max-h-[300px]">
                   <CommandEmpty>No results found</CommandEmpty>
                   <CommandGroup>
                     {options.map((opt) => (

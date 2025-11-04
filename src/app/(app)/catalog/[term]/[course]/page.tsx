@@ -78,7 +78,7 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex h-full min-w-0 flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:overflow-y-scroll">
+    <div className="bg-neu1 flex h-full min-w-0 flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg rounded-b-none border border-b-0 px-4 pt-10 pb-8 md:px-10">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
@@ -101,7 +101,7 @@ export default async function Page(props: {
           >
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
-          <span className="text-neu6 flex items-center gap-1">
+          <span className="text-neu6 flex max-w-20 items-center gap-1 sm:max-w-full">
             {isTermActive ? (
               <>
                 <Globe className="size-4" />
@@ -217,7 +217,7 @@ export default async function Page(props: {
         </div>
       </div>
       <Separator />
-      <div className="-mr-20 -ml-20 inline-block w-[calc(100%+5rem)] min-w-0">
+      <div className="-mr-8 -ml-8 inline-block w-full min-w-0 md:-mr-20 md:-ml-20 md:w-[calc(100%+5rem)]">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable
             sectionsPromise={sections as Promise<SectionTableSection[]>}

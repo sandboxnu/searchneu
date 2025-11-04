@@ -114,7 +114,7 @@ export function SearchPanel(props: {
         <RangeSlider />
       </div>
 
-      <div className="pb-10 md:hidden"></div>
+      <div className="pb-20 md:hidden"></div>
     </div>
   );
 }

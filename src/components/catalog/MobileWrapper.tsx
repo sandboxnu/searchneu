@@ -62,7 +62,7 @@ export function MobileWrapper(props: {
                 <ListFilter className="text-neu6 size-4" strokeWidth={2} />
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="data-[vaul-drawer-direction=bottom]:max-h-[95vh]">
+            <DrawerContent className="data-[vaul-drawer-direction=bottom]:max-h-[95dvh]">
               <DrawerTitle className="text-center">Catalog Filters</DrawerTitle>
               <div className="overflow-y-scroll">
                 <SearchPanel {...props} />

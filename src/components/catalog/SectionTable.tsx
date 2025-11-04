@@ -73,9 +73,9 @@ export function SectionTable({
   );
 
   return (
-    <div className="w-full min-w-0 overflow-x-auto px-10 [&::-webkit-scrollbar]:hidden">
-      <div className="min-w-max overflow-hidden rounded-lg">
-        <table className="w-full min-w-max table-auto border-collapse rounded-lg border">
+    <div className="w-full min-w-0 overflow-x-auto px-2 md:px-10 [&::-webkit-scrollbar]:hidden">
+      <div className="min-w-max overflow-hidden rounded-lg border">
+        <table className="w-full min-w-max table-auto border-collapse rounded-lg">
           <colgroup>
             <col className="min-w-16" />
             <col className="min-w-12" />

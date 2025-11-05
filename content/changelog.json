@@ -15,6 +15,22 @@
           ]
         }
       ]
+    },
+    {
+      "version": "1.0.1",
+      "title": "(official) launch!",
+      "notes": "WE ARE BACK FOR REAL THIS TIME!",
+      "date": "11/04/2025",
+      "image": "Changelog_Image_3.png",
+      "features": [
+        {
+          "description": "The SearchNEU team is excited to announce a major update to the platform, featuring a completely redesigned user interface, fully functional notifications, and a more responsive design for smoother performance across all devices. This release focuses on quality-of-life improvements to make your search experience faster, cleaner, and more intuitive than ever.",
+          "contributorUrls": [
+            "https://github.com/szetoai",
+            "https://github.com/jpnortonwastaken"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -86,7 +86,7 @@ export function SearchBar() {
       <Input
         ref={searchInputRef}
         className="bg-neu1 focus:border-neu3 border pl-10"
-        placeholder="Search by course, professor, or phrase..."
+        placeholder="Search by course or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

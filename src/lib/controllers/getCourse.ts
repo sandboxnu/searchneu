@@ -11,7 +11,10 @@ import {
 } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
-import { type Section, type Room } from "@/components/coursePage/SectionTable";
+import {
+  type SectionTableSection,
+  type SectionTableRoom,
+} from "@/components/catalog/SectionTable";
 
 export const getCourse = cache(
   async (term: string, subject: string, courseNumber: string) => {
@@ -27,6 +30,7 @@ export const getCourse = cache(
         maxCredits: coursesT.maxCredits,
         prereqs: coursesT.prereqs,
         coreqs: coursesT.coreqs,
+        postreqs: coursesT.postreqs,
         updatedAt: coursesT.updatedAt,
         nupaths: sql<
           string[]
@@ -56,6 +60,7 @@ export const getCourse = cache(
         coursesT.maxCredits,
         coursesT.prereqs,
         coursesT.coreqs,
+        coursesT.postreqs,
         coursesT.updatedAt,
       );
   },
@@ -93,7 +98,7 @@ export const getCourseSections = cache(async (courseId: number) => {
     .where(eq(sectionsT.courseId, courseId))
     .then((rows) => {
       // Group the rows by section and reconstruct the meetingTimes array
-      const sectionMap = new Map<number, Section>();
+      const sectionMap = new Map<number, SectionTableSection>();
 
       for (const row of rows) {
         if (!sectionMap.has(row.id)) {
@@ -116,7 +121,7 @@ export const getCourseSections = cache(async (courseId: number) => {
         if (row.meetingTimeId && row.days && row.startTime && row.endTime) {
           const section = sectionMap.get(row.id)!;
 
-          const room: Room | undefined =
+          const room: SectionTableRoom | undefined =
             row.roomId && row.roomNumber
               ? {
                   id: row.roomId,

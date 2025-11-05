@@ -1,6 +1,11 @@
-import { Section } from "@/components/coursePage/SectionTable";
 import { db } from "@/db";
-import { coursesT, meetingTimesT, sectionsT, nupathsT, courseNupathJoinT } from "@/db/schema";
+import {
+  coursesT,
+  meetingTimesT,
+  sectionsT,
+  nupathsT,
+  courseNupathJoinT,
+} from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 
@@ -22,7 +27,9 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       courseName: coursesT.name,
       courseSubject: coursesT.subject,
       courseNumber: coursesT.courseNumber,
-      courseNupaths: sql<string[]>`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
+      courseNupaths: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
       // Meeting time data
       meetingTimeId: meetingTimesT.id,
       days: meetingTimesT.days,
@@ -101,18 +108,23 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
 // Helper function to check if two meeting times conflict
 const hasTimeConflict = (
   time1: { days: number[]; startTime: number; endTime: number },
-  time2: { days: number[]; startTime: number; endTime: number }
+  time2: { days: number[]; startTime: number; endTime: number },
 ): boolean => {
   // Check if they share any days
   const sharedDays = time1.days.filter((day) => time2.days.includes(day));
   if (sharedDays.length === 0) return false;
 
   // Check if time ranges overlap
-  return !(time1.endTime <= time2.startTime || time2.endTime <= time1.startTime);
+  return !(
+    time1.endTime <= time2.startTime || time2.endTime <= time1.startTime
+  );
 };
 
 // Helper function to check if two sections have any time conflicts
-const sectionsHaveConflict = (section1: SectionWithCourse, section2: SectionWithCourse): boolean => {
+const sectionsHaveConflict = (
+  section1: SectionWithCourse,
+  section2: SectionWithCourse,
+): boolean => {
   for (const time1 of section1.meetingTimes) {
     for (const time2 of section2.meetingTimes) {
       if (hasTimeConflict(time1, time2)) {
@@ -136,13 +148,19 @@ const isValidSchedule = (sections: SectionWithCourse[]): boolean => {
 };
 
 // Helper function to generate all combinations of sections
-const generateCombinations = (sectionsByCourse: SectionWithCourse[][]): SectionWithCourse[][] => {
+const generateCombinations = (
+  sectionsByCourse: SectionWithCourse[][],
+): SectionWithCourse[][] => {
   if (sectionsByCourse.length === 0) return [];
-  if (sectionsByCourse.length === 1) return sectionsByCourse[0].map((section) => [section]);
+  if (sectionsByCourse.length === 1)
+    return sectionsByCourse[0].map((section) => [section]);
 
   const result: SectionWithCourse[][] = [];
 
-  const generateRecursive = (currentCombination: SectionWithCourse[], courseIndex: number) => {
+  const generateRecursive = (
+    currentCombination: SectionWithCourse[],
+    courseIndex: number,
+  ) => {
     if (courseIndex === sectionsByCourse.length) {
       result.push([...currentCombination]);
       return;

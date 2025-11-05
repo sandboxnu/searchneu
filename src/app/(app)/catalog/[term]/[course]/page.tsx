@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { termsT, trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
-import { ExpandableDescription } from "@/components/coursePage/ExpandableDescription";
+import { ExpandableDescription } from "@/components/catalog/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { Suspense } from "react";
@@ -12,10 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import {
   SectionTable,
-  type Section,
-} from "@/components/coursePage/SectionTable";
+  type SectionTableSection,
+} from "@/components/catalog/SectionTable";
 import { type Metadata } from "next";
-import { RequisiteBlock } from "@/components/coursePage/Requisites";
+import { RequisiteBlock } from "@/components/catalog/Requisites";
 import { getCourse, getCourseSections } from "@/lib/controllers/getCourse";
 
 const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
@@ -78,7 +78,7 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch rounded-t-lg rounded-b-none border border-b-0 px-10 pt-10 pb-8 md:h-[calc(100vh-128px)] md:overflow-y-scroll">
+    <div className="bg-neu1 flex h-full min-w-0 flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg rounded-b-none border border-b-0 px-4 pt-10 pb-8 md:px-10">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
@@ -101,7 +101,7 @@ export default async function Page(props: {
           >
             {formatCreditRangeString(course.minCredits, course.maxCredits)}
           </h2>
-          <span className="text-neu6 flex items-center gap-1">
+          <span className="text-neu6 flex max-w-20 items-center gap-1 sm:max-w-full">
             {isTermActive ? (
               <>
                 <Globe className="size-4" />
@@ -184,33 +184,43 @@ export default async function Page(props: {
           REQUIREMENTS
         </h3>
         <div className="flex flex-col gap-2 md:flex-row">
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               PREREQUISITES
             </h3>
             <RequisiteBlock
               req={course.prereqs as Requisite}
               termId={termId}
-              coreqMode={false}
+              prereqMode={true}
             />
           </div>
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 pt-4 pb-2">
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               COREQUISITES
             </h3>
             <RequisiteBlock
               req={course.coreqs as Requisite}
               termId={termId}
-              coreqMode={true}
+              prereqMode={false}
+            />
+          </div>
+          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+            <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
+              POSTREQUISITES
+            </h3>
+            <RequisiteBlock
+              req={course.postreqs as Requisite}
+              termId={termId}
+              prereqMode={false}
             />
           </div>
         </div>
       </div>
       <Separator />
-      <div className="w-full">
+      <div className="-mr-8 -ml-8 inline-block w-full min-w-0 md:-mr-20 md:-ml-20 md:w-[calc(100%+5rem)]">
         <Suspense fallback={<SectionsTableSkeleton />}>
           <SectionTable
-            sectionsPromise={sections as Promise<Section[]>}
+            sectionsPromise={sections as Promise<SectionTableSection[]>}
             trackedSectionsPromise={trackedSections as Promise<number[]>}
             isTermActive={isTermActive}
           />

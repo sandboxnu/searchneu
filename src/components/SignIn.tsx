@@ -26,7 +26,7 @@ export function SignIn({ closeFn }: { closeFn: () => void }) {
 
   return (
     <Dialog onOpenChange={() => closeFn()} defaultOpen={true}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="px-8 sm:max-w-[425px]">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle>Sign In</DialogTitle>
           <DialogDescription className="text-center">

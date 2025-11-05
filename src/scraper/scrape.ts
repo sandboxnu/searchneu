@@ -1,6 +1,6 @@
 import { BannerSection, Config, Course, TermScrape } from "./types";
 import { decode } from "he";
-import { parseCoreqs, parsePrereqs } from "./reqs";
+import { parseCoreqs, parsePrereqs, populatePostReqs, Requisite } from "./reqs";
 import { $fetch, processWithConcurrency } from "./utils";
 import { parseRooms } from "./rooms";
 import { logger } from "@/lib/logger";
@@ -30,9 +30,9 @@ export async function scrapeTerm(term: string) {
   await getCourseDescriptions(courses);
   console.log(`✓ Course descriptions retrieved`);
 
-  console.log(`🔗 Fetching prerequisites and corequisites...`);
+  console.log(`🔗 Fetching requisites...`);
   await getReqs(courses, subjects);
-  console.log(`✓ Requirements retrieved`);
+  console.log(`✓ Requisites processed`);
 
   console.log(`🏢 Processing room schedules...`);
   const rooms = await parseRooms(courses);
@@ -132,6 +132,8 @@ async function getReqs(
         );
       });
   }
+
+  populatePostReqs(courses);
 }
 
 // getCourseNames goes through and scrapes the course names for
@@ -234,6 +236,7 @@ export function arrangeCourses(sections: BannerSection[]) {
         sections: [],
         prereqs: {},
         coreqs: {},
+        postreqs: {},
       };
     }
 
@@ -290,10 +293,17 @@ export function parseMeetingTimes(section: BannerSection) {
     if (isFinal && meetingTime.startDate) {
       finalDate = meetingTime.startDate;
     }
+    
+    let actualRoom;
+    if (!meetingTime.room) {
+      actualRoom = "";
+    } else {
+      actualRoom = meetingTime.room == "ROOM" ? "" : meetingTime.room;
+    }
 
     meetings.push({
       building: meetingTime.buildingDescription || meetingTime.building || "",
-      room: meetingTime.room || "",
+      room: actualRoom,
       days: days,
       startTime: startTime,
       endTime: endTime,

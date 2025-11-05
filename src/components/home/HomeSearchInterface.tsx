@@ -48,46 +48,60 @@ export function HomeSearchInterface({
   }
 
   return (
-    <div className="w-full sm:px-24 md:w-auto">
-      <div className="mb-4 flex w-full flex-col justify-center gap-2 md:flex-row">
+    <div className="w-full px-4 sm:px-24 md:w-auto">
+      <div className="mb-4 flex w-full flex-row justify-center gap-2">
         <Button
-          className={cn("rounded-full border transition duration-200", {
-            "border-r1 bg-r1/30 text-neu hover:bg-r1/50":
-              selectedCollege !== "neu",
-            "border-neu bg-neu text-neu1 hover:bg-neu/80":
-              selectedCollege === "neu",
-          })}
+          className={cn(
+            "h-11 rounded-full border font-semibold transition duration-200",
+            {
+              "border-r1 bg-r1/30 text-neu hover:bg-r1/50":
+                selectedCollege !== "neu",
+              "border-neu bg-neu text-neu1 hover:bg-neu/80":
+                selectedCollege === "neu",
+            },
+          )}
           onClick={() => setSelectedCollege("neu")}
         >
-          Northeastern University
+          <span className="md:hidden">NEU</span>
+          <span className="hidden md:inline">Northeastern University</span>
         </Button>
         <Button
-          className={cn("rounded-full border transition duration-200", {
-            "border-c1 bg-c1/30 text-cps hover:bg-c1/50":
-              selectedCollege !== "cps",
-            "border-cps bg-cps text-neu1 hover:bg-cps/80":
-              selectedCollege === "cps",
-          })}
+          className={cn(
+            "h-11 rounded-full border font-semibold transition duration-200",
+            {
+              "border-c1 bg-c1/30 text-c6 hover:bg-c1/50":
+                selectedCollege !== "cps",
+              "border-cps bg-cps text-neu1 hover:bg-cps/80":
+                selectedCollege === "cps",
+            },
+          )}
           onClick={() => setSelectedCollege("cps")}
         >
-          College of Professional Studies
+          <span className="md:hidden">CPS</span>
+          <span className="hidden md:inline">
+            College of Professional Studies
+          </span>
         </Button>
         <Button
-          className={cn("rounded-full border transition duration-200", {
-            "border-l1 bg-l1/30 text-law hover:bg-l1/50":
-              selectedCollege !== "law",
-            "border-law bg-law text-neu1 hover:bg-law/80":
-              selectedCollege === "law",
-          })}
+          className={cn(
+            "h-11 rounded-full border font-semibold transition duration-200",
+            {
+              "border-l1 bg-l1/30 text-law hover:bg-l1/50":
+                selectedCollege !== "law",
+              "border-law bg-law text-neu1 hover:bg-law/80":
+                selectedCollege === "law",
+            },
+          )}
           onClick={() => setSelectedCollege("law")}
         >
-          School of Law
+          <span className="md:hidden">LAW</span>
+          <span className="hidden md:inline">School of Law</span>
         </Button>
       </div>
       <div className="relative">
         <SearchIcon
           className={cn(
-            "absolute top-1/2 left-4 size-6 -translate-y-1/2 -scale-x-100 transform transition duration-200 lg:size-9",
+            "absolute top-1/2 left-3 size-7 -translate-y-1/2 -scale-x-100 transform transition duration-200 lg:left-6 lg:size-8",
             {
               "text-neu": selectedCollege === "neu",
               "text-cps": selectedCollege === "cps",
@@ -96,7 +110,7 @@ export function HomeSearchInterface({
           )}
         />
         <Input
-          placeholder="Search by course, professor, or phrase..."
+          placeholder="Search by course or phrase..."
           ref={searchInputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -104,13 +118,14 @@ export function HomeSearchInterface({
             }
           }}
           className={cn(
-            "bg-neu1 w-full rounded-full pl-12 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-xl! lg:placeholder:text-lg xl:w-[800px]",
+            "bg-neu1 w-full rounded-full pl-12 transition duration-200 placeholder:text-sm lg:h-16 lg:w-[650px] lg:pl-16 lg:text-2xl! lg:placeholder:text-2xl xl:w-[800px]",
             {
               "border-r1": selectedCollege === "neu",
               "border-c1": selectedCollege === "cps",
               "border-l1": selectedCollege === "law",
             },
           )}
+          autoFocus={true}
         />
       </div>
     </div>

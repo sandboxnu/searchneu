@@ -1,6 +1,6 @@
 import { getSearch } from "@/lib/controllers/getSearch";
 import { getTerms } from "@/lib/controllers/getTerms";
-import { ResultCard } from "@/components/search/ResultCard";
+import { ResultCard } from "@/components/catalog/search/ResultCard";
 import LogoLoop from "@/components/ui/logo-loop";
 
 export async function CourseCards() {

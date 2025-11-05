@@ -22,21 +22,21 @@ export default async function Home() {
         sparkCount={8}
         duration={400}
       >
-        <div className="px-4 py-6">
+        <div className="pt-4 pb-6">
           <Header />
 
-          <div className="text-neu8 mt-[10%] flex flex-col items-center text-4xl font-bold md:text-7xl">
+          <div className="text-neu8 mt-[25%] flex flex-col items-center text-4xl font-bold md:mt-[10%] md:text-7xl">
             <span className="-mb-2 flex">
-              <p className="text-neu mr-5 italic">Never</p>miss an open
+              <p className="text-neu mr-3 italic md:mr-5">Never</p>miss an open
             </span>
             <span>waitlist seat again</span>
           </div>
 
-          <div className="mt-[5%] flex items-center justify-center">
+          <div className="mt-[15%] flex items-center justify-center md:mt-[5%]">
             <Search />
           </div>
 
-          <div className="mt-[5%]">
+          <div className="mt-[20%] md:mt-[5%]">
             <Suspense>
               <CourseCards />
             </Suspense>

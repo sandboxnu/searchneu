@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
 import { faqFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
-import { BugIcon, MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 import { Suspense } from "react";
 import {
   Sheet,
@@ -36,10 +36,6 @@ export function Header() {
       <Link href="/">
         <Logo className="h-6 w-40" />
       </Link>
-      <span className="text-neu8 border-yellow bg-yellow/40 hidden items-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold md:flex">
-        <BugIcon className="size-4" />
-        Beta - unstable & experimental
-      </span>
       <div className="hidden items-center gap-2 lg:flex">
         {Nav}
         <UserIcon />

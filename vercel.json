@@ -1,14 +1,13 @@
 {
   "functions": {
     "src/app/(app)/api/update/route.ts": {
-      "memory": 3000,
-      "maxDuration": 300
+      "maxDuration": 800
     }
   },
   "crons": [
     {
       "path": "/api/update",
-      "schedule": "*/20 * * * *"
+      "schedule": "*/5 * * * *"
     }
   ]
 }

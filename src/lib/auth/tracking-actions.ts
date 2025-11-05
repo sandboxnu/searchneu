@@ -6,6 +6,7 @@ import { getGuid } from "./utils";
 import { db } from "@/db";
 import { trackersT, usersT } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
+import { track } from "@vercel/analytics/server";
 
 export async function createTrackerAction(id: number) {
   const guid = await getGuid();
@@ -50,6 +51,8 @@ export async function createTrackerAction(id: number) {
     sectionId: id,
   });
 
+  track("tracker-add");
+
   return { ok: true };
 }
 
@@ -85,6 +88,8 @@ export async function deleteTrackerAction(id: number) {
         isNull(trackersT.deletedAt),
       ),
     );
+
+  track("tracker-remove");
 
   return { ok: true };
 }

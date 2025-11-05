@@ -8,6 +8,7 @@ import { usersT } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { logger } from "@/lib/logger";
+import { track } from "@vercel/analytics/server";
 
 interface GoogleOauthClaims {
   sub: string;
@@ -112,6 +113,8 @@ export async function GET(req: NextRequest) {
     const params = new URLSearchParams();
     params.set("redirect_uri", redirectURI ?? "/");
 
+    track("sign-up");
+
     return new Response(null, {
       status: 302,
       headers: {
@@ -119,6 +122,8 @@ export async function GET(req: NextRequest) {
       },
     });
   }
+
+  track("sign-in");
 
   return new Response(null, {
     status: 302,

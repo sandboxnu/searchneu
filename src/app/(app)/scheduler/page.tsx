@@ -6,18 +6,25 @@ import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ courseIds?: string }>;
+  searchParams: Promise<{ lockedCourseIds?: string; optionalCourseIds?: string }>;
 }) {
   const params = await searchParams;
   
-  // Parse course IDs from URL search params
-  const courseIds = params.courseIds
+  // Parse locked and optional course IDs from URL search params
+  const lockedCourseIds = params.lockedCourseIds
     ?.split(",")
     .map((id) => parseInt(id.trim()))
     .filter((id) => !isNaN(id)) || [];
 
-  // Generate schedules if course IDs are provided
-  const allSchedules = courseIds.length > 0 ? await generateSchedules(courseIds) : [];
+  const optionalCourseIds = params.optionalCourseIds
+    ?.split(",")
+    .map((id) => parseInt(id.trim()))
+    .filter((id) => !isNaN(id)) || [];
+
+  // Generate schedules if locked course IDs are provided
+  const allSchedules = lockedCourseIds.length > 0 
+    ? await generateSchedules(lockedCourseIds, optionalCourseIds) 
+    : [];
 
   // Fetch available NUPath options
   const nupathOptions = await db

@@ -22,13 +22,14 @@ function militaryToTimeString(time: number): string {
 interface FilterPanelProps {
   filters: ScheduleFilters;
   onFiltersChange: (filters: ScheduleFilters) => void;
-  onGenerateSchedules: (courseIds: number[]) => void;
+  onGenerateSchedules: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
 }
 
 export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions }: FilterPanelProps) {
-  const [courseIdsInput, setCourseIdsInput] = useState("17500, 16048, 15783, 17501");
+  const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
+  const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
 
   const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
     if (value === undefined || (Array.isArray(value) && value.length === 0)) {
@@ -42,38 +43,58 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   const clearFilters = () => onFiltersChange({});
 
   const handleGenerate = () => {
-    // Parse course IDs from input
-    const courseIds = courseIdsInput
+    // Parse locked course IDs from input
+    const lockedCourseIds = lockedCourseIdsInput
       .split(",")
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id));
     
-    if (courseIds.length > 0) {
-      onGenerateSchedules(courseIds);
+    // Parse optional course IDs from input
+    const optionalCourseIds = optionalCourseIdsInput
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+    
+    if (lockedCourseIds.length > 0 || optionalCourseIds.length > 0) {
+      onGenerateSchedules(lockedCourseIds, optionalCourseIds);
     }
   };
 
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
-      {/* Course IDs Input */}
+      {/* Locked Course IDs Input */}
       <div>
         <Label className="text-muted-foreground text-xs font-bold">
-          COURSE IDs
+          LOCKED COURSE IDs
         </Label>
         <textarea
-          value={courseIdsInput}
-          onChange={(e) => setCourseIdsInput(e.target.value)}
-          placeholder="Enter course IDs separated by commas (e.g., 17500, 16048)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[80px] font-mono text-sm"
+          value={lockedCourseIdsInput}
+          onChange={(e) => setLockedCourseIdsInput(e.target.value)}
+          placeholder="Enter locked course IDs separated by commas (e.g., 2953, 160)"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
         />
-        <Button
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          className="w-full mt-2"
-        >
-          {isGenerating ? "Generating..." : "Generate Schedules"}
-        </Button>
       </div>
+
+      {/* Optional Course IDs Input */}
+      <div>
+        <Label className="text-muted-foreground text-xs font-bold">
+          OPTIONAL COURSE IDs
+        </Label>
+        <textarea
+          value={optionalCourseIdsInput}
+          onChange={(e) => setOptionalCourseIdsInput(e.target.value)}
+          placeholder="Enter optional course IDs separated by commas (e.g., 142, 5857)"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
+        />
+      </div>
+
+      <Button
+        onClick={handleGenerate}
+        disabled={isGenerating}
+        className="w-full"
+      >
+        {isGenerating ? "Generating..." : "Generate Schedules"}
+      </Button>
 
       <Separator />
 

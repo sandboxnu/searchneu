@@ -10,6 +10,41 @@ const nextConfig: NextConfig = {
   },
   // cacheComponents: true, /* BUG: unstable for the time being */
   reactCompiler: true,
+
+  async redirects() {
+    return [
+      {
+        source: "/NEU",
+        destination: "/",
+        statusCode: 307,
+      },
+      {
+        source: "/NEU/:s",
+        destination: "/",
+        statusCode: 307,
+      },
+      {
+        source: "/CPS",
+        destination: "/",
+        statusCode: 307,
+      },
+      {
+        source: "/CPS/:s",
+        destination: "/",
+        statusCode: 307,
+      },
+      {
+        source: "/LAW",
+        destination: "/",
+        statusCode: 307,
+      },
+      {
+        source: "/LAW/:s",
+        destination: "/",
+        statusCode: 307,
+      },
+    ];
+  },
 };
 
 const vercelToolbar = withVercelToolbar();

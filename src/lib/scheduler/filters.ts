@@ -82,9 +82,9 @@ export const sectionPassesFilters = (
     return false;
   }
 
-  //Check online only (only if provided)
+  //Check online filter (only if provided)
   if (filters.isOnline !== undefined) {
-    if (!filters.isOnline && section.campus != "Online") {
+    if (!filters.isOnline && section.campus == "Online") {
       return false;
     }
   }

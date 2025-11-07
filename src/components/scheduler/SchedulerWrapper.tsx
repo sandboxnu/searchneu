@@ -2,7 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { filterSchedules, type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import {
+  filterSchedules,
+  type ScheduleFilters,
+  type SectionWithCourse,
+} from "@/lib/scheduler/filters";
 import { SchedulerView } from "./SchedulerView";
 import { FilterPanel } from "./FilterPanel";
 
@@ -11,9 +15,12 @@ interface SchedulerWrapperProps {
   nupathOptions: { label: string; value: string }[];
 }
 
-export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
+export function SchedulerWrapper({
+  initialSchedules,
+  nupathOptions,
+}: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({});
+  const [filters, setFilters] = useState<ScheduleFilters>({ isOnline: true });
   const [isPending, startTransition] = useTransition();
 
   const handleGenerateSchedules = async (courseIds: number[]) => {
@@ -26,13 +33,15 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
 
   // Apply filters
   const filteredSchedules =
-    Object.keys(filters).length > 0 ? filterSchedules(initialSchedules, filters) : initialSchedules;
+    Object.keys(filters).length > 0
+      ? filterSchedules(initialSchedules, filters)
+      : initialSchedules;
 
   return (
     <div className="grid w-full grid-cols-6">
       <div className="col-span-1 w-full">
-        <FilterPanel 
-          filters={filters} 
+        <FilterPanel
+          filters={filters}
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}

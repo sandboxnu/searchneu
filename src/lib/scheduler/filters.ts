@@ -15,6 +15,7 @@ export type ScheduleFilters = {
   minSeatsLeft?: number;
   minHonorsCourses?: number;
   nupaths?: string[];
+  isOnline?: boolean;
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -79,6 +80,13 @@ export const sectionPassesFilters = (
     section.seatRemaining < filters.minSeatsLeft
   ) {
     return false;
+  }
+
+  //Check online only (only if provided)
+  if (filters.isOnline !== undefined) {
+    if (!filters.isOnline && section.campus != "Online") {
+      return false;
+    }
   }
 
   return true;
@@ -164,4 +172,3 @@ export const filterSchedules = (
     schedulePassesFilters(schedule, filters),
   );
 };
-

@@ -1,6 +1,9 @@
 "use client";
 
-import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import {
+  type ScheduleFilters,
+  type SectionWithCourse,
+} from "@/lib/scheduler/filters";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -24,13 +27,19 @@ interface SchedulerViewProps {
   filters: ScheduleFilters;
 }
 
-export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerViewProps) {
+export function SchedulerView({
+  schedules,
+  totalSchedules,
+  filters,
+}: SchedulerViewProps) {
   return (
     <div className="h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-6 py-4">
       {/* Active Filters Summary */}
       {Object.keys(filters).length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2 text-blue-900">Active Filters:</h2>
+        <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h2 className="mb-2 text-lg font-semibold text-blue-900">
+            Active Filters:
+          </h2>
           <div className="space-y-1 text-sm text-blue-800">
             {filters.startTime && (
               <div>• Earliest start time: {formatTime(filters.startTime)}</div>
@@ -38,11 +47,17 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
             {filters.endTime && (
               <div>• Latest end time: {formatTime(filters.endTime)}</div>
             )}
-            {filters.specificDaysFree && filters.specificDaysFree.length > 0 && (
-              <div>• Days with no classes: {formatDays(filters.specificDaysFree)}</div>
-            )}
+            {filters.specificDaysFree &&
+              filters.specificDaysFree.length > 0 && (
+                <div>
+                  • Days with no classes: {formatDays(filters.specificDaysFree)}
+                </div>
+              )}
             {filters.minDaysFree !== undefined && (
               <div>• Minimum days free per week: {filters.minDaysFree}</div>
+            )}
+            {filters.isOnline !== undefined && (
+              <div>• Online Classes Included: {filters.isOnline}</div>
             )}
             {filters.minSeatsLeft !== undefined && (
               <div>• Minimum seats available: {filters.minSeatsLeft}</div>
@@ -59,8 +74,10 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
 
       {/* Results Count */}
       <p className="text-gray-600">
-        Found {schedules.length} valid schedule{schedules.length !== 1 ? "s" : ""}
-        {totalSchedules !== schedules.length && ` (filtered from ${totalSchedules} total)`}
+        Found {schedules.length} valid schedule
+        {schedules.length !== 1 ? "s" : ""}
+        {totalSchedules !== schedules.length &&
+          ` (filtered from ${totalSchedules} total)`}
       </p>
 
       {/* Schedules */}
@@ -68,9 +85,9 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
         {schedules.map((schedule, scheduleIndex) => (
           <div
             key={scheduleIndex}
-            className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
+            className="rounded-lg border border-gray-300 bg-white p-6 shadow-sm"
           >
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="mb-4 text-xl font-semibold">
               Schedule {scheduleIndex + 1}
             </h2>
 
@@ -78,32 +95,32 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
               {schedule.map((section, sectionIndex) => (
                 <div
                   key={sectionIndex}
-                  className="border-l-4 border-blue-500 pl-4 py-2"
+                  className="border-l-4 border-blue-500 py-2 pl-4"
                 >
-                  <div className="flex justify-between items-start mb-2">
+                  <div className="mb-2 flex items-start justify-between">
                     <div>
-                      <h3 className="font-bold text-lg text-gray-900">
+                      <h3 className="text-lg font-bold text-gray-900">
                         {section.courseSubject} {section.courseNumber}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-1">
+                      <p className="mb-1 text-sm text-gray-600">
                         {section.courseName}
                       </p>
                       <span className="text-sm text-gray-700">
                         CRN: {section.crn}
                       </span>
                       {section.honors && (
-                        <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                        <span className="ml-2 rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-800">
                           Honors
                         </span>
                       )}
                     </div>
-                    <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                    <span className="rounded bg-gray-100 px-2 py-1 text-sm text-gray-600">
                       {section.classType}
                     </span>
                   </div>
 
                   {section.faculty && (
-                    <p className="text-sm text-gray-700 mb-1">
+                    <p className="mb-1 text-sm text-gray-700">
                       Instructor: {section.faculty}
                     </p>
                   )}
@@ -113,7 +130,7 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
                       {section.meetingTimes.map((meeting, meetingIndex) => (
                         <div
                           key={meetingIndex}
-                          className="text-sm text-gray-700 flex items-center gap-2"
+                          className="flex items-center gap-2 text-sm text-gray-700"
                         >
                           <span className="font-medium">
                             {formatDays(meeting.days)}

@@ -239,6 +239,14 @@ export const generateSchedules = async (
   // Filter to only valid locked schedules (no time conflicts)
   const validLockedSchedules = lockedCombinations.filter(isValidSchedule);
 
+  // Edge case: no locked courses but have optional courses
+  if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
+    // Start with empty schedule and add optional courses
+    const schedulesWithOptional = addOptionalCourses([], optionalSectionsByCourse);
+    // Remove any empty schedules
+    return schedulesWithOptional.filter(schedule => schedule.length > 0);
+  }
+
   // If no optional courses, return the locked schedules
   if (optionalCourseIds.length === 0) {
     return validLockedSchedules;

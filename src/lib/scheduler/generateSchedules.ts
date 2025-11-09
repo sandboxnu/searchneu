@@ -8,6 +8,7 @@ import {
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
+import { hasConflictInSchedule } from "./binaryMeetingTime";
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -105,46 +106,10 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
   return sections;
 };
 
-// Helper function to check if two meeting times conflict
-const hasTimeConflict = (
-  time1: { days: number[]; startTime: number; endTime: number },
-  time2: { days: number[]; startTime: number; endTime: number },
-): boolean => {
-  // Check if they share any days
-  const sharedDays = time1.days.filter((day) => time2.days.includes(day));
-  if (sharedDays.length === 0) return false;
-
-  // Check if time ranges overlap
-  return !(
-    time1.endTime <= time2.startTime || time2.endTime <= time1.startTime
-  );
-};
-
-// Helper function to check if two sections have any time conflicts
-const sectionsHaveConflict = (
-  section1: SectionWithCourse,
-  section2: SectionWithCourse,
-): boolean => {
-  for (const time1 of section1.meetingTimes) {
-    for (const time2 of section2.meetingTimes) {
-      if (hasTimeConflict(time1, time2)) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
 // Helper function to check if a combination of sections has any conflicts
+// This now uses the optimized binary meeting time approach for O(1) conflict checking
 const isValidSchedule = (sections: SectionWithCourse[]): boolean => {
-  for (let i = 0; i < sections.length; i++) {
-    for (let j = i + 1; j < sections.length; j++) {
-      if (sectionsHaveConflict(sections[i], sections[j])) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return !hasConflictInSchedule(sections);
 };
 
 // Helper function to generate all combinations of sections

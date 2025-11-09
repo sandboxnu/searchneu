@@ -21,8 +21,8 @@ export default async function Page({
     .map((id) => parseInt(id.trim()))
     .filter((id) => !isNaN(id)) || [];
 
-  // Generate schedules if locked course IDs are provided
-  const allSchedules = lockedCourseIds.length > 0 
+  // Generate schedules if any course IDs are provided (locked or optional)
+  const allSchedules = (lockedCourseIds.length > 0 || optionalCourseIds.length > 0)
     ? await generateSchedules(lockedCourseIds, optionalCourseIds) 
     : [];
 

@@ -282,5 +282,310 @@ describe("schedule generation logic", () => {
       assert.strictEqual(isValidSchedule(schedule), true);
     });
   });
+
+  describe("optional courses logic", () => {
+    // Test the logic for adding optional courses to locked schedules
+    // This mirrors the addOptionalCourses logic in generateSchedules.ts
+    type Section = {
+      id: number;
+      meetingTimes: Array<{ days: number[]; startTime: number; endTime: number }>;
+    };
+
+    const hasTimeConflict = (
+      time1: { days: number[]; startTime: number; endTime: number },
+      time2: { days: number[]; startTime: number; endTime: number }
+    ): boolean => {
+      const sharedDays = time1.days.filter((day) => time2.days.includes(day));
+      if (sharedDays.length === 0) return false;
+      return !(time1.endTime <= time2.startTime || time2.endTime <= time1.startTime);
+    };
+
+    const sectionsHaveConflict = (section1: Section, section2: Section): boolean => {
+      for (const time1 of section1.meetingTimes) {
+        for (const time2 of section2.meetingTimes) {
+          if (hasTimeConflict(time1, time2)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    const isValidSchedule = (sections: Section[]): boolean => {
+      for (let i = 0; i < sections.length; i++) {
+        for (let j = i + 1; j < sections.length; j++) {
+          if (sectionsHaveConflict(sections[i], sections[j])) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+
+    const addOptionalCourses = (
+      baseSchedule: Section[],
+      optionalSectionsByCourse: Section[][]
+    ): Section[][] => {
+      const results: Section[][] = [];
+
+      const generateOptionalCombinations = (
+        currentSchedule: Section[],
+        courseIndex: number
+      ) => {
+        if (courseIndex === optionalSectionsByCourse.length) {
+          results.push([...currentSchedule]);
+          return;
+        }
+
+        // Try not adding this optional course
+        generateOptionalCombinations(currentSchedule, courseIndex + 1);
+
+        // Try adding each section of this optional course if it doesn't conflict
+        for (const section of optionalSectionsByCourse[courseIndex]) {
+          const testSchedule = [...currentSchedule, section];
+          if (isValidSchedule(testSchedule)) {
+            generateOptionalCombinations(testSchedule, courseIndex + 1);
+          }
+        }
+      };
+
+      generateOptionalCombinations(baseSchedule, 0);
+      return results;
+    };
+
+    test("should return only base schedule when no optional courses", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1, 3], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const result = addOptionalCourses(baseSchedule, []);
+
+      assert.strictEqual(result.length, 1);
+      assert.deepStrictEqual(result[0], baseSchedule);
+    });
+
+    test("should add optional course when it doesn't conflict", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1, 3], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [2, 4], startTime: 1100, endTime: 1230 }],
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 2 schedules: one with and one without the optional course
+      assert.strictEqual(result.length, 2);
+
+      // One should be just the base schedule
+      assert.strictEqual(result.some(s => s.length === 1 && s[0].id === 1), true);
+
+      // One should include both courses
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 2)), true);
+    });
+
+    test("should not add optional course when it conflicts", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1, 3], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [1, 3], startTime: 1000, endTime: 1130 }], // Conflicts
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should only have 1 schedule: the base schedule without the conflicting optional course
+      assert.strictEqual(result.length, 1);
+      assert.strictEqual(result[0].length, 1);
+      assert.strictEqual(result[0][0].id, 1);
+    });
+
+    test("should try multiple sections of an optional course", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1, 3], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [1, 3], startTime: 1000, endTime: 1130 }], // Conflicts
+          },
+          {
+            id: 3,
+            meetingTimes: [{ days: [2, 4], startTime: 1100, endTime: 1230 }], // Doesn't conflict
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 2 schedules: one without optional, one with section 3
+      assert.strictEqual(result.length, 2);
+
+      // One should be just the base schedule
+      assert.strictEqual(result.some(s => s.length === 1 && s[0].id === 1), true);
+
+      // One should include section 3 (not section 2 which conflicts)
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 3)), true);
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 2)), false);
+    });
+
+    test("should generate all valid subsets of multiple optional courses", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [2], startTime: 1100, endTime: 1230 }],
+          },
+        ],
+        [
+          {
+            id: 3,
+            meetingTimes: [{ days: [3], startTime: 1300, endTime: 1430 }],
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 4 schedules: none, just 2, just 3, both 2 and 3
+      assert.strictEqual(result.length, 4);
+
+      // Check all combinations exist
+      assert.strictEqual(result.some(s => s.length === 1 && s[0].id === 1), true); // Just base
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 2) && !s.some(sec => sec.id === 3)), true); // Base + 2
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 3) && !s.some(sec => sec.id === 2)), true); // Base + 3
+      assert.strictEqual(result.some(s => s.length === 3 && s.some(sec => sec.id === 2) && s.some(sec => sec.id === 3)), true); // Base + 2 + 3
+    });
+
+    test("should handle optional courses that conflict with each other", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [2], startTime: 1100, endTime: 1230 }],
+          },
+        ],
+        [
+          {
+            id: 3,
+            meetingTimes: [{ days: [2], startTime: 1130, endTime: 1300 }], // Conflicts with course 2
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 3 schedules: none, just 2, just 3 (but NOT both 2 and 3)
+      assert.strictEqual(result.length, 3);
+
+      // Check combinations
+      assert.strictEqual(result.some(s => s.length === 1 && s[0].id === 1), true); // Just base
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 2) && !s.some(sec => sec.id === 3)), true); // Base + 2
+      assert.strictEqual(result.some(s => s.length === 2 && s.some(sec => sec.id === 3) && !s.some(sec => sec.id === 2)), true); // Base + 3
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 2) && s.some(sec => sec.id === 3)), false); // NOT both 2 and 3
+    });
+
+    test("should handle empty base schedule", () => {
+      const baseSchedule: Section[] = [];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 1,
+            meetingTimes: [{ days: [1], startTime: 900, endTime: 1030 }],
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 2 schedules: empty and with section 1
+      assert.strictEqual(result.length, 2);
+      assert.strictEqual(result.some(s => s.length === 0), true);
+      assert.strictEqual(result.some(s => s.length === 1 && s[0].id === 1), true);
+    });
+
+    test("should handle complex scenario with multiple sections per optional course", () => {
+      const baseSchedule: Section[] = [
+        {
+          id: 1,
+          meetingTimes: [{ days: [1], startTime: 900, endTime: 1030 }],
+        },
+      ];
+
+      const optionalSections: Section[][] = [
+        [
+          {
+            id: 2,
+            meetingTimes: [{ days: [1], startTime: 1000, endTime: 1130 }], // Conflicts
+          },
+          {
+            id: 3,
+            meetingTimes: [{ days: [2], startTime: 1100, endTime: 1230 }], // Doesn't conflict
+          },
+        ],
+        [
+          {
+            id: 4,
+            meetingTimes: [{ days: [3], startTime: 1300, endTime: 1430 }],
+          },
+        ],
+      ];
+
+      const result = addOptionalCourses(baseSchedule, optionalSections);
+
+      // Should have 4 schedules: none, just 3, just 4, both 3 and 4
+      assert.strictEqual(result.length, 4);
+
+      // Should NOT include section 2 (conflicts with base)
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 2)), false);
+
+      // Should include various combinations of 3 and 4
+      assert.strictEqual(result.some(s => s.length === 1), true); // Just base
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 3) && !s.some(sec => sec.id === 4)), true); // Base + 3
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 4) && !s.some(sec => sec.id === 3)), true); // Base + 4
+      assert.strictEqual(result.some(s => s.some(sec => sec.id === 3) && s.some(sec => sec.id === 4)), true); // Base + 3 + 4
+    });
+  });
 });
 

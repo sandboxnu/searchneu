@@ -177,20 +177,87 @@ const generateCombinations = (
   return result;
 };
 
-export const generateSchedules = async (
-  courseIds: number[],
-): Promise<SectionWithCourse[][]> => {
-  // assume that all courseIds are from the same term, add logic to check this later
-  const sectionsByCourse = await Promise.all(
-    courseIds.map(getSectionsAndMeetingTimes),
-  );
+// Helper function to try adding optional courses to a base schedule
+const addOptionalCourses = (
+  baseSchedule: SectionWithCourse[],
+  optionalSectionsByCourse: SectionWithCourse[][]
+): SectionWithCourse[][] => {
+  const results: SectionWithCourse[][] = [];
+  
+  // Generate all possible subsets of optional courses (including empty set)
+  const generateOptionalCombinations = (
+    currentSchedule: SectionWithCourse[],
+    courseIndex: number
+  ) => {
+    // Always add the current schedule (even if no more optional courses are added)
+    if (courseIndex === optionalSectionsByCourse.length) {
+      results.push([...currentSchedule]);
+      return;
+    }
 
-  // Generate all possible combinations of sections
-  const allCombinations = generateCombinations(sectionsByCourse);
+    // Try not adding this optional course
+    generateOptionalCombinations(currentSchedule, courseIndex + 1);
 
-  // Filter to only valid schedules (no time conflicts)
-  const validSchedules = allCombinations.filter(isValidSchedule);
+    // Try adding each section of this optional course if it doesn't conflict
+    for (const section of optionalSectionsByCourse[courseIndex]) {
+      const testSchedule = [...currentSchedule, section];
+      if (isValidSchedule(testSchedule)) {
+        generateOptionalCombinations(testSchedule, courseIndex + 1);
+      }
+    }
+  };
 
-  return validSchedules;
+  generateOptionalCombinations(baseSchedule, 0);
+  return results;
 };
 
+export const generateSchedules = async (
+  lockedCourseIds: number[],
+  optionalCourseIds: number[]
+): Promise<SectionWithCourse[][]> => {
+  // assume that all courseIds are from the same term, add logic to check this later
+  
+  // Remove duplicates from both lists
+  lockedCourseIds = Array.from(new Set(lockedCourseIds));
+  optionalCourseIds = Array.from(new Set(optionalCourseIds));
+  
+  // Remove any IDs from optional that appear in locked (locked takes precedence)
+  const lockedSet = new Set(lockedCourseIds);
+  optionalCourseIds = optionalCourseIds.filter(id => !lockedSet.has(id));
+
+  // Get sections for locked and optional courses
+  const lockedSectionsByCourse = await Promise.all(
+    lockedCourseIds.map(getSectionsAndMeetingTimes)
+  );
+  const optionalSectionsByCourse = await Promise.all(
+    optionalCourseIds.map(getSectionsAndMeetingTimes)
+  );
+
+  // Generate all possible combinations of locked courses
+  const lockedCombinations = generateCombinations(lockedSectionsByCourse);
+
+  // Filter to only valid locked schedules (no time conflicts)
+  const validLockedSchedules = lockedCombinations.filter(isValidSchedule);
+
+  // Edge case: no locked courses but have optional courses
+  if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
+    // Start with empty schedule and add optional courses
+    const schedulesWithOptional = addOptionalCourses([], optionalSectionsByCourse);
+    // Remove any empty schedules
+    return schedulesWithOptional.filter(schedule => schedule.length > 0);
+  }
+
+  // If no optional courses, return the locked schedules
+  if (optionalCourseIds.length === 0) {
+    return validLockedSchedules;
+  }
+
+  // For each valid locked schedule, try adding optional courses
+  const allSchedules: SectionWithCourse[][] = [];
+  for (const lockedSchedule of validLockedSchedules) {
+    const schedulesWithOptional = addOptionalCourses(lockedSchedule, optionalSectionsByCourse);
+    allSchedules.push(...schedulesWithOptional);
+  }
+
+  return allSchedules;
+};

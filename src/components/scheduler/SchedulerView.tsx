@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import { CalendarView } from "./CalendarView";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -25,123 +27,73 @@ interface SchedulerViewProps {
 }
 
 export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerViewProps) {
+  const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(0);
+
+  // Limit to first 8 schedules for tabs
+  const displaySchedules = schedules;
+  const currentSchedule = displaySchedules[selectedScheduleIndex];
+
   return (
-    <div className="h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-6 py-4">
+    <div className="h-[calc(100vh-72px)] w-full flex flex-col px-6 py-4" style={{ backgroundColor: '#F8F9F9' }}>
+      {/* Schedule Tabs */}
+      <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
+        {displaySchedules.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setSelectedScheduleIndex(index)}
+            className={`
+              px-4 py-2 rounded-lg border whitespace-nowrap font-bold
+              ${selectedScheduleIndex === index 
+                ? "bg-white border-gray-300 text-gray-900" 
+                : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
+              }
+            `}
+          >
+            Plan {index + 1}
+          </button>
+        ))}
+      </div>
+
       {/* Active Filters Summary */}
       {Object.keys(filters).length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2 text-blue-900">Active Filters:</h2>
-          <div className="space-y-1 text-sm text-blue-800">
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <h2 className="text-sm font-semibold mb-1 text-blue-900">Active Filters:</h2>
+          <div className="flex flex-wrap gap-2 text-xs text-blue-800">
             {filters.startTime && (
-              <div>• Earliest start time: {formatTime(filters.startTime)}</div>
+              <span className="bg-white px-2 py-1 rounded">Earliest: {formatTime(filters.startTime)}</span>
             )}
             {filters.endTime && (
-              <div>• Latest end time: {formatTime(filters.endTime)}</div>
+              <span className="bg-white px-2 py-1 rounded">Latest: {formatTime(filters.endTime)}</span>
             )}
             {filters.specificDaysFree && filters.specificDaysFree.length > 0 && (
-              <div>• Days with no classes: {formatDays(filters.specificDaysFree)}</div>
+              <span className="bg-white px-2 py-1 rounded">Days Free: {formatDays(filters.specificDaysFree)}</span>
             )}
             {filters.minDaysFree !== undefined && (
-              <div>• Minimum days free per week: {filters.minDaysFree}</div>
+              <span className="bg-white px-2 py-1 rounded">Min Days Free: {filters.minDaysFree}</span>
             )}
             {filters.minSeatsLeft !== undefined && (
-              <div>• Minimum seats available: {filters.minSeatsLeft}</div>
+              <span className="bg-white px-2 py-1 rounded">Min Seats: {filters.minSeatsLeft}</span>
             )}
             {filters.minHonorsCourses !== undefined && (
-              <div>• Minimum honors courses: {filters.minHonorsCourses}</div>
+              <span className="bg-white px-2 py-1 rounded">Min Honors: {filters.minHonorsCourses}</span>
             )}
             {filters.nupaths && filters.nupaths.length > 0 && (
-              <div>• NUPath requirements: {filters.nupaths.join(", ")}</div>
+              <span className="bg-white px-2 py-1 rounded">NUPaths: {filters.nupaths.join(", ")}</span>
             )}
           </div>
         </div>
       )}
 
-      {/* Results Count */}
-      <p className="text-gray-600">
-        Found {schedules.length} valid schedule{schedules.length !== 1 ? "s" : ""}
-        {totalSchedules !== schedules.length && ` (filtered from ${totalSchedules} total)`}
-      </p>
-
-      {/* Schedules */}
-      <div className="space-y-8">
-        {schedules.map((schedule, scheduleIndex) => (
-          <div
-            key={scheduleIndex}
-            className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
-          >
-            <h2 className="text-xl font-semibold mb-4">
-              Schedule {scheduleIndex + 1}
-            </h2>
-
-            <div className="space-y-4">
-              {schedule.map((section, sectionIndex) => (
-                <div
-                  key={sectionIndex}
-                  className="border-l-4 border-blue-500 pl-4 py-2"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {section.courseSubject} {section.courseNumber}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-1">
-                        {section.courseName}
-                      </p>
-                      <span className="text-sm text-gray-700">
-                        CRN: {section.crn}
-                      </span>
-                      {section.honors && (
-                        <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                          Honors
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      {section.classType}
-                    </span>
-                  </div>
-
-                  {section.faculty && (
-                    <p className="text-sm text-gray-700 mb-1">
-                      Instructor: {section.faculty}
-                    </p>
-                  )}
-
-                  {section.meetingTimes.length > 0 ? (
-                    <div className="mt-2 space-y-1">
-                      {section.meetingTimes.map((meeting, meetingIndex) => (
-                        <div
-                          key={meetingIndex}
-                          className="text-sm text-gray-700 flex items-center gap-2"
-                        >
-                          <span className="font-medium">
-                            {formatDays(meeting.days)}
-                          </span>
-                          <span>•</span>
-                          <span>
-                            {formatTime(meeting.startTime)} -{" "}
-                            {formatTime(meeting.endTime)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 italic">
-                      No scheduled meeting times
-                    </p>
-                  )}
-
-                  <div className="mt-2 text-xs text-gray-500">
-                    Seats: {section.seatRemaining}/{section.seatCapacity} •
-                    Campus: {section.campus}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Calendar View */}
+      {currentSchedule ? (
+        <div className="flex-1 overflow-hidden">
+          <CalendarView schedule={currentSchedule} scheduleNumber={selectedScheduleIndex + 1} />
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-gray-500">
+          No schedules found. Try adjusting your filters or course selection.
+        </div>
+      )}
     </div>
   );
 }

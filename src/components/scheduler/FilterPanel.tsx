@@ -34,9 +34,7 @@ export function FilterPanel({
   isGenerating,
   nupathOptions,
 }: FilterPanelProps) {
-  const [courseIdsInput, setCourseIdsInput] = useState(
-    "17500, 16048, 15783, 17501",
-  );
+  const [courseIdsInput, setCourseIdsInput] = useState("");
 
   const updateFilter = <K extends keyof ScheduleFilters>(
     key: K,
@@ -65,7 +63,7 @@ export function FilterPanel({
   };
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:hidden">
       {/* Course IDs Input */}
       <div>
         <Label className="text-muted-foreground text-xs font-bold">

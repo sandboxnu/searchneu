@@ -12,17 +12,20 @@ import {
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Iconskie } from "../icons/Iconskie";
 import { useAuth, signOut } from "@/lib/auth/client";
+import { ErrorBoundary } from "react-error-boundary";
+import { NavErrorFallback } from "../navigation/NavError"
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
   const { user, isPending } = useAuth();
 
   if (!isPending && user.guid) {
-    return <UserMenu />;
+    return <ErrorBoundary FallbackComponent={NavErrorFallback}><UserMenu /></ErrorBoundary>;
   }
 
   return (
     <>
+    <ErrorBoundary FallbackComponent={NavErrorFallback}>
       <Button
         className="bg-accent hover:bg-accent/80 h-9 rounded-full font-bold"
         onClick={() => setShowSI(!showSI)}
@@ -30,6 +33,7 @@ export function UserIcon() {
         Sign In
       </Button>
       {showSI && <SignIn closeFn={() => setShowSI(false)} />}
+    </ErrorBoundary>
     </>
   );
 }

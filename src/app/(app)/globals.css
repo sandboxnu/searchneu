@@ -154,11 +154,9 @@
   }
   body {
     @apply bg-neu2 text-neu9;
-    vertical-align: baseline;
   }
   * {
     @apply leading-tight;
-    vertical-align: baseline;
   }
 }
 

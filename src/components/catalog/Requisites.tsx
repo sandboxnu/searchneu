@@ -12,6 +12,7 @@ import type {
 import { cn } from "@/lib/cn";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 // Type guards
 const isCondition = (item: RequisiteItem): item is Condition => {
@@ -44,6 +45,7 @@ export function RequisiteBlock({
   const [isAnimating, setIsAnimating] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (contentRef && contentRef.current) {
@@ -66,6 +68,7 @@ export function RequisiteBlock({
     term: termId,
     depth: 0,
     prereqMode: prereqMode,
+    searchQuery: searchParams.get("q"),
   });
 
   return (
@@ -110,11 +113,13 @@ function RequisiteItemComponent({
   term,
   depth,
   prereqMode,
+  searchQuery,
 }: {
   item: RequisiteItem;
   term: string;
   depth: number;
   prereqMode: boolean;
+  searchQuery: string | null;
 }) {
   if (isCondition(item)) {
     return (
@@ -135,6 +140,7 @@ function RequisiteItemComponent({
               term={term}
               depth={depth + 1}
               prereqMode={true}
+              searchQuery={searchQuery}
             />
             {depth > 0 &&
               item.type === "and" &&
@@ -157,7 +163,7 @@ function RequisiteItemComponent({
   if (isCourse(item)) {
     return (
       <Link
-        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}`}
+        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}${searchQuery ? `?q=${searchQuery}` : ""}`}
         className="bg-neu1 flex items-center rounded-lg border p-2.5"
       >
         <span className="text-neu8 text-xs font-bold whitespace-nowrap">

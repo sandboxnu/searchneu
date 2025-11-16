@@ -3,6 +3,7 @@ import { Bookmark, CircleQuestionMark, DoorOpen } from "lucide-react";
 import { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FlagValues } from "flags/react";
 
 export function NavBar({
   flags,
@@ -17,6 +18,13 @@ export function NavBar({
 
   return (
     <nav className="flex gap-2 font-semibold">
+      <FlagValues
+        values={{
+          "faq-page": faqFlag,
+          rooms: roomsFlag,
+          scheduler: schedulerFlag,
+        }}
+      />
       {roomsFlag && (
         <Link
           href="/rooms"

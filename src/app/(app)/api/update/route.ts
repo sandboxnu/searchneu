@@ -105,24 +105,24 @@ export async function GET(req: NextRequest) {
     `);
     }
 
-    // if (newSections.length > 0) {
-    //   await db.insert(sectionsT).values(
-    //     newSections.map((s, i) => ({
-    //       term: term,
-    //       courseId: newSectionCourseKeys[i],
-    //       crn: s.crn,
-    //       faculty: s.faculty,
-    //       seatCapacity: s.seatCapacity,
-    //       seatRemaining: s.seatRemaining,
-    //       waitlistCapacity: s.waitlistCapacity,
-    //       waitlistRemaining: s.waitlistRemaining,
-    //       classType: s.classType,
-    //       honors: s.honors,
-    //       campus: s.campus,
-    //       meetingTimes: s.meetingTimes,
-    //     })),
-    //   );
-    // }
+    if (newSections.length > 0) {
+      await db.insert(sectionsT).values(
+        newSections.map((s, i) => ({
+          term: term,
+          courseId: newSectionCourseKeys[i],
+          crn: s.crn,
+          faculty: s.faculty,
+          seatCapacity: s.seatCapacity,
+          seatRemaining: s.seatRemaining,
+          waitlistCapacity: s.waitlistCapacity,
+          waitlistRemaining: s.waitlistRemaining,
+          classType: s.classType,
+          honors: s.honors,
+          campus: s.campus,
+          meetingTimes: s.meetingTimes,
+        })),
+      );
+    }
 
     // set the term last updated
     await db

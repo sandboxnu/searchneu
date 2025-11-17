@@ -14,16 +14,11 @@ import { readFileSync } from "fs";
 import path from "path";
 import { parse } from "yaml";
 
+const CACHE_PATH = "cache/";
+
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
 export async function updateTerm(term: string) {
-  const CACHE_PATH = "cache/";
-
-  const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
-    encoding: "utf8",
-  });
-  const config = parse(configStream) as Config;
-
   logger.info({ term }, "updating term");
   const scrapedSections = await scrapeSections(term);
 
@@ -96,6 +91,11 @@ export async function updateTerm(term: string) {
     (_, i) => rawCourseKeys[i] !== -1,
   );
   const newSectionCourseKeys = rawCourseKeys.filter((k) => k !== -1);
+
+  const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
+    encoding: "utf8",
+  });
+  const config = parse(configStream) as Config;
 
   rootedNewSections = await getSectionFaculty(rootedNewSections);
   const newSections = rootedNewSections.map((s) => ({

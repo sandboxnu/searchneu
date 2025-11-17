@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
       sectionsWithNewSeats: newSeats,
       sectionsWithUpdatedSeats: updatedSeats,
       sectionsWithNewWaitlistSeats: waitlistSeats,
+      sectionsWithUpdatedWaitlistSeats: updatedWaitlistSeats,
       newSections,
       newSectionCourseKeys,
     } = await updateTerm(term);
@@ -79,7 +80,7 @@ export async function GET(req: NextRequest) {
       )
       .join(", ");
 
-    const waitlistValues = waitlistSeats
+    const waitlistValues = [...waitlistSeats, ...updatedWaitlistSeats]
       .map(
         ({ courseReferenceNumber, waitAvailable }) =>
           `('${courseReferenceNumber}', ${waitAvailable})`,

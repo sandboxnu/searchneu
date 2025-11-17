@@ -4,7 +4,7 @@ function isValidNupath(code: string, config: Config) {
   return config.attributes.nupath.some((n) => n.short === code);
 }
 
-function convertCampus(code: string, config: Config): string {
+export function convertCampus(code: string, config: Config): string {
   const campusConfig = config.attributes.campus.find((c) => c.code === code);
   if (!campusConfig) {
     throw new Error(

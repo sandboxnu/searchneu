@@ -38,6 +38,7 @@ export async function updateTerm(term: string) {
   const sectionsWithNewSeats: BannerSection[] = [];
   const sectionsWithUpdatedSeats: BannerSection[] = [];
   const sectionsWithNewWaitlistSeats: BannerSection[] = [];
+  const sectionsWithUpdatedWaitlistSeats: BannerSection[] = [];
 
   // PERF: when notif info is added to db, if could be worth only
   // checking the sections people are subbed too
@@ -67,6 +68,13 @@ export async function updateTerm(term: string) {
       !sectionsWithNewSeats.includes(scrape)
     ) {
       sectionsWithUpdatedSeats.push(scrape);
+    }
+
+    if (
+      scrape.waitAvailable !== stale.waitRemaining &&
+      !sectionsWithNewWaitlistSeats.includes(scrape)
+    ) {
+      sectionsWithUpdatedWaitlistSeats.push(scrape);
     }
   }
 
@@ -146,6 +154,7 @@ export async function updateTerm(term: string) {
     sectionsWithNewSeats,
     sectionsWithUpdatedSeats,
     sectionsWithNewWaitlistSeats,
+    sectionsWithUpdatedWaitlistSeats,
     newSections,
     newSectionCourseKeys,
   };

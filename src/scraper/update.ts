@@ -8,10 +8,22 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
 import { logger } from "@/lib/logger";
+import { convertCampus } from "./validate-cache";
+import { Config } from "@/scraper/types";
+import { readFileSync } from "fs";
+import path from "path";
+import { parse } from "yaml";
 
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
 export async function updateTerm(term: string) {
+  const CACHE_PATH = "cache/";
+
+  const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
+    encoding: "utf8",
+  });
+  const config = parse(configStream) as Config;
+
   logger.info({ term }, "updating term");
   const scrapedSections = await scrapeSections(term);
 
@@ -29,6 +41,7 @@ export async function updateTerm(term: string) {
     .where(eq(coursesT.term, term));
 
   const sectionsWithNewSeats: BannerSection[] = [];
+  const sectionsWithUpdatedSeats: BannerSection[] = [];
   const sectionsWithNewWaitlistSeats: BannerSection[] = [];
 
   // PERF: when notif info is added to db, if could be worth only
@@ -52,6 +65,13 @@ export async function updateTerm(term: string) {
 
     if (scrape.waitAvailable > 0 && stale.waitRemaining === 0) {
       sectionsWithNewWaitlistSeats.push(scrape);
+    }
+
+    if (
+      scrape.seatsAvailable !== stale.seatRemaining &&
+      !sectionsWithNewSeats.includes(scrape)
+    ) {
+      sectionsWithUpdatedSeats.push(scrape);
     }
   }
 
@@ -86,7 +106,7 @@ export async function updateTerm(term: string) {
     waitlistRemaining: s.waitAvailable,
     classType: s.scheduleTypeDescription,
     honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-    campus: s.campusDescription,
+    campus: convertCampus(s.campusDescription, config),
     meetingTimes: parseMeetingTimes(s),
 
     faculty: s.f ?? "TBA",
@@ -124,6 +144,7 @@ export async function updateTerm(term: string) {
 
   return {
     sectionsWithNewSeats,
+    sectionsWithUpdatedSeats,
     sectionsWithNewWaitlistSeats,
     newSections,
     newSectionCourseKeys,

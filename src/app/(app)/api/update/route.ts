@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
   for (const term of terms) {
     const {
       sectionsWithNewSeats: newSeats,
+      sectionsWithUpdatedSeats: updatedSeats,
       sectionsWithNewWaitlistSeats: waitlistSeats,
       newSections,
       newSectionCourseKeys,
@@ -71,7 +72,7 @@ export async function GET(req: NextRequest) {
     await sendNotifications(seatNotifs, waitlistNotifs);
 
     // update the seat counts in the database
-    const values = newSeats
+    const values = [...newSeats, ...updatedSeats]
       .map(
         ({ courseReferenceNumber, seatsAvailable }) =>
           `('${courseReferenceNumber}', ${seatsAvailable})`,

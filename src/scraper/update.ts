@@ -8,6 +8,13 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
 import { logger } from "@/lib/logger";
+import { convertCampus } from "./validate-cache";
+import { Config } from "@/scraper/types";
+import { readFileSync } from "fs";
+import path from "path";
+import { parse } from "yaml";
+
+const CACHE_PATH = "cache/";
 
 // updateTerm scrapes the banner section information to determine
 // the sections with updated seat counts
@@ -29,7 +36,9 @@ export async function updateTerm(term: string) {
     .where(eq(coursesT.term, term));
 
   const sectionsWithNewSeats: BannerSection[] = [];
+  const sectionsWithUpdatedSeats: BannerSection[] = [];
   const sectionsWithNewWaitlistSeats: BannerSection[] = [];
+  const sectionsWithUpdatedWaitlistSeats: BannerSection[] = [];
 
   // PERF: when notif info is added to db, if could be worth only
   // checking the sections people are subbed too
@@ -52,6 +61,20 @@ export async function updateTerm(term: string) {
 
     if (scrape.waitAvailable > 0 && stale.waitRemaining === 0) {
       sectionsWithNewWaitlistSeats.push(scrape);
+    }
+
+    if (
+      scrape.seatsAvailable !== stale.seatRemaining &&
+      !sectionsWithNewSeats.includes(scrape)
+    ) {
+      sectionsWithUpdatedSeats.push(scrape);
+    }
+
+    if (
+      scrape.waitAvailable !== stale.waitRemaining &&
+      !sectionsWithNewWaitlistSeats.includes(scrape)
+    ) {
+      sectionsWithUpdatedWaitlistSeats.push(scrape);
     }
   }
 
@@ -77,6 +100,11 @@ export async function updateTerm(term: string) {
   );
   const newSectionCourseKeys = rawCourseKeys.filter((k) => k !== -1);
 
+  const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
+    encoding: "utf8",
+  });
+  const config = parse(configStream) as Config;
+
   rootedNewSections = await getSectionFaculty(rootedNewSections);
   const newSections = rootedNewSections.map((s) => ({
     crn: s.courseReferenceNumber,
@@ -86,8 +114,8 @@ export async function updateTerm(term: string) {
     waitlistRemaining: s.waitAvailable,
     classType: s.scheduleTypeDescription,
     honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-    // campus: s.campusDescription,
-    // meetingTimes: parseMeetingTimes(s),
+    campus: convertCampus(s.campusDescription, config),
+    meetingTimes: parseMeetingTimes(s),
 
     faculty: s.f ?? "TBA",
   }));
@@ -124,7 +152,9 @@ export async function updateTerm(term: string) {
 
   return {
     sectionsWithNewSeats,
+    sectionsWithUpdatedSeats,
     sectionsWithNewWaitlistSeats,
+    sectionsWithUpdatedWaitlistSeats,
     newSections,
     newSectionCourseKeys,
   };

@@ -32,7 +32,9 @@ export async function GET(req: NextRequest) {
   for (const term of terms) {
     const {
       sectionsWithNewSeats: newSeats,
+      sectionsWithUpdatedSeats: updatedSeats,
       sectionsWithNewWaitlistSeats: waitlistSeats,
+      sectionsWithUpdatedWaitlistSeats: updatedWaitlistSeats,
       newSections,
       newSectionCourseKeys,
     } = await updateTerm(term);
@@ -71,14 +73,14 @@ export async function GET(req: NextRequest) {
     await sendNotifications(seatNotifs, waitlistNotifs);
 
     // update the seat counts in the database
-    const values = newSeats
+    const values = [...newSeats, ...updatedSeats]
       .map(
         ({ courseReferenceNumber, seatsAvailable }) =>
           `('${courseReferenceNumber}', ${seatsAvailable})`,
       )
       .join(", ");
 
-    const waitlistValues = waitlistSeats
+    const waitlistValues = [...waitlistSeats, ...updatedWaitlistSeats]
       .map(
         ({ courseReferenceNumber, waitAvailable }) =>
           `('${courseReferenceNumber}', ${waitAvailable})`,
@@ -105,24 +107,24 @@ export async function GET(req: NextRequest) {
     `);
     }
 
-    // if (newSections.length > 0) {
-    //   await db.insert(sectionsT).values(
-    //     newSections.map((s, i) => ({
-    //       term: term,
-    //       courseId: newSectionCourseKeys[i],
-    //       crn: s.crn,
-    //       faculty: s.faculty,
-    //       seatCapacity: s.seatCapacity,
-    //       seatRemaining: s.seatRemaining,
-    //       waitlistCapacity: s.waitlistCapacity,
-    //       waitlistRemaining: s.waitlistRemaining,
-    //       classType: s.classType,
-    //       honors: s.honors,
-    //       campus: s.campus,
-    //       meetingTimes: s.meetingTimes,
-    //     })),
-    //   );
-    // }
+    if (newSections.length > 0) {
+      await db.insert(sectionsT).values(
+        newSections.map((s, i) => ({
+          term: term,
+          courseId: newSectionCourseKeys[i],
+          crn: s.crn,
+          faculty: s.faculty,
+          seatCapacity: s.seatCapacity,
+          seatRemaining: s.seatRemaining,
+          waitlistCapacity: s.waitlistCapacity,
+          waitlistRemaining: s.waitlistRemaining,
+          classType: s.classType,
+          honors: s.honors,
+          campus: s.campus,
+          meetingTimes: s.meetingTimes,
+        })),
+      );
+    }
 
     // set the term last updated
     await db

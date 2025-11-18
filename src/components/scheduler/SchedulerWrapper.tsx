@@ -23,11 +23,18 @@ export function SchedulerWrapper({
   const [filters, setFilters] = useState<ScheduleFilters>({ isOnline: true });
   const [isPending, startTransition] = useTransition();
 
-  const handleGenerateSchedules = async (courseIds: number[]) => {
+  const handleGenerateSchedules = async (lockedCourseIds: number[], optionalCourseIds: number[]) => {
     startTransition(() => {
       // Navigate to the same page with course IDs in the URL
       // This will trigger a server-side re-render with the new schedules
-      router.push(`/scheduler?courseIds=${courseIds.join(",")}`);
+      const params = new URLSearchParams();
+      if (lockedCourseIds.length > 0) {
+        params.set("lockedCourseIds", lockedCourseIds.join(","));
+      }
+      if (optionalCourseIds.length > 0) {
+        params.set("optionalCourseIds", optionalCourseIds.join(","));
+      }
+      router.push(`/scheduler?${params.toString()}`);
     });
   };
 

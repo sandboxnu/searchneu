@@ -5,6 +5,8 @@ import { CourseCards } from "@/components/home/CourseCards";
 import type { Metadata } from "next";
 import { Search } from "@/components/home/Search";
 import ClickSpark from "@/components/ui/click-spark";
+import { notFound } from 'next/navigation'
+
 
 export const metadata: Metadata = {
   title: "SearchNEU",
@@ -12,7 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  return (
+  // throw new Error('Internal Server Error')
+  notFound();
+  return (  
     <>
       <NeuSearchskiePattern count={200} />
       <ClickSpark

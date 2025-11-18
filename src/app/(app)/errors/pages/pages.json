@@ -1,0 +1,23 @@
+{
+  "pages": [
+    {
+      "title": "Landing",
+      "image": "/images/errors/landing.png",
+      "symbol": "",
+      "link": "/"
+    },
+    {
+      "title": "Catalog",
+      "image": "/images/errors/catalog.png",
+      "symbol": "",
+      "link": "/catalog"
+    },
+    {
+      "title": "Changelog",
+      "image": "/images/errors/changelog.png",
+      "symbol": "",
+      "link": "/changelog"
+    }
+
+  ]
+}

@@ -5,6 +5,9 @@ import { type ScheduleFilters } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { FilterMultiSelect } from "./FilterMultiSelect";
+import { Switch } from "../ui/switch";
+import { TimeInput } from "./TimeInput";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -50,6 +53,11 @@ export function FilterPanel({
   };
 
   const clearFilters = () => onFiltersChange({ isOnline: true });
+
+  const clearNUPaths = () => {
+    const { nupaths, ...rest } = filters;
+    onFiltersChange(rest);
+  };
 
   const handleGenerate = () => {
     // Parse locked course IDs from input
@@ -117,113 +125,12 @@ export function FilterPanel({
         </button>
       </div>
 
-      {/* Start Time Filter */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          EARLIEST START TIME
-        </Label>
-        <input
-          type="time"
-          value={
-            filters.startTime ? militaryToTimeString(filters.startTime) : ""
-          }
-          onChange={(e) =>
-            updateFilter(
-              "startTime",
-              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
-            )
-          }
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
-      {/* End Time Filter */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          LATEST END TIME
-        </Label>
-        <input
-          type="time"
-          value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
-          onChange={(e) =>
-            updateFilter(
-              "endTime",
-              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
-            )
-          }
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
       <Separator />
-
-      {/* Min Days Free */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          MIN DAYS FREE
-        </Label>
-        <input
-          type="number"
-          min="0"
-          max="7"
-          value={filters.minDaysFree ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minDaysFree",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
-          }
-          placeholder="0-7"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
-      {/* Days Free Checkboxes */}
-      <div>
-        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
-          SPECIFIC DAYS FREE
-        </Label>
-        <div className="flex flex-wrap gap-2">
-          {[
-            { value: 0, label: "Sun" },
-            { value: 1, label: "Mon" },
-            { value: 2, label: "Tue" },
-            { value: 3, label: "Wed" },
-            { value: 4, label: "Thu" },
-            { value: 5, label: "Fri" },
-            { value: 6, label: "Sat" },
-          ].map((day) => (
-            <label
-              key={day.value}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
-            >
-              <input
-                type="checkbox"
-                checked={filters.specificDaysFree?.includes(day.value) ?? false}
-                onChange={(e) => {
-                  const currentDays = filters.specificDaysFree || [];
-                  const newDays = e.target.checked
-                    ? [...currentDays, day.value]
-                    : currentDays.filter((d) => d !== day.value);
-                  updateFilter(
-                    "specificDaysFree",
-                    newDays.length > 0 ? newDays : undefined,
-                  );
-                }}
-                className="rounded"
-              />
-              <span className="text-sm">{day.label}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
-
+      
       {/* Online Classes */}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-muted-foreground text-xs font-bold">
-          INCLUDE ONLINE CLASSES
+          INCLUDE REMOTE SECTIONS
         </span>
         <button
           type="button"
@@ -242,43 +149,126 @@ export function FilterPanel({
 
       <Separator />
 
-      {/* Min Seats Left */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          MIN SEATS AVAILABLE
-        </Label>
-        <input
-          type="number"
-          min="0"
-          value={filters.minSeatsLeft ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minSeatsLeft",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
-          }
-          placeholder="Any"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+      {/* Time Section */}
+      <div className="space-y-3">
+        <Label className="text-muted-foreground text-xs font-bold">TIME</Label>
+        
+        <div className="flex items-center justify-between text-sm pb-1.5">
+          <span className="text-muted-foreground whitespace-nowrap">Start time is after</span>
+          <TimeInput
+            value={
+              filters.startTime ? militaryToTimeString(filters.startTime) : ""
+            }
+            onChange={(value) =>
+              updateFilter(
+                "startTime",
+                value ? timeStringToMilitary(value) : undefined
+              )
+            }
+          />
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground whitespace-nowrap">End time is before</span>
+          <TimeInput
+            value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
+            onChange={(value) =>
+              updateFilter(
+                "endTime",
+                value ? timeStringToMilitary(value) : undefined
+              )
+            }
+          />
+        </div>
+
+        
+
+        
       </div>
 
-      {/* Min Honors Courses */}
-      <div>
+      <Separator />
+
+      {/* Free Days Section */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-muted-foreground text-xs font-bold">
+            FREE DAYS
+          </Label>
+          {(filters.specificDaysFree?.length ?? 0) > 0 && (
+            <button
+              onClick={() => updateFilter("specificDaysFree", undefined)}
+              className="text-blue-600 hover:text-blue-600/80 text-xs"
+            >
+              Clear all
+            </button>
+          )}
+        </div>
+
+        {/* Day number buttons */}
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5, 6].map((num) => (
+            <button
+              key={num}
+              onClick={() => updateFilter("minDaysFree", num)}
+              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                filters.minDaysFree === num
+                  ? "bg-red-500 text-white"
+                  : "border border-input bg-background text-foreground hover:bg-muted"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+        </div>
+
+        {/* Day checkboxes */}
+        <div className="space-y-2">
+          {[
+            { value: 1, label: "Monday" },
+            { value: 2, label: "Tuesday" },
+            { value: 3, label: "Wednesday" },
+            { value: 4, label: "Thursday" },
+            { value: 5, label: "Friday" },
+            { value: 6, label: "Saturday" },
+            { value: 0, label: "Sunday" },
+          ].map((day) => (
+            <label
+              key={day.value}
+              className="flex cursor-pointer items-center justify-between py-1"
+            >
+              <span className="text-sm text-muted-foreground">{day.label}</span>
+              <input
+                type="checkbox"
+                checked={filters.specificDaysFree?.includes(day.value) ?? false}
+                onChange={(e) => {
+                  const currentDays = filters.specificDaysFree || [];
+                  const newDays = e.target.checked
+                    ? [...currentDays, day.value]
+                    : currentDays.filter((d) => d !== day.value);
+                  updateFilter(
+                    "specificDaysFree",
+                    newDays.length > 0 ? newDays : undefined
+                  );
+                }}
+                className="h-4 w-4 rounded border-input accent-red-500"
+              />
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Hide Filled Sections Toggle */}
+      <div className="flex items-center justify-between">
         <Label className="text-muted-foreground text-xs font-bold">
-          MIN HONORS COURSES
+          HIDE FILLED SECTIONS
         </Label>
-        <input
-          type="number"
-          min="0"
-          value={filters.minHonorsCourses ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minHonorsCourses",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
+        <Switch
+          checked={(filters.minSeatsLeft ?? 0) > 0}
+          onCheckedChange={(checked) =>
+            updateFilter("minSeatsLeft", checked ? 1 : undefined)
           }
-          placeholder="Any"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -286,35 +276,33 @@ export function FilterPanel({
 
       {/* NUPath Requirement */}
       <div>
-        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
-          NUPATH REQUIREMENTS
-        </Label>
-        <div className="flex flex-wrap gap-2">
-          {nupathOptions.map((nupath) => (
-            <label
-              key={nupath.value}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
-            >
-              <input
-                type="checkbox"
-                checked={filters.nupaths?.includes(nupath.value) ?? false}
-                onChange={(e) => {
-                  const currentNupaths = filters.nupaths || [];
-                  const newNupaths = e.target.checked
-                    ? [...currentNupaths, nupath.value]
-                    : currentNupaths.filter((n) => n !== nupath.value);
-                  updateFilter(
-                    "nupaths",
-                    newNupaths.length > 0 ? newNupaths : undefined,
-                  );
-                }}
-                className="rounded"
-              />
-              <span className="text-sm">{nupath.label}</span>
-            </label>
-          ))}
-        </div>
+        <FilterMultiSelect
+          label="NUPATHS"
+          options={nupathOptions}
+          selected={filters.nupaths ?? []}
+          onSelectedChange={(values) =>
+            updateFilter("nupaths", values.length > 0 ? values : undefined)
+          }
+          placeholder="Select NUPaths"
+        />
       </div>
+
+      <Separator />
+
+      {/* Include Honors Toggle */}
+      <div className="flex items-center justify-between">
+        <Label className="text-muted-foreground text-xs font-bold">
+          INCLUDE HONORS
+        </Label>
+        <Switch
+          checked={(filters.minHonorsCourses ?? 0) > 0}
+          onCheckedChange={(checked) =>
+            updateFilter("minHonorsCourses", checked ? 1 : undefined)
+          }
+          className="data-[state=checked]:bg-red-500"
+        />
+      </div>
+
     </div>
   );
 }

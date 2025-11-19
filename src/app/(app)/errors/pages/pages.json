@@ -3,21 +3,26 @@
     {
       "title": "Landing",
       "image": "/images/errors/landing.png",
-      "symbol": "",
+      "symbol": "house",
       "link": "/"
     },
     {
       "title": "Catalog",
       "image": "/images/errors/catalog.png",
-      "symbol": "",
+      "symbol": "book-open-text",
       "link": "/catalog"
     },
     {
       "title": "Changelog",
       "image": "/images/errors/changelog.png",
-      "symbol": "",
+      "symbol": "album",
       "link": "/changelog"
+    },
+        {
+      "title": "Sandbox",
+      "image": "/images/errors/sandbox.png",
+      "symbol": "sandbox",
+      "link": "https://www.sandboxnu.com/"
     }
-
   ]
 }

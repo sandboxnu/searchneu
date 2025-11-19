@@ -14,8 +14,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  // throw new Error('Internal Server Error')
-  notFound();
   return (  
     <>
       <NeuSearchskiePattern count={200} />

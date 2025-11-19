@@ -204,6 +204,11 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
             {filters.nupaths && filters.nupaths.length > 0 && (
               <span className="bg-white px-2 py-1 rounded">NUPaths: {filters.nupaths.join(", ")}</span>
             )}
+            {filters.isOnline !== undefined && (
+              <span className="bg-white px-2 py-1 rounded">
+                {filters.isOnline ? "Includes Online Courses" : "Excludes Online Courses"}
+              </span>
+            )}
           </div>
         </div>
       )}

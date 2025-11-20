@@ -55,7 +55,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
     }
   };
 
-  const clearFilters = () => onFiltersChange({ isOnline: true });
+  const clearFilters = () => onFiltersChange({ includesOnline: true });
 
   const handleGenerate = () => {
     // Parse locked course IDs from input
@@ -228,14 +228,14 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         </span>
         <button
           type="button"
-          onClick={() => updateFilter("isOnline", !filters.isOnline)}
+          onClick={() => updateFilter("includesOnline", !filters.includesOnline)}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-            filters.isOnline ? "bg-red-500" : "bg-gray-300"
+            filters.includesOnline ? "bg-red-500" : "bg-gray-300"
           }`}
         >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-              filters.isOnline ? "translate-x-6" : "translate-x-1"
+              filters.includesOnline ? "translate-x-6" : "translate-x-1"
             }`}
           />
         </button>
@@ -380,7 +380,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       <Separator />
 
       {/* Include Honors Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-20">
         <Label className="text-muted-foreground text-xs font-bold">
           INCLUDE HONORS
         </Label>
@@ -391,16 +391,6 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           }
           className="data-[state=checked]:bg-red-500"
         />
-      </div>
-
-      <Separator />
-
-      <div className="pb-20">
-        <FeedbackModal>
-          <div className="text-xs text-neu font-semibold cursor-pointer hover:underline">
-            Have an idea for a filter? Let us know <MoveRightIcon className="inline h-3 w-3"/>      
-          </div>
-        </FeedbackModal>
       </div>
       
     </div>

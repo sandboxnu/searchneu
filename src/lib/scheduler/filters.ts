@@ -15,7 +15,7 @@ export type ScheduleFilters = {
   minSeatsLeft?: number;
   includeHonors?: boolean;
   nupaths?: string[];
-  isOnline?: boolean;
+  includesOnline?: boolean;
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -82,6 +82,13 @@ export const sectionPassesFilters = (
     return false;
   }
 
+  // The only time we care is if we want to exclude online courses
+  if (filters.includesOnline == false) {
+    if (section.campus == "Online") {
+      return false;
+    }
+  }
+
   return true;
 };
 
@@ -117,18 +124,6 @@ const scheduleHasRequiredNupaths = (
   return requiredNupaths.every((nupath) => scheduleNupaths.has(nupath));
 };
 
-// Check if a schedule has at least one online course
-const scheduleHasOnlineCourse = (
-  schedule: SectionWithCourse[],
-): boolean => {
-  for (const section of schedule) {
-    if (section.campus == "Online") {
-      return true;
-    }
-  }
-  return false;
-};
-
 // Check if a complete schedule passes all filters
 export const schedulePassesFilters = (
   schedule: SectionWithCourse[],
@@ -161,13 +156,6 @@ export const schedulePassesFilters = (
   // Check NUPath requirements (only if provided)
   if (filters.nupaths && filters.nupaths.length > 0) {
     if (!scheduleHasRequiredNupaths(schedule, filters.nupaths)) {
-      return false;
-    }
-  }
-
-  // Check that at least no courses are online
-  if (filters.isOnline == false) {
-    if (scheduleHasOnlineCourse(schedule)) {
       return false;
     }
   }

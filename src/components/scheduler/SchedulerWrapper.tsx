@@ -13,7 +13,7 @@ interface SchedulerWrapperProps {
 
 export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({isOnline: true});
+  const [filters, setFilters] = useState<ScheduleFilters>({isOnline: true, includeHonors: true});
   const [isPending, startTransition] = useTransition();
 
   const handleGenerateSchedules = async (lockedCourseIds: number[], optionalCourseIds: number[]) => {

@@ -36,7 +36,6 @@ export function FilterMultiSelect({
   options,
   selected,
   onSelectedChange,
-  placeholder = "Select options",
 }: FilterMultiSelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -110,7 +109,7 @@ export function FilterMultiSelect({
               >
                 <CommandInput
                   placeholder={`Search ${label.toLowerCase()}...`}
-                  className="text-sm"
+                  className="text-xs"
                 />
                 <CommandList className="max-h-[300px]">
                   <CommandEmpty>No results found</CommandEmpty>
@@ -158,7 +157,7 @@ export function FilterMultiSelect({
           {selectedOptions.slice(0, 3).map((opt) => (
             <span
               key={opt.value}
-              className="inline-flex w-fit items-center rounded-full border bg-secondary px-3 py-1 text-sm"
+              className="inline-flex w-fit items-center rounded-full border bg-secondary px-3 py-1 text-xs"
             >
               <span className="flex items-center gap-2">
                 {opt.value !== opt.label && (
@@ -184,7 +183,7 @@ export function FilterMultiSelect({
             </span>
           ))}
           {selectedOptions.length > 3 && (
-            <span className="rounded-full border px-3 py-1 text-sm">
+            <span className="rounded-full border px-3 py-1 text-xs">
               +{selectedOptions.length - 3}
             </span>
           )}

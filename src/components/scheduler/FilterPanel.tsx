@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
+import { MoveRightIcon } from "lucide-react";
+import FeedbackModal from "../feedback/FeedbackModal";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -54,11 +56,6 @@ export function FilterPanel({
 
   const clearFilters = () => onFiltersChange({ isOnline: true });
 
-  const clearNUPaths = () => {
-    const { nupaths, ...rest } = filters;
-    onFiltersChange(rest);
-  };
-
   const handleGenerate = () => {
     // Parse locked course IDs from input
     const lockedCourseIds = lockedCourseIdsInput
@@ -78,7 +75,7 @@ export function FilterPanel({
   };
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
       {/* Locked Course IDs Input */}
       <div>
         <Label className="text-muted-foreground text-xs font-bold">
@@ -179,11 +176,7 @@ export function FilterPanel({
               )
             }
           />
-        </div>
-
-        
-
-        
+        </div>        
       </div>
 
       <Separator />
@@ -295,14 +288,24 @@ export function FilterPanel({
           INCLUDE HONORS
         </Label>
         <Switch
-          checked={(filters.minHonorsCourses ?? 0) > 0}
+          checked={(filters.includeHonors)}
           onCheckedChange={(checked) =>
-            updateFilter("minHonorsCourses", checked ? 1 : undefined)
+            updateFilter("includeHonors", checked)
           }
           className="data-[state=checked]:bg-red-500"
         />
       </div>
 
+      <Separator />
+
+      <div className="pb-20">
+        <FeedbackModal>
+          <div className="text-xs text-neu font-semibold cursor-pointer hover:underline">
+            Have an idea for a filter? Let us know <MoveRightIcon className="inline h-3 w-3"/>      
+          </div>
+        </FeedbackModal>
+      </div>
+      
     </div>
   );
 }

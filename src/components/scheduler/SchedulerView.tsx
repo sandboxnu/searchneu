@@ -198,8 +198,10 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
             {filters.minSeatsLeft !== undefined && (
               <span className="bg-white px-2 py-1 rounded">Min Seats: {filters.minSeatsLeft}</span>
             )}
-            {filters.minHonorsCourses !== undefined && (
-              <span className="bg-white px-2 py-1 rounded">Min Honors: {filters.minHonorsCourses}</span>
+            {filters.includeHonors !== undefined && (
+              <span className="bg-white px-2 py-1 rounded">
+                {filters.includeHonors ? "Includes Honors Courses" : "Excludes Honors Courses"}
+              </span>
             )}
             {filters.nupaths && filters.nupaths.length > 0 && (
               <span className="bg-white px-2 py-1 rounded">NUPaths: {filters.nupaths.join(", ")}</span>

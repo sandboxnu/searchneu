@@ -13,8 +13,9 @@ export type ScheduleFilters = {
   specificDaysFree?: number[]; // array of day numbers (0=Sunday, 1=Monday, 2=Tuesday, ..., 6=Saturday)
   minDaysFree?: number;
   minSeatsLeft?: number;
-  minHonorsCourses?: number;
+  includeHonors?: boolean;
   nupaths?: string[];
+  includesOnline?: boolean;
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -81,6 +82,13 @@ export const sectionPassesFilters = (
     return false;
   }
 
+  // The only time we care is if we want to exclude online courses
+  if (filters.includesOnline == false) {
+    if (section.campus == "Online") {
+      return false;
+    }
+  }
+
   return true;
 };
 
@@ -137,10 +145,10 @@ export const schedulePassesFilters = (
     }
   }
 
-  // Check minimum honors courses (only if provided)
-  if (filters.minHonorsCourses !== undefined) {
+  // Check that no honors courses are included (only if specified)
+  if (filters.includeHonors == false) {
     const honorsCount = schedule.filter((section) => section.honors).length;
-    if (honorsCount < filters.minHonorsCourses) {
+    if (honorsCount > 0) {
       return false;
     }
   }

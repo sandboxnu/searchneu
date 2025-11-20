@@ -44,6 +44,30 @@ describe("filters", () => {
       assert.strictEqual(sectionPassesFilters(section, filters), true);
     });
 
+    test("should filter by including online courses", () => {
+      const onlineSection = createMockSection({
+        meetingTimes: [],
+        campus: "Online",
+      });
+
+      const inPersonSection = createMockSection({
+        meetingTimes: [
+          {
+            days: [1, 3],
+            startTime: 900,
+            endTime: 1030,
+            final: false,
+          },
+        ],
+        campus: "Boston",
+      });
+
+      assert.strictEqual(sectionPassesFilters(onlineSection, { includesOnline: true }), true);
+      assert.strictEqual(sectionPassesFilters(inPersonSection, { includesOnline: true }), true);
+      assert.strictEqual(sectionPassesFilters(onlineSection, { includesOnline: false }), false);
+      assert.strictEqual(sectionPassesFilters(inPersonSection, { includesOnline: false }), true);
+    })
+
     test("should filter by startTime", () => {
       const section = createMockSection({
         meetingTimes: [
@@ -248,23 +272,83 @@ describe("filters", () => {
       );
     });
 
-    test("should filter by minHonorsCourses", () => {
+    test("should filter by including honors", () => {
       const schedule = [
         createMockSection({ honors: true }),
         createMockSection({ id: 2, crn: "20001", honors: true }),
         createMockSection({ id: 3, crn: "30001", honors: false }),
       ];
 
-      // Schedule has 2 honors courses, filter requires at least 2
+      // Schedule has 2 honors courses, filter requires at least 1
       assert.strictEqual(
-        schedulePassesFilters(schedule, { minHonorsCourses: 2 }),
+        schedulePassesFilters(schedule, { includeHonors: true }),
         true
       );
 
-      // Schedule has 2 honors courses, filter requires at least 3
+      // Schedule has 2 honor courses, filter requires none
       assert.strictEqual(
-        schedulePassesFilters(schedule, { minHonorsCourses: 3 }),
+        schedulePassesFilters(schedule, { includeHonors: false }),
         false
+      );
+    });
+
+    test("should filter by including online courses", () => {
+      const onlineSection = createMockSection({
+        meetingTimes: [],
+        campus: "Online",
+      });
+      
+      const inPersonSection = createMockSection({
+        meetingTimes: [
+          {
+            days: [1, 3],
+            startTime: 900,
+            endTime: 1030,
+            final: false,
+          },
+        ],
+        campus: "Boston",
+      });
+
+      const section2 = createMockSection({ 
+        id: 2, 
+        crn: "20001", 
+        campus: "Boston", 
+        meetingTimes: [ 
+          {
+            days: [2,4],
+            startTime: 1100,
+            endTime: 1230,
+            final: false,
+          }
+        ] 
+      });
+
+      const scheduleWithOnline = [onlineSection, section2];
+      const scheduleWithoutOnline = [inPersonSection, section2];
+      
+      // Schedule has an online course, filter allows online courses
+      assert.strictEqual(
+        schedulePassesFilters(scheduleWithOnline, { includesOnline: true }),
+        true
+      );
+
+      // Schedule has an online course, filter excludes online courses
+      assert.strictEqual(
+        schedulePassesFilters(scheduleWithOnline, { includesOnline: false }),
+        false
+      );
+
+      // Schedule has no online courses, filter excludes online courses
+      assert.strictEqual(
+        schedulePassesFilters(scheduleWithoutOnline, { includesOnline: false }),
+        true
+      );
+
+      // Schedule has no online courses, filter allows online courses
+      assert.strictEqual(
+        schedulePassesFilters(scheduleWithoutOnline, { includesOnline: true }),
+        true
       );
     });
 
@@ -325,7 +409,7 @@ describe("filters", () => {
       assert.strictEqual(
         schedulePassesFilters(schedule, {
           minSeatsLeft: 5,
-          minHonorsCourses: 1,
+          includeHonors: true,
           startTime: 800,
         }),
         true
@@ -335,7 +419,7 @@ describe("filters", () => {
       assert.strictEqual(
         schedulePassesFilters(schedule, {
           minSeatsLeft: 15, // fails
-          minHonorsCourses: 1,
+          includeHonors: true,
           startTime: 800,
         }),
         false

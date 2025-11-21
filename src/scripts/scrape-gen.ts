@@ -4,7 +4,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import consola from "consola";
+import { scrapeCatalogTerm } from "@/scraper/gen/main";
 
 const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
@@ -39,7 +39,6 @@ const main = defineCommand({
       },
     );
     const config = parse(configStream) as Config;
-    consola.info("manifest loaded");
 
     const termsToScrape = filterTerms(config, { terms: [], all: true });
 
@@ -48,10 +47,6 @@ const main = defineCommand({
       return;
     }
 
-    consola.info(
-      `scraping ${termsToScrape.length} term${termsToScrape.length > 1 ? "s" : ""}: ${termsToScrape.map((t) => t.term).join(", ")}`,
-    );
-
     for (const term of termsToScrape) {
       const cachename = path.resolve(
         CACHE_PATH,
@@ -59,22 +54,17 @@ const main = defineCommand({
       );
       const existingCache = existsSync(cachename);
 
-      if (existingCache) {
-        consola.start(`regenerating cache for term ${term.term}`);
-      } else {
-        consola.start(`creating cache for term ${term.term}`);
-      }
+      const out = await scrapeCatalogTerm(term.term.toString());
+      return;
 
-      const out = await scrapeTerm(term.term.toString());
-      const cachedData: CachedTermScrape = {
-        ...out,
-        timestamp: new Date().toISOString(),
-      };
-
-      consola.prompt;
-
-      writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
-      console.log(`✅ Completed term ${term.term}\n`);
+      // const out = await scrapeTerm(term.term.toString());
+      // const cachedData: CachedTermScrape = {
+      //   ...out,
+      //   timestamp: new Date().toISOString(),
+      // };
+      //
+      // writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
+      // console.log(`✅ Completed term ${term.term}\n`);
     }
 
     console.log(

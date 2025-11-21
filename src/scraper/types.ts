@@ -134,7 +134,6 @@ export interface Course {
   description: string;
   maxCredits: number;
   minCredits: number;
-  sections: Section[];
   nupath: string[];
   coreqs: Requisite;
   prereqs: Requisite;

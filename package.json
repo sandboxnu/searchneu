@@ -59,6 +59,7 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.7",
+    "citty": "^0.1.6",
     "he": "^1.2.0",
     "node-html-parser": "^7.0.1",
     "pg": "^8.16.3",

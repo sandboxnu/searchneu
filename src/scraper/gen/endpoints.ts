@@ -57,3 +57,6 @@ export const courseCoreqsEndpoint = (term: string, crn: string) =>
       body: `term=${term}&courseReferenceNumber=${crn}`,
     },
   ] as const;
+
+export const subjectsEndpoint = (term: string) =>
+  `${baseUrl}/StudentRegistrationSsb/ssb/classSearch/get_subject?term=${term}&offset=1&max=900` as const;

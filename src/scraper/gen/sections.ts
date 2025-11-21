@@ -1,4 +1,4 @@
-import { $fetch } from "../utils";
+import { $fetch } from "./fetch";
 import { sectionSearchEndpoint } from "./endpoints";
 import type { BannerSection } from "../types";
 import { logger } from "@/lib/logger";

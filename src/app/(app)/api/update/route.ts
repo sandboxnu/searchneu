@@ -1,5 +1,14 @@
-import { coursesT, sectionsT, termsT, trackersT, usersT } from "@/db/schema";
-import { eq, gt } from "drizzle-orm";
+import {
+  buildingsT,
+  coursesT,
+  meetingTimesT,
+  roomsT,
+  sectionsT,
+  termsT,
+  trackersT,
+  usersT,
+} from "@/db/schema";
+import { eq, gt, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -25,9 +34,10 @@ export async function GET(req: NextRequest) {
     .from(termsT)
     .where(gt(termsT.activeUntil, new Date()));
 
-  const terms = dbterms.map((t) => t.term);
-  logger.info({ terms }, "terms to update");
+  // const terms = dbterms.map((t) => t.term);
+  // logger.info({ terms }, "terms to update");
 
+  const terms = ["202630"];
   // for each term perform an update
   for (const term of terms) {
     const {
@@ -35,6 +45,8 @@ export async function GET(req: NextRequest) {
       sectionsWithUpdatedSeats: updatedSeats,
       sectionsWithNewWaitlistSeats: waitlistSeats,
       sectionsWithUpdatedWaitlistSeats: updatedWaitlistSeats,
+      sectionsWithUpdatedSeatCapacity: updatedSeatsCapacity,
+      sectionsWithUpdatedWaitlistSeatCapacity: updatedWaitlistCapacity,
       newSections,
       newSectionCourseKeys,
     } = await updateTerm(term);
@@ -73,7 +85,7 @@ export async function GET(req: NextRequest) {
     await sendNotifications(seatNotifs, waitlistNotifs);
 
     // update the seat counts in the database
-    const values = [...newSeats, ...updatedSeats]
+    const newSeatValues = [...newSeats, ...updatedSeats]
       .map(
         ({ courseReferenceNumber, seatsAvailable }) =>
           `('${courseReferenceNumber}', ${seatsAvailable})`,
@@ -87,12 +99,26 @@ export async function GET(req: NextRequest) {
       )
       .join(", ");
 
-    if (values.length > 0) {
+    const newSeatsCapacity = updatedSeatsCapacity
+      .map(
+        ({ courseReferenceNumber, maximumEnrollment }) =>
+          `('${courseReferenceNumber}', ${maximumEnrollment})`,
+      )
+      .join(", ");
+
+    const newWaitlistCapacity = updatedWaitlistCapacity
+      .map(
+        ({ courseReferenceNumber, waitCapacity }) =>
+          `('${courseReferenceNumber}', ${waitCapacity})`,
+      )
+      .join(", ");
+
+    if (newSeatValues.length > 0) {
       await db.execute(sql`
         UPDATE ${sectionsT}
         SET 
           "seatRemaining" = v.seat_remaining
-        FROM (VALUES ${sql.raw(values)}) AS v(crn, seat_remaining)
+        FROM (VALUES ${sql.raw(newSeatValues)}) AS v(crn, seat_remaining)
         WHERE ${sectionsT.crn} = v.crn;
   `);
     }
@@ -107,23 +133,91 @@ export async function GET(req: NextRequest) {
     `);
     }
 
+    if (newSeatsCapacity.length > 0) {
+      console.log("NEW SEATS CAPACITY", newSeatsCapacity);
+      await db.execute(sql`
+        UPDATE ${sectionsT}
+        SET
+          "seatCapacity" = v.seat_capacity
+        FROM (VALUES ${sql.raw(newSeatsCapacity)}) AS v(crn, seat_capacity)
+        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.term} = ${term};
+    `);
+    }
+
+    if (newWaitlistCapacity.length > 0) {
+      await db.execute(sql`
+        UPDATE ${sectionsT}
+        SET
+          "waitlistCapacity" = v.waitlist_capacity
+        FROM (VALUES ${sql.raw(newWaitlistCapacity)}) AS v(crn, waitlist_capacity)
+        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.term} = ${term};
+    `);
+    }
+
     if (newSections.length > 0) {
-      await db.insert(sectionsT).values(
-        newSections.map((s, i) => ({
-          term: term,
-          courseId: newSectionCourseKeys[i],
-          crn: s.crn,
-          faculty: s.faculty,
-          seatCapacity: s.seatCapacity,
-          seatRemaining: s.seatRemaining,
-          waitlistCapacity: s.waitlistCapacity,
-          waitlistRemaining: s.waitlistRemaining,
-          classType: s.classType,
-          honors: s.honors,
-          campus: s.campus,
-          meetingTimes: s.meetingTimes,
-        })),
-      );
+      const sections = await db
+        .insert(sectionsT)
+        .values(
+          newSections.map((s, i) => ({
+            term: term,
+            courseId: newSectionCourseKeys[i],
+            crn: s.crn,
+            faculty: s.faculty,
+            seatCapacity: s.seatCapacity,
+            seatRemaining: s.seatRemaining,
+            waitlistCapacity: s.waitlistCapacity,
+            waitlistRemaining: s.waitlistRemaining,
+            classType: s.classType,
+            honors: s.honors,
+            campus: s.campus,
+            meetingTimes: s.meetingTimes,
+          })),
+        )
+        .returning();
+
+      const meetingTimesData = [];
+
+      for (let i = 0; i < newSections.length; i++) {
+        const section = sections[i];
+        const meetingTimes = newSections[i].meetingTimes;
+        for (const mt of meetingTimes) {
+          let roomId = null;
+
+          if (mt.building && mt.room) {
+            const room = await db
+              .select({
+                roomId: roomsT.id,
+              })
+              .from(roomsT)
+              .innerJoin(buildingsT, eq(buildingsT.id, roomsT.buildingId))
+              .where(
+                and(
+                  eq(roomsT.number, mt.room),
+                  eq(buildingsT.name, mt.building),
+                ),
+              )
+              .limit(1);
+            roomId = room[0].roomId;
+          }
+          if (mt.startTime && mt.endTime) {
+            meetingTimesData.push({
+              term: term,
+              sectionId: section.id,
+              roomId: roomId,
+              days: mt.days,
+              startTime: mt.startTime,
+              endTime: mt.endTime,
+            });
+          }
+        }
+      }
+
+      if (meetingTimesData.length > 0) {
+        await db
+          .insert(meetingTimesT)
+          .values(meetingTimesData)
+          .onConflictDoNothing();
+      }
     }
 
     // set the term last updated

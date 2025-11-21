@@ -126,26 +126,242 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function processWithConcurrency<T>(
-  tasks: (() => Promise<T>)[],
-  concurrencyLimit: number,
-): Promise<T[]> {
-  const results: T[] = [];
-  const executing: Promise<void>[] = [];
+// fetch engine
+interface FetchEngineConfig {
+  maxRetries?: number;
+  initialRetryDelay?: number;
+  maxRetryDelay?: number;
+  retryBackoffMultiplier?: number;
+  throttleDelay?: number;
+  maxConcurrent?: number;
+  retryOn?: (response: Response, error?: Error) => boolean;
+}
 
-  for (const task of tasks) {
-    const promise = task().then((result) => {
-      results.push(result);
+interface FetchRequestOptions extends RequestInit {
+  onRetry?: (attempt: number, delay: number, error?: Error) => void;
+  onSuccess?: (response: Response) => void;
+  onError?: (error: Error) => void;
+  onQueueAdd?: () => void;
+  onQueueStart?: () => void;
+  maxRetries?: number;
+}
+
+interface QueuedRequest {
+  id: string;
+  url: string;
+  options: FetchRequestOptions;
+  resolve: (value: Response) => void;
+  reject: (reason: Error) => void;
+  attempts: number;
+}
+
+export class FetchEngine {
+  private config: Required<FetchEngineConfig>;
+  private queue: QueuedRequest[] = [];
+  private activeRequests = 0;
+  private processing = false;
+  private requestIdCounter = 0;
+
+  constructor(config: FetchEngineConfig = {}) {
+    this.config = {
+      maxRetries: config.maxRetries ?? 3,
+      initialRetryDelay: config.initialRetryDelay ?? 1000,
+      maxRetryDelay: config.maxRetryDelay ?? 30000,
+      retryBackoffMultiplier: config.retryBackoffMultiplier ?? 2,
+      throttleDelay: config.throttleDelay ?? 100,
+      maxConcurrent: config.maxConcurrent ?? 5,
+      retryOn:
+        config.retryOn ??
+        ((response, error) => {
+          if (error) return true;
+          return response.status === 429 || response.status >= 500;
+        }),
+    };
+  }
+
+  /**
+   * Main fetch method that adds requests to the queue
+   */
+  async fetch(
+    url: string,
+    options: FetchRequestOptions = {},
+  ): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const request: QueuedRequest = {
+        id: `req_${++this.requestIdCounter}`,
+        url,
+        options,
+        resolve,
+        reject,
+        attempts: 0,
+      };
+
+      this.queue.push(request);
+      options.onQueueAdd?.();
+
+      if (!this.processing) {
+        this.processQueue();
+      }
     });
+  }
 
-    executing.push(promise);
+  /**
+   * Process the queue with concurrency control
+   */
+  private async processQueue(): Promise<void> {
+    if (this.processing) return;
+    this.processing = true;
 
-    if (executing.length >= concurrencyLimit) {
-      await Promise.race(executing);
-      executing.splice(0, executing.findIndex((p) => p === promise) + 1);
+    while (this.queue.length > 0 || this.activeRequests > 0) {
+      // Wait if we've hit max concurrent requests
+      while (
+        this.activeRequests >= this.config.maxConcurrent &&
+        this.queue.length > 0
+      ) {
+        await this.sleep(50);
+      }
+
+      const request = this.queue.shift();
+      if (!request) {
+        if (this.activeRequests === 0) break;
+        await this.sleep(50);
+        continue;
+      }
+
+      // Process request without blocking the queue
+      this.executeRequest(request);
+
+      // Throttle between requests
+      if (this.queue.length > 0) {
+        await this.sleep(this.config.throttleDelay);
+      }
+    }
+
+    this.processing = false;
+  }
+
+  /**
+   * Execute a single request with retry logic
+   */
+  private async executeRequest(request: QueuedRequest): Promise<void> {
+    this.activeRequests++;
+    request.options.onQueueStart?.();
+
+    const maxRetries = request.options.maxRetries ?? this.config.maxRetries;
+
+    try {
+      const response = await this.fetchWithRetry(request, maxRetries);
+      request.options.onSuccess?.(response);
+      request.resolve(response);
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      request.options.onError?.(err);
+      request.reject(err);
+    } finally {
+      this.activeRequests--;
     }
   }
 
-  await Promise.all(executing);
-  return results;
+  /**
+   * Fetch with automatic retry logic
+   */
+  private async fetchWithRetry(
+    request: QueuedRequest,
+    maxRetries: number,
+  ): Promise<Response> {
+    let lastError: Error | undefined;
+
+    while (request.attempts <= maxRetries) {
+      try {
+        const {
+          onRetry,
+          onSuccess,
+          onError,
+          onQueueAdd,
+          onQueueStart,
+          maxRetries: _,
+          ...fetchOptions
+        } = request.options;
+
+        const response = await fetch(request.url, fetchOptions);
+
+        // Check if we should retry based on response
+        if (
+          request.attempts < maxRetries &&
+          this.config.retryOn(response.clone(), undefined)
+        ) {
+          request.attempts++;
+          const delay = this.calculateRetryDelay(request.attempts);
+          request.options.onRetry?.(request.attempts, delay);
+          await this.sleep(delay);
+          continue;
+        }
+
+        return response;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+
+        // Check if we should retry based on error
+        if (request.attempts < maxRetries) {
+          request.attempts++;
+          const delay = this.calculateRetryDelay(request.attempts);
+          request.options.onRetry?.(request.attempts, delay, lastError);
+          await this.sleep(delay);
+          continue;
+        }
+
+        throw lastError;
+      }
+    }
+
+    throw lastError || new Error("Max retries exceeded");
+  }
+
+  /**
+   * Calculate retry delay with exponential backoff
+   */
+  private calculateRetryDelay(attempt: number): number {
+    const delay = Math.min(
+      this.config.initialRetryDelay *
+        Math.pow(this.config.retryBackoffMultiplier, attempt - 1),
+      this.config.maxRetryDelay,
+    );
+    // Add jitter to prevent thundering herd
+    return delay + Math.random() * 1000;
+  }
+
+  /**
+   * Sleep utility
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Get current queue status
+   */
+  getStatus() {
+    return {
+      queueLength: this.queue.length,
+      activeRequests: this.activeRequests,
+      processing: this.processing,
+    };
+  }
+
+  /**
+   * Clear the queue (does not affect active requests)
+   */
+  clearQueue(): void {
+    const clearedRequests = this.queue.splice(0);
+    clearedRequests.forEach((req) => {
+      req.reject(new Error("Request cancelled: queue cleared"));
+    });
+  }
+
+  /**
+   * Update configuration
+   */
+  updateConfig(newConfig: Partial<FetchEngineConfig>): void {
+    this.config = { ...this.config, ...newConfig };
+  }
 }

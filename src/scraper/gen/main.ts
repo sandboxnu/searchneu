@@ -1,9 +1,16 @@
 import { logger } from "@/lib/logger";
 import { scrapeSections } from "./sections";
-import type { BannerSection, Course, Section } from "../types";
-import { scrapeCourseDescriptions, scrapeCourseNames } from "./courses";
-import { sectionFacultyEndpoint } from "./endpoints";
+import {
+  courseCoreqsEndpoint,
+  coursePrereqsEndpoint,
+  sectionFacultyEndpoint,
+  subjectsEndpoint,
+} from "./endpoints";
 import { decode } from "he";
+import type { BannerSection, Course, Section } from "../types";
+import { FetchEngine } from "./fetch";
+import { parseCoreqs, parsePrereqs, populatePostReqs } from "./reqs";
+import { $fetch } from "../utils";
 
 export async function scrapeCatalogTerm(term: string) {
   // get sections
@@ -12,7 +19,12 @@ export async function scrapeCatalogTerm(term: string) {
 
   // stub courses from sections
   logger.info("stubbing courses");
-  const { courses, sections, subjects, campuses } = arrangeCourses(rawSections);
+  const {
+    courses,
+    sections,
+    subjects: subjectCodes,
+    campuses,
+  } = arrangeCourses(rawSections);
   const sectionList = Object.values(sections).flat();
 
   const taggedCourses = courses.map((c) => ({
@@ -20,13 +32,43 @@ export async function scrapeCatalogTerm(term: string) {
     crn: sections[c.subject + c.courseNumber][0].crn,
   }));
 
+  // get and validate subjects
+  const bannerSubjects = await $fetch(subjectsEndpoint(term)).then((r) =>
+    r.json(),
+  );
+  const subjects: { code: string; description: string }[] = bannerSubjects
+    .filter((subj: { code: string; description: string }) =>
+      subjectCodes.includes(subj.code),
+    )
+    .map((subj: { code: string; description: string }) => ({
+      code: subj.code,
+      description: decode(subj.description),
+    }));
+
+  const fe = new FetchEngine({
+    maxRetries: 5,
+    initialRetryDelay: 1000,
+    throttleDelay: 0,
+    maxConcurrent: 20,
+    retryOn: (response) => response.status === 429 || response.status >= 500,
+  });
+
   // scrape faculty
   const facultyPromises = sectionList
     .map((s) => async () => {
       const url = sectionFacultyEndpoint(term, s.crn);
-      const { data, success } = await fe.fetch(url, {}).then((r) => r.json());
+      const data = await fe
+        .fetch(url, {
+          onRetry(attempt) {
+            logger.debug(
+              { crn: s.crn, attempt },
+              "retrying faculty for section",
+            );
+          },
+        })
+        .then((r) => r.json());
 
-      if (!success || !data?.fmt?.length || !data.fmt[0]?.faculty?.length) {
+      if (!data || !data?.fmt?.length || !data.fmt[0]?.faculty?.length) {
         s.faculty = "TBA";
         return;
       }
@@ -35,6 +77,63 @@ export async function scrapeCatalogTerm(term: string) {
         decode(decode(data.fmt[0].faculty[0].displayName ?? "TBA")) ?? "TBA";
     })
     .map((p) => p());
+
+  // prereqs
+  const prereqPromises = taggedCourses
+    .map(({ course, crn }) => async () => {
+      const [url, body] = coursePrereqsEndpoint(term, crn);
+      const data = await fe
+        .fetch(url, {
+          ...body,
+          onRetry(attempt) {
+            logger.debug(
+              {
+                course: `${course.subject} ${course.courseNumber}`,
+                attempt,
+              },
+              "retrying prereqs for course",
+            );
+          },
+        })
+        .then((r) => r.text());
+
+      course.prereqs = parsePrereqs(decode(decode(data)), subjects);
+    })
+    .map((p) => p());
+
+  const coreqPromises = taggedCourses
+    .map(({ course, crn }) => async () => {
+      const [url, body] = courseCoreqsEndpoint(term, crn);
+      const data = await fe
+        .fetch(url, {
+          ...body,
+          onRetry(attempt) {
+            logger.debug(
+              {
+                course: `${course.subject} ${course.courseNumber}`,
+                attempt,
+              },
+              "retrying coreqs for course",
+            );
+          },
+        })
+        .then((r) => r.text());
+
+      course.coreqs = parseCoreqs(decode(decode(data)), subjects);
+    })
+    .map((p) => p());
+
+  const intervalCleanup = setInterval(() => logger.info(fe.getStatus()), 5000);
+
+  // wait for all the requests
+  await Promise.all([...facultyPromises, ...prereqPromises, ...coreqPromises]);
+
+  // postreqs
+  populatePostReqs(courses);
+
+  clearTimeout(intervalCleanup);
+
+  logger.info(sectionList.slice(0, 2));
 
   // structure rooms out
   //

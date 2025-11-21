@@ -29,7 +29,7 @@ function getGlobalSlotIndex(day: number, slot: number): number {
  * Convert a section's meeting times to a binary mask.
  * Each occupied 5-minute slot gets one bit set.
  */
-function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
+export function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
     let mask = BigInt(0); // Use BigInt constructor to avoid ES2020 literal
     for (const meetingTime of section.meetingTimes) {
         const startSlot = timeToSlotIndex(meetingTime.startTime);
@@ -48,17 +48,24 @@ function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
 
 /**
  * Check if any sections in a schedule have conflicts.
- * Returns true if there are conflicts, false otherwise.
+ * Returns true if there are any conflicts, false otherwise.
+ * Used for testing.
  */
 export function hasConflictInSchedule(sections: SectionWithCourse[]): boolean {
     const masks = sections.map(meetingTimesToBinaryMask);
-
     for (let i = 0; i < masks.length; i++) {
         for (let j = i + 1; j < masks.length; j++) {
-            if ((masks[i] & masks[j]) !== BigInt(0)) {
+            if (masksConflict(masks[i], masks[j])) {
                 return true;
             }
         }
     }
     return false;
+}
+
+/**
+ * Check if two binary masks conflict - O(1) operation.
+ */
+export function masksConflict(mask1: bigint, mask2: bigint): boolean {
+  return (mask1 & mask2) !== BigInt(0);
 }

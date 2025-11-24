@@ -1,7 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { hasConflictInSchedule } from "../binaryMeetingTime";
+import {
+    hasConflictInSchedule,
+    hasConflictWithMask,
+    meetingTimesToBinaryMask,
+} from "../binaryMeetingTime";
 import { createMockSection } from "./mocks";
 
 // Helper to build schedule arrays quickly
@@ -92,4 +96,50 @@ test("handles weekend meeting times", () => {
 
     assert.equal(hasConflictInSchedule(schedule(saturdayClass, sundayClass)), false);
     assert.equal(hasConflictInSchedule(schedule(saturdayClass, weekendOverlap)), true);
+});
+
+// Tests for incremental conflict checking with masks
+test("hasConflictWithMask detects conflict with cumulative mask", () => {
+    const sectionA = createMockSection(1, [{ days: [1], startTime: 900, endTime: 1000 }]);
+    const sectionB = createMockSection(2, [{ days: [1], startTime: 950, endTime: 1050 }]);
+
+    const maskA = meetingTimesToBinaryMask(sectionA);
+    assert.equal(hasConflictWithMask(sectionB, maskA), true);
+});
+
+test("hasConflictWithMask returns false when no conflict", () => {
+    const sectionA = createMockSection(1, [{ days: [1], startTime: 900, endTime: 1000 }]);
+    const sectionB = createMockSection(2, [{ days: [1], startTime: 1000, endTime: 1100 }]);
+
+    const maskA = meetingTimesToBinaryMask(sectionA);
+    assert.equal(hasConflictWithMask(sectionB, maskA), false);
+});
+
+test("hasConflictWithMask works with multiple sections in cumulative mask", () => {
+    const sectionA = createMockSection(1, [{ days: [1], startTime: 900, endTime: 1000 }]);
+    const sectionB = createMockSection(2, [{ days: [2], startTime: 900, endTime: 1000 }]);
+    const sectionC = createMockSection(3, [{ days: [1], startTime: 950, endTime: 1050 }]);
+
+    // Build cumulative mask from sections A and B
+    const maskA = meetingTimesToBinaryMask(sectionA);
+    const maskB = meetingTimesToBinaryMask(sectionB);
+    const cumulativeMask = maskA | maskB;
+
+    // Section C conflicts with section A (both on day 1)
+    assert.equal(hasConflictWithMask(sectionC, cumulativeMask), true);
+});
+
+test("hasConflictWithMask handles empty cumulative mask", () => {
+    const sectionA = createMockSection(1, [{ days: [1], startTime: 900, endTime: 1000 }]);
+    const emptyMask = BigInt(0);
+
+    assert.equal(hasConflictWithMask(sectionA, emptyMask), false);
+});
+
+test("hasConflictWithMask handles sections with no meeting times", () => {
+    const emptySection = createMockSection(1, []);
+    const sectionWithTimes = createMockSection(2, [{ days: [1], startTime: 900, endTime: 1000 }]);
+
+    const mask = meetingTimesToBinaryMask(sectionWithTimes);
+    assert.equal(hasConflictWithMask(emptySection, mask), false);
 });

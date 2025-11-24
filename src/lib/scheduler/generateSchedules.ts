@@ -8,7 +8,10 @@ import {
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
-import { hasConflictInSchedule } from "./binaryMeetingTime";
+import {
+    hasConflictWithMask,
+    meetingTimesToBinaryMask,
+} from "./binaryMeetingTime";
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -106,13 +109,8 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
   return sections;
 };
 
-// Helper function to check if a combination of sections has any conflicts
-// This now uses the optimized binary meeting time approach for O(1) conflict checking
-const isValidSchedule = (sections: SectionWithCourse[]): boolean => {
-  return !hasConflictInSchedule(sections);
-};
-
-// Helper function to generate all combinations of sections
+// Helper function to generate all valid combinations of sections
+// Uses incremental conflict checking to short-circuit invalid paths early
 const generateCombinations = (
   sectionsByCourse: SectionWithCourse[][],
 ): SectionWithCourse[][] => {
@@ -124,6 +122,7 @@ const generateCombinations = (
 
   const generateRecursive = (
     currentCombination: SectionWithCourse[],
+    cumulativeMask: bigint,
     courseIndex: number,
   ) => {
     if (courseIndex === sectionsByCourse.length) {
@@ -132,13 +131,23 @@ const generateCombinations = (
     }
 
     for (const section of sectionsByCourse[courseIndex]) {
+      // Check for conflicts before adding this section
+      if (hasConflictWithMask(section, cumulativeMask)) {
+        // Skip this path - conflict detected early
+        continue;
+      }
+
+      // No conflict, add the section and continue building this combination
+      const sectionMask = meetingTimesToBinaryMask(section);
+      const newCumulativeMask = cumulativeMask | sectionMask;
+
       currentCombination.push(section);
-      generateRecursive(currentCombination, courseIndex + 1);
+      generateRecursive(currentCombination, newCumulativeMask, courseIndex + 1);
       currentCombination.pop();
     }
   };
 
-  generateRecursive([], 0);
+  generateRecursive([], BigInt(0), 0);
   return result;
 };
 
@@ -150,11 +159,8 @@ export const generateSchedules = async (
     courseIds.map(getSectionsAndMeetingTimes),
   );
 
-  // Generate all possible combinations of sections
-  const allCombinations = generateCombinations(sectionsByCourse);
-
-  // Filter to only valid schedules (no time conflicts)
-  const validSchedules = allCombinations.filter(isValidSchedule);
+  // Generate all valid combinations of sections (conflicts are detected and skipped during generation)
+  const validSchedules = generateCombinations(sectionsByCourse);
 
   return validSchedules;
 };

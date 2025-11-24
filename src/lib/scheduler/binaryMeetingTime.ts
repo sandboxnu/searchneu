@@ -29,7 +29,7 @@ function getGlobalSlotIndex(day: number, slot: number): number {
  * Convert a section's meeting times to a binary mask.
  * Each occupied 5-minute slot gets one bit set.
  */
-function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
+export function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
     let mask = BigInt(0); // Use BigInt constructor to avoid ES2020 literal
     for (const meetingTime of section.meetingTimes) {
         const startSlot = timeToSlotIndex(meetingTime.startTime);
@@ -44,6 +44,21 @@ function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
         }
     }
     return mask;
+}
+
+/**
+ * Check if a new section conflicts with an existing cumulative mask.
+ * This is used for incremental conflict checking during schedule generation.
+ * @param newSection The section to check for conflicts
+ * @param cumulativeMask The binary mask representing all sections added so far
+ * @returns true if there is a conflict, false otherwise
+ */
+export function hasConflictWithMask(
+    newSection: SectionWithCourse,
+    cumulativeMask: bigint,
+): boolean {
+    const newMask = meetingTimesToBinaryMask(newSection);
+    return (cumulativeMask & newMask) !== BigInt(0);
 }
 
 /**

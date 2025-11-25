@@ -44,6 +44,7 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}
           nupathOptions={nupathOptions}
+          filteredSchedules={filteredSchedules}
         />
       </div>
       <div className="col-span-5 pl-6">

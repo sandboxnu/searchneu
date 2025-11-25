@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { type ScheduleFilters } from "@/lib/scheduler/filters";
+import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
+import { CourseBox } from "@/components/scheduler/CourseBox";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -25,9 +27,10 @@ interface FilterPanelProps {
   onGenerateSchedules: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
+  filteredSchedules: SectionWithCourse[][];
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions }: FilterPanelProps) {
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules }: FilterPanelProps) {
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
 
@@ -107,6 +110,69 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           Clear All
         </button>
       </div>
+
+      <Separator />
+
+      {/* Classes Filter*/}
+      <div className="flex justify-between items-center">
+        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
+        <button
+          onClick={() => {}}
+          aria-label="Edit classes"
+          title="Edit classes"
+          className="p-1 border border-transparent text-gray-600 rounded"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div>
+        {filteredSchedules && filteredSchedules.length > 0 && (
+          (() => {
+            // Build a map of course -> sections
+            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
+            for (const schedule of filteredSchedules) {
+              for (const section of schedule) {
+                const courseKey = `${section.courseSubject} ${section.courseNumber}`;
+                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
+                const inner = courseMap.get(courseKey)!;
+                if (!inner.has(section.crn)) inner.set(section.crn, section);
+              }
+            }
+
+            // Sort courses alphabetically
+            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+            return (
+              <div className="mt-2">
+                {(() => {
+                  const colors = [
+                    { fill: "#FFF9D8", stroke: "#FFF6C7" },
+                    { fill: "#FFE4E0", stroke: "#FFD8D2" },
+                    { fill: "#DBF4FB", stroke: "#CCEFF9" },
+                    { fill: "#E2E0F8", stroke: "#D6D3F5" },
+                    { fill: "#DBF6E5", stroke: "#CCF2DA" },
+                    { fill: "#FFF1E4", stroke: "#FFEBD9" },
+                    { fill: "#FFE4F0", stroke: "#FFD9EA" },
+                    { fill: "#EAEAEA", stroke: "#E1E1E1" },
+                    { fill: "#E9E0D9", stroke: "#E0D3C9" },
+                  ];
+
+                  return courseEntries.map(([courseKey, sectionsMap], i) => (
+                    <CourseBox
+                      key={courseKey}
+                      sections={Array.from(sectionsMap.values())}
+                      color={colors[i % colors.length]}
+                    />
+                  ));
+                })()}
+              </div>
+            );
+          })()
+        )}
+      </div>
+
+      <Separator />
 
       {/* Start Time Filter */}
       <div>

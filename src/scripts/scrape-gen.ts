@@ -1,10 +1,12 @@
 import { scrapeTerm } from "@/scraper/scrape";
-import { Config, TermScrape } from "@/scraper/types";
+import { TermScrape } from "@/scraper/types";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
 import { scrapeCatalogTerm } from "@/scraper/gen/main";
+import { infer as zinfer } from "zod";
+import { Config } from "@/scraper/config";
 
 const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
@@ -38,7 +40,14 @@ const main = defineCommand({
         encoding: "utf8",
       },
     );
-    const config = parse(configStream) as Config;
+    const configRaw = parse(configStream);
+    const configResponse = Config.safeParse(configRaw);
+    if (!configResponse.success) {
+      console.error(configResponse.error);
+      return;
+    }
+
+    const config = configResponse.data;
 
     const termsToScrape = filterTerms(config, { terms: [], all: true });
 
@@ -47,14 +56,17 @@ const main = defineCommand({
       return;
     }
 
-    for (const term of termsToScrape) {
+    for (const termConfig of termsToScrape) {
       const cachename = path.resolve(
         CACHE_PATH,
-        CACHE_FORMAT(term.term.toString()),
+        CACHE_FORMAT(termConfig.term.toString()),
       );
       const existingCache = existsSync(cachename);
 
-      const out = await scrapeCatalogTerm(term.term.toString());
+      const out = await scrapeCatalogTerm(
+        termConfig.term.toString(),
+        termConfig,
+      );
       return;
 
       // const out = await scrapeTerm(term.term.toString());
@@ -76,7 +88,7 @@ const main = defineCommand({
 void runMain(main);
 
 function filterTerms(
-  config: Config,
+  config: zinfer<typeof Config>,
   options: { terms: string[]; all: boolean },
 ) {
   const now = new Date();

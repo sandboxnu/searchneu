@@ -1,7 +1,11 @@
-import { $fetch } from "./fetch";
-import { sectionSearchEndpoint } from "./endpoints";
-import type { BannerSection } from "../types";
+import { $fetch } from "../fetch";
+import { sectionSearchEndpoint } from "../endpoints";
 import { logger } from "@/lib/logger";
+import * as z from "zod";
+import {
+  BannerSection,
+  BannerSectionResponse,
+} from "@/scraper/schemas/section";
 
 /**
  * scrapeSections get all the sections in a term. It steps through the pages of search results
@@ -39,7 +43,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
     "section count received",
   );
 
-  const rawSections: BannerSection[] = [];
+  const rawSections: z.infer<typeof BannerSection>[] = [];
 
   for (let i = 0; i < numBatches; i++) {
     logger.debug({ term: term, batch: i }, "scraping sections for batch");
@@ -65,9 +69,6 @@ export async function scrapeSections(term: string, cookiePool = 20) {
   }
 
   if (rawSections.length !== initialSectionResp.totalCount) {
-    // logger.warn(
-    //   `Section count mismatch - expected ${resp.totalCount}, received ${rawSections.length}`,
-    // );
     logger.warn(
       {
         term: term,

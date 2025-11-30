@@ -10,7 +10,7 @@ export const sectionSearchEndpoint = (
 export const sectionFacultyEndpoint = (term: string, crn: string) =>
   `${baseUrl}/StudentRegistrationSsb/ssb/searchResults/getFacultyMeetingTimes?term=${term}&courseReferenceNumber=${crn}` as const;
 
-export const courseNameEndpoint = (term: string, crn: string) =>
+export const sectionCatalogDetailsEndpoint = (term: string, crn: string) =>
   [
     `${baseUrl}/StudentRegistrationSsb/ssb/searchResults/getSectionCatalogDetails`,
     {

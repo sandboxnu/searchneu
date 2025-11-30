@@ -1,18 +1,32 @@
 import { logger } from "@/lib/logger";
-import { scrapeSections } from "./sections";
+import { scrapeSections } from "./pieces/sections";
 import {
   courseCoreqsEndpoint,
+  courseDescriptionEndpoint,
   coursePrereqsEndpoint,
-  sectionFacultyEndpoint,
   subjectsEndpoint,
 } from "./endpoints";
 import { decode } from "he";
-import type { BannerSection, Course, Section } from "../types";
-import { FetchEngine } from "./fetch";
-import { parseCoreqs, parsePrereqs, populatePostReqs } from "./reqs";
-import { $fetch } from "../utils";
+import type { Course, Section } from "../types";
+import { FetchEngine, $fetch } from "./fetch";
+import { parseCoreqs, parsePrereqs, populatePostReqs } from "./pieces/reqs";
+import { scrapeMeetingsFaculty } from "./pieces/meetingsFaculty";
+import * as z from "zod";
+import { BannerSection } from "../schemas/section";
+import { scrapeCatalogDetails } from "./pieces/courseNames";
+import { TermConfig } from "../config";
 
-export async function scrapeCatalogTerm(term: string) {
+/**
+ * scrapeCatalogTerm is the main scraping logic
+ *
+ * @param term the banner catalog term to scrape
+ * @param config scraper configuration
+ * @returns term scrape object
+ */
+export async function scrapeCatalogTerm(
+  term: string,
+  config: z.infer<typeof TermConfig>,
+) {
   // get sections
   logger.info("scraping sections");
   const rawSections = await scrapeSections(term);
@@ -27,8 +41,15 @@ export async function scrapeCatalogTerm(term: string) {
   } = arrangeCourses(rawSections);
   const sectionList = Object.values(sections).flat();
 
+  const specialTopicCourses = courses
+    .filter((c) => c.specialTopics)
+    .map((c) => ({
+      ...c,
+      crn: sections[c.subject + c.courseNumber][0].crn,
+    }));
+
   const taggedCourses = courses.map((c) => ({
-    course: c,
+    ...c,
     crn: sections[c.subject + c.courseNumber][0].crn,
   }));
 
@@ -54,27 +75,44 @@ export async function scrapeCatalogTerm(term: string) {
   });
 
   // scrape faculty
-  const facultyPromises = sectionList
-    .map((s) => async () => {
-      const url = sectionFacultyEndpoint(term, s.crn);
+  const failedFacultySections = scrapeMeetingsFaculty(fe, term, sectionList);
+
+  // names
+  // NOTE: frankly there should be a way to force scraping the name
+  // and also a way to dev check to see if this hueristic works at all
+  const failedCatalogDetailCourses = scrapeCatalogDetails(
+    fe,
+    term,
+    specialTopicCourses,
+  );
+
+  // descriptions
+  const descriptionPromises = taggedCourses
+    .map(({ course, crn }) => async () => {
+      const [url, body] = courseDescriptionEndpoint(term, crn);
       const data = await fe
         .fetch(url, {
+          ...body,
           onRetry(attempt) {
             logger.debug(
-              { crn: s.crn, attempt },
-              "retrying faculty for section",
+              {
+                course: `${course.subject} ${course.courseNumber}`,
+                attempt,
+              },
+              "retrying description for course",
             );
           },
         })
-        .then((r) => r.json());
+        .then((r) => r.text());
 
-      if (!data || !data?.fmt?.length || !data.fmt[0]?.faculty?.length) {
-        s.faculty = "TBA";
+      if (!data) {
         return;
       }
 
-      s.faculty =
-        decode(decode(data.fmt[0].faculty[0].displayName ?? "TBA")) ?? "TBA";
+      course.description = decode(decode(data))
+        .replace(/<[^>]*>/g, "") // Remove HTML tags
+        .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments
+        .trim();
     })
     .map((p) => p());
 
@@ -101,6 +139,7 @@ export async function scrapeCatalogTerm(term: string) {
     })
     .map((p) => p());
 
+  // coreqs
   const coreqPromises = taggedCourses
     .map(({ course, crn }) => async () => {
       const [url, body] = courseCoreqsEndpoint(term, crn);
@@ -126,7 +165,13 @@ export async function scrapeCatalogTerm(term: string) {
   const intervalCleanup = setInterval(() => logger.info(fe.getStatus()), 5000);
 
   // wait for all the requests
-  await Promise.all([...facultyPromises, ...prereqPromises, ...coreqPromises]);
+  await Promise.all([
+    failedFacultySections,
+    failedCatalogDetailCourses,
+    ...descriptionPromises,
+    ...prereqPromises,
+    ...coreqPromises,
+  ]);
 
   // postreqs
   populatePostReqs(courses);
@@ -145,22 +190,28 @@ export async function scrapeCatalogTerm(term: string) {
 }
 
 /* arrangeCourses takes the raw sections scraped from banner and
- * pulls out the courses, arranging the sections in those courses,
- * pulls out the right fields, etc.
  *
- * @param {BannerSection[]} bannerSections
+ * @param bannerSections
  * @returns
  */
-export function arrangeCourses(bannerSections: BannerSection[]) {
+export function arrangeCourses(
+  bannerSections: z.infer<typeof BannerSection>[],
+) {
   const courses: { [key: string]: Course } = {};
+  const xlist: { [key: string]: string[] } = {};
   const sections: { [key: string]: Section[] } = {};
   const subjects: string[] = [];
   const campuses: string[] = [];
 
   for (const s of bannerSections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
+      const specialTopics = s.courseTitle.includes("Special Topics");
+
       courses[s.subjectCourse] = {
-        name: "", // note - this will be filled in later when the names are scraped
+        // special topic courses are when course information is section scoped
+        specialTopics: specialTopics,
+        // the section title is the course title for non-special topic courses
+        name: specialTopics ? "Special Topics" : s.courseTitle,
         term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,
@@ -177,11 +228,29 @@ export function arrangeCourses(bannerSections: BannerSection[]) {
       };
     }
 
+    const c = courses[s.subjectCourse];
+
+    // special topic courses have different names between sections
+    if (s.courseTitle !== c.name) {
+      c.specialTopics = true;
+      c.name = "Special Topics"; // update name placeholder (special topic course names are scraped later)
+    }
+
     if (!Object.keys(sections).includes(s.subjectCourse))
       sections[s.subjectCourse] = [];
 
+    if (s.crossList) {
+      if (!Object.keys(xlist).includes(s.crossList)) {
+        xlist[s.crossList] = [];
+      }
+      xlist[s.crossList].push(s.courseReferenceNumber);
+    }
+
     sections[s.subjectCourse].push({
       crn: s.courseReferenceNumber,
+      name: s.courseTitle,
+      description: "",
+      // TODO: xlisted courses should use xlist seat numbers
       seatCapacity: s.maximumEnrollment,
       seatRemaining: s.seatsAvailable,
       waitlistCapacity: s.waitCapacity,
@@ -192,7 +261,10 @@ export function arrangeCourses(bannerSections: BannerSection[]) {
       campus: s.campusDescription,
       meetingTimes: parseMeetingTimes(s),
 
-      faculty: "TBA",
+      faculty: [],
+
+      // note - the xlisted crns will be updated once all xlists are calculated
+      xlist: [],
     });
 
     if (!subjects.includes(s.subject)) subjects.push(s.subject);
@@ -209,7 +281,8 @@ export function arrangeCourses(bannerSections: BannerSection[]) {
  * @param {BannerSection} section The raw scraped section to parse
  * @returns
  */
-export function parseMeetingTimes(section: BannerSection) {
+export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
+  // BUG: somewhere in here lol
   const meetings = [];
   for (const meetingFaculty of section.meetingsFaculty) {
     const meetingTime = meetingFaculty?.meetingTime;

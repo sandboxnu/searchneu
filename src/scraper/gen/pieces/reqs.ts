@@ -1,5 +1,5 @@
 import { parse } from "node-html-parser";
-import { Course as PopulatedCourse } from "../types";
+import { Course as PopulatedCourse } from "../../types";
 export interface Condition {
   type: "and" | "or";
   items: RequisiteItem[];

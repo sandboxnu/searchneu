@@ -68,7 +68,7 @@ export function RequisiteBlock({
     term: termId,
     depth: 0,
     prereqMode: prereqMode,
-    searchQuery: searchParams.get("q"),
+    searchParam: searchParams.toString(),
   });
 
   return (
@@ -113,13 +113,13 @@ function RequisiteItemComponent({
   term,
   depth,
   prereqMode,
-  searchQuery,
+  searchParam,
 }: {
   item: RequisiteItem;
   term: string;
   depth: number;
   prereqMode: boolean;
-  searchQuery: string | null;
+  searchParam: string | null;
 }) {
   if (isCondition(item)) {
     return (
@@ -140,7 +140,7 @@ function RequisiteItemComponent({
               term={term}
               depth={depth + 1}
               prereqMode={true}
-              searchQuery={searchQuery}
+              searchParam={searchParam}
             />
             {depth > 0 &&
               item.type === "and" &&
@@ -163,7 +163,7 @@ function RequisiteItemComponent({
   if (isCourse(item)) {
     return (
       <Link
-        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}${searchQuery ? `?q=${searchQuery}` : ""}`}
+        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}${searchParam ? `?${searchParam}` : ""}`}
         className="bg-neu1 flex items-center rounded-lg border p-2.5"
       >
         <span className="text-neu8 text-xs font-bold whitespace-nowrap">

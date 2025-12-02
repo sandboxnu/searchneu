@@ -34,10 +34,9 @@ export async function GET(req: NextRequest) {
     .from(termsT)
     .where(gt(termsT.activeUntil, new Date()));
 
-  // const terms = dbterms.map((t) => t.term);
-  // logger.info({ terms }, "terms to update");
+  const terms = dbterms.map((t) => t.term);
+  logger.info({ terms }, "terms to update");
 
-  const terms = ["202630"];
   // for each term perform an update
   for (const term of terms) {
     const {

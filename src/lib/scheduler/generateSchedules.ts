@@ -9,6 +9,130 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 
+// Limits and defaults
+const MAX_COURSES = 8;
+const MAX_COMBINATIONS = 500_000; // 500k
+const MAX_SECTIONS_PER_COURSE = 50;
+const TIMEOUT_MS = 30_000; // 30 seconds
+
+// Calculate an upper bound on total combinations.
+// Locked courses contribute `count` each. Optional courses can be omitted,
+// so they contribute `(count + 1)` each. Total combos = lockedProduct * optionalFactor
+const calculateTotalCombinations = (
+  lockedSections: SectionWithCourse[][],
+  optionalSections: SectionWithCourse[][],
+): number => {
+  const lockedProduct = lockedSections.reduce(
+    (p, arr) => p * Math.max(arr.length, 0),
+    1,
+  );
+
+  const optionalFactor = optionalSections.reduce(
+    (p, arr) => p * (arr.length + 1),
+    1,
+  );
+
+  return lockedProduct * optionalFactor;
+};
+
+// Wrap a promise with a timeout. If the promise doesn't settle within `ms`, rejects.
+const withTimeout = async <T>(promise: Promise<T>, ms: number): Promise<T> => {
+  let timer: NodeJS.Timeout | null = null;
+
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(`Schedule generation timed out after ${ms / 1000}s`));
+    }, ms);
+  });
+
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+};
+
+// Validate bounds and throw descriptive errors when limits are exceeded
+const validateBounds = (
+  lockedCourseIds: number[],
+  optionalCourseIds: number[],
+  lockedSectionsByCourse: SectionWithCourse[][],
+  optionalSectionsByCourse: SectionWithCourse[][],
+) => {
+  const totalCourses = lockedCourseIds.length + optionalCourseIds.length;
+  if (totalCourses > MAX_COURSES) {
+    throw new Error(
+      `Too many courses requested (${totalCourses}). Maximum allowed is ${MAX_COURSES}. Try generating fewer courses at once.`,
+    );
+  }
+
+  // Per-course empty detection and per-course section limits
+  const emptyCourses: string[] = [];
+  const oversizedCourses: string[] = [];
+
+  const inspectCourse = (
+    courseId: number,
+    sections: SectionWithCourse[],
+  ) => {
+    const meta = sections[0];
+    const label = meta
+      ? `${meta.courseSubject} ${meta.courseNumber}`
+      : `CourseId ${courseId}`;
+
+    if (sections.length === 0) emptyCourses.push(label);
+    if (sections.length > MAX_SECTIONS_PER_COURSE)
+      oversizedCourses.push(`${label} (${sections.length})`);
+  };
+
+  lockedCourseIds.forEach((id, i) =>
+    inspectCourse(id, lockedSectionsByCourse[i] || []),
+  );
+  optionalCourseIds.forEach((id, i) =>
+    inspectCourse(id, optionalSectionsByCourse[i] || []),
+  );
+
+  if (emptyCourses.length > 0) {
+    throw new Error(
+      `One or more courses have no available sections: ${emptyCourses.join(
+        ", ",
+      )}. Try removing that course or widening filters (time/campus/professor).`,
+    );
+  }
+
+  if (oversizedCourses.length > 0) {
+    throw new Error(
+      `One or more courses have an unusually large number of sections: ${oversizedCourses.join(
+        ", ",
+      )}. Maximum allowed per course is ${MAX_SECTIONS_PER_COURSE}.`,
+    );
+  }
+
+  const totalCombos = calculateTotalCombinations(
+    lockedSectionsByCourse,
+    optionalSectionsByCourse,
+  );
+
+  if (totalCombos > MAX_COMBINATIONS) {
+    // Build a helpful breakdown
+    const breakdown: string[] = [];
+    lockedSectionsByCourse.forEach((arr, i) => {
+      const meta = arr[0];
+      const label = meta ? `${meta.courseSubject} ${meta.courseNumber}` : `Locked#${i}`;
+      breakdown.push(`${label}: ${arr.length}`);
+    });
+    optionalSectionsByCourse.forEach((arr, i) => {
+      const meta = arr[0];
+      const label = meta ? `${meta.courseSubject} ${meta.courseNumber}` : `Optional#${i}`;
+      breakdown.push(`${label}: ${arr.length}`);
+    });
+
+    throw new Error(
+      `Schedule generation would check ~${totalCombos.toLocaleString()} combinations which exceeds the limit of ${MAX_COMBINATIONS.toLocaleString()} (~5s). Course breakdown: ${breakdown.join(
+        "; ",
+      )}. Try narrowing filters, removing some courses, or generating fewer courses at once.`,
+    );
+  }
+};
 const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
   const sections = db
@@ -232,32 +356,51 @@ export const generateSchedules = async (
   const optionalSectionsByCourse = await Promise.all(
     optionalCourseIds.map(getSectionsAndMeetingTimes)
   );
+  // Validate bounds early (throws descriptive errors)
+  validateBounds(
+    lockedCourseIds,
+    optionalCourseIds,
+    lockedSectionsByCourse,
+    optionalSectionsByCourse,
+  );
 
-  // Generate all possible combinations of locked courses
-  const lockedCombinations = generateCombinations(lockedSectionsByCourse);
+  // Smart ordering: sort course lists by ascending section count to reduce branching
+  const sortedLockedSections = [...lockedSectionsByCourse].sort(
+    (a, b) => a.length - b.length,
+  );
+  const sortedOptionalSections = [...optionalSectionsByCourse].sort(
+    (a, b) => a.length - b.length,
+  );
 
-  // Filter to only valid locked schedules (no time conflicts)
-  const validLockedSchedules = lockedCombinations.filter(isValidSchedule);
+  // Do the heavy generation inside a function so we can apply a timeout wrapper.
+  const runGeneration = async () => {
+    // Edge case: no locked courses but have optional courses
+    if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
+      const schedulesWithOptional = addOptionalCourses([], sortedOptionalSections);
+      return schedulesWithOptional.filter((s) => s.length > 0);
+    }
 
-  // Edge case: no locked courses but have optional courses
-  if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    // Start with empty schedule and add optional courses
-    const schedulesWithOptional = addOptionalCourses([], optionalSectionsByCourse);
-    // Remove any empty schedules
-    return schedulesWithOptional.filter(schedule => schedule.length > 0);
-  }
+    // Generate and filter locked combinations
+    const lockedCombinations = generateCombinations(sortedLockedSections);
+    const validLockedSchedules = lockedCombinations.filter(isValidSchedule);
 
-  // If no optional courses, return the locked schedules
-  if (optionalCourseIds.length === 0) {
-    return validLockedSchedules;
-  }
+    // If no optional courses, return locked schedules
+    if (optionalCourseIds.length === 0) {
+      return validLockedSchedules;
+    }
 
-  // For each valid locked schedule, try adding optional courses
-  const allSchedules: SectionWithCourse[][] = [];
-  for (const lockedSchedule of validLockedSchedules) {
-    const schedulesWithOptional = addOptionalCourses(lockedSchedule, optionalSectionsByCourse);
-    allSchedules.push(...schedulesWithOptional);
-  }
+    const allSchedules: SectionWithCourse[][] = [];
+    for (const lockedSchedule of validLockedSchedules) {
+      const schedulesWithOptional = addOptionalCourses(
+        lockedSchedule,
+        sortedOptionalSections,
+      );
+      allSchedules.push(...schedulesWithOptional);
+    }
 
-  return allSchedules;
+    return allSchedules;
+  };
+
+  // Run generation with timeout protection
+  return await withTimeout(runGeneration(), TIMEOUT_MS);
 };

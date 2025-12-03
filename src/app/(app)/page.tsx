@@ -4,6 +4,7 @@ import { Header } from "@/components/navigation/Header";
 import { CourseCards } from "@/components/home/CourseCards";
 import type { Metadata } from "next";
 import { Search } from "@/components/home/Search";
+import { Footer } from "@/components/navigation/Footer";
 import ClickSpark from "@/components/ui/click-spark";
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default async function Home() {
         sparkCount={8}
         duration={400}
       >
-        <div className="pt-4 pb-6">
+        <div className="h-screen pt-4 pb-6">
           <Header />
 
           <div className="text-neu8 mt-[25%] flex flex-col items-center text-4xl font-bold md:mt-[10%] md:text-7xl">
@@ -43,6 +44,7 @@ export default async function Home() {
           </div>
         </div>
       </ClickSpark>
+      <Footer/>
     </>
   );
 }

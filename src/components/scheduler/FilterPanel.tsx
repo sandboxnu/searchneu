@@ -27,10 +27,21 @@ interface FilterPanelProps {
   nupathOptions: { label: string; value: string }[];
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions }: FilterPanelProps) {
-  const [courseIdsInput, setCourseIdsInput] = useState("17500, 16048, 15783, 17501");
+export function FilterPanel({
+  filters,
+  onFiltersChange,
+  onGenerateSchedules,
+  isGenerating,
+  nupathOptions,
+}: FilterPanelProps) {
+  const [courseIdsInput, setCourseIdsInput] = useState(
+    "17500, 16048, 15783, 17501",
+  );
 
-  const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
+  const updateFilter = <K extends keyof ScheduleFilters>(
+    key: K,
+    value: ScheduleFilters[K],
+  ) => {
     if (value === undefined || (Array.isArray(value) && value.length === 0)) {
       const { [key]: _, ...rest } = filters;
       onFiltersChange(rest);
@@ -47,7 +58,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       .split(",")
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id));
-    
+
     if (courseIds.length > 0) {
       onGenerateSchedules(courseIds);
     }
@@ -64,12 +75,12 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           value={courseIdsInput}
           onChange={(e) => setCourseIdsInput(e.target.value)}
           placeholder="Enter course IDs separated by commas (e.g., 17500, 16048)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[80px] font-mono text-sm"
+          className="mt-2 min-h-[80px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
         <Button
           onClick={handleGenerate}
           disabled={isGenerating}
-          className="w-full mt-2"
+          className="mt-2 w-full"
         >
           {isGenerating ? "Generating..." : "Generate Schedules"}
         </Button>
@@ -77,11 +88,11 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       <Separator />
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h3 className="text-muted-foreground text-xs font-bold">FILTERS</h3>
         <button
           onClick={clearFilters}
-          className="px-3 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded"
+          className="rounded bg-red-100 px-3 py-1 text-xs text-red-700 hover:bg-red-200"
         >
           Clear All
         </button>
@@ -94,9 +105,16 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         </Label>
         <input
           type="time"
-          value={filters.startTime ? militaryToTimeString(filters.startTime) : ""}
-          onChange={(e) => updateFilter("startTime", e.target.value ? timeStringToMilitary(e.target.value) : undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+          value={
+            filters.startTime ? militaryToTimeString(filters.startTime) : ""
+          }
+          onChange={(e) =>
+            updateFilter(
+              "startTime",
+              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
+            )
+          }
+          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -108,8 +126,13 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         <input
           type="time"
           value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
-          onChange={(e) => updateFilter("endTime", e.target.value ? timeStringToMilitary(e.target.value) : undefined)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+          onChange={(e) =>
+            updateFilter(
+              "endTime",
+              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
+            )
+          }
+          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -125,15 +148,20 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           min="0"
           max="7"
           value={filters.minDaysFree ?? ""}
-          onChange={(e) => updateFilter("minDaysFree", e.target.value ? parseInt(e.target.value) : undefined)}
+          onChange={(e) =>
+            updateFilter(
+              "minDaysFree",
+              e.target.value ? parseInt(e.target.value) : undefined,
+            )
+          }
           placeholder="0-7"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
       {/* Days Free Checkboxes */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold block mb-2">
+        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
           SPECIFIC DAYS FREE
         </Label>
         <div className="flex flex-wrap gap-2">
@@ -146,7 +174,10 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
             { value: 5, label: "Fri" },
             { value: 6, label: "Sat" },
           ].map((day) => (
-            <label key={day.value} className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+            <label
+              key={day.value}
+              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
+            >
               <input
                 type="checkbox"
                 checked={filters.specificDaysFree?.includes(day.value) ?? false}
@@ -154,8 +185,11 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                   const currentDays = filters.specificDaysFree || [];
                   const newDays = e.target.checked
                     ? [...currentDays, day.value]
-                    : currentDays.filter(d => d !== day.value);
-                  updateFilter("specificDaysFree", newDays.length > 0 ? newDays : undefined);
+                    : currentDays.filter((d) => d !== day.value);
+                  updateFilter(
+                    "specificDaysFree",
+                    newDays.length > 0 ? newDays : undefined,
+                  );
                 }}
                 className="rounded"
               />
@@ -176,9 +210,14 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           type="number"
           min="0"
           value={filters.minSeatsLeft ?? ""}
-          onChange={(e) => updateFilter("minSeatsLeft", e.target.value ? parseInt(e.target.value) : undefined)}
+          onChange={(e) =>
+            updateFilter(
+              "minSeatsLeft",
+              e.target.value ? parseInt(e.target.value) : undefined,
+            )
+          }
           placeholder="Any"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -191,9 +230,14 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           type="number"
           min="0"
           value={filters.minHonorsCourses ?? ""}
-          onChange={(e) => updateFilter("minHonorsCourses", e.target.value ? parseInt(e.target.value) : undefined)}
+          onChange={(e) =>
+            updateFilter(
+              "minHonorsCourses",
+              e.target.value ? parseInt(e.target.value) : undefined,
+            )
+          }
           placeholder="Any"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -201,12 +245,15 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* NUPath Requirement */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold block mb-2">
+        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
           NUPATH REQUIREMENTS
         </Label>
         <div className="flex flex-wrap gap-2">
           {nupathOptions.map((nupath) => (
-            <label key={nupath.value} className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+            <label
+              key={nupath.value}
+              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
+            >
               <input
                 type="checkbox"
                 checked={filters.nupaths?.includes(nupath.value) ?? false}
@@ -214,14 +261,15 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                   const currentNupaths = filters.nupaths || [];
                   const newNupaths = e.target.checked
                     ? [...currentNupaths, nupath.value]
-                    : currentNupaths.filter(n => n !== nupath.value);
-                  updateFilter("nupaths", newNupaths.length > 0 ? newNupaths: undefined);
+                    : currentNupaths.filter((n) => n !== nupath.value);
+                  updateFilter(
+                    "nupaths",
+                    newNupaths.length > 0 ? newNupaths : undefined,
+                  );
                 }}
                 className="rounded"
               />
-              <span className="text-sm">
-                {nupath.label}
-              </span>
+              <span className="text-sm">{nupath.label}</span>
             </label>
           ))}
         </div>

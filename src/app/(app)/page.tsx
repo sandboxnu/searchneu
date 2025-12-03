@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <>
-      <NeuSearchskiePattern count={200} />
       <ClickSpark
         sparkColor="#333"
         sparkSize={10}
@@ -23,7 +22,8 @@ export default async function Home() {
         sparkCount={8}
         duration={400}
       >
-        <div className="h-screen pt-4 pb-6">
+        <div className="min-h-screen pt-4 pb-6">
+          <NeuSearchskiePattern count={200} />
           <Header />
 
           <div className="text-neu8 mt-[25%] flex flex-col items-center text-4xl font-bold md:mt-[10%] md:text-7xl">

@@ -10,7 +10,7 @@ type Prop = {
 }
 
 export function Helper(prop: Prop) {
-  return <div className="flex flex-col ml-15 gap-2 w-45 mb-6 items-start xl:mr-6 xl:items-start">
+  return <div className="flex flex-col ml-15 gap-2 w-45 mb-6 items-start xl:ml-0 xl:mr-6">
     <p className="font-bold text-neu5 uppercase">{prop.name}</p>
    {prop.labels.map(([label, href], index) => (
         <Link
@@ -27,15 +27,13 @@ export function Helper(prop: Prop) {
 
 export function Footer() {
   return (
-    <footer className="flex flex-col xl:flex-row h-312px justify-between pt-2 bg-neu1 overflow-hidden">
+    <footer className="relative flex flex-col xl:flex-row xl:h-[312px] justify-between gap-39 pt-2 bg-neu1 overflow-hidden">
       <div className="flex flex-col">
-        <div className="relative h-78">
-          <div className="absolute">
-            <Neu className="absolute h-120 w-auto -left-25" />
-            <Logo className="absolute top-16 left-15 h-7 w-auto"/>
-          </div>
+        <div className="h-78">
+          <Neu className="absolute h-120 w-auto -left-25" />
+          <Logo className="absolute top-19 left-15 h-7 w-auto"/>
         </div>
-        <div className="flex flex-col gap-6 xl:flex-row items-start xl:items-center justify-between absolute -bottom-75 left-15 right-30 text-sm">
+        <div className="flex flex-col gap-6 xl:flex-row items-start xl:items-center justify-between absolute left-15 top-70 right-30 text-sm">
             <div className="flex gap-1 flex-col xl:flex-row">
               <p className="text-neu5">2025 SearchNEU.</p>
               <p className="text-neu7">

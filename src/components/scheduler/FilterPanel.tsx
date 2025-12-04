@@ -147,15 +147,15 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
               <div className="mt-2">
                 {(() => {
                   const colors = [
-                    { fill: "#FFF9D8", stroke: "#FFF6C7" },
-                    { fill: "#FFE4E0", stroke: "#FFD8D2" },
-                    { fill: "#DBF4FB", stroke: "#CCEFF9" },
-                    { fill: "#E2E0F8", stroke: "#D6D3F5" },
-                    { fill: "#DBF6E5", stroke: "#CCF2DA" },
-                    { fill: "#FFF1E4", stroke: "#FFEBD9" },
-                    { fill: "#FFE4F0", stroke: "#FFD9EA" },
-                    { fill: "#EAEAEA", stroke: "#E1E1E1" },
-                    { fill: "#E9E0D9", stroke: "#E0D3C9" },
+                    { fill: "var(--scheduler-course-yellow-fill)", stroke: "var(--scheduler-course-yellow-stroke)" },
+                    { fill: "var(--scheduler-course-red-fill)", stroke: "var(--scheduler-course-red-stroke)" },
+                    { fill: "var(--scheduler-course-blue-fill)", stroke: "var(--scheduler-course-blue-stroke)" },
+                    { fill: "var(--scheduler-course-purple-fill)", stroke: "var(--scheduler-course-purple-stroke)" },
+                    { fill: "var(--scheduler-course-green-fill)", stroke: "var(--scheduler-course-green-stroke)" },
+                    { fill: "var(--scheduler-course-orange-fill)", stroke: "var(--scheduler-course-orange-stroke)" },
+                    { fill: "var(--scheduler-course-pink-fill)", stroke: "var(--scheduler-course-pink-stroke)" },
+                    { fill: "var(--scheduler-course-gray-fill)", stroke: "var(--scheduler-course-gray-stroke)" },
+                    { fill: "var(--scheduler-course-brown-fill)", stroke: "var(--scheduler-course-brown-stroke)" },
                   ];
 
                   return courseEntries.map(([courseKey, sectionsMap], i) => (

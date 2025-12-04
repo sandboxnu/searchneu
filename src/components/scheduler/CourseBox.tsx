@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { SectionRow } from "./SectionRow";
+import { cn } from "@/lib/cn";
 
 interface CourseColor {
   fill: string;
@@ -21,15 +22,15 @@ export function CourseBox({ sections, color }: CourseBoxProps) {
 
   const courseId = sections[0] ? `${sections[0].courseSubject} ${sections[0].courseNumber}` : "";
   const courseName = sections[0] ? sections[0].courseName : "";
-    
-  const fill = color?.fill ?? "transparent";
-  const stroke = color?.stroke ?? "transparent";
 
   return (
     <div className="mb-3">
       <div
-        className="rounded-md px-3 py-2 flex items-start justify-between border"
-        style={{ backgroundColor: fill, borderColor: stroke }}
+        className={cn(
+          "rounded-md px-3 py-2 flex items-start justify-between border",
+          color?.fill ? `bg-[${color.fill}]` : "bg-transparent",
+          color?.stroke ? `border-[${color.stroke}]` : "border-transparent"
+        )}
       >
         <div className="flex items-start gap-3">
           <button
@@ -50,7 +51,7 @@ export function CourseBox({ sections, color }: CourseBoxProps) {
       </div>
 
       {open && (
-        <div className="rounded-md mt-2 overflow-hidden border-2" style={{ borderColor: fill }}>
+        <div className="rounded-md mt-2 overflow-hidden border-2" style={{ borderColor: `${color?.fill}` }}>
           {sections.map((s) => (
             <SectionRow key={s.crn} section={s} />
           ))}

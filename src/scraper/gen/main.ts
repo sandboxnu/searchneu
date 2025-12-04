@@ -1,9 +1,9 @@
 import { logger } from "@/lib/logger";
 import { scrapeSections } from "./pieces/sections";
 import {
-  courseCoreqsEndpoint,
+  sectionCoreqsEndpoint,
   courseDescriptionEndpoint,
-  coursePrereqsEndpoint,
+  sectionPrereqsEndpoint,
   subjectsEndpoint,
 } from "./endpoints";
 import { decode } from "he";
@@ -15,6 +15,8 @@ import * as z from "zod";
 import { BannerSection } from "../schemas/section";
 import { scrapeCatalogDetails } from "./pieces/courseNames";
 import { TermConfig } from "../config";
+import { scrapeCourseDescriptions } from "./pieces/courseDescriptions";
+import { scrapeCoursePrereqs } from "./pieces/coursePrereqs";
 
 /**
  * scrapeCatalogTerm is the main scraping logic
@@ -30,6 +32,10 @@ export async function scrapeCatalogTerm(
   // get sections
   logger.info("scraping sections");
   const rawSections = await scrapeSections(term);
+  if (!rawSections) {
+    logger.error("failed to scrape sections");
+    return;
+  }
 
   // stub courses from sections
   logger.info("stubbing courses");
@@ -78,71 +84,40 @@ export async function scrapeCatalogTerm(
   const failedFacultySections = scrapeMeetingsFaculty(fe, term, sectionList);
 
   // names
-  // NOTE: frankly there should be a way to force scraping the name
-  // and also a way to dev check to see if this hueristic works at all
+  // PERF: we could prob just do the special topic courses, but we should be sure that just those need
+  // an updated name
   const failedCatalogDetailCourses = scrapeCatalogDetails(
     fe,
     term,
-    specialTopicCourses,
+    taggedCourses,
   );
 
+  // ===== scrape information for "ordinary" (ie non special topics) courses =====
   // descriptions
-  const descriptionPromises = taggedCourses
-    .map(({ course, crn }) => async () => {
-      const [url, body] = courseDescriptionEndpoint(term, crn);
-      const data = await fe
-        .fetch(url, {
-          ...body,
-          onRetry(attempt) {
-            logger.debug(
-              {
-                course: `${course.subject} ${course.courseNumber}`,
-                attempt,
-              },
-              "retrying description for course",
-            );
-          },
-        })
-        .then((r) => r.text());
-
-      if (!data) {
-        return;
-      }
-
-      course.description = decode(decode(data))
-        .replace(/<[^>]*>/g, "") // Remove HTML tags
-        .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments
-        .trim();
-    })
-    .map((p) => p());
+  const ordinaryCourses = courses
+    .filter((c) => !c.specialTopics)
+    .map((c) => ({
+      ...c,
+      crn: sections[c.subject + c.courseNumber][0].crn,
+    }));
+  const failedDescriptions = scrapeCourseDescriptions(
+    fe,
+    term,
+    ordinaryCourses,
+  );
 
   // prereqs
-  const prereqPromises = taggedCourses
-    .map(({ course, crn }) => async () => {
-      const [url, body] = coursePrereqsEndpoint(term, crn);
-      const data = await fe
-        .fetch(url, {
-          ...body,
-          onRetry(attempt) {
-            logger.debug(
-              {
-                course: `${course.subject} ${course.courseNumber}`,
-                attempt,
-              },
-              "retrying prereqs for course",
-            );
-          },
-        })
-        .then((r) => r.text());
-
-      course.prereqs = parsePrereqs(decode(decode(data)), subjects);
-    })
-    .map((p) => p());
+  const failedPrereqPromises = scrapeCoursePrereqs(
+    fe,
+    term,
+    ordinaryCourses,
+    subjects,
+  );
 
   // coreqs
   const coreqPromises = taggedCourses
     .map(({ course, crn }) => async () => {
-      const [url, body] = courseCoreqsEndpoint(term, crn);
+      const [url, body] = sectionCoreqsEndpoint(term, crn);
       const data = await fe
         .fetch(url, {
           ...body,
@@ -168,8 +143,8 @@ export async function scrapeCatalogTerm(
   await Promise.all([
     failedFacultySections,
     failedCatalogDetailCourses,
-    ...descriptionPromises,
-    ...prereqPromises,
+    failedDescriptions,
+    failedPrereqPromises,
     ...coreqPromises,
   ]);
 
@@ -203,6 +178,8 @@ export function arrangeCourses(
   const subjects: string[] = [];
   const campuses: string[] = [];
 
+  const crns: string[] = [];
+
   for (const s of bannerSections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       const specialTopics = s.courseTitle.includes("Special Topics");
@@ -212,7 +189,6 @@ export function arrangeCourses(
         specialTopics: specialTopics,
         // the section title is the course title for non-special topic courses
         name: specialTopics ? "Special Topics" : s.courseTitle,
-        term: s.term,
         courseNumber: s.courseNumber,
         subject: s.subject,
         description: "", // note - this will be filled in later when the descriptions are scraped
@@ -230,8 +206,11 @@ export function arrangeCourses(
 
     const c = courses[s.subjectCourse];
 
-    // special topic courses have different names between sections
-    if (s.courseTitle !== c.name) {
+    if (
+      !c.specialTopics &&
+      (s.courseTitle !== c.name || // special topic courses have different names between sections
+        s.sectionAttributes.filter((s) => s.code === "TOPC").length === 0) // or sometimes have a "Topics" attribute
+    ) {
       c.specialTopics = true;
       c.name = "Special Topics"; // update name placeholder (special topic course names are scraped later)
     }
@@ -246,13 +225,15 @@ export function arrangeCourses(
       xlist[s.crossList].push(s.courseReferenceNumber);
     }
 
+    crns.push(s.courseReferenceNumber);
+
     sections[s.subjectCourse].push({
       crn: s.courseReferenceNumber,
       name: s.courseTitle,
+      sectionNumber: s.sequenceNumber,
       description: "",
-      // TODO: xlisted courses should use xlist seat numbers
-      seatCapacity: s.maximumEnrollment,
-      seatRemaining: s.seatsAvailable,
+      seatCapacity: s.crossListCapacity ?? s.maximumEnrollment,
+      seatRemaining: s.crossListAvailable ?? s.seatsAvailable,
       waitlistCapacity: s.waitCapacity,
       waitlistRemaining: s.waitAvailable,
       classType: s.scheduleTypeDescription,
@@ -263,8 +244,10 @@ export function arrangeCourses(
 
       faculty: [],
 
-      // note - the xlisted crns will be updated once all xlists are calculated
-      xlist: [],
+      prereqs: {},
+      coreqs: {},
+
+      xlist: s.crossList ? xlist[s.crossList] : [],
     });
 
     if (!subjects.includes(s.subject)) subjects.push(s.subject);

@@ -26,7 +26,7 @@ export const BannerSectionMeetingsFaculty = z.strictObject({
     category: z.string(),
     class: z.string(),
     courseReferenceNumber: BannerCRN,
-    creditHourSession: z.int().nullable(),
+    creditHourSession: z.number().nullable(),
     endDate: z.string(),
     endTime: z.string().nullable(),
     friday: z.boolean(),

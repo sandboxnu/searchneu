@@ -1,22 +1,12 @@
 import { parse } from "node-html-parser";
-import { Course as PopulatedCourse } from "../../types";
-export interface Condition {
-  type: "and" | "or";
-  items: RequisiteItem[];
-}
-
-export interface Course {
-  subject: string;
-  courseNumber: string;
-}
-
-export interface Test {
-  name: string;
-  score: number;
-}
-
-export type RequisiteItem = Condition | Course | Test;
-export type Requisite = RequisiteItem | Record<string, never>;
+import {
+  Test,
+  Condition,
+  Course,
+  ReqsCourse,
+  Requisite,
+  RequisiteItem,
+} from "../../types";
 
 export function parseCoreqs(
   rawHtml: string,
@@ -34,13 +24,13 @@ export function parseCoreqs(
   tableRows.forEach((tr) => {
     const data = tr.querySelectorAll("td");
     if (data.length === 3) {
-      const newCourse: Course = {
+      const newCourse: ReqsCourse = {
         subject: getSubjectCode(data[0].innerText, subjects),
         courseNumber: data[1].innerText,
       };
       items.push(newCourse);
     } else {
-      const newCourse: Course = {
+      const newCourse: ReqsCourse = {
         subject: getSubjectCode(data[1].innerText, subjects),
         courseNumber: data[2].innerText,
       };
@@ -103,7 +93,7 @@ export function parsePrereqs(
 
     // Handle course information
     if (notEmpty(data[4].innerText) && notEmpty(data[5].innerText)) {
-      const newCourse: Course = {
+      const newCourse: ReqsCourse = {
         subject: getSubjectCode(data[4].innerText, subjects),
         courseNumber: data[5].innerText,
       };
@@ -134,7 +124,7 @@ export function parsePrereqs(
     return rootCondition;
   }
 }
-export function populatePostReqs(courses: PopulatedCourse[]) {
+export function populatePostReqs(courses: Course[]) {
   const postreqMap = new Map<string, Set<string>>();
 
   for (const c of courses) {

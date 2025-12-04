@@ -18,37 +18,57 @@ import {
  */
 export async function scrapeSections(term: string, cookiePool = 20) {
   // create the pool of cookies to use; section search requests require a cookie section to Banner
-  const cookies = await getAuthCookies(term, cookiePool);
+  const cookies = await getAuthCookies(term, cookiePool + 1);
   logger.debug({ term: term }, "auth cookies aquired");
+
+  const initalCookie = cookies.pop();
+  if (!initalCookie) {
+    logger.error("not enough cookies");
+    return;
+  }
 
   // get just the first section to see how many are in a term
   const initialSectionResp = await $fetch(sectionSearchEndpoint(term, 0, 1), {
     headers: {
-      Cookie: cookies[0],
+      Cookie: initalCookie,
     },
   }).then((resp) => resp.json());
+
+  const initialSectionRespResult =
+    BannerSectionResponse.safeParse(initialSectionResp);
+  if (!initialSectionRespResult.success) {
+    logger.error(
+      {
+        error: initialSectionRespResult.error,
+      },
+      "error parsing inital section response",
+    );
+    return;
+  }
+
+  const initialResp = initialSectionRespResult.data;
 
   // number of batches we have to do. each page can return up to 500 sections and
   // we only have `cookiePool` number of cookies
   const numBatches = Math.ceil(
-    Math.ceil(initialSectionResp.totalCount / 500) / cookiePool,
+    Math.ceil(initialResp.totalCount / 500) / cookiePool,
   );
 
   logger.debug(
     {
       term: term,
-      count: initialSectionResp.totalCount,
+      count: initialResp.totalCount,
       batches: numBatches,
     },
     "section count received",
   );
 
-  const rawSections: z.infer<typeof BannerSection>[] = [];
+  const rawSections: unknown[] = [];
 
   for (let i = 0; i < numBatches; i++) {
     logger.debug({ term: term, batch: i }, "scraping sections for batch");
     const promises = Array.from([...Array(cookiePool).keys()], (j) =>
-      fetch(sectionSearchEndpoint(term, (i * cookiePool + j) * 500, 500), {
+      $fetch(sectionSearchEndpoint(term, (i * cookiePool + j) * 500, 500), {
         headers: {
           Cookie: cookies[j],
         },
@@ -68,7 +88,17 @@ export async function scrapeSections(term: string, cookiePool = 20) {
     logger.trace({ term: term, batch: i }, "marshalled sections");
   }
 
-  if (rawSections.length !== initialSectionResp.totalCount) {
+  const rawSectionResult = BannerSectionResponse.pick({ data: true }).safeParse(
+    { data: rawSections },
+  );
+  if (!rawSectionResult.success) {
+    logger.error({ e: rawSectionResult.error }, "error parsing sections");
+    return;
+  }
+
+  const sections = rawSectionResult.data.data;
+
+  if (sections.length !== initialResp.totalCount) {
     logger.warn(
       {
         term: term,
@@ -79,7 +109,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
     );
   }
 
-  return rawSections;
+  return sections;
 }
 
 // getAuthCookies get a bunch of cookies from the banner api. A cookie is required

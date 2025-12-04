@@ -1,10 +1,9 @@
 import type { NextConfig } from "next";
 import withVercelToolbar from "@vercel/toolbar/plugins/next";
-import { createMDX } from "fumadocs-mdx/next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  serverExternalPackages: ["typescript", "twoslash"],
+  serverExternalPackages: ["typescript"],
   outputFileTracingIncludes: {
     "/content/api/": ["./content/api/*"],
   },
@@ -48,6 +47,5 @@ const nextConfig: NextConfig = {
 };
 
 const vercelToolbar = withVercelToolbar();
-const mdx = createMDX();
 
-export default mdx(vercelToolbar(nextConfig));
+export default vercelToolbar(nextConfig);

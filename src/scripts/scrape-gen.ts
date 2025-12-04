@@ -57,6 +57,7 @@ const main = defineCommand({
     }
 
     for (const termConfig of termsToScrape) {
+      if (termConfig.term !== 202630) continue;
       const cachename = path.resolve(
         CACHE_PATH,
         CACHE_FORMAT(termConfig.term.toString()),

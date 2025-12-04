@@ -34,7 +34,7 @@ export const courseDescriptionEndpoint = (term: string, crn: string) =>
     },
   ] as const;
 
-export const coursePrereqsEndpoint = (term: string, crn: string) =>
+export const sectionPrereqsEndpoint = (term: string, crn: string) =>
   [
     `${baseUrl}/StudentRegistrationSsb/ssb/searchResults/getSectionPrerequisites`,
     {
@@ -46,7 +46,7 @@ export const coursePrereqsEndpoint = (term: string, crn: string) =>
     },
   ] as const;
 
-export const courseCoreqsEndpoint = (term: string, crn: string) =>
+export const sectionCoreqsEndpoint = (term: string, crn: string) =>
   [
     `${baseUrl}/StudentRegistrationSsb/ssb/searchResults/getCorequisites`,
     {

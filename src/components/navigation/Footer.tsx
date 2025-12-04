@@ -4,15 +4,10 @@ import Link from "next/link";
 import { Neu } from "../icons/Neu";
 import { Logo } from "../icons/logo"
 
-type Prop = {
-  name: string;
-  labels: [string, string][];
-}
-
-export function Helper(prop: Prop) {
+export function LinkColumn({name, labels}: {name: string, labels: [string, string][]}) {
   return <div className="flex flex-col ml-15 gap-2 w-45 mb-6 items-start xl:ml-0">
-    <p className="font-bold text-neu5 uppercase">{prop.name}</p>
-   {prop.labels.map(([label, href], index) => (
+    <p className="font-bold text-neu5 uppercase">{name}</p>
+   {labels.map(([label, href], index) => (
         <Link
           key={index}
           href={href}
@@ -79,23 +74,23 @@ export function Footer() {
           </div>
       </div>
       <div className="flex flex-col xl:flex-row justify-end xl:pt-14 mr-12 gap-6">
-          <Helper name="Product"
+          <LinkColumn name="Product"
                     labels={[
                       ["Home", "/"],
                       ["Catalog", "/catalog"],
                       ["Rooms", "/rooms"],
                     ]}/>
-          <Helper name="Resources"
+          <LinkColumn name="Resources"
                     labels={[
                       ["Changelog", "/changelog"],
                       ["FAQ", "/faq"],
                     ]}/>
-          <Helper name="Development"
+          <LinkColumn name="Development"
                     labels={[
                       ["Documentation", "/docs"],
                       ["Github", "https://github.com/sandboxnu/searchneu"],
                     ]}/>
-          <Helper name="Affiliations"
+          <LinkColumn name="Affiliations"
                     labels={[
                       ["Sandbox", "https://www.sandboxnu.com/"],
                       ["GraduateNU", "https://www.sandboxnu.com/"],

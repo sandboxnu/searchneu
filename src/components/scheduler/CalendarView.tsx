@@ -220,7 +220,10 @@ export function CalendarView({ schedule, scheduleNumber, colorMap }: CalendarVie
                           {section.faculty}
                         </div>
                       )}
-                      <div className="text-sm mt-1 text-neu6">
+                      <div className="text-base truncate text-neu6">
+                        CRN {section.crn}
+                      </div>
+                      <div className="text-base mt-1 text-neu6">
                         {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
                       </div>
                     </div>

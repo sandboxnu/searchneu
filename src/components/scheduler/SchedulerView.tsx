@@ -156,7 +156,7 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
 
       {/* Schedule/Plan Tabs (Second Row) */}
       {displaySchedules.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto">
           {displaySchedules.map((schedule, index) => {
             const scheduleKey = getScheduleKey(schedule);
             return (
@@ -175,36 +175,6 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
               </button>
             );
           })}
-        </div>
-      )}
-
-      {/* Active Filters Summary */}
-      {Object.keys(filters).length > 0 && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <h2 className="text-sm font-semibold mb-1 text-blue-900">Active Filters:</h2>
-          <div className="flex flex-wrap gap-2 text-xs text-blue-800">
-            {filters.startTime && (
-              <span className="bg-white px-2 py-1 rounded">Earliest: {formatTime(filters.startTime)}</span>
-            )}
-            {filters.endTime && (
-              <span className="bg-white px-2 py-1 rounded">Latest: {formatTime(filters.endTime)}</span>
-            )}
-            {filters.specificDaysFree && filters.specificDaysFree.length > 0 && (
-              <span className="bg-white px-2 py-1 rounded">Days Free: {formatDays(filters.specificDaysFree)}</span>
-            )}
-            {filters.minDaysFree !== undefined && (
-              <span className="bg-white px-2 py-1 rounded">Min Days Free: {filters.minDaysFree}</span>
-            )}
-            {filters.minSeatsLeft !== undefined && (
-              <span className="bg-white px-2 py-1 rounded">Min Seats: {filters.minSeatsLeft}</span>
-            )}
-            {filters.minHonorsCourses !== undefined && (
-              <span className="bg-white px-2 py-1 rounded">Min Honors: {filters.minHonorsCourses}</span>
-            )}
-            {filters.nupaths && filters.nupaths.length > 0 && (
-              <span className="bg-white px-2 py-1 rounded">NUPaths: {filters.nupaths.join(", ")}</span>
-            )}
-          </div>
         </div>
       )}
 

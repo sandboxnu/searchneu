@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
+import { type CourseColor, getSectionColor } from "@/lib/scheduler/courseColors";
 
 interface CalendarViewProps {
   schedule: SectionWithCourse[];
   scheduleNumber: number;
+  colorMap: Map<string, CourseColor>;
 }
 
 // Height per hour in pixels - increase this to make rows taller
@@ -27,29 +29,38 @@ function timeToMinutes(time: number): number {
   return hours * 60 + minutes;
 }
 
-// All blocks use the same grey styling
-function getCourseColor(): string {
-  return "bg-gray-100 border border-gray-300 text-gray-900";
-}
-
-export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
+export function CalendarView({ schedule, scheduleNumber, colorMap }: CalendarViewProps) {
   const calendarRef = useRef<HTMLDivElement>(null);
   
-  // Define time range (12 AM to 11 PM - full 24 hours)
-  const startHour = 0;
+  // Define time range (6 AM to midnight)
+  const startHour = 6;
   const endHour = 24;
   const totalHours = endHour - startHour;
   
   // Calculate minimum height based on hour height
   const minCalendarHeight = totalHours * HOUR_HEIGHT;
   
+  // Separate async/remote courses from scheduled courses
+  const asyncCourses = schedule.filter(section => 
+    !section.meetingTimes || 
+    section.meetingTimes.length === 0 || 
+    section.meetingTimes.every(mt => !mt.days || mt.days.length === 0)
+  );
+  
+  const scheduledCourses = schedule.filter(section => 
+    section.meetingTimes && 
+    section.meetingTimes.length > 0 && 
+    section.meetingTimes.some(mt => mt.days && mt.days.length > 0)
+  );
+  
   // Auto-scroll to 7 AM on mount or when schedule changes
   useEffect(() => {
     if (calendarRef.current) {
-      const scrollPosition = 7 * HOUR_HEIGHT + 48 + 8;
+      const asyncHeaderHeight = asyncCourses.length > 0 ? 80 : 0;
+      const scrollPosition = 1 * HOUR_HEIGHT + 48 + asyncHeaderHeight + 8; // 7 AM is now 1 hour from start (6 AM)
       calendarRef.current.scrollTop = scrollPosition;
     }
-  }, [scheduleNumber]);
+  }, [scheduleNumber, asyncCourses.length]);
   
   // Define days
   const days = [
@@ -61,9 +72,6 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
     { short: "FRI", full: "FRIDAY", index: 5 },
     { short: "SAT", full: "SATURDAY", index: 6 },
   ];
-
-  // All courses use the same grey color
-  const courseColor = getCourseColor();
 
   // Create time slots
   const timeSlots: string[] = [];
@@ -92,18 +100,69 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
       className="h-full w-full rounded-lg border border-gray-300 bg-white overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
     >
       {/* Calendar Grid */}
-      <div className="grid grid-cols-[65px_repeat(7,1fr)]" style={{ minHeight: `${minCalendarHeight}px` }}>
+      <div className="relative">
+        {/* Sticky Header Row - spans all columns */}
+        <div className="sticky top-0 bg-white z-30 grid grid-cols-[65px_repeat(7,1fr)]">
+          {/* Time Column Header */}
+          <div className="bg-white">
+            {!asyncCourses.length && (
+              <div className="h-12 flex items-center justify-end pr-2 pb-1 text-sm font-semibold text-neu4">
+                GMT-5
+              </div>
+            )}
+          </div>
+          
+          {/* Day Headers */}
+          {days.map((day) => (
+            <div key={day.index} className="h-12 flex items-center justify-center pb-1 bg-white">
+              <div className="text-sm font-semibold text-neu6">{day.full}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Async/Remote Courses Section - spans all day columns */}
+        {asyncCourses.length > 0 && (
+          <div className="sticky top-12 bg-white z-30 grid grid-cols-[65px_1fr] border-b border-gray-200">
+            <div className="bg-white flex items-start justify-end pr-2 py-2">
+              <div className="text-sm font-semibold text-neu4 h-[39px] flex items-center">GMT-5</div>
+            </div>
+            <div className="py-2 px-1 space-y-2">
+              {asyncCourses.map((section, index) => {
+                const sectionColor = getSectionColor(section, colorMap);
+                return (
+                  <div
+                    key={index}
+                    className="rounded-md p-2 px-3 flex items-center gap-3 border"
+                    style={{
+                      backgroundColor: sectionColor?.fill,
+                      borderColor: sectionColor?.stroke,
+                    }}
+                  >
+                    <div className="text-base font-bold truncate text-neu8">
+                      {section.courseSubject} {section.courseNumber}
+                    </div>
+                    <div className="text-base truncate text-neu6">
+                      CRN {section.crn}
+                    </div>
+                    <div className="text-base truncate text-neu6 italic">
+                      Asynchronous
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        
+        <div className="grid grid-cols-[65px_repeat(7,1fr)]" style={{ minHeight: `${minCalendarHeight}px` }}>
         {/* Time Column */}
         <div className="bg-white">
-          <div className="h-12 flex items-center justify-end pr-2 pb-1 text-xs font-semibold text-gray-500 sticky top-0 bg-white z-10">
-            [EST]
-          </div>
           <div className="relative h-[calc(100%-3rem)] mt-2">
             {timeSlots.map((time, index) => {
               return (
                 <div
                   key={time}
-                  className="absolute w-full flex items-start justify-end pr-2 text-sm text-gray-600"
+                  className="absolute w-full flex items-start justify-end pr-2 text-sm text-neu6"
                   style={{ top: `${(index / totalHours) * 100}%`, height: `${(1 / totalHours) * 100}%` }}
                 >
                   <span className="-translate-y-1/2">{time}</span>
@@ -116,11 +175,6 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
         {/* Day Columns */}
         {days.map((day, idx) => (
           <div key={day.index} className="relative bg-white">
-            {/* Day Header */}
-            <div className="h-12 flex items-center justify-center pb-1 sticky top-0 bg-white z-10">
-              <div className="text-sm font-semibold text-gray-500">{day.full}</div>
-            </div>
-
             {/* Time Grid Lines */}
             <div className="relative h-[calc(100%-3rem)] mt-2">
               {/* Top border for 12 AM */}
@@ -138,7 +192,8 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
               })}
 
               {/* Class Blocks */}
-              {schedule.map((section, sectionIndex) => {
+              {scheduledCourses.map((section, sectionIndex) => {
+                const sectionColor = getSectionColor(section, colorMap);
                 return section.meetingTimes.map((meeting, meetingIndex) => {
                   if (!meeting.days.includes(day.index)) return null;
 
@@ -147,21 +202,28 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
                   return (
                     <div
                       key={`${sectionIndex}-${meetingIndex}`}
-                      className={`absolute w-[calc(100%-8px)] mx-1 rounded-md ${courseColor} p-2 overflow-hidden`}
-                      style={position}
+                      className="absolute w-[calc(100%-8px)] mx-1 rounded-md p-2 overflow-hidden border"
+                      style={{
+                        ...position,
+                        backgroundColor: sectionColor?.fill,
+                        borderColor: sectionColor?.stroke,
+                      }}
                     >
-                      <div className="text-base font-bold truncate text-black">
+                      <div className="text-base font-bold truncate text-neu8">
                         {section.courseSubject} {section.courseNumber}
                       </div>
-                      <div className="text-sm truncate text-gray-600">
+                      <div className="text-base truncate text-neu6">
                         {section.courseName}
                       </div>
                       {section.faculty && (
-                        <div className="text-sm truncate text-gray-600">
+                        <div className="text-base truncate text-neu6">
                           {section.faculty}
                         </div>
                       )}
-                      <div className="text-sm mt-1 text-gray-600">
+                      <div className="text-base truncate text-neu6">
+                        CRN {section.crn}
+                      </div>
+                      <div className="text-base mt-1 text-neu6">
                         {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
                       </div>
                     </div>
@@ -171,6 +233,7 @@ export function CalendarView({ schedule, scheduleNumber }: CalendarViewProps) {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

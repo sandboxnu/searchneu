@@ -33,8 +33,8 @@ export function CourseBox({ sections, color }: CourseBoxProps) {
             {courseLocked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
           </button>
           <div className="mt-1 leading-tight">
-            <div className="font-bold text-sm text-gray-900 mb-1">{courseId}</div>
-            <div className="text-sm text-muted-foreground">{courseName}</div>
+            <div className="font-bold text-sm text-neu8 mb-1">{courseId}</div>
+            <div className="text-sm text-neu7">{courseName}</div>
           </div>
         </div>
         <button onClick={() => setOpen((s) => !s)} aria-label={open ? "Collapse" : "Expand"} className="p-1">

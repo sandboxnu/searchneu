@@ -47,3 +47,11 @@ export function getCourseColorMap(filteredSchedules: SectionWithCourse[][]): Map
 
   return colorMap;
 }
+
+// Gets the color for a specific section based on its course
+export function getSectionColor(
+  section: SectionWithCourse,
+  colorMap: Map<string, CourseColor>
+): CourseColor | undefined {
+  return colorMap.get(getCourseKey(section));
+}

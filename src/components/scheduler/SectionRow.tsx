@@ -23,9 +23,9 @@ export function SectionRow({ section }: SectionRowProps) {
           {locked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
         </button>
         <div>
-          <div className="font-bold text-sm text-gray-900 my-1">CRN {section.crn}</div>
-          <div className="text-sm text-muted-foreground">{formatFaculty(section.faculty)}</div>
-          <div className="text-sm text-muted-foreground mb-1">
+          <div className="font-bold text-sm text-neu8 my-1">CRN {section.crn}</div>
+          <div className="text-sm text-neu6">{formatFaculty(section.faculty)}</div>
+          <div className="text-sm text-neu6 mb-1">
             <MeetingTimes meetings={section.meetingTimes} />
           </div>
           <span

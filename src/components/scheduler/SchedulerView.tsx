@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { CalendarView } from "./CalendarView";
+import { getCourseColorMap } from "@/lib/scheduler/courseColors";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -22,14 +23,15 @@ function formatDays(days: number[]): string {
 
 interface SchedulerViewProps {
   schedules: SectionWithCourse[][];
-  totalSchedules: number;
   filters: ScheduleFilters;
 }
 
-export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerViewProps) {
+export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
   const [selectedScheduleIndex, setSelectedScheduleIndex] = useState(0);
 
-  // Limit to first 8 schedules for tabs
+  // Memoize the color map so it's only computed when schedules changes
+  const colorMap = useMemo(() => getCourseColorMap(schedules), [schedules]);
+
   const displaySchedules = schedules;
   const currentSchedule = displaySchedules[selectedScheduleIndex];
 
@@ -87,7 +89,7 @@ export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerV
       {/* Calendar View */}
       {currentSchedule ? (
         <div className="flex-1 overflow-hidden">
-          <CalendarView schedule={currentSchedule} scheduleNumber={selectedScheduleIndex + 1} />
+          <CalendarView schedule={currentSchedule} scheduleNumber={selectedScheduleIndex + 1} colorMap={colorMap} />
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center text-gray-500">

@@ -50,7 +50,6 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
       <div className="col-span-5 pl-6">
         <SchedulerView
           schedules={filteredSchedules}
-          totalSchedules={initialSchedules.length}
           filters={filters}
         />
       </div>

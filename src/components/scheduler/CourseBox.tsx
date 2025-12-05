@@ -4,12 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { SectionRow } from "./SectionRow";
-import { cn } from "@/lib/cn";
-
-interface CourseColor {
-  fill: string;
-  stroke: string;
-}
+import { type CourseColor } from "@/lib/scheduler/courseColors";
 
 interface CourseBoxProps {
   sections: SectionWithCourse[];

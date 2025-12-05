@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { CourseBox } from "@/components/scheduler/CourseBox";
+import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -33,6 +34,9 @@ interface FilterPanelProps {
 export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules }: FilterPanelProps) {
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
+
+  // Memoize the color map so it's only computed when filteredSchedules changes
+  const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
 
   const updateFilter = <K extends keyof ScheduleFilters>(key: K, value: ScheduleFilters[K]) => {
     if (value === undefined || (Array.isArray(value) && value.length === 0)) {
@@ -133,7 +137,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
             const courseMap = new Map<string, Map<string, SectionWithCourse>>();
             for (const schedule of filteredSchedules) {
               for (const section of schedule) {
-                const courseKey = `${section.courseSubject} ${section.courseNumber}`;
+                const courseKey = getCourseKey(section);
                 if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
                 const inner = courseMap.get(courseKey)!;
                 if (!inner.has(section.crn)) inner.set(section.crn, section);
@@ -145,27 +149,13 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
             return (
               <div className="mt-2">
-                {(() => {
-                  const colors = [
-                    { fill: "var(--scheduler-course-yellow-fill)", stroke: "var(--scheduler-course-yellow-stroke)" },
-                    { fill: "var(--scheduler-course-red-fill)", stroke: "var(--scheduler-course-red-stroke)" },
-                    { fill: "var(--scheduler-course-blue-fill)", stroke: "var(--scheduler-course-blue-stroke)" },
-                    { fill: "var(--scheduler-course-purple-fill)", stroke: "var(--scheduler-course-purple-stroke)" },
-                    { fill: "var(--scheduler-course-green-fill)", stroke: "var(--scheduler-course-green-stroke)" },
-                    { fill: "var(--scheduler-course-orange-fill)", stroke: "var(--scheduler-course-orange-stroke)" },
-                    { fill: "var(--scheduler-course-pink-fill)", stroke: "var(--scheduler-course-pink-stroke)" },
-                    { fill: "var(--scheduler-course-gray-fill)", stroke: "var(--scheduler-course-gray-stroke)" },
-                    { fill: "var(--scheduler-course-brown-fill)", stroke: "var(--scheduler-course-brown-stroke)" },
-                  ];
-
-                  return courseEntries.map(([courseKey, sectionsMap], i) => (
-                    <CourseBox
-                      key={courseKey}
-                      sections={Array.from(sectionsMap.values())}
-                      color={colors[i % colors.length]}
-                    />
-                  ));
-                })()}
+                {courseEntries.map(([courseKey, sectionsMap]) => (
+                  <CourseBox
+                    key={courseKey}
+                    sections={Array.from(sectionsMap.values())}
+                    color={colorMap.get(courseKey)}
+                  />
+                ))}
               </div>
             );
           })()

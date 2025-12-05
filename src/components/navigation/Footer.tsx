@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Neu } from "../icons/Neu";
 import { Logo } from "../icons/logo"
+import { Footskie } from "../icons/Footskie";
 
 export function LinkColumn({name, labels}: {name: string, labels: [string, string][]}) {
   return <div className="flex flex-col ml-15 gap-2 w-45 mb-6 items-start xl:ml-0">
@@ -25,10 +26,10 @@ export function Footer() {
     <footer className="relative flex flex-col xl:flex-row xl:h-[312px] justify-between gap-39 pt-5 bg-neu1 overflow-hidden">
       <div className="flex flex-col">
         <div className="h-78">
-          <Neu className="absolute h-110 w-auto -left-20" />
+          <Footskie className="absolute w-auto -left-16" />
           <Logo className="absolute top-19 left-15 h-7 w-auto"/>
         </div>
-        <div className="flex flex-col gap-6 xl:flex-row items-start xl:items-center justify-between absolute left-15 top-70 right-30 text-sm">
+        <div className="flex flex-col gap-6 xl:flex-row items-start xl:items-center justify-between absolute left-15 top-67.5 right-30 text-sm">
             <div className="flex gap-1 flex-col xl:flex-row">
               <p className="text-neu5">2025 SearchNEU.</p>
               <p className="text-neu7">

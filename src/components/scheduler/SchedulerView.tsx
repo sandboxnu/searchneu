@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { CalendarView } from "./CalendarView";
-import { getCourseColorMap } from "@/lib/scheduler/courseColors";
+import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -30,7 +30,7 @@ function getCoursesFromSchedule(schedule: SectionWithCourse[]): string[] {
 }
 
 // Helper to create a key from course list
-function getCourseKey(courses: string[]): string {
+function getCourseGroupKey(courses: string[]): string {
   return courses.join("|");
 }
 
@@ -49,7 +49,7 @@ function groupSchedulesByCourses(schedules: SectionWithCourse[][]): Map<string, 
   
   for (const schedule of schedules) {
     const courses = getCoursesFromSchedule(schedule);
-    const key = getCourseKey(courses);
+    const key = getCourseGroupKey(courses);
     
     if (!groups.has(key)) {
       groups.set(key, []);
@@ -144,14 +144,28 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
               key={group.courseKey}
               onClick={() => handleCourseGroupChange(group.courseKey, index)}
               className={`
-                px-4 py-2 rounded-lg border whitespace-nowrap font-bold
+                px-3 py-2 rounded-lg border whitespace-nowrap font-bold flex items-center gap-2 text-neu8
                 ${currentCourseGroupIndex === index 
-                  ? "bg-white border-gray-300 text-gray-900" 
-                  : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
+                  ? "border-neu3 bg-white" 
+                  : "border-neu3 bg-neu2 hover:bg-neu3"
                 }
               `}
             >
-              {group.courses.join(", ")}
+              {group.courses.map((course) => {
+                const color = colorMap.get(course);
+                return (
+                  <div
+                    key={course}
+                    className="px-2 py-1 rounded-sm text-sm"
+                    style={{
+                      backgroundColor: color?.fill,
+                      borderColor: color?.stroke,
+                    }}
+                  >
+                    {course}
+                  </div>
+                );
+              })}
             </button>
           ))}
         </div>

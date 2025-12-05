@@ -27,6 +27,8 @@ export async function updateTerm(term: string) {
       crn: sectionsT.crn,
       seatRemaining: sectionsT.seatRemaining,
       waitRemaining: sectionsT.waitlistRemaining,
+      seatCapacity: sectionsT.seatCapacity,
+      waitlistCapacity: sectionsT.waitlistCapacity,
       courseId: coursesT.id,
       courseNumber: coursesT.courseNumber,
       courseSubject: coursesT.subject,
@@ -39,6 +41,8 @@ export async function updateTerm(term: string) {
   const sectionsWithUpdatedSeats: BannerSection[] = [];
   const sectionsWithNewWaitlistSeats: BannerSection[] = [];
   const sectionsWithUpdatedWaitlistSeats: BannerSection[] = [];
+  const sectionsWithUpdatedSeatCapacity: BannerSection[] = [];
+  const sectionsWithUpdatedWaitlistSeatCapacity: BannerSection[] = [];
 
   // PERF: when notif info is added to db, if could be worth only
   // checking the sections people are subbed too
@@ -63,18 +67,20 @@ export async function updateTerm(term: string) {
       sectionsWithNewWaitlistSeats.push(scrape);
     }
 
-    if (
-      scrape.seatsAvailable !== stale.seatRemaining &&
-      !sectionsWithNewSeats.includes(scrape)
-    ) {
+    if (scrape.seatsAvailable !== stale.seatRemaining) {
       sectionsWithUpdatedSeats.push(scrape);
     }
 
-    if (
-      scrape.waitAvailable !== stale.waitRemaining &&
-      !sectionsWithNewWaitlistSeats.includes(scrape)
-    ) {
+    if (scrape.waitAvailable !== stale.waitRemaining) {
       sectionsWithUpdatedWaitlistSeats.push(scrape);
+    }
+
+    if (scrape.waitCapacity !== stale.waitlistCapacity) {
+      sectionsWithUpdatedWaitlistSeatCapacity.push(scrape);
+    }
+
+    if (scrape.maximumEnrollment !== stale.seatCapacity) {
+      sectionsWithUpdatedSeatCapacity.push(scrape);
     }
   }
 
@@ -155,6 +161,8 @@ export async function updateTerm(term: string) {
     sectionsWithUpdatedSeats,
     sectionsWithNewWaitlistSeats,
     sectionsWithUpdatedWaitlistSeats,
+    sectionsWithUpdatedWaitlistSeatCapacity,
+    sectionsWithUpdatedSeatCapacity,
     newSections,
     newSectionCourseKeys,
   };

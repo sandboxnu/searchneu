@@ -11,9 +11,10 @@ interface SchedulerWrapperProps {
   nupathOptions: { label: string; value: string }[];
   term: string;
   termName: string;
+  lockedCourseKeys: string[];
 }
 
-export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termName }: SchedulerWrapperProps) {
+export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termName, lockedCourseKeys }: SchedulerWrapperProps) {
   const router = useRouter();
   const [filters, setFilters] = useState<ScheduleFilters>({ includesOnline: true, includeHonors: true });
   const [isPending, startTransition] = useTransition();
@@ -49,6 +50,7 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termNa
           filteredSchedules={filteredSchedules}
           term={term}
           termName={termName}
+          lockedCourseKeys={lockedCourseKeys}
         />
       </div>
       <div className="col-span-5 pl-6">

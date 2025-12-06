@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { nupathsT, coursesT } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql, inArray } from "drizzle-orm";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
 import { getTermName } from "@/lib/controllers/getTerms";
@@ -26,6 +26,15 @@ export default async function Page({
   // Generate schedules if any course IDs are provided (locked or optional)
   const allSchedules = (lockedCourseIds.length > 0 || optionalCourseIds.length > 0)
     ? await generateSchedules(lockedCourseIds, optionalCourseIds) 
+    : [];
+
+  // Get course keys (subject + number) for locked courses to display lock state
+  const lockedCourseKeys = lockedCourseIds.length > 0
+    ? await db
+        .select({ subject: coursesT.subject, courseNumber: coursesT.courseNumber })
+        .from(coursesT)
+        .where(inArray(coursesT.id, lockedCourseIds))
+        .then((courses) => courses.map((c) => `${c.subject} ${c.courseNumber}`))
     : [];
 
   const allCourseIds = [...lockedCourseIds, ...optionalCourseIds];
@@ -67,6 +76,7 @@ export default async function Page({
         nupathOptions={nupathOptions}
         term={term}
         termName={termName}
+        lockedCourseKeys={lockedCourseKeys}
       />
     </div>
   );

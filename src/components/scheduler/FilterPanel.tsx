@@ -40,9 +40,10 @@ interface FilterPanelProps {
   filteredSchedules: SectionWithCourse[][];
   term: string;
   termName: string;
+  lockedCourseKeys: string[];
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules, term, termName }: FilterPanelProps) {
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules, term, termName, lockedCourseKeys }: FilterPanelProps) {
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,7 +97,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         onOpenChange={setIsModalOpen}
         term={term}
         termName={termName}
-        onGenerateSchedules={(courseIds) => onGenerateSchedules(courseIds, [])}
+        onGenerateSchedules={onGenerateSchedules}
       />
 
       <Separator />
@@ -184,13 +185,19 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
             return (
               <div className="mt-2">
-                {courseEntries.map(([courseKey, sectionsMap]) => (
-                  <CourseBox
-                    key={courseKey}
-                    sections={Array.from(sectionsMap.values())}
-                    color={colorMap.get(courseKey)}
-                  />
-                ))}
+                {courseEntries.map(([courseKey, sectionsMap]) => {
+                  const sections = Array.from(sectionsMap.values());
+                  const isLocked = lockedCourseKeys.includes(courseKey);
+                  
+                  return (
+                    <CourseBox
+                      key={courseKey}
+                      sections={sections}
+                      color={colorMap.get(courseKey)}
+                      isLocked={isLocked}
+                    />
+                  );
+                })}
               </div>
             );
           })()

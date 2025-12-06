@@ -60,7 +60,7 @@ export function AddCoursesModal({
   onOpenChange: (open: boolean) => void;
   term?: string;
   termName?: string;
-  onGenerateSchedules?: (courseIds: number[]) => void;
+  onGenerateSchedules?: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
 }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -101,11 +101,17 @@ export function AddCoursesModal({
   };
 
   const handleGenerateSchedules = () => {
-    const courseIds = selectedCourses
+    const lockedCourseIds = selectedCourses
+      .filter((course) => course.isLocked)
       .map((course) => course.id)
       .filter((id): id is number => id !== undefined);
 
-    if (courseIds.length === 0) {
+    const unlockedCourseIds = selectedCourses
+      .filter((course) => !course.isLocked)
+      .map((course) => course.id)
+      .filter((id): id is number => id !== undefined);
+
+    if (lockedCourseIds.length === 0 && unlockedCourseIds.length === 0) {
       console.warn(
         "No course IDs available. Selected courses:",
         selectedCourses,
@@ -115,9 +121,16 @@ export function AddCoursesModal({
     }
 
     if (onGenerateSchedules) {
-      onGenerateSchedules(courseIds);
+      onGenerateSchedules(lockedCourseIds, unlockedCourseIds);
     } else {
-      router.push(`/scheduler?courseIds=${courseIds.join(",")}`);
+      const params = new URLSearchParams();
+      if (lockedCourseIds.length > 0) {
+        params.set("lockedCourseIds", lockedCourseIds.join(","));
+      }
+      if (unlockedCourseIds.length > 0) {
+        params.set("optionalCourseIds", unlockedCourseIds.join(","));
+      }
+      router.push(`/scheduler?${params.toString()}`);
     }
 
     onOpenChange(false);

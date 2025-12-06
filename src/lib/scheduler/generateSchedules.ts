@@ -13,7 +13,6 @@ import { SectionWithCourse } from "./filters";
 const MAX_COURSES = 8;
 const MAX_COMBINATIONS = 500_000; // 500k
 const MAX_SECTIONS_PER_COURSE = 50;
-const TIMEOUT_MS = 30_000; // 30 seconds
 
 // Calculate an upper bound on total combinations.
 // Locked courses contribute `count` each. Optional courses can be omitted,
@@ -33,23 +32,6 @@ const calculateTotalCombinations = (
   );
 
   return lockedProduct * optionalFactor;
-};
-
-// Wrap a promise with a timeout. If the promise doesn't settle within `ms`, rejects.
-const withTimeout = async <T>(promise: Promise<T>, ms: number): Promise<T> => {
-  let timer: NodeJS.Timeout | null = null;
-
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => {
-      reject(new Error(`Schedule generation timed out after ${ms / 1000}s`));
-    }, ms);
-  });
-
-  try {
-    return await Promise.race([promise, timeout]);
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
 };
 
 // Validate bounds and throw descriptive errors when limits are exceeded
@@ -127,7 +109,7 @@ const validateBounds = (
     });
 
     throw new Error(
-      `Schedule generation would check ~${totalCombos.toLocaleString()} combinations which exceeds the limit of ${MAX_COMBINATIONS.toLocaleString()} (~5s). Course breakdown: ${breakdown.join(
+      `Schedule generation would check ~${totalCombos.toLocaleString()} combinations which exceeds the limit of ${MAX_COMBINATIONS.toLocaleString()}. Course breakdown: ${breakdown.join(
         "; ",
       )}. Try narrowing filters, removing some courses, or generating fewer courses at once.`,
     );
@@ -402,5 +384,5 @@ export const generateSchedules = async (
   };
 
   // Run generation with timeout protection
-  return await withTimeout(runGeneration(), TIMEOUT_MS);
+  return runGeneration();
 };

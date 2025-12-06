@@ -47,6 +47,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useState<any[]>([]);
 
   // Memoize the color map so it's only computed when filteredSchedules changes
   const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
@@ -98,6 +99,8 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         term={term}
         termName={termName}
         onGenerateSchedules={onGenerateSchedules}
+        initialSelectedCourses={selectedCourses}
+        onSelectedCoursesChange={setSelectedCourses}
       />
 
       <Separator />

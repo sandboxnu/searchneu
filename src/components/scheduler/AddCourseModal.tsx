@@ -55,19 +55,32 @@ export function AddCoursesModal({
   term = "Spring 2026",
   termName = "Spring 2026",
   onGenerateSchedules,
+  initialSelectedCourses,
+  onSelectedCoursesChange,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   term?: string;
   termName?: string;
   onGenerateSchedules?: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
+  initialSelectedCourses?: SelectedCourse[];
+  onSelectedCoursesChange?: (courses: SelectedCourse[]) => void;
 }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+  const [selectedCourses, setSelectedCoursesInternal] = useState<SelectedCourse[]>(initialSelectedCourses || []);
   const [campus, setCampus] = useState("Boston Campus");
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const isStale = deferredSearchQuery !== searchQuery;
+
+  // Sync internal state with external state
+  const setSelectedCourses = (courses: SelectedCourse[] | ((prev: SelectedCourse[]) => SelectedCourse[])) => {
+    setSelectedCoursesInternal((prev) => {
+      const newCourses = typeof courses === "function" ? courses(prev) : courses;
+      onSelectedCoursesChange?.(newCourses);
+      return newCourses;
+    });
+  };
 
   const handleCourseSelect = (course: Course) => {
     if (isSelected(course.code)) {
@@ -133,7 +146,8 @@ export function AddCoursesModal({
       router.push(`/scheduler?${params.toString()}`);
     }
 
-    onOpenChange(false);
+    // Keep modal open so users can adjust their selection
+    // onOpenChange(false);
   };
 
   const isSelected = (courseCode: string): boolean => {

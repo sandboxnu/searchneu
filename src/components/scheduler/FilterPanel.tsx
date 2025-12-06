@@ -137,6 +137,21 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       <Separator />
 
+<<<<<<< HEAD
+=======
+      <div className="flex items-center justify-between">
+        <h3 className="text-muted-foreground text-xs font-bold">FILTERS</h3>
+        <button
+          onClick={clearFilters}
+          className="rounded bg-red-100 px-3 py-1 text-xs text-red-700 hover:bg-red-200"
+        >
+          Clear All
+        </button>
+      </div>
+
+      <Separator />
+
+>>>>>>> 3403d23 (fix: remove duplicate CLASSES section in FilterPanel)
       {/* Classes Filter*/}
       <div className="flex justify-between items-center">
         <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>

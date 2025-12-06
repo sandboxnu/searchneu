@@ -3,27 +3,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { CalendarView } from "./CalendarView";
-import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
-
-// Helper to convert time format (e.g., 1330 -> "1:30 PM")
-function formatTime(time: number): string {
-  const hours = Math.floor(time / 100);
-  const minutes = time % 100;
-  const period = hours >= 12 ? "PM" : "AM";
-  const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
-  return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-}
-
-// Helper to convert day numbers to day names
-// Days are stored as: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
-function formatDays(days: number[]): string {
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return days.map((d) => dayNames[d]).join(", ");
-}
+import { getCourseColorMap } from "@/lib/scheduler/courseColors";
 
 // Helper to get unique courses from a schedule
 function getCoursesFromSchedule(schedule: SectionWithCourse[]): string[] {
-  const courses = schedule.map(section => 
+  const courses = schedule.map(section =>
     `${section.courseSubject} ${section.courseNumber}`
   );
   return Array.from(new Set(courses)).sort();
@@ -46,17 +30,17 @@ function getScheduleKey(schedule: SectionWithCourse[]): string {
 // Group schedules by their course combinations
 function groupSchedulesByCourses(schedules: SectionWithCourse[][]): Map<string, SectionWithCourse[][]> {
   const groups = new Map<string, SectionWithCourse[][]>();
-  
+
   for (const schedule of schedules) {
     const courses = getCoursesFromSchedule(schedule);
     const key = getCourseGroupKey(courses);
-    
+
     if (!groups.has(key)) {
       groups.set(key, []);
     }
     groups.get(key)!.push(schedule);
   }
-  
+
   return groups;
 }
 
@@ -71,7 +55,7 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
 
   // Memoize the color map so it's only computed when schedules changes
   const colorMap = useMemo(() => getCourseColorMap(schedules), [schedules]);
-  
+
   // Group schedules by course combinations
   const courseGroups = useMemo(() => {
     const groups = groupSchedulesByCourses(schedules);
@@ -145,8 +129,8 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
               onClick={() => handleCourseGroupChange(group.courseKey, index)}
               className={`
                 px-3 py-2 rounded-lg border whitespace-nowrap font-bold flex items-center gap-2 text-neu8
-                ${currentCourseGroupIndex === index 
-                  ? "border-neu3 bg-white" 
+                ${currentCourseGroupIndex === index
+                  ? "border-neu3 bg-white"
                   : "border-neu3 bg-neu2 hover:bg-neu3"
                 }
               `}
@@ -182,8 +166,8 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
                 onClick={() => handleScheduleChange(scheduleKey)}
                 className={`
                   px-4 py-2 rounded-lg border whitespace-nowrap font-bold
-                  ${currentScheduleIndex === index 
-                    ? "bg-white border-gray-300 text-gray-900" 
+                  ${currentScheduleIndex === index
+                    ? "bg-white border-gray-300 text-gray-900"
                     : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
                   }
                 `}

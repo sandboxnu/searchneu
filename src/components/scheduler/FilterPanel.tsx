@@ -11,8 +11,6 @@ import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
-import { MoveRightIcon } from "lucide-react";
-import FeedbackModal from "../feedback/FeedbackModal";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -54,8 +52,6 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       onFiltersChange({ ...filters, [key]: value });
     }
   };
-
-  const clearFilters = () => onFiltersChange({ includesOnline: true });
 
   const handleGenerate = () => {
     // Parse locked course IDs from input
@@ -110,67 +106,6 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       >
         {isGenerating ? "Generating..." : "Generate Schedules"}
       </Button>
-
-      <Separator />
-
-      <div className="flex items-center justify-between">
-        <h3 className="text-muted-foreground text-xs font-bold">FILTERS</h3>
-        <button
-          onClick={clearFilters}
-          className="rounded bg-red-100 px-3 py-1 text-xs text-red-700 hover:bg-red-200"
-        >
-          Clear All
-        </button>
-      </div>
-
-      <Separator />
-
-      {/* Classes Filter*/}
-      <div className="flex justify-between items-center">
-        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
-        <button
-          onClick={() => {}}
-          aria-label="Edit classes"
-          title="Edit classes"
-          className="p-1 border border-transparent text-gray-600 rounded"
-        >
-          <Pencil className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div>
-        {filteredSchedules && filteredSchedules.length > 0 && (
-          (() => {
-            // Build a map of course -> sections
-            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
-            for (const schedule of filteredSchedules) {
-              for (const section of schedule) {
-                const courseKey = getCourseKey(section);
-                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
-                const inner = courseMap.get(courseKey)!;
-                if (!inner.has(section.crn)) inner.set(section.crn, section);
-              }
-            }
-
-            // Sort courses alphabetically
-            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-
-            return (
-              <div className="mt-2">
-                {courseEntries.map(([courseKey, sectionsMap]) => (
-                  <CourseBox
-                    key={courseKey}
-                    sections={Array.from(sectionsMap.values())}
-                    color={colorMap.get(courseKey)}
-                  />
-                ))}
-              </div>
-            );
-          })()
-        )}
-      </div>
-
-      <Separator />
 
       <Separator />
 

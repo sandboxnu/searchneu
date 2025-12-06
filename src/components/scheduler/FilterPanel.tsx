@@ -13,7 +13,6 @@ import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
 import { MoveRightIcon } from "lucide-react";
 import FeedbackModal from "../feedback/FeedbackModal";
-import { AddCoursesModal } from "@/components/scheduler/AddCourseModal";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -35,12 +34,11 @@ interface FilterPanelProps {
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
   filteredSchedules: SectionWithCourse[][];
-  term: string;
-  termName: string;
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules, term, termName }: FilterPanelProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules }: FilterPanelProps) {
+  const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
+  const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
 
   // Memoize the color map so it's only computed when filteredSchedules changes
   const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
@@ -59,24 +57,58 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
   const clearFilters = () => onFiltersChange({ includesOnline: true });
 
+  const handleGenerate = () => {
+    // Parse locked course IDs from input
+    const lockedCourseIds = lockedCourseIdsInput
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+
+    // Parse optional course IDs from input
+    const optionalCourseIds = optionalCourseIdsInput
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+    if (lockedCourseIds.length > 0 || optionalCourseIds.length > 0) {
+      onGenerateSchedules(lockedCourseIds, optionalCourseIds);
+    }
+  };
+
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
-      {/* Add Courses Button */}
+      {/* Locked Course IDs Input */}
+      <div>
+        <Label className="text-muted-foreground text-xs font-bold">
+          LOCKED COURSE IDs
+        </Label>
+        <textarea
+          value={lockedCourseIdsInput}
+          onChange={(e) => setLockedCourseIdsInput(e.target.value)}
+          placeholder="Enter locked course IDs separated by commas (e.g., 2953, 160)"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
+        />
+      </div>
+
+      {/* Optional Course IDs Input */}
+      <div>
+        <Label className="text-muted-foreground text-xs font-bold">
+          OPTIONAL COURSE IDs
+        </Label>
+        <textarea
+          value={optionalCourseIdsInput}
+          onChange={(e) => setOptionalCourseIdsInput(e.target.value)}
+          placeholder="Enter optional course IDs separated by commas (e.g., 142, 5857)"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
+        />
+      </div>
+
       <Button
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleGenerate}
         disabled={isGenerating}
         className="w-full"
       >
-        Add Courses
+        {isGenerating ? "Generating..." : "Generate Schedules"}
       </Button>
-
-      <AddCoursesModal
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        term={term}
-        termName={termName}
-        onGenerateSchedules={(courseIds) => onGenerateSchedules(courseIds, [])}
-      />
 
       <Separator />
 
@@ -89,55 +121,6 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           Clear All
         </button>
       </div>
-
-      <Separator />
-
-      {/* Classes Filter*/}
-      <div className="flex justify-between items-center">
-        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
-        <button
-          onClick={() => {}}
-          aria-label="Edit classes"
-          title="Edit classes"
-          className="p-1 border border-transparent text-gray-600 rounded"
-        >
-          <Pencil className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div>
-        {filteredSchedules && filteredSchedules.length > 0 && (
-          (() => {
-            // Build a map of course -> sections
-            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
-            for (const schedule of filteredSchedules) {
-              for (const section of schedule) {
-                const courseKey = getCourseKey(section);
-                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
-                const inner = courseMap.get(courseKey)!;
-                if (!inner.has(section.crn)) inner.set(section.crn, section);
-              }
-            }
-
-            // Sort courses alphabetically
-            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-
-            return (
-              <div className="mt-2">
-                {courseEntries.map(([courseKey, sectionsMap]) => (
-                  <CourseBox
-                    key={courseKey}
-                    sections={Array.from(sectionsMap.values())}
-                    color={colorMap.get(courseKey)}
-                  />
-                ))}
-              </div>
-            );
-          })()
-        )}
-      </div>
-
-      <Separator />
 
       <Separator />
 

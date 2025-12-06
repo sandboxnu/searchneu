@@ -1,9 +1,7 @@
 import { db } from "@/db";
-import { nupathsT, coursesT } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { nupathsT } from "@/db/schema";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
-import { getTermName } from "@/lib/controllers/getTerms";
 
 export default async function Page({
   searchParams,
@@ -24,36 +22,11 @@ export default async function Page({
     .filter((id) => !isNaN(id)) || [];
 
   // Generate schedules if any course IDs are provided (locked or optional)
-  // TODO: Implement locked vs optional logic in generateSchedules
-  // For now, treat all courses as locked (required)
+  // TODO: Update generateSchedules to handle locked vs optional separately
   const allCourseIds = [...lockedCourseIds, ...optionalCourseIds];
   const allSchedules = allCourseIds.length > 0
     ? await generateSchedules(allCourseIds) 
     : [];
-
-  // Get term from first course to show term name, or use default
-  let term = "202630";
-  let termName = "Spring 2026";
-  
-  if (allCourseIds.length > 0) {
-    const firstCourse = await db
-      .select({ term: coursesT.term })
-      .from(coursesT)
-      .where(eq(coursesT.id, allCourseIds[0]))
-      .limit(1);
-    
-    term = firstCourse[0]?.term || "202630";
-    termName = await getTermName(term);
-  } else {
-    // Get the current term - fetch from the first course or use a default
-    const firstCourse = await db
-      .select({ term: coursesT.term })
-      .from(coursesT)
-      .limit(1);
-    
-    term = firstCourse[0]?.term || "202630";
-    termName = await getTermName(term);
-  }
 
   // Fetch available NUPath options
   const nupathOptions = await db
@@ -63,12 +36,7 @@ export default async function Page({
 
   return (
     <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
-      <SchedulerWrapper 
-        initialSchedules={allSchedules} 
-        nupathOptions={nupathOptions}
-        term={term}
-        termName={termName}
-      />
+      <SchedulerWrapper initialSchedules={allSchedules} nupathOptions={nupathOptions} />
     </div>
   );
 }

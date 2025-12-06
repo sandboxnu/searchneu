@@ -18,13 +18,15 @@ function formatDays(days: number[]): string {
   return days.map((d) => dayNames[d]).join(", ");
 }
 
-interface SchedulerViewProps {
+export function SchedulerView({
+  schedules,
+  totalSchedules,
+  filters,
+}: {
   schedules: SectionWithCourse[][];
   totalSchedules: number;
   filters: ScheduleFilters;
-}
-
-export function SchedulerView({ schedules, totalSchedules, filters }: SchedulerViewProps) {
+}) {
   return (
     <div className="h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-6 py-4">
       {/* Active Filters Summary */}

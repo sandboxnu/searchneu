@@ -5,6 +5,7 @@ import { type ScheduleFilters } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { AddCoursesModal } from "@/components/scheduler/AddCourseModal";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -19,24 +20,24 @@ function militaryToTimeString(time: number): string {
   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 }
 
-interface FilterPanelProps {
-  filters: ScheduleFilters;
-  onFiltersChange: (filters: ScheduleFilters) => void;
-  onGenerateSchedules: (courseIds: number[]) => void;
-  isGenerating: boolean;
-  nupathOptions: { label: string; value: string }[];
-}
-
 export function FilterPanel({
   filters,
   onFiltersChange,
   onGenerateSchedules,
   isGenerating,
   nupathOptions,
-}: FilterPanelProps) {
-  const [courseIdsInput, setCourseIdsInput] = useState(
-    "17500, 16048, 15783, 17501",
-  );
+  term,
+  termName,
+}: {
+  filters: ScheduleFilters;
+  onFiltersChange: (filters: ScheduleFilters) => void;
+  onGenerateSchedules: (courseIds: number[]) => void;
+  isGenerating: boolean;
+  nupathOptions: { label: string; value: string }[];
+  term: string;
+  termName: string;
+}) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateFilter = <K extends keyof ScheduleFilters>(
     key: K,
@@ -52,39 +53,26 @@ export function FilterPanel({
 
   const clearFilters = () => onFiltersChange({});
 
-  const handleGenerate = () => {
-    // Parse course IDs from input
-    const courseIds = courseIdsInput
-      .split(",")
-      .map((id) => parseInt(id.trim()))
-      .filter((id) => !isNaN(id));
-
-    if (courseIds.length > 0) {
-      onGenerateSchedules(courseIds);
-    }
-  };
-
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
-      {/* Course IDs Input */}
+      {/* Add Courses Button */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          COURSE IDs
-        </Label>
-        <textarea
-          value={courseIdsInput}
-          onChange={(e) => setCourseIdsInput(e.target.value)}
-          placeholder="Enter course IDs separated by commas (e.g., 17500, 16048)"
-          className="mt-2 min-h-[80px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
         <Button
-          onClick={handleGenerate}
+          onClick={() => setIsModalOpen(true)}
           disabled={isGenerating}
-          className="mt-2 w-full"
+          className="w-full"
         >
-          {isGenerating ? "Generating..." : "Generate Schedules"}
+          Add Courses
         </Button>
       </div>
+
+      <AddCoursesModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        term={term}
+        termName={termName}
+        onGenerateSchedules={onGenerateSchedules}
+      />
 
       <Separator />
 

@@ -6,12 +6,17 @@ import { filterSchedules, type ScheduleFilters, type SectionWithCourse } from "@
 import { SchedulerView } from "./SchedulerView";
 import { FilterPanel } from "./FilterPanel";
 
-interface SchedulerWrapperProps {
+export function SchedulerWrapper({
+  initialSchedules,
+  nupathOptions,
+  term,
+  termName,
+}: {
   initialSchedules: SectionWithCourse[][];
   nupathOptions: { label: string; value: string }[];
-}
-
-export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
+  term: string;
+  termName: string;
+}) {
   const router = useRouter();
   const [filters, setFilters] = useState<ScheduleFilters>({});
   const [isPending, startTransition] = useTransition();
@@ -37,6 +42,8 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}
           nupathOptions={nupathOptions}
+          term={term}
+          termName={termName}
         />
       </div>
       <div className="col-span-5 pl-6">

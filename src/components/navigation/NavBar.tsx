@@ -1,5 +1,5 @@
 "use client";
-import { Bookmark, CircleQuestionMark, DoorOpen } from "lucide-react";
+import { Bookmark, CircleQuestionMark, DoorOpen, Calendar } from "lucide-react";
 import { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -47,9 +47,10 @@ export function NavBar({
         <Link
           href="/scheduler"
           data-active={pathname === "/scheduler"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
         >
-          Scheduler
+          <Calendar className="size-4" />
+          <span>Scheduler</span>
         </Link>
       )}
       {faqFlag && (

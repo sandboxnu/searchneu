@@ -9,9 +9,11 @@ import { FilterPanel } from "./FilterPanel";
 interface SchedulerWrapperProps {
   initialSchedules: SectionWithCourse[][];
   nupathOptions: { label: string; value: string }[];
+  term: string;
+  termName: string;
 }
 
-export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
+export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termName }: SchedulerWrapperProps) {
   const router = useRouter();
   const [filters, setFilters] = useState<ScheduleFilters>({ includesOnline: true, includeHonors: true });
   const [isPending, startTransition] = useTransition();
@@ -45,6 +47,8 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
           isGenerating={isPending}
           nupathOptions={nupathOptions}
           filteredSchedules={filteredSchedules}
+          term={term}
+          termName={termName}
         />
       </div>
       <div className="col-span-5 pl-6">

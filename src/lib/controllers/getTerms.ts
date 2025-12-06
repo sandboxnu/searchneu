@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/db";
 import { termsT } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import type { GroupedTerms } from "../types";
 
 // getTerms retreives all the terms from the db
@@ -36,4 +37,15 @@ export async function getTerms() {
   groupedTerms.law.sort((a, b) => b.term.localeCompare(a.term));
 
   return groupedTerms;
+}
+
+// getTermName retrieves the display name for a specific term
+export async function getTermName(termId: string) {
+  const result = await db
+    .select({ name: termsT.name })
+    .from(termsT)
+    .where(eq(termsT.term, termId))
+    .limit(1);
+
+  return result[0]?.name ?? termId;
 }

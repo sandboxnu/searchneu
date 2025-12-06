@@ -11,6 +11,12 @@ import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
+<<<<<<< HEAD
+=======
+import { MoveRightIcon } from "lucide-react";
+import FeedbackModal from "../feedback/FeedbackModal";
+import { AddCoursesModal } from "@/components/scheduler/AddCourseModal";
+>>>>>>> f452f97 (feat: add course selection modal with improved UX)
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -32,11 +38,14 @@ interface FilterPanelProps {
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
   filteredSchedules: SectionWithCourse[][];
+  term: string;
+  termName: string;
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules }: FilterPanelProps) {
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules, term, termName }: FilterPanelProps) {
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Memoize the color map so it's only computed when filteredSchedules changes
   const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
@@ -73,6 +82,25 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
+      {/* Add Courses Button */}
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        disabled={isGenerating}
+        className="w-full"
+      >
+        Add Courses
+      </Button>
+
+      <AddCoursesModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        term={term}
+        termName={termName}
+        onGenerateSchedules={(courseIds) => onGenerateSchedules(courseIds, [])}
+      />
+
+      <Separator />
+
       {/* Locked Course IDs Input */}
       <div>
         <Label className="text-muted-foreground text-xs font-bold">

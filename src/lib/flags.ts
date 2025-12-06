@@ -20,6 +20,6 @@ export const schedulerFlag = flag({
   key: "scheduler",
   description: "Enable scheduler page",
   decide() {
-    return false;
+    return true;
   },
 });

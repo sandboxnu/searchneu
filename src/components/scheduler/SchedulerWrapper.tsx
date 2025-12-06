@@ -6,26 +6,30 @@ import { filterSchedules, type ScheduleFilters, type SectionWithCourse } from "@
 import { SchedulerView } from "./SchedulerView";
 import { FilterPanel } from "./FilterPanel";
 
-export function SchedulerWrapper({
-  initialSchedules,
-  nupathOptions,
-  term,
-  termName,
-}: {
+interface SchedulerWrapperProps {
   initialSchedules: SectionWithCourse[][];
   nupathOptions: { label: string; value: string }[];
   term: string;
   termName: string;
-}) {
+}
+
+export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termName }: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({});
+  const [filters, setFilters] = useState<ScheduleFilters>({includesOnline: true, includeHonors: true});
   const [isPending, startTransition] = useTransition();
 
-  const handleGenerateSchedules = async (courseIds: number[]) => {
+  const handleGenerateSchedules = async (lockedCourseIds: number[], optionalCourseIds: number[]) => {
     startTransition(() => {
       // Navigate to the same page with course IDs in the URL
       // This will trigger a server-side re-render with the new schedules
-      router.push(`/scheduler?courseIds=${courseIds.join(",")}`);
+      const params = new URLSearchParams();
+      if (lockedCourseIds.length > 0) {
+        params.set("lockedCourseIds", lockedCourseIds.join(","));
+      }
+      if (optionalCourseIds.length > 0) {
+        params.set("optionalCourseIds", optionalCourseIds.join(","));
+      }
+      router.push(`/scheduler?${params.toString()}`);
     });
   };
 
@@ -42,6 +46,7 @@ export function SchedulerWrapper({
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}
           nupathOptions={nupathOptions}
+          filteredSchedules={filteredSchedules}
           term={term}
           termName={termName}
         />
@@ -49,7 +54,6 @@ export function SchedulerWrapper({
       <div className="col-span-5 pl-6">
         <SchedulerView
           schedules={filteredSchedules}
-          totalSchedules={initialSchedules.length}
           filters={filters}
         />
       </div>

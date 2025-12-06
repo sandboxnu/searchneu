@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { type ScheduleFilters } from "@/lib/scheduler/filters";
+import { useState, useMemo } from "react";
+import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
+import { CourseBox } from "@/components/scheduler/CourseBox";
+import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
+import { FilterMultiSelect } from "./FilterMultiSelect";
+import { Switch } from "../ui/switch";
+import { TimeInput } from "./TimeInput";
+import { MoveRightIcon } from "lucide-react";
+import FeedbackModal from "../feedback/FeedbackModal";
 import { AddCoursesModal } from "@/components/scheduler/AddCourseModal";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
@@ -20,24 +28,22 @@ function militaryToTimeString(time: number): string {
   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 }
 
-export function FilterPanel({
-  filters,
-  onFiltersChange,
-  onGenerateSchedules,
-  isGenerating,
-  nupathOptions,
-  term,
-  termName,
-}: {
+interface FilterPanelProps {
   filters: ScheduleFilters;
   onFiltersChange: (filters: ScheduleFilters) => void;
-  onGenerateSchedules: (courseIds: number[]) => void;
+  onGenerateSchedules: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
+  filteredSchedules: SectionWithCourse[][];
   term: string;
   termName: string;
-}) {
+}
+
+export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules, term, termName }: FilterPanelProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Memoize the color map so it's only computed when filteredSchedules changes
+  const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
 
   const updateFilter = <K extends keyof ScheduleFilters>(
     key: K,
@@ -51,27 +57,25 @@ export function FilterPanel({
     }
   };
 
-  const clearFilters = () => onFiltersChange({});
+  const clearFilters = () => onFiltersChange({ includesOnline: true });
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-4 py-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
       {/* Add Courses Button */}
-      <div>
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          disabled={isGenerating}
-          className="w-full"
-        >
-          Add Courses
-        </Button>
-      </div>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        disabled={isGenerating}
+        className="w-full"
+      >
+        Add Courses
+      </Button>
 
       <AddCoursesModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         term={term}
         termName={termName}
-        onGenerateSchedules={onGenerateSchedules}
+        onGenerateSchedules={(courseIds) => onGenerateSchedules(courseIds, [])}
       />
 
       <Separator />
@@ -86,86 +90,210 @@ export function FilterPanel({
         </button>
       </div>
 
-      {/* Start Time Filter */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          EARLIEST START TIME
-        </Label>
-        <input
-          type="time"
-          value={
-            filters.startTime ? militaryToTimeString(filters.startTime) : ""
-          }
-          onChange={(e) =>
-            updateFilter(
-              "startTime",
-              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
-            )
-          }
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+      <Separator />
+
+      {/* Classes Filter*/}
+      <div className="flex justify-between items-center">
+        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
+        <button
+          onClick={() => {}}
+          aria-label="Edit classes"
+          title="Edit classes"
+          className="p-1 border border-transparent text-gray-600 rounded"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* End Time Filter */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          LATEST END TIME
-        </Label>
-        <input
-          type="time"
-          value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
-          onChange={(e) =>
-            updateFilter(
-              "endTime",
-              e.target.value ? timeStringToMilitary(e.target.value) : undefined,
-            )
-          }
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+        {filteredSchedules && filteredSchedules.length > 0 && (
+          (() => {
+            // Build a map of course -> sections
+            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
+            for (const schedule of filteredSchedules) {
+              for (const section of schedule) {
+                const courseKey = getCourseKey(section);
+                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
+                const inner = courseMap.get(courseKey)!;
+                if (!inner.has(section.crn)) inner.set(section.crn, section);
+              }
+            }
+
+            // Sort courses alphabetically
+            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+            return (
+              <div className="mt-2">
+                {courseEntries.map(([courseKey, sectionsMap]) => (
+                  <CourseBox
+                    key={courseKey}
+                    sections={Array.from(sectionsMap.values())}
+                    color={colorMap.get(courseKey)}
+                  />
+                ))}
+              </div>
+            );
+          })()
+        )}
       </div>
 
       <Separator />
 
-      {/* Min Days Free */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          MIN DAYS FREE
-        </Label>
-        <input
-          type="number"
-          min="0"
-          max="7"
-          value={filters.minDaysFree ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minDaysFree",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
-          }
-          placeholder="0-7"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+      <Separator />
+
+      {/* Classes Filter*/}
+      <div className="flex justify-between items-center">
+        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
+        <button
+          onClick={() => {}}
+          aria-label="Edit classes"
+          title="Edit classes"
+          className="p-1 border border-transparent text-gray-600 rounded"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* Days Free Checkboxes */}
       <div>
-        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
-          SPECIFIC DAYS FREE
-        </Label>
-        <div className="flex flex-wrap gap-2">
+        {filteredSchedules && filteredSchedules.length > 0 && (
+          (() => {
+            // Build a map of course -> sections
+            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
+            for (const schedule of filteredSchedules) {
+              for (const section of schedule) {
+                const courseKey = getCourseKey(section);
+                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
+                const inner = courseMap.get(courseKey)!;
+                if (!inner.has(section.crn)) inner.set(section.crn, section);
+              }
+            }
+
+            // Sort courses alphabetically
+            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+            return (
+              <div className="mt-2">
+                {courseEntries.map(([courseKey, sectionsMap]) => (
+                  <CourseBox
+                    key={courseKey}
+                    sections={Array.from(sectionsMap.values())}
+                    color={colorMap.get(courseKey)}
+                  />
+                ))}
+              </div>
+            );
+          })()
+        )}
+      </div>
+
+      <Separator />
+      
+      {/* Online Classes */}
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-muted-foreground text-xs font-bold">
+          INCLUDE REMOTE SECTIONS
+        </span>
+        <button
+          type="button"
+          onClick={() => updateFilter("includesOnline", !filters.includesOnline)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
+            filters.includesOnline ? "bg-red-500" : "bg-gray-300"
+          }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+              filters.includesOnline ? "translate-x-6" : "translate-x-1"
+            }`}
+          />
+        </button>
+      </div>
+
+      <Separator />
+
+      {/* Time Section */}
+      <div className="space-y-3">
+        <Label className="text-muted-foreground text-xs font-bold">TIME</Label>
+        
+        <div className="flex items-center justify-between text-sm pb-1.5">
+          <span className="text-muted-foreground whitespace-nowrap">Start time is after</span>
+          <TimeInput
+            value={
+              filters.startTime ? militaryToTimeString(filters.startTime) : ""
+            }
+            onChange={(value) =>
+              updateFilter(
+                "startTime",
+                value ? timeStringToMilitary(value) : undefined
+              )
+            }
+          />
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground whitespace-nowrap">End time is before</span>
+          <TimeInput
+            value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
+            onChange={(value) =>
+              updateFilter(
+                "endTime",
+                value ? timeStringToMilitary(value) : undefined
+              )
+            }
+          />
+        </div>        
+      </div>
+
+      <Separator />
+
+      {/* Free Days Section */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-muted-foreground text-xs font-bold">
+            FREE DAYS
+          </Label>
+          {(filters.specificDaysFree?.length ?? 0) > 0 && (
+            <button
+              onClick={() => updateFilter("specificDaysFree", undefined)}
+              className="text-blue-600 hover:text-blue-600/80 text-xs"
+            >
+              Clear all
+            </button>
+          )}
+        </div>
+
+        {/* Day number buttons */}
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5, 6].map((num) => (
+            <button
+              key={num}
+              onClick={() => updateFilter("minDaysFree", num)}
+              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                filters.minDaysFree === num
+                  ? "bg-red-500 text-white"
+                  : "border border-input bg-background text-foreground hover:bg-muted"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+        </div>
+
+        {/* Day checkboxes */}
+        <div className="space-y-2">
           {[
-            { value: 0, label: "Sun" },
-            { value: 1, label: "Mon" },
-            { value: 2, label: "Tue" },
-            { value: 3, label: "Wed" },
-            { value: 4, label: "Thu" },
-            { value: 5, label: "Fri" },
-            { value: 6, label: "Sat" },
+            { value: 1, label: "Monday" },
+            { value: 2, label: "Tuesday" },
+            { value: 3, label: "Wednesday" },
+            { value: 4, label: "Thursday" },
+            { value: 5, label: "Friday" },
+            { value: 6, label: "Saturday" },
+            { value: 0, label: "Sunday" },
           ].map((day) => (
             <label
               key={day.value}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
+              className="flex cursor-pointer items-center justify-between py-1"
             >
+              <span className="text-sm text-muted-foreground">{day.label}</span>
               <input
                 type="checkbox"
                 checked={filters.specificDaysFree?.includes(day.value) ?? false}
@@ -176,12 +304,11 @@ export function FilterPanel({
                     : currentDays.filter((d) => d !== day.value);
                   updateFilter(
                     "specificDaysFree",
-                    newDays.length > 0 ? newDays : undefined,
+                    newDays.length > 0 ? newDays : undefined
                   );
                 }}
-                className="rounded"
+                className="h-4 w-4 rounded border-input accent-red-500"
               />
-              <span className="text-sm">{day.label}</span>
             </label>
           ))}
         </div>
@@ -189,43 +316,16 @@ export function FilterPanel({
 
       <Separator />
 
-      {/* Min Seats Left */}
-      <div>
+      {/* Hide Filled Sections Toggle */}
+      <div className="flex items-center justify-between">
         <Label className="text-muted-foreground text-xs font-bold">
-          MIN SEATS AVAILABLE
+          HIDE FILLED SECTIONS
         </Label>
-        <input
-          type="number"
-          min="0"
-          value={filters.minSeatsLeft ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minSeatsLeft",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
+        <Switch
+          checked={(filters.minSeatsLeft ?? 0) > 0}
+          onCheckedChange={(checked) =>
+            updateFilter("minSeatsLeft", checked ? 1 : undefined)
           }
-          placeholder="Any"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
-
-      {/* Min Honors Courses */}
-      <div>
-        <Label className="text-muted-foreground text-xs font-bold">
-          MIN HONORS COURSES
-        </Label>
-        <input
-          type="number"
-          min="0"
-          value={filters.minHonorsCourses ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "minHonorsCourses",
-              e.target.value ? parseInt(e.target.value) : undefined,
-            )
-          }
-          placeholder="Any"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -233,35 +333,33 @@ export function FilterPanel({
 
       {/* NUPath Requirement */}
       <div>
-        <Label className="text-muted-foreground mb-2 block text-xs font-bold">
-          NUPATH REQUIREMENTS
-        </Label>
-        <div className="flex flex-wrap gap-2">
-          {nupathOptions.map((nupath) => (
-            <label
-              key={nupath.value}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50"
-            >
-              <input
-                type="checkbox"
-                checked={filters.nupaths?.includes(nupath.value) ?? false}
-                onChange={(e) => {
-                  const currentNupaths = filters.nupaths || [];
-                  const newNupaths = e.target.checked
-                    ? [...currentNupaths, nupath.value]
-                    : currentNupaths.filter((n) => n !== nupath.value);
-                  updateFilter(
-                    "nupaths",
-                    newNupaths.length > 0 ? newNupaths : undefined,
-                  );
-                }}
-                className="rounded"
-              />
-              <span className="text-sm">{nupath.label}</span>
-            </label>
-          ))}
-        </div>
+        <FilterMultiSelect
+          label="NUPATHS"
+          options={nupathOptions}
+          selected={filters.nupaths ?? []}
+          onSelectedChange={(values) =>
+            updateFilter("nupaths", values.length > 0 ? values : undefined)
+          }
+          placeholder="Select NUPaths"
+        />
       </div>
+
+      <Separator />
+
+      {/* Include Honors Toggle */}
+      <div className="flex items-center justify-between pb-20">
+        <Label className="text-muted-foreground text-xs font-bold">
+          INCLUDE HONORS
+        </Label>
+        <Switch
+          checked={(filters.includeHonors)}
+          onCheckedChange={(checked) =>
+            updateFilter("includeHonors", checked)
+          }
+          className="data-[state=checked]:bg-red-500"
+        />
+      </div>
+      
     </div>
   );
 }

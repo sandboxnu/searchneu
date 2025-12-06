@@ -8,28 +8,38 @@ import { getTermName } from "@/lib/controllers/getTerms";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ courseIds?: string }>;
+  searchParams: Promise<{ lockedCourseIds?: string; optionalCourseIds?: string }>;
 }) {
   const params = await searchParams;
   
-  // Parse course IDs from URL search params
-  const courseIds = params.courseIds
+  // Parse locked and optional course IDs from URL search params
+  const lockedCourseIds = params.lockedCourseIds
     ?.split(",")
     .map((id) => parseInt(id.trim()))
     .filter((id) => !isNaN(id)) || [];
 
-  // Generate schedules if course IDs are provided
-  const allSchedules = courseIds.length > 0 ? await generateSchedules(courseIds) : [];
+  const optionalCourseIds = params.optionalCourseIds
+    ?.split(",")
+    .map((id) => parseInt(id.trim()))
+    .filter((id) => !isNaN(id)) || [];
+
+  // Generate schedules if any course IDs are provided (locked or optional)
+  // TODO: Implement locked vs optional logic in generateSchedules
+  // For now, treat all courses as locked (required)
+  const allCourseIds = [...lockedCourseIds, ...optionalCourseIds];
+  const allSchedules = allCourseIds.length > 0
+    ? await generateSchedules(allCourseIds) 
+    : [];
 
   // Get term from first course to show term name, or use default
   let term = "202630";
   let termName = "Spring 2026";
   
-  if (courseIds.length > 0) {
+  if (allCourseIds.length > 0) {
     const firstCourse = await db
       .select({ term: coursesT.term })
       .from(coursesT)
-      .where(eq(coursesT.id, courseIds[0]))
+      .where(eq(coursesT.id, allCourseIds[0]))
       .limit(1);
     
     term = firstCourse[0]?.term || "202630";

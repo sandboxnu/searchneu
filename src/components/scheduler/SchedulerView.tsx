@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useMemo, useEffect } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import { CalendarView } from "./CalendarView";
+import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -18,132 +21,190 @@ function formatDays(days: number[]): string {
   return days.map((d) => dayNames[d]).join(", ");
 }
 
-export function SchedulerView({
-  schedules,
-  totalSchedules,
-  filters,
-}: {
+// Helper to get unique courses from a schedule
+function getCoursesFromSchedule(schedule: SectionWithCourse[]): string[] {
+  const courses = schedule.map(section => 
+    `${section.courseSubject} ${section.courseNumber}`
+  );
+  return Array.from(new Set(courses)).sort();
+}
+
+// Helper to create a key from course list
+function getCourseGroupKey(courses: string[]): string {
+  return courses.join("|");
+}
+
+// Helper to create a unique identifier for a schedule based on its CRNs
+// This key ensures that the same schedule remains displayed when filters change,
+// even if the schedule's position in the filtered list changes. By using CRNs
+// instead of array indices, we can track and preserve the user's selected schedule
+// across filter operations.
+function getScheduleKey(schedule: SectionWithCourse[]): string {
+  return schedule.map(section => section.crn).sort().join("|");
+}
+
+// Group schedules by their course combinations
+function groupSchedulesByCourses(schedules: SectionWithCourse[][]): Map<string, SectionWithCourse[][]> {
+  const groups = new Map<string, SectionWithCourse[][]>();
+  
+  for (const schedule of schedules) {
+    const courses = getCoursesFromSchedule(schedule);
+    const key = getCourseGroupKey(courses);
+    
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key)!.push(schedule);
+  }
+  
+  return groups;
+}
+
+interface SchedulerViewProps {
   schedules: SectionWithCourse[][];
-  totalSchedules: number;
   filters: ScheduleFilters;
-}) {
+}
+
+export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
+  const [selectedCourseGroupKey, setSelectedCourseGroupKey] = useState<string | null>(null);
+  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(null);
+
+  // Memoize the color map so it's only computed when schedules changes
+  const colorMap = useMemo(() => getCourseColorMap(schedules), [schedules]);
+  
+  // Group schedules by course combinations
+  const courseGroups = useMemo(() => {
+    const groups = groupSchedulesByCourses(schedules);
+    return Array.from(groups.entries()).map(([key, schedules]) => ({
+      courseKey: key,
+      courses: key.split("|"),
+      schedules,
+    }));
+  }, [schedules]);
+
+  // Find the current course group and schedule indices based on keys
+  // If the selected course group is not found (e.g., filtered out), falls back to first course group
+  // If the selected schedule is not found (e.g., filtered out), falls back to first schedule of the current course group
+  const currentCourseGroupIndex = useMemo(() => {
+    if (!selectedCourseGroupKey || courseGroups.length === 0) return 0;
+    const index = courseGroups.findIndex(g => g.courseKey === selectedCourseGroupKey);
+    return index >= 0 ? index : 0;
+  }, [selectedCourseGroupKey, courseGroups]);
+
+  const currentCourseGroup = courseGroups[currentCourseGroupIndex];
+  const displaySchedules = currentCourseGroup?.schedules || [];
+
+  const currentScheduleIndex = useMemo(() => {
+    if (!selectedScheduleKey || displaySchedules.length === 0) return 0;
+    const index = displaySchedules.findIndex(s => getScheduleKey(s) === selectedScheduleKey);
+    return index >= 0 ? index : 0;
+  }, [selectedScheduleKey, displaySchedules]);
+
+  const currentSchedule = displaySchedules[currentScheduleIndex];
+
+  // Auto-select the first course group and first schedule on initial load.
+  // These useEffects only run when the keys are null (not yet selected).
+  useEffect(() => {
+    if (!selectedCourseGroupKey && courseGroups.length > 0) {
+      setSelectedCourseGroupKey(courseGroups[0].courseKey);
+    }
+  }, [selectedCourseGroupKey, courseGroups]);
+
+  useEffect(() => {
+    if (!selectedScheduleKey && displaySchedules.length > 0) {
+      setSelectedScheduleKey(getScheduleKey(displaySchedules[0]));
+    }
+  }, [selectedScheduleKey, displaySchedules]);
+
+  // Handle course group change
+  const handleCourseGroupChange = (courseKey: string, index: number) => {
+    setSelectedCourseGroupKey(courseKey);
+    // Reset to first schedule of new course group
+    const newGroup = courseGroups.find(g => g.courseKey === courseKey);
+    if (newGroup && newGroup.schedules.length > 0) {
+      setSelectedScheduleKey(getScheduleKey(newGroup.schedules[0]));
+    }
+  };
+
+  // Handle schedule change
+  const handleScheduleChange = (scheduleKey: string) => {
+    setSelectedScheduleKey(scheduleKey);
+  };
+
+  // Show message if no schedules available
+  const hasSchedules = courseGroups.length > 0 && displaySchedules.length > 0;
+
   return (
-    <div className="h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-6 py-4">
-      {/* Active Filters Summary */}
-      {Object.keys(filters).length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2 text-blue-900">Active Filters:</h2>
-          <div className="space-y-1 text-sm text-blue-800">
-            {filters.startTime && (
-              <div>• Earliest start time: {formatTime(filters.startTime)}</div>
-            )}
-            {filters.endTime && (
-              <div>• Latest end time: {formatTime(filters.endTime)}</div>
-            )}
-            {filters.specificDaysFree && filters.specificDaysFree.length > 0 && (
-              <div>• Days with no classes: {formatDays(filters.specificDaysFree)}</div>
-            )}
-            {filters.minDaysFree !== undefined && (
-              <div>• Minimum days free per week: {filters.minDaysFree}</div>
-            )}
-            {filters.minSeatsLeft !== undefined && (
-              <div>• Minimum seats available: {filters.minSeatsLeft}</div>
-            )}
-            {filters.minHonorsCourses !== undefined && (
-              <div>• Minimum honors courses: {filters.minHonorsCourses}</div>
-            )}
-            {filters.nupaths && filters.nupaths.length > 0 && (
-              <div>• NUPath requirements: {filters.nupaths.join(", ")}</div>
-            )}
-          </div>
+    <div className="h-[calc(100vh-72px)] w-full flex flex-col px-6 py-4" style={{ backgroundColor: '#F8F9F9' }}>
+      {/* Course Group Tabs (First Row) */}
+      {courseGroups.length > 0 && (
+        <div className="flex items-center gap-2 mb-2 overflow-x-auto pb-2">
+          {courseGroups.map((group, index) => (
+            <button
+              key={group.courseKey}
+              onClick={() => handleCourseGroupChange(group.courseKey, index)}
+              className={`
+                px-3 py-2 rounded-lg border whitespace-nowrap font-bold flex items-center gap-2 text-neu8
+                ${currentCourseGroupIndex === index 
+                  ? "border-neu3 bg-white" 
+                  : "border-neu3 bg-neu2 hover:bg-neu3"
+                }
+              `}
+            >
+              {group.courses.map((course) => {
+                const color = colorMap.get(course);
+                return (
+                  <div
+                    key={course}
+                    className="px-2 py-1 rounded-sm text-sm"
+                    style={{
+                      backgroundColor: color?.fill,
+                      borderColor: color?.stroke,
+                    }}
+                  >
+                    {course}
+                  </div>
+                );
+              })}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* Results Count */}
-      <p className="text-gray-600">
-        Found {schedules.length} valid schedule{schedules.length !== 1 ? "s" : ""}
-        {totalSchedules !== schedules.length && ` (filtered from ${totalSchedules} total)`}
-      </p>
+      {/* Schedule/Plan Tabs (Second Row) */}
+      {displaySchedules.length > 0 && (
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto">
+          {displaySchedules.map((schedule, index) => {
+            const scheduleKey = getScheduleKey(schedule);
+            return (
+              <button
+                key={scheduleKey}
+                onClick={() => handleScheduleChange(scheduleKey)}
+                className={`
+                  px-4 py-2 rounded-lg border whitespace-nowrap font-bold
+                  ${currentScheduleIndex === index 
+                    ? "bg-white border-gray-300 text-gray-900" 
+                    : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
+                  }
+                `}
+              >
+                Plan {index + 1}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Schedules */}
-      <div className="space-y-8">
-        {schedules.map((schedule, scheduleIndex) => (
-          <div
-            key={scheduleIndex}
-            className="border border-gray-300 rounded-lg p-6 bg-white shadow-sm"
-          >
-            <h2 className="text-xl font-semibold mb-4">
-              Schedule {scheduleIndex + 1}
-            </h2>
-
-            <div className="space-y-4">
-              {schedule.map((section, sectionIndex) => (
-                <div
-                  key={sectionIndex}
-                  className="border-l-4 border-blue-500 pl-4 py-2"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {section.courseSubject} {section.courseNumber}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-1">
-                        {section.courseName}
-                      </p>
-                      <span className="text-sm text-gray-700">
-                        CRN: {section.crn}
-                      </span>
-                      {section.honors && (
-                        <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                          Honors
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      {section.classType}
-                    </span>
-                  </div>
-
-                  {section.faculty && (
-                    <p className="text-sm text-gray-700 mb-1">
-                      Instructor: {section.faculty}
-                    </p>
-                  )}
-
-                  {section.meetingTimes.length > 0 ? (
-                    <div className="mt-2 space-y-1">
-                      {section.meetingTimes.map((meeting, meetingIndex) => (
-                        <div
-                          key={meetingIndex}
-                          className="text-sm text-gray-700 flex items-center gap-2"
-                        >
-                          <span className="font-medium">
-                            {formatDays(meeting.days)}
-                          </span>
-                          <span>•</span>
-                          <span>
-                            {formatTime(meeting.startTime)} -{" "}
-                            {formatTime(meeting.endTime)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 italic">
-                      No scheduled meeting times
-                    </p>
-                  )}
-
-                  <div className="mt-2 text-xs text-gray-500">
-                    Seats: {section.seatRemaining}/{section.seatCapacity} •
-                    Campus: {section.campus}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Calendar View */}
+      {hasSchedules && currentSchedule ? (
+        <div className="flex-1 overflow-hidden">
+          <CalendarView schedule={currentSchedule} scheduleNumber={currentScheduleIndex + 1} colorMap={colorMap} />
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-gray-500">
+          No schedules found. Try adjusting your filters or course selection.
+        </div>
+      )}
     </div>
   );
 }

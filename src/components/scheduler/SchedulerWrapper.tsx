@@ -41,13 +41,14 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions, term, termNa
   return (
     <div className="grid w-full grid-cols-6">
       <div className="col-span-1 w-full">
-        <FilterPanel
-          filters={filters}
+        <FilterPanel 
+          filters={filters} 
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}
           nupathOptions={nupathOptions}
           filteredSchedules={filteredSchedules}
+          allSchedules={initialSchedules}
           term={term}
           termName={termName}
           lockedCourseKeys={lockedCourseKeys}

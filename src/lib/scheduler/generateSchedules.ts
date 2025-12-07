@@ -5,12 +5,15 @@ import {
   sectionsT,
   nupathsT,
   courseNupathJoinT,
+  roomsT,
+  buildingsT,
 } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
+import { SectionTableRoom } from "@/components/catalog/SectionTable";
+
 
 const getSectionsAndMeetingTimes = (courseId: number) => {
-  // This code is from the catalog page, ideally we want to abstract this in the future
   const sections = db
     .select({
       id: sectionsT.id,
@@ -35,10 +38,18 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       days: meetingTimesT.days,
       startTime: meetingTimesT.startTime,
       endTime: meetingTimesT.endTime,
+      // Room data
+      roomId: roomsT.id,
+      roomNumber: roomsT.number,
+      // Building data
+      buildingId: buildingsT.id,
+      buildingName: buildingsT.name,
     })
     .from(sectionsT)
     .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+    .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
+    .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
     .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
     .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
     .where(eq(sectionsT.courseId, courseId))
@@ -60,9 +71,12 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       meetingTimesT.days,
       meetingTimesT.startTime,
       meetingTimesT.endTime,
+      roomsT.id,
+      roomsT.number,
+      buildingsT.id,
+      buildingsT.name,
     )
     .then((rows) => {
-      // Group the rows by section and reconstruct the meetingTimes array
       const sectionMap = new Map<number, SectionWithCourse>();
 
       for (const row of rows) {
@@ -86,14 +100,27 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
           });
         }
 
-        // Add meeting time if it exists
         if (row.meetingTimeId && row.days && row.startTime && row.endTime) {
           const section = sectionMap.get(row.id)!;
+
+          const room: SectionTableRoom | undefined =
+            row.roomId && row.roomNumber
+              ? {
+                id: row.roomId,
+                number: row.roomNumber,
+                building:
+                  row.buildingId && row.buildingName
+                    ? { id: row.buildingId, name: row.buildingName }
+                    : undefined,
+              }
+              : undefined;
+
           section.meetingTimes.push({
             days: row.days,
             startTime: row.startTime,
             endTime: row.endTime,
-            final: false, // You'll need to add this field to meetingTimesT if needed
+            final: false,
+            room,
             finalDate: undefined,
           });
         }
@@ -183,7 +210,7 @@ const addOptionalCourses = (
   optionalSectionsByCourse: SectionWithCourse[][]
 ): SectionWithCourse[][] => {
   const results: SectionWithCourse[][] = [];
-  
+
   // Generate all possible subsets of optional courses (including empty set)
   const generateOptionalCombinations = (
     currentSchedule: SectionWithCourse[],
@@ -216,11 +243,11 @@ export const generateSchedules = async (
   optionalCourseIds: number[]
 ): Promise<SectionWithCourse[][]> => {
   // assume that all courseIds are from the same term, add logic to check this later
-  
+
   // Remove duplicates from both lists
   lockedCourseIds = Array.from(new Set(lockedCourseIds));
   optionalCourseIds = Array.from(new Set(optionalCourseIds));
-  
+
   // Remove any IDs from optional that appear in locked (locked takes precedence)
   const lockedSet = new Set(lockedCourseIds);
   optionalCourseIds = optionalCourseIds.filter(id => !lockedSet.has(id));

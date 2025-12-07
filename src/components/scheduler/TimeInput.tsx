@@ -65,12 +65,12 @@ export function TimeInput({
   return (      
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button className="flex w-20 items-center gap-2 bg-transparent font-medium text-muted-foreground hover:text-foreground/80 focus:outline-none">
-            <span className="inline-block w-14 text-left text-sm">{displayValue}</span>
-            <ChevronDown className="h-4 w-4 opacity-50" />
+          <button className="flex items-center gap-2 bg-transparent font-medium text-muted-foreground hover:text-foreground/80 focus:outline-none">
+            <span className="inline-block w-full text-left text-sm">{displayValue}</span>
+            <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="end">
+        <PopoverContent className="w-[120px] p-0" align="end">
           <Command>
             <CommandInput placeholder="-- : --" />
             <CommandList>
@@ -86,7 +86,7 @@ export function TimeInput({
                     }}
                   >
                     <Check
-                      className={`mr-2 h-4 w-4 ${
+                      className={`${
                         option.value === value ? "opacity-100" : "opacity-0"
                       }`}
                     />

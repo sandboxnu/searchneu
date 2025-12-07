@@ -5,12 +5,13 @@ import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/fi
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, Info } from "lucide-react";
 import { CourseBox } from "@/components/scheduler/CourseBox";
 import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -49,6 +50,19 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       const { [key]: _, ...rest } = filters;
       onFiltersChange(rest);
     } else {
+      // Special handling for minDaysFree: clear specificDaysFree if new value is less than current
+      if (key === "minDaysFree" && typeof value === "number") {
+        const currentMinDays = filters.minDaysFree;
+        const currentSpecificDays = filters.specificDaysFree || [];
+        
+        // If selecting a smaller number than before, clear the specific days
+        if (currentMinDays !== undefined && value < currentMinDays && currentSpecificDays.length > 0) {
+          const { specificDaysFree: _, ...rest } = filters;
+          onFiltersChange({ ...rest, [key]: value });
+          return;
+        }
+      }
+      
       onFiltersChange({ ...filters, [key]: value });
     }
   };
@@ -72,10 +86,10 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   };
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll rounded-lg border px-4 py-4">
       {/* Locked Course IDs Input */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold">
+        <Label className="text-neu7 text-xs font-bold">
           LOCKED COURSE IDs
         </Label>
         <textarea
@@ -88,7 +102,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* Optional Course IDs Input */}
       <div>
-        <Label className="text-muted-foreground text-xs font-bold">
+        <Label className="text-neu7 text-xs font-bold">
           OPTIONAL COURSE IDs
         </Label>
         <textarea
@@ -111,7 +125,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* Classes Filter*/}
       <div className="flex justify-between items-center">
-        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
+        <h3 className="text-neu7 text-xs font-bold">CLASSES</h3>
         <button
           onClick={() => {}}
           aria-label="Edit classes"
@@ -158,22 +172,15 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       
       {/* Online Classes */}
       <div className="mt-2 flex items-center justify-between">
-        <span className="text-muted-foreground text-xs font-bold">
+        <Label className="text-neu7 text-xs font-bold">
           INCLUDE REMOTE SECTIONS
-        </span>
-        <button
-          type="button"
-          onClick={() => updateFilter("includesOnline", !filters.includesOnline)}
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-            filters.includesOnline ? "bg-red-500" : "bg-gray-300"
-          }`}
-        >
-          <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-              filters.includesOnline ? "translate-x-6" : "translate-x-1"
-            }`}
-          />
-        </button>
+        </Label>
+        <Switch
+          checked={filters.includesOnline ?? true}
+          onCheckedChange={(checked) =>
+            updateFilter("includesOnline", checked)
+          }
+        />
       </div>
 
       <Separator />
@@ -197,8 +204,8 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           />
         </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground whitespace-nowrap">End time is before</span>
+        <div className="flex items-center justify-between text-sm gap-2">
+          <span className="text-muted-foreground whitespace-nowrap flex-shrink-0">End time is before</span>
           <TimeInput
             value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
             onChange={(value) =>
@@ -216,34 +223,59 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       {/* Free Days Section */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-muted-foreground text-xs font-bold">
+          <Label className="text-neu7 text-xs font-bold">
             FREE DAYS
           </Label>
-          {(filters.specificDaysFree?.length ?? 0) > 0 && (
-            <button
-              onClick={() => updateFilter("specificDaysFree", undefined)}
-              className="text-blue-600 hover:text-blue-600/80 text-xs"
-            >
-              Clear all
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {filters.minDaysFree && (
+              <button
+                onClick={() => updateFilter("minDaysFree", undefined)}
+                className="text-blue-600 hover:text-blue-600/80 text-xs"
+              >
+                Clear all
+              </button>
+            )}
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-neu6 hover:text-black transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-center">
+                  <p>Select a number to filter schedules with at least that many free days.</p>
+                  <p>Use the checkboxes below to specify which days must be free.</p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
 
         {/* Day number buttons */}
-        <div className="flex gap-2 justify-center">
-          {[1, 2, 3, 4, 5, 6].map((num) => (
-            <button
-              key={num}
-              onClick={() => updateFilter("minDaysFree", num)}
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
-                filters.minDaysFree === num
-                  ? "bg-red-500 text-white"
-                  : "border border-input bg-background text-foreground hover:bg-muted"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
+        <div className="border border-gray-300 rounded-full p-1 flex gap-0">
+          {[1, 2, 3, 4, 5, 6].map((num) => {
+            const isSelected = filters.minDaysFree === num;
+            return (
+              <button
+                key={num}
+                onClick={() => {
+                  if (isSelected) {
+                    // When deselecting, also clear all specific day checkboxes
+                    const { minDaysFree: _, specificDaysFree: __, ...rest } = filters;
+                    onFiltersChange(rest);
+                  } else {
+                    updateFilter("minDaysFree", num);
+                  }
+                }}
+                aria-label={`${num} free days`}
+                className={`flex-1 h-7 rounded-full text-sm font-medium transition-colors ${
+                  isSelected
+                    ? "bg-neu text-white hover:bg-neu/90"
+                    : "bg-transparent text-foreground hover:bg-muted"
+                }`}
+              >
+                {num}
+              </button>
+            );
+          })}
         </div>
 
         {/* Day checkboxes */}
@@ -256,29 +288,39 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
             { value: 5, label: "Friday" },
             { value: 6, label: "Saturday" },
             { value: 0, label: "Sunday" },
-          ].map((day) => (
-            <label
-              key={day.value}
-              className="flex cursor-pointer items-center justify-between py-1"
-            >
-              <span className="text-sm text-muted-foreground">{day.label}</span>
-              <input
-                type="checkbox"
-                checked={filters.specificDaysFree?.includes(day.value) ?? false}
-                onChange={(e) => {
-                  const currentDays = filters.specificDaysFree || [];
-                  const newDays = e.target.checked
-                    ? [...currentDays, day.value]
-                    : currentDays.filter((d) => d !== day.value);
-                  updateFilter(
-                    "specificDaysFree",
-                    newDays.length > 0 ? newDays : undefined
-                  );
-                }}
-                className="h-4 w-4 rounded border-input accent-red-500"
-              />
-            </label>
-          ))}
+          ].map((day) => {
+            const isChecked = filters.specificDaysFree?.includes(day.value) ?? false;
+            const checkedCount = filters.specificDaysFree?.length ?? 0;
+            const maxDays = filters.minDaysFree ?? Infinity;
+            const isDisabled = !isChecked && checkedCount >= maxDays;
+            
+            return (
+              <label
+                key={day.value}
+                className={`flex items-center justify-between py-1 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                <span className={`text-sm ${isChecked ? 'text-black font-medium' : isDisabled ? 'text-gray-300' : 'text-muted-foreground'}`}>
+                  {day.label}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  disabled={isDisabled}
+                  onChange={(e) => {
+                    const currentDays = filters.specificDaysFree || [];
+                    const newDays = e.target.checked
+                      ? [...currentDays, day.value]
+                      : currentDays.filter((d) => d !== day.value);
+                    updateFilter(
+                      "specificDaysFree",
+                      newDays.length > 0 ? newDays : undefined
+                    );
+                  }}
+                  className="h-4 w-4 rounded border-input accent-neu disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </label>
+            );
+          })}
         </div>
       </div>
 
@@ -286,7 +328,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* Hide Filled Sections Toggle */}
       <div className="flex items-center justify-between">
-        <Label className="text-muted-foreground text-xs font-bold">
+        <Label className="text-neu7 text-xs font-bold">
           HIDE FILLED SECTIONS
         </Label>
         <Switch
@@ -316,7 +358,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* Include Honors Toggle */}
       <div className="flex items-center justify-between pb-20">
-        <Label className="text-muted-foreground text-xs font-bold">
+        <Label className="text-neu7 text-xs font-bold">
           INCLUDE HONORS
         </Label>
         <Switch
@@ -324,7 +366,6 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           onCheckedChange={(checked) =>
             updateFilter("includeHonors", checked)
           }
-          className="data-[state=checked]:bg-red-500"
         />
       </div>
       

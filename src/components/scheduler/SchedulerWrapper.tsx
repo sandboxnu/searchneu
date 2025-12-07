@@ -36,8 +36,8 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
     Object.keys(filters).length > 0 ? filterSchedules(initialSchedules, filters) : initialSchedules;
 
   return (
-    <div className="grid w-full grid-cols-6">
-      <div className="col-span-1 w-full">
+    <div className="flex w-full gap-3">
+      <div className="w-full max-w-[280px]">
         <FilterPanel
           filters={filters}
           onFiltersChange={setFilters}
@@ -47,7 +47,7 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
           filteredSchedules={filteredSchedules}
         />
       </div>
-      <div className="col-span-5 pl-6">
+      <div className="flex-1 min-w-0">
         <SchedulerView
           schedules={filteredSchedules}
           filters={filters}

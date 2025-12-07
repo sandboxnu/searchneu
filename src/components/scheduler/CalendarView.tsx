@@ -42,8 +42,8 @@ export function CalendarView({ schedule, scheduleNumber, colorMap }: CalendarVie
   const minCalendarHeight = totalHours * HOUR_HEIGHT;
 
   // Separate async/remote courses from scheduled courses
-  const asyncCourses = schedule.filter(section => section.campus === "Online");
-  const scheduledCourses = schedule.filter(section => section.campus !== "Online");
+  const asyncCourses = schedule.filter(section => section.meetingTimes.length === 0);
+  const scheduledCourses = schedule.filter(section => section.meetingTimes.length > 0);
 
   // Auto-scroll to 7 AM on mount or when schedule changes
   useEffect(() => {

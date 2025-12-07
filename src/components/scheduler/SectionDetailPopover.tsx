@@ -12,7 +12,7 @@ interface SectionDetailPopoverProps {
 
 export function SectionDetailPopover({ section, children }: SectionDetailPopoverProps) {
 
-  const isOnline = section.campus === "Online";
+  const isScheduled = section.meetingTimes && section.meetingTimes.length > 0
   const meetingTime = section.meetingTimes?.[0]
 
   return (
@@ -56,7 +56,7 @@ export function SectionDetailPopover({ section, children }: SectionDetailPopover
               <tr>
                 <td className="text-sm font-medium text-gray-400 uppercase tracking-wide align-top pt-4">Meeting Times</td>
                 <td className="pt-4 pb-2">
-                  {isOnline ? (
+                  {!isScheduled ? (
                     <span className="text-sm italic text-gray-500">Asynchronous</span>
                   ) : (
                     <>
@@ -72,12 +72,10 @@ export function SectionDetailPopover({ section, children }: SectionDetailPopover
               </tr>
 
               {/* Room */}
-              {!isOnline && (
-                <tr className="h-12">
-                  <td className="text-sm font-medium text-gray-400 uppercase tracking-wide align-middle">Room</td>
-                  <td className="text-base text-gray-900 align-middle">{parseSectionRoom(section)}</td>
-                </tr>
-              )}
+              <tr className="h-12">
+                <td className="text-sm font-medium text-gray-400 uppercase tracking-wide align-middle">Room</td>
+                <td className="text-base text-gray-900 align-middle">{parseSectionRoom(section)}</td>
+              </tr>
 
               {/* Professor */}
               {section.faculty && (

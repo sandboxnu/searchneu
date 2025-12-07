@@ -9,11 +9,11 @@ import { type CourseColor } from "@/lib/scheduler/courseColors";
 interface CourseBoxProps {
   sections: SectionWithCourse[];
   color?: CourseColor;
+  isLocked?: boolean;
 }
 
-export function CourseBox({ sections, color }: CourseBoxProps) {
+export function CourseBox({ sections, color, isLocked = false }: CourseBoxProps) {
   const [open, setOpen] = useState(false);
-  const [courseLocked, setCourseLocked] = useState(false);
 
   const courseId = sections[0] ? `${sections[0].courseSubject} ${sections[0].courseNumber}` : "";
   const courseName = sections[0] ? sections[0].courseName : "";
@@ -25,13 +25,9 @@ export function CourseBox({ sections, color }: CourseBoxProps) {
         style={{ borderColor: `${color?.stroke}`, backgroundColor: `${color?.fill}` }}
       >
         <div className="flex items-start gap-3">
-          <button
-            onClick={() => setCourseLocked((c) => !c)}
-            aria-label={courseLocked ? "Unlock course" : "Lock course"}
-            className="p-1 self-start"
-          >
-            {courseLocked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
-          </button>
+          <div className="p-1 self-start">
+            {isLocked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
+          </div>
           <div className="mt-1 leading-tight">
             <div className="font-bold text-sm text-neu8 mb-1">{courseId}</div>
             <div className="text-sm text-neu7">{courseName}</div>

@@ -92,7 +92,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   };
 
   return (
-    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
+    <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4 rounded-lg border">
       <AddCoursesModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

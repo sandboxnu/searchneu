@@ -157,7 +157,7 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
 
       {/* Schedule/Plan Tabs (Second Row) */}
       {displaySchedules.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto">
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-2">
           {displaySchedules.map((schedule, index) => {
             const scheduleKey = getScheduleKey(schedule);
             return (

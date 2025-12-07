@@ -70,7 +70,7 @@ export function TimeInput({
             <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-[120px] p-0" align="end">
+        <PopoverContent className="w-[130px] p-0" align="end">
           <Command>
             <CommandInput placeholder="-- : --" />
             <CommandList>

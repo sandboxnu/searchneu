@@ -12,7 +12,7 @@ interface CalendarViewProps {
 }
 
 // Height per hour in pixels - increase this to make rows taller
-const HOUR_HEIGHT = 100;
+const HOUR_HEIGHT = 120;
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -204,7 +204,7 @@ export function CalendarView({ schedule, scheduleNumber, colorMap }: CalendarVie
                           <div className="text-base truncate text-neu6">{section.courseName}</div>
                           {section.faculty && <div className="text-base truncate text-neu6">{section.faculty}</div>}
                           <div className="text-base truncate text-neu6">CRN {section.crn}</div>
-                          <div className="text-base mt-1 text-neu6">
+                          <div className="text-sm mt-1 text-neu6">
                             {formatTime(meeting.startTime)} - {formatTime(meeting.endTime)}
                           </div>
                         </div>

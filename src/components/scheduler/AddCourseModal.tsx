@@ -80,7 +80,7 @@ export function AddCoursesModal({
           code: course.code,
           name: course.name,
           children: [],
-          isLocked: false,
+          isLocked: true,
         },
       ]);
     }

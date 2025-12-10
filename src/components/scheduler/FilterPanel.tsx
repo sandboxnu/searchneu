@@ -245,7 +245,20 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
 
       {/* Time Section */}
       <div className="space-y-3">
-        <Label className="text-muted-foreground text-xs font-bold">TIME</Label>
+        <div className="flex items-center justify-between">
+          <Label className="text-muted-foreground text-xs font-bold">TIME</Label>
+          {(filters.startTime || filters.endTime) && (
+            <button
+              onClick={() => {
+                const { startTime: _, endTime: __, ...rest } = filters;
+                onFiltersChange(rest);
+              }}
+              className="text-blue-600 hover:text-blue-600/80 text-xs"
+            >
+              Clear all
+            </button>
+          )}
+        </div>
         
         <div className="flex items-center justify-between text-sm pb-1.5">
           <span className="text-muted-foreground whitespace-nowrap">Start time is after</span>
@@ -259,6 +272,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                 value ? timeStringToMilitary(value) : undefined
               )
             }
+            disableAfter={filters.endTime ? militaryToTimeString(filters.endTime) : undefined}
           />
         </div>
 
@@ -272,6 +286,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                 value ? timeStringToMilitary(value) : undefined
               )
             }
+            disableBefore={filters.startTime ? militaryToTimeString(filters.startTime) : undefined}
           />
         </div>        
       </div>

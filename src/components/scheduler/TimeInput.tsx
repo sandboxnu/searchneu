@@ -22,6 +22,8 @@ interface TimeInputProps {
   startHour?: number;
   endHour?: number;
   intervalMinutes?: number;
+  disableAfter?: string; // Disable times after or equal this value (format: "HH:MM")
+  disableBefore?: string; // Disable times before or equal to this value (format: "HH:MM")
 }
 
 function generateTimeOptions(
@@ -54,6 +56,8 @@ export function TimeInput({
   startHour = 6,
   endHour = 24,
   intervalMinutes = 15,
+  disableAfter,
+  disableBefore,
 }: TimeInputProps) {
   const [open, setOpen] = useState(false);
   
@@ -61,6 +65,13 @@ export function TimeInput({
   
   const selectedOption = timeOptions.find((option) => option.value === value);
   const displayValue = selectedOption?.label || "-- : -- --";
+
+  // Helper to check if a time should be disabled
+  const isTimeDisabled = (timeValue: string): boolean => {
+    if (disableAfter && timeValue >= disableAfter) return true;
+    if (disableBefore && timeValue <= disableBefore) return true;
+    return false;
+  };
 
   return (      
       <Popover open={open} onOpenChange={setOpen}>
@@ -76,23 +87,30 @@ export function TimeInput({
             <CommandList>
               <CommandEmpty>No time found.</CommandEmpty>
               <CommandGroup>
-                {timeOptions.map((option) => (
-                  <CommandItem
-                    key={option.value}
-                    value={option.label}
-                    onSelect={() => {
-                      onChange(option.value);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={`mr-2 h-4 w-4 ${
-                        option.value === value ? "opacity-100" : "opacity-0"
-                      }`}
-                    />
-                    {option.label}
-                  </CommandItem>
-                ))}
+                {timeOptions.map((option) => {
+                  const disabled = isTimeDisabled(option.value);
+                  return (
+                    <CommandItem
+                      key={option.value}
+                      value={option.label}
+                      disabled={disabled}
+                      onSelect={() => {
+                        if (!disabled) {
+                          onChange(option.value);
+                          setOpen(false);
+                        }
+                      }}
+                      className={disabled ? "opacity-50 cursor-not-allowed" : ""}
+                    >
+                      <Check
+                        className={`mr-6 h-4 w-4 ${
+                          option.value === value ? "opacity-100" : "opacity-0"
+                        }`}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             </CommandList>
           </Command>

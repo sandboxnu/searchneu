@@ -1,0 +1,23 @@
+{
+  "name": "@sneu/scraper",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {},
+  "exports": {},
+  "dependencies": {
+    "yaml": "^2.8.2",
+    "he": "^1.2.0",
+    "node-html-parser": "^7.0.1",
+    "citty": "^0.1.6",
+    "zod": "^4.1.13",
+    "consola": "^3.4.2"
+  },
+  "devDependencies": {
+    "@sneu/tsconfig": "workspace:*",
+    "@sneu/db": "workspace:*",
+    "@types/node": "^24.10.1",
+    "@types/he": "^1.2.3",
+    "typescript": "^5.9.3"
+  }
+}

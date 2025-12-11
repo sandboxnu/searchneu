@@ -72,15 +72,15 @@ importers:
 
   apps/searchneu:
     dependencies:
-      '@neondatabase/serverless':
-        specifier: ^1.0.2
-        version: 1.0.2
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
       '@sneu/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@sneu/scraper':
+        specifier: workspace:*
+        version: link:../../packages/scraper
       '@tanstack/react-virtual':
         specifier: ^3.13.12
         version: 3.13.12(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -108,9 +108,6 @@ importers:
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      drizzle-orm:
-        specifier: ^0.45.0
-        version: 0.45.0(@neondatabase/serverless@1.0.2)(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(pg@8.16.3)
       flags:
         specifier: ^4.0.2
         version: 4.0.2(@opentelemetry/api@1.9.0)(next@16.0.7(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -166,18 +163,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.1.17)
-      '@types/he':
-        specifier: ^1.2.3
-        version: 1.2.3
-      '@types/mdx':
-        specifier: ^2.0.13
-        version: 2.0.13
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.1
-      '@types/pg':
-        specifier: ^8.15.6
-        version: 8.15.6
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7
@@ -187,24 +175,12 @@ importers:
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
-      drizzle-kit:
-        specifier: ^0.31.8
-        version: 0.31.8
       eslint:
         specifier: ^9.39.1
         version: 9.39.1(jiti@2.6.1)
       eslint-config-next:
         specifier: ^16.0.7
         version: 16.0.7(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      he:
-        specifier: ^1.2.0
-        version: 1.2.0
-      node-html-parser:
-        specifier: ^7.0.1
-        version: 7.0.1
-      pg:
-        specifier: ^8.16.3
-        version: 8.16.3
       prettier:
         specifier: ^3.7.4
         version: 3.7.4
@@ -217,15 +193,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.17
-      tsx:
-        specifier: ^4.21.0
-        version: 4.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      yaml:
-        specifier: ^2.8.2
-        version: 2.8.2
 
   packages/db:
     dependencies:
@@ -248,6 +218,43 @@ importers:
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.8
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/scraper:
+    dependencies:
+      citty:
+        specifier: ^0.1.6
+        version: 0.1.6
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      he:
+        specifier: ^1.2.0
+        version: 1.2.0
+      node-html-parser:
+        specifier: ^7.0.1
+        version: 7.0.1
+      yaml:
+        specifier: ^2.8.2
+        version: 2.8.2
+      zod:
+        specifier: ^4.1.13
+        version: 4.1.13
+    devDependencies:
+      '@sneu/db':
+        specifier: workspace:*
+        version: link:../db
+      '@sneu/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/he':
+        specifier: ^1.2.3
+        version: 1.2.3
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -2600,6 +2607,9 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
+  citty@0.1.6:
+    resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
+
   cjs-module-lexer@1.4.3:
     resolution: {integrity: sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==}
 
@@ -2648,6 +2658,10 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  consola@3.4.2:
+    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
+    engines: {node: ^14.18.0 || >=16.10.0}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -4736,11 +4750,6 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
-
-  tsx@4.21.0:
-    resolution: {integrity: sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
 
   turbo-darwin-64@2.6.3:
     resolution: {integrity: sha512-BlJJDc1CQ7SK5Y5qnl7AzpkvKSnpkfPmnA+HeU/sgny3oHZckPV2776ebO2M33CYDSor7+8HQwaodY++IINhYg==}
@@ -7141,6 +7150,10 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
+  citty@0.1.6:
+    dependencies:
+      consola: 3.4.2
+
   cjs-module-lexer@1.4.3: {}
 
   class-variance-authority@0.7.1:
@@ -7184,6 +7197,8 @@ snapshots:
   compute-scroll-into-view@3.1.1: {}
 
   concat-map@0.0.1: {}
+
+  consola@3.4.2: {}
 
   convert-source-map@2.0.0: {}
 
@@ -9855,13 +9870,6 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.8.1: {}
-
-  tsx@4.21.0:
-    dependencies:
-      esbuild: 0.27.1
-      get-tsconfig: 4.13.0
-    optionalDependencies:
-      fsevents: 2.3.3
 
   turbo-darwin-64@2.6.3:
     optional: true

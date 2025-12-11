@@ -1,5 +1,4 @@
-import { db } from "@/db";
-import { termsT, trackersT, usersT } from "@/db/schema";
+import { db, termsT, trackersT, usersT } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/catalog/ExpandableDescription";

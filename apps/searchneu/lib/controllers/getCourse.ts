@@ -1,6 +1,6 @@
 import { cache } from "react";
-import { db } from "@/db";
 import {
+  db,
   coursesT,
   sectionsT,
   meetingTimesT,
@@ -8,7 +8,7 @@ import {
   nupathsT,
   roomsT,
   buildingsT,
-} from "@/db/schema";
+} from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {

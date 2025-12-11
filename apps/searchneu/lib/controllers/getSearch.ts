@@ -1,5 +1,4 @@
-import { db } from "@/db";
-import { coursesT, sectionsT, courseNupathJoinT, nupathsT } from "@/db/schema";
+import { db, coursesT, sectionsT, courseNupathJoinT, nupathsT } from "@/lib/db";
 import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { cache } from "react";
 

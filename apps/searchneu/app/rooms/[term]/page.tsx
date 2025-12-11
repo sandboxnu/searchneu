@@ -1,6 +1,5 @@
 import { TermSelect } from "@/components/rooms/TermSelect";
-import { db } from "@/db/index";
-import { buildingsT, roomsT, termsT } from "@/db/schema";
+import { db, buildingsT, roomsT, termsT } from "@/lib/db";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";

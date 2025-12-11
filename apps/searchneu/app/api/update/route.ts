@@ -1,4 +1,5 @@
 import {
+  db,
   buildingsT,
   coursesT,
   meetingTimesT,
@@ -7,12 +8,10 @@ import {
   termsT,
   trackersT,
   usersT,
-} from "@/db/schema";
+} from "@/lib/db";
 import { eq, gt, and } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/neon-serverless";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
-import { db } from "@/db";
 import { updateTerm } from "@/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
 import { logger } from "@/lib/logger";

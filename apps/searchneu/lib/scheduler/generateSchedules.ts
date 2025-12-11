@@ -1,11 +1,11 @@
-import { db } from "@/db";
 import {
+  db,
   coursesT,
   meetingTimesT,
   sectionsT,
   nupathsT,
   courseNupathJoinT,
-} from "@/db/schema";
+} from "@/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 import { meetingTimesToBinaryMask, masksConflict } from "./binaryMeetingTime";
@@ -106,15 +106,14 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
   return sections;
 };
 
-
-/** 
+/**
  * Used to keep track of indexes of sections and increment them when they conflict w the current schedule
  * Returns true if overflow (we're done), false otherwise
-*/ 
+ */
 export const incrementIndex = (
   indexes: number[],
   sizes: number[],
-  position: number
+  position: number,
 ): boolean => {
   indexes[position]++;
 
@@ -136,7 +135,7 @@ export const incrementIndex = (
  * Uses binary time representation for O(1) conflict checking.
  */
 const generateCombinationsOptimized = (
-  sectionsByCourse: SectionWithCourse[][]
+  sectionsByCourse: SectionWithCourse[][],
 ): SectionWithCourse[][] => {
   if (sectionsByCourse.length === 0) return [];
   if (sectionsByCourse.length === 1)
@@ -154,7 +153,7 @@ const generateCombinationsOptimized = (
 
   // Pre-compute binary masks for all sections once
   const sectionMasks: bigint[][] = sortedSections.map((sections) =>
-    sections.map(meetingTimesToBinaryMask)
+    sections.map(meetingTimesToBinaryMask),
   );
 
   while (true) {
@@ -205,7 +204,7 @@ const generateCombinationsOptimized = (
  */
 const addOptionalCourses = (
   baseSchedule: SectionWithCourse[],
-  optionalSectionsByCourse: SectionWithCourse[][]
+  optionalSectionsByCourse: SectionWithCourse[][],
 ): SectionWithCourse[][] => {
   const results: SectionWithCourse[][] = [];
 
@@ -215,7 +214,7 @@ const addOptionalCourses = (
   const generateOptionalCombinations = (
     currentSchedule: SectionWithCourse[],
     currentMasks: bigint[], // masks for the sections in the current schedule
-    courseIndex: number
+    courseIndex: number,
   ) => {
     // ending condition to break recursion
     if (courseIndex === optionalSectionsByCourse.length) {
@@ -224,12 +223,16 @@ const addOptionalCourses = (
     }
 
     // Try not adding this optional course
-    generateOptionalCombinations(currentSchedule, currentMasks, courseIndex + 1);
+    generateOptionalCombinations(
+      currentSchedule,
+      currentMasks,
+      courseIndex + 1,
+    );
 
     // Try adding each section of this optional course if it doesn't conflict
     for (const section of optionalSectionsByCourse[courseIndex]) {
       const sectionMask = meetingTimesToBinaryMask(section);
-      
+
       // Early termination: check if this section conflicts with current schedule
       let hasConflict = false;
       for (const mask of currentMasks) {
@@ -243,7 +246,7 @@ const addOptionalCourses = (
         generateOptionalCombinations(
           [...currentSchedule, section],
           [...currentMasks, sectionMask],
-          courseIndex + 1
+          courseIndex + 1,
         );
       }
     }
@@ -258,8 +261,10 @@ const addOptionalCourses = (
 // returns a list of valid schedules (each schedule is a list of sections)
 export const generateSchedules = async (
   lockedCourseIds: number[],
-  optionalCourseIds: number[]
+  optionalCourseIds: number[],
 ): Promise<SectionWithCourse[][]> => {
+  // assume that all courseIds are from the same term, add logic to check this later
+
   // Remove duplicates from both lists
   lockedCourseIds = Array.from(new Set(lockedCourseIds));
   optionalCourseIds = Array.from(new Set(optionalCourseIds));
@@ -270,21 +275,26 @@ export const generateSchedules = async (
 
   // Get sections for locked and optional courses
   const lockedSectionsByCourse = await Promise.all(
-    lockedCourseIds.map(getSectionsAndMeetingTimes)
+    lockedCourseIds.map(getSectionsAndMeetingTimes),
   );
   const optionalSectionsByCourse = await Promise.all(
-    optionalCourseIds.map(getSectionsAndMeetingTimes)
+    optionalCourseIds.map(getSectionsAndMeetingTimes),
   );
 
   // sort courses by section count
   optionalSectionsByCourse.sort((a, b) => a.length - b.length);
 
   // Generate all valid locked schedules using optimized algorithm
-  const validLockedSchedules = generateCombinationsOptimized(lockedSectionsByCourse);
+  const validLockedSchedules = generateCombinationsOptimized(
+    lockedSectionsByCourse,
+  );
 
   // Edge case: no locked courses but have optional courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    const schedulesWithOptional = addOptionalCourses([], optionalSectionsByCourse);
+    const schedulesWithOptional = addOptionalCourses(
+      [],
+      optionalSectionsByCourse,
+    );
     return schedulesWithOptional.filter((schedule) => schedule.length > 0);
   }
 
@@ -298,10 +308,11 @@ export const generateSchedules = async (
   for (const lockedSchedule of validLockedSchedules) {
     const schedulesWithOptional = addOptionalCourses(
       lockedSchedule,
-      optionalSectionsByCourse
+      optionalSectionsByCourse,
     );
     allSchedules.push(...schedulesWithOptional);
   }
 
   return allSchedules;
 };
+

@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { BannerTerm } from "./schemas/common";
 
 export const TermConfig = z.strictObject({
   term: z.int(),

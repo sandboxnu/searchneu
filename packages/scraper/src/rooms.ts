@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { consola } from "consola";
 import type { Course, BuildingSchedule } from "./types";
 
 export async function parseRooms(courses: Course[]) {
@@ -9,14 +9,11 @@ export async function parseRooms(courses: Course[]) {
         const { building, room, startTime, endTime, days } = meetingTime;
 
         if (!building || !room) {
-          logger.warn(
-            {
-              courseId: course.subject || course.courseNumber,
-              sectionCrn: section.crn,
-              meetingTime,
-            },
-            "Skipping meetingTime with missing building/room",
-          );
+          consola.warn("Skipping meetingTime with missing building/room", {
+            courseId: course.subject || course.courseNumber,
+            sectionCrn: section.crn,
+            meetingTime,
+          });
           return;
         }
         if (!acc[building]) {

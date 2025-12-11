@@ -1,8 +1,8 @@
 import type { Requisite, Subject } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionPrereqsEndpoint } from "../endpoints";
-import { logger } from "@/lib/logger";
-import { decode } from "he";
+import { consola } from "consola";
+import { decode } from "html-entities";
 import { BannerSectionPrereqs } from "../../schemas/sectionPrereqs";
 import { parsePrereqs } from "./reqs";
 
@@ -32,20 +32,21 @@ export async function scrapeCoursePrereqs(
           ...body,
           onRetry(attempt) {
             // retries are part of the process, just log it if debugging
-            logger.debug(
-              { course: c.subject + c.courseNumber, attempt },
-              "retrying prereqs for course",
-            );
+            consola.debug("retrying prereqs for course", {
+              course: c.subject + c.courseNumber,
+              attempt,
+            });
           },
         })
         .then((r) => r.text())
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          logger.error(
-            { error: e, crn: c.crn, course: c.subject + c.courseNumber },
-            "error scraping prereqs",
-          );
+          consola.error("error scraping prereqs", {
+            error: e,
+            crn: c.crn,
+            course: c.subject + c.courseNumber,
+          });
           return;
         });
 
@@ -56,14 +57,11 @@ export async function scrapeCoursePrereqs(
       if (!prereqsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        logger.error(
-          {
-            error: prereqsResult.error,
-            crn: c.crn,
-            course: c.subject + c.courseNumber,
-          },
-          "error scraping prereqs",
-        );
+        consola.error("error scraping prereqs", {
+          error: prereqsResult.error,
+          crn: c.crn,
+          course: c.subject + c.courseNumber,
+        });
         return;
       }
 

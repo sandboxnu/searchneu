@@ -1,7 +1,9 @@
-import { TermScrape, Config } from "./types";
+import { TermScrape } from "../types";
+import { Config } from "../config";
+import { infer as zinfer } from "zod";
 import * as schema from "@sneu/db/schema";
 import { eq, and, inArray, notInArray, sql } from "drizzle-orm";
-import { logger } from "@/lib/logger";
+import { consola } from "consola";
 import { type Database } from "@sneu/db/client";
 
 function chunk<T>(array: T[], size: number): T[][] {
@@ -12,7 +14,10 @@ function chunk<T>(array: T[], size: number): T[][] {
   return chunks;
 }
 
-export async function insertConfigData(config: Config, db: Database) {
+export async function insertConfigData(
+  config: zinfer<typeof Config>,
+  db: Database,
+) {
   await db.transaction(async (tx) => {
     console.log("  → Inserting campuses and nupaths...");
 
@@ -45,21 +50,21 @@ export async function insertConfigData(config: Config, db: Database) {
         .onConflictDoNothing();
     }
 
-    logger.info("Config data inserted");
+    consola.info("Config data inserted");
   });
 }
 
 export async function insertTermData(
   data: TermScrape,
   db: Database,
-  attributes: Config["attributes"],
+  attributes: zinfer<typeof Config>["attributes"],
   activeUntil: Date,
 ) {
   await db.transaction(async (tx) => {
     const termCode = data.term.code;
 
     // Insert term
-    console.log("  → Inserting term...");
+    consola.log("  → Inserting term...");
 
     // Insert or update term
     await tx
@@ -102,7 +107,7 @@ export async function insertTermData(
       .from(schema.campusesT);
     const validCampusNames = new Set(campuses.map((c) => c.name));
 
-    console.log("  → Inserting subjects...");
+    consola.log("  → Inserting subjects...");
 
     // Insert subjects for this term
     if (data.subjects.length > 0) {
@@ -140,8 +145,7 @@ export async function insertTermData(
         .where(eq(schema.subjectsT.term, termCode));
     }
 
-    logger.info(`Subjects for ${termCode} synced`);
-    console.log("  → Inserting buildings...");
+    consola.log("  → Inserting buildings...");
 
     const buildingNames = Object.keys(data.rooms);
     if (buildingNames.length > 0) {
@@ -175,10 +179,8 @@ export async function insertTermData(
       buildings.map((b) => [`${b.campus}-${b.name}`, b.id]),
     );
 
-    logger.info("Buildings synced");
-
     // Insert rooms
-    console.log("  → Inserting rooms...");
+    consola.log("  → Inserting rooms...");
     const roomInserts: { buildingId: number; number: string }[] = [];
     for (const [buildingName, rooms] of Object.entries(data.rooms)) {
       const campus = data.buildingCampuses[buildingName];
@@ -214,12 +216,11 @@ export async function insertTermData(
       rooms.map((r) => [`${r.buildingId}-${r.number}`, r.id]),
     );
 
-    logger.info("Rooms synced");
-    console.log("  → Inserting courses and sections...");
+    consola.log("  → Inserting courses and sections...");
 
     // Prepare course data
     if (data.courses.length === 0) {
-      logger.info("No courses to process");
+      consola.info("No courses to process");
       await tx
         .delete(schema.coursesT)
         .where(eq(schema.coursesT.term, termCode));
@@ -289,7 +290,7 @@ export async function insertTermData(
       allCourseResults.map((c) => [`${c.subject}-${c.courseNumber}`, c.id]),
     );
 
-    logger.info(`${allCourseResults.length} courses for ${termCode} upserted`);
+    consola.info(`${allCourseResults.length} courses for ${termCode} upserted`);
 
     // Remove courses not in scrape
     const scrapedCourseKeys = data.courses.map(
@@ -310,7 +311,7 @@ export async function insertTermData(
       )
       .map((c) => c.id);
 
-    console.log("courses to be deleted: ", coursesToDelete);
+    consola.log("courses to be deleted: ", coursesToDelete);
 
     if (coursesToDelete.length > 0) {
       // Delete in chunks to avoid parameter limit
@@ -321,7 +322,7 @@ export async function insertTermData(
         //   .where(inArray(schema.coursesT.id, deleteChunk));
         continue; // TODO:
       }
-      logger.info(`${coursesToDelete.length} courses deleted`);
+      consola.info(`${coursesToDelete.length} courses deleted`);
     }
 
     // Bulk insert course-nupath relationships
@@ -340,7 +341,7 @@ export async function insertTermData(
       }
     }
 
-    console.log("  → Inserting meeting times...");
+    consola.log("  → Inserting meeting times...");
 
     // Delete existing course-nupath joins for this term's courses
     const courseIds = Array.from(courseMap.values());
@@ -357,13 +358,13 @@ export async function insertTermData(
         for (const nupathChunk of nupathChunks) {
           await tx.insert(schema.courseNupathJoinT).values(nupathChunk);
         }
-        logger.info(
+        consola.info(
           `${courseNupathInserts.length} course-nupath relationships inserted`,
         );
       }
     }
 
-    logger.info(`Course NUPaths for ${termCode} synced`);
+    consola.info(`Course NUPaths for ${termCode} synced`);
 
     const normalizeCampus = (campus: string | undefined | null): string => {
       if (!campus) return "Unknown";
@@ -455,7 +456,7 @@ export async function insertTermData(
 
     const sectionMap = new Map(allSectionResults.map((s) => [s.crn, s.id]));
 
-    logger.info(
+    consola.info(
       `${allSectionResults.length} sections for ${termCode} upserted`,
     );
 
@@ -477,7 +478,7 @@ export async function insertTermData(
           .delete(schema.sectionsT)
           .where(inArray(schema.sectionsT.id, deleteChunk));
       }
-      logger.info(`${sectionsToDelete.length} sections deleted`);
+      consola.info(`${sectionsToDelete.length} sections deleted`);
     }
 
     // Bulk insert meeting times
@@ -597,14 +598,14 @@ export async function insertTermData(
               ],
             });
         }
-        logger.info(
+        consola.info(
           `${meetingTimeInserts.length} meeting times inserted (including ${meetingTimeInserts.filter((m) => m.roomId === null).length} without room assignments)`,
         );
       } else {
-        logger.info("No meeting times to insert");
+        consola.info("No meeting times to insert");
       }
     }
 
-    logger.info(`Meeting times for ${termCode} synced`);
+    consola.info(`Meeting times for ${termCode} synced`);
   });
 }

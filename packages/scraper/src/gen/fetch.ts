@@ -1,5 +1,3 @@
-import { logger } from "@/lib/logger";
-
 interface RetryOptions {
   maxRetries?: number;
   initialDelay?: number;

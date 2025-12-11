@@ -1,6 +1,6 @@
 import { $fetch } from "../fetch";
 import { sectionSearchEndpoint } from "../endpoints";
-import { logger } from "@/lib/logger";
+import { consola } from "consola";
 import { BannerSectionResponse } from "../../schemas/section";
 
 /**
@@ -15,11 +15,11 @@ import { BannerSectionResponse } from "../../schemas/section";
 export async function scrapeSections(term: string, cookiePool = 20) {
   // create the pool of cookies to use; section search requests require a cookie section to Banner
   const cookies = await getAuthCookies(term, cookiePool + 1);
-  logger.debug({ term: term }, "auth cookies aquired");
+  consola.debug("auth cookies aquired", { term: term });
 
   const initalCookie = cookies.pop();
   if (!initalCookie) {
-    logger.error("not enough cookies");
+    consola.error("not enough cookies");
     return;
   }
 
@@ -33,12 +33,9 @@ export async function scrapeSections(term: string, cookiePool = 20) {
   const initialSectionRespResult =
     BannerSectionResponse.safeParse(initialSectionResp);
   if (!initialSectionRespResult.success) {
-    logger.error(
-      {
-        error: initialSectionRespResult.error,
-      },
-      "error parsing inital section response",
-    );
+    consola.error("error parsing inital section response", {
+      error: initialSectionRespResult.error,
+    });
     return;
   }
 
@@ -50,19 +47,16 @@ export async function scrapeSections(term: string, cookiePool = 20) {
     Math.ceil(initialResp.totalCount / 500) / cookiePool,
   );
 
-  logger.debug(
-    {
-      term: term,
-      count: initialResp.totalCount,
-      batches: numBatches,
-    },
-    "section count received",
-  );
+  consola.debug("section count received", {
+    term: term,
+    count: initialResp.totalCount,
+    batches: numBatches,
+  });
 
   const rawSections: unknown[] = [];
 
   for (let i = 0; i < numBatches; i++) {
-    logger.debug({ term: term, batch: i }, "scraping sections for batch");
+    consola.debug("scraping sections for batch", { term: term, batch: i });
     const promises = Array.from([...Array(cookiePool).keys()], (j) =>
       $fetch(sectionSearchEndpoint(term, (i * cookiePool + j) * 500, 500), {
         headers: {
@@ -71,9 +65,9 @@ export async function scrapeSections(term: string, cookiePool = 20) {
       }).then((resp) => resp.json()),
     );
 
-    logger.trace({ term: term, batch: i }, "start section requests");
+    consola.debug("start section requests", { term: term, batch: i });
     const results = await Promise.allSettled(promises);
-    logger.trace({ term: term, batch: i }, "received section responses");
+    consola.debug("received section responses", { term: term, batch: i });
 
     results
       .filter((p) => p.status === "fulfilled")
@@ -81,28 +75,25 @@ export async function scrapeSections(term: string, cookiePool = 20) {
         rawSections.push(...p.value.data);
       });
 
-    logger.trace({ term: term, batch: i }, "marshalled sections");
+    consola.debug("marshalled sections", { term: term, batch: i });
   }
 
   const rawSectionResult = BannerSectionResponse.pick({ data: true }).safeParse(
     { data: rawSections },
   );
   if (!rawSectionResult.success) {
-    logger.error({ e: rawSectionResult.error }, "error parsing sections");
+    consola.error("error parsing sections", { e: rawSectionResult.error });
     return;
   }
 
   const sections = rawSectionResult.data.data;
 
   if (sections.length !== initialResp.totalCount) {
-    logger.warn(
-      {
-        term: term,
-        expected: initialSectionResp.totalCount,
-        actual: rawSections.length,
-      },
-      "section count mismatch",
-    );
+    consola.warn("section count mismatch", {
+      term: term,
+      expected: initialSectionResp.totalCount,
+      actual: rawSections.length,
+    });
   }
 
   return sections;
@@ -112,7 +103,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
 // to access the search pages - by getting a bunch, we can fire a bunch
 // of concurrent requests
 async function getAuthCookies(term: string, count: number) {
-  logger.trace("start getting auth cookies");
+  consola.debug("start getting auth cookies");
   const promises = Array.from({ length: count }, () =>
     fetch("https://nubanner.neu.edu/StudentRegistrationSsb/ssb/term/search", {
       method: "POST",
@@ -123,9 +114,9 @@ async function getAuthCookies(term: string, count: number) {
     }),
   );
 
-  logger.trace("start auth cookie requests");
+  consola.debug("start auth cookie requests");
   const results = await Promise.allSettled<Promise<Response>>(promises);
-  logger.trace("received auth cookie responses");
+  consola.debug("received auth cookie responses");
 
   const cookies = results
     .filter((result) => result.status === "fulfilled")
@@ -138,7 +129,7 @@ async function getAuthCookies(term: string, count: number) {
       return cookiePairs.join("; ");
     });
 
-  logger.trace("auth cookies marshalled");
+  consola.debug("auth cookies marshalled");
 
   return cookies;
 }

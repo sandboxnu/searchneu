@@ -1,12 +1,7 @@
-import { logger } from "@/lib/logger";
+import { consola } from "consola";
 import { scrapeSections } from "./pieces/sections";
-import {
-  sectionCoreqsEndpoint,
-  courseDescriptionEndpoint,
-  sectionPrereqsEndpoint,
-  subjectsEndpoint,
-} from "./endpoints";
-import { decode } from "he";
+import { sectionCoreqsEndpoint, subjectsEndpoint } from "./endpoints";
+import { decode } from "html-entities";
 import type { Course, Section } from "../types";
 import { FetchEngine, $fetch } from "./fetch";
 import { parseCoreqs, parsePrereqs, populatePostReqs } from "./pieces/reqs";
@@ -30,15 +25,15 @@ export async function scrapeCatalogTerm(
   config: z.infer<typeof TermConfig>,
 ) {
   // get sections
-  logger.info("scraping sections");
+  consola.info("scraping sections");
   const rawSections = await scrapeSections(term);
   if (!rawSections) {
-    logger.error("failed to scrape sections");
+    consola.error("failed to scrape sections");
     return;
   }
 
   // stub courses from sections
-  logger.info("stubbing courses");
+  consola.info("stubbing courses");
   const {
     courses,
     sections,
@@ -60,7 +55,7 @@ export async function scrapeCatalogTerm(
   }));
 
   // get and validate subjects
-  const bannerSubjects = await $fetch(subjectsEndpoint(term)).then((r) =>
+  const bannerSubjects: any = await $fetch(subjectsEndpoint(term)).then((r) =>
     r.json(),
   );
   const subjects: { code: string; description: string }[] = bannerSubjects
@@ -122,13 +117,11 @@ export async function scrapeCatalogTerm(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            logger.debug(
-              {
+            "retrying coreqs for course",
+              consola.debug({
                 course: `${course.subject} ${course.courseNumber}`,
                 attempt,
-              },
-              "retrying coreqs for course",
-            );
+              });
           },
         })
         .then((r) => r.text());
@@ -137,7 +130,7 @@ export async function scrapeCatalogTerm(
     })
     .map((p) => p());
 
-  const intervalCleanup = setInterval(() => logger.info(fe.getStatus()), 5000);
+  const intervalCleanup = setInterval(() => consola.info(fe.getStatus()), 5000);
 
   // wait for all the requests
   await Promise.all([
@@ -153,7 +146,7 @@ export async function scrapeCatalogTerm(
 
   clearTimeout(intervalCleanup);
 
-  logger.info(sectionList.slice(0, 2));
+  consola.info(sectionList.slice(0, 2));
 
   // structure rooms out
   //
@@ -270,7 +263,7 @@ export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
   for (const meetingFaculty of section.meetingsFaculty) {
     const meetingTime = meetingFaculty?.meetingTime;
     if (!meetingTime) {
-      logger.info("no meeting time " + section.courseReferenceNumber);
+      consola.info("no meeting time " + section.courseReferenceNumber);
       continue;
     }
 

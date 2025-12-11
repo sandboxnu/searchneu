@@ -1,12 +1,12 @@
-import { scrapeTerm } from "@/scraper/scrape";
-import { TermScrape } from "@/scraper/types";
+import { TermScrape } from "../types";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "@/scraper/gen/main";
+import { scrapeCatalogTerm } from "../gen/main";
 import { infer as zinfer } from "zod";
-import { Config } from "./config";
+import { Config } from "../config";
+import { consola } from "consola";
 
 const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
@@ -34,6 +34,8 @@ const main = defineCommand({
     },
   },
   async run({ args }) {
+    consola.level = 999;
+
     const configStream = readFileSync(
       path.resolve(CACHE_PATH, "manifest.yaml"),
       {

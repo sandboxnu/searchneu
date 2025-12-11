@@ -1,8 +1,8 @@
 import type { Faculty, Section } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionFacultyEndpoint } from "../endpoints";
-import { logger } from "@/lib/logger";
-import { decode } from "he";
+import { consola } from "consola";
+import { decode } from "html-entities";
 import { BannerSectionMeetingsFacultyResponse } from "../../schemas/meetingsFaculty";
 import z from "zod";
 
@@ -37,17 +37,17 @@ export async function scrapeMeetingsFaculty(
         .fetch(url, {
           onRetry(attempt) {
             // retries are part of the process, just log it if debugging
-            logger.debug(
-              { crn: s.crn, attempt },
-              "retrying faculty for section",
-            );
+            consola.debug("retrying faculty for section", {
+              crn: s.crn,
+              attempt,
+            });
           },
         })
         .then((r) => r.json())
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the section
           failedRequests.push(s.crn);
-          logger.error({ error: e, crn: s.crn }, "error scraping faculty");
+          consola.error("error scraping faculty", { error: e, crn: s.crn });
           return;
         });
 
@@ -59,10 +59,10 @@ export async function scrapeMeetingsFaculty(
       if (!meetingsFacultyResult.success) {
         // if the parse fails: note the crn, log the error, and skip the section
         failedRequests.push(s.crn);
-        logger.error(
-          { error: meetingsFacultyResult.error, crn: s.crn },
-          "error parsing faculty",
-        );
+        consola.error("error parsing faculty", {
+          error: meetingsFacultyResult.error,
+          crn: s.crn,
+        });
         return;
       }
 

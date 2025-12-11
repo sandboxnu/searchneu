@@ -1,8 +1,8 @@
 import type { Requisite } from "../../types";
 import { FetchEngine } from "../fetch";
 import { courseDescriptionEndpoint } from "../endpoints";
-import { logger } from "@/lib/logger";
-import { decode } from "he";
+import { consola } from "consola";
+import { decode } from "html-entities";
 import { BannerSectionDescription } from "../../schemas/sectionDescription";
 
 /**
@@ -29,20 +29,21 @@ export async function scrapeCourseDescriptions(
           ...body,
           onRetry(attempt) {
             // retries are part of the process, just log it if debugging
-            logger.debug(
-              { course: c.subject + c.courseNumber, attempt },
-              "retrying description for course",
-            );
+            consola.debug("retrying description for course", {
+              course: c.subject + c.courseNumber,
+              attempt,
+            });
           },
         })
         .then((r) => r.text())
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          logger.error(
-            { error: e, crn: c.crn, course: c.subject + c.courseNumber },
-            "error scraping description",
-          );
+          consola.error("error scraping description", {
+            error: e,
+            crn: c.crn,
+            course: c.subject + c.courseNumber,
+          });
           return;
         });
 
@@ -54,14 +55,11 @@ export async function scrapeCourseDescriptions(
       if (!catalogDetailsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        logger.error(
-          {
-            error: catalogDetailsResult.error,
-            crn: c.crn,
-            course: c.subject + c.courseNumber,
-          },
-          "error scraping description",
-        );
+        consola.error("error scraping description", {
+          error: catalogDetailsResult.error,
+          crn: c.crn,
+          course: c.subject + c.courseNumber,
+        });
         return;
       }
 

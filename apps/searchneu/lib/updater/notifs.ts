@@ -1,6 +1,5 @@
-import { db } from "@/db";
 import { twilio } from "../twilio";
-import { notificationsT, trackersT } from "@/db/schema";
+import { db, notificationsT, trackersT } from "@/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { logger } from "../logger";
 

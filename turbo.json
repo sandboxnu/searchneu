@@ -17,7 +17,7 @@
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "./dist/**"]
     },
     "dev": {
       "env": [
@@ -35,6 +35,23 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "persistent": true,
       "cache": false
+    },
+    "db:generate": {
+      "env": ["DATABASE_URL"],
+      "cache": false
+    },
+    "db:migrate": {
+      "env": ["DATABASE_URL"],
+      "cache": false
+    },
+    "db:push": {
+      "env": ["DATABASE_URL"],
+      "cache": false
+    },
+    "db:studio": {
+      "env": ["DATABASE_URL"],
+      "cache": false,
+      "persistent": true
     }
   }
 }

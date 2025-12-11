@@ -1,6 +1,5 @@
 import "server-only";
-import { db } from "@/db";
-import { termsT } from "@/db/schema";
+import { db, termsT } from "@/lib/db";
 import type { GroupedTerms } from "../types";
 
 // getTerms retreives all the terms from the db

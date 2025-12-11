@@ -1,5 +1,4 @@
-import { db } from "@/db";
-import { usersT } from "@/db/schema";
+import { db, usersT } from "@/lib/db";
 import { verifyJWT } from "@/lib/auth/utils";
 import { config } from "@/lib/auth/auth";
 import { eq } from "drizzle-orm";

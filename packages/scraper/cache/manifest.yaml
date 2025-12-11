@@ -1,0 +1,106 @@
+terms:
+  # NEU Fall 2025
+  - term: 202610
+    activeUntil: 2025-10-01
+  # NEU Spring 2026
+  - term: 202630
+    activeUntil: 2026-2-01
+  # CPS Winter Quarter 2026
+  - term: 202625
+    activeUntil: 2026-2-01
+  # CPS Fall Quarter 2025
+  - term: 202615
+    activeUntil: 2025-12-10
+  # NEU Summer II 2025
+  - term: 202560
+    activeUntil: 2025-08-01
+  # LAW Summer Semester
+  - term: 202552
+    activeUntil: 2025-08-01
+
+attributes:
+  campus:
+    - code: "Boston"
+      group: "United States"
+    - code: "Oakland, CA"
+      name: "Oakland"
+      group: "United States"
+    - code: "Charlotte, NC"
+      name: "Charlotte"
+      group: "United States"
+    - code: "Nahant"
+      group: "United States"
+    - code: "Burlington"
+      group: "United States"
+    - code: "Arlington, VA"
+      name: "Arlington"
+      group: "United States"
+    - code: "Seattle, WA"
+      name: "Seattle"
+      group: "United States"
+    - code: "Portland, Maine"
+      name: "Portland"
+      group: "United States"
+    - code: "Miami, FL"
+      name: "Miami"
+      group: "United States"
+    - code: "Silicon Valley, CA"
+      name: "Silicon Valley"
+      group: "United States"
+    - code: "Vancouver, Canada"
+      name: "Vancouver"
+      group: "Canada"
+    - code: "Toronto, Canada"
+      name: "Toronto"
+      group: "Canada"
+    - code: "Online"
+      group: "Other"
+    - code: "No campus, no room needed"
+      name: "Online"
+      group: "Other"
+    - code: "Study Abroad"
+      name: "Study Abroad"
+      group: "Other"
+    - code: "Unknown"
+      group: "Other"
+
+  nupath:
+    - code: "NUpath Natural/Designed World"
+      short: "ND"
+      name: "Natural/Designed World"
+    - code: "NUpath Creative Express/Innov"
+      short: "EI"
+      name: "Creative Express/Innov"
+    - code: "NUpath Interpreting Culture"
+      short: "IC"
+      name: "Interpreting Culture"
+    - code: "NUpath Formal/Quant Reasoning"
+      short: "FQ"
+      name: "Formal/Quant Reasoning"
+    - code: "NUpath Societies/Institutions"
+      short: "SI"
+      name: "Societies/Institutions"
+    - code: "NUpath Analyzing/Using Data"
+      short: "AD"
+      name: "Analyzing/Using Data"
+    - code: "NUpath Difference/Diversity"
+      short: "DD"
+      name: "Difference/Diversity"
+    - code: "NUpath Ethical Reasoning"
+      short: "ER"
+      name: "Ethical Reasoning"
+    - code: "NU Core/NUpath 1st Yr Writing"
+      short: "WF"
+      name: "First Year Writing"
+    - code: "NUpath Writing Intensive"
+      short: "WI"
+      name: "Writing Intensive"
+    - code: "NU Core/NUpath Adv Writ Dscpl"
+      short: "WD"
+      name: "Advanced Writing"
+    - code: "NUpath Integration Experience"
+      short: "EX"
+      name: "Integration Experience"
+    - code: "NUpath Capstone Experience"
+      short: "CE"
+      name: "Capstone Experience"

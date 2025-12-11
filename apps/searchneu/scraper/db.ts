@@ -1,9 +1,8 @@
-import { type NodePgDatabase } from "drizzle-orm/node-postgres";
-import type { Pool } from "pg";
 import { TermScrape, Config } from "./types";
-import * as schema from "@/db/schema";
+import * as schema from "@sneu/db/schema";
 import { eq, and, inArray, notInArray, sql } from "drizzle-orm";
 import { logger } from "@/lib/logger";
+import { type Database } from "@sneu/db/client";
 
 function chunk<T>(array: T[], size: number): T[][] {
   const chunks: T[][] = [];
@@ -13,10 +12,7 @@ function chunk<T>(array: T[], size: number): T[][] {
   return chunks;
 }
 
-export async function insertConfigData(
-  config: Config,
-  db: NodePgDatabase<typeof schema> & { $client: Pool },
-) {
+export async function insertConfigData(config: Config, db: Database) {
   await db.transaction(async (tx) => {
     console.log("  → Inserting campuses and nupaths...");
 
@@ -55,7 +51,7 @@ export async function insertConfigData(
 
 export async function insertTermData(
   data: TermScrape,
-  db: NodePgDatabase<typeof schema> & { $client: Pool },
+  db: Database,
   attributes: Config["attributes"],
   activeUntil: Date,
 ) {

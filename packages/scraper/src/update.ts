@@ -1,0 +1,168 @@
+import { db, coursesT, sectionsT } from "@/lib/db";
+import {
+  getSectionFaculty,
+  parseMeetingTimes,
+  scrapeSections,
+} from "@/scraper/scrape";
+import { eq } from "drizzle-orm";
+import { BannerSection } from "@/scraper/types";
+import { logger } from "@/lib/logger";
+import { convertCampus } from "./validate-cache";
+import { Config } from "@/scraper/types";
+import { readFileSync } from "fs";
+import path from "path";
+import { parse } from "yaml";
+
+const CACHE_PATH = "cache/";
+
+// updateTerm scrapes the banner section information to determine
+// the sections with updated seat counts
+export async function updateTerm(term: string) {
+  logger.info({ term }, "updating term");
+  const scrapedSections = await scrapeSections(term);
+
+  const staleSections = await db
+    .select({
+      crn: sectionsT.crn,
+      seatRemaining: sectionsT.seatRemaining,
+      waitRemaining: sectionsT.waitlistRemaining,
+      seatCapacity: sectionsT.seatCapacity,
+      waitlistCapacity: sectionsT.waitlistCapacity,
+      courseId: coursesT.id,
+      courseNumber: coursesT.courseNumber,
+      courseSubject: coursesT.subject,
+    })
+    .from(sectionsT)
+    .leftJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
+    .where(eq(coursesT.term, term));
+
+  const sectionsWithNewSeats: BannerSection[] = [];
+  const sectionsWithUpdatedSeats: BannerSection[] = [];
+  const sectionsWithNewWaitlistSeats: BannerSection[] = [];
+  const sectionsWithUpdatedWaitlistSeats: BannerSection[] = [];
+  const sectionsWithUpdatedSeatCapacity: BannerSection[] = [];
+  const sectionsWithUpdatedWaitlistSeatCapacity: BannerSection[] = [];
+
+  // PERF: when notif info is added to db, if could be worth only
+  // checking the sections people are subbed too
+
+  const missingSections: string[] = [];
+  for (const stale of staleSections) {
+    const scrape = scrapedSections.find(
+      (j) => j.courseReferenceNumber === stale.crn,
+    );
+
+    // PERF: what about sections that are no longer present?
+    if (!scrape) {
+      missingSections.push(stale.crn);
+      continue;
+    }
+
+    if (scrape.seatsAvailable > 0 && stale.seatRemaining === 0) {
+      sectionsWithNewSeats.push(scrape);
+    }
+
+    if (scrape.waitAvailable > 0 && stale.waitRemaining === 0) {
+      sectionsWithNewWaitlistSeats.push(scrape);
+    }
+
+    if (scrape.seatsAvailable !== stale.seatRemaining) {
+      sectionsWithUpdatedSeats.push(scrape);
+    }
+
+    if (scrape.waitAvailable !== stale.waitRemaining) {
+      sectionsWithUpdatedWaitlistSeats.push(scrape);
+    }
+
+    if (scrape.waitCapacity !== stale.waitlistCapacity) {
+      sectionsWithUpdatedWaitlistSeatCapacity.push(scrape);
+    }
+
+    if (scrape.maximumEnrollment !== stale.seatCapacity) {
+      sectionsWithUpdatedSeatCapacity.push(scrape);
+    }
+  }
+
+  let rawNewSections: BannerSection[] = [];
+  if (staleSections.length !== scrapedSections.length) {
+    const keys = new Set(staleSections.map((s) => s.crn));
+
+    rawNewSections = scrapedSections.filter(
+      (s) => !keys.has(s.courseReferenceNumber),
+    );
+  }
+
+  const rawCourseKeys = rawNewSections.map(
+    (s) =>
+      staleSections.find(
+        (c) =>
+          c.courseSubject === s.subject && c.courseNumber === s.courseNumber,
+      )?.courseId ?? -1,
+  );
+
+  let rootedNewSections = rawNewSections.filter(
+    (_, i) => rawCourseKeys[i] !== -1,
+  );
+  const newSectionCourseKeys = rawCourseKeys.filter((k) => k !== -1);
+
+  const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
+    encoding: "utf8",
+  });
+  const config = parse(configStream) as Config;
+
+  rootedNewSections = await getSectionFaculty(rootedNewSections);
+  const newSections = rootedNewSections.map((s) => ({
+    crn: s.courseReferenceNumber,
+    seatCapacity: s.maximumEnrollment,
+    seatRemaining: s.seatsAvailable,
+    waitlistCapacity: s.waitCapacity,
+    waitlistRemaining: s.waitAvailable,
+    classType: s.scheduleTypeDescription,
+    honors: s.sectionAttributes.some((a) => a.description === "Honors"),
+    campus: convertCampus(s.campusDescription, config),
+    meetingTimes: parseMeetingTimes(s),
+
+    faculty: s.f ?? "TBA",
+  }));
+
+  if (missingSections) {
+    logger.info({ missingSections }, "orphaned sections!");
+  }
+
+  if (rootedNewSections.length !== rawNewSections.length) {
+    const unrootedSections = rawNewSections.filter(
+      (_, i) => rawCourseKeys[i] === -1,
+    );
+    logger.info(
+      {
+        unrootedSections: unrootedSections.map((s) => s.courseReferenceNumber),
+      },
+      "unrooted sections!",
+    );
+  }
+
+  logger.info(
+    { sections: sectionsWithNewSeats.map((s) => s.courseReferenceNumber) },
+    "Sections with open seats",
+  );
+  logger.info(
+    {
+      sections: sectionsWithNewWaitlistSeats.map(
+        (s) => s.courseReferenceNumber,
+      ),
+    },
+    "Sections with open waitlist spots",
+  );
+  logger.info({ sections: newSections.map((s) => s.crn) }, "New sections");
+
+  return {
+    sectionsWithNewSeats,
+    sectionsWithUpdatedSeats,
+    sectionsWithNewWaitlistSeats,
+    sectionsWithUpdatedWaitlistSeats,
+    sectionsWithUpdatedWaitlistSeatCapacity,
+    sectionsWithUpdatedSeatCapacity,
+    newSections,
+    newSectionCourseKeys,
+  };
+}

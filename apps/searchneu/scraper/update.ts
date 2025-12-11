@@ -1,11 +1,10 @@
-import { coursesT, sectionsT } from "@/db/schema";
+import { db, coursesT, sectionsT } from "@/lib/db";
 import {
   getSectionFaculty,
   parseMeetingTimes,
   scrapeSections,
 } from "@/scraper/scrape";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
 import { BannerSection } from "@/scraper/types";
 import { logger } from "@/lib/logger";
 import { convertCampus } from "./validate-cache";

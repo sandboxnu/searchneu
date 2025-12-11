@@ -1,8 +1,7 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/catalog/MobileWrapper";
-import { db } from "@/db";
-import { subjectsT, sectionsT, nupathsT, campusesT } from "@/db/schema";
+import { db, subjectsT, sectionsT, nupathsT, campusesT } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 

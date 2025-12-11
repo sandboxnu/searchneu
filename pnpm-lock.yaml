@@ -78,6 +78,9 @@ importers:
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
+      '@sneu/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@tanstack/react-virtual':
         specifier: ^3.13.12
         version: 3.13.12(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -217,15 +220,39 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
-      turbo:
-        specifier: ^2.6.3
-        version: 2.6.3
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       yaml:
         specifier: ^2.8.2
         version: 2.8.2
+
+  packages/db:
+    dependencies:
+      '@neondatabase/serverless':
+        specifier: ^1.0.2
+        version: 1.0.2
+      drizzle-orm:
+        specifier: ^0.45.0
+        version: 0.45.0(@neondatabase/serverless@1.0.2)(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(pg@8.16.3)
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
+    devDependencies:
+      '@sneu/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/tsconfig: {}
 
 packages:
 

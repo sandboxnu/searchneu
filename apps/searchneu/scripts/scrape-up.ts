@@ -1,5 +1,3 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "@/db/schema";
 import { loadEnvConfig } from "@next/env";
 import { insertTermData, insertConfigData } from "@/scraper/db";
 import { TermScrape } from "@/scraper/types";
@@ -7,6 +5,7 @@ import { Config } from "@/scraper/types";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
+import { getDb } from "@sneu/db/client";
 
 const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
@@ -103,16 +102,7 @@ void (async () => {
   const projectDir = process.cwd();
   loadEnvConfig(projectDir);
 
-  // HACK: saves from having two db connection strings
-  let connectionString = process.env.DATABASE_URL!;
-  if (connectionString.includes("neon.tech")) {
-    connectionString = connectionString.replace("-pooler", "");
-  }
-
-  const db = drizzle({
-    connection: connectionString,
-    schema: schema,
-  });
+  const db = getDb(process.env.DATABASE_URL!, true);
 
   console.log("🔌 Connected to database");
 

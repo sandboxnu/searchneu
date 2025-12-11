@@ -3,8 +3,7 @@
 import { cookies } from "next/headers";
 import { config } from "./auth";
 import { getGuid } from "./utils";
-import { db } from "@/db";
-import { trackersT, usersT } from "@/db/schema";
+import { db, trackersT, usersT } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { track } from "@vercel/analytics/server";
 

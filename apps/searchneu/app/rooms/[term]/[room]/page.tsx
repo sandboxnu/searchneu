@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
-import { db } from "@/db/index";
 import {
+  db,
   roomsT,
   buildingsT,
   meetingTimesT,
   sectionsT,
   coursesT,
-} from "@/db/schema";
+} from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 
 const DAYS_OF_WEEK = [

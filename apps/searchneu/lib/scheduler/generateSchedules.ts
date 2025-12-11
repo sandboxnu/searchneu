@@ -1,11 +1,11 @@
-import { db } from "@/db";
 import {
+  db,
   coursesT,
   meetingTimesT,
   sectionsT,
   nupathsT,
   courseNupathJoinT,
-} from "@/db/schema";
+} from "@/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 
@@ -180,14 +180,14 @@ const generateCombinations = (
 // Helper function to try adding optional courses to a base schedule
 const addOptionalCourses = (
   baseSchedule: SectionWithCourse[],
-  optionalSectionsByCourse: SectionWithCourse[][]
+  optionalSectionsByCourse: SectionWithCourse[][],
 ): SectionWithCourse[][] => {
   const results: SectionWithCourse[][] = [];
-  
+
   // Generate all possible subsets of optional courses (including empty set)
   const generateOptionalCombinations = (
     currentSchedule: SectionWithCourse[],
-    courseIndex: number
+    courseIndex: number,
   ) => {
     // Always add the current schedule (even if no more optional courses are added)
     if (courseIndex === optionalSectionsByCourse.length) {
@@ -213,24 +213,24 @@ const addOptionalCourses = (
 
 export const generateSchedules = async (
   lockedCourseIds: number[],
-  optionalCourseIds: number[]
+  optionalCourseIds: number[],
 ): Promise<SectionWithCourse[][]> => {
   // assume that all courseIds are from the same term, add logic to check this later
-  
+
   // Remove duplicates from both lists
   lockedCourseIds = Array.from(new Set(lockedCourseIds));
   optionalCourseIds = Array.from(new Set(optionalCourseIds));
-  
+
   // Remove any IDs from optional that appear in locked (locked takes precedence)
   const lockedSet = new Set(lockedCourseIds);
-  optionalCourseIds = optionalCourseIds.filter(id => !lockedSet.has(id));
+  optionalCourseIds = optionalCourseIds.filter((id) => !lockedSet.has(id));
 
   // Get sections for locked and optional courses
   const lockedSectionsByCourse = await Promise.all(
-    lockedCourseIds.map(getSectionsAndMeetingTimes)
+    lockedCourseIds.map(getSectionsAndMeetingTimes),
   );
   const optionalSectionsByCourse = await Promise.all(
-    optionalCourseIds.map(getSectionsAndMeetingTimes)
+    optionalCourseIds.map(getSectionsAndMeetingTimes),
   );
 
   // Generate all possible combinations of locked courses
@@ -242,9 +242,12 @@ export const generateSchedules = async (
   // Edge case: no locked courses but have optional courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
     // Start with empty schedule and add optional courses
-    const schedulesWithOptional = addOptionalCourses([], optionalSectionsByCourse);
+    const schedulesWithOptional = addOptionalCourses(
+      [],
+      optionalSectionsByCourse,
+    );
     // Remove any empty schedules
-    return schedulesWithOptional.filter(schedule => schedule.length > 0);
+    return schedulesWithOptional.filter((schedule) => schedule.length > 0);
   }
 
   // If no optional courses, return the locked schedules
@@ -255,7 +258,10 @@ export const generateSchedules = async (
   // For each valid locked schedule, try adding optional courses
   const allSchedules: SectionWithCourse[][] = [];
   for (const lockedSchedule of validLockedSchedules) {
-    const schedulesWithOptional = addOptionalCourses(lockedSchedule, optionalSectionsByCourse);
+    const schedulesWithOptional = addOptionalCourses(
+      lockedSchedule,
+      optionalSectionsByCourse,
+    );
     allSchedules.push(...schedulesWithOptional);
   }
 

@@ -9,8 +9,7 @@ import {
   trackersT,
   usersT,
 } from "@/lib/db";
-import { eq, gt, and } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { eq, gt, and, sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";

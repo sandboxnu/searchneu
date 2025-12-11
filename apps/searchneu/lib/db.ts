@@ -1,4 +1,4 @@
-import { getDb } from "@sneu/db/client";
+import { getDb } from "@sneu/db/neon";
 
 export const db = getDb();
 export * from "@sneu/db/schema";

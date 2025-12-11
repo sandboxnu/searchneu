@@ -163,7 +163,7 @@ function RequisiteItemComponent({
   if (isCourse(item)) {
     return (
       <Link
-        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}${searchParam ?? ""}`}
+        href={`/catalog/${term}/${item.subject}%20${item.courseNumber}?${searchParam ?? ""}`}
         className="bg-neu1 flex items-center rounded-lg border p-2.5"
       >
         <span className="text-neu8 text-xs font-bold whitespace-nowrap">

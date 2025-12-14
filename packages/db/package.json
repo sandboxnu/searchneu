@@ -3,6 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
   "exports": {
     "./client": {
       "types": "./dist/client.d.ts",
@@ -12,14 +20,6 @@
       "types": "./dist/schema/index.d.ts",
       "default": "./dist/schema/index.js"
     }
-  },
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

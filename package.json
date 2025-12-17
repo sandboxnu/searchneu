@@ -4,10 +4,10 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "db:generate": "turbo run db:generate --filter=@repo/database",
-    "db:migrate": "turbo run db:migrate --filter=@repo/database",
-    "db:push": "turbo run db:push --filter=@repo/database",
-    "db:studio": "turbo run db:studio --filter=@repo/database"
+    "db:generate": "turbo run db:generate --filter=@sneu/db",
+    "db:migrate": "turbo run db:migrate --filter=@sneu/db",
+    "db:push": "turbo run db:push --filter=@sneu/db",
+    "db:studio": "turbo run db:studio --filter=@sneu/db"
   },
   "devDependencies": {
     "turbo": "^2.6.3"

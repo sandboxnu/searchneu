@@ -3,7 +3,7 @@ import { FetchEngine } from "../fetch";
 import { sectionPrereqsEndpoint } from "../endpoints";
 import { consola } from "consola";
 import { decode } from "html-entities";
-import { BannerSectionPrereqs } from "../../schemas/sectionPrereqs";
+import { BannerSectionPrereqs } from "../../schemas/banner/sectionPrereqs";
 import { parsePrereqs } from "./reqs";
 
 /**

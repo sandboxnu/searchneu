@@ -1,9 +1,8 @@
-import type { Requisite } from "../../types";
 import { FetchEngine } from "../fetch";
 import { courseDescriptionEndpoint } from "../endpoints";
 import { consola } from "consola";
 import { decode } from "html-entities";
-import { BannerSectionDescription } from "../../schemas/sectionDescription";
+import { BannerSectionDescription } from "../../schemas/banner/sectionDescription";
 
 /**
  *
@@ -16,7 +15,7 @@ import { BannerSectionDescription } from "../../schemas/sectionDescription";
 export async function scrapeCourseDescriptions(
   fe: FetchEngine,
   term: string,
-  items: ({ crn: string; prereqs: Requisite } & { [key: string]: any })[],
+  items: ({ crn: string; description: string } & { [key: string]: any })[],
 ) {
   const failedRequests: string[] = [];
   const courseDescriptionRequests: (() => Promise<void>)[] = [];
@@ -49,27 +48,23 @@ export async function scrapeCourseDescriptions(
 
       // take the response and parse it - this ensures it follows the expected schema
       // and gives us types
-      const catalogDetailsResult =
+      const sectionDescriptionResult =
         await BannerSectionDescription.safeParseAsync(resp);
 
-      if (!catalogDetailsResult.success) {
+      if (!sectionDescriptionResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
         consola.error("error scraping description", {
-          error: catalogDetailsResult.error,
+          error: sectionDescriptionResult.error,
           crn: c.crn,
           course: c.subject + c.courseNumber,
         });
         return;
       }
 
-      const catalogDetails = catalogDetailsResult.data;
+      const sectionDescription = sectionDescriptionResult.data;
 
-      if (!catalogDetails) {
-        return;
-      }
-
-      c.description = decode(decode(catalogDetails))
+      c.description = decode(decode(sectionDescription))
         .replace(/<[^>]*>/g, "") // Remove HTML tags
         .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments
         .trim();

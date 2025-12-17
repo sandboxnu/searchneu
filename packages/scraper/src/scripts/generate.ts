@@ -10,9 +10,11 @@ import { consola } from "consola";
 
 const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
+const CACHE_VERSION = 3;
 
 interface CachedTermScrape extends TermScrape {
   timestamp: string;
+  version: number;
 }
 
 const main = defineCommand({
@@ -45,7 +47,7 @@ const main = defineCommand({
     const configRaw = parse(configStream);
     const configResponse = Config.safeParse(configRaw);
     if (!configResponse.success) {
-      console.error(configResponse.error);
+      consola.error(configResponse.error);
       return;
     }
 
@@ -54,12 +56,13 @@ const main = defineCommand({
     const termsToScrape = filterTerms(config, { terms: [], all: true });
 
     if (termsToScrape.length === 0) {
-      console.log("ℹ️  No active terms to scrape");
+      consola.log("no active / configured terms to scrape");
       return;
     }
 
     for (const termConfig of termsToScrape) {
       if (termConfig.term !== 202630) continue;
+
       const cachename = path.resolve(
         CACHE_PATH,
         CACHE_FORMAT(termConfig.term.toString()),
@@ -76,8 +79,9 @@ const main = defineCommand({
       }
 
       const cachedData: CachedTermScrape = {
-        ...out,
+        version: CACHE_VERSION,
         timestamp: new Date().toISOString(),
+        ...out,
       };
 
       writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
@@ -85,7 +89,7 @@ const main = defineCommand({
     }
 
     consola.success(
-      `🎉 Successfully scraped ${termsToScrape.length} term${termsToScrape.length > 1 ? "s" : ""}`,
+      `🎉 successfully scraped ${termsToScrape.length} term${termsToScrape.length > 1 ? "s" : ""}`,
     );
   },
 });
@@ -96,6 +100,10 @@ function filterTerms(
   config: zinfer<typeof Config>,
   options: { terms: string[]; all: boolean },
 ) {
+  if (options.all) {
+    return config.terms;
+  }
+
   const now = new Date();
 
   if (options.terms.length > 0) {
@@ -103,18 +111,12 @@ function filterTerms(
       options.terms.includes(t.term.toString()),
     );
     if (filteredTerms.length === 0) {
-      console.log(
-        `⚠️  No matching terms found for: ${options.terms.join(", ")}`,
-      );
+      consola.log(`no matching terms found for: ${options.terms.join(", ")}`);
       process.exit(1);
     }
     return filteredTerms;
   }
 
-  if (options.all) {
-    return config.terms;
-  }
-
-  // Default: only active terms
+  // default: only active terms
   return config.terms.filter((t) => new Date(t.activeUntil) > now);
 }

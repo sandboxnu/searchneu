@@ -14,6 +14,7 @@ import { scrapeCourseCoreqs } from "./pieces/courseCoreqs";
 import { arrangeCourses } from "./marshall";
 import { parseRooms } from "./pieces/rooms";
 import { TermScrape } from "../types";
+import { scrapeTermDefinition } from "./pieces/terms";
 
 /**
  * scrapeCatalogTerm is the main scraping logic
@@ -41,6 +42,8 @@ export async function scrapeCatalogTerm(
     sections,
     subjects: subjectCodes,
     campuses,
+    attributes,
+    buildings,
   } = arrangeCourses(rawSections);
   const sectionList = Object.values(sections).flat();
 
@@ -59,13 +62,16 @@ export async function scrapeCatalogTerm(
     consola.warn("differing quantity of subjects", {
       extracted: subjectCodes.length,
       banner: subjects.length,
+      problem: subjects.filter((s) => !subjectCodes.includes(s.code)),
     });
   }
 
   // getTermInfo gets the name for the term being scraped from banner
-  const resp: any = await $fetch(
-    `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/getTerms?offset=1&max=10&searchTerm=${term}`,
-  ).then((resp) => resp.json());
+  const termDef = await scrapeTermDefinition(term);
+  if (!termDef) {
+    consola.error("error getting term definition from Banner");
+    return;
+  }
 
   const fe = new FetchEngine({
     maxRetries: 5,
@@ -175,26 +181,37 @@ special topics:
     stFailedCoreqPromises,
   ]);
 
+  clearTimeout(intervalCleanup);
+
   // postreqs
   populatePostReqs(courses);
 
-  clearTimeout(intervalCleanup);
+  const rooms = await parseRooms(Object.values(sections).flat());
 
-  const [rooms, buildingCampuses] = await parseRooms(
-    Object.values(sections).flat(),
-  );
+  const parsedAttributes = [...attributes].map((v) => ({
+    code: v[0],
+    name: v[1],
+  }));
+
+  // ===== prepare objects to be saved =====
+  const parsedCampuses = [...campuses].map((v) => ({
+    // campuses are mapped description : code
+    code: v[1],
+    name: v[0],
+    buildings: [...(buildings.get(v[1]) ?? [])].map((v) => ({
+      // buildings are mapped code : description
+      code: v[0],
+      name: v[1],
+    })),
+  }));
 
   return {
-    term: resp[0],
+    term: termDef,
     courses: courses,
     sections: sections,
+    attributes: parsedAttributes,
     subjects,
     rooms,
-    buildingCampuses,
+    campuses: parsedCampuses,
   };
-
-  // get term info
-  //
-  // get nupaths
-  // get campuses
 }

@@ -2,7 +2,6 @@ import { consola } from "consola";
 import type { BuildingSchedule, Section } from "../../types";
 
 export async function parseRooms(sections: Section[]) {
-  const buildingCampuses: { [building: string]: string } = {};
   const rooms = sections.reduce((acc, section) => {
     section.meetingTimes.forEach((meetingTime) => {
       const { building, room, startTime, endTime, days } = meetingTime;
@@ -16,7 +15,6 @@ export async function parseRooms(sections: Section[]) {
       }
       if (!acc[building]) {
         acc[building] = {};
-        buildingCampuses[building] = section.campus;
       }
 
       if (!acc[building][room]) {
@@ -34,5 +32,5 @@ export async function parseRooms(sections: Section[]) {
     return acc;
   }, {} as BuildingSchedule);
 
-  return [rooms, buildingCampuses] as const;
+  return rooms;
 }

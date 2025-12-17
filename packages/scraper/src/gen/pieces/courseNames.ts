@@ -60,10 +60,6 @@ export async function scrapeCatalogDetails(
 
       const catalogDetails = catalogDetailsResult.data;
 
-      if (!catalogDetails) {
-        return;
-      }
-
       c.name =
         decode(decode(catalogDetails))
           .replace(/<[^>]*>/g, "") // Remove HTML tags

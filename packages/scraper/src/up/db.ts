@@ -333,7 +333,7 @@ export async function insertTermData(
       );
       if (!courseId) continue;
 
-      for (const nupathShort of course.nupath) {
+      for (const nupathShort of course.attributes) {
         const nupathId = nupathMap.get(nupathShort);
         if (nupathId) {
           courseNupathInserts.push({ courseId, nupathId });

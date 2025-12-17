@@ -14,15 +14,23 @@ export function arrangeCourses(
   const courses: { [key: string]: Course } = {};
   const xlist: { [key: string]: string[] } = {};
   const sections: { [key: string]: Section[] } = {};
-  const subjects: string[] = [];
-  const campuses: string[] = [];
-  const buildings = [];
+  const subjectCodes: string[] = [];
+  const attributes: Map<string, string> = new Map();
+  const campuses: Map<string, string> = new Map();
+  const buildings: Map<string, Map<string, string>> = new Map();
 
   const crns: string[] = [];
 
   for (const s of bannerSections) {
     if (!Object.keys(courses).includes(s.subjectCourse)) {
       const specialTopics = s.courseTitle.includes("Special Topics");
+
+      const courseAttributes = s.sectionAttributes.map((a) => ({
+        code: a.code,
+        description: a.description.trim(),
+      }));
+
+      courseAttributes.forEach((n) => attributes.set(n.code, n.description));
 
       courses[s.subjectCourse] = {
         // special topic courses are when course information is section scoped
@@ -34,10 +42,7 @@ export function arrangeCourses(
         description: "", // note - this will be filled in later when the descriptions are scraped
         maxCredits: s.creditHourHigh ?? s.creditHourLow,
         minCredits: s.creditHourLow,
-        // Store raw nupath codes from banner - will be filtered during upload
-        nupath: s.sectionAttributes
-          .filter((a) => a.code.startsWith("NC"))
-          .map((a) => a.code.replace("NC", "")),
+        attributes: courseAttributes.map((n) => n.code),
         prereqs: {},
         coreqs: {},
         postreqs: {},
@@ -67,6 +72,12 @@ export function arrangeCourses(
 
     crns.push(s.courseReferenceNumber);
 
+    const {
+      meetingTimes,
+      campuses: mtCampuses,
+      buildings: mtBuildings,
+    } = parseMeetingTimes(s);
+
     sections[s.subjectCourse].push({
       crn: s.courseReferenceNumber,
       name: s.courseTitle,
@@ -78,9 +89,8 @@ export function arrangeCourses(
       waitlistRemaining: s.waitAvailable,
       classType: s.scheduleTypeDescription,
       honors: s.sectionAttributes.some((a) => a.description === "Honors"),
-      // Store raw campus code from banner - will be validated during upload
       campus: s.campusDescription,
-      meetingTimes: parseMeetingTimes(s),
+      meetingTimes: meetingTimes,
 
       faculty: [],
 
@@ -90,12 +100,51 @@ export function arrangeCourses(
       xlist: s.crossList ? xlist[s.crossList] : [],
     });
 
-    if (!subjects.includes(s.subject)) subjects.push(s.subject);
-    if (!campuses.includes(s.campusDescription))
-      campuses.push(s.campusDescription);
+    if (!subjectCodes.includes(s.subject)) subjectCodes.push(s.subject);
+
+    // if (mtCampuses.length === 0 && meetingTimes.length > 0) {
+    //   consola.warn("no campuses across meeting times", {
+    //     crn: s.courseReferenceNumber,
+    //     sectionCampus: s.campusDescription,
+    //     mt: mtCampuses,
+    //   });
+    // }
+
+    if (mtCampuses.length > 0) {
+      campuses.set(mtCampuses[0].description, mtCampuses[0].code);
+    } else if (!campuses.has(s.campusDescription)) {
+      campuses.set(s.campusDescription, "?");
+    }
+
+    mtBuildings.forEach((v, k) => {
+      if (mtCampuses.length === 0) {
+        consola.warn("no campus specified for a set building", {
+          crn: s.courseReferenceNumber,
+        });
+        return;
+      }
+
+      const campusCode = mtCampuses[0].code;
+      if (!buildings.has(campusCode)) {
+        buildings.set(campusCode, new Map());
+      }
+      const campusMap = buildings.get(campusCode);
+      if (campusMap) campusMap.set(k, v);
+    });
   }
 
-  return { courses: Object.values(courses), sections, subjects, campuses };
+  consola.box("campuses", campuses);
+  consola.box("attributes", attributes);
+  consola.box("buildings", buildings);
+
+  return {
+    courses: Object.values(courses),
+    sections,
+    subjects: subjectCodes,
+    campuses,
+    attributes,
+    buildings,
+  };
 }
 
 /*
@@ -107,11 +156,18 @@ export function arrangeCourses(
 export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
   // BUG: somewhere in here lol
   const meetings = [];
+  const buildings: Map<string, string> = new Map();
+  const campuses: { code: string; description: string }[] = [];
+
   for (const meetingFaculty of section.meetingsFaculty) {
-    const meetingTime = meetingFaculty?.meetingTime;
-    if (!meetingTime) {
-      consola.info("no meeting time " + section.courseReferenceNumber);
-      continue;
+    const meetingTime = meetingFaculty.meetingTime;
+
+    //
+    if (meetingTime.campus && meetingTime.campusDescription) {
+      campuses.push({
+        code: meetingTime.campus,
+        description: meetingTime.campusDescription,
+      });
     }
 
     const days = [];
@@ -136,20 +192,24 @@ export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
       meetingTime.meetingType === "FNEX";
 
     // Only include finalDate if it's a final exam
-    let finalDate = null;
+    let finalDate: string | null = null;
     if (isFinal && meetingTime.startDate) {
       finalDate = meetingTime.startDate;
     }
 
-    let actualRoom;
-    if (!meetingTime.room) {
+    let actualRoom: string;
+    if (!meetingTime.room || meetingTime.room === "ROOM") {
       actualRoom = "";
     } else {
-      actualRoom = meetingTime.room == "ROOM" ? "" : meetingTime.room;
+      actualRoom = meetingTime.room;
+    }
+
+    if (meetingTime.building && meetingTime.buildingDescription) {
+      buildings.set(meetingTime.building, meetingTime.buildingDescription);
     }
 
     meetings.push({
-      building: meetingTime.buildingDescription || meetingTime.building || "",
+      building: meetingTime.building || "",
       room: actualRoom,
       days: days,
       startTime: startTime,
@@ -159,5 +219,5 @@ export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
     });
   }
 
-  return meetings;
+  return { meetingTimes: meetings, campuses, buildings };
 }

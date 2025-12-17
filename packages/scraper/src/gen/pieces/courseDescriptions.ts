@@ -65,10 +65,6 @@ export async function scrapeCourseDescriptions(
 
       const catalogDetails = catalogDetailsResult.data;
 
-      if (!catalogDetails) {
-        return;
-      }
-
       c.description = decode(decode(catalogDetails))
         .replace(/<[^>]*>/g, "") // Remove HTML tags
         .replace(/<!--[\s\S]*?-->/g, "") // Remove HTML comments

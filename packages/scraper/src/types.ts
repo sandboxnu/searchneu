@@ -50,7 +50,7 @@ export interface Course {
   description: string;
   maxCredits: number;
   minCredits: number;
-  nupath: string[];
+  attributes: string[];
   coreqs: Requisite;
   prereqs: Requisite;
   postreqs: Requisite;
@@ -99,10 +99,19 @@ export interface TermScrape {
   };
   courses: Course[];
   sections: { [key: string]: Section[] };
+  attributes: {
+    code: string;
+    name: string;
+  }[];
   subjects: { code: string; description: string }[];
   rooms: BuildingSchedule;
-  buildingCampuses: {
-    [building: string]: string;
-  };
+  campuses: {
+    code: string;
+    name: string;
+    buildings: {
+      code: string;
+      name: string;
+    }[];
+  }[];
   timestamp?: string;
 }

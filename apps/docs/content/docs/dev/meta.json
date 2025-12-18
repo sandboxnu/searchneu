@@ -1,7 +1,8 @@
 {
-  "title": "Developer Guide",
+  "title": "Developer's Guide",
   "description": "For SearchNEU development",
   "icon": "CodeXml",
-  "root": true,
-  "defaultOpen": true
+  "root": false,
+  "defaultOpen": true,
+  "pages": ["index", "frontend", "database", "search", "git", "vercel"]
 }

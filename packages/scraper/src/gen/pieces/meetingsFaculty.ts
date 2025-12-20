@@ -3,7 +3,7 @@ import { FetchEngine } from "../fetch";
 import { sectionFacultyEndpoint } from "../endpoints";
 import { consola } from "consola";
 import { decode } from "html-entities";
-import { BannerSectionMeetingsFacultyResponse } from "../../schemas/meetingsFaculty";
+import { BannerSectionMeetingsFacultyResponse } from "../../schemas/banner/meetingsFaculty";
 import z from "zod";
 
 /**
@@ -81,7 +81,6 @@ export async function scrapeMeetingsFaculty(
       const faculty = Array.from(facultySet).map(
         (f) =>
           ({
-            bannerId: f.bannerId,
             displayName: decode(decode(f.displayName)),
             email: f.emailAddress,
             primary: f.primaryIndicator,

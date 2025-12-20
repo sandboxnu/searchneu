@@ -1,7 +1,7 @@
 import { $fetch } from "../fetch";
 import { sectionSearchEndpoint } from "../endpoints";
 import { consola } from "consola";
-import { BannerSectionResponse } from "../../schemas/section";
+import { BannerSectionResponse } from "../../schemas/banner/section";
 
 /**
  * scrapeSections get all the sections in a term. It steps through the pages of search results
@@ -13,13 +13,15 @@ import { BannerSectionResponse } from "../../schemas/section";
  * @returns raw scraped sections
  */
 export async function scrapeSections(term: string, cookiePool = 20) {
+  consola.start("scraping sections");
+
   // create the pool of cookies to use; section search requests require a cookie section to Banner
   const cookies = await getAuthCookies(term, cookiePool + 1);
-  consola.debug("auth cookies aquired", { term: term });
+  consola.debug(`${cookies.length} auth cookies aquired`);
 
   const initalCookie = cookies.pop();
   if (!initalCookie) {
-    consola.error("not enough cookies");
+    consola.error("not enough banner auth cookies");
     return;
   }
 
@@ -47,16 +49,13 @@ export async function scrapeSections(term: string, cookiePool = 20) {
     Math.ceil(initialResp.totalCount / 500) / cookiePool,
   );
 
-  consola.debug("section count received", {
-    term: term,
-    count: initialResp.totalCount,
-    batches: numBatches,
-  });
+  consola.debug(
+    `${initialResp.totalCount} sections - ${numBatches} batch(es) required`,
+  );
 
   const rawSections: unknown[] = [];
-
   for (let i = 0; i < numBatches; i++) {
-    consola.debug("scraping sections for batch", { term: term, batch: i });
+    consola.debug(`scraping sections for batch ${i + 1}`);
     const promises = Array.from([...Array(cookiePool).keys()], (j) =>
       $fetch(sectionSearchEndpoint(term, (i * cookiePool + j) * 500, 500), {
         headers: {
@@ -65,9 +64,9 @@ export async function scrapeSections(term: string, cookiePool = 20) {
       }).then((resp) => resp.json() as any),
     );
 
-    consola.debug("start section requests", { term: term, batch: i });
+    consola.trace(`start section requests for batch ${i + 1}`);
     const results = await Promise.allSettled(promises);
-    consola.debug("received section responses", { term: term, batch: i });
+    consola.trace(`received section responses for batch ${i + 1}`);
 
     results
       .filter((p) => p.status === "fulfilled")
@@ -75,7 +74,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
         rawSections.push(...p.value.data);
       });
 
-    consola.debug("marshalled sections", { term: term, batch: i });
+    consola.trace(`marshalled sections for batch ${i + 1}`);
   }
 
   const rawSectionResult = BannerSectionResponse.pick({ data: true }).safeParse(
@@ -89,11 +88,9 @@ export async function scrapeSections(term: string, cookiePool = 20) {
   const sections = rawSectionResult.data.data;
 
   if (sections.length !== initialResp.totalCount) {
-    consola.warn("section count mismatch", {
-      term: term,
-      expected: initialResp.totalCount,
-      actual: rawSections.length,
-    });
+    consola.warn(
+      `section count mismatch, expected: ${initialResp.totalCount} received: ${rawSections.length}`,
+    );
   }
 
   return sections;
@@ -103,7 +100,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
 // to access the search pages - by getting a bunch, we can fire a bunch
 // of concurrent requests
 async function getAuthCookies(term: string, count: number) {
-  consola.debug("start getting auth cookies");
+  consola.debug("getting banner auth cookies");
   const promises = Array.from({ length: count }, () =>
     fetch("https://nubanner.neu.edu/StudentRegistrationSsb/ssb/term/search", {
       method: "POST",
@@ -114,9 +111,9 @@ async function getAuthCookies(term: string, count: number) {
     }),
   );
 
-  consola.debug("start auth cookie requests");
+  consola.trace("start auth cookie requests");
   const results = await Promise.allSettled<Promise<Response>>(promises);
-  consola.debug("received auth cookie responses");
+  consola.trace("received auth cookie responses");
 
   const cookies = results
     .filter((result) => result.status === "fulfilled")
@@ -129,7 +126,7 @@ async function getAuthCookies(term: string, count: number) {
       return cookiePairs.join("; ");
     });
 
-  consola.debug("auth cookies marshalled");
+  consola.trace("marshalled auth cookies");
 
   return cookies;
 }

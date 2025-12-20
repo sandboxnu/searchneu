@@ -1,4 +1,4 @@
-import { insertTermData, insertConfigData } from "../up/db";
+import { insertTermData, insertConfigData } from "../upload/db";
 import { TermScrape } from "../types";
 import { Config } from "../config";
 import { infer as zinfer } from "zod";

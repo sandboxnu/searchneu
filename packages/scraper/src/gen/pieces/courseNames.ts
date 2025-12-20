@@ -3,7 +3,7 @@ import { FetchEngine } from "../fetch";
 import { sectionCatalogDetailsEndpoint } from "../endpoints";
 import { consola } from "consola";
 import { decode } from "html-entities";
-import { BannerSectionCatalogDetails } from "../../schemas/sectionCatalogDetails";
+import { BannerSectionCatalogDetails } from "../../schemas/banner/sectionCatalogDetails";
 
 /**
  *

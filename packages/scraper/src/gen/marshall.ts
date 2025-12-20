@@ -1,7 +1,10 @@
 import { consola } from "consola";
-import type { Course, Section } from "../types";
 import * as z from "zod";
-import { BannerSection } from "../schemas/section";
+import { BannerSection } from "../schemas/banner/section";
+import {
+  ScraperBannerCacheCourse,
+  ScraperBannerCacheSection,
+} from "../schemas/scraper/banner-cache";
 
 /* arrangeCourses takes the raw sections scraped from banner and
  *
@@ -11,13 +14,26 @@ import { BannerSection } from "../schemas/section";
 export function arrangeCourses(
   bannerSections: z.infer<typeof BannerSection>[],
 ) {
-  const courses: { [key: string]: Course } = {};
+  consola.start("stubbing courses");
+
+  const courses: { [key: string]: z.infer<typeof ScraperBannerCacheCourse> } =
+    {};
   const xlist: { [key: string]: string[] } = {};
-  const sections: { [key: string]: Section[] } = {};
+  const sections: {
+    [key: string]: z.infer<typeof ScraperBannerCacheSection>[];
+  } = {};
   const subjectCodes: string[] = [];
   const attributes: Map<string, string> = new Map();
-  const campuses: Map<string, string> = new Map();
-  const buildings: Map<string, Map<string, string>> = new Map();
+  const campuses: Map<string, { code: string; description: string }> =
+    new Map();
+  const buildings: Map<
+    string,
+    { code: string; description: string; campus: string }
+  > = new Map();
+  const rooms: Map<
+    string,
+    { rooms: Set<string>; building: string; campus: string }
+  > = new Map();
 
   const crns: string[] = [];
 
@@ -53,8 +69,9 @@ export function arrangeCourses(
 
     if (
       !c.specialTopics &&
-      (s.courseTitle !== c.name || // special topic courses have different names between sections
-        s.sectionAttributes.filter((s) => s.code === "TOPC").length > 0) // or sometimes have a "Topics" attribute
+      // (s.courseTitle !== c.name || // special topic courses have different names between sections
+      //   s.sectionAttributes.filter((s) => s.code === "TOPC").length > 0) // or sometimes have a "Topics" attribute
+      s.sectionAttributes.filter((s) => s.code === "TOPC").length > 0
     ) {
       c.specialTopics = true;
       c.name = "Special Topics"; // update name placeholder (special topic course names are scraped later)
@@ -111,9 +128,15 @@ export function arrangeCourses(
     // }
 
     if (mtCampuses.length > 0) {
-      campuses.set(mtCampuses[0].description, mtCampuses[0].code);
+      campuses.set(mtCampuses[0].description, {
+        code: mtCampuses[0].code,
+        description: mtCampuses[0].description,
+      });
     } else if (!campuses.has(s.campusDescription)) {
-      campuses.set(s.campusDescription, "?");
+      campuses.set(s.campusDescription, {
+        code: "?",
+        description: s.campusDescription,
+      });
     }
 
     mtBuildings.forEach((v, k) => {
@@ -125,25 +148,37 @@ export function arrangeCourses(
       }
 
       const campusCode = mtCampuses[0].code;
-      if (!buildings.has(campusCode)) {
-        buildings.set(campusCode, new Map());
+      if (!buildings.has(k)) {
+        buildings.set(k, {
+          code: k,
+          description: v.description,
+          campus: campusCode,
+        });
       }
-      const campusMap = buildings.get(campusCode);
-      if (campusMap) campusMap.set(k, v);
+
+      if (!rooms.has(k)) {
+        rooms.set(k, { rooms: new Set(), building: k, campus: campusCode });
+      }
+      const roomRef = rooms.get(k);
+      if (roomRef) {
+        v.rooms.forEach((r) => roomRef.rooms.add(r));
+      }
     });
   }
 
-  consola.box("campuses", campuses);
-  consola.box("attributes", attributes);
-  consola.box("buildings", buildings);
+  // consola.box("campuses", campuses);
+  // consola.box("attributes", attributes);
+  // consola.box("buildings", buildings);
+  // consola.box("rooms", rooms);
 
   return {
     courses: Object.values(courses),
     sections,
     subjects: subjectCodes,
-    campuses,
     attributes,
+    campuses,
     buildings,
+    rooms,
   };
 }
 
@@ -156,7 +191,8 @@ export function arrangeCourses(
 export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
   // BUG: somewhere in here lol
   const meetings = [];
-  const buildings: Map<string, string> = new Map();
+  const buildings: Map<string, { description: string; rooms: string[] }> =
+    new Map();
   const campuses: { code: string; description: string }[] = [];
 
   for (const meetingFaculty of section.meetingsFaculty) {
@@ -197,19 +233,29 @@ export function parseMeetingTimes(section: z.infer<typeof BannerSection>) {
       finalDate = meetingTime.startDate;
     }
 
-    let actualRoom: string;
+    let actualRoom: string | null = null;
     if (!meetingTime.room || meetingTime.room === "ROOM") {
-      actualRoom = "";
+      actualRoom = null;
     } else {
       actualRoom = meetingTime.room;
     }
 
     if (meetingTime.building && meetingTime.buildingDescription) {
-      buildings.set(meetingTime.building, meetingTime.buildingDescription);
+      if (!buildings.has(meetingTime.building)) {
+        buildings.set(meetingTime.building, {
+          description: meetingTime.buildingDescription,
+          rooms: [],
+        });
+      }
+
+      const b = buildings.get(meetingTime.building);
+      if (b && actualRoom) {
+        b.rooms.push(actualRoom);
+      }
     }
 
     meetings.push({
-      building: meetingTime.building || "",
+      building: meetingTime.building,
       room: actualRoom,
       days: days,
       startTime: startTime,

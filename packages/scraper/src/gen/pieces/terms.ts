@@ -1,5 +1,5 @@
 import consola from "consola";
-import { BannerTermsResponse } from "../../schemas/terms";
+import { BannerTermsResponse } from "../../schemas/banner/terms";
 import { $fetch } from "../fetch";
 
 /**

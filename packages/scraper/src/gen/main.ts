@@ -1,3 +1,7 @@
+/**
+ * the main scraper flow
+ */
+
 import { consola } from "consola";
 import { scrapeSections } from "./pieces/sections";
 import { subjectsEndpoint } from "./endpoints";
@@ -12,9 +16,8 @@ import { scrapeCourseDescriptions } from "./pieces/courseDescriptions";
 import { scrapeCoursePrereqs } from "./pieces/coursePrereqs";
 import { scrapeCourseCoreqs } from "./pieces/courseCoreqs";
 import { arrangeCourses } from "./marshall";
-import { parseRooms } from "./pieces/rooms";
-import { TermScrape } from "../types";
 import { scrapeTermDefinition } from "./pieces/terms";
+import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
 
 /**
  * scrapeCatalogTerm is the main scraping logic
@@ -26,9 +29,11 @@ import { scrapeTermDefinition } from "./pieces/terms";
 export async function scrapeCatalogTerm(
   term: string,
   config: z.infer<typeof TermConfig>,
-): Promise<TermScrape | undefined> {
+  interactive: boolean,
+): Promise<
+  Omit<z.infer<typeof ScraperBannerCache>, "timestamp" | "version"> | undefined
+> {
   // get sections
-  consola.start("scraping sections");
   const rawSections = await scrapeSections(term);
   if (!rawSections) {
     consola.error("failed to scrape sections");
@@ -36,18 +41,19 @@ export async function scrapeCatalogTerm(
   }
 
   // stub courses from sections
-  consola.info("stubbing courses");
   const {
     courses,
     sections,
     subjects: subjectCodes,
-    campuses,
     attributes,
+    campuses,
     buildings,
+    rooms,
   } = arrangeCourses(rawSections);
   const sectionList = Object.values(sections).flat();
 
   // get and validate subjects
+  consola.debug("scraping subjects");
   const bannerSubjects: any = await $fetch(subjectsEndpoint(term)).then((r) =>
     r.json(),
   );
@@ -59,14 +65,13 @@ export async function scrapeCatalogTerm(
   );
 
   if (subjectCodes.length !== subjects.length) {
-    consola.warn("differing quantity of subjects", {
-      extracted: subjectCodes.length,
-      banner: subjects.length,
-      problem: subjects.filter((s) => !subjectCodes.includes(s.code)),
-    });
+    consola.warn(
+      `subject count mismatch, banner: ${subjects.length} extracted: ${subjectCodes.length} diff: ${subjects.filter((s) => !subjectCodes.includes(s.code)).map((s) => s.code)}`,
+    );
   }
 
   // getTermInfo gets the name for the term being scraped from banner
+  consola.debug("scraping term definition");
   const termDef = await scrapeTermDefinition(term);
   if (!termDef) {
     consola.error("error getting term definition from Banner");
@@ -81,13 +86,14 @@ export async function scrapeCatalogTerm(
     retryOn: (response) => response.status === 429 || response.status >= 500,
   });
 
+  consola.debug("generating scraping promises");
+
   // scrape faculty
   const failedFacultySections = scrapeMeetingsFaculty(fe, term, sectionList);
 
-  const taggedCourses = courses.map((c) => ({
-    ...c,
-    crn: sections[c.subject + c.courseNumber][0].crn,
-  }));
+  const taggedCourses = courses.map((c) =>
+    Object.assign(c, { crn: sections[c.subject + c.courseNumber][0].crn }),
+  );
 
   // names
   // PERF: we could prob just do the special topic courses, but we should be sure that just those need
@@ -102,10 +108,10 @@ export async function scrapeCatalogTerm(
   // descriptions
   const ordinaryCourses = courses
     .filter((c) => !c.specialTopics)
-    .map((c) => ({
-      ...c,
-      crn: sections[c.subject + c.courseNumber][0].crn,
-    }));
+    .map((c) =>
+      Object.assign(c, { crn: sections[c.subject + c.courseNumber][0].crn }),
+    );
+
   const failedDescriptions = scrapeCourseDescriptions(
     fe,
     term,
@@ -156,18 +162,34 @@ export async function scrapeCatalogTerm(
     subjects,
   );
 
-  consola.box(
-    `scraping stats
-totals:
+  if (interactive)
+    consola.box(
+      `==scraping stats==
+total:
   courses: ${courses.length}
   sections: ${Object.values(sections).flat().length}
-standard: ${ordinaryCourses.length} (x3)
+standard:
+  courses: ${ordinaryCourses.length}
+  sections: ${Object.values(sections).flat().length - specialTopicSections.length}
 special topics:
   courses: ${stc.length}
-  sections: ${specialTopicSections.length} (x3)`,
-  );
+  sections: ${specialTopicSections.length}
+requests:
+  total: ${fe.getStatus().queueLength}
+  etr: ${Math.floor(fe.getStatus().queueLength / 20 / 60)}mins`,
+    );
 
-  const intervalCleanup = setInterval(() => consola.info(fe.getStatus()), 5000);
+  consola.start("scraping supporting information");
+  const initialQueueLength = fe.getStatus().queueLength;
+  const intervalCleanup = setInterval(() => {
+    if (interactive) {
+      consola.info(
+        `${fe.getStatus().queueLength} remaining \
+(${Math.floor(((initialQueueLength - fe.getStatus().queueLength) / initialQueueLength) * 100)}%) \
+(${fe.getStatus().activeRequests} active)`,
+      );
+    }
+  }, 5000);
 
   // wait for all the requests
   await Promise.all([
@@ -186,8 +208,6 @@ special topics:
   // postreqs
   populatePostReqs(courses);
 
-  const rooms = await parseRooms(Object.values(sections).flat());
-
   const parsedAttributes = [...attributes].map((v) => ({
     code: v[0],
     name: v[1],
@@ -196,14 +216,25 @@ special topics:
   // ===== prepare objects to be saved =====
   const parsedCampuses = [...campuses].map((v) => ({
     // campuses are mapped description : code
-    code: v[1],
-    name: v[0],
-    buildings: [...(buildings.get(v[1]) ?? [])].map((v) => ({
-      // buildings are mapped code : description
-      code: v[0],
-      name: v[1],
-    })),
+    code: v[1].code,
+    name: v[1].description,
   }));
+
+  const parsedBuildings = [...buildings].map((v) => ({
+    code: v[1].code,
+    name: v[1].description,
+    campus: v[1].campus,
+  }));
+
+  const parsedRooms = [...rooms]
+    .map((v) => {
+      return [...v[1].rooms].map((r) => ({
+        code: r,
+        building: v[1].building,
+        campus: v[1].campus,
+      }));
+    })
+    .flat();
 
   return {
     term: termDef,
@@ -211,7 +242,8 @@ special topics:
     sections: sections,
     attributes: parsedAttributes,
     subjects,
-    rooms,
     campuses: parsedCampuses,
+    buildings: parsedBuildings,
+    rooms: parsedRooms,
   };
 }

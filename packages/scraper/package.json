@@ -1,0 +1,35 @@
+{
+  "name": "@sneu/scraper",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
+    "scrape:up": "node --import tsx ./src/scripts/upload.ts"
+  },
+  "exports": {
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
+  },
+  "dependencies": {
+    "citty": "^0.1.6",
+    "consola": "^3.4.2",
+    "drizzle-orm": "^0.45.0",
+    "html-entities": "^2.6.0",
+    "node-html-parser": "^7.0.1",
+    "yaml": "^2.8.2",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@sneu/db": "workspace:*",
+    "@sneu/tsconfig": "workspace:*",
+    "@types/he": "^1.2.3",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

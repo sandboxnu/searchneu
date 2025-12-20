@@ -1,0 +1,1248 @@
+openapi: 3.0.3
+info:
+  title: NU Banner API
+  version: 1.1.0
+  description: |-
+    This web page documents usage of the public-facing API for browsing classes on
+    [*NU Banner*](https://nubanner.neu.edu/StudentRegistrationSsb/).
+    It is not official; all this information was discovered through reverse-engineering.
+    We are unaffiliated with both Northeastern University and Ellucian.
+    See the [README on Gitlab](https://gitlab.com/jennydaman/nubanned#nu-banner-api)
+    for more information.
+
+    Listing data returns *JSON*, while most endpoints that describe a specific course
+    will return *HTML* instead.
+servers:
+  - url: https://nubanner.neu.edu/StudentRegistrationSsb/ssb
+paths:
+  /classSearch/getTerms:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+              example:
+                - code: "201960"
+                  description: Summer 2 2019 Semester
+                - code: "201954"
+                  description: Summer 2019 CPS Semester
+                - code: "201950"
+                  description: Summer Full 2019 Semester
+                - code: "201940"
+                  description: Summer 1 2019 Semester
+                - code: "201938"
+                  description: Spring 2019 Law Quarter
+                - code: "201935"
+                  description: Spring 2019 CPS Quarter
+                - code: "201934"
+                  description: Spring 2019 CPS Semester
+                - code: "201932"
+                  description: Spring 2019 Law Semester
+                - code: "201930"
+                  description: Spring 2019 Semester
+                - code: "201928"
+                  description: Winter 2019 Law Quarter (View Only)
+      summary: List semesters
+      operationId: List semesters
+      description: |-
+        Generates a list of semesters and their corresponding term codes that
+        are available to be viewed.
+      tags:
+        - Registration Listings
+      parameters:
+        - name: offset
+          in: query
+          description: Start index (keep it as 1)
+          required: true
+          example: "1"
+          schema:
+            type: number
+        - name: max
+          in: query
+          description: How many semesters to return (change this if you want)
+          required: true
+          example: "10"
+          schema:
+            type: number
+        - name: searchTerm
+          in: query
+          description: Key word to filter the results by
+          schema:
+            type: string
+  /classSearch/get_subject:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+              example:
+                - code: BIOC
+                  description: Biochemistry
+                - code: BIOE
+                  description: Bioengineering
+                - code: BINF
+                  description: Bioinformatics
+                - code: BIOL
+                  description: Biology
+                - code: BIOT
+                  description: Biotechnology
+                - code: CHEM
+                  description: Chemistry &amp; Chemical Biology
+                - code: EEMB
+                  description: Ecology, Evolutn &amp; Marine Biol
+      summary: Search for subjects
+      operationId: Search for subjects
+      description: |-
+        *nubanner* includes `&_=1550718949982` in the query string, but the function
+        is unknown and the value is probably ignored.
+      tags:
+        - Registration Listings
+      parameters:
+        - name: term
+          in: query
+          description: The term code for the semester to search in
+          required: true
+          example: "201930"
+          schema:
+            type: number
+        - name: offset
+          in: query
+          description: Start index (keep it as 1)
+          required: true
+          example: "1"
+          schema:
+            type: number
+        - name: max
+          in: query
+          description: How many subjects to return (change this if you want)
+          required: true
+          example: "10"
+          schema:
+            type: number
+        - name: searchTerm
+          in: query
+          description: Key word to filter the results by
+          example: Bio
+          schema:
+            type: string
+  /term/search:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fwdURL:
+                    type: string
+              example:
+                fwdURL: /StudentRegistrationSsb/ssb/classSearch/classSearch
+      summary: Declare term
+      operationId: Declare term
+      description: |-
+        Tells *nubanner* which term the client is interested in,
+        and will grant permission to the client session (cookies `JSESSIONID` and `nubanner-cookie`)
+        to get [`/searchResults/searchResults`](#studentregistrationssb-search).
+
+        If provided cookies, then the current session is authorized.
+        Otherwise, authorized cookies are returned in the response with `Set-Cookie`.
+
+        *NU Banner* uses the query string `?mode=search`,
+        however it doesn't seem to be necessary.
+
+        :::note
+        If you forget `term` in the body, then you'll get a response containing these values:
+
+        ```json
+        "regAllowed": false,
+        "studentEligFailures": 
+        ["No Classes Found in this Date Range"]
+        ```
+
+        There is no validation that the specified term is correct.
+
+        :::
+      tags:
+        - Registration Listings
+      parameters:
+        - name: Cookie
+          in: header
+          description: e.g. JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+          required: false
+          schema:
+            type: string
+          example: JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+  /searchResults/searchResults:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content: {}
+      summary: Search courses
+      operationId: Search courses
+      description: ""
+      tags:
+        - Registration Listings
+      parameters:
+        - name: txt_subject
+          in: query
+          description: Subject code
+          example: CS
+          schema:
+            type: string
+        - name: txt_courseNumber
+          in: query
+          description: Course number
+          example: "2500"
+          schema:
+            type: number
+        - name: txt_term
+          in: query
+          description: term code&mdash;must match what was POSTed to [`/term/search`](#studentregistrationssb-clickcontinue-post)
+          example: "201930"
+          schema:
+            type: number
+        - name: startDatepicker
+          in: query
+          description: ""
+          schema:
+            type: string
+        - name: endDatepicker
+          in: query
+          description: ""
+          schema:
+            type: string
+        - name: pageOffset
+          in: query
+          description: Start index (default 0)
+          example: "0"
+          schema:
+            type: number
+        - name: pageMaxSize
+          in: query
+          description: How many sessions to return (default 20). **Maximum number of results is 500.**
+          example: "10"
+          schema:
+            type: number
+        - name: sortColumn
+          in: query
+          description: how to sort the results
+          example: subjectDescription
+          schema:
+            type: string
+        - name: sortDirection
+          in: query
+          description: direction to sort the columns
+          example: asc
+          schema:
+            type: string
+        - name: Cookie
+          in: header
+          description: e.g. JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+          required: false
+          schema:
+            type: string
+          example: JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+  /classSearch/resetDataForm:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html;charset=utf-8:
+              example: |2
+                    true
+      summary: Reset data form
+      operationId: Reset data form
+      description: ""
+      tags:
+        - Registration Listings
+      parameters:
+        - name: Cookie
+          in: header
+          description: e.g. JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+          required: false
+          schema:
+            type: string
+          example: JSESSIONID=ABCDEF0123456789ABCDEF0123456789; nubanner-cookie=0123456789.12345.1234;
+  /contactCard/retrieveData:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      facultyCardPopupConfig:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            config:
+                              type: string
+                            display:
+                              type: string
+                            title:
+                              type: string
+                          required:
+                            - config
+                            - display
+                            - title
+                      personData:
+                        type: object
+                        properties:
+                          lastName:
+                            type: string
+                          firstName:
+                            type: string
+                          middleName:
+                            nullable: true
+                          fullName:
+                            type: string
+                          displayName:
+                            type: string
+                          preferenceFirstName:
+                            type: string
+                          namePrefix:
+                            type: string
+                          nameSuffix:
+                            nullable: true
+                          scheduleIndicator:
+                            type: string
+                          advisorIndicator:
+                            type: string
+                          title:
+                            type: object
+                            properties:
+                              class:
+                                type: string
+                              id:
+                                type: number
+                              version:
+                                type: number
+                              code:
+                                type: string
+                              dataOrigin:
+                                nullable: true
+                              description:
+                                type: string
+                              lastModified:
+                                type: string
+                              lastModifiedBy:
+                                nullable: true
+                          deptAndCollegeInformation:
+                            nullable: true
+                          address:
+                            nullable: true
+                          telephone:
+                            nullable: true
+                          email:
+                            nullable: true
+                      message:
+                        type: string
+              example:
+                data:
+                  facultyCardPopupConfig:
+                    - config: facultyCardPopup
+                      display: Faculty Card Popup
+                      title: Faculty Card Popup
+                    - config: facultyName
+                      display: Faculty Name
+                      title: Faculty Name
+                    - config: facultyPhoto
+                      display: Faculty Photo
+                      title: Faculty Photo
+                    - config: facultyTitle
+                      display: Faculty Title
+                      title: Faculty Title
+                    - config: facultyDepartment
+                      display: Faculty Department
+                      title: Faculty Department
+                    - config: facultyEmail
+                      display: Faculty Email Address
+                      title: Faculty Email Address
+                  personData:
+                    lastName: Shivers III
+                    firstName: Olin
+                    middleName: null
+                    fullName: Olin Shivers III
+                    displayName: Shivers III, Olin
+                    preferenceFirstName: Olin
+                    namePrefix: Dr
+                    nameSuffix: null
+                    scheduleIndicator: "Y"
+                    advisorIndicator: "Y"
+                    title:
+                      class: net.hedtech.banner.student.system.FacultyCategory
+                      id: 1
+                      version: 0
+                      code: PROF
+                      dataOrigin: null
+                      description: Professor
+                      lastModified: 10/29/2008
+                      lastModifiedBy: null
+                    deptAndCollegeInformation: null
+                    address: null
+                    telephone: null
+                    email: null
+                  message: ""
+      summary: Staff Information
+      operationId: Staff Information
+      description: ""
+      tags:
+        - Registration Listings
+      parameters:
+        - name: termCode
+          in: query
+          description: The term code for the semester
+          required: true
+          example: "201930"
+          schema:
+            type: number
+        - name: bannerId
+          in: query
+          description: From [`searchResults`](#studentregistrationssb-search-get)
+          required: true
+          example: "000933475"
+          schema:
+            type: number
+  /searchResults/getClassDetails:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |
+                <span class="status-bold">Associated Term: </span>Spring 2019 Semester <br/>
+                <span class="status-bold">CRN: </span><span id="courseReferenceNumber">30392</span><br/>
+
+                <span class="status-bold">Campus: </span>Boston  <br/>
+                <span class="status-bold">Schedule Type: </span>
+
+                    Lecture
+
+                <br/>
+                <span class="status-bold">Instructional Method: </span>Traditional<br/>
+                <span class="status-bold">Section Number: </span><span id="sectionNumber">02</span>  <br/>
+                <span class="status-bold">Subject: </span><span id="subject">Physics</span>  <br/>
+                <span class="status-bold">Course Number: </span><span id="courseNumber">1147</span>  <br/>
+                <span class="status-bold">Title: </span><span id="courseTitle">Physics for Life Sciences 2</span><br/>
+
+                <span class="status-bold">Credit Hours:</span>
+
+                    4
+                    <br>
+
+                <span class="status-bold">Grade Mode: </span>
+                    No Section specified grade mode, please see Catalog link below for more information.<br>
+      summary: Class Details
+      operationId: Class Details
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getSectionBookstoreDetails:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |
+                <span class="status-bold">Bookstore Links</span><br/><br/>
+
+                <span>Use the link(s) below to access online bookstores to determine the cost of required materials.</span><br/><br/>
+
+                <div class="indent-left">
+
+                            <a href="https://www.barnesandnoble.com" target="_blank">Barnes and Noble</a> <br/>
+                        <br/>
+
+                            <a href="http://www.bkstr.com/webapp/wcs/stores/servlet/CourseMaterialsResultsView?storeId=&lt;&lt;Campus Store ID&gt;&gt;&amp;termId=201930&amp;departmentDisplayName=PHYS&amp;courseDisplayName=Physics&amp;sectionDisplayName=1147" target="_blank">Follett Bookstore</a> <br/>
+                        <br/>
+
+                            <a href="http://northeastern.bncollege.com" target="_blank">bookstore.links.NUBookstore</a> <br/>
+                        <br/>
+
+                </div>
+      summary: Bookstore Links
+      operationId: Bookstore Links
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getCourseDescription:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |
+                Continues PHYS 1145. Covers heat, electricity, vibrations and waves, sound, geometrical optics, and nuclear physics and radioactivity. The application of physics to a variety of problems in the life and health sciences is emphasized. Electricity topics include electrostatics, capacitance, resistivity, direct-current circuits, and RC circuits. Vibrations and waves topics include simple harmonic motion and wave motion. Sound topics include wave characteristics, the ear, Doppler effect, shock waves, and ultrasound. Optics topics include reflection, mirrors, refraction, total internal reflection, fiber optics, lenses, the eye, telescopes, and microscopes. Nuclear physics and radioactivity topics include atomic nucleus, radioactivity, half-life, radioactive dating, detectors, nuclear reaction, fission, fusion, radiation damage, radiation therapy, PET, and MRI. A laboratory is included.
+      summary: Course Description
+      operationId: Course Description
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getSyllabus:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    No Syllabus Information Available
+      summary: Syllabus
+      operationId: Syllabus
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getSectionAttributes:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                     <div>
+                        <span class='attribute-text'> NUpath Natural/Designed World  NCND
+                            <br/></span></div>
+
+                     <div>
+                        <span class='attribute-text'>UG College of Science  UBSC
+                            </span></div>
+      summary: Attributes
+      operationId: Attributes
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getRestrictions:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    <div class="infoicon"><span class="status-bold">Not all restrictions are applicable.</span></div> <br/>
+
+                            <span class="status-bold">Must be enrolled in one of the following Levels: </span><br/>
+
+                                    <span class="detail-popup-indentation">Undergraduate (UG)</span><br/>
+
+                        <br/>
+      summary: Restrictions
+      operationId: Restrictions
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getFacultyMeetingTimes:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fmt:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category:
+                          type: string
+                        class:
+                          type: string
+                        courseReferenceNumber:
+                          type: string
+                        faculty:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              bannerId:
+                                type: string
+                              category:
+                                type: string
+                              class:
+                                type: string
+                              courseReferenceNumber:
+                                type: string
+                              displayName:
+                                type: string
+                              emailAddress:
+                                nullable: true
+                              primaryIndicator:
+                                type: boolean
+                              term:
+                                type: string
+                            required:
+                              - bannerId
+                              - category
+                              - class
+                              - courseReferenceNumber
+                              - displayName
+                              - emailAddress
+                              - primaryIndicator
+                              - term
+                        meetingTime:
+                          type: object
+                          properties:
+                            beginTime:
+                              type: string
+                            building:
+                              type: string
+                            buildingDescription:
+                              type: string
+                            campus:
+                              type: string
+                            campusDescription:
+                              type: string
+                            category:
+                              type: string
+                            class:
+                              type: string
+                            courseReferenceNumber:
+                              type: string
+                            creditHourSession:
+                              type: number
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                            friday:
+                              type: boolean
+                            hoursWeek:
+                              type: number
+                            meetingScheduleType:
+                              type: string
+                            meetingType:
+                              type: string
+                            meetingTypeDescription:
+                              type: string
+                            monday:
+                              type: boolean
+                            room:
+                              type: string
+                            saturday:
+                              type: boolean
+                            startDate:
+                              type: string
+                            sunday:
+                              type: boolean
+                            term:
+                              type: string
+                            thursday:
+                              type: boolean
+                            tuesday:
+                              type: boolean
+                            wednesday:
+                              type: boolean
+                        term:
+                          type: string
+                      required:
+                        - category
+                        - class
+                        - courseReferenceNumber
+                        - faculty
+                        - meetingTime
+                        - term
+              example:
+                fmt:
+                  - category: "01"
+                    class: net.hedtech.banner.student.schedule.SectionSessionDecorator
+                    courseReferenceNumber: "30393"
+                    faculty:
+                      - bannerId: "000124859"
+                        category: "01"
+                        class: net.hedtech.banner.student.faculty.FacultyResultDecorator
+                        courseReferenceNumber: "30393"
+                        displayName: Kravchenko, Sergey
+                        emailAddress: null
+                        primaryIndicator: true
+                        term: "201930"
+                      - bannerId: "001676905"
+                        category: "01"
+                        class: net.hedtech.banner.student.faculty.FacultyResultDecorator
+                        courseReferenceNumber: "30393"
+                        displayName: Fotovatian, Assad
+                        emailAddress: null
+                        primaryIndicator: false
+                        term: "201930"
+                    meetingTime:
+                      beginTime: "1335"
+                      building: CG
+                      buildingDescription: Cargill Hall
+                      campus: BOS
+                      campusDescription: Boston
+                      category: "01"
+                      class: net.hedtech.banner.general.overall.MeetingTimeDecorator
+                      courseReferenceNumber: "30393"
+                      creditHourSession: 4
+                      endDate: 04/17/2019
+                      endTime: "1440"
+                      friday: false
+                      hoursWeek: 3.25
+                      meetingScheduleType: LEC
+                      meetingType: CLAS
+                      meetingTypeDescription: Class
+                      monday: true
+                      room: "097"
+                      saturday: false
+                      startDate: 01/07/2019
+                      sunday: false
+                      term: "201930"
+                      thursday: true
+                      tuesday: false
+                      wednesday: true
+                    term: "201930"
+                  - category: "01"
+                    class: net.hedtech.banner.student.schedule.SectionSessionDecorator
+                    courseReferenceNumber: "30393"
+                    faculty:
+                      - bannerId: "000124859"
+                        category: "01"
+                        class: net.hedtech.banner.student.faculty.FacultyResultDecorator
+                        courseReferenceNumber: "30393"
+                        displayName: Kravchenko, Sergey
+                        emailAddress: null
+                        primaryIndicator: true
+                        term: "201930"
+                      - bannerId: "001676905"
+                        category: "01"
+                        class: net.hedtech.banner.student.faculty.FacultyResultDecorator
+                        courseReferenceNumber: "30393"
+                        displayName: Fotovatian, Assad
+                        emailAddress: null
+                        primaryIndicator: false
+                        term: "201930"
+                    meetingTime:
+                      beginTime: "1030"
+                      building: EL
+                      buildingDescription: Ell Hall
+                      campus: BOS
+                      campusDescription: Boston
+                      category: "01"
+                      class: net.hedtech.banner.general.overall.MeetingTimeDecorator
+                      courseReferenceNumber: "30393"
+                      creditHourSession: 0
+                      endDate: 04/23/2019
+                      endTime: "1230"
+                      friday: false
+                      hoursWeek: 2
+                      meetingScheduleType: LEC
+                      meetingType: FNEX
+                      meetingTypeDescription: Final Exam
+                      monday: false
+                      room: AUD
+                      saturday: false
+                      startDate: 04/23/2019
+                      sunday: false
+                      term: "201930"
+                      thursday: false
+                      tuesday: true
+                      wednesday: false
+                    term: "201930"
+      summary: Instructor/Meeting Times
+      operationId: Instructor/Meeting Times
+      description: ""
+      tags:
+        - Search Results
+      parameters:
+        - name: term
+          in: query
+          description: The term code for the semester
+          required: true
+          example: "201930"
+          schema:
+            type: number
+        - name: courseReferenceNumber
+          in: query
+          description: From [`searchResults`](#studentregistrationssb-search-get)
+          required: true
+          example: "30393"
+          schema:
+            type: number
+  /searchResults/getEnrollmentInfo:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |
+                <span class="status-bold">Enrollment Actual:</span> <span dir="ltr"> 94 </span><br/>
+                <span class="status-bold">Enrollment Maximum:</span> <span dir="ltr"> 155 </span><br/>
+                <span class="status-bold">Enrollment Seats Available:</span> <span dir="ltr"> 61 </span>  <br/>
+                <hr/>
+                <span class="status-bold">Waitlist Capacity:</span> <span dir="ltr"> 0  </span><br/>
+                <span class="status-bold">Waitlist Actual:</span> <span dir="ltr"> 0  </span><br/>
+                <span class="status-bold">Waitlist Seats Available:</span> <span dir="ltr"> 0  </span><br/>
+      summary: Enrollment/Waitlist
+      operationId: Enrollment/Waitlist
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getCorequisites:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              examples:
+                example1:
+                  value: |2
+                            <table class="basePreqTable">
+                                <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Course Number</th>
+                                    <th>Title</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>Physics</td>
+                                        <td>1148</td>
+                                        <td>Lab for PHYS 1147</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                example2:
+                  value: |
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CRN</th>
+                                <th>Subject</th>
+                                <th>Course Number</th>
+                                <th>Title</th>
+                                <th>Section</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                                <tr>
+                                    <td>18504</td>
+                                    <td>Health Sci - Interdisciplinary</td>
+                                    <td>1200</td>
+                                    <td>Basic Skills for the Healthcare Professional</td>
+                                    <td>02</td>
+                                </tr>
+
+                        </tbody>
+                    </table>
+      summary: Corequisites
+      operationId: Corequisites
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getSectionPrerequisites:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              examples:
+                example1:
+                  value: |
+                    <h3>Catalog Prerequisites</h3>
+
+                        <table class="basePreqTable">
+                          <thead>
+                          <tr>
+                            <th>And/Or</th>
+                            <th></th>
+                            <th>Test</th>
+                            <th>Score</th>
+                            <th>Subject</th>
+                            <th>Course Number</th>
+                            <th>Level</th>
+                            <th>Grade</th>
+                            <th></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+                            <tr>
+
+                                <td></td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1145</td>
+                              <td>Undergraduate</td>
+                              <td>D-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1149</td>
+                              <td>Undergraduate</td>
+                              <td>D-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1151</td>
+                              <td>Undergraduate</td>
+                              <td>D-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1161</td>
+                              <td>Undergraduate</td>
+                              <td>D-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1171</td>
+                              <td>Undergraduate</td>
+                              <td>D-</td>
+                              <td></td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                example2:
+                  value: |
+                    <h3>Catalog Prerequisites</h3>
+
+                        <table class="basePreqTable">
+                          <thead>
+                          <tr>
+                            <th>And/Or</th>
+                            <th></th>
+                            <th>Test</th>
+                            <th>Score</th>
+                            <th>Subject</th>
+                            <th>Course Number</th>
+                            <th>Level</th>
+                            <th>Grade</th>
+                            <th></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+                            <tr>
+
+                                <td></td>
+
+                              <td>(</td>
+                              <td></td>
+                              <td></td>
+                              <td>Mathematics</td>
+                              <td>2321</td>
+                              <td>Undergraduate</td>
+                              <td>C-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>And</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Physics</td>
+                              <td>1155</td>
+                              <td>Undergraduate</td>
+                              <td>C-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>And</td>
+
+                              <td>(</td>
+                              <td></td>
+                              <td></td>
+                              <td>Chemistry &amp; Chemical Biology</td>
+                              <td>1151</td>
+                              <td>Undergraduate</td>
+                              <td>C-</td>
+                              <td></td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>Chemistry &amp; Chemical Biology</td>
+                              <td>1211</td>
+                              <td>Undergraduate</td>
+                              <td>C-</td>
+                              <td>)</td>
+                            </tr>
+
+                            <tr>
+
+                                <td></td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>)</td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Or</td>
+
+                              <td></td>
+                              <td>Graduate Admission</td>
+                              <td>REQ</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+      summary: Prerequisites
+      operationId: Prerequisites
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getCourseMutuallyExclusions:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    No Mutual Exclusion information available.
+      summary: Mutual Exclusion
+      operationId: Mutual Exclusion
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getXlstSections:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    No cross list information available.
+      summary: Cross Listed Courses
+      operationId: Cross Listed Courses
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getLinkedSections:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    No linked course information available.
+      summary: Linked Sections
+      operationId: Linked Sections
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getFees:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |2
+                    No fee information available.
+      summary: Fees
+      operationId: Fees
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+  /searchResults/getSectionCatalogDetails:
+    post:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            text/html:
+              example: |
+                <span class="status-bold">Title: </span>Physics for Life Sciences 2<br/>
+
+                <span class="status-bold">College:</span>
+
+                        <span>College of Science  SC</span>
+
+                <br/>
+
+                <span class="status-bold">Division:</span>
+
+                <br/>
+
+                <span class="status-bold">Department:</span>
+
+                <span>Physics  PHYS</span>
+
+                <br/>
+
+                <span class="status-bold">Hours:</span><br/>
+                <span class="indent-left">Credit Hours: </span><span class="credit-hours-direction">4  </span><br/>
+
+                    <div class="indent-left">
+                        Lecture: <span class="credit-hours-direction">4  </span><br/>
+                        Lab: <span class="credit-hours-direction">  </span> <br/>
+                        Other: <span class="credit-hours-direction">  </span> <br/>
+                    </div>
+
+                <span class="status-bold">Levels:</span><br/>
+                <div class="indent-left">
+
+                        Undergraduate  UG
+
+                </div>
+                <span class="status-bold">Grading Modes:</span>
+                <div class="indent-left">
+                    Pass/Fail  P<br/> Traditional  S 
+                </div>
+                <span class="status-bold">Schedule Types:</span>
+                <div class="indent-left">Lecture  LEC </div>
+                <span class="status-bold">Attributes:</span>
+                <div class="indent-left"> NUpath Natural/Designed World  NCND<br/> UG College of Science  UBSC </div>
+      summary: Catalog
+      operationId: Catalog
+      description: ""
+      tags:
+        - Search Results
+      parameters: []
+components:
+  schemas: {}
+tags:
+  - name: Registration Listings
+    description: |-
+      Listing data about terms, subjects, classes, and sections
+  - name: Search Results
+    description: |-
+      Most (but one) of these are `POST` endpoints that require the same URL encoded body,
+      and returns HTML code.

@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+/* lol we have no dark mode... yet???? */
+/* @custom-variant dark (&:is(.dark *)); */
+
+:root {
+  --neu9: oklch(0.25 0 0); /* text */
+  --neu8: oklch(0.33 0.027 245.9);
+  --neu7: oklch(0.49 0 0); /* label text */
+  --neu6: oklch(0.62 0 0); /* placeholder text */
+  --neu5: oklch(0.7155 0 0);
+  --neu4: oklch(0.81 0 0); /* rings (at /50) */
+  --neu3: oklch(
+    0.91 0 0
+  ); /* focus items (cards against neu2 at /30) & badges */
+  --neu25: oklch(0.9604 0.0011 197.14);
+  --neu2: oklch(
+    0.98 0.0011 197.14
+  ); /* input backgrounds & accent backgrounds */
+  --neu1: oklch(1 0 0); /* background */
+
+  --neu: oklch(0.61 0.2082 22.24);
+  --r4: oklch(0.6663 0.1868 27.46);
+  --r1: oklch(0.9093 0.0392 12.03);
+
+  --c1: oklch(0.9516 0.0399 75.8);
+  --c6: oklch(0.6632 0.1413 66.52);
+
+  --l1: oklch(0.9154 0.0144 231.22);
+
+  --green: oklch(0.7038 0.1481 160); /* seat green status */
+  --yellow: oklch(0.7828 0.168 66.2); /* seat yellow status */
+  --red: oklch(0.6122 0.2082 22.24); /* seat red status */
+  --blue: oklch(0.6 0.1786 254.7); /* links (hover at /80) */
+  --cps: oklch(0.78 0.168 66.2);
+  --law: oklch(0.56 0.0781 237.98);
+
+  --navy: oklch(0.33 0.0678 257.27);
+
+  /* ShadCN style variables - these enforce some degree of consistency across components */
+  --background: oklch(1 0 0); /* NEU 1 */
+  --foreground: oklch(0.25 0 0); /* NEU 9 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.91 0 0); /* NEU 3 */
+  --primary-foreground: oklch(0.25 0 0); /* NEU 9 */
+  --secondary: oklch(0.9814 0.0011 197.14); /* NEU 2 */
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.62 0 0); /* NEU 6 */
+  --accent: oklch(0.61 0.2082 22.24); /* NEU */
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9604 0.0011 197.14); /* NEU 2.5 */
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Scheduler Course Colors */
+  --scheduler-course-yellow-fill: #FFF9D8;
+  --scheduler-course-yellow-stroke: #FFF6C7;
+  --scheduler-course-red-fill: #FFE4E0;
+  --scheduler-course-red-stroke: #FFD8D2;
+  --scheduler-course-blue-fill: #DBF4FB;
+  --scheduler-course-blue-stroke: #CCEFF9;
+  --scheduler-course-purple-fill: #E2E0F8;
+  --scheduler-course-purple-stroke: #D6D3F5;
+  --scheduler-course-green-fill: #DBF6E5;
+  --scheduler-course-green-stroke: #CCF2DA;
+  --scheduler-course-orange-fill: #FFF1E4;
+  --scheduler-course-orange-stroke: #FFEBD9;
+  --scheduler-course-pink-fill: #FFE4F0;
+  --scheduler-course-pink-stroke: #FFD9EA;
+  --scheduler-course-gray-fill: #EAEAEA;
+  --scheduler-course-gray-stroke: #E1E1E1;
+  --scheduler-course-brown-fill: #E9E0D9;
+  --scheduler-course-brown-stroke: #E0D3C9;
+  
+  --font-lato: "Lato", sans-serif;
+}
+
+@theme inline {
+  --color-neu9: var(--neu9);
+  --color-neu8: var(--neu8);
+  --color-neu7: var(--neu7);
+  --color-neu6: var(--neu6);
+  --color-neu5: var(--neu5);
+  --color-neu4: var(--neu4);
+  --color-neu3: var(--neu3);
+  --color-neu25: var(--neu25);
+  --color-neu2: var(--neu2);
+  --color-neu1: var(--neu1);
+
+  --color-neu: var(--neu);
+  --color-r4: var(--r4);
+  --color-r1: var(--r1);
+
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-red: var(--red);
+  --color-blue: var(--blue);
+
+  --color-cps: var(--cps);
+  --color-law: var(--law);
+
+  --color-l1: var(--l1);
+  --color-c1: var(--c1);
+  --color-c6: var(--c6);
+
+  --color-navy: var(--navy);
+
+  --font-sans: var(--font-lato);
+  --font-mono: var(--font-geist-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-neu25 outline-neu4/50;
+  }
+  body {
+    @apply bg-neu2 text-neu9;
+  }
+  * {
+    @apply leading-tight;
+  }
+}
+
+@theme default {
+  --color-accent: var(--neu);
+}
+
+@layer theme {
+  [data-theme="neu"] {
+    --color-accent: var(--neu);
+  }
+
+  [data-theme="cps"] {
+    --color-accent: var(--cps);
+  }
+
+  [data-theme="law"] {
+    --color-accent: var(--law);
+  }
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 900;
+  src:
+    url("/fonts/lato-black-webfont.woff2") format("woff2"),
+    url("/fonts/lato-black-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 900;
+  src:
+    url("/fonts/lato-blackitalic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-blackitalic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 700;
+  src:
+    url("/fonts/lato-bold-webfont.woff2") format("woff2"),
+    url("/fonts/lato-bold-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 700;
+  src:
+    url("/fonts/lato-bolditalic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-bolditalic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 600;
+  src:
+    url("/fonts/lato-semibold-webfont.woff2") format("woff2"),
+    url("/fonts/lato-semibold-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 600;
+  src:
+    url("/fonts/lato-semibolditalic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-semibolditalic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 600;
+  src:
+    url("/fonts/lato-semibold-webfont.woff2") format("woff2"),
+    url("/fonts/lato-semibold-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 400;
+  src:
+    url("/fonts/lato-italic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-italic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 400;
+  src:
+    url("/fonts/lato-regular-webfont.woff2") format("woff2"),
+    url("/fonts/lato-regular-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 300;
+  src:
+    url("/fonts/lato-light-webfont.woff2") format("woff2"),
+    url("/fonts/lato-light-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 300;
+  src:
+    url("/fonts/lato-lightitalic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-lightitalic-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 100;
+  src:
+    url("/fonts/lato-thin-webfont.woff2") format("woff2"),
+    url("/fonts/lato-thin-webfont.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  font-weight: 100;
+  src:
+    url("/fonts/lato-thinitalic-webfont.woff2") format("woff2"),
+    url("/fonts/lato-thinitalic-webfont.woff") format("woff");
+}
+
+.sunset {
+  background: linear-gradient(
+    180deg,
+    rgba(168, 218, 220, 0.66) 3.86%,
+    rgba(168, 218, 220, 0.66) 54.45%,
+    hsla(90, 23%, 74%, 0.539) 68.57%,
+    hsla(47, 45%, 66%, 0.425) 78.28%,
+    rgba(255, 159, 28, 0.67) 103.17%
+  );
+}

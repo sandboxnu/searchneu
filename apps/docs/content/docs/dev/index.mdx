@@ -1,0 +1,62 @@
+---
+title: Getting Started
+icon: BookMarked
+description: Getting started on SearchNEU
+---
+import { HomeIcon } from 'lucide-react';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+## Introduction
+
+SearchNEU is a longstanding project; the oldest one in Sandbox. As a developer, if you're reading this,
+I'm sure you have some semblance of an idea of what SearchNEU is about: helping students find classes a lot more easily than banner does. Recently, a chill guy named Big Mike re-worked the SearchNEU codebase from the ground up, shifting Search from a pretty outdated codebase to a sleek,
+modern (dareisay chique?) codebase. Hopefully, this documentation will serve as your guide for navigating Search,
+making a it a little bit easier to keep this awesome project in tip-top shape!
+
+
+### Getting Started:
+
+1. Go to the SearchNEU github [here](https://github.com/sandboxnu/searchneu) and clone the repository. As a general practice, whenever you make a change, please make a branch off of the main repository and submit a PR for review by the rest of the team. Specifics on how to go about using Git and GitHub for this project can be found [here](/).
+
+2. Search is composed of two apps: the documentation app (powered by [Fumadocs](https://www.fumadocs.dev/docs/ui/what-is-fumadocs)) and SearchNEU proper. Search itself is built in the [Next.js](https://nextjs.org/) framework, which itself draws on the [React](https://react.dev/) library. We rely on a [PostgreSQL](`https://www.postgresql.org/`) database to store course/class information, coupled with a [Drizzle ORM](`https://orm.drizzle.team/docs/overview`) (Object-Relational Mapper) for linking our TypeScript to our data.
+
+3. Now into a little bit more of the meat: EXPLAIN PACKAGE.JSON DIFFERENT COMMANDS AND WHAT THEY DO ONCE WE FIGURE OUT DB REFACTORING
+
+### Specific Topics
+
+Below you can dig into more intricate, specific parts of search. Go crazy! (We did)
+
+<p></p>
+
+<Cards>
+    <Card
+    href="/dev/frontend"
+    title="Frontend Stuff"
+    >
+    Learn more about the killer SearchNEU design
+    </Card>
+    <Card
+    href="/dev/database"
+    title="Database/Scraper Interworkings"
+    >
+    How the scraper interacts with banner and our database
+    </Card>
+    <Card
+    href="/dev/search"
+    title="Searching Shenanigans"
+    >
+    What makes Search able to search
+    </Card>
+    <Card
+    href="/dev/git"
+    title="Github and Git Etiquette"
+    >
+    So we never have another quarter million line PR
+    </Card>
+    <Card
+    href="/dev/vercel"
+    title="Hosting Through Vercel"
+    >
+    Actually hosting SearchNEU for our lovely cohort
+    </Card>
+</Cards>

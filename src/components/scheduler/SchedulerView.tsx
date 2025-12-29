@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
 import { CalendarView } from "./CalendarView";
 import { getCourseColorMap } from "@/lib/scheduler/courseColors";
+import { cn } from "@/lib/cn";
 
 // Helper to get unique courses from a schedule
 function getCoursesFromSchedule(schedule: SectionWithCourse[]): string[] {
@@ -127,13 +128,12 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
             <button
               key={group.courseKey}
               onClick={() => handleCourseGroupChange(group.courseKey, index)}
-              className={`
-                px-3 py-2 rounded-lg border whitespace-nowrap font-bold flex items-center gap-2 text-neu8
-                ${currentCourseGroupIndex === index
-                  ? "border-neu3 bg-white"
-                  : "border-neu3 bg-neu2 hover:bg-neu3"
-                }
-              `}
+              className={cn(
+                "px-3 py-2 rounded-lg border whitespace-nowrap font-bold flex items-center gap-2 text-neu8 border-neu3",
+                currentCourseGroupIndex === index
+                  ? "bg-white"
+                  : "bg-neu2 hover:bg-neu3"
+              )}
             >
               {group.courses.map((course) => {
                 const color = colorMap.get(course);
@@ -164,13 +164,12 @@ export function SchedulerView({ schedules, filters }: SchedulerViewProps) {
               <button
                 key={scheduleKey}
                 onClick={() => handleScheduleChange(scheduleKey)}
-                className={`
-                  px-4 py-2 rounded-lg border whitespace-nowrap font-bold
-                  ${currentScheduleIndex === index
-                    ? "bg-white border-gray-300 text-gray-900"
-                    : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
-                  }
-                `}
+                className={cn(
+                  "px-4 py-2 rounded-lg border whitespace-nowrap font-bold border-neu3",
+                  currentScheduleIndex === index
+                    ? "bg-white text-neu9"
+                    : "bg-neu1 text-neu6 hover:bg-gray-200"
+                )}
               >
                 Plan {index + 1}
               </button>

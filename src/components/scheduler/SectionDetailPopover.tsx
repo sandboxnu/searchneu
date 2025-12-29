@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Fragment, type ReactNode } from "react"
+import { Fragment, type ReactNode } from "react";
 
-import type { SectionWithCourse } from "@/lib/scheduler/filters"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/cn"
+import type { SectionWithCourse } from "@/lib/scheduler/filters";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/cn";
 
 interface SectionDetailPopoverProps {
   section: SectionWithCourse,
@@ -21,7 +21,7 @@ export function SectionDetailPopover({ section, children }: SectionDetailPopover
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-[360px] p-0 bg-neu1 shadow-lg" align="start" side="right" sideOffset={8}>
+      <PopoverContent className="w-[360px] p-0 bg-neu1 shadow-lg border-0" align="start" side="right" sideOffset={8}>
         {/* Header */}
         <div className="px-6 pt-6 pb-4 relative bg-neu2 stroke-neu3 rounded-t-xl">
           <h2 className="text-xl font-bold text-neu9">
@@ -101,11 +101,11 @@ const formatMeetingDays = (meetingDays: number[]): ReactNode => {
 
   const dayLabels = meetsOnWeekend
     ? ["S", "M", "T", "W", "TH", "F", "S"]
-    : ["M", "T", "W", "TH", "F"]
+    : ["M", "T", "W", "TH", "F"];
 
   const dayIndices = meetsOnWeekend
     ? [0, 1, 2, 3, 4, 5, 6]
-    : [1, 2, 3, 4, 5]
+    : [1, 2, 3, 4, 5];
 
   return (
     <span className="tracking-wide">

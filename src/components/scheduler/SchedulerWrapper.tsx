@@ -13,7 +13,7 @@ interface SchedulerWrapperProps {
 
 export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({includesOnline: true, includeHonors: true});
+  const [filters, setFilters] = useState<ScheduleFilters>({ includesOnline: true, includeHonors: true });
   const [isPending, startTransition] = useTransition();
 
   const handleGenerateSchedules = async (lockedCourseIds: number[], optionalCourseIds: number[]) => {
@@ -38,8 +38,8 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
   return (
     <div className="grid w-full grid-cols-6">
       <div className="col-span-1 w-full">
-        <FilterPanel 
-          filters={filters} 
+        <FilterPanel
+          filters={filters}
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}

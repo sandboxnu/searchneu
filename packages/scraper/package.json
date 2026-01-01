@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
-    "scrape:up": "node --import tsx ./src/scripts/upload.ts"
+    "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
   },
   "exports": {
     "./types": {

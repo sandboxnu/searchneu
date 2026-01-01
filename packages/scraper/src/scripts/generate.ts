@@ -2,13 +2,12 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "../gen/main";
+import { scrapeCatalogTerm } from "../generate/main";
 import { infer as zinfer } from "zod";
 import { Config } from "../config";
 import { consola } from "consola";
 import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
 
-const CACHE_PATH = "cache/";
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
 
@@ -23,6 +22,12 @@ const main = defineCommand({
       default: "active",
       description:
         "comma-seperated list of specific terms to scrape, 'active' (default), or 'all'",
+      required: false,
+    },
+    cachePath: {
+      type: "string",
+      default: "cache/",
+      description: "",
       required: false,
     },
     interactive: {
@@ -57,7 +62,7 @@ const main = defineCommand({
     const interactive = args.interactive;
 
     const configStream = readFileSync(
-      path.resolve(CACHE_PATH, "manifest.yaml"),
+      path.resolve(args.cachePath, "manifest.yaml"),
       {
         encoding: "utf8",
       },
@@ -83,7 +88,7 @@ const main = defineCommand({
       consola.start(`scraping term ${termConfig.term}`);
 
       const cachename = path.resolve(
-        CACHE_PATH,
+        args.cachePath,
         CACHE_FORMAT(termConfig.term.toString()),
       );
       const existingCache = existsSync(cachename);
@@ -94,25 +99,31 @@ const main = defineCommand({
         continue;
       }
 
-      const out = await scrapeCatalogTerm(
-        termConfig.term.toString(),
-        termConfig,
-        interactive,
-      );
+      try {
+        const out = await scrapeCatalogTerm(
+          termConfig.term.toString(),
+          termConfig,
+          interactive,
+        );
 
-      if (!out) {
-        consola.error(`error scraping term ${termConfig.term}`);
-        return;
+        if (!out) {
+          consola.error(`error scraping term ${termConfig.term}`);
+          // return;
+          continue;
+        }
+
+        const cachedData: zinfer<typeof ScraperBannerCache> = {
+          version: CACHE_VERSION,
+          timestamp: new Date().toISOString(),
+          ...out,
+        };
+
+        writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
+        consola.success(`scraped term ${termConfig.term}`);
+      } catch (e) {
+        consola.error(`failed to scrape term ${termConfig.term}`, e);
+        continue;
       }
-
-      const cachedData: zinfer<typeof ScraperBannerCache> = {
-        version: CACHE_VERSION,
-        timestamp: new Date().toISOString(),
-        ...out,
-      };
-
-      writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
-      consola.success(`scraped term ${termConfig.term}`);
     }
 
     consola.success(

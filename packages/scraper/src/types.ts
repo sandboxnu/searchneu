@@ -45,7 +45,7 @@ export type Section = z.infer<typeof ScraperBannerCacheSection>;
 export interface Faculty {
   bannerId: string;
   displayName: string;
-  email?: string;
+  email: string | null;
   primary: boolean;
 }
 
@@ -81,7 +81,7 @@ export interface Test {
 }
 
 export type RequisiteItem = Condition | ReqsCourse | Test;
-export type Requisite = RequisiteItem | Record<string, never>;
+export type Requisite = RequisiteItem | Record<never, never>;
 
 export interface Subject {
   code: string;

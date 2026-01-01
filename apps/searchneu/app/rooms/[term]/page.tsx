@@ -13,11 +13,11 @@ const cachedBuildings = unstable_cache(
         buildingId: buildingsT.id,
         buildingName: buildingsT.name,
         roomId: roomsT.id,
-        roomNumber: roomsT.number,
+        roomNumber: roomsT.code,
       })
       .from(buildingsT)
       .leftJoin(roomsT, eq(roomsT.buildingId, buildingsT.id))
-      .orderBy(buildingsT.name, roomsT.number);
+      .orderBy(buildingsT.name, roomsT.code);
 
     // Group rooms by building
     const groupedData = buildingsWithRooms.reduce(

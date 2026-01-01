@@ -8,7 +8,7 @@ import type {
   Course,
   Test,
   RequisiteItem,
-} from "@/scraper/reqs";
+} from "@sneu/scraper/types";
 import { cn } from "@/lib/cn";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
@@ -64,7 +64,7 @@ export function RequisiteBlock({
   }
 
   const tree = RequisiteItemComponent({
-    item: req,
+    item: req as RequisiteItem,
     term: termId,
     depth: 0,
     prereqMode: prereqMode,
@@ -77,18 +77,20 @@ export function RequisiteBlock({
         ref={contentRef}
         className={cn("", {
           "transition-all duration-500 ease-in-out":
-            isCondition(req) && contentHeight > 120,
+            isCondition(req as RequisiteItem) && contentHeight > 120,
           "overflow-hidden": isAnimating || !expanded,
           "overflow-visible": !isAnimating && expanded,
         })}
         style={{
           maxHeight:
-            isCondition(req) && !expanded ? "120px" : `${contentHeight}px`,
+            isCondition(req as RequisiteItem) && !expanded
+              ? "120px"
+              : `${contentHeight}px`,
         }}
       >
         {tree}
       </div>
-      {contentHeight > 120 && isCondition(req) && (
+      {contentHeight > 120 && isCondition(req as RequisiteItem) && (
         <Button
           className={cn(
             "text-neu6 hover:bg-neu3/30 hover:text-neu6 mt-2 -mb-2 h-6 py-1.5 text-[10px] font-bold",
@@ -96,7 +98,11 @@ export function RequisiteBlock({
           variant="ghost"
           onClick={handleToggle}
         >
-          {expanded ? <>COLLAPSE</> : <>SEE ALL ({req.items.length})</>}
+          {expanded ? (
+            <>COLLAPSE</>
+          ) : (
+            <>SEE ALL ({(req as Condition).items.length})</>
+          )}
           <ChevronDown
             className={cn("transform transition duration-200", {
               "rotate-180": expanded,

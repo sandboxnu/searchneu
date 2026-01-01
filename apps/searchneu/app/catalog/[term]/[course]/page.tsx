@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
-import { type Requisite } from "@/scraper/reqs";
+import { type Requisite } from "@sneu/scraper/types";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import {

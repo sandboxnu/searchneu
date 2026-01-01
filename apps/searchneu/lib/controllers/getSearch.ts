@@ -1,4 +1,12 @@
-import { db, coursesT, sectionsT, courseNupathJoinT, nupathsT } from "@/lib/db";
+import {
+  db,
+  coursesT,
+  sectionsT,
+  courseNupathJoinT,
+  nupathsT,
+  subjectsT,
+  campusesT,
+} from "@/lib/db";
 import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { cache } from "react";
 
@@ -23,12 +31,12 @@ export const getSearch = cache(
       );
     }
 
-    if (subjects && subjects.length > 0 && subjects[0] !== "") {
-      sqlChunks.push(sql`and`);
-      sqlChunks.push(
-        sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + `'${s}'`, "") + "]"}`,
-      );
-    }
+    // if (subjects && subjects.length > 0 && subjects[0] !== "") {
+    //   sqlChunks.push(sql`and`);
+    //   sqlChunks.push(
+    //     sql`${coursesT.subject} @@@ ${"IN [" + subjects.reduce((agg, s) => agg + " " + `'${s}'`, "") + "]"}`,
+    //   );
+    // }
 
     if (minCourseId !== -1) {
       sqlChunks.push(sql`and`);
@@ -49,7 +57,7 @@ export const getSearch = cache(
         id: coursesT.id,
         name: coursesT.name,
         courseNumber: coursesT.courseNumber,
-        subject: coursesT.subject,
+        subject: subjectsT.code,
         maxCredits: coursesT.maxCredits,
         minCredits: coursesT.minCredits,
         nupaths: sql<
@@ -63,7 +71,7 @@ export const getSearch = cache(
         postreqs: coursesT.postreqs,
         totalSections: countDistinct(sectionsT.id),
         sectionsWithSeats: sql<number>`count(distinct case when ${sectionsT.seatRemaining} > 0 then ${sectionsT.id} end)`,
-        campus: sql<string[]>`array_agg(distinct ${sectionsT.campus})`,
+        campus: sql<string[]>`array_agg(distinct ${campusesT.name})`,
         classType: sql<string[]>`array_agg(distinct ${sectionsT.classType})`,
         honors: sql<boolean>`bool_or(${sectionsT.honors})`,
         score: sql<number>`paradedb.score(${coursesT.id})`,
@@ -72,6 +80,8 @@ export const getSearch = cache(
       .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
       .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
       .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
+      .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+      .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
       .where(sql.join(sqlChunks, sql.raw(" ")))
       .groupBy(
         coursesT.id,
@@ -80,6 +90,7 @@ export const getSearch = cache(
         coursesT.subject,
         coursesT.maxCredits,
         coursesT.minCredits,
+        subjectsT.code,
       )
       .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
 
@@ -95,6 +106,10 @@ export const getSearch = cache(
         (classTypes.length === 0 ||
           (classTypes.length > 0 && classTypes[0] === "") ||
           r.classType.some((x) => classTypes.includes(x))) &&
+        // HACK: add subject filtering back in
+        (subjects.length === 0 ||
+          (subjects.length > 0 && subjects[0] === "") ||
+          subjects.some((x) => r.subject === x)) &&
         (!honors || r.honors),
     );
 

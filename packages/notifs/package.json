@@ -1,0 +1,24 @@
+{
+  "name": "@sneu/notifs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "twilio": "^5.3.7"
+  },
+  "devDependencies": {
+    "@sneu/tsconfig": "workspace:*",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

@@ -8,12 +8,13 @@ import {
   termsT,
   trackersT,
   usersT,
+  subjectsT,
 } from "@/lib/db";
-import { eq, gt, and, sql } from "drizzle-orm";
+import { eq, gt, and } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
-import { updateTerm } from "@/scraper/update";
+import { updateTerm } from "@sneu/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
-import { logger } from "@/lib/logger";
 
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  logger.info(req.url);
+  console.log(req.url);
 
   // get active terms
   const dbterms = await db
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
     .where(gt(termsT.activeUntil, new Date()));
 
   const terms = dbterms.map((t) => t.term);
-  logger.info({ terms }, "terms to update");
+  console.log({ terms }, "terms to update");
 
   // for each term perform an update
   for (const term of terms) {
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
       sectionsWithUpdatedWaitlistSeatCapacity: updatedWaitlistCapacity,
       newSections,
       newSectionCourseKeys,
-    } = await updateTerm(term);
+    } = await updateTerm(term, db, console);
 
     // get seat trackers & send notifs
     const trackers = await db
@@ -58,7 +59,7 @@ export async function GET(req: NextRequest) {
         method: trackersT.notificationMethod,
         count: trackersT.messageCount,
         limit: trackersT.messageLimit,
-        courseSubject: coursesT.subject,
+        courseSubject: subjectsT.code,
         courseNumber: coursesT.courseNumber,
         phoneNumber: usersT.phoneNumber,
         phoneNumberVerified: usersT.phoneNumberVerified,
@@ -66,6 +67,7 @@ export async function GET(req: NextRequest) {
       .from(trackersT)
       .innerJoin(sectionsT, eq(sectionsT.id, trackersT.sectionId))
       .innerJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
+      .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(usersT, eq(usersT.id, trackersT.userId))
       .where(eq(sectionsT.term, term));
 
@@ -152,69 +154,69 @@ export async function GET(req: NextRequest) {
     }
 
     if (newSections.length > 0) {
-      const sections = await db
-        .insert(sectionsT)
-        .values(
-          newSections.map((s, i) => ({
-            term: term,
-            courseId: newSectionCourseKeys[i],
-            crn: s.crn,
-            faculty: s.faculty,
-            seatCapacity: s.seatCapacity,
-            seatRemaining: s.seatRemaining,
-            waitlistCapacity: s.waitlistCapacity,
-            waitlistRemaining: s.waitlistRemaining,
-            classType: s.classType,
-            honors: s.honors,
-            campus: s.campus,
-            meetingTimes: s.meetingTimes,
-          })),
-        )
-        .returning();
-
-      const meetingTimesData = [];
-
-      for (let i = 0; i < newSections.length; i++) {
-        const section = sections[i];
-        const meetingTimes = newSections[i].meetingTimes;
-        for (const mt of meetingTimes) {
-          let roomId = null;
-
-          if (mt.building && mt.room) {
-            const room = await db
-              .select({
-                roomId: roomsT.id,
-              })
-              .from(roomsT)
-              .innerJoin(buildingsT, eq(buildingsT.id, roomsT.buildingId))
-              .where(
-                and(
-                  eq(roomsT.number, mt.room),
-                  eq(buildingsT.name, mt.building),
-                ),
-              )
-              .limit(1);
-            roomId = room[0].roomId;
-          }
-          if (mt.startTime && mt.endTime) {
-            meetingTimesData.push({
-              term: term,
-              sectionId: section.id,
-              roomId: roomId,
-              days: mt.days,
-              startTime: mt.startTime,
-              endTime: mt.endTime,
-            });
-          }
-        }
-      }
-
-      if (meetingTimesData.length > 0) {
-        await db
-          .insert(meetingTimesT)
-          .values(meetingTimesData)
-          .onConflictDoNothing();
-      }
+      // const sections = await db
+      //   .insert(sectionsT)
+      //   .values(
+      //     newSections.map((s, i) => ({
+      //       term: term,
+      //       courseId: newSectionCourseKeys[i],
+      //       crn: s.crn,
+      //       faculty: s.faculty,
+      //       seatCapacity: s.seatCapacity,
+      //       seatRemaining: s.seatRemaining,
+      //       waitlistCapacity: s.waitlistCapacity,
+      //       waitlistRemaining: s.waitlistRemaining,
+      //       classType: s.classType,
+      //       honors: s.honors,
+      //       campus: s.campus,
+      //       meetingTimes: s.meetingTimes,
+      //     })),
+      //   )
+      //   .returning();
+      //
+      // const meetingTimesData = [];
+      //
+      // for (let i = 0; i < newSections.length; i++) {
+      //   const section = sections[i];
+      //   const meetingTimes = newSections[i].meetingTimes;
+      //   for (const mt of meetingTimes) {
+      //     let roomId = null;
+      //
+      //     if (mt.building && mt.room) {
+      //       const room = await db
+      //         .select({
+      //           roomId: roomsT.id,
+      //         })
+      //         .from(roomsT)
+      //         .innerJoin(buildingsT, eq(buildingsT.id, roomsT.buildingId))
+      //         .where(
+      //           and(
+      //             eq(roomsT.number, mt.room),
+      //             eq(buildingsT.name, mt.building),
+      //           ),
+      //         )
+      //         .limit(1);
+      //       roomId = room[0].roomId;
+      //     }
+      //     if (mt.startTime && mt.endTime) {
+      //       meetingTimesData.push({
+      //         term: term,
+      //         sectionId: section.id,
+      //         roomId: roomId,
+      //         days: mt.days,
+      //         startTime: mt.startTime,
+      //         endTime: mt.endTime,
+      //       });
+      //     }
+      //   }
+      // }
+      //
+      // if (meetingTimesData.length > 0) {
+      //   await db
+      //     .insert(meetingTimesT)
+      //     .values(meetingTimesData)
+      //     .onConflictDoNothing();
+      // }
     }
 
     // set the term last updated

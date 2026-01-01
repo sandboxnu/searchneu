@@ -1,16 +1,14 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/controllers/getTerms";
 import { MobileWrapper } from "@/components/catalog/MobileWrapper";
-import { db, subjectsT, sectionsT, nupathsT, campusesT } from "@/lib/db";
+import { db, sectionsT, nupathsT, campusesT } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 
 const cachedSubjects = unstable_cache(
-  async (term: string) =>
+  async () =>
     db.query.subjectsT
-      .findMany({
-        where: eq(subjectsT.term, term),
-      })
+      .findMany({})
       .then((subjs) => subjs.map((s) => ({ label: s.name, value: s.code }))),
   [],
   { revalidate: 3600, tags: ["banner.subjects"] },
@@ -51,7 +49,7 @@ export default async function Layout(props: {
   const terms = getTerms();
   const term = (await props.params)?.term ?? "";
 
-  const subjects = cachedSubjects(term);
+  const subjects = cachedSubjects();
   const campuses = cachedCampuses();
   const classTypes = cachedClassTypes(term);
   const nupaths = cachedNupaths();

@@ -1,12 +1,10 @@
 import {
   boolean,
   decimal,
-  foreignKey,
   index,
   integer,
   jsonb,
   pgTable,
-  primaryKey,
   text,
   timestamp,
   unique,
@@ -22,7 +20,9 @@ export const coursesT = pgTable(
       .notNull()
       .references(() => termsT.term),
     name: text().notNull(),
-    subject: varchar({ length: 6 }).notNull(),
+    subject: integer()
+      .notNull()
+      .references(() => subjectsT.id),
     courseNumber: varchar({ length: 6 }).notNull(),
     register: text().notNull(),
     description: text().notNull(),
@@ -37,10 +37,6 @@ export const coursesT = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
-    foreignKey({
-      columns: [table.term, table.subject],
-      foreignColumns: [subjectsT.term, subjectsT.code],
-    }),
     unique("term_course").on(table.term, table.subject, table.courseNumber),
     index("courses_search_idx")
       .using(
@@ -48,7 +44,6 @@ export const coursesT = pgTable(
         table.id,
         table.name,
         table.register,
-        table.subject,
         table.courseNumber,
         table.term,
       )
@@ -58,7 +53,6 @@ export const coursesT = pgTable(
         text_fields: `'{
           "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
           "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
-          "subject": {"fast": true},
           "courseNumber": {"fast": true},
           "term": {"fast": true}
         }'`,
@@ -84,9 +78,9 @@ export const sectionsT = pgTable(
     waitlistRemaining: integer().notNull(),
     classType: text().notNull(),
     honors: boolean().notNull(),
-    campus: text()
+    campus: integer()
       .notNull()
-      .references(() => campusesT.name),
+      .references(() => campusesT.id),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
@@ -110,25 +104,19 @@ export const termsT = pgTable("terms", {
     .$onUpdate(() => new Date()),
 });
 
-export const subjectsT = pgTable(
-  "subjects",
-  {
-    term: varchar({ length: 6 })
-      .notNull()
-      .references(() => termsT.term),
-    code: varchar({ length: 6 }).notNull(),
-    name: text().notNull(),
-  },
-  (table) => [primaryKey({ columns: [table.term, table.code] })],
-);
+export const subjectsT = pgTable("subjects", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  code: varchar({ length: 6 }).notNull().unique(),
+  name: text().notNull(),
+});
 
 export const campusesT = pgTable(
   "campuses",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().unique(),
-    // code: text().array().notNull(),
-    group: text(),
+    name: text().notNull().unique(),
+    code: text().notNull().unique(),
+    group: text().notNull(),
   },
   (table) => [uniqueIndex("campus_name_idx").on(table.name)],
 );
@@ -137,7 +125,8 @@ export const nupathsT = pgTable(
   "nupaths",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    short: varchar({ length: 3 }).notNull().unique(),
+    short: varchar({ length: 4 }).notNull().unique(),
+    code: varchar({ length: 4 }).notNull().unique(),
     name: text().notNull().unique(),
   },
   (table) => [uniqueIndex("nupath_short_idx").on(table.short)],
@@ -164,8 +153,11 @@ export const buildingsT = pgTable(
   "buildings",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().notNull(),
-    campus: text().notNull(),
+    name: text().notNull().unique(),
+    code: text().notNull().unique(),
+    campus: integer()
+      .notNull()
+      .references(() => campusesT.id),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
@@ -179,10 +171,10 @@ export const roomsT = pgTable(
   "rooms",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    code: varchar({ length: 10 }).notNull(),
     buildingId: integer()
       .notNull()
       .references(() => buildingsT.id),
-    number: varchar({ length: 10 }).notNull(),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
@@ -190,7 +182,7 @@ export const roomsT = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
-    unique("building_room").on(table.buildingId, table.number),
+    unique("building_room").on(table.buildingId, table.code),
     index("building_idx").on(table.buildingId),
   ],
 );

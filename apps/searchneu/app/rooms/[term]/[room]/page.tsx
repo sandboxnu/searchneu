@@ -34,7 +34,7 @@ export default async function RoomDetailPage({
 
   const roomData = await db
     .select({
-      roomNumber: roomsT.number,
+      roomNumber: roomsT.code,
       buildingName: buildingsT.name,
     })
     .from(roomsT)

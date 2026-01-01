@@ -7,12 +7,20 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
-    "scrape:up": "node --import tsx ./src/scripts/upload.ts"
+    "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
   },
   "exports": {
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
+    },
+    "./update": {
+      "types": "./dist/update/main.d.ts",
+      "default": "./dist/update/main.js"
+    },
+    "./notifs": {
+      "types": "./dist/update/notifs.d.ts",
+      "default": "./dist/update/notifs.js"
     }
   },
   "dependencies": {

@@ -5,6 +5,8 @@ import {
   sectionsT,
   nupathsT,
   courseNupathJoinT,
+  subjectsT,
+  campusesT,
 } from "@/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
@@ -17,7 +19,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       id: sectionsT.id,
       crn: sectionsT.crn,
       faculty: sectionsT.faculty,
-      campus: sectionsT.campus,
+      campus: campusesT.name,
       honors: sectionsT.honors,
       classType: sectionsT.classType,
       seatRemaining: sectionsT.seatRemaining,
@@ -26,7 +28,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       waitlistRemaining: sectionsT.waitlistRemaining,
       // Course data
       courseName: coursesT.name,
-      courseSubject: coursesT.subject,
+      courseSubject: subjectsT.code,
       courseNumber: coursesT.courseNumber,
       courseNupaths: sql<
         string[]
@@ -42,6 +44,8 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
     .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
     .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
     .where(eq(sectionsT.courseId, courseId))
     .groupBy(
       sectionsT.id,
@@ -315,4 +319,3 @@ export const generateSchedules = async (
 
   return allSchedules;
 };
-

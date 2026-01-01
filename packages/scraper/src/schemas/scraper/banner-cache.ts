@@ -6,7 +6,7 @@ import * as z from "zod";
 
 export const ScraperBannerCacheRequisiteTest = z.strictObject({
   name: z.string(),
-  score: z.number(),
+  score: z.number().nullable(),
 });
 export const ScraperBannerCacheRequisiteCourse = z.strictObject({
   subject: z.string(),
@@ -14,7 +14,9 @@ export const ScraperBannerCacheRequisiteCourse = z.strictObject({
 });
 export const ScraperBannerCacheRequisiteCondition = z.strictObject({
   type: z.enum(["and", "or"]),
-  items: z.array(ScraperBannerCacheRequisiteCourse),
+  get items() {
+    return z.array(ScraperBannerCacheRequisiteItem);
+  },
 });
 
 export const ScraperBannerCacheRequisiteItem = z.union([
@@ -30,14 +32,14 @@ export const ScraperBannerCacheRequisite = z.union([
 
 export const ScraperBannerFaculty = z.strictObject({
   displayName: z.string(),
-  email: z.string().optional(),
+  email: z.string().nullable(),
   primary: z.boolean(),
 });
 
 export const ScraperBannerMeetingTime = z.strictObject({
   building: z.string().nullable(),
   room: z.string().nullable(),
-  days: z.array(z.int()).length(7),
+  days: z.array(z.int()).max(7),
   startTime: z.number(),
   endTime: z.number(),
   final: z.boolean(),
@@ -58,6 +60,9 @@ export const ScraperBannerCacheCourse = z.strictObject({
   coreqs: ScraperBannerCacheRequisite,
   prereqs: ScraperBannerCacheRequisite,
   postreqs: ScraperBannerCacheRequisite,
+
+  // TODO: remove this lol
+  crn: z.string().optional(),
 });
 
 export const ScraperBannerCacheSection = z.strictObject({

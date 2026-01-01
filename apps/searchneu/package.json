@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node src/scripts/run-tests.mjs",
+    "test": "node scripts/run-tests.mjs",
     "test:watch": "node --test --watch --import tsx src/**/*.test.ts"
   },
   "dependencies": {
@@ -54,6 +54,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "server-only": "^0.0.1",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "prettier": {

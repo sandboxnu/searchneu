@@ -8,6 +8,8 @@ import {
   nupathsT,
   roomsT,
   buildingsT,
+  subjectsT,
+  campusesT,
 } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
@@ -40,12 +42,13 @@ export const getCourse = cache(
         >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
       })
       .from(coursesT)
+      .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
       .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
       .where(
         and(
           eq(coursesT.term, term),
-          eq(coursesT.subject, subject),
+          eq(subjectsT.code, subject),
           eq(coursesT.courseNumber, courseNumber),
         ),
       )
@@ -72,7 +75,7 @@ export const getCourseSections = cache(async (courseId: number) => {
       id: sectionsT.id,
       crn: sectionsT.crn,
       faculty: sectionsT.faculty,
-      campus: sectionsT.campus,
+      campus: campusesT.name,
       honors: sectionsT.honors,
       classType: sectionsT.classType,
       seatRemaining: sectionsT.seatRemaining,
@@ -86,7 +89,7 @@ export const getCourseSections = cache(async (courseId: number) => {
       endTime: meetingTimesT.endTime,
       // Room data
       roomId: roomsT.id,
-      roomNumber: roomsT.number,
+      roomNumber: roomsT.code,
       // Building data
       buildingId: buildingsT.id,
       buildingName: buildingsT.name,
@@ -95,6 +98,7 @@ export const getCourseSections = cache(async (courseId: number) => {
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
     .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
     .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
+    .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
     .where(eq(sectionsT.courseId, courseId))
     .then((rows) => {
       // Group the rows by section and reconstruct the meetingTimes array

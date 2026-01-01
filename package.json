@@ -10,9 +10,9 @@
     "db:studio": "turbo run db:studio --filter=@sneu/db"
   },
   "devDependencies": {
-    "turbo": "^2.6.3"
+    "turbo": "^2.7.2"
   },
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.27.0",
   "engine": {
     "node": "24.x"
   }

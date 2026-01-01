@@ -36,6 +36,22 @@
       "persistent": true,
       "cache": false
     },
+    "test": {
+      "env": [
+        "DATABASE_URL",
+        "CRON_SECRET",
+        "TWILIO_ACCOUNT_SID",
+        "TWILIO_AUTH_TOKEN",
+        "TWILIO_VERIFY_SID",
+        "TWILIO_PHONE_NUMBER",
+        "JWT_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "FLAGS_SECRET"
+      ],
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
     "db:generate": {
       "env": ["DATABASE_URL"],
       "cache": false
@@ -46,7 +62,8 @@
     },
     "db:push": {
       "env": ["DATABASE_URL"],
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "db:studio": {
       "env": ["DATABASE_URL"],

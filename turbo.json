@@ -13,7 +13,8 @@
         "JWT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
-        "FLAGS_SECRET"
+        "FLAGS_SECRET",
+        "SLACK_WEBHOOK_URL"
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
@@ -30,7 +31,8 @@
         "JWT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
-        "FLAGS_SECRET"
+        "FLAGS_SECRET",
+        "SLACK_WEBHOOK_URL"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "persistent": true,
@@ -47,7 +49,8 @@
         "JWT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
-        "FLAGS_SECRET"
+        "FLAGS_SECRET",
+        "SLACK_WEBHOOK_URL"
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]

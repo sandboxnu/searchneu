@@ -26,17 +26,17 @@
   "dependencies": {
     "citty": "^0.1.6",
     "consola": "^3.4.2",
-    "drizzle-orm": "^0.45.0",
+    "drizzle-orm": "^0.45.1",
     "html-entities": "^2.6.0",
-    "node-html-parser": "^7.0.1",
+    "node-html-parser": "^7.0.2",
     "yaml": "^2.8.2",
-    "zod": "^4.1.13"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@sneu/db": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.0.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

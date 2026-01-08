@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+.turbo/
+
 # dependencies
 /node_modules
 /.pnp
@@ -46,6 +48,3 @@ next-env.d.ts
 
 # ide
 .vscode
-
-# Turborepo
-.turbo

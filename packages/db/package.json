@@ -1,0 +1,39 @@
+{
+  "name": "@sneu/db",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "exports": {
+    "./neon": {
+      "types": "./dist/neon.d.ts",
+      "default": "./dist/neon.js"
+    },
+    "./pg": {
+      "types": "./dist/pg.d.ts",
+      "default": "./dist/pg.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "default": "./dist/schema/index.js"
+    }
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@sneu/tsconfig": "workspace:*",
+    "@types/node": "^25.0.3",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "^5.9.3"
+  }
+}

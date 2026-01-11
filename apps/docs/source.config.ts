@@ -1,14 +1,21 @@
+import remarkDirective from "remark-directive";
+import {
+  rehypeCodeDefaultOptions,
+  remarkDirectiveAdmonition,
+} from "fumadocs-core/mdx-plugins";
 import {
   defineConfig,
   defineDocs,
   frontmatterSchema,
   metaSchema,
-} from 'fumadocs-mdx/config';
+} from "fumadocs-mdx/config";
+import { transformerTwoslash } from "fumadocs-twoslash";
+import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
-  dir: 'content/docs',
+  dir: "content/docs",
   docs: {
     schema: frontmatterSchema,
     postprocess: {
@@ -23,5 +30,22 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     // MDX options
+    remarkPlugins: [remarkDirective, remarkDirectiveAdmonition],
+
+    rehypeCodeOptions: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      transformers: [
+        ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerTwoslash({
+          typesCache: createFileSystemTypesCache(),
+        }),
+      ],
+      // important: Shiki doesn't support lazy loading languages for codeblocks in Twoslash popups
+      // make sure to define them first (e.g. the common ones)
+      langs: ["js", "jsx", "ts", "tsx"],
+    },
   },
 });

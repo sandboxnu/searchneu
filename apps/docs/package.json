@@ -13,11 +13,16 @@
   "dependencies": {
     "fumadocs-core": "16.4.4",
     "fumadocs-mdx": "14.2.4",
+    "fumadocs-openapi": "^10.2.4",
+    "fumadocs-twoslash": "^3.1.12",
     "fumadocs-ui": "16.4.4",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "remark-directive": "^4.0.0",
+    "shiki": "^3.21.0",
+    "twoslash": "^0.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
@@ -28,6 +33,8 @@
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.1",
+    "json-schema-typed": "^8.0.2",
+    "openapi-types": "^12.1.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"

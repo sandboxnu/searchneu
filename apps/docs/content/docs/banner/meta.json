@@ -1,0 +1,13 @@
+{
+  "title": "Banner",
+  "description": "NEU Banner System",
+  "icon": "School",
+  "root": true,
+  "defaultOpen": false,
+  "pages": [
+    "index",
+    "---Endpoints---",
+    "...registration-listings",
+    "...search-results"
+  ]
+}

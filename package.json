@@ -7,7 +7,9 @@
     "db:generate": "turbo run db:generate --filter=@sneu/db",
     "db:migrate": "turbo run db:migrate --filter=@sneu/db",
     "db:push": "turbo run db:push --filter=@sneu/db",
-    "db:studio": "turbo run db:studio --filter=@sneu/db"
+    "db:studio": "turbo run db:studio --filter=@sneu/db",
+    "scrape:gen": "turbo run scrape:gen --filter=@sneu/scraper",
+    "scrape:up": "turbo run scrape:up --filter=@sneu/scraper"
   },
   "devDependencies": {
     "turbo": "^2.7.3"

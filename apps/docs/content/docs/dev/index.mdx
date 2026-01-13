@@ -3,24 +3,51 @@ title: Getting Started
 icon: Rocket
 description: Getting started on SearchNEU
 ---
-import { HomeIcon } from 'lucide-react';
-import { Card, Cards } from 'fumadocs-ui/components/card';
+
+import { HomeIcon } from "lucide-react";
+import { Card, Cards } from "fumadocs-ui/components/card";
 
 ## Introduction
 
-SearchNEU is a longstanding project; one of the oldest ones in Sandbox. As a developer, if you're reading this,
-I'm sure you have some semblance of an idea of what SearchNEU is about: helping students find classes a lot more easily than banner does. Recently, a chill guy named Big Mike re-worked the SearchNEU codebase from the ground up, shifting Search from a pretty outdated codebase to a sleek,
-modern (dareisay chique?) codebase. Hopefully, this documentation will serve as your guide for navigating Search,
-making a it a little bit easier to keep this awesome project in tip-top shape!
+SearchNEU is a longstanding project; one of the oldest ones in Sandbox. As a
+developer, if you're reading this, I'm sure you have some semblance of an idea
+of what SearchNEU is about: helping students find classes a lot more easily than
+banner does. Hopefully, this documentation will serve as your guide for navigating
+Search, making a it a little bit easier to keep this awesome project in tip-top
+shape!
 
+## Getting Started
 
-### Getting Started:
+### Tech Installation
 
-1. Go to the SearchNEU github [here](https://github.com/sandboxnu/searchneu) and clone the repository. As a general practice, whenever you make a change, please make a branch off of the main repository and submit a PR for review by the rest of the team. Specifics on how to go about using Git and GitHub for this project can be found [here](/).
+1. Install the [pnpm](https://pnpm.io) package manager. This should be installed
+   directly and **not** installed through `npm`. Run `pnpm -v` to ensure it was
+   successfully installed (should return version information).
+2. Install [Docker](https://www.docker.com/) following the directions on the site.
+   Correct installation can be checked by running `docker -v` which should return
+   version information.
+3. Install [Nodejs](https://nodejs.org/en). Installation can vary by system, preferrences,
+   and previous installations. The easiest way is to run `pnpm env use --global 24`
+   which uses pnpm to install Node. Note that pnpm may error and require `pnpm setup`
+   to be run first. Node installation can be checked with `node -v` which should return
+   a version starting with `v24` (the current major Nodejs version that Search uses)
+4. Install [Turborepo](https://turborepo.dev) globally with `pnpm install turbo --global`.
+5. Clone the [SearchNEU github repository](https://github.com/sandboxnu/searchneu)
+   with `git clone git@github.com:sandboxnu/searchneu.git`
+6. Install all project dependencies! From inside the project directory, run `pnpm install`.
+   This should install a bunch of packages and create some `node_module` directories.
+7. Clone cache files from [SearchNEU Cache Repository](https://github.com/sandboxnu/searchneu-cache).
+   These should be somewhere on your machine, but not in the main SearchNEU directory.
 
-2. Search is composed of two apps: the documentation app (powered by [Fumadocs](https://www.fumadocs.dev/docs/ui/what-is-fumadocs)) and SearchNEU proper. Search itself is built in the [Next.js](https://nextjs.org/) framework, which itself draws on the [React](https://react.dev/) library. We rely on a [PostgreSQL](`https://www.postgresql.org/`) database to store course/class information, coupled with a [Drizzle ORM](`https://orm.drizzle.team/docs/overview`) (Object-Relational Mapper) for linking our TypeScript to our data.
+### Running the Project
 
-3. Now into a little bit more of the meat: EXPLAIN PACKAGE.JSON DIFFERENT COMMANDS AND WHAT THEY DO ONCE WE FIGURE OUT DB REFACTORING
+1. Start up the database with `docker compose up -d`.
+2. After the first time you spin up the database, run `turbo db:migrate` to clear
+   the database. More database information can be found [here](dev/codebase/database)
+3. Run `turbo db:push` to upload the drizzle schema
+4. Seed the database with `turbo scrape:up -- --cachePath="<PATH_TO_CATALOG_CACHES>" --terms=all`
+5. Run `turbo dev` to spin up SearchNEU and all packages
+6. Visit http://localhost:3000 to view the site!
 
 ### Specific Topics
 
@@ -29,34 +56,19 @@ Below you can dig into more intricate, specific parts of search. Go crazy! (We d
 <p></p>
 
 <Cards>
-    <Card
-    href="/dev/frontend"
-    title="Frontend Stuff"
-    >
+  <Card href="/dev/frontend" title="Frontend Stuff">
     Learn more about the killer SearchNEU design
-    </Card>
-    <Card
-    href="/dev/database"
-    title="Database/Scraper Interworkings"
-    >
+  </Card>
+  <Card href="/dev/database" title="Database/Scraper Interworkings">
     How the scraper interacts with banner and our database
-    </Card>
-    <Card
-    href="/dev/search"
-    title="Searching Shenanigans"
-    >
+  </Card>
+  <Card href="/dev/search" title="Searching Shenanigans">
     What makes Search able to search
-    </Card>
-    <Card
-    href="/dev/git"
-    title="Github and Git Etiquette"
-    >
+  </Card>
+  <Card href="/dev/git" title="Github and Git Etiquette">
     So we never have another quarter million line PR
-    </Card>
-    <Card
-    href="/dev/vercel"
-    title="Hosting Through Vercel"
-    >
+  </Card>
+  <Card href="/dev/vercel" title="Hosting Through Vercel">
     Actually hosting SearchNEU for our lovely cohort
-    </Card>
+  </Card>
 </Cards>

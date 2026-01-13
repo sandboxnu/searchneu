@@ -1,8 +1,19 @@
 {
-  "title": "Developer's Guide",
-  "description": "For SearchNEU development",
+  "title": "Developer Guide",
+  "description": "SearchNEU development",
   "icon": "CodeXml",
-  "root": false,
+  "root": true,
   "defaultOpen": true,
-  "pages": ["index", "frontend", "database", "search", "git", "vercel"]
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---Workflows---",
+    "git",
+    "---Codebase---",
+    "codebase/overview",
+    "...codebase",
+    "---Technologies---",
+    "vercel",
+    "---Reference---"
+  ]
 }

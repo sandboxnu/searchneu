@@ -1,40 +1,43 @@
 # docs
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+Documentation site for SearchNEU
 
-Run development server:
+## structure
 
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+The majority of this application is auto-generated and should not require changes
+except for on-going maintenance.
+
+```txt
+docs/
+├─ content/         Content location
+├─ app/             Nextjs routes
+├─ public/          Nextjs public resources
+├─ componenets/     React components
+├─ lib/             General / backend logic
+├─ scripts/         Misc scripts
+├─ package.json
+├─ ...
+└─ README.md
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+The `content/` directory contains the markdown files which are generated into
+the documentation site.
 
-## Explore
+## quickstart
 
-In the project, you can see:
+The easiest way to run the documentation site is through `turbo`:
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+```bash
+turbo run dev --filter=docs
+```
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+The `dev` script can be invoked directly as well (not preferred):
 
-### Fumadocs MDX
+```bash
+pnpm dev
+```
 
-A `source.config.ts` config file has been included, you can customise different options like frontmatter schema.
-
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
-
-## Learn More
+## resources
 
 To learn more about Next.js and Fumadocs, take a look at the following
 resources:

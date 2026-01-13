@@ -87,7 +87,6 @@ export const getSearch = cache(
         coursesT.id,
         coursesT.name,
         coursesT.courseNumber,
-        coursesT.subject,
         coursesT.maxCredits,
         coursesT.minCredits,
         subjectsT.code,

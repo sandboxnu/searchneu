@@ -156,12 +156,12 @@ export async function uploadCatalogTerm(
       { code: "NCEX", short: "EX", name: "Integration Experience" },
       { code: "NCCE", short: "CE", name: "Capstone Experience" },
     ];
-    await db
+    await tx
       .insert(nupathsT)
       .values(nupaths)
       .onConflictDoNothing({ target: nupathsT.short });
 
-    const nupathsV = await db
+    const nupathsV = await tx
       .select({
         id: nupathsT.id,
         code: nupathsT.code,
@@ -399,7 +399,7 @@ export async function uploadCatalogTerm(
 
     const nucChunks = chunk(nupathCourseMappings, 5000);
     for (const chunk of nucChunks) {
-      await db
+      await tx
         .insert(courseNupathJoinT)
         .values(chunk)
         .onConflictDoNothing({

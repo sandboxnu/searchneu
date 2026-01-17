@@ -1,5 +1,5 @@
 import { Header } from "@/components/navigation/Header";
-import { graduateFlag, schedulerFlag } from "@/lib/flags";
+import { graduateFlag } from "@/lib/flags";
 import { notFound } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 

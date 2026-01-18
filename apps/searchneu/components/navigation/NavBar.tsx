@@ -13,6 +13,7 @@ export function NavBar({
   const roomsFlag = use(flags["rooms"]);
   const faqFlag = use(flags["faq"]);
   const schedulerFlag = use(flags["scheduler"]);
+  const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
 
@@ -50,6 +51,15 @@ export function NavBar({
           className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
         >
           Scheduler
+        </Link>
+      )}
+      {graduateFlag && (
+        <Link
+          href="/graduate"
+          data-active={pathname === "/graduate"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+        >
+          Graduate
         </Link>
       )}
       {faqFlag && (

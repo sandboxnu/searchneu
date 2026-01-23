@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Neu } from "../icons/Neu";
 import { Logo } from "../icons/logo";
 import { Footskie } from "../icons/Footskie";
 

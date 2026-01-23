@@ -18,15 +18,19 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-md' }: Moda
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">  
       {/* Modal */}
       <div className={`relative bg-white rounded-lg shadow-xl ${maxWidth} w-full max-h-[90vh] overflow-y-auto`}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-          <button
+        {/* Close Button */}
+        <div className="flex justify-end p-2">
+        <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-black-400 hover:bg-gray-100 rounded-sm transition-colors p-1"
           >
-            <X size={24} />
+            <X className="size-4"/>
           </button>
+        </div>
+ 
+        {/* Header */}
+        <div className="flex items-center justify-center -mt-4">
+          <h2 className="text-md font-bold text-[#1C3557]">{title}</h2>
         </div>
         
         {/* Content */}
@@ -38,7 +42,7 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-md' }: Moda
   );
 };
 
-// Form Components that match the style
+//form components
 type FormFieldProps = {
   label: ReactNode;
   children: ReactNode;

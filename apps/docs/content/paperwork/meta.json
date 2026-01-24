@@ -1,0 +1,8 @@
+{
+  "title": "PCPs",
+  "description": "Platform Change Proposals",
+  "icon": "Pickaxe",
+  "root": true,
+  "defaultOpen": false,
+  "pages": ["---About---", "index", "---Proposals---", "...proposals"]
+}

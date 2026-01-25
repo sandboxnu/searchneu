@@ -26,7 +26,7 @@ export const plansT = pgTable("plans", {
         .$onUpdate(() => new Date()),
 });
 
-export const graduateMetaDataT = pgTable("graduateMetaDataT", {
+export const graduateMetaDataT = pgTable("graduateMetaData", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     userId: integer().notNull().references(() => usersT.id),
     academicYear: smallint(),

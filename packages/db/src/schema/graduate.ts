@@ -7,14 +7,12 @@ import {
     timestamp
 } from "drizzle-orm/pg-core";
 import {usersT} from "./platform";
-import {relations} from "drizzle-orm";
-import {Schedule, ScheduleCourse} from "../graduate/types";
 
-export const plansT = pgTable("plans", {
+export const auditPlansT = pgTable("auditPlansT", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text().notNull(),
     userId: integer("user_id").notNull().references(() => usersT.id, { onDelete: "cascade" }),
-    schedule: json().$type<Schedule<null>>().notNull(),
+    schedule: json(),
     major: text(),
     minor: text(),
     concentration: text(),
@@ -26,7 +24,7 @@ export const plansT = pgTable("plans", {
         .$onUpdate(() => new Date()),
 });
 
-export const graduateMetaDataT = pgTable("graduateMetaData", {
+export const graduateMetadataT = pgTable("graduateMetadataT", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     userId: integer().notNull().references(() => usersT.id),
     academicYear: smallint(),
@@ -36,20 +34,13 @@ export const graduateMetaDataT = pgTable("graduateMetaData", {
     minors: text().array(),
     coopCycle: text(),
     concentration: text(),
-    coursesCompleted: json().$type<ScheduleCourse<null>[]>(),
-    coursesTransferred: json().$type<ScheduleCourse<null>>(),
-    primaryPlanId: integer().references(() => plansT.id),
-    starredPlanId: integer().references(() => plansT.id),
+    coursesCompleted: json(),
+    coursesTransferred: json(),
+    primaryPlanId: integer().references(() => auditPlansT.id),
+    starredPlanId: integer().references(() => auditPlansT.id),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
         .notNull()
         .defaultNow()
         .$onUpdate(() => new Date())
 })
-
-export const planRelations = relations(plansT, ({ one }) => ({
-    user: one(usersT, {
-        fields: [plansT.userId],
-        references: [usersT.id],
-    })
-}));

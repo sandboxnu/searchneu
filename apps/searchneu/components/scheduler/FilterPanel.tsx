@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import {
+  type ScheduleFilters,
+  type SectionWithCourse,
+} from "@/lib/scheduler/filters";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -12,7 +15,8 @@ import { FilterMultiSelect } from "./FilterMultiSelect";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
 import { MoveRightIcon } from "lucide-react";
-import FeedbackModal from "../feedback/FeedbackModal";
+import AddCoursesModal from "./AddCoursesModal";
+import { GroupedTerms } from "@/lib/types";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
 function timeStringToMilitary(timeStr: string): number {
@@ -30,18 +34,34 @@ function militaryToTimeString(time: number): string {
 interface FilterPanelProps {
   filters: ScheduleFilters;
   onFiltersChange: (filters: ScheduleFilters) => void;
-  onGenerateSchedules: (lockedCourseIds: number[], optionalCourseIds: number[]) => void;
+  onGenerateSchedules: (
+    lockedCourseIds: number[],
+    optionalCourseIds: number[],
+  ) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
   filteredSchedules: SectionWithCourse[][];
+  terms: Promise<GroupedTerms>;
 }
 
-export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isGenerating, nupathOptions, filteredSchedules }: FilterPanelProps) {
+export function FilterPanel({
+  filters,
+  onFiltersChange,
+  onGenerateSchedules,
+  isGenerating,
+  nupathOptions,
+  filteredSchedules,
+  terms,
+}: FilterPanelProps) {
   const [lockedCourseIdsInput, setLockedCourseIdsInput] = useState("");
   const [optionalCourseIdsInput, setOptionalCourseIdsInput] = useState("");
+  const [isAddCoursesOpen, setIsAddCoursesOpen] = useState(false);
 
   // Memoize the color map so it's only computed when filteredSchedules changes
-  const colorMap = useMemo(() => getCourseColorMap(filteredSchedules), [filteredSchedules]);
+  const colorMap = useMemo(
+    () => getCourseColorMap(filteredSchedules),
+    [filteredSchedules],
+  );
 
   const updateFilter = <K extends keyof ScheduleFilters>(
     key: K,
@@ -63,13 +83,13 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       .split(",")
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id));
-    
+
     // Parse optional course IDs from input
     const optionalCourseIds = optionalCourseIdsInput
       .split(",")
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id));
-    
+
     if (lockedCourseIds.length > 0 || optionalCourseIds.length > 0) {
       onGenerateSchedules(lockedCourseIds, optionalCourseIds);
     }
@@ -78,6 +98,13 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
   return (
     <div className="bg-background h-[calc(100vh-72px)] w-full space-y-4 overflow-y-scroll px-2.5 pt-2.5 pb-4">
       {/* Locked Course IDs Input */}
+      <AddCoursesModal
+        open={isAddCoursesOpen}
+        terms={terms}
+        closeFn={() => {
+          setIsAddCoursesOpen(false);
+        }}
+      />
       <div>
         <Label className="text-muted-foreground text-xs font-bold">
           LOCKED COURSE IDs
@@ -86,7 +113,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           value={lockedCourseIdsInput}
           onChange={(e) => setLockedCourseIdsInput(e.target.value)}
           placeholder="Enter locked course IDs separated by commas (e.g., 2953, 160)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
+          className="mt-2 min-h-[60px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -99,7 +126,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           value={optionalCourseIdsInput}
           onChange={(e) => setOptionalCourseIdsInput(e.target.value)}
           placeholder="Enter optional course IDs separated by commas (e.g., 142, 5857)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 min-h-[60px] font-mono text-sm"
+          className="mt-2 min-h-[60px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -126,34 +153,38 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       <Separator />
 
       {/* Classes Filter*/}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
         <button
-          onClick={() => {}}
+          onClick={() => setIsAddCoursesOpen(true)}
           aria-label="Edit classes"
           title="Edit classes"
-          className="p-1 border border-transparent text-gray-600 rounded"
+          className="rounded border border-transparent p-1 text-gray-600"
         >
-          <Pencil className="w-4 h-4" />
+          <Pencil className="h-4 w-4" />
         </button>
       </div>
 
       <div>
-        {filteredSchedules && filteredSchedules.length > 0 && (
+        {filteredSchedules &&
+          filteredSchedules.length > 0 &&
           (() => {
             // Build a map of course -> sections
             const courseMap = new Map<string, Map<string, SectionWithCourse>>();
             for (const schedule of filteredSchedules) {
               for (const section of schedule) {
                 const courseKey = getCourseKey(section);
-                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
+                if (!courseMap.has(courseKey))
+                  courseMap.set(courseKey, new Map());
                 const inner = courseMap.get(courseKey)!;
                 if (!inner.has(section.crn)) inner.set(section.crn, section);
               }
             }
 
             // Sort courses alphabetically
-            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+            const courseEntries = Array.from(courseMap.entries()).sort((a, b) =>
+              a[0].localeCompare(b[0]),
+            );
 
             return (
               <div className="mt-2">
@@ -166,8 +197,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                 ))}
               </div>
             );
-          })()
-        )}
+          })()}
       </div>
 
       <Separator />
@@ -175,34 +205,38 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       <Separator />
 
       {/* Classes Filter*/}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
         <button
           onClick={() => {}}
           aria-label="Edit classes"
           title="Edit classes"
-          className="p-1 border border-transparent text-gray-600 rounded"
+          className="rounded border border-transparent p-1 text-gray-600"
         >
-          <Pencil className="w-4 h-4" />
+          <Pencil className="h-4 w-4" />
         </button>
       </div>
 
       <div>
-        {filteredSchedules && filteredSchedules.length > 0 && (
+        {filteredSchedules &&
+          filteredSchedules.length > 0 &&
           (() => {
             // Build a map of course -> sections
             const courseMap = new Map<string, Map<string, SectionWithCourse>>();
             for (const schedule of filteredSchedules) {
               for (const section of schedule) {
                 const courseKey = getCourseKey(section);
-                if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
+                if (!courseMap.has(courseKey))
+                  courseMap.set(courseKey, new Map());
                 const inner = courseMap.get(courseKey)!;
                 if (!inner.has(section.crn)) inner.set(section.crn, section);
               }
             }
 
             // Sort courses alphabetically
-            const courseEntries = Array.from(courseMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+            const courseEntries = Array.from(courseMap.entries()).sort((a, b) =>
+              a[0].localeCompare(b[0]),
+            );
 
             return (
               <div className="mt-2">
@@ -215,12 +249,11 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                 ))}
               </div>
             );
-          })()
-        )}
+          })()}
       </div>
 
       <Separator />
-      
+
       {/* Online Classes */}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-muted-foreground text-xs font-bold">
@@ -228,7 +261,9 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
         </span>
         <button
           type="button"
-          onClick={() => updateFilter("includesOnline", !filters.includesOnline)}
+          onClick={() =>
+            updateFilter("includesOnline", !filters.includesOnline)
+          }
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
             filters.includesOnline ? "bg-red-500" : "bg-gray-300"
           }`}
@@ -246,22 +281,26 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
       {/* Time Section */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-muted-foreground text-xs font-bold">TIME</Label>
+          <Label className="text-muted-foreground text-xs font-bold">
+            TIME
+          </Label>
           {(filters.startTime || filters.endTime) && (
             <button
               onClick={() => {
                 const { startTime: _, endTime: __, ...rest } = filters;
                 onFiltersChange(rest);
               }}
-              className="text-blue-600 hover:text-blue-600/80 text-xs"
+              className="text-xs text-blue-600 hover:text-blue-600/80"
             >
               Clear all
             </button>
           )}
         </div>
-        
-        <div className="flex items-center justify-between text-sm pb-1.5">
-          <span className="text-muted-foreground whitespace-nowrap">Start time is after</span>
+
+        <div className="flex items-center justify-between pb-1.5 text-sm">
+          <span className="text-muted-foreground whitespace-nowrap">
+            Start time is after
+          </span>
           <TimeInput
             value={
               filters.startTime ? militaryToTimeString(filters.startTime) : ""
@@ -269,26 +308,36 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
             onChange={(value) =>
               updateFilter(
                 "startTime",
-                value ? timeStringToMilitary(value) : undefined
+                value ? timeStringToMilitary(value) : undefined,
               )
             }
-            disableAfter={filters.endTime ? militaryToTimeString(filters.endTime) : undefined}
+            disableAfter={
+              filters.endTime
+                ? militaryToTimeString(filters.endTime)
+                : undefined
+            }
           />
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground whitespace-nowrap">End time is before</span>
+          <span className="text-muted-foreground whitespace-nowrap">
+            End time is before
+          </span>
           <TimeInput
             value={filters.endTime ? militaryToTimeString(filters.endTime) : ""}
             onChange={(value) =>
               updateFilter(
                 "endTime",
-                value ? timeStringToMilitary(value) : undefined
+                value ? timeStringToMilitary(value) : undefined,
               )
             }
-            disableBefore={filters.startTime ? militaryToTimeString(filters.startTime) : undefined}
+            disableBefore={
+              filters.startTime
+                ? militaryToTimeString(filters.startTime)
+                : undefined
+            }
           />
-        </div>        
+        </div>
       </div>
 
       <Separator />
@@ -302,7 +351,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           {(filters.specificDaysFree?.length ?? 0) > 0 && (
             <button
               onClick={() => updateFilter("specificDaysFree", undefined)}
-              className="text-blue-600 hover:text-blue-600/80 text-xs"
+              className="text-xs text-blue-600 hover:text-blue-600/80"
             >
               Clear all
             </button>
@@ -318,7 +367,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
               className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
                 filters.minDaysFree === num
                   ? "bg-red-500 text-white"
-                  : "border border-input bg-background text-foreground hover:bg-muted"
+                  : "border-input bg-background text-foreground hover:bg-muted border"
               }`}
             >
               {num}
@@ -341,7 +390,7 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
               key={day.value}
               className="flex cursor-pointer items-center justify-between py-1"
             >
-              <span className="text-sm text-muted-foreground">{day.label}</span>
+              <span className="text-muted-foreground text-sm">{day.label}</span>
               <input
                 type="checkbox"
                 checked={filters.specificDaysFree?.includes(day.value) ?? false}
@@ -352,10 +401,10 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
                     : currentDays.filter((d) => d !== day.value);
                   updateFilter(
                     "specificDaysFree",
-                    newDays.length > 0 ? newDays : undefined
+                    newDays.length > 0 ? newDays : undefined,
                   );
                 }}
-                className="h-4 w-4 rounded border-input accent-red-500"
+                className="border-input h-4 w-4 rounded accent-red-500"
               />
             </label>
           ))}
@@ -400,14 +449,11 @@ export function FilterPanel({ filters, onFiltersChange, onGenerateSchedules, isG
           INCLUDE HONORS
         </Label>
         <Switch
-          checked={(filters.includeHonors)}
-          onCheckedChange={(checked) =>
-            updateFilter("includeHonors", checked)
-          }
+          checked={filters.includeHonors}
+          onCheckedChange={(checked) => updateFilter("includeHonors", checked)}
           className="data-[state=checked]:bg-red-500"
         />
       </div>
-      
     </div>
   );
 }

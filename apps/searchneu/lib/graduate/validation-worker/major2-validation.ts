@@ -178,6 +178,158 @@ export type TotalCreditsRequirementError = {
   requiredCredits: number;
 };
 
+// Custom error class for validation input errors
+export class MajorValidationInputError extends Error {
+  constructor(
+    message: string,
+    public readonly field: string,
+    public readonly receivedValue?: unknown
+  ) {
+    super(message);
+    this.name = "MajorValidationInputError";
+  }
+}
+
+// Validates the input parameters for validateMajor2
+function validateInputs(
+  major: Major2 | null | undefined,
+  taken: ScheduleCourse2<unknown>[] | null | undefined
+): asserts major is Major2 {
+  if (major === null || major === undefined) {
+    throw new MajorValidationInputError(
+      "Major is required for validation",
+      "major",
+      major
+    );
+  }
+
+  if (typeof major !== "object") {
+    throw new MajorValidationInputError(
+      `Major must be an object, received ${typeof major}`,
+      "major",
+      major
+    );
+  }
+
+  if (!major.name || typeof major.name !== "string") {
+    throw new MajorValidationInputError(
+      "Major must have a valid name",
+      "major.name",
+      major.name
+    );
+  }
+
+  if (!Array.isArray(major.requirementSections)) {
+    throw new MajorValidationInputError(
+      "Major must have requirementSections array",
+      "major.requirementSections",
+      major.requirementSections
+    );
+  }
+
+  if (
+    typeof major.totalCreditsRequired !== "number" ||
+    major.totalCreditsRequired < 0
+  ) {
+    throw new MajorValidationInputError(
+      "Major must have a valid totalCreditsRequired (non-negative number)",
+      "major.totalCreditsRequired",
+      major.totalCreditsRequired
+    );
+  }
+
+  if (taken === null || taken === undefined) {
+    throw new MajorValidationInputError(
+      "Taken courses array is required for validation",
+      "taken",
+      taken
+    );
+  }
+
+  if (!Array.isArray(taken)) {
+    throw new MajorValidationInputError(
+      `Taken courses must be an array, received ${typeof taken}`,
+      "taken",
+      taken
+    );
+  }
+
+  // Validate each course in the taken array has required fields
+  for (let i = 0; i < taken.length; i++) {
+    const course = taken[i];
+    if (!course || typeof course !== "object") {
+      throw new MajorValidationInputError(
+        `Invalid course at index ${i}: must be an object`,
+        `taken[${i}]`,
+        course
+      );
+    }
+    if (!course.subject || typeof course.subject !== "string") {
+      throw new MajorValidationInputError(
+        `Invalid course at index ${i}: missing or invalid subject`,
+        `taken[${i}].subject`,
+        course.subject
+      );
+    }
+    if (!course.classId || typeof course.classId !== "string") {
+      throw new MajorValidationInputError(
+        `Invalid course at index ${i}: missing or invalid classId`,
+        `taken[${i}].classId`,
+        course.classId
+      );
+    }
+    if (typeof course.numCreditsMin !== "number") {
+      throw new MajorValidationInputError(
+        `Invalid course at index ${i}: missing or invalid numCreditsMin`,
+        `taken[${i}].numCreditsMin`,
+        course.numCreditsMin
+      );
+    }
+  }
+}
+
+// Validates minor input if provided
+function validateMinorInput(minor: Minor | undefined): void {
+  if (minor === undefined) {
+    return;
+  }
+
+  if (typeof minor !== "object" || minor === null) {
+    throw new MajorValidationInputError(
+      `Minor must be an object, received ${typeof minor}`,
+      "minor",
+      minor
+    );
+  }
+
+  if (!minor.name || typeof minor.name !== "string") {
+    throw new MajorValidationInputError(
+      "Minor must have a valid name",
+      "minor.name",
+      minor.name
+    );
+  }
+
+  if (!Array.isArray(minor.requirementSections)) {
+    throw new MajorValidationInputError(
+      "Minor must have requirementSections array",
+      "minor.requirementSections",
+      minor.requirementSections
+    );
+  }
+
+  if (
+    typeof minor.totalCreditsRequired !== "number" ||
+    minor.totalCreditsRequired < 0
+  ) {
+    throw new MajorValidationInputError(
+      "Minor must have a valid totalCreditsRequired (non-negative number)",
+      "minor.totalCreditsRequired",
+      minor.totalCreditsRequired
+    );
+  }
+}
+
 // for keeping track of courses taken
 interface CourseValidationTracker {
   // retrieve a given schedule course if it exists
@@ -304,14 +456,29 @@ export function validateMajor2(
   minor?: Minor,
   concentrations?: SelectedConcentrationsType
 ): MajorValidationResult {
+  // Validate all inputs before processing
+  validateInputs(major, taken);
+  validateMinorInput(minor);
+
   const tracker = new Major2ValidationTracker(taken);
 
   let concentrationReq: Requirement2[] = [];
   if (major.concentrations) {
-    concentrationReq = getConcentrationsRequirement(
-      concentrations,
-      major.concentrations
-    );
+    try {
+      concentrationReq = getConcentrationsRequirement(
+        concentrations,
+        major.concentrations
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new MajorValidationInputError(
+          `Failed to process concentrations: ${error.message}`,
+          "concentrations",
+          concentrations
+        );
+      }
+      throw error;
+    }
   }
 
   const minorRequirements: Requirement2[] = [];
@@ -320,10 +487,7 @@ export function validateMajor2(
     minorRequirements.push(...getMinorRequirement(minor));
   }
 
-  const majorRequirements: Requirement2[] = [];
-  if (major) {
-    majorRequirements.push(...wrapMajor(major));
-  }
+  const majorRequirements: Requirement2[] = wrapMajor(major);
 
   const allRequirements = [
     ...majorRequirements,

@@ -1,3 +1,9 @@
+import ValidationClient from "@/components/graduate/validationClient";
+
 export default function Page() {
-  return <div>Hello graduates!</div>
+  return (
+    <div>
+      <ValidationClient />
+    </div>
+  );
 }

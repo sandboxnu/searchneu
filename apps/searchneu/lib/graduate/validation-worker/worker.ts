@@ -3,14 +3,19 @@ import {
   Minor,
   ScheduleCourse2,
 } from "../types";
-import { validateMajor2, MajorValidationResult } from "./major2-validation";
+import {
+  validateMajor2,
+  MajorValidationResult,
+  MajorValidationInputError,
+} from "./major2-validation";
 
-type WorkerMessage = Loaded | ValidationResult;
-
-enum WorkerMessageType {
+export enum WorkerMessageType {
   Loaded = "Loaded",
   ValidationResult = "ValidationResult",
+  ValidationError = "ValidationError",
 }
+
+export type WorkerMessage = Loaded | ValidationResult | ValidationError;
 
 type ValidationResult = {
   type: WorkerMessageType.ValidationResult;
@@ -18,9 +23,20 @@ type ValidationResult = {
   requestNumber: number;
 };
 
+type ValidationError = {
+  type: WorkerMessageType.ValidationError;
+  error: {
+    name: string;
+    message: string;
+    field?: string;
+    receivedValue?: unknown;
+  };
+  requestNumber: number;
+};
+
 type Loaded = { type: WorkerMessageType.Loaded };
 
-interface WorkerPostInfo {
+export interface WorkerPostInfo {
   major: Major2;
   minor?: Minor;
   taken: ScheduleCourse2<unknown>[];
@@ -28,22 +44,43 @@ interface WorkerPostInfo {
   requestNumber: number;
 }
 
-
 // Let the host page know the worker is ready.
 const loadMessage: Loaded = { type: WorkerMessageType.Loaded };
 postMessage(loadMessage);
 
 addEventListener("message", ({ data }: MessageEvent<WorkerPostInfo>) => {
-  const validationResult: ValidationResult = {
-    type: WorkerMessageType.ValidationResult,
-    result: validateMajor2(
-      data.major,
-      data.taken,
-      data.minor,
-      data.concentration,
-    ),
-    requestNumber: data.requestNumber,
-  };
+  try {
+    const validationResult: ValidationResult = {
+      type: WorkerMessageType.ValidationResult,
+      result: validateMajor2(
+        data.major,
+        data.taken,
+        data.minor,
+        data.concentration
+      ),
+      requestNumber: data.requestNumber,
+    };
 
-  postMessage(validationResult);
+    postMessage(validationResult);
+  } catch (error) {
+    const errorMessage: ValidationError = {
+      type: WorkerMessageType.ValidationError,
+      error:
+        error instanceof MajorValidationInputError
+          ? {
+              name: error.name,
+              message: error.message,
+              field: error.field,
+              receivedValue: error.receivedValue,
+            }
+          : {
+              name: error instanceof Error ? error.name : "UnknownError",
+              message:
+                error instanceof Error ? error.message : "An unknown error occurred",
+            },
+      requestNumber: data.requestNumber,
+    };
+
+    postMessage(errorMessage);
+  }
 });

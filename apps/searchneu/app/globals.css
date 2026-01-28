@@ -22,6 +22,7 @@
   --neu1: oklch(1 0 0); /* background */
 
   --neu: oklch(0.61 0.2082 22.24);
+  --r5: oklch(0.6122 0.2082 22.24);
   --r4: oklch(0.6663 0.1868 27.46);
   --r1: oklch(0.9093 0.0392 12.03);
 
@@ -110,6 +111,7 @@
   --color-neu1: var(--neu1);
 
   --color-neu: var(--neu);
+  --color-r5: var(--r5);
   --color-r4: var(--r4);
   --color-r1: var(--r1);
 

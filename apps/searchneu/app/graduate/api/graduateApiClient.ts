@@ -9,7 +9,7 @@ class GraduateAPIClient {
   constructor(baseURL?: string) {
     this.baseURL = baseURL ?? (
       process.env.NODE_ENV === 'development' 
-        ? '/api/graduate-api'
+        ? '/api/graduate'
         : 'https://api.graduatenu.com/api' 
     );
     this.axios = Axios.create({

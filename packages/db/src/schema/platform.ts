@@ -10,8 +10,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { sectionsT } from "./catalog";
-import {relations} from "drizzle-orm";
-import {plansT} from "./graduate";
 
 export const usersT = pgTable(
   "users",
@@ -73,7 +71,3 @@ export const notificationsT = pgTable("notifications", {
   message: text(),
   sentAt: timestamp().notNull().defaultNow(),
 });
-
-export const usersRelations = relations(usersT, ({ many }) => ({
-    plans: many(plansT),
-}));

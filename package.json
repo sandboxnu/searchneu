@@ -17,5 +17,13 @@
   "packageManager": "pnpm@10.27.0",
   "engine": {
     "node": "24.x"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@types/axios": "^0.9.36",
+    "axios": "^1.13.2",
+    "class-validator": "^0.14.3",
+    "swr": "^2.3.8"
   }
 }

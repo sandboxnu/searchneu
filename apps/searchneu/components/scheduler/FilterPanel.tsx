@@ -208,7 +208,7 @@ export function FilterPanel({
       <div className="flex items-center justify-between">
         <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
         <button
-          onClick={() => {}}
+          onClick={() => setIsAddCoursesOpen(true)}
           aria-label="Edit classes"
           title="Edit classes"
           className="rounded border border-transparent p-1 text-gray-600"

@@ -44,7 +44,7 @@ The application will then be accessible on http://localhost:3000
 
 ## resources
 
-- [Documentation Site]() - COMING SOON
+- [Documentation Site](https://docs.searchneu.com)
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
   features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.

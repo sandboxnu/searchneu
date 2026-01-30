@@ -1,12 +1,3 @@
 {
-  "pages": [
-    "index",
-    "---Sections---",
-    "dev",
-    "---API Reference---",
-    "searchneu",
-    "banner",
-    "---Reference---",
-    "paperwork"
-  ]
+  "pages": ["(dev)", "paperwork", "searchneu", "banner"]
 }

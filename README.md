@@ -6,7 +6,7 @@
 ▄▄▄█▀ ▀█▄▄▄ ▀█▄██ ██    ▀████ ██ ██ ██ ██ ▀█▄▄▄ ▀██▀█
 ```
 
-[searchneu](https://searchneu.com) | [docs](coming soon) | [sandbox](https://sandboxnu.com)
+[searchneu](https://searchneu.com) | [docs](https://docs.searchneu.com) | [sandbox](https://sandboxnu.com)
 
 ## 🚀 about
 

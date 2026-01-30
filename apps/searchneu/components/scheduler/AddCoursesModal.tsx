@@ -10,9 +10,9 @@ import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
 import { CollegeDropdown } from "./CollegeDropdown";
 import { useState } from "react";
-import ModalSearchResults from "./ModalSearchResults";
 import { ModalSearchBar } from "./ModalSearchBar";
-const SearchResults = dynamic(() => import("../catalog/search/SearchResults"), {
+import { searchResult } from "./ModalSearchResults";
+const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
 
@@ -24,15 +24,39 @@ export default function AddCoursesModal(props: {
   const [selectedCollege, setSelectedCollege] = useState<string>("neu");
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedCourses, setSelectedCourses] = useState<any[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<searchResult[]>([]);
 
-  // keep track of selected term and campus
-  // keep track of search query (deviate from search pattern of having it in URL params bc this is a modal)
-  // keep track of search results
-  // keep track of selected courses to add
+  const handleSelectCourse = (course: searchResult) => {
+    const isAlreadySelected = selectedCourses.some(
+      (c) =>
+        c.subject === course.subject && c.courseNumber === course.courseNumber,
+    );
+
+    if (isAlreadySelected) return;
+
+    // Limit to 6 courses
+    if (selectedCourses.length >= 6) return;
+
+    setSelectedCourses((prev) => [...prev, course]);
+    console.log("Selected Courses:", selectedCourses);
+  };
+
+  const clear = () => {
+    setSelectedCollege("neu");
+    setSelectedTerm(null);
+    setSearchQuery("");
+    setSelectedCourses([]);
+  };
+
   return (
-    <Dialog open={props.open} onOpenChange={() => props.closeFn()}>
-      <DialogContent className="flex h-[700px] flex-col items-start justify-start px-[24px] py-[36px] sm:max-w-[925px]">
+    <Dialog
+      open={props.open}
+      onOpenChange={() => {
+        props.closeFn();
+        clear();
+      }}
+    >
+      <DialogContent className="flex h-[700px] flex-col items-start justify-start overflow-hidden px-[24px] py-[36px] sm:max-w-[925px]">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
@@ -58,7 +82,7 @@ export default function AddCoursesModal(props: {
               <ModalSearchResults
                 searchQuery={searchQuery}
                 term={selectedTerm}
-                course=""
+                onSelectCourse={handleSelectCourse}
               />
             )}
           </div>

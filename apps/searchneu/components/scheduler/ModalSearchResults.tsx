@@ -4,7 +4,7 @@ import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
 
-interface searchResult {
+export interface searchResult {
   name: string;
   courseNumber: string;
   subject: string;
@@ -15,9 +15,18 @@ interface searchResult {
   nupaths: string[];
 }
 
-const ResultCard = ({ result }: { result: searchResult }) => {
+const ResultCard = ({
+  result,
+  onSelect,
+}: {
+  result: searchResult;
+  onSelect: (course: searchResult) => void;
+}) => {
   return (
-    <div className="group text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full cursor-pointer flex-row items-center justify-start gap-[8px] px-[16px] py-[12px] transition-colors">
+    <div
+      onClick={() => onSelect(result)}
+      className="group text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full cursor-pointer flex-row items-center justify-start gap-[8px] px-[16px] py-[12px] transition-colors"
+    >
       <p>
         <span className="group-hover:text-neu8 font-bold transition-all">
           {result.subject} {result.courseNumber}
@@ -31,81 +40,76 @@ const ResultCard = ({ result }: { result: searchResult }) => {
 export default function ModalSearchResults({
   searchQuery,
   term,
-  course,
+  onSelectCourse,
 }: {
   searchQuery: string;
-  term?: string;
-  course?: string;
+  term: string;
+  onSelectCourse: (course: searchResult) => void;
 }) {
-  const deferred = useDeferredValue(searchQuery);
-  const stale = deferred !== searchQuery;
+  const deferredQuery = useDeferredValue(searchQuery);
+  const deferredTerm = useDeferredValue(term);
+  const stale = deferredQuery !== searchQuery || deferredTerm !== term;
 
   return (
     <div
       className={cn(
-        "flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-lg",
+        "flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg",
         stale ? "opacity-60" : "",
       )}
     >
       <Suspense fallback={<ResultsListSkeleton />}>
         <ResultsList
-          params={deferred}
-          term={term?.toString() ?? ""}
-          course={course?.toString() ?? ""}
-          searchQuery={searchQuery}
+          query={deferredQuery}
+          term={deferredTerm}
+          onSelectCourse={onSelectCourse}
         />
       </Suspense>
     </div>
   );
 }
 
-// this acts as a single value cache for the data fetcher - the fetch promise has to be stored outside
-// the react tree since otherwise they would be recreated on every rerender
-let cacheKey = "!";
-let cachePromise: Promise<unknown> = new Promise((r) => r([]));
+// Cache for the data fetcher
+let cacheKey = "";
+let cachePromise: Promise<unknown> = Promise.resolve([]);
 
-function fetcher<T>(key: string, p: () => string) {
-  if (!Object.is(cacheKey, key)) {
+function fetcher<T>(key: string, url: string): Promise<T> {
+  if (cacheKey !== key) {
     cacheKey = key;
-    // if window is undefined, then we are ssr and thus cannot do a relative fetch
     if (typeof window !== "undefined") {
-      // PERF: next caching on the fetch
-      cachePromise = fetch(p()).then((r) => r.json());
+      cachePromise = fetch(url).then((r) => r.json());
     }
   }
-
   return cachePromise as Promise<T>;
 }
 
-// this is explicitly memoized b/c the parent component
-// rerenders too frequently with the searchParams and the
-// memo shields the extra fetch requests
-function ResultsList(props: {
-  params: string;
+function ResultsList({
+  query,
+  term,
+  onSelectCourse,
+}: {
+  query: string;
   term: string;
-  course: string;
-  searchQuery: string;
+  onSelectCourse: (course: searchResult) => void;
 }) {
-  "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
+  "use no memo";
+
+  // Build the API URL with proper params
+  const searchParams = new URLSearchParams();
+  searchParams.set("q", query);
+  searchParams.set("term", term);
+  const url = `/api/search?${searchParams.toString()}`;
+  const cacheKey = `${query}-${term}`;
 
   const results = use(
-    fetcher<searchResult[] | { error: string }>(
-      props.params + props.term,
-      () => {
-        const searchP = new URLSearchParams(props.params);
-        searchP.set("term", props.term);
-        return `/api/search?${searchP.toString()}`;
-      },
-    ),
+    fetcher<searchResult[] | { error: string }>(cacheKey, url),
   );
 
-  const parentRef = useRef(null);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const virtual = useVirtualizer({
     count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 106.5,
-    scrollPaddingStart: 0,
+    estimateSize: () => 48,
     overscan: 5,
   });
 
@@ -114,30 +118,19 @@ function ResultsList(props: {
   if (!Array.isArray(results)) {
     if (results.error === "insufficient query length") {
       return (
-        <>
-          <p className="text-neu6 w-full py-1 text-center text-sm">
-            Type more to search
-          </p>
-          <div
-            ref={parentRef}
-            className="h-full w-full overflow-y-auto pt-2 md:pr-3"
-          ></div>
-        </>
+        <div className="flex h-full items-center justify-center">
+          <p className="text-neu6 text-sm">Type more to search</p>
+        </div>
       );
     }
-
-    throw new Error("");
+    throw new Error(results.error || "Unknown error");
   }
 
   if (results.length === 0) {
     return (
-      <>
-        <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
-        <div
-          ref={parentRef}
-          className="h-full w-full overflow-y-auto pt-2 md:pr-3"
-        ></div>
-      </>
+      <div className="flex h-full items-center justify-center">
+        <p className="text-neu6 text-sm">No Results</p>
+      </div>
     );
   }
 
@@ -146,12 +139,19 @@ function ResultsList(props: {
       ref={parentRef}
       className="border-neu25 min-h-0 flex-1 overflow-y-auto rounded-lg border"
     >
-      <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
-        {items.map((v) => (
-          <li key={v.index} data-index={v.index} ref={virtual.measureElement}>
-            <ResultCard result={results[v.index]} />
-          </li>
-        ))}
+      <div className="relative" style={{ height: virtual.getTotalSize() }}>
+        <ul
+          className="absolute top-0 left-0 w-full"
+          style={{
+            transform: `translateY(${items[0]?.start ?? 0}px)`,
+          }}
+        >
+          {items.map((v) => (
+            <li key={v.index} data-index={v.index} ref={virtual.measureElement}>
+              <ResultCard result={results[v.index]} onSelect={onSelectCourse} />
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -159,10 +159,13 @@ function ResultsList(props: {
 
 function ResultsListSkeleton() {
   return (
-    <ul className="h-[calc(100vh-128px)] space-y-1 overflow-y-clip p-2">
-      {Array.from({ length: 10 }).map((_, i) => (
-        <li key={i} className="bg-neu3 h-20 w-full animate-pulse rounded"></li>
+    <div className="flex-1 space-y-1 overflow-hidden p-2">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="bg-neu3 h-12 w-full animate-pulse rounded"
+        ></div>
       ))}
-    </ul>
+    </div>
   );
 }

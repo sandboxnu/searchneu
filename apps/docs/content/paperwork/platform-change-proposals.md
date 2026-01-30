@@ -140,7 +140,7 @@ What exactly is being changed? This is where the changes should be described in
 exacting detail! What table is being added, what is the schema, what are the relationships?
 This should also have a list of all the resources being changes (ie prod Neon)
 
-## IMPLIMENTATION STEPS
+## IMPLEMENTATION STEPS
 
 This is the HOW. How will the current state of the app be migrated to the proposed
 state? No need to identify stakeholders yet (save that for the Pull Request, since

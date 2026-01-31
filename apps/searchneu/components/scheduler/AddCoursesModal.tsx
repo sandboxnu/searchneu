@@ -12,9 +12,38 @@ import { CollegeDropdown } from "./CollegeDropdown";
 import { useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import { searchResult } from "./ModalSearchResults";
+import { DeleteIcon } from "../icons/Delete";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
+
+interface SelectedCourse {
+  subject: string;
+  courseNumber: string;
+  title: string;
+  handleDelete: () => void;
+}
+
+const SelectedCourseItem = (props: { course: SelectedCourse }) => {
+  {
+    return (
+      <div className="text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full flex-row items-center justify-between rounded-lg px-[16px] py-[12px] text-[12px] transition-colors">
+        <p className="m-0 flex flex-row items-center justify-start gap-[8px]">
+          <span className="text-neu8 text-[14px] font-bold">
+            {props.course.subject} {props.course.courseNumber}
+          </span>{" "}
+          {props.course.title}
+        </p>
+        <button
+          onClick={props.course.handleDelete}
+          className="cursor-pointer rounded-md p-1"
+        >
+          <DeleteIcon />
+        </button>
+      </div>
+    );
+  }
+};
 
 export default function AddCoursesModal(props: {
   open: boolean;
@@ -46,6 +75,18 @@ export default function AddCoursesModal(props: {
     setSelectedTerm(null);
     setSearchQuery("");
     setSelectedCourses([]);
+  };
+
+  const handleDeleteCourse = (courseToDelete: searchResult) => {
+    setSelectedCourses((prev) =>
+      prev.filter(
+        (course) =>
+          !(
+            course.subject === courseToDelete.subject &&
+            course.courseNumber === courseToDelete.courseNumber
+          ),
+      ),
+    );
   };
 
   return (
@@ -90,6 +131,24 @@ export default function AddCoursesModal(props: {
           <div className="flex w-1/2 flex-col gap-[10px] max-[768px]:w-full">
             <div className="bg-neu25 flex h-full min-h-[250px] w-full flex-col rounded-lg p-[8px]">
               {/* display column of selected courses here */}
+              {selectedCourses.length === 0 && (
+                <span className="m-auto text-center text-gray-500">
+                  No courses selected.
+                </span>
+              )}
+              <div className="flex h-full flex-col gap-2 overflow-y-auto">
+                {selectedCourses.map((course, index) => (
+                  <SelectedCourseItem
+                    key={`${course.subject}-${course.courseNumber}-${index}`}
+                    course={{
+                      subject: course.subject,
+                      courseNumber: course.courseNumber,
+                      title: course.name,
+                      handleDelete: () => handleDeleteCourse(course),
+                    }}
+                  />
+                ))}
+              </div>
             </div>
             <Button>Generate Schedules</Button>
           </div>

@@ -25,7 +25,7 @@ const ResultCard = ({
   return (
     <div
       onClick={() => onSelect(result)}
-      className="group text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full cursor-pointer flex-row items-center justify-start gap-[8px] px-[16px] py-[12px] transition-colors"
+      className="group text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full cursor-pointer flex-row items-center justify-start gap-[8px] px-[16px] py-[12px] text-[14px] transition-colors"
     >
       <p>
         <span className="group-hover:text-neu8 font-bold transition-all">

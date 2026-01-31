@@ -74,6 +74,3 @@ export const notificationsT = pgTable("notifications", {
   sentAt: timestamp().notNull().defaultNow(),
 });
 
-export const usersRelations = relations(usersT, ({ many }) => ({
-    plans: many(auditPlansT),
-}));

@@ -1,8 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Header } from "@/components/navigation/Header";
 
 export default function Page() {
     return (
+        <div className="min-h-screen pt-4 pb-6">
+        <Header />
         <div className="p-8" style={{paddingLeft: '152px', paddingRight: '152px'}}>
             <h2 className="mb-4 text-2xl font-bold text-[#1D3557] text-[28px] pl-4">How-to Guides</h2>
             <ScrollArea className="w-full whitespace-nowrap">
@@ -29,6 +32,7 @@ export default function Page() {
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
         </div>
+    </div>
     );
 }
         

@@ -7,7 +7,7 @@ export default function Page() {
         <div className="min-h-screen pt-4 pb-6">
         <Header />
         <div className="p-8" style={{paddingLeft: '152px', paddingRight: '152px'}}>
-            <h2 className="mb-4 text-2xl font-bold text-[#1D3557] text-[28px] pl-4">How-to Guides</h2>
+            <h2 className="text-[#5F5F5F] font-bold text-[28px] pl-4">How-to Guides</h2>
             <ScrollArea className="w-full whitespace-nowrap">
                 <div className="flex w-max space-x-4 p-4">
                     <Card

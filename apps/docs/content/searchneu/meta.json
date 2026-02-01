@@ -1,0 +1,8 @@
+{
+  "title": "SearchNEU API",
+  "description": "SearchNEU public API",
+  "icon": "Pencil",
+  "root": true,
+  "defaultOpen": false,
+  "pages": ["index", "---Endpoints---"]
+}

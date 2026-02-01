@@ -98,7 +98,7 @@ export function SectionTable({
             </tr>
           </thead>
           <tbody className="divide-neu25 divide-y">
-            {sections.map((s) => (
+            {filteredSections.map((s) => (
               <SectionTableRow
                 key={s.crn}
                 section={s}

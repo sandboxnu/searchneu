@@ -1,17 +1,22 @@
 import {
-    integer,
-    json,
-    pgTable,
-    smallint,
-    text,
-    timestamp
+  index,
+  integer,
+  json,
+  pgTable,
+  smallint,
+  text,
+  timestamp,
 } from "drizzle-orm/pg-core";
-import {usersT} from "./platform";
+import { usersT } from "./platform";
 
-export const auditPlansT = pgTable("auditPlansT", {
+export const auditPlansT = pgTable(
+  "audit_plans",
+  {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text().notNull(),
-    userId: integer("user_id").notNull().references(() => usersT.id, { onDelete: "cascade" }),
+    userId: integer()
+      .notNull()
+      .references(() => usersT.id, { onDelete: "cascade" }),
     schedule: json(),
     major: text(),
     minor: text(),
@@ -19,14 +24,20 @@ export const auditPlansT = pgTable("auditPlansT", {
     catalogYear: smallint(),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
-        .notNull()
-        .defaultNow()
-        .$onUpdate(() => new Date()),
-});
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("audit_plans_user_id_idx").on(table.userId)],
+);
 
-export const graduateMetadataT = pgTable("graduateMetadataT", {
+export const auditMetadataT = pgTable(
+  "audit_metadata",
+  {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer().notNull().references(() => usersT.id),
+    userId: integer()
+      .notNull()
+      .references(() => usersT.id, { onDelete: "cascade" }),
     academicYear: smallint(),
     graduateYear: smallint(),
     catalogYear: smallint(),
@@ -40,7 +51,11 @@ export const graduateMetadataT = pgTable("graduateMetadataT", {
     starredPlanId: integer().references(() => auditPlansT.id),
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
-        .notNull()
-        .defaultNow()
-        .$onUpdate(() => new Date())
-})
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+
+  (table) => [index("audit_metadata_user_id_idx").on(table.userId)],
+);
+

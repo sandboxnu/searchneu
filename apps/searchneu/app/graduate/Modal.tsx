@@ -1,6 +1,7 @@
 'use client';
 
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { X } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 
@@ -51,10 +52,9 @@ type FormFieldProps = {
 };
 
 const FormField = ({ label, children, required }: FormFieldProps) => (
-  <div className="mb-4">
+  <div className="mb-4 mt-4">
     <label className="block text-sm font-bold text-[#1C3557] mb-1">
       {label}
-      {required && <span className="text-red-500 ml-1">*</span>}
     </label>
     {children}
   </div>
@@ -66,13 +66,12 @@ type InputProps = {
   [key: string]: any;
 };
 
-const Input = ({ placeholder, value, onChange, ...props }: InputProps) => (
-  <Textarea
+const Input = ({ placeholder, value, onChange, }: InputProps) => (
+  <input
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="h-full max-h-32 w-full resize-none text-sm"
-          required
+          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
         />
 );
 
@@ -88,15 +87,10 @@ const Select = ({ placeholder, value, onChange, options, ...props }: SelectProps
   <select
     value={value}
     onChange={onChange}
-    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'right 1rem center'
-    }}
+    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
     {...props}
   >
-    <option value="">{placeholder}</option>
+    <option value="">{placeholder} </option>
     {options?.map((opt, idx) => (
       <option key={idx} value={opt.value}>{opt.label}</option>
     ))}
@@ -110,20 +104,30 @@ type CheckboxProps = {
     helpText?: ReactNode;
 }
 
-const Checkbox = ({ label, checked, onChange, helpText } : CheckboxProps) => (
-  <div className="flex items-start mb-6">
+const Checkbox = ({ label, checked, onChange, helpText }: CheckboxProps) => (
+  <div className="flex items-center gap-2">
     <input
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
     />
-    <label className="ml-3 text-sm font-semibold text-gray-700">
+
+    <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
       {label}
+
       {helpText && (
-        <span className="ml-2 inline-flex items-center justify-center w-4 h-4 text-xs text-gray-500 border border-gray-400 rounded-full">
-          ?
-        </span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center justify-center w-4 h-4 text-xs border border-gray-400 rounded-full cursor-help">
+                ?
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs text-sm">
+              {helpText}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
     </label>
   </div>
@@ -135,7 +139,7 @@ type ModalFooterProps = {
 };
 
 const ModalFooter = ({ children }: ModalFooterProps) => (
-  <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 mt-6">
+  <div className="flex items-center justify-center gap-3 pt-4 border-t border-gray-200 mt-6">
     {children}
   </div>
 );
@@ -147,13 +151,14 @@ type ButtonProps = {
   onClick?: () => void;
   variant?: 'primary' | 'secondary';
   type?: 'button' | 'submit' | 'reset';
+  isDisabled?: boolean;
 };
 
-const Button = ({ children, onClick, variant = 'primary', type = 'button' }: ButtonProps) => {
+const Button = ({ children, onClick, variant = 'primary', type = 'button', isDisabled }: ButtonProps) => {
   const baseClasses = "px-6 py-3 rounded-md font-medium transition-colors";
   const variants = {
-    primary: "bg-pink-400 hover:bg-pink-500 text-white",
-    secondary: "bg-gray-200 hover:bg-gray-300 text-gray-800"
+    primary: isDisabled ? "bg-[#EB5756]/50 text-white opacity-122" : "bg-[#EB5756] text-white",
+    secondary: "bg-transparent text-black"
   };
   
   return (
@@ -161,6 +166,7 @@ const Button = ({ children, onClick, variant = 'primary', type = 'button' }: But
       type={type}
       onClick={onClick}
       className={`${baseClasses} ${variants[variant]}`}
+      disabled={isDisabled}
     >
       {children}
     </button>

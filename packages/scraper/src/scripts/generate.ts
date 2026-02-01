@@ -59,7 +59,7 @@ const main = defineCommand({
     if (args.verbose) consola.level = 4;
     if (args.veryverbose) consola.level = 999;
 
-    const interactive = args.interactive;
+    const interactive = args.interactive ?? false;
 
     const configStream = readFileSync(
       path.resolve(args.cachePath, "manifest.yaml"),

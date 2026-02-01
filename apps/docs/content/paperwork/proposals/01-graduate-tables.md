@@ -1,5 +1,5 @@
 ---
-title: 1 - Graduate Tables
+title: 01 - Graduate Tables
 ---
 
 Adding audit plan and graduate metadata tables to the Search database to allow

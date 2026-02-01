@@ -1,5 +1,3 @@
-import { StaticImageData } from "next/image";
-
 interface CardProps {
     img: string;
     title: string;

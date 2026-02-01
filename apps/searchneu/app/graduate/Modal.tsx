@@ -1,7 +1,8 @@
 'use client';
 
+import { Textarea } from '@/components/ui/textarea';
 import { X } from 'lucide-react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 type ModalProps = {
   isOpen: boolean;
@@ -50,8 +51,8 @@ type FormFieldProps = {
 };
 
 const FormField = ({ label, children, required }: FormFieldProps) => (
-  <div className="mb-6">
-    <label className="block text-sm font-semibold text-gray-700 mb-2">
+  <div className="mb-4">
+    <label className="block text-sm font-bold text-[#1C3557] mb-1">
       {label}
       {required && <span className="text-red-500 ml-1">*</span>}
     </label>
@@ -62,20 +63,19 @@ const FormField = ({ label, children, required }: FormFieldProps) => (
 type InputProps = {
   placeholder?: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   [key: string]: any;
 };
 
 const Input = ({ placeholder, value, onChange, ...props }: InputProps) => (
-  <input
-    type="text"
-    value={value}
-    onChange={onChange}
-    placeholder={placeholder}
-    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-    {...props}
-  />
+  <Textarea
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className="h-full max-h-32 w-full resize-none text-sm"
+          required
+        />
 );
+
 
 type SelectProps = {
     placeholder?: string;

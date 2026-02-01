@@ -11,8 +11,8 @@ import { Button } from "../ui/button";
 import { CollegeDropdown } from "./CollegeDropdown";
 import { useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
-import { DeleteIcon } from "../icons/Delete";
 import { Course } from "@sneu/scraper/types";
+import SelectedCourseGroup from "./SelectedCourseGroup";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
@@ -20,79 +20,8 @@ const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
 interface SelectedCourseGroup {
   parent: Course;
   coreqs: Course[];
+  isLocked: boolean;
 }
-
-interface SelectedCourse {
-  subject: string;
-  courseNumber: string;
-  title: string;
-  handleDelete: () => void;
-  isGrouped?: boolean;
-}
-
-const SelectedCourseItem = ({ course }: { course: SelectedCourse }) => {
-  const containerClass = [
-    "group text-neu6 hover:bg-neu2 bg-neu1 flex h-[50px] w-full flex-row items-center justify-between px-[16px] text-[12px] transition-colors",
-    course.isGrouped ? "rounded-none" : "rounded-lg",
-  ].join(" ");
-
-  return (
-    <div className={containerClass}>
-      <p className="m-0 flex min-w-0 items-center gap-[8px]">
-        <span className="text-neu8 shrink-0 text-[14px] font-bold">
-          {course.subject} {course.courseNumber}
-        </span>
-        <span className="truncate">{course.title}</span>
-      </p>
-      <button
-        onClick={course.handleDelete}
-        className="invisible cursor-pointer rounded-md p-1 group-hover:visible"
-      >
-        <DeleteIcon />
-      </button>
-    </div>
-  );
-};
-
-const SelectedCourseGroup = ({
-  parent,
-  coreqs,
-  onDelete,
-}: {
-  parent: Course;
-  coreqs: Course[];
-  onDelete: () => void;
-}) => {
-  return (
-    <div className="border-neu3 flex flex-col overflow-hidden rounded-lg border">
-      {/* parent */}
-      <SelectedCourseItem
-        course={{
-          subject: parent.subject,
-          courseNumber: parent.courseNumber,
-          title: parent.name,
-          handleDelete: onDelete,
-          isGrouped: coreqs.length > 0,
-        }}
-      />
-
-      {/* coreqs */}
-      {coreqs.map((coreq, idx) => (
-        <div key={idx} className="border-neu3 border-t">
-          <SelectedCourseItem
-            course={{
-              subject: coreq.subject,
-              courseNumber: coreq.courseNumber,
-              title: coreq.name ?? "Corequisite",
-              handleDelete: onDelete, // deleting parent deletes whole group
-              isGrouped: true,
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
 
 export default function AddCoursesModal(props: {
   open: boolean;
@@ -136,8 +65,10 @@ export default function AddCoursesModal(props: {
           )
         : [];
 
-      return [...prev, { parent: course, coreqs }];
+      return [...prev, { parent: course, coreqs, isLocked: false }];
     });
+
+    console.log("Selected courses:", selectedCourseGroups);
   };
 
   const clear = () => {
@@ -193,12 +124,16 @@ export default function AddCoursesModal(props: {
   };
 
   const handleGeneratation = () => {
-    // parse locked course IDs
-    const lockedCourseIds = selectedCourseGroups.map((group) =>
-      parseInt(group.parent.courseNumber),
-    );
+    // parse locked course IDs by checking which courses are locked
+    const lockedCourseIds = selectedCourseGroups
+      .filter((group) => group.isLocked)
+      .map((group) => parseInt(group.parent.courseNumber));
+
     // parse optional course IDs
-    const optionalCourseIds: number[] = [];
+    const optionalCourseIds = selectedCourseGroups
+      .filter((group) => !group.isLocked)
+      .map((group) => parseInt(group.parent.courseNumber));
+
     if (lockedCourseIds.length > 0) {
       props.onGenerateSchedules(lockedCourseIds, optionalCourseIds);
     }
@@ -206,6 +141,20 @@ export default function AddCoursesModal(props: {
     // close modal and clear state
     props.closeFn();
     clear();
+  };
+
+  const handleToggleLock = (parent: Course) => {
+    setSelectedCourseGroups((prev) =>
+      prev.map((group) => {
+        if (
+          group.parent.subject === parent.subject &&
+          group.parent.courseNumber === parent.courseNumber
+        ) {
+          return { ...group, isLocked: !group.isLocked };
+        }
+        return group;
+      }),
+    );
   };
 
   return (
@@ -262,6 +211,8 @@ export default function AddCoursesModal(props: {
                       parent={group.parent}
                       coreqs={group.coreqs}
                       onDelete={() => handleDeleteGroup(group.parent)}
+                      onToggleLock={() => handleToggleLock(group.parent)}
+                      isLocked={group.isLocked}
                     />
                   ))}
                 </div>

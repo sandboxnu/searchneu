@@ -5,7 +5,6 @@ import {
   ChildError,
   CourseError,
   getConcentrationsRequirement,
-  Major2ValidationTracker,
   MajorValidationError,
   MajorValidationResult,
   SectionError,
@@ -14,109 +13,37 @@ import {
   validateRequirement,
 } from "./major2-validation";
 import {
-  Concentrations2,
-  IAndCourse2,
-  ICourseRange2,
-  IOrCourse2,
-  IRequiredCourse,
-  IXofManyCourse,
   type Major2,
-  Requirement2,
-  ScheduleCourse2,
   Section,
   Err,
   Ok,
   ResultType,
 } from "../types";
-import { assertUnreachable, courseToString } from "./course-utils";
+import {
+  course,
+  convert,
+  or,
+  and,
+  range,
+  xom,
+  section,
+  solution,
+  concentrations,
+  makeTracker,
+  convertToMajor2,
+} from "./test-utils";
 import bscs from "./mock-majors/bscs.json";
 import {test, describe} from "node:test"
 import assert from "node:assert";
 
-type TestCourse = IRequiredCourse & { credits: number };
-const course = (
-  subject: string,
-  classId: number,
-  credits?: number,
-): TestCourse => ({
-  subject,
-  type: "COURSE",
-  classId: classId,
-  credits: credits ?? 4,
-});
-const convert = (c: TestCourse): ScheduleCourse2<unknown> => ({
-  ...c,
-  classId: String(c.classId),
-  name: courseToString(c),
-  numCreditsMax: c.credits,
-  numCreditsMin: c.credits,
-  id: null,
-});
-const or = (...courses: Requirement2[]): IOrCourse2 => ({
-  type: "OR",
-  courses,
-});
-const and = (...courses: Requirement2[]): IAndCourse2 => ({
-  type: "AND",
-  courses,
-});
-const range = (
-  creditsRequired: number,
-  subject: string,
-  idRangeStart: number,
-  idRangeEnd: number,
-  exceptions: IRequiredCourse[],
-): ICourseRange2 => ({
-  type: "RANGE",
-  subject,
-  idRangeStart,
-  idRangeEnd,
-  exceptions,
-});
-const xom = (
-  numCreditsMin: number,
-  courses: Requirement2[],
-): IXofManyCourse => ({
-  type: "XOM",
-  numCreditsMin,
-  courses,
-});
-const section = (
-  title: string,
-  minRequirementCount: number,
-  requirements: Requirement2[],
-): { type: "SECTION" } & Section => ({
-  title,
-  requirements,
-  minRequirementCount,
-  type: "SECTION",
-});
-const solution = (...sol: (string | TestCourse)[]) => {
-  const credits = sol
-    .map((c) => (typeof c === "string" ? 4 : c.credits))
-    .reduce((total, c) => total + c, 0);
-  return {
-    minCredits: credits,
-    maxCredits: credits,
-    sol: sol.map((s) => (typeof s === "string" ? s : courseToString(s))),
-  };
-};
 const child = (error: MajorValidationError, index: number): ChildError => {
   return {
     childIndex: index,
     ...error,
   };
 };
-const concentrations = (
-  minOptions: number,
-  ...concentrationOptions: Section[]
-): Concentrations2 => ({
-  minOptions,
-  concentrationOptions,
-});
-const makeTracker = (...courses: TestCourse[]) => {
-  return new Major2ValidationTracker(courses.map(convert));
-};
+
+
 const cs2810 = course("CS", 2810);
 const cs3950 = course("CS", 3950);
 const cs4805 = course("CS", 4805);
@@ -301,100 +228,6 @@ describe("validateRequirement suite", () => {
   });
 });
 
-function convertToMajor2(old: any): Major2 {
-  return {
-    name: old.name,
-    totalCreditsRequired: old.totalCreditsRequired,
-    yearVersion: old.yearVersion,
-    requirementSections: Object.values(old.requirementGroupMap).map(
-      convertToSection,
-    ),
-    concentrations: {
-      minOptions: old.concentrations.minOptions,
-      concentrationOptions: old.concentrations.concentrationOptions.map(
-        (c: any) => ({
-          type: "SECTION",
-          title: c.name,
-          minRequirementCount: c.requirementGroups.length,
-          requirements: Object.values(c.requirementGroupMap).map(
-            convertToSection,
-          ),
-        }),
-      ),
-    },
-  };
-}
-
-function convertToSection(r: any): Section {
-  switch (r.type) {
-    case "AND":
-      return {
-        type: "SECTION",
-        minRequirementCount: r.requirements.length,
-        requirements: r.requirements.map(convertToRequirement2),
-        title: r.name,
-      };
-    case "OR":
-      return {
-        type: "SECTION",
-        title: r.name,
-        minRequirementCount: 1,
-        requirements: [
-          {
-            type: "XOM",
-            numCreditsMin: r.numCreditsMin,
-            courses: r.requirements.map(convertToRequirement2),
-          },
-        ],
-      };
-    case "RANGE":
-      return {
-        type: "SECTION",
-        title: r.name,
-        minRequirementCount: 1,
-        requirements: [convertToRequirement2(r.requirements)],
-      };
-    default:
-      return assertUnreachable(r as never);
-  }
-}
-
-function convertToRequirement2(r: any): Requirement2 {
-  switch (r.type) {
-    case "OR":
-      return {
-        type: "OR",
-        courses: r.courses.map(convertToRequirement2),
-      };
-    case "AND":
-      return {
-        type: "AND",
-        courses: r.courses.map(convertToRequirement2),
-      };
-    case "RANGE":
-      return {
-        type: "XOM",
-        numCreditsMin: r.creditsRequired,
-        courses: r.ranges.map((r: any) => ({
-          type: "RANGE",
-          exceptions: [],
-          idRangeStart: r.idRangeStart,
-          idRangeEnd: r.idRangeEnd,
-          subject: r.subject,
-        })),
-      };
-    case "COURSE":
-      return r;
-    case "CREDITS":
-      return {
-        type: "XOM",
-        numCreditsMin: r.minCredits,
-        courses: r.courses.map(convertToRequirement2),
-      };
-    default:
-      return assertUnreachable(r as never);
-  }
-}
 
 describe("integration suite", () => {
   const bscs2 = convertToMajor2(bscs as any);

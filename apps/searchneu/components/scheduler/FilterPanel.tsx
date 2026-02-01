@@ -101,6 +101,7 @@ export function FilterPanel({
       <AddCoursesModal
         open={isAddCoursesOpen}
         terms={terms}
+        onGenerateSchedules={onGenerateSchedules}
         closeFn={() => {
           setIsAddCoursesOpen(false);
         }}

@@ -11,82 +11,201 @@ import { Button } from "../ui/button";
 import { CollegeDropdown } from "./CollegeDropdown";
 import { useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
-import { searchResult } from "./ModalSearchResults";
 import { DeleteIcon } from "../icons/Delete";
+import { Course } from "@sneu/scraper/types";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
+
+interface SelectedCourseGroup {
+  parent: Course;
+  coreqs: Course[];
+}
 
 interface SelectedCourse {
   subject: string;
   courseNumber: string;
   title: string;
   handleDelete: () => void;
+  isGrouped?: boolean;
 }
 
-const SelectedCourseItem = (props: { course: SelectedCourse }) => {
-  {
-    return (
-      <div className="text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full flex-row items-center justify-between rounded-lg px-[16px] py-[12px] text-[12px] transition-colors">
-        <p className="m-0 flex flex-row items-center justify-start gap-[8px]">
-          <span className="text-neu8 text-[14px] font-bold">
-            {props.course.subject} {props.course.courseNumber}
-          </span>{" "}
-          {props.course.title}
-        </p>
-        <button
-          onClick={props.course.handleDelete}
-          className="cursor-pointer rounded-md p-1"
-        >
-          <DeleteIcon />
-        </button>
-      </div>
-    );
-  }
+const SelectedCourseItem = ({ course }: { course: SelectedCourse }) => {
+  const containerClass = [
+    "group text-neu6 hover:bg-neu2 bg-neu1 flex h-[50px] w-full flex-row items-center justify-between px-[16px] text-[12px] transition-colors",
+    course.isGrouped ? "rounded-none" : "rounded-lg",
+  ].join(" ");
+
+  return (
+    <div className={containerClass}>
+      <p className="m-0 flex min-w-0 items-center gap-[8px]">
+        <span className="text-neu8 shrink-0 text-[14px] font-bold">
+          {course.subject} {course.courseNumber}
+        </span>
+        <span className="truncate">{course.title}</span>
+      </p>
+      <button
+        onClick={course.handleDelete}
+        className="invisible cursor-pointer rounded-md p-1 group-hover:visible"
+      >
+        <DeleteIcon />
+      </button>
+    </div>
+  );
+};
+
+const SelectedCourseGroup = ({
+  parent,
+  coreqs,
+  onDelete,
+}: {
+  parent: Course;
+  coreqs: Course[];
+  onDelete: () => void;
+}) => {
+  return (
+    <div className="border-neu3 flex flex-col overflow-hidden rounded-lg border">
+      {/* parent */}
+      <SelectedCourseItem
+        course={{
+          subject: parent.subject,
+          courseNumber: parent.courseNumber,
+          title: parent.name,
+          handleDelete: onDelete,
+          isGrouped: coreqs.length > 0,
+        }}
+      />
+
+      {/* coreqs */}
+      {coreqs.map((coreq, idx) => (
+        <div key={idx} className="border-neu3 border-t">
+          <SelectedCourseItem
+            course={{
+              subject: coreq.subject,
+              courseNumber: coreq.courseNumber,
+              title: coreq.name ?? "Corequisite",
+              handleDelete: onDelete, // deleting parent deletes whole group
+              isGrouped: true,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default function AddCoursesModal(props: {
   open: boolean;
   closeFn: () => void;
   terms: Promise<GroupedTerms>;
+  onGenerateSchedules: (
+    lockedCourseIds: number[],
+    optionalCourseIds: number[],
+  ) => void;
 }) {
   const [selectedCollege, setSelectedCollege] = useState<string>("neu");
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedCourses, setSelectedCourses] = useState<searchResult[]>([]);
+  const [selectedCourseGroups, setSelectedCourseGroups] = useState<
+    SelectedCourseGroup[]
+  >([]);
 
-  const handleSelectCourse = (course: searchResult) => {
-    const isAlreadySelected = selectedCourses.some(
-      (c) =>
-        c.subject === course.subject && c.courseNumber === course.courseNumber,
-    );
+  const handleSelectCourse = (course: Course) => {
+    setSelectedCourseGroups((prev) => {
+      // already selected
+      if (
+        prev.some(
+          (g) =>
+            g.parent.subject === course.subject &&
+            g.parent.courseNumber === course.courseNumber,
+        )
+      ) {
+        return prev;
+      }
 
-    if (isAlreadySelected) return;
+      if (prev.length >= 6) return prev;
 
-    // Limit to 6 courses
-    if (selectedCourses.length >= 6) return;
+      const coreqs = course.coreqs
+        ? extractCoreqCourses(course.coreqs).map(
+            (c) =>
+              ({
+                ...course,
+                subject: c.subject,
+                courseNumber: c.courseNumber,
+              }) as Course,
+          )
+        : [];
 
-    setSelectedCourses((prev) => [...prev, course]);
-    console.log("Selected Courses:", selectedCourses);
+      return [...prev, { parent: course, coreqs }];
+    });
   };
 
   const clear = () => {
     setSelectedCollege("neu");
     setSelectedTerm(null);
     setSearchQuery("");
-    setSelectedCourses([]);
+    setSelectedCourseGroups([]);
   };
 
-  const handleDeleteCourse = (courseToDelete: searchResult) => {
-    setSelectedCourses((prev) =>
+  const handleDeleteGroup = (parent: Course) => {
+    setSelectedCourseGroups((prev) =>
       prev.filter(
-        (course) =>
+        (g) =>
           !(
-            course.subject === courseToDelete.subject &&
-            course.courseNumber === courseToDelete.courseNumber
+            g.parent.subject === parent.subject &&
+            g.parent.courseNumber === parent.courseNumber
           ),
       ),
     );
+  };
+
+  const isCourseCoreq = (
+    req: any,
+  ): req is { subject: string; courseNumber: string } => {
+    return (
+      req &&
+      typeof req === "object" &&
+      "subject" in req &&
+      "courseNumber" in req
+    );
+  };
+
+  const extractCoreqCourses = (
+    req: any,
+    acc: { subject: string; courseNumber: string }[] = [],
+  ) => {
+    if (!req || typeof req !== "object") return acc;
+
+    // empty object {}
+    if (Object.keys(req).length === 0) return acc;
+
+    // single course
+    if (isCourseCoreq(req)) {
+      acc.push(req);
+      return acc;
+    }
+
+    if ("type" in req && Array.isArray(req.items)) {
+      req.items.forEach((item: any) => extractCoreqCourses(item, acc));
+    }
+
+    return acc;
+  };
+
+  const handleGeneratation = () => {
+    // parse locked course IDs
+    const lockedCourseIds = selectedCourseGroups.map((group) =>
+      parseInt(group.parent.courseNumber),
+    );
+    // parse optional course IDs
+    const optionalCourseIds: number[] = [];
+    if (lockedCourseIds.length > 0) {
+      props.onGenerateSchedules(lockedCourseIds, optionalCourseIds);
+    }
+
+    // close modal and clear state
+    props.closeFn();
+    clear();
   };
 
   return (
@@ -108,7 +227,7 @@ export default function AddCoursesModal(props: {
         {/* main dialog content */}
         <div className="flex h-full w-full flex-row gap-[10px] pb-[72px] max-[768px]:flex-col max-[768px]:gap-4">
           {/* selecting term, campus, search, and search results */}
-          <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 overflow-hidden max-[768px]:w-full">
+          <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 overflow-hidden max-[768px]:h-1/2 max-[768px]:w-full">
             <CollegeDropdown
               terms={props.terms}
               selectedCollege={selectedCollege}
@@ -128,29 +247,28 @@ export default function AddCoursesModal(props: {
             )}
           </div>
           {/* selected course and generate button */}
-          <div className="flex w-1/2 flex-col gap-[10px] max-[768px]:w-full">
-            <div className="bg-neu25 flex h-full min-h-[250px] w-full flex-col rounded-lg p-[8px]">
-              {/* display column of selected courses here */}
-              {selectedCourses.length === 0 && (
-                <span className="m-auto text-center text-gray-500">
-                  No courses selected.
+          <div className="flex w-1/2 flex-col gap-[10px] max-[768px]:h-1/2 max-[768px]:w-full">
+            {/* selected courses panel */}
+            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-[8px]">
+              {selectedCourseGroups.length === 0 ? (
+                <span className="text-neu6 flex h-full items-center justify-center text-sm">
+                  No courses selected
                 </span>
+              ) : (
+                <div className="flex min-h-0 flex-col gap-y-[4px] overflow-y-auto">
+                  {selectedCourseGroups.map((group, index) => (
+                    <SelectedCourseGroup
+                      key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}
+                      parent={group.parent}
+                      coreqs={group.coreqs}
+                      onDelete={() => handleDeleteGroup(group.parent)}
+                    />
+                  ))}
+                </div>
               )}
-              <div className="flex h-full flex-col gap-2 overflow-y-auto">
-                {selectedCourses.map((course, index) => (
-                  <SelectedCourseItem
-                    key={`${course.subject}-${course.courseNumber}-${index}`}
-                    course={{
-                      subject: course.subject,
-                      courseNumber: course.courseNumber,
-                      title: course.name,
-                      handleDelete: () => handleDeleteCourse(course),
-                    }}
-                  />
-                ))}
-              </div>
             </div>
-            <Button>Generate Schedules</Button>
+
+            <Button onClick={handleGeneratation}>Generate Schedules</Button>
           </div>
         </div>
       </DialogContent>

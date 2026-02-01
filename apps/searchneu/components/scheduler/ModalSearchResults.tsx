@@ -3,35 +3,25 @@
 import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
-
-export interface searchResult {
-  name: string;
-  courseNumber: string;
-  subject: string;
-  minCredits: string;
-  maxCredits: string;
-  sectionsWithSeats: number;
-  totalSections: number;
-  nupaths: string[];
-}
+import { Course } from "@sneu/scraper/types";
 
 const ResultCard = ({
   result,
   onSelect,
 }: {
-  result: searchResult;
-  onSelect: (course: searchResult) => void;
+  result: Course;
+  onSelect: (course: Course) => void;
 }) => {
   return (
     <div
       onClick={() => onSelect(result)}
-      className="group text-neu6 hover:bg-neu2 bg-neu1 flex h-fit w-full cursor-pointer flex-row items-center justify-start gap-[8px] px-[16px] py-[12px] text-[14px] transition-colors"
+      className="group text-neu6 hover:bg-neu2 bg-neu1 h-[40px] w-full cursor-pointer px-[16px] py-[12px] text-[14px] transition-colors"
     >
-      <p>
-        <span className="group-hover:text-neu8 font-bold transition-all">
+      <p className="flex min-w-0 items-center gap-1">
+        <span className="group-hover:text-neu8 shrink-0 font-bold transition-all">
           {result.subject} {result.courseNumber}
-        </span>{" "}
-        {result.name}
+        </span>
+        <span className="truncate">{result.name}</span>
       </p>
     </div>
   );
@@ -44,7 +34,7 @@ export default function ModalSearchResults({
 }: {
   searchQuery: string;
   term: string;
-  onSelectCourse: (course: searchResult) => void;
+  onSelectCourse: (course: Course) => void;
 }) {
   const deferredQuery = useDeferredValue(searchQuery);
   const deferredTerm = useDeferredValue(term);
@@ -89,20 +79,17 @@ function ResultsList({
 }: {
   query: string;
   term: string;
-  onSelectCourse: (course: searchResult) => void;
+  onSelectCourse: (course: Course) => void;
 }) {
   "use no memo";
 
-  // Build the API URL with proper params
   const searchParams = new URLSearchParams();
   searchParams.set("q", query);
   searchParams.set("term", term);
   const url = `/api/search?${searchParams.toString()}`;
   const cacheKey = `${query}-${term}`;
 
-  const results = use(
-    fetcher<searchResult[] | { error: string }>(cacheKey, url),
-  );
+  const results = use(fetcher<Course[] | { error: string }>(cacheKey, url));
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -159,12 +146,18 @@ function ResultsList({
 
 function ResultsListSkeleton() {
   return (
-    <div className="flex-1 space-y-1 overflow-hidden p-2">
+    <div className="flex-1 space-y-2 overflow-hidden p-2">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="bg-neu3 h-12 w-full animate-pulse rounded"
-        ></div>
+          className="bg-neu3 flex h-[40px] w-full animate-pulse items-center justify-between rounded-lg px-[16px] py-[12px]"
+        >
+          {/* simulate subject & courseNumber */}
+          <div className="flex min-w-0 items-center gap-1">
+            <div className="bg-neu4 h-[14px] w-[40px] rounded"></div>
+            <div className="bg-neu4 h-[14px] flex-1 rounded"></div>
+          </div>
+        </div>
       ))}
     </div>
   );

@@ -27,5 +27,5 @@ export const UpdateAuditPlanDto = z.object({
   catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).optional(),
 });
 
-export type CreatePlanInput = z.infer<typeof CreateAuditPlanDto>;
-export type UpdatePlanInput = z.infer<typeof UpdateAuditPlanDto>;
+export type CreateAuditPlanInput = z.infer<typeof CreateAuditPlanDto>;
+export type UpdateAuditPlanInput = z.infer<typeof UpdateAuditPlanDto>;

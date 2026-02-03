@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
   // cacheComponents: true, /* BUG: unstable for the time being */
   reactCompiler: true,
 
+  async rewrites() {
+    return [
+      {
+        source: "/api/graduate/:path*",
+        destination: "https://api.graduatenu.com/api/:path*",
+      },
+    ];
+  },
+
   async redirects() {
     return [
       {

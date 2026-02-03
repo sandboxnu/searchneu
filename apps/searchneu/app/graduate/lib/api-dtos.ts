@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { Schedule } from "./types"
 
 const MIN_YEAR = 1898;
 const MAX_YEAR = 3000;
@@ -15,12 +14,12 @@ export const CreateAuditPlanDtoWithoutSchedule = z.object({
 });
 
 export const CreateAuditPlanDto = CreateAuditPlanDtoWithoutSchedule.extend({
-  schedule: z.custom<Schedule<null>>
+  schedule: z.any()
 });
 
 export const UpdateAuditPlanDto = z.object({
   name: z.string().optional(),
-  schedule: z.custom<Schedule<null>>().optional(),
+  schedule: z.any().optional(),
   major: z.string().optional(),
   minor: z.string().nullable().optional(),
   concentration: z.string().optional(),

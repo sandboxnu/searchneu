@@ -1,5 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 
+// @ts-expect-error: NOTE: this file is outside of @sneu/db tsconfig so the node types are not loaded
 const connectionString = process.env.DATABASE_URL!;
 
 export default defineConfig({

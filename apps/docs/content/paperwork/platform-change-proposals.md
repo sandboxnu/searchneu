@@ -1,5 +1,6 @@
 ---
-title: 00 - Platform Change Proposals
+title: Platform Change Proposals
+icon: FileQuestionMark
 ---
 
 Platform Change Proposals (PCPs) create a process for any changes to SearchNEU
@@ -93,16 +94,16 @@ If an accepted PCP requires modification before implementation is complete:
 Use judgment here—if the change would affect other teams' understanding or planning,
 it warrants a new PCP.
 
-## INCIDENTS
+### INCIDENTS
 
 Should a PCP fail and either a) leave a broken / partial state in prod or b)
 require any degree of rollback, then an Incident must be declared. The purpose
 of this is to ensure all stakeholders are aware of the state of any changes and
 that as many eyes can get on the issue as possible.
 
-> **Note:** The Incident process is documented separately in [TODO: link to incident
->
-> > documentation]. This PCP does not document the Incident process.
+**Note:** The Incident process is documented separately in the [Incident Management
+Process](/paperwork/incident-management). This PCP does not document the Incident
+process.
 
 ## IMPLIMENTATION STEPS
 
@@ -139,7 +140,7 @@ What exactly is being changed? This is where the changes should be described in
 exacting detail! What table is being added, what is the schema, what are the relationships?
 This should also have a list of all the resources being changes (ie prod Neon)
 
-## IMPLIMENTATION STEPS
+## IMPLEMENTATION STEPS
 
 This is the HOW. How will the current state of the app be migrated to the proposed
 state? No need to identify stakeholders yet (save that for the Pull Request, since

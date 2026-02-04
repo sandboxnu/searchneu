@@ -12,7 +12,7 @@
     "scrape:up": "turbo run scrape:up --filter=@sneu/scraper"
   },
   "devDependencies": {
-    "turbo": "^2.7.4"
+    "turbo": "^2.8.0"
   },
   "packageManager": "pnpm@10.27.0",
   "engine": {

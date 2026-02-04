@@ -2,24 +2,19 @@ import { useEffect, useState } from "react";
 import { Button, FormField, Input, Modal, Checkbox, Select, ModalFooter } from "./Modal";
 
 export default function NewPlanModal() {
-    {/*change original state */}
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState('');
-  const [major, setMajor] = useState(null);
-  const [minor, setMinor] = useState(null);
-  const [confirmedBeta, setConfirmedBeta] = useState(false);
+  const [major, setMajor] = useState('');
+  const [minor, setMinor] = useState('');
 
   const noMajorHelperLabel = `You can opt out of selecting a major for this plan if you are unsure or if we do not support you major Without a selected major, we won't be able to display the major requirements`;
 
   const handleClose = () => {
     setIsOpen(false);
   }
-
-  useEffect (() => {
-    setConfirmedBeta(catalogYear && major);
-  }, [catalogYear, major])
+  
 // Generate default plan title using formatted date and time
 const generateDefaultPlanTitle = () => {
     const now = new Date();
@@ -101,19 +96,10 @@ const generateDefaultPlanTitle = () => {
 
         {/*Recommended Template*/}
 
-        {/*Beta confirmation checkbox*/}
-        {catalogYear && major && 
-        <Checkbox
-            label = "I understand that I am selecting a beta major and that the requirements may not be accurate."
-            checked = {confirmedBeta}
-            onChange = {() => setConfirmedBeta(!confirmedBeta)}
-        />
-        }
-
 
         <ModalFooter>
             <Button variant="secondary"> Cancel </Button>
-            <Button variant="primary" isDisabled={!confirmedBeta} onClick={handleClose}> Add Plan </Button>
+            <Button variant="primary" onClick={handleClose}> Add Plan </Button>
         </ModalFooter>        
         
       </Modal>

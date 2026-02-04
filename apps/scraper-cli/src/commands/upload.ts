@@ -1,13 +1,13 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
 import { infer as zinfer } from "zod";
-import { Config } from "../config";
+import { Config } from "@sneu/scraper/config";
 import { consola } from "consola";
-import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import { ScraperBannerCache } from "@sneu/scraper/schemas";
 import { getDb } from "@sneu/db/pg";
-import { uploadCatalogTerm } from "../upload/main";
+import { uploadCatalogTerm } from "@sneu/scraper/upload";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
@@ -131,6 +131,8 @@ const main = defineCommand({
     );
   },
 });
+
+export default main;
 
 void runMain(main);
 

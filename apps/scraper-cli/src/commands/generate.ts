@@ -2,11 +2,11 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "../generate/main";
+import { scrapeCatalogTerm } from "@sneu/scraper/generate";
 import { infer as zinfer } from "zod";
-import { Config } from "../config";
+import { Config } from "@sneu/scraper/config";
 import { consola } from "consola";
-import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import { ScraperBannerCache } from "@sneu/scraper/schemas";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
@@ -112,7 +112,7 @@ const main = defineCommand({
           continue;
         }
 
-        const cachedData: zinfer<typeof ScraperBannerCache> = {
+        const cachedData = {
           version: CACHE_VERSION,
           timestamp: new Date().toISOString(),
           ...out,
@@ -131,6 +131,8 @@ const main = defineCommand({
     );
   },
 });
+
+export default main;
 
 void runMain(main);
 

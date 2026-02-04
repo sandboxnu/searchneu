@@ -94,6 +94,40 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  apps/scraper-cli:
+    dependencies:
+      '@sneu/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@sneu/scraper':
+        specifier: workspace:*
+        version: link:../../packages/scraper
+      citty:
+        specifier: ^0.2.0
+        version: 0.2.0
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      yaml:
+        specifier: ^2.8.2
+        version: 2.8.2
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@sneu/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^25.1.0
+        version: 25.1.0
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   apps/searchneu:
     dependencies:
       '@mdx-js/loader':
@@ -276,9 +310,6 @@ importers:
 
   packages/scraper:
     dependencies:
-      citty:
-        specifier: ^0.2.0
-        version: 0.2.0
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -304,9 +335,6 @@ importers:
       '@sneu/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/he':
-        specifier: ^1.2.3
-        version: 1.2.3
       '@types/node':
         specifier: ^25.1.0
         version: 25.1.0
@@ -2255,9 +2283,6 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
-
-  '@types/he@1.2.3':
-    resolution: {integrity: sha512-q67/qwlxblDzEDvzHhVkwc1gzVWxaNxeyHUBF4xElrvjL11O+Ytze+1fGpBHlr/H9myiBUaUXNnNPmBHxxfAcA==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -7030,8 +7055,6 @@ snapshots:
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
-
-  '@types/he@1.2.3': {}
 
   '@types/json-schema@7.0.15': {}
 

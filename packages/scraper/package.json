@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
-    "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
-    "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
+    "dev": "tsc --watch"
   },
   "exports": {
     "./types": {
@@ -21,10 +19,25 @@
     "./notifs": {
       "types": "./dist/update/notifs.d.ts",
       "default": "./dist/update/notifs.js"
+    },
+    "./generate": {
+      "types": "./dist/generate/main.d.ts",
+      "default": "./dist/generate/main.js"
+    },
+    "./upload": {
+      "types": "./dist/upload/main.d.ts",
+      "default": "./dist/upload/main.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/scraper/banner-cache.d.ts",
+      "default": "./dist/schemas/scraper/banner-cache.js"
     }
   },
   "dependencies": {
-    "citty": "^0.2.0",
     "consola": "^3.4.2",
     "drizzle-orm": "^0.45.1",
     "html-entities": "^2.6.0",
@@ -35,7 +48,6 @@
   "devDependencies": {
     "@sneu/db": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
-    "@types/he": "^1.2.3",
     "@types/node": "^25.1.0",
     "tsx": "^4.21.0",
     "turbo": "^2.8.0",

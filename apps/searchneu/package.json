@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node scripts/run-tests.mjs",
-    "test:watch": "node --test --watch --import tsx src/**/*.test.ts"
+    "test": "node --test --import tsx ./**/*.test.ts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

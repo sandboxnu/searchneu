@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "test": "turbo run test",
     "db:generate": "turbo run db:generate --filter=@sneu/db",
     "db:migrate": "turbo run db:migrate --filter=@sneu/db",
     "db:push": "turbo run db:push --filter=@sneu/db",

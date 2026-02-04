@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "test": "node --test --import tsx ./**/*.test.ts",
     "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
     "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
   },

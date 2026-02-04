@@ -1,0 +1,9 @@
+openapi: 3.0.3
+info:
+  title: SearchNEU API
+  version: 0.0.1
+  description: |-
+    Hello World
+servers:
+  - url: https://searchneu.com
+paths:

@@ -31,7 +31,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col gap-6 xl:flex-row items-start xl:items-center justify-between absolute left-15 top-67.5 right-30 text-sm">
             <div className="flex gap-1 flex-col xl:flex-row">
-              <p className="text-neu5">2025 SearchNEU.</p>
+              <p className="text-neu5">© 2025 SearchNEU.</p>
               <p className="text-neu7">
                 Made with {" "}
                 <span

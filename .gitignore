@@ -46,6 +46,7 @@ next-env.d.ts
 
 # ide
 .vscode
+.idea
 
 # Turborepo
 .turbo

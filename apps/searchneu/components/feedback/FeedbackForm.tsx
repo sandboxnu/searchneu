@@ -26,7 +26,8 @@ export default function FeedbackForm() {
 
     setSubmitting(true);
     try {
-      const res = await sendFeedbackToSlack(feedbackType, message, contact);
+      const currentUrl = window.location.href;
+      const res = await sendFeedbackToSlack(feedbackType, message, contact, currentUrl);
       if (res == 200) {
         setMessage("");
         setContact("");
@@ -75,7 +76,7 @@ export default function FeedbackForm() {
         </div>
         <Select value={feedbackType} onValueChange={setFeedbackType}>
           <SelectTrigger className="text-neu7 h-9 w-full border font-bold">
-            <SelectValue placeholder="Bug Report" />
+            <SelectValue placeholder="Select Feedback Type" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="bug-report">Bug Report</SelectItem>
@@ -113,7 +114,7 @@ export default function FeedbackForm() {
 
       <Button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || !feedbackType || !message.trim()}
         className="bg-neu hover:bg-neu/80 text-neu1 m-auto rounded-full px-6 py-3 font-bold"
       >
         {submitting ? "Submitting..." : "Submit"}

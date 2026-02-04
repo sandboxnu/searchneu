@@ -20,18 +20,12 @@ export function Header() {
   const enableSchedulerPage = schedulerFlag();
   const enableGraduatePage = graduateFlag();
 
-  const Nav = (
-    <Suspense>
-      <NavBar
-        flags={{
-          rooms: enableRoomsPage,
-          faq: enableFaqPage,
-          scheduler: enableSchedulerPage,
-          graduate: enableGraduatePage,
-        }}
-      />
-    </Suspense>
-  );
+  const flags = {
+    rooms: enableRoomsPage,
+    faq: enableFaqPage,
+    scheduler: enableSchedulerPage,
+    graduate: enableGraduatePage,
+  };
 
   return (
     <header className="z-20 flex h-9 w-full items-center justify-between bg-transparent px-4 md:px-6">
@@ -39,7 +33,9 @@ export function Header() {
         <Logo className="h-6 w-40" />
       </Link>
       <div className="hidden items-center gap-2 lg:flex">
-        {Nav}
+        <Suspense>
+          <NavBar flags={flags} />
+        </Suspense>
         <UserIcon />
       </div>
       <Sheet>
@@ -59,7 +55,9 @@ export function Header() {
               <Logo className="h-6 w-40" />
             </Link>
             <UserIcon />
-            {Nav}
+            <Suspense>
+              <NavBar flags={flags} closeable />
+            </Suspense>
           </div>
           <SheetClose className="bg-neu1 absolute top-4 right-4 flex size-9 items-center justify-center rounded-full border disabled:pointer-events-none">
             <XIcon className="size-6" />

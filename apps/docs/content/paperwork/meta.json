@@ -1,0 +1,17 @@
+{
+  "title": "Paperwork",
+  "description": "Archive for PCPs and Incidents",
+  "icon": "Archive",
+  "root": true,
+  "defaultOpen": false,
+  "pages": [
+    "index",
+    "platform-change-proposals",
+    "incident-management",
+    "resources",
+    "---Proposals---",
+    "...proposals",
+    "---Incidents---",
+    "...incidents"
+  ]
+}

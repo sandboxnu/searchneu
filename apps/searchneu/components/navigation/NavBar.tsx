@@ -4,11 +4,14 @@ import { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
+import { SheetClose } from "../ui/sheet";
 
 export function NavBar({
   flags,
+  closeable = false,
 }: {
   flags: { [key: string]: Promise<boolean> };
+  closeable?: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
   const faqFlag = use(flags["faq"]);
@@ -16,6 +19,8 @@ export function NavBar({
   const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
+
+  const LinkWrapper = closeable ? SheetClose : ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
   return (
     <nav className="flex gap-2 font-semibold">
@@ -27,49 +32,59 @@ export function NavBar({
         }}
       />
       {roomsFlag && (
-        <Link
-          href="/rooms"
-          data-active={pathname === "/rooms"}
-          className="bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
-        >
-          <DoorOpen className="size-4" />
-          <span>Rooms</span>
-        </Link>
+        <LinkWrapper asChild={closeable}>
+          <Link
+            href="/rooms"
+            data-active={pathname === "/rooms"}
+            className="bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
+          >
+            <DoorOpen className="size-4" />
+            <span>Rooms</span>
+          </Link>
+        </LinkWrapper>
       )}
-      <Link
-        href="/catalog"
-        data-active={pathname.startsWith("/catalog")}
-        className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
-      >
-        <Bookmark className="size-4" />
-        <span>Catalog</span>
-      </Link>
-      {schedulerFlag && (
+      <LinkWrapper asChild={closeable}>
         <Link
-          href="/scheduler"
-          data-active={pathname === "/scheduler"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+          href="/catalog"
+          data-active={pathname.startsWith("/catalog")}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
         >
-          Scheduler
+          <Bookmark className="size-4" />
+          <span>Catalog</span>
         </Link>
+      </LinkWrapper>
+      {schedulerFlag && (
+        <LinkWrapper asChild={closeable}>
+          <Link
+            href="/scheduler"
+            data-active={pathname === "/scheduler"}
+            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+          >
+            Scheduler
+          </Link>
+        </LinkWrapper>
       )}
       {graduateFlag && (
-        <Link
-          href="/graduate"
-          data-active={pathname === "/graduate"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
-        >
-          Graduate
-        </Link>
+        <LinkWrapper asChild={closeable}>
+          <Link
+            href="/graduate"
+            data-active={pathname === "/graduate"}
+            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+          >
+            Graduate
+          </Link>
+        </LinkWrapper>
       )}
       {faqFlag && (
-        <Link
-          href="/faq"
-          data-active={pathname === "/faq"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
-        >
-          <CircleQuestionMark className="text-red size-5" />
-        </Link>
+        <LinkWrapper asChild={closeable}>
+          <Link
+            href="/faq"
+            data-active={pathname === "/faq"}
+            className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+          >
+            <CircleQuestionMark className="text-red size-5" />
+          </Link>
+        </LinkWrapper>
       )}
     </nav>
   );

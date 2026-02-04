@@ -51,6 +51,10 @@ export const getSearch = cache(
         sql`${coursesT.courseNumber} @@@ ${"<= " + String(maxCourseId * 1000 + 999)}`,
       );
     }
+    if (honors) {
+      sqlChunks.push(sql`and`);
+      sqlChunks.push(sql`${sectionsT.honors} = true`);
+    }
 
     const result = await db
       .select({

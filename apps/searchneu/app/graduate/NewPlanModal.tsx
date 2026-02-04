@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, FormField, Input, Modal, Checkbox, Select, ModalFooter } from "./Modal";
 
 export default function NewPlanModal() {
+    {/*change original state */}
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -27,7 +28,6 @@ const generateDefaultPlanTitle = () => {
 
   return (
     <>
-        {/*TODO: change isOpen*/}
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -96,6 +96,8 @@ const generateDefaultPlanTitle = () => {
         </FormField>
 
         {/*Can't find your major / minor?*/}
+        {/*TODO make tooltip */}
+        Can't find your major/minor?
 
         {/*Recommended Template*/}
 

@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { Button, FormField, Input, Modal, Checkbox, Select, ModalFooter } from "./Modal";
+import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
+import { GetSupportedMajorsResponse } from "@/lib/graduate/api-response-types";
+import { ReceiptRussianRuble } from "lucide-react";
 
 export default function NewPlanModal() {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState('');
+  const [supportedMajorsData, setSupportedMajorsData] = useState<GetSupportedMajorsResponse | null>(null);
+  const [majorOptions, setMajorOptions] = useState<{ value: string; label: string }[]>([]);
+  const [isLoadingMajors, setIsLoadingMajors] = useState(false);
   const [major, setMajor] = useState('');
   const [minor, setMinor] = useState('');
 
@@ -14,7 +20,50 @@ export default function NewPlanModal() {
   const handleClose = () => {
     setIsOpen(false);
   }
+
+  //fetching majors
+  useEffect(() => {
+  const fetchSupportedMajors = async () => {
+    setIsLoadingMajors(true);
+    
+    try {
+      const response = await GraduateAPI.majors.getSupportedMajors();
+      setSupportedMajorsData(response);
+    } catch (error) {
+      console.error('Error fetching majors:', error);
+    } 
+    setIsLoadingMajors(false);
+  };
+
+  fetchSupportedMajors();
+}, []);
+
+//change supported majors based on catalog year
+useEffect(() => {
+  if (!catalogYear || !supportedMajorsData) {
+    setMajorOptions([]);
+    setMajor(''); 
+    return;
+  }
+  const majorsForYear = supportedMajorsData.supportedMajors[catalogYear];
   
+  if (majorsForYear) {
+    const options = Object.keys(majorsForYear)
+      .sort() 
+      .map(majorName => ({
+        value: majorName,
+        label: majorName
+      }));
+    
+    setMajorOptions(options);
+  } else {
+    setMajorOptions([]);
+  }
+  
+  setMajor('');
+}, [catalogYear, supportedMajorsData]);
+
+
 // Generate default plan title using formatted date and time
 const generateDefaultPlanTitle = () => {
     const now = new Date();
@@ -44,13 +93,11 @@ const generateDefaultPlanTitle = () => {
         onChange = {() => setIsNoMajorSelected(!isNoMajorSelected)}
         helpText = {noMajorHelperLabel}
       />
-           {/*TODO: fix styling of checkbox*/}
 
         {/*no major checkbox + tooltip*/}
 
         {/*catalog year*/}
         <FormField label = "Catalog Year">
-            {/* TODO make inner text gray, arrow dropdwon, graduate-style options */}
             <Select 
                 placeholder="Select Catalog Year"
                 value = {catalogYear}
@@ -66,20 +113,16 @@ const generateDefaultPlanTitle = () => {
 
         {/*major*/}
         <FormField label = "Major(s)">
-            {/* TODO make inner text gray, arrow dropdwon, graduate-style options */}
             <Select 
-                placeholder = {major ? "" : "Select a major "}
+                placeholder = {isLoadingMajors ? "Loading majors ..." : "Select a major"}
                 value = {major}
-                options={[
-                    { value: 'lol', label: 'lol' },
-                ]}
+                options={majorOptions}
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMajor(e.target.value)}
                 />
         </FormField>
 
         {/*minor*/}
         <FormField label = "Minor(s)">
-            {/* TODO make inner text gray, arrow dropdwon, graduate-style options */}
             <Select 
                 placeholder= { minor ? "" : "Select a minor" }
                 value = {minor}
@@ -91,7 +134,6 @@ const generateDefaultPlanTitle = () => {
         </FormField>
 
         {/*Can't find your major / minor?*/}
-        {/*TODO make tooltip */}
         Can't find your major/minor?
 
         {/*Recommended Template*/}

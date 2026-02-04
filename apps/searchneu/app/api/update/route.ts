@@ -15,6 +15,7 @@ import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
+import { createScraperEmitter } from "@sneu/scraper/events";
 
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update
@@ -38,6 +39,41 @@ export async function GET(req: NextRequest) {
 
   // for each term perform an update
   for (const term of terms) {
+    // Create emitter and set up event listeners
+    const emitter = createScraperEmitter();
+
+    emitter.on("update:start", ({ term }) => {
+      console.log(`Starting update for term ${term}`);
+    });
+
+    emitter.on("update:seats:new", ({ crns }) => {
+      console.log(`Sections with open seats: ${crns.join(", ")}`);
+    });
+
+    emitter.on("update:seats:waitlist", ({ crns }) => {
+      console.log(`Sections with open waitlist spots: ${crns.join(", ")}`);
+    });
+
+    emitter.on("update:sections:new", ({ crns }) => {
+      console.log(`New sections: ${crns.join(", ")}`);
+    });
+
+    emitter.on("update:sections:missing", ({ crns }) => {
+      console.warn(`Orphaned sections: ${crns.join(", ")}`);
+    });
+
+    emitter.on("update:sections:unrooted", ({ crns }) => {
+      console.warn(`Unrooted sections: ${crns.join(", ")}`);
+    });
+
+    emitter.on("update:complete", ({ term, sectionsWithNewSeats, sectionsWithNewWaitlistSeats, newSections }) => {
+      console.log(`Update complete for ${term}: ${sectionsWithNewSeats} new seats, ${sectionsWithNewWaitlistSeats} new waitlist, ${newSections} new sections`);
+    });
+
+    emitter.on("update:error", ({ error, context }) => {
+      console.error(`Error in ${context}: ${error.message}`);
+    });
+
     const {
       sectionsWithNewSeats: newSeats,
       sectionsWithUpdatedSeats: updatedSeats,
@@ -47,7 +83,7 @@ export async function GET(req: NextRequest) {
       sectionsWithUpdatedWaitlistSeatCapacity: updatedWaitlistCapacity,
       newSections,
       newSectionCourseKeys,
-    } = await updateTerm(term, db, console);
+    } = await updateTerm(term, db, emitter);
 
     // get seat trackers & send notifs
     const trackers = await db

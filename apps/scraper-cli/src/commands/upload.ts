@@ -8,6 +8,7 @@ import { consola } from "consola";
 import { ScraperBannerCache } from "@sneu/scraper/schemas";
 import { getDb } from "@sneu/db/pg";
 import { uploadCatalogTerm } from "@sneu/scraper/upload";
+import { createScraperEmitter } from "@sneu/scraper/events";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
@@ -117,8 +118,59 @@ const main = defineCommand({
       }
       const termData = safeTermData.data;
 
+      // Create emitter and set up event listeners
+      const emitter = createScraperEmitter();
+
+      emitter.on("upload:start", ({ term }) => {
+        consola.debug(`Starting upload for term ${term}`);
+      });
+
+      emitter.on("upload:campuses:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} campuses`);
+      });
+
+      emitter.on("upload:buildings:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} buildings`);
+      });
+
+      emitter.on("upload:subjects:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} subjects`);
+      });
+
+      emitter.on("upload:term:complete", ({ term }) => {
+        consola.debug(`Inserted term ${term}`);
+      });
+
+      emitter.on("upload:courses:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} courses`);
+      });
+
+      emitter.on("upload:sections:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} sections`);
+      });
+
+      emitter.on("upload:sections:removed", ({ count, crns }) => {
+        consola.info(`${count} sections to remove`);
+      });
+
+      emitter.on("upload:meetingtimes:complete", ({ count }) => {
+        consola.debug(`Inserted ${count} meeting times`);
+      });
+
+      emitter.on("upload:meetingtimes:removed", ({ count }) => {
+        consola.info(`${count} meeting times to remove`);
+      });
+
+      emitter.on("upload:complete", ({ term }) => {
+        consola.debug(`Completed upload for term ${term}`);
+      });
+
+      emitter.on("upload:error", ({ error, context }) => {
+        consola.error(`Error in ${context}: ${error.message}`);
+      });
+
       try {
-        await uploadCatalogTerm(termData, db, termConfig);
+        await uploadCatalogTerm(termData, db, termConfig, emitter);
         consola.success(`uploaded term ${termConfig.term}`);
       } catch (e) {
         consola.error(`failed to upload term ${termConfig.term} - `, e);

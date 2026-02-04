@@ -12,6 +12,10 @@
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
     },
+    "./events": {
+      "types": "./dist/events.d.ts",
+      "default": "./dist/events.js"
+    },
     "./update": {
       "types": "./dist/update/main.d.ts",
       "default": "./dist/update/main.js"

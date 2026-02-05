@@ -9,7 +9,7 @@ import { $fetch } from "../fetch";
  *
  */
 export async function scrapeTermDefinition(term: string) {
-  const resp: any = await $fetch(
+  const resp = await $fetch(
     `https://nubanner.neu.edu/StudentRegistrationSsb/ssb/classSearch/getTerms?offset=1&max=10&searchTerm=${term}`,
   ).then((resp) => resp.json());
 

@@ -14,7 +14,6 @@ with this policy.
 We collect the following types of information:
 
 1. **Information You Provide Directly:**
-
    - **Google Account Information:** When you choose to sign in using your Northeastern
      University Google account, we collect the following information provided by
      Google, with your consent:
@@ -38,26 +37,22 @@ We collect the following types of information:
 We use the collected information for the following purposes:
 
 1. To Provide and Maintain the Service:
-
    - To authenticate you using your Google account.
    - To create and manage your user account.
    - To send you SMS notifications about course seat availability, if you have
      opted in.
 
 2. To Improve the Application:
-
    - To monitor and analyze usage and trends to improve your experience with
      the Application.
    - To debug and troubleshoot issues with the Application using Log Data.
 
 3. To Communicate With You:
-
    - To respond to your inquiries or provide support.
    - To send you important notices about the Application, such as changes to our
      terms or policies (though we primarily aim to post these on the Application).
 
 4. To Comply with Legal Obligations:
-
    - To comply with applicable laws, regulations, legal processes, or governmental
      requests.
 
@@ -73,7 +68,6 @@ following limited circumstances:
 
 2. For Legal Reasons: We may disclose your information if required to do so by
    law or in the good faith belief that such action is necessary to:
-
    - Comply with a legal obligation.
    - Protect and defend our rights or property.
    - Prevent or investigate possible wrongdoing in connection with the Application.

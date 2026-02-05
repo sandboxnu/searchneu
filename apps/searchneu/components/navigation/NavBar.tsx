@@ -20,7 +20,9 @@ export function NavBar({
 
   const pathname = usePathname();
 
-  const LinkWrapper = closeable ? SheetClose : ({ children }: { children: React.ReactNode }) => <>{children}</>;
+  const LinkWrapper = closeable
+    ? SheetClose
+    : ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
   return (
     <nav className="flex gap-2 font-semibold">

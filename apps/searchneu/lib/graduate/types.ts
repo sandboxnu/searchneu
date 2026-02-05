@@ -3,19 +3,19 @@
  * breadth requirements.
  */
 export enum NUPathEnum {
-    ND = "Natural/Designed World",
-    EI = "Creative Express/Innov",
-    IC = "Interpreting Cusclture",
-    FQ = "Formal/Quant Reasoning",
-    SI = "Societies/Institutions",
-    AD = "Analyzing/Using Data",
-    DD = "Difference/Diversity",
-    ER = "Ethical Reasoning",
-    WF = "1st Yr Writing",
-    WD = "Adv Writ Dscpl",
-    WI = "Writing Intensive",
-    EX = "Integration Experience",
-    CE = "Capstone Experience",
+  ND = "Natural/Designed World",
+  EI = "Creative Express/Innov",
+  IC = "Interpreting Cusclture",
+  FQ = "Formal/Quant Reasoning",
+  SI = "Societies/Institutions",
+  AD = "Analyzing/Using Data",
+  DD = "Difference/Diversity",
+  ER = "Ethical Reasoning",
+  WF = "1st Yr Writing",
+  WD = "Adv Writ Dscpl",
+  WI = "Writing Intensive",
+  EX = "Integration Experience",
+  CE = "Capstone Experience",
 }
 
 /**
@@ -23,20 +23,20 @@ export enum NUPathEnum {
  * abbreviated by Northeastern.
  */
 export enum SeasonEnum {
-    FL = "FL",
-    SP = "SP",
-    S1 = "S1",
-    S2 = "S2",
-    SM = "SM",
+  FL = "FL",
+  SP = "SP",
+  S1 = "S1",
+  S2 = "S2",
+  SM = "SM",
 }
 
 /** A Status is one of on CO-OP, CLASSES, or INACTIVE */
 export enum StatusEnum {
-    COOP = "COOP",
-    CLASSES = "CLASSES",
-    INACTIVE = "INACTIVE",
-    HOVERINACTIVE = "HOVERINACTIVE",
-    HOVERCOOP = "HOVERCOOP",
+  COOP = "COOP",
+  CLASSES = "CLASSES",
+  INACTIVE = "INACTIVE",
+  HOVERINACTIVE = "HOVERINACTIVE",
+  HOVERCOOP = "HOVERCOOP",
 }
 
 /** A SearchNEU prerequisite object. */
@@ -50,9 +50,9 @@ export type INEUReq = INEUAndReq | INEUOrReq | INEUReqCourse;
  * @param missing True if the class is missing.
  */
 export interface INEUReqCourse {
-    classId: string;
-    subject: string;
-    missing?: true;
+  classId: string;
+  subject: string;
+  missing?: true;
 }
 
 /**
@@ -63,8 +63,8 @@ export interface INEUReqCourse {
  *   marked as done.
  */
 export interface INEUAndReq {
-    type: "and";
-    values: INEUReq[];
+  type: "and";
+  values: INEUReq[];
 }
 
 /**
@@ -75,8 +75,8 @@ export interface INEUAndReq {
  *   prerequisite to be marked as done.
  */
 export interface INEUOrReq {
-    type: "or";
-    values: INEUReq[];
+  type: "or";
+  values: INEUReq[];
 }
 
 /**
@@ -95,16 +95,16 @@ export interface INEUOrReq {
  * @param id            Unique id used as a book keeping field for dnd.
  */
 export interface ScheduleCourse<T> {
-    name: string;
-    classId: string;
-    subject: string;
-    prereqs?: INEUAndReq | INEUOrReq;
-    coreqs?: INEUAndReq | INEUOrReq;
-    nupaths?: NUPathEnum[];
-    numCreditsMin: number;
-    numCreditsMax: number;
-    id: T;
-    generic?: boolean;
+  name: string;
+  classId: string;
+  subject: string;
+  prereqs?: INEUAndReq | INEUOrReq;
+  coreqs?: INEUAndReq | INEUOrReq;
+  nupaths?: NUPathEnum[];
+  numCreditsMin: number;
+  numCreditsMax: number;
+  id: T;
+  generic?: boolean;
 }
 
 /**
@@ -119,10 +119,10 @@ export interface ScheduleCourse<T> {
  * @param id      Unique id used as a book keeping field for dnd.
  */
 export interface ScheduleTerm<T> {
-    season: SeasonEnum;
-    status: StatusEnum;
-    classes: ScheduleCourse<T>[];
-    id: T;
+  season: SeasonEnum;
+  status: StatusEnum;
+  classes: ScheduleCourse<T>[];
+  id: T;
 }
 
 /**
@@ -142,12 +142,12 @@ export interface ScheduleTerm<T> {
  * @param isSummerFull True if the summer1 should hold the classes for summer full.
  */
 export interface ScheduleYear<T> {
-    year: number;
-    fall: ScheduleTerm<T>;
-    spring: ScheduleTerm<T>;
-    summer1: ScheduleTerm<T>;
-    summer2: ScheduleTerm<T>;
-    isSummerFull: boolean;
+  year: number;
+  fall: ScheduleTerm<T>;
+  spring: ScheduleTerm<T>;
+  summer1: ScheduleTerm<T>;
+  summer2: ScheduleTerm<T>;
+  isSummerFull: boolean;
 }
 
 /**
@@ -157,7 +157,7 @@ export interface ScheduleYear<T> {
  * @param years A list of the years of this object
  */
 export interface Schedule<T> {
-    years: ScheduleYear<T>[];
+  years: ScheduleYear<T>[];
 }
 
 /**
@@ -170,15 +170,15 @@ export interface Schedule<T> {
  * @param concentrations       The possible concentrations within this major.
  */
 export interface Major {
-    name: string;
-    requirementSections: Section[];
-    totalCreditsRequired: number;
-    yearVersion: number;
-    concentrations?: Concentrations;
-    metadata?: MajorMetadata;
-  }
+  name: string;
+  requirementSections: Section[];
+  totalCreditsRequired: number;
+  yearVersion: number;
+  concentrations?: Concentrations;
+  metadata?: MajorMetadata;
+}
 
-  /**
+/**
  * Metadata for a major.
  *
  * @param verified   Whether the major has been manually verified.
@@ -186,10 +186,10 @@ export interface Major {
  * @param branch     The branch of the scraper (must be main).
  */
 export interface MajorMetadata {
-    verified: boolean;
-    lastEdited: string;
-    branch: string;
-  }
+  verified: boolean;
+  lastEdited: string;
+  branch: string;
+}
 
 /**
  * A Minor, containing all the requirements.
@@ -202,12 +202,12 @@ export interface MajorMetadata {
  */
 
 export interface Minor {
-    name: string;
-    requirementSections: Section[];
-    totalCreditsRequired: number;
-    yearVersion: number;
-    metadata?: MinorMetaData;
-  }
+  name: string;
+  requirementSections: Section[];
+  totalCreditsRequired: number;
+  yearVersion: number;
+  metadata?: MinorMetaData;
+}
 
 /**
  * Metadata for a minor.
@@ -217,12 +217,12 @@ export interface Minor {
  * @param branch     The branch of the scraper (must be main).
  */
 export interface MinorMetaData {
-    verified: boolean;
-    lastEdited: string;
-    branch: string;
-  }
+  verified: boolean;
+  lastEdited: string;
+  branch: string;
+}
 
-  /**
+/**
   * A Concentrations, contains all of the available concentrations for the major
   * and their respective requirements.
   
@@ -231,35 +231,35 @@ export interface MinorMetaData {
   * @param concentrationOptions The list of sections representing all of the
   *   available concentrations in the major.
   */
-  export interface Concentrations {
-    minOptions: number;
-    concentrationOptions: Section[];
-  }
+export interface Concentrations {
+  minOptions: number;
+  concentrationOptions: Section[];
+}
 
- /**
-  * A Section, containing its related requirements.
-  *
-  * @param title               The title of the section.
-  * @param requirements        A list of the requirements within this section.
-  * @param minRequirementCount The minimum number of requirements (counts from
-  *   requirements) that are accepted for the section to be fulfilled.
-  */
-  export interface Section {
-    type: "SECTION";
-    title: string;
-    requirements: Requirement[];
-    minRequirementCount: number;
-    warnings?: string[];
-  }
+/**
+ * A Section, containing its related requirements.
+ *
+ * @param title               The title of the section.
+ * @param requirements        A list of the requirements within this section.
+ * @param minRequirementCount The minimum number of requirements (counts from
+ *   requirements) that are accepted for the section to be fulfilled.
+ */
+export interface Section {
+  type: "SECTION";
+  title: string;
+  requirements: Requirement[];
+  minRequirementCount: number;
+  warnings?: string[];
+}
 
- /** Represents a degree requirement that allows a Section to be completed. */
- export type Requirement =
-    | IXofManyCourse
-    | IAndCourse
-    | IOrCourse
-    | ICourseRange
-    | IRequiredCourse
-    | Section;
+/** Represents a degree requirement that allows a Section to be completed. */
+export type Requirement =
+  | IXofManyCourse
+  | IAndCourse
+  | IOrCourse
+  | ICourseRange
+  | IRequiredCourse
+  | Section;
 
 /**
  * Represents a requirement where X number of credits need to be completed from
@@ -270,88 +270,86 @@ export interface MinorMetaData {
  * @param courses       The list of requirements that the credits can be fulfilled from.
  */
 export interface IXofManyCourse {
-    type: "XOM";
-    numCreditsMin: number;
-    courses: Requirement[];
-  }
-  
-  /**
-   * Represents an 'AND' series of requirements.
-   *
-   * @param type    The type of requirement.
-   * @param courses The list of requirements, all of which must be taken to
-   *   satisfy this requirement.
-   */
-  export interface IAndCourse {
-    type: "AND";
-    courses: Requirement[];
-  }
-  
-  /**
-   * Represents an 'OR' set of requirements.
-   *
-   * @param type    The type of requirement.
-   * @param courses The list of requirements, one of which can be taken to satisfy
-   *   this requirement.
-   */
-  export interface IOrCourse {
-    type: "OR";
-    courses: Requirement[];
-  }
-  
-  /**
-   * Represents a requirement that specifies a range of courses.
-   *
-   * @param type         The type of requirement.
-   * @param subject      The subject area of the range of courses.
-   * @param idRangeStart The course ID for the starting range of course numbers.
-   * @param idRangeEnd   The course ID for the ending range of course numbers.
-   * @param exceptions   The requirements within the mentioned range that do not
-   *   count towards fulfulling this requirement.
-   */
-  export interface ICourseRange {
-    type: "RANGE";
-    subject: string;
-    idRangeStart: number;
-    idRangeEnd: number;
-    exceptions: IRequiredCourse[];
-  }
-  
-  /**
-   * A single required course.
-   *
-   * @param classId - The numeric ID of the course.
-   * @param subject - The subject that the course is concerned with, such as CS
-   *   (Computer Science).
-   */
-  export interface IRequiredCourse {
-    type: "COURSE";
-    classId: number;
-    subject: string;
-    description?: string;
-  }
+  type: "XOM";
+  numCreditsMin: number;
+  courses: Requirement[];
+}
 
+/**
+ * Represents an 'AND' series of requirements.
+ *
+ * @param type    The type of requirement.
+ * @param courses The list of requirements, all of which must be taken to
+ *   satisfy this requirement.
+ */
+export interface IAndCourse {
+  type: "AND";
+  courses: Requirement[];
+}
 
-  export type SupportedConcentrations = {
-    concentrations: string[];
-    minRequiredConcentrations: number;
-    verified: boolean;
-  };
+/**
+ * Represents an 'OR' set of requirements.
+ *
+ * @param type    The type of requirement.
+ * @param courses The list of requirements, one of which can be taken to satisfy
+ *   this requirement.
+ */
+export interface IOrCourse {
+  type: "OR";
+  courses: Requirement[];
+}
 
-  // { majorName => { concentration, minRequiredConcentrations, verified} }
-  export type SupportedMajorsForYear = Record<string, SupportedConcentrations>;
-  export type SupportedMinorsForYear = Record<string, Minor>;
+/**
+ * Represents a requirement that specifies a range of courses.
+ *
+ * @param type         The type of requirement.
+ * @param subject      The subject area of the range of courses.
+ * @param idRangeStart The course ID for the starting range of course numbers.
+ * @param idRangeEnd   The course ID for the ending range of course numbers.
+ * @param exceptions   The requirements within the mentioned range that do not
+ *   count towards fulfulling this requirement.
+ */
+export interface ICourseRange {
+  type: "RANGE";
+  subject: string;
+  idRangeStart: number;
+  idRangeEnd: number;
+  exceptions: IRequiredCourse[];
+}
 
-  // { year => supported majors }
-  export type SupportedMajors = Record<string, SupportedMajorsForYear>;
-  export type SupportedMinors = Record<string, SupportedMinorsForYear>;
-  
-  export type Maybe<T> = T | false;
-  
-  export interface MetaInfo {
-    commit: Maybe<string>;
-    commitMessage: Maybe<string>;
-    build_timestamp: Maybe<number>;
-    environment: Maybe<string>;
-  }
-  
+/**
+ * A single required course.
+ *
+ * @param classId - The numeric ID of the course.
+ * @param subject - The subject that the course is concerned with, such as CS
+ *   (Computer Science).
+ */
+export interface IRequiredCourse {
+  type: "COURSE";
+  classId: number;
+  subject: string;
+  description?: string;
+}
+
+export type SupportedConcentrations = {
+  concentrations: string[];
+  minRequiredConcentrations: number;
+  verified: boolean;
+};
+
+// { majorName => { concentration, minRequiredConcentrations, verified} }
+export type SupportedMajorsForYear = Record<string, SupportedConcentrations>;
+export type SupportedMinorsForYear = Record<string, Minor>;
+
+// { year => supported majors }
+export type SupportedMajors = Record<string, SupportedMajorsForYear>;
+export type SupportedMinors = Record<string, SupportedMinorsForYear>;
+
+export type Maybe<T> = T | false;
+
+export interface MetaInfo {
+  commit: Maybe<string>;
+  commitMessage: Maybe<string>;
+  build_timestamp: Maybe<number>;
+  environment: Maybe<string>;
+}

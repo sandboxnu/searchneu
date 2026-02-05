@@ -58,4 +58,3 @@ export const auditMetadataT = pgTable(
 
   (table) => [index("audit_metadata_user_id_idx").on(table.userId)],
 );
-

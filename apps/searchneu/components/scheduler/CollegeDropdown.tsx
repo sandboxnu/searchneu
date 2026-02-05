@@ -33,7 +33,7 @@ export function CollegeDropdown(props: {
     if (availableTerms.length > 0) {
       props.onTermChange(availableTerms[0].term);
     }
-  }, [props.selectedCollege, availableTerms]);
+  }, [props.selectedCollege]);
 
   return (
     <div className="space-y-2">

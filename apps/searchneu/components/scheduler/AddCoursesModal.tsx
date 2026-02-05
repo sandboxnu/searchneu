@@ -52,7 +52,7 @@ export default function AddCoursesModal(props: {
         return prev;
       }
 
-      if (prev.length >= 6) return prev;
+      if (prev.length >= 10) return prev;
 
       const coreqs = course.coreqs
         ? extractCoreqCourses(course.coreqs).map(
@@ -79,6 +79,9 @@ export default function AddCoursesModal(props: {
   };
 
   const handleDeleteGroup = (parent: Course) => {
+    // deleting parent deletes whole group
+    // deleting a child only deletes child
+
     setSelectedCourseGroups((prev) =>
       prev.filter(
         (g) =>
@@ -88,6 +91,29 @@ export default function AddCoursesModal(props: {
           ),
       ),
     );
+  };
+
+  const handleDeleteChild = (child: Course) => {
+    setSelectedCourseGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        coreqs: group.coreqs.filter(
+          (c) =>
+            !(
+              c.subject === child.subject &&
+              c.courseNumber === child.courseNumber
+            ),
+        ),
+      })),
+    );
+  };
+
+  const handleDelete = (course: Course, isCoreq: boolean) => {
+    if (isCoreq) {
+      handleDeleteChild(course);
+    } else {
+      handleDeleteGroup(course);
+    }
   };
 
   const isCourseCoreq = (
@@ -196,21 +222,23 @@ export default function AddCoursesModal(props: {
             )}
           </div>
           {/* selected course and generate button */}
-          <div className="flex w-1/2 flex-col gap-[10px] max-[768px]:h-1/2 max-[768px]:w-full">
+          <div className="flex w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
             {/* selected courses panel */}
-            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-[8px]">
+            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-2">
               {selectedCourseGroups.length === 0 ? (
                 <span className="text-neu6 flex h-full items-center justify-center text-sm">
                   No courses selected
                 </span>
               ) : (
-                <div className="flex min-h-0 flex-col gap-y-[4px] overflow-y-auto">
+                <div className="flex min-h-0 flex-col gap-y-1 overflow-y-auto">
                   {selectedCourseGroups.map((group, index) => (
                     <SelectedCourseGroup
                       key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}
                       parent={group.parent}
                       coreqs={group.coreqs}
-                      onDelete={() => handleDeleteGroup(group.parent)}
+                      onDeleteCourse={(course, isCoreq) =>
+                        handleDelete(course, isCoreq)
+                      }
                       onToggleLock={() => handleToggleLock(group.parent)}
                       isLocked={group.isLocked}
                     />

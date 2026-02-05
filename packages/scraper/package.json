@@ -39,7 +39,7 @@
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.1.0",
+    "@types/node": "^25.2.1",
     "eslint": "^9.39.2",
     "nock": "^14.0.10",
     "tsx": "^4.21.0",

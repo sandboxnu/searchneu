@@ -55,32 +55,8 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
-    "db:generate": {
-      "env": ["DATABASE_URL"],
-      "cache": false
-    },
-    "db:migrate": {
-      "env": ["DATABASE_URL"],
-      "cache": false
-    },
-    "db:push": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
-    },
-    "db:studio": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
-    },
-    "scrape:gen": {
-      "cache": false,
-      "persistent": true
-    },
-    "scrape:up": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
+    "lint": {
+      "dependsOn": ["^lint"]
     }
   }
 }

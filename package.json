@@ -4,6 +4,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "db:generate": "turbo run db:generate --filter=@sneu/db",
     "db:migrate": "turbo run db:migrate --filter=@sneu/db",
     "db:push": "turbo run db:push --filter=@sneu/db",
@@ -12,6 +15,8 @@
     "scrape:up": "turbo run scrape:up --filter=@sneu/scraper"
   },
   "devDependencies": {
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "turbo": "^2.8.0"
   },
   "packageManager": "pnpm@10.27.0",

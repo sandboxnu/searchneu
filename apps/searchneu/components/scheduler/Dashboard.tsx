@@ -7,6 +7,7 @@ import { GroupedTerms } from "@/lib/types";
 import { CollegeDropdown } from "@/components/scheduler/CollegeDropdown";
 import { TermsDropdown } from "./TermsDropdown";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Searchskie } from "../icons/Searchskie";
 
 
 
@@ -75,7 +76,12 @@ export function DashboardClient(props: {
         </Button>
       </div>
 
-      <div className="bg-neu1 h-full min-h-0 w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+      <div className="bg-neu1 h-full min-h-0 w-full place-content-center space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+        <div className="flex flex-col items-center gap-1 text-center">
+            <Searchskie className="w-72 pb-8" />
+            <h1 className="text-xl font-semibold">No plans found</h1>
+            <p className="">Generate a new schedule first</p>
+        </div>
       </div>
     </div>
   );

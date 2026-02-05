@@ -33,7 +33,9 @@ export default function Page() {
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
             <h2 className="mb-4 text-2xl font-bold text-[#5F5F5F] text-[28px] pl-4">FAQs</h2>
-            <FAQDropDown title="test question" description="test answer"/>   
+            <div className="pl-4">
+                <FAQDropDown title="test question" description="test answer"/>  
+            </div> 
         </div>
     </div>
     );

@@ -47,7 +47,9 @@ export async function updateTerm(
   term: string,
   db: ReturnType<typeof createDbClient>,
   logger?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     info: (msg: any, msg2?: string) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     warn?: (msg: any, msg2?: string) => void;
   },
 ): Promise<UpdateTermResult> {

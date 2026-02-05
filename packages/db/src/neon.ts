@@ -30,7 +30,7 @@ function createDb(connectionString: string, stripPooler: boolean) {
   });
 }
 
-let db: ReturnType<typeof createDb> | null = null;
+let db: NeonHttpDatabase<typeof schema> | null = null;
 
 /**
  * getDb either gets an existing database client or creates a new one if needed. reusing a single database

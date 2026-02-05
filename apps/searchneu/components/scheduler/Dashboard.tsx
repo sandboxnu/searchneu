@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { GroupedTerms } from "@/lib/types";
 import { CollegeDropdown } from "@/components/scheduler/CollegeDropdown";
+import { TermsDropdown } from "./TermsDropdown";
 
 
 export function DashboardClient(props: {
@@ -18,16 +19,21 @@ export function DashboardClient(props: {
       <div className="bg-neu1 h-full min-h-0 w-full max-w-[280px] space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
         
         <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
-        <CollegeDropdown
-          terms={props.terms}
-          selectedCollege={selectedCollege}
-          onCollegeChange={setSelectedCollege}
-          onTermChange={setSelectedTerm}
-        />
+        <Suspense>
+            <CollegeDropdown
+                terms={props.terms}
+                selectedCollege={selectedCollege}
+                onCollegeChange={setSelectedCollege}
+                onTermChange={setSelectedTerm}
+            />
+        </Suspense>
+        
 
         <h3 className="text-neu7 text-xs font-bold">SEMESTER</h3>
-        {/* toggle here */}
-
+        <Suspense>
+            <TermsDropdown terms={props.terms} className="bg-secondary w-72" />
+        </Suspense>
+        
         <Button asChild className="mt-auto w-full">
           <Link href="/scheduler/generator">Open generator</Link>
         </Button>

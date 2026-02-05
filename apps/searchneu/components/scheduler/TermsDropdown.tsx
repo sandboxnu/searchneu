@@ -12,7 +12,7 @@ import { useState, useEffect, use, Suspense, ComponentProps } from "react";
 import type { GroupedTerms, Subject } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
-export function TermSelect(
+export function TermsDropdown(
   props: { terms: Promise<GroupedTerms> } & ComponentProps<
     typeof SelectTrigger
   >,
@@ -71,7 +71,7 @@ export function TermSelect(
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select
         onValueChange={(e) =>
-          router.push(`/catalog/${e}?${searchParams.toString()}`) 
+          router.push(`/scheduler/${e}?${searchParams.toString()}`)
         }
         value={term?.toString()}
       >

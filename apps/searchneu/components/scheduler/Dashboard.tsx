@@ -42,7 +42,7 @@ export function DashboardClient(props: {
     }
 
     router.replace(`/scheduler?${params.toString()}`, {scroll: false});
-  }, [selectedCollege, selectedTerm, router, searchParams]);
+  }, [selectedCollege, selectedTerm, router]);
 
   return (
     <div className="bg-neu2 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">

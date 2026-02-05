@@ -1,0 +1,14 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "scrape:gen": {
+      "cache": false,
+      "persistent": true
+    },
+    "scrape:up": {
+      "env": ["DATABASE_URL"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

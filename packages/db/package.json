@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "lint": "eslint .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -31,9 +32,11 @@
     "pg": "^8.17.2"
   },
   "devDependencies": {
+    "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/node": "^25.1.0",
     "drizzle-kit": "^0.31.8",
+    "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }
 }

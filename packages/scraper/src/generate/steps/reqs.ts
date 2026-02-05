@@ -214,9 +214,9 @@ function isCourse(obj: Requisite | null): obj is Course {
   return obj !== null && "subject" in obj && "courseNumber" in obj;
 }
 
-function isTest(obj: Requisite | null): obj is Course {
-  return obj !== null && "name" in obj && "score" in obj;
-}
+// function isTest(obj: Requisite | null): obj is Course {
+//   return obj !== null && "name" in obj && "score" in obj;
+// }
 
 function notEmpty(val: string): boolean {
   return val.trim() !== "";

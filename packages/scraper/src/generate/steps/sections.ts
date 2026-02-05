@@ -61,6 +61,7 @@ export async function scrapeSections(term: string, cookiePool = 20) {
         headers: {
           Cookie: cookies[j],
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }).then((resp) => resp.json() as any),
     );
 

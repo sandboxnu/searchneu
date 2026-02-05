@@ -104,10 +104,6 @@ export async function uploadCatalogTerm(
       (agg, b) => agg.set(b.code, b.id),
       new Map<string, number>(),
     );
-    const buildingsMap = buildings.reduce(
-      (agg, b) => agg.set(b.name, b.id),
-      new Map<string, number>(),
-    );
     consola.debug("inserted buildings");
 
     // rooms

@@ -37,14 +37,19 @@ export function MobileWrapper(props: {
   coursePage: ReactNode;
 }) {
   const { course } = useParams();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const [newSearch, setNewSearch] = useState(false);
+
   useEffect(() => {
-    setNewSearch(true)
+    // WARN: we should obv fix this and remove the ignore
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNewSearch(true);
   }, [searchParams]);
 
   useEffect(() => {
-    setNewSearch(false)
+    // WARN: we should obv fix this and remove the ignore
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNewSearch(false);
   }, [course]);
 
   return (

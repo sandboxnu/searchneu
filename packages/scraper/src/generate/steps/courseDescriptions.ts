@@ -15,7 +15,7 @@ import { BannerSectionDescription } from "../../schemas/banner/sectionDescriptio
 export async function scrapeCourseDescriptions(
   fe: FetchEngine,
   term: string,
-  items: ({ crn: string; description: string } & { [key: string]: any })[],
+  items: ({ crn: string; description: string } & { [key: string]: unknown })[],
 ) {
   const failedRequests: string[] = [];
   const courseDescriptionRequests: (() => Promise<void>)[] = [];
@@ -29,7 +29,8 @@ export async function scrapeCourseDescriptions(
           onRetry(attempt) {
             // retries are part of the process, just log it if debugging
             consola.debug("retrying description for course", {
-              course: c.subject + c.courseNumber,
+              // course: c.subject + c.courseNumber,
+              crn: c.crn,
               attempt,
             });
           },
@@ -41,7 +42,7 @@ export async function scrapeCourseDescriptions(
           consola.error("error scraping description", {
             error: e,
             crn: c.crn,
-            course: c.subject + c.courseNumber,
+            // course: c.subject + c.courseNumber,
           });
           return;
         });
@@ -57,7 +58,7 @@ export async function scrapeCourseDescriptions(
         consola.error("error scraping description", {
           error: sectionDescriptionResult.error,
           crn: c.crn,
-          course: c.subject + c.courseNumber,
+          // course: c.subject + c.courseNumber,
         });
         return;
       }

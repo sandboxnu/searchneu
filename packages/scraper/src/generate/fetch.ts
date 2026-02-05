@@ -271,17 +271,7 @@ export class FetchEngine {
 
     while (request.attempts <= maxRetries) {
       try {
-        const {
-          onRetry,
-          onSuccess,
-          onError,
-          onQueueAdd,
-          onQueueStart,
-          maxRetries: _,
-          ...fetchOptions
-        } = request.options;
-
-        const response = await fetch(request.url, fetchOptions);
+        const response = await fetch(request.url, request.options);
 
         // Check if we should retry based on response
         if (

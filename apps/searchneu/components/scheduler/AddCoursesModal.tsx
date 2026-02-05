@@ -191,7 +191,7 @@ export default function AddCoursesModal(props: {
         clear();
       }}
     >
-      <DialogContent className="flex h-[700px] flex-col items-start justify-start overflow-hidden px-[24px] py-[36px] sm:max-w-[925px]">
+      <DialogContent className="flex h-[700px] flex-col items-start justify-start overflow-hidden px-6 py-9 sm:max-w-[925px]">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
@@ -200,7 +200,7 @@ export default function AddCoursesModal(props: {
           </DialogDescription>
         </DialogHeader>
         {/* main dialog content */}
-        <div className="flex h-full w-full flex-row gap-[10px] pb-[72px] max-[768px]:flex-col max-[768px]:gap-4">
+        <div className="flex h-full w-full flex-row gap-2.5 pb-18 max-[768px]:flex-col max-[768px]:gap-4">
           {/* selecting term, campus, search, and search results */}
           <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 overflow-hidden max-[768px]:h-1/2 max-[768px]:w-full">
             <CollegeDropdown

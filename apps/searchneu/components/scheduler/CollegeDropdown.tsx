@@ -45,7 +45,7 @@ export function CollegeDropdown(props: {
         value={props.selectedCollege}
       >
         <SelectTrigger
-          className={cn("bg-neu h-[40px] w-full font-semibold", {
+          className={cn("bg-neu h-10 w-full font-semibold", {
             "text-neu bg-r1/20 focus-visible:border-r1 [&>svg]:text-neu":
               props.selectedCollege === "neu",
             "text-cps bg-c1/20 focus-visible:border-c1 [&>svg]:text-cps":

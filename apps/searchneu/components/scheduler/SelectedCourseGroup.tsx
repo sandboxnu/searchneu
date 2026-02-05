@@ -32,7 +32,7 @@ const SelectedCourseItem = ({
 
   return (
     <div className={containerClass}>
-      <p className="m-0 flex min-w-0 items-center gap-[8px]">
+      <p className="m-0 flex min-w-0 items-center gap-2">
         {canLock && (
           <button
             onClick={onToggleLock}

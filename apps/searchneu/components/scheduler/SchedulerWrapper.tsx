@@ -2,7 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { filterSchedules, type ScheduleFilters, type SectionWithCourse } from "@/lib/scheduler/filters";
+import {
+  filterSchedules,
+  type ScheduleFilters,
+  type SectionWithCourse,
+} from "@/lib/scheduler/filters";
 import { SchedulerView } from "./SchedulerView";
 import { FilterPanel } from "./FilterPanel";
 
@@ -11,12 +15,21 @@ interface SchedulerWrapperProps {
   nupathOptions: { label: string; value: string }[];
 }
 
-export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerWrapperProps) {
+export function SchedulerWrapper({
+  initialSchedules,
+  nupathOptions,
+}: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({includesOnline: true, includeHonors: true});
+  const [filters, setFilters] = useState<ScheduleFilters>({
+    includesOnline: true,
+    includeHonors: true,
+  });
   const [isPending, startTransition] = useTransition();
 
-  const handleGenerateSchedules = async (lockedCourseIds: number[], optionalCourseIds: number[]) => {
+  const handleGenerateSchedules = async (
+    lockedCourseIds: number[],
+    optionalCourseIds: number[],
+  ) => {
     startTransition(() => {
       // Navigate to the same page with course IDs in the URL
       // This will trigger a server-side re-render with the new schedules
@@ -33,13 +46,15 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
 
   // Apply filters
   const filteredSchedules =
-    Object.keys(filters).length > 0 ? filterSchedules(initialSchedules, filters) : initialSchedules;
+    Object.keys(filters).length > 0
+      ? filterSchedules(initialSchedules, filters)
+      : initialSchedules;
 
   return (
     <div className="grid w-full grid-cols-6">
       <div className="col-span-1 w-full">
-        <FilterPanel 
-          filters={filters} 
+        <FilterPanel
+          filters={filters}
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
           isGenerating={isPending}
@@ -48,10 +63,7 @@ export function SchedulerWrapper({ initialSchedules, nupathOptions }: SchedulerW
         />
       </div>
       <div className="col-span-5 pl-6">
-        <SchedulerView
-          schedules={filteredSchedules}
-          filters={filters}
-        />
+        <SchedulerView schedules={filteredSchedules} filters={filters} />
       </div>
     </div>
   );

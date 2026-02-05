@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { GraduateAPI } from './graduateApiClient';
-import { GetSupportedMajorsResponse } from './api-response-types';
+import { useState, useEffect } from "react";
+import { GraduateAPI } from "./graduateApiClient";
+import { GetSupportedMajorsResponse } from "./api-response-types";
 
 export function useSupportedMajors() {
   const [data, setData] = useState<GetSupportedMajorsResponse | null>(null);
@@ -12,7 +12,9 @@ export function useSupportedMajors() {
         const response = await GraduateAPI.majors.getSupportedMajors();
         setData(response);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch majors'));
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch majors"),
+        );
       } finally {
       }
     };

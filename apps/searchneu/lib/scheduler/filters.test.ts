@@ -10,7 +10,7 @@ import {
 
 describe("filters", () => {
   const createMockSection = (
-    overrides: Partial<SectionWithCourse> = {}
+    overrides: Partial<SectionWithCourse> = {},
   ): SectionWithCourse => ({
     id: 1,
     crn: "10001",
@@ -62,11 +62,23 @@ describe("filters", () => {
         campus: "Boston",
       });
 
-      assert.strictEqual(sectionPassesFilters(onlineSection, { includesOnline: true }), true);
-      assert.strictEqual(sectionPassesFilters(inPersonSection, { includesOnline: true }), true);
-      assert.strictEqual(sectionPassesFilters(onlineSection, { includesOnline: false }), false);
-      assert.strictEqual(sectionPassesFilters(inPersonSection, { includesOnline: false }), true);
-    })
+      assert.strictEqual(
+        sectionPassesFilters(onlineSection, { includesOnline: true }),
+        true,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(inPersonSection, { includesOnline: true }),
+        true,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(onlineSection, { includesOnline: false }),
+        false,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(inPersonSection, { includesOnline: false }),
+        true,
+      );
+    });
 
     test("should filter by startTime", () => {
       const section = createMockSection({
@@ -83,13 +95,13 @@ describe("filters", () => {
       // Section starts at 9:00 AM, filter allows 8:00 AM+
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 800 }),
-        true
+        true,
       );
 
       // Section starts at 9:00 AM, filter requires 10:00 AM+
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 1000 }),
-        false
+        false,
       );
     });
 
@@ -108,13 +120,13 @@ describe("filters", () => {
       // Section ends at 10:30 AM, filter allows up to 11:00 AM
       assert.strictEqual(
         sectionPassesFilters(section, { endTime: 1100 }),
-        true
+        true,
       );
 
       // Section ends at 10:30 AM, filter requires ending before 10:00 AM
       assert.strictEqual(
         sectionPassesFilters(section, { endTime: 1000 }),
-        false
+        false,
       );
     });
 
@@ -133,13 +145,13 @@ describe("filters", () => {
       // Section is 9:00-10:30, filter allows 8:00-11:00
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 800, endTime: 1100 }),
-        true
+        true,
       );
 
       // Section is 9:00-10:30, filter requires 10:00-11:00
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 1000, endTime: 1100 }),
-        false
+        false,
       );
     });
 
@@ -158,19 +170,19 @@ describe("filters", () => {
       // Section has classes on Monday/Wednesday, filter requires Tuesday free
       assert.strictEqual(
         sectionPassesFilters(section, { specificDaysFree: [2] }),
-        true
+        true,
       );
 
       // Section has classes on Monday/Wednesday, filter requires Monday free
       assert.strictEqual(
         sectionPassesFilters(section, { specificDaysFree: [1] }),
-        false
+        false,
       );
 
       // Section has classes on Monday/Wednesday, filter requires both Monday and Wednesday free
       assert.strictEqual(
         sectionPassesFilters(section, { specificDaysFree: [1, 3] }),
-        false
+        false,
       );
     });
 
@@ -182,13 +194,13 @@ describe("filters", () => {
       // Section has 10 seats, filter requires at least 5
       assert.strictEqual(
         sectionPassesFilters(section, { minSeatsLeft: 5 }),
-        true
+        true,
       );
 
       // Section has 10 seats, filter requires at least 15
       assert.strictEqual(
         sectionPassesFilters(section, { minSeatsLeft: 15 }),
-        false
+        false,
       );
     });
 
@@ -214,13 +226,13 @@ describe("filters", () => {
       // Filter requires start at 8:00+ (both pass)
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 800 }),
-        true
+        true,
       );
 
       // Filter requires start at 10:00+ (first fails)
       assert.strictEqual(
         sectionPassesFilters(section, { startTime: 1000 }),
-        false
+        false,
       );
     });
   });
@@ -262,13 +274,13 @@ describe("filters", () => {
       // Filter requires at least 3 free days (7 - 4 = 3 free)
       assert.strictEqual(
         schedulePassesFilters(schedule, { minDaysFree: 3 }),
-        true
+        true,
       );
 
       // Filter requires at least 4 free days (7 - 4 = 3 free, fails)
       assert.strictEqual(
         schedulePassesFilters(schedule, { minDaysFree: 4 }),
-        false
+        false,
       );
     });
 
@@ -282,13 +294,13 @@ describe("filters", () => {
       // Schedule has 2 honors courses, filter requires at least 1
       assert.strictEqual(
         schedulePassesFilters(schedule, { includeHonors: true }),
-        true
+        true,
       );
 
       // Schedule has 2 honor courses, filter requires none
       assert.strictEqual(
         schedulePassesFilters(schedule, { includeHonors: false }),
-        false
+        false,
       );
     });
 
@@ -297,7 +309,7 @@ describe("filters", () => {
         meetingTimes: [],
         campus: "Online",
       });
-      
+
       const inPersonSection = createMockSection({
         meetingTimes: [
           {
@@ -310,45 +322,45 @@ describe("filters", () => {
         campus: "Boston",
       });
 
-      const section2 = createMockSection({ 
-        id: 2, 
-        crn: "20001", 
-        campus: "Boston", 
-        meetingTimes: [ 
+      const section2 = createMockSection({
+        id: 2,
+        crn: "20001",
+        campus: "Boston",
+        meetingTimes: [
           {
-            days: [2,4],
+            days: [2, 4],
             startTime: 1100,
             endTime: 1230,
             final: false,
-          }
-        ] 
+          },
+        ],
       });
 
       const scheduleWithOnline = [onlineSection, section2];
       const scheduleWithoutOnline = [inPersonSection, section2];
-      
+
       // Schedule has an online course, filter allows online courses
       assert.strictEqual(
         schedulePassesFilters(scheduleWithOnline, { includesOnline: true }),
-        true
+        true,
       );
 
       // Schedule has an online course, filter excludes online courses
       assert.strictEqual(
         schedulePassesFilters(scheduleWithOnline, { includesOnline: false }),
-        false
+        false,
       );
 
       // Schedule has no online courses, filter excludes online courses
       assert.strictEqual(
         schedulePassesFilters(scheduleWithoutOnline, { includesOnline: false }),
-        true
+        true,
       );
 
       // Schedule has no online courses, filter allows online courses
       assert.strictEqual(
         schedulePassesFilters(scheduleWithoutOnline, { includesOnline: true }),
-        true
+        true,
       );
     });
 
@@ -365,13 +377,13 @@ describe("filters", () => {
       // Schedule has ND, AD, EI, filter requires ND and AD
       assert.strictEqual(
         schedulePassesFilters(schedule, { nupaths: ["ND", "AD"] }),
-        true
+        true,
       );
 
       // Schedule has ND, AD, EI, filter requires ND, AD, and FQ (missing FQ)
       assert.strictEqual(
         schedulePassesFilters(schedule, { nupaths: ["ND", "AD", "FQ"] }),
-        false
+        false,
       );
     });
 
@@ -385,7 +397,7 @@ describe("filters", () => {
       // Section has 5 seats, but filter requires 10
       assert.strictEqual(
         schedulePassesFilters(schedule, { minSeatsLeft: 10 }),
-        false
+        false,
       );
     });
 
@@ -412,7 +424,7 @@ describe("filters", () => {
           includeHonors: true,
           startTime: 800,
         }),
-        true
+        true,
       );
 
       // One filter fails
@@ -422,7 +434,7 @@ describe("filters", () => {
           includeHonors: true,
           startTime: 800,
         }),
-        false
+        false,
       );
     });
   });
@@ -485,4 +497,3 @@ describe("filters", () => {
     });
   });
 });
-

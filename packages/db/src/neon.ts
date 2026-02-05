@@ -1,7 +1,4 @@
-import {
-  drizzle as drizzleNeon,
-  NeonHttpDatabase,
-} from "drizzle-orm/neon-http";
+import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
 import { neon, neonConfig } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
@@ -30,7 +27,7 @@ function createDb(connectionString: string, stripPooler: boolean) {
   });
 }
 
-let db: NeonHttpDatabase<typeof schema> | null = null;
+let db: ReturnType<typeof createDb> | null = null;
 
 /**
  * getDb either gets an existing database client or creates a new one if needed. reusing a single database

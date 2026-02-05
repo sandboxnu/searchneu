@@ -18,14 +18,22 @@ export function SectionRow({ section }: SectionRowProps) {
         <button
           onClick={() => setLocked((l) => !l)}
           aria-label={locked ? "Unlock section" : "Lock section"}
-          className="p-1 self-start"
+          className="self-start p-1"
         >
-          {locked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
+          {locked ? (
+            <Lock className="h-4 w-4 text-red-500" />
+          ) : (
+            <Unlock className="h-4 w-4 text-gray-400" />
+          )}
         </button>
         <div>
-          <div className="font-bold text-sm text-neu8 my-1">CRN {section.crn}</div>
-          <div className="text-sm text-neu6">{formatFaculty(section.faculty)}</div>
-          <div className="text-sm text-neu6 mb-1">
+          <div className="text-neu8 my-1 text-sm font-bold">
+            CRN {section.crn}
+          </div>
+          <div className="text-neu6 text-sm">
+            {formatFaculty(section.faculty)}
+          </div>
+          <div className="text-neu6 mb-1 text-sm">
             <MeetingTimes meetings={section.meetingTimes} />
           </div>
           <span
@@ -46,7 +54,11 @@ export function SectionRow({ section }: SectionRowProps) {
   );
 }
 
-function MeetingTimes({ meetings }: { meetings: SectionWithCourse["meetingTimes"] }) {
+function MeetingTimes({
+  meetings,
+}: {
+  meetings: SectionWithCourse["meetingTimes"];
+}) {
   const dayLetters = ["S", "M", "Tu", "W", "Th", "F", "S"];
 
   if (!meetings || meetings.length === 0 || meetings[0].days.length === 0) {

@@ -15,10 +15,10 @@ export default function FAQDropDown({title, description}: AccordionType) {
 		<Accordion.Root type="single" collapsible className="w-full">
 			<Accordion.Item value="item1">
 				<Accordion.Header>
-					<Accordion.Trigger className="flex items-center justify-between w-full data-[state=closed]:text-neu7 data-[state=open]:text-neu8 data-[state=open]:[&>span]:duration-300 data-[state=open]:[&>span]:rotate-180 data-[state=closed]:[&>span]:duration-300 data-[state=closed]:[&>span]:rotate-0"> 
+					<Accordion.Trigger className="flex items-center justify-between w-full data-[state=closed]:[&>span]:text-neu4 data-[state=open]:[&>span]:text-neu5 data-[state=closed]:text-neu7 data-[state=open]:text-neu8 data-[state=open]:text-neu8 data-[state=open]:[&>span]:duration-300 data-[state=open]:[&>span]:rotate-180 data-[state=closed]:[&>span]:duration-300 data-[state=closed]:[&>span]:rotate-0"> 
 					<h4 className="leading-[24px] text-xl font-medium;">{title}</h4> 
 					<span>
-						<ChevronDownIcon color="#C2C2C2"/>
+						<ChevronDownIcon/>
 					</span>
 					</Accordion.Trigger>
 				</Accordion.Header>

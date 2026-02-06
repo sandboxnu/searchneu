@@ -2,3 +2,4 @@
 export * from "./catalog";
 export * from "./platform";
 export * from "./scheduler";
+export * from "./graduate";

@@ -68,7 +68,7 @@ class GraduateAPIClient {
     getForYear: (catalogYear: number): Promise<Record<string, Major>> =>
       this.req("GET", `/templates/${catalogYear}`),
     
-    getForMajor: (majorName: string, catalogYear: number): Promise<Major | null> =>
+    getForMajor: (catalogYear: number, majorName: string): Promise<Major | null> =>
       this.req("GET", `/templates/${catalogYear}/${majorName}`),
     
     getAll: (): Promise<Record<string, Record<string, Major>>> =>

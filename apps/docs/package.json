@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "@sneu/docs",
   "version": "0.1.0",
   "private": true,
   "scripts": {

@@ -2,11 +2,12 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "../generate/main";
+import { scrapeCatalogTerm } from "@sneu/scraper/generate";
 import { infer as zinfer } from "zod";
-import { Config } from "../config";
+import { Config } from "@sneu/scraper/config";
 import { consola } from "consola";
-import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import { ScraperBannerCache } from "@sneu/scraper/schemas";
+import { createScraperEmitter } from "@sneu/scraper/events";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
@@ -99,11 +100,79 @@ const main = defineCommand({
         continue;
       }
 
+      // Create emitter and set up event listeners
+      const emitter = createScraperEmitter();
+
+      emitter.on("generate:start", ({ term }) => {
+        consola.debug(`Starting scrape for term ${term}`);
+      });
+
+      emitter.on("generate:sections:complete", ({ count }) => {
+        consola.debug(`Scraped ${count} sections`);
+      });
+
+      emitter.on("generate:subjects:start", () => {
+        consola.debug("Scraping subjects");
+      });
+
+      emitter.on("generate:subjects:mismatch", ({ bannerCount, extractedCount, diff }) => {
+        consola.warn(
+          `Subject count mismatch, banner: ${bannerCount} extracted: ${extractedCount} diff: ${diff}`,
+        );
+      });
+
+      emitter.on("generate:term:complete", ({ term, description }) => {
+        consola.debug(`Term definition: ${term} - ${description}`);
+      });
+
+      emitter.on("generate:requests:queued", ({
+        totalCourses,
+        totalSections,
+        standardCourses,
+        standardSections,
+        specialTopicCourses,
+        specialTopicSections,
+        totalRequests,
+        estimatedMinutes,
+      }) => {
+        consola.box(
+          `==scraping stats==
+total:
+  courses: ${totalCourses}
+  sections: ${totalSections}
+standard:
+  courses: ${standardCourses}
+  sections: ${standardSections}
+special topics:
+  courses: ${specialTopicCourses}
+  sections: ${specialTopicSections}
+requests:
+  total: ${totalRequests}
+  etr: ${estimatedMinutes}mins`,
+        );
+        consola.start("scraping supporting information");
+      });
+
+      emitter.on("generate:requests:progress", ({ remaining, percentComplete, activeRequests }) => {
+        consola.info(
+          `${remaining} remaining (${percentComplete}%) (${activeRequests} active)`,
+        );
+      });
+
+      emitter.on("generate:complete", ({ term }) => {
+        consola.debug(`Completed scraping term ${term}`);
+      });
+
+      emitter.on("generate:error", ({ error, context }) => {
+        consola.error(`Error in ${context}: ${error.message}`);
+      });
+
       try {
         const out = await scrapeCatalogTerm(
           termConfig.term.toString(),
           termConfig,
           interactive,
+          emitter,
         );
 
         if (!out) {
@@ -112,7 +181,7 @@ const main = defineCommand({
           continue;
         }
 
-        const cachedData: zinfer<typeof ScraperBannerCache> = {
+        const cachedData = {
           version: CACHE_VERSION,
           timestamp: new Date().toISOString(),
           ...out,
@@ -131,6 +200,8 @@ const main = defineCommand({
     );
   },
 });
+
+export default main;
 
 void runMain(main);
 

@@ -23,7 +23,7 @@ const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
   tags: ["banner.course"],
 });
 
-async function getTrackedSections() {
+export async function getTrackedSections() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });

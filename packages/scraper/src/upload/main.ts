@@ -2,7 +2,6 @@
  * uploads a cache to the db
  */
 
-import { consola } from "consola";
 import * as z from "zod";
 import { TermConfig } from "../config";
 import {
@@ -23,18 +22,22 @@ import {
   termsT,
 } from "@sneu/db/schema";
 import { eq, sql } from "drizzle-orm";
+import type { ScraperEventEmitter } from "../events";
 
 /**
  *
  *
  * @param cache
  * @param config scraper configuration
+ * @param emitter optional event emitter for progress/status updates
  */
 export async function uploadCatalogTerm(
   scrape: z.infer<typeof ScraperBannerCache>,
   db: ReturnType<typeof createDbClient>,
   config: z.infer<typeof TermConfig>,
+  emitter?: ScraperEventEmitter,
 ): Promise<void> {
+  emitter?.emit("upload:start", { term: scrape.term.code });
   await db.transaction(async (tx) => {
     // ===== fixed values =====
     // campuses
@@ -76,7 +79,7 @@ export async function uploadCatalogTerm(
       (agg, c) => agg.set(c.code, c.id),
       new Map<string, number>(),
     );
-    consola.debug("inserted campuses");
+    emitter?.emit("upload:campuses:complete", { count: campuses.length });
 
     // buildings
     const buildingsValues = scrape.buildings.map((b) => {
@@ -108,7 +111,7 @@ export async function uploadCatalogTerm(
       (agg, b) => agg.set(b.name, b.id),
       new Map<string, number>(),
     );
-    consola.debug("inserted buildings");
+    emitter?.emit("upload:buildings:complete", { count: buildings.length });
 
     // rooms
     const roomsValues = scrape.rooms.map((r) => {
@@ -138,7 +141,6 @@ export async function uploadCatalogTerm(
       (agg, b) => agg.set(b.name, { id: b.id, rooms: roomsMap }),
       new Map<string, { id: number; rooms: Map<string, number> }>(),
     );
-    consola.debug("inserted buildings");
 
     // nupaths
     const nupaths = [
@@ -188,7 +190,7 @@ export async function uploadCatalogTerm(
       (agg, s) => agg.set(s.code, s.id),
       new Map<string, number>(),
     );
-    consola.debug("inserted subjects");
+    emitter?.emit("upload:subjects:complete", { count: subjects.length });
 
     // ===== term specific values =====
     // term
@@ -206,7 +208,7 @@ export async function uploadCatalogTerm(
           activeUntil: new Date(config.activeUntil),
         },
       });
-    consola.debug("inserted term");
+    emitter?.emit("upload:term:complete", { term: scrape.term.code });
 
     // courses
     // TODO: special topics
@@ -263,7 +265,7 @@ export async function uploadCatalogTerm(
       (agg, c) => agg.set(c.subject + c.courseNumber, c.id),
       new Map<string, number>(),
     );
-    consola.debug("inserted courses");
+    emitter?.emit("upload:courses:complete", { count: courses.length });
 
     // sections
     const meetingtimes: Map<
@@ -363,9 +365,12 @@ export async function uploadCatalogTerm(
     const sectionsToRemove = sections.filter((s) => !scrapedCrns.has(s.crn));
     const sectionIdsToRemove = sectionsToRemove.map((s) => s.id);
 
-    consola.debug("inserted sections");
+    emitter?.emit("upload:sections:complete", { count: sections.length });
     if (sectionIdsToRemove.length > 0) {
-      consola.info(`${sectionIdsToRemove.length} sections to remove`);
+      emitter?.emit("upload:sections:removed", {
+        count: sectionIdsToRemove.length,
+        crns: sectionsToRemove.map((s) => s.crn),
+      });
     }
 
     // nupath course mappings
@@ -484,9 +489,16 @@ export async function uploadCatalogTerm(
     );
     const meetingTimeIdsToRemove = meetingTimesToRemove.map((mt) => mt.id);
 
+    emitter?.emit("upload:meetingtimes:complete", {
+      count: meetingTimeValues.length,
+    });
     if (meetingTimeIdsToRemove.length > 0) {
-      consola.info(`${meetingTimeIdsToRemove.length} meeting times to remove`);
+      emitter?.emit("upload:meetingtimes:removed", {
+        count: meetingTimeIdsToRemove.length,
+      });
     }
+
+    emitter?.emit("upload:complete", { term: scrape.term.code });
   });
 }
 

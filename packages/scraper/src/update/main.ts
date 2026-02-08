@@ -9,6 +9,7 @@ import { scrapeSections } from "../generate/steps/sections";
 import { parseMeetingTimes } from "../generate/marshall";
 import type { BannerSection } from "../schemas/banner/section";
 import * as z from "zod";
+import type { ScraperEventEmitter } from "../events";
 
 export interface UpdateTermResult {
   sectionsWithNewSeats: z.infer<typeof BannerSection>[];
@@ -46,13 +47,9 @@ export interface UpdateTermResult {
 export async function updateTerm(
   term: string,
   db: ReturnType<typeof createDbClient>,
-  logger?: {
-    info: (msg: any, msg2?: string) => void;
-    warn?: (msg: any, msg2?: string) => void;
-  },
+  emitter?: ScraperEventEmitter,
 ): Promise<UpdateTermResult> {
-  const log = logger ?? { info: console.log, warn: console.warn };
-  log.info({ term }, "updating term");
+  emitter?.emit("update:start", { term });
 
   const scrapedSections = await scrapeSections(term);
   if (!scrapedSections) {
@@ -158,35 +155,35 @@ export async function updateTerm(
     };
   });
 
-  if (missingSections.length > 0 && log.warn) {
-    log.warn({ missingSections }, "orphaned sections!");
+  if (missingSections.length > 0) {
+    emitter?.emit("update:sections:missing", { crns: missingSections });
   }
 
-  if (rootedNewSections.length !== rawNewSections.length && log.warn) {
+  if (rootedNewSections.length !== rawNewSections.length) {
     const unrootedSections = rawNewSections.filter(
       (_, i) => rawCourseKeys[i] === -1,
     );
-    log.warn(
-      {
-        unrootedSections: unrootedSections.map((s) => s.courseReferenceNumber),
-      },
-      "unrooted sections!",
-    );
+    emitter?.emit("update:sections:unrooted", {
+      crns: unrootedSections.map((s) => s.courseReferenceNumber),
+    });
   }
 
-  log.info(
-    { sections: sectionsWithNewSeats.map((s) => s.courseReferenceNumber) },
-    "Sections with open seats",
-  );
-  log.info(
-    {
-      sections: sectionsWithNewWaitlistSeats.map(
-        (s) => s.courseReferenceNumber,
-      ),
-    },
-    "Sections with open waitlist spots",
-  );
-  log.info({ sections: newSections.map((s) => s.crn) }, "New sections");
+  emitter?.emit("update:seats:new", {
+    crns: sectionsWithNewSeats.map((s) => s.courseReferenceNumber),
+  });
+  emitter?.emit("update:seats:waitlist", {
+    crns: sectionsWithNewWaitlistSeats.map((s) => s.courseReferenceNumber),
+  });
+  emitter?.emit("update:sections:new", {
+    crns: newSections.map((s) => s.crn),
+  });
+
+  emitter?.emit("update:complete", {
+    term,
+    sectionsWithNewSeats: sectionsWithNewSeats.length,
+    sectionsWithNewWaitlistSeats: sectionsWithNewWaitlistSeats.length,
+    newSections: newSections.length,
+  });
 
   return {
     sectionsWithNewSeats,

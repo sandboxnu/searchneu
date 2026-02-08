@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { Button, FormField, Input, Modal, Checkbox, Select, ModalFooter } from "./Modal";
 import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
-import { GetSupportedMajorsResponse } from "@/lib/graduate/api-response-types";
-import { ReceiptRussianRuble } from "lucide-react";
+import { GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "@/lib/graduate/api-response-types";
 
 export default function NewPlanModal() {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState('');
+
+  //majors 
   const [supportedMajorsData, setSupportedMajorsData] = useState<GetSupportedMajorsResponse | null>(null);
   const [majorOptions, setMajorOptions] = useState<{ value: string; label: string }[]>([]);
   const [isLoadingMajors, setIsLoadingMajors] = useState(false);
   const [major, setMajor] = useState('');
+
+  //minors
+  const [supportedMinorsData, setSupportedMinorsData] = useState<GetSupportedMinorsResponse | null>(null);
+  const [minorOptions, setMinorOptions] = useState<{ value: string; label: string }[]>([]);
+  const [isLoadingMinors, setIsLoadingMinors] = useState(false);  
   const [minor, setMinor] = useState('');
 
   const noMajorHelperLabel = `You can opt out of selecting a major for this plan if you are unsure or if we do not support you major Without a selected major, we won't be able to display the major requirements`;
@@ -21,8 +27,9 @@ export default function NewPlanModal() {
     setIsOpen(false);
   }
 
-  //fetching majors
+  //fetching majors + minors 
   useEffect(() => {
+    //majors
   const fetchSupportedMajors = async () => {
     setIsLoadingMajors(true);
     
@@ -35,7 +42,21 @@ export default function NewPlanModal() {
     setIsLoadingMajors(false);
   };
 
+  //minors
+  const fetchSupportedMinors = async () => {
+    setIsLoadingMinors(true);
+    
+    try {
+      const response = await GraduateAPI.minors.getSupportedMinors();
+      setSupportedMinorsData(response);
+    } catch (error) {
+      console.error('Error fetching minors:', error);
+    } 
+    setIsLoadingMinors(false);
+  };
+
   fetchSupportedMajors();
+  fetchSupportedMinors();
 }, []);
 
 //change supported majors based on catalog year
@@ -62,6 +83,32 @@ useEffect(() => {
   
   setMajor('');
 }, [catalogYear, supportedMajorsData]);
+
+//change supported minors based on catalog year
+useEffect(() => {
+  if (!catalogYear || !supportedMinorsData) {
+    setMinorOptions([]);
+    setMinor(''); 
+    return;
+  }
+  
+  const minorsForYear = supportedMinorsData.supportedMinors[catalogYear];
+  
+  if (minorsForYear) {
+    const options = Object.keys(minorsForYear)
+      .sort() 
+      .map(minorName => ({
+        value: minorName,
+        label: minorName
+      }));
+    
+    setMinorOptions(options);
+  } else {
+    setMinorOptions([]);
+  }
+  
+  setMinor('');
+}, [catalogYear, supportedMinorsData]);
 
 
 // Generate default plan title using formatted date and time
@@ -124,11 +171,9 @@ const generateDefaultPlanTitle = () => {
         {/*minor*/}
         <FormField label = "Minor(s)">
             <Select 
-                placeholder= { minor ? "" : "Select a minor" }
+                placeholder= { isLoadingMinors ? "Loading minors..." : "Select a minor"}
                 value = {minor}
-                options={[
-                    { value: 'lol', label: 'lol' },
-                ]}
+                options={minorOptions}
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMinor(e.target.value)}
                 />
         </FormField>

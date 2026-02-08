@@ -1,6 +1,7 @@
 import { db, nupathsT } from "@/lib/db";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
+import { getTerms } from "@/lib/controllers/getTerms";
 
 export default async function Page({
   searchParams,
@@ -37,11 +38,15 @@ export default async function Page({
     .from(nupathsT)
     .then((c) => c.map((e) => ({ label: e.name, value: e.short })));
 
+  // Fetch terms from the db
+  const terms = getTerms();
+
   return (
     <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
       <SchedulerWrapper
         initialSchedules={allSchedules}
         nupathOptions={nupathOptions}
+        terms={terms}
       />
     </div>
   );

@@ -36,6 +36,6 @@ export const notificationsFlag = flag({
   key: "notifications",
   description: "Enable notifications page",
   decide() {
-    return false;
+    return true;
   },
 });

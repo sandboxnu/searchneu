@@ -13,6 +13,7 @@ export function SearchBar() {
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
   const [popped, setPopped] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,6 +66,7 @@ export function SearchBar() {
 
   function handleSubmit() {
     const params = new URLSearchParams(searchParams);
+    setQuery(inputValue)
     if (!query.trim()) {
       params.delete("q");
       window.history.pushState(null, "", `${pathname}?${params.toString()}`);
@@ -87,7 +89,15 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-neu1 focus:border-neu3 border pl-10"
+        className="visible md:hidden bg-neu1 focus:border-neu3 border pl-10"
+        placeholder="Search by course or phrase..."
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+      />
+      <Input
+        ref={searchInputRef}
+        className="hidden md:block bg-neu1 focus:border-neu3 border pl-10"
         placeholder="Search by course or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}

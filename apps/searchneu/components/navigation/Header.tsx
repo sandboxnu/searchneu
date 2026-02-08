@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { faqFlag, graduateFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
+import {
+  faqFlag,
+  graduateFlag,
+  notificationsFlag,
+  roomsFlag,
+  schedulerFlag,
+} from "@/lib/flags";
 import { MenuIcon, XIcon } from "lucide-react";
 import { Suspense } from "react";
 import {
@@ -19,12 +25,14 @@ export function Header() {
   const enableRoomsPage = roomsFlag();
   const enableSchedulerPage = schedulerFlag();
   const enableGraduatePage = graduateFlag();
+  const enableNotificationsPage = notificationsFlag();
 
   const flags = {
     rooms: enableRoomsPage,
     faq: enableFaqPage,
     scheduler: enableSchedulerPage,
     graduate: enableGraduatePage,
+    notifications: enableNotificationsPage,
   };
 
   return (

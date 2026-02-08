@@ -4,8 +4,9 @@ import {
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
+  Bell,
 } from "lucide-react";
-import { type ReactNode, use } from "react";
+import { ReactNode, use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
@@ -22,6 +23,7 @@ export function NavBar({
   const faqFlag = use(flags["faq"]);
   const schedulerFlag = use(flags["scheduler"]);
   const graduateFlag = use(flags["graduate"]);
+  const notificationsFlag = use(flags["notifications"]);
 
   const pathname = usePathname();
 
@@ -87,6 +89,18 @@ export function NavBar({
             className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
           >
             <CircleQuestionMark className="text-red size-5" />
+          </Link>
+        </LinkWrapper>
+      )}
+      {notificationsFlag && (
+        <LinkWrapper mobileNav={closeable}>
+          <Link
+            href="/notifications"
+            data-active={pathname === "/notifications"}
+            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
+          >
+            <Bell className="size-4" />
+            <span>Notifications</span>
           </Link>
         </LinkWrapper>
       )}

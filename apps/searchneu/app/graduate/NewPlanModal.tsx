@@ -21,6 +21,11 @@ export default function NewPlanModal() {
   const [isLoadingMinors, setIsLoadingMinors] = useState(false);  
   const [minor, setMinor] = useState('');
 
+  //concentrations
+  const [concentration, setConcentration] = useState('');
+  const [concentrationOptions, setConcentrationOptions] = useState<{ value: string; label: string }[]>([]);
+  const [isLoadingConcentration, setIsLoadingConcentration] = useState(false);  
+
   const noMajorHelperLabel = `You can opt out of selecting a major for this plan if you are unsure or if we do not support you major Without a selected major, we won't be able to display the major requirements`;
 
   const handleClose = () => {
@@ -110,6 +115,30 @@ useEffect(() => {
   setMinor('');
 }, [catalogYear, supportedMinorsData]);
 
+//change concentrations based on major
+useEffect(() => {
+  setIsLoadingConcentration(true);
+  if (!major || !catalogYear || !supportedMajorsData) {
+    setConcentrationOptions([]);
+    setConcentration('');
+    return;
+  }
+  
+  const majorData = supportedMajorsData.supportedMajors[catalogYear]?.[major];
+  
+  if (majorData?.concentrations && majorData.concentrations.length > 0) {
+    const options = majorData.concentrations.map(name => ({
+      value: name,
+      label: name
+    }));
+    setConcentrationOptions(options);
+  } else {
+    setConcentrationOptions([]);
+    setConcentration('');
+  }
+  setIsLoadingConcentration(false);
+}, [major, catalogYear, supportedMajorsData]);
+
 
 // Generate default plan title using formatted date and time
 const generateDefaultPlanTitle = () => {
@@ -177,6 +206,17 @@ const generateDefaultPlanTitle = () => {
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMinor(e.target.value)}
                 />
         </FormField>
+
+        {/*concentration*/}
+        {concentrationOptions.length > 0 &&
+        <FormField label = "Concentration">
+            <Select 
+                placeholder= { isLoadingConcentration ? "Loading concentrations..." : "Select a concentration"}
+                value = {concentration}
+                options={concentrationOptions}
+                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setConcentration(e.target.value)}
+                />
+        </FormField>}
 
         {/*Can't find your major / minor?*/}
         Can't find your major/minor?

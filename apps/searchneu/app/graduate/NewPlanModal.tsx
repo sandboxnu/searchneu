@@ -153,8 +153,16 @@ const generateDefaultPlanTitle = () => {
         onClose={() => setIsOpen(false)}
         title="New Plan"
       >
+        {/*import from UAchieve*/}
+        <div className="flex justify-center">
+          <button className="border-gray-500 rounded-4xl border-1 p-2 pl-5 pr-5">
+          Import from UAchieve
+        </button>
+        </div>
+        
+
         {/*title*/}
-        <FormField label="Title">
+        <FormField label="TITLE">
           <Input
             placeholder= {generateDefaultPlanTitle()}
             value={message}
@@ -162,18 +170,8 @@ const generateDefaultPlanTitle = () => {
           />
         </FormField>
 
-        
-      <Checkbox
-        label = "No major?"
-        checked = {isNoMajorSelected}
-        onChange = {() => setIsNoMajorSelected(!isNoMajorSelected)}
-        helpText = {noMajorHelperLabel}
-      />
-
-        {/*no major checkbox + tooltip*/}
-
-        {/*catalog year*/}
-        <FormField label = "Catalog Year">
+         {/*catalog year*/}
+        <FormField label = "CATALOG YEAR">
             <Select 
                 placeholder="Select Catalog Year"
                 value = {catalogYear}
@@ -187,7 +185,8 @@ const generateDefaultPlanTitle = () => {
                 />
         </FormField>
 
-        {/*major*/}
+        
+      {/*major*/}
         <FormField label = "Major(s)">
             <Select 
                 placeholder = {isLoadingMajors ? "Loading majors ..." : "Select a major"}
@@ -196,6 +195,26 @@ const generateDefaultPlanTitle = () => {
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMajor(e.target.value)}
                 />
         </FormField>
+
+      <Checkbox
+        label = "Can't find my major?"
+        checked = {isNoMajorSelected}
+        onChange = {() => setIsNoMajorSelected(!isNoMajorSelected)}
+        helpText = {noMajorHelperLabel}
+      />
+
+        {/*no major checkbox + tooltip*/}
+
+       {/*concentration*/}
+        {concentrationOptions.length > 0 &&
+        <FormField label = "Concentration">
+            <Select 
+                placeholder= { isLoadingConcentration ? "Loading concentrations..." : "Select a concentration"}
+                value = {concentration}
+                options={concentrationOptions}
+                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setConcentration(e.target.value)}
+                />
+        </FormField>}
 
         {/*minor*/}
         <FormField label = "Minor(s)">
@@ -207,26 +226,10 @@ const generateDefaultPlanTitle = () => {
                 />
         </FormField>
 
-        {/*concentration*/}
-        {concentrationOptions.length > 0 &&
-        <FormField label = "Concentration">
-            <Select 
-                placeholder= { isLoadingConcentration ? "Loading concentrations..." : "Select a concentration"}
-                value = {concentration}
-                options={concentrationOptions}
-                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setConcentration(e.target.value)}
-                />
-        </FormField>}
-
-        {/*Can't find your major / minor?*/}
-        Can't find your major/minor?
-
-        {/*Recommended Template*/}
-
 
         <ModalFooter>
             <Button variant="secondary"> Cancel </Button>
-            <Button variant="primary" onClick={handleClose}> Add Plan </Button>
+            <Button variant="primary" onClick={handleClose}> Create Plan </Button>
         </ModalFooter>        
         
       </Modal>

@@ -53,7 +53,7 @@ type FormFieldProps = {
 
 const FormField = ({ label, children, required }: FormFieldProps) => (
   <div className="mb-4 mt-4">
-    <label className="block text-sm font-bold text-[#1C3557] mb-1">
+    <label className="block text-xs font-bold text-neu6 mb-1">
       {label}
     </label>
     {children}
@@ -71,7 +71,7 @@ const Input = ({ placeholder, value, onChange, }: InputProps) => (
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
+          className="w-full px-4 py-3 border border-neu2 rounded-4xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
         />
 );
 
@@ -87,7 +87,7 @@ const Select = ({ placeholder, value, onChange, options, ...props }: SelectProps
   <select
     value={value}
     onChange={onChange}
-    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
+    className="w-full px-4 py-3 border border-neu2 rounded-4xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
     {...props}
   >
     <option value="">{placeholder} </option>
@@ -112,7 +112,7 @@ const Checkbox = ({ label, checked, onChange, helpText }: CheckboxProps) => (
       onChange={onChange}
     />
 
-    <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+    <label className="text-xs font-semibold text-neu6 flex items-center gap-1">
       {label}
 
       {helpText && (
@@ -139,7 +139,7 @@ type ModalFooterProps = {
 };
 
 const ModalFooter = ({ children }: ModalFooterProps) => (
-  <div className="flex items-center justify-center gap-3 pt-4 border-t border-gray-200 mt-6">
+  <div className="flex justify-center gap-24 pt-4 border-t border-gray-200 mt-6">
     {children}
   </div>
 );
@@ -155,9 +155,9 @@ type ButtonProps = {
 };
 
 const Button = ({ children, onClick, variant = 'primary', type = 'button', isDisabled }: ButtonProps) => {
-  const baseClasses = "px-6 py-3 rounded-md font-medium transition-colors";
+  const baseClasses = "px-6 py-3 rounded-4xl font-medium width-120px height-36px transition-colors";
   const variants = {
-    primary: isDisabled ? "bg-[#EB5756]/50 text-white opacity-122" : "bg-[#EB5756] text-white",
+    primary: isDisabled ? "bg-[#EB5756]/50 text-white opacity-122" : "bg-[#E63946] text-white",
     secondary: "bg-transparent text-black"
   };
   

@@ -54,15 +54,13 @@ export async function scrapeCatalogTerm(
 
   // get and validate subjects
   consola.debug("scraping subjects");
-  const bannerSubjects: any = await $fetch(subjectsEndpoint(term)).then((r) =>
-    r.json(),
+  const bannerSubjects = await $fetch(subjectsEndpoint(term)).then(
+    (r) => r.json() as Promise<{ code: string; description: string }[]>,
   );
-  const subjects: { code: string; description: string }[] = bannerSubjects.map(
-    (subj: { code: string; description: string }) => ({
-      code: subj.code,
-      description: decode(subj.description),
-    }),
-  );
+  const subjects = bannerSubjects.map((subj) => ({
+    code: subj.code,
+    description: decode(subj.description),
+  }));
 
   if (subjectCodes.length !== subjects.length) {
     consola.warn(

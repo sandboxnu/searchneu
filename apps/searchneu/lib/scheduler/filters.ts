@@ -172,4 +172,3 @@ export const filterSchedules = (
     schedulePassesFilters(schedule, filters),
   );
 };
-

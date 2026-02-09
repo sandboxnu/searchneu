@@ -46,7 +46,7 @@ export function SearchBar() {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [query]);
+  });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,11 +62,11 @@ export function SearchBar() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  });
 
   function handleSubmit() {
     const params = new URLSearchParams(searchParams);
-    setQuery(inputValue)
+    setQuery(inputValue);
     if (!query.trim()) {
       params.delete("q");
       window.history.pushState(null, "", `${pathname}?${params.toString()}`);
@@ -89,7 +89,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="visible md:hidden bg-neu1 focus:border-neu3 border pl-10"
+        className="bg-neu1 focus:border-neu3 visible border pl-10 md:hidden"
         placeholder="Search by course or phrase..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -97,7 +97,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="hidden md:block bg-neu1 focus:border-neu3 border pl-10"
+        className="bg-neu1 focus:border-neu3 hidden border pl-10 md:block"
         placeholder="Search by course or phrase..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}

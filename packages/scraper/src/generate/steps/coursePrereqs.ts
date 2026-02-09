@@ -18,7 +18,7 @@ import { parsePrereqs } from "./reqs";
 export async function scrapeCoursePrereqs(
   fe: FetchEngine,
   term: string,
-  items: ({ crn: string; prereqs: Requisite } & { [key: string]: any })[],
+  items: ({ crn: string; prereqs: Requisite } & { [key: string]: unknown })[],
   subjects: Subject[],
 ) {
   const failedRequests: string[] = [];
@@ -33,7 +33,8 @@ export async function scrapeCoursePrereqs(
           onRetry(attempt) {
             // retries are part of the process, just log it if debugging
             consola.debug("retrying prereqs for course", {
-              course: c.subject + c.courseNumber,
+              // course: c.subject + c.courseNumber,
+              crn: c.crn,
               attempt,
             });
           },
@@ -45,7 +46,7 @@ export async function scrapeCoursePrereqs(
           consola.error("error scraping prereqs", {
             error: e,
             crn: c.crn,
-            course: c.subject + c.courseNumber,
+            // course: c.subject + c.courseNumber,
           });
           return;
         });
@@ -60,7 +61,7 @@ export async function scrapeCoursePrereqs(
         consola.error("error scraping prereqs", {
           error: prereqsResult.error,
           crn: c.crn,
-          course: c.subject + c.courseNumber,
+          // course: c.subject + c.courseNumber,
         });
         return;
       }

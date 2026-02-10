@@ -5,7 +5,7 @@
 export enum NUPathEnum {
   ND = "Natural/Designed World",
   EI = "Creative Express/Innov",
-  IC = "Interpreting Cusclture",
+  IC = "Interpreting Culture",
   FQ = "Formal/Quant Reasoning",
   SI = "Societies/Institutions",
   AD = "Analyzing/Using Data",
@@ -53,6 +53,17 @@ export interface INEUReqCourse {
   classId: string;
   subject: string;
   missing?: true;
+}
+
+/**
+ * A scheduled course.
+ *
+ * @param classId The course number of the scheduled course.
+ * @param subject The subject of the scheduled course.
+ */
+export interface IScheduleCourse {
+  classId: number;
+  subject: string;
 }
 
 /**
@@ -160,6 +171,81 @@ export interface Schedule<T> {
   years: ScheduleYear<T>[];
 }
 
+export interface ParsedCourse {
+  subject: string;
+  classId: string;
+}
+
+/**
+ * A SearchNEU prerequisite course.
+ *
+ * @param classId The course number of this prerequisite course.
+ * @param subject The subject of this prerequisite course.
+ * @param missing True if the class is missing.
+ */
+export interface INEUReqCourse {
+  classId: string;
+  subject: string;
+  missing?: true;
+}
+
+export type INEUReqError =
+  | INEUReqCourseError
+  | INEUReqAndError
+  | INEUReqOrError;
+
+export enum ReqErrorType {
+  COURSE = "course",
+  AND = "and",
+  OR = "or",
+}
+
+export interface INEUReqCourseError {
+  type: ReqErrorType.COURSE;
+  subject: string;
+  classId: string;
+}
+
+export interface INEUReqAndError {
+  type: ReqErrorType.AND;
+  missing: INEUReqError[];
+  subject?: string;
+  classId?: string;
+}
+
+export interface INEUReqOrError {
+  type: ReqErrorType.OR;
+  missing: INEUReqError[];
+  subject?: string;
+  classId?: string;
+}
+
+export interface TermError {
+  [key: string]: INEUReqError | undefined;
+}
+
+export interface ScheduleWarnings {
+  type: string;
+  years: YearError[];
+}
+
+export interface YearError {
+  year: number;
+  fall: TermError;
+  spring: TermError;
+  summer1: TermError;
+  summer2: TermError;
+}
+
+export type PreReqWarnings = ScheduleWarnings & {
+  type: "prereq";
+};
+
+export type CoReqWarnings = ScheduleWarnings & {
+  type: "coreq";
+};
+
+//                                       NEW MAJOR OBJECT HERE
 /**
  * A Major, containing all the requirements.
  *
@@ -345,6 +431,26 @@ export type SupportedMinorsForYear = Record<string, Minor>;
 export type SupportedMajors = Record<string, SupportedMajorsForYear>;
 export type SupportedMinors = Record<string, SupportedMinorsForYear>;
 
+/**
+ * Types for a some result from an algorithim. Currently used for the result of
+ * the Major 2 validation algorithm.
+ */
+export enum ResultType {
+  Ok = "Ok",
+  Err = "Err",
+}
+
+export type Result<T, E> =
+  | { ok: T; type: ResultType.Ok }
+  | { err: E; type: ResultType.Err };
+
+export const Ok = <T, E>(ok: T): Result<T, E> => ({ ok, type: ResultType.Ok });
+
+export const Err = <T, E>(err: E): Result<T, E> => ({
+  err,
+  type: ResultType.Err,
+});
+
 export type Maybe<T> = T | false;
 
 export interface MetaInfo {
@@ -353,3 +459,9 @@ export interface MetaInfo {
   build_timestamp: Maybe<number>;
   environment: Maybe<string>;
 }
+
+// option object type for react-select
+export type OptionObject = {
+  label: string | number;
+  value: string | number;
+};

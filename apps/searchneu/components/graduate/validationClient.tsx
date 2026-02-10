@@ -18,7 +18,7 @@ type ValidationState =
       error: { name: string; message: string; field?: string };
     };
 
-export default function ValidationClient() {
+function ValidationClient() {
   const workerRef = useRef<Worker>(null);
   const [validationState, setValidationState] = useState<ValidationState>({
     status: "idle",
@@ -107,14 +107,6 @@ export default function ValidationClient() {
     [],
   );
 
-  const testClick = () => {
-    // Example: send a test validation request (this will error without valid data)
-    runValidation({
-      major: null as never, // This will trigger our validation error
-      taken: [],
-    });
-  };
-
   const major2Example = {
     name: "Test Major",
     requirementSections: [],
@@ -132,9 +124,6 @@ export default function ValidationClient() {
     <div className="space-y-4 p-4">
       <h2 className="text-lg font-semibold">ValidationClient</h2>
 
-      <Button variant="outline" onClick={testClick}>
-        Test Validation
-      </Button>
       <Button variant="outline" onClick={testGoodValidation}>
         Test good Validation
       </Button>
@@ -170,3 +159,5 @@ export default function ValidationClient() {
     </div>
   );
 }
+
+export { ValidationClient };

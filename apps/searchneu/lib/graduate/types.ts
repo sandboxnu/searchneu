@@ -1,3 +1,5 @@
+import { Requisite } from "@sneu/scraper/types";
+
 /**
  * Describes the term SearchNEU uses for each of Northeastern's NUPath academic
  * breadth requirements.
@@ -39,59 +41,19 @@ export enum StatusEnum {
   HOVERCOOP = "HOVERCOOP",
 }
 
-/** A SearchNEU prerequisite object. */
-export type INEUReq = INEUAndReq | INEUOrReq | INEUReqCourse;
-
 /**
- * A SearchNEU prerequisite course.
+ * A Audit course.
  *
- * @param classId The course number of this prerequisite course.
- * @param subject The subject of this prerequisite course.
- * @param missing True if the class is missing.
+ * @param classId The course number of the audit course.
+ * @param subject The subject of the audit course.
  */
-export interface INEUReqCourse {
-  classId: string;
-  subject: string;
-  missing?: true;
-}
-
-/**
- * A scheduled course.
- *
- * @param classId The course number of the scheduled course.
- * @param subject The subject of the scheduled course.
- */
-export interface IScheduleCourse {
+export interface IAuditCourse {
   classId: number;
   subject: string;
 }
 
 /**
- * A SearchNEU AND prerequisite object.
- *
- * @param type   The type of the SearchNEU prerequisite.
- * @param values The prerequisites that must be completed for this prereq. to be
- *   marked as done.
- */
-export interface INEUAndReq {
-  type: "and";
-  values: INEUReq[];
-}
-
-/**
- * A SearchNEU OR prerequisite object.
- *
- * @param type   The type of the SearchNEU prerequisite.
- * @param values The prerequisites of which one must be completed for this
- *   prerequisite to be marked as done.
- */
-export interface INEUOrReq {
-  type: "or";
-  values: INEUReq[];
-}
-
-/**
- * A course within a schedule used by of the App. A generic id field is used for
+ * A course within a audit used by of the App. A generic id field is used for
  * book keeping purposes by the drag and drop library, in cases where we don't
  * care about this id, T can null.
  *
@@ -105,12 +67,12 @@ export interface INEUOrReq {
  * @param numCreditsMax The maximum number of credits this course gives
  * @param id            Unique id used as a book keeping field for dnd.
  */
-export interface ScheduleCourse<T> {
+export interface AuditCourse<T> {
   name: string;
   classId: string;
   subject: string;
-  prereqs?: INEUAndReq | INEUOrReq;
-  coreqs?: INEUAndReq | INEUOrReq;
+  prereqs?: Requisite;
+  coreqs?: Requisite;
   nupaths?: NUPathEnum[];
   numCreditsMin: number;
   numCreditsMax: number;
@@ -119,7 +81,7 @@ export interface ScheduleCourse<T> {
 }
 
 /**
- * A clean version of the ScheduleTerm used by of the App. A generic id field is
+ * A clean version of the AuditTerm used by of the App. A generic id field is
  * used for book keeping purposes by the drag and drop library, in cases where
  * we don't care about this id, T can null.
  *
@@ -129,64 +91,51 @@ export interface ScheduleCourse<T> {
  * @param classes A list of the classes of this term.
  * @param id      Unique id used as a book keeping field for dnd.
  */
-export interface ScheduleTerm<T> {
+export interface AuditTerm<T> {
   season: SeasonEnum;
   status: StatusEnum;
-  classes: ScheduleCourse<T>[];
+  classes: AuditCourse<T>[];
   id: T;
 }
 
 /**
- * A ScheduleYear, representing a year of a schedule
+ * A AuditYear, representing a year of a audit
  *
  * @param year         The academic year number(1, 2, 3...) not to be confused
  *   with the calendar year. One academic year spans from [Calendar Year X,
  *   Fall] - [Calendar Year X + 1, Summer 2].
  *
  *   Storing the academic year num isn't necessary but can be nice since it
- *   prevents us from relying on the order in which ScheduleYears are stored in
- *   a Schedule.
+ *   prevents us from relying on the order in which AuditYears are stored in
+ *   an Audit.
  * @param fall         The fall term
  * @param spring       The spring term
  * @param summer1      The summer 1 term
  * @param summer2      The summer 2 term
  * @param isSummerFull True if the summer1 should hold the classes for summer full.
  */
-export interface ScheduleYear<T> {
+export interface AuditYear<T> {
   year: number;
-  fall: ScheduleTerm<T>;
-  spring: ScheduleTerm<T>;
-  summer1: ScheduleTerm<T>;
-  summer2: ScheduleTerm<T>;
+  fall: AuditTerm<T>;
+  spring: AuditTerm<T>;
+  summer1: AuditTerm<T>;
+  summer2: AuditTerm<T>;
   isSummerFull: boolean;
 }
 
 /**
- * A clean version of a student's schedule as used in of the App with no
+ * A clean version of a student's audit as used in of the App with no
  * redundunt year information.
  *
  * @param years A list of the years of this object
  */
-export interface Schedule<T> {
-  years: ScheduleYear<T>[];
+export interface Audit<T> {
+  years: AuditYear<T>[];
 }
 
 export interface ParsedCourse {
   subject: string;
   classId: string;
-}
-
-/**
- * A SearchNEU prerequisite course.
- *
- * @param classId The course number of this prerequisite course.
- * @param subject The subject of this prerequisite course.
- * @param missing True if the class is missing.
- */
-export interface INEUReqCourse {
-  classId: string;
-  subject: string;
-  missing?: true;
 }
 
 export type INEUReqError =
@@ -224,7 +173,7 @@ export interface TermError {
   [key: string]: INEUReqError | undefined;
 }
 
-export interface ScheduleWarnings {
+export interface AuditWarnings {
   type: string;
   years: YearError[];
 }
@@ -237,11 +186,11 @@ export interface YearError {
   summer2: TermError;
 }
 
-export type PreReqWarnings = ScheduleWarnings & {
+export type PreReqWarnings = AuditWarnings & {
   type: "prereq";
 };
 
-export type CoReqWarnings = ScheduleWarnings & {
+export type CoReqWarnings = AuditWarnings & {
   type: "coreq";
 };
 

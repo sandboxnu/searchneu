@@ -1,9 +1,6 @@
 import { NextRequest } from "next/server";
 import { CreateAuditPlanDto } from "@/lib/graduate/api-dtos";
-import {
-  createAuditPlan,
-  verifyUser,
-} from "@/lib/controllers/auditPlans";
+import { createAuditPlan, verifyUser } from "@/lib/controllers/auditPlans";
 
 /**
  * Creates a new audit plan for the authenticated user

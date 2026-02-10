@@ -94,7 +94,7 @@ function ResultsList({
   const parentRef = useRef<HTMLDivElement>(null);
 
   const virtual = useVirtualizer({
-    count: Array.isArray(results) ? results.length : 0,
+    count: Array.isArray(results) ? Math.min(results.length, 20) : 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 48,
     overscan: 5,

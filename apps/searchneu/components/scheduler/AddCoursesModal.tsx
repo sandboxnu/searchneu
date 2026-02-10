@@ -8,8 +8,7 @@ import {
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
-import { CollegeDropdown } from "./CollegeDropdown";
-import { useState } from "react";
+import { useState, use } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import { Course } from "@sneu/scraper/types";
 import SelectedCourseGroup from "./SelectedCourseGroup";
@@ -32,12 +31,13 @@ export default function AddCoursesModal(props: {
     optionalCourseIds: number[],
   ) => void;
 }) {
-  const [selectedCollege, setSelectedCollege] = useState<string>("neu");
-  const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroup[]
   >([]);
+
+  const terms = use(props.terms);
+  const hardcodedTerm = terms.neu[0]?.term ?? "";
 
   const handleSelectCourse = (course: Course) => {
     setSelectedCourseGroups((prev) => {
@@ -195,56 +195,51 @@ export default function AddCoursesModal(props: {
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
-            Add up to 10 courses that you are considering for{" "}
-            <span className="font-bold">Spring 2026.</span>
+            Add up to 6 courses{" "}
+            <span className="italic">(excluding corequisites)</span> that you
+            are considering for <span className="font-bold">Spring 2026.</span>
           </DialogDescription>
         </DialogHeader>
         {/* main dialog content */}
         <div className="flex h-full w-full flex-row gap-2.5 pb-18 max-[768px]:flex-col max-[768px]:gap-4">
           {/* selecting term, campus, search, and search results */}
           <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 overflow-hidden max-[768px]:h-1/2 max-[768px]:w-full">
-            <CollegeDropdown
-              terms={props.terms}
-              selectedCollege={selectedCollege}
-              onCollegeChange={setSelectedCollege}
-              onTermChange={setSelectedTerm}
-            />
             <ModalSearchBar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
-            {selectedTerm && (
-              <ModalSearchResults
-                searchQuery={searchQuery}
-                term={selectedTerm}
-                onSelectCourse={handleSelectCourse}
-              />
-            )}
+
+            <ModalSearchResults
+              searchQuery={searchQuery}
+              term={hardcodedTerm}
+              onSelectCourse={handleSelectCourse}
+            />
           </div>
           {/* selected course and generate button */}
           <div className="flex w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
             {/* selected courses panel */}
-            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-2">
-              {selectedCourseGroups.length === 0 ? (
-                <span className="text-neu6 flex h-full items-center justify-center text-sm">
-                  No courses selected
+
+            <div className="bg-neu25 flex min-h-0 flex-1 flex-col gap-1 rounded-lg p-2">
+              {/* number of selections label */}
+              <div className="flex items-center justify-start p-2">
+                <span className="text-neu5 text-xs">
+                  {`${selectedCourseGroups.length} courses added, `}
                 </span>
-              ) : (
-                <div className="flex min-h-0 flex-col gap-y-1 overflow-y-auto">
-                  {selectedCourseGroups.map((group, index) => (
-                    <SelectedCourseGroup
-                      key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}
-                      parent={group.parent}
-                      coreqs={group.coreqs}
-                      onDeleteCourse={(course, isCoreq) =>
-                        handleDelete(course, isCoreq)
-                      }
-                      onToggleLock={() => handleToggleLock(group.parent)}
-                      isLocked={group.isLocked}
-                    />
-                  ))}
-                </div>
-              )}
+              </div>
+              <div className="flex min-h-0 flex-col gap-y-1 overflow-y-auto">
+                {selectedCourseGroups.map((group, index) => (
+                  <SelectedCourseGroup
+                    key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}
+                    parent={group.parent}
+                    coreqs={group.coreqs}
+                    onDeleteCourse={(course, isCoreq) =>
+                      handleDelete(course, isCoreq)
+                    }
+                    onToggleLock={() => handleToggleLock(group.parent)}
+                    isLocked={group.isLocked}
+                  />
+                ))}
+              </div>
             </div>
 
             <Button onClick={handleGeneratation}>Generate Schedules</Button>

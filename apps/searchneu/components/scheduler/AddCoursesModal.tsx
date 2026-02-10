@@ -35,6 +35,7 @@ export default function AddCoursesModal(props: {
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroup[]
   >([]);
+  const [numCourses, setNumCourses] = useState<number>(1);
 
   const terms = use(props.terms);
   const hardcodedTerm = terms.neu[0]?.term ?? "";
@@ -72,10 +73,9 @@ export default function AddCoursesModal(props: {
   };
 
   const clear = () => {
-    setSelectedCollege("neu");
-    setSelectedTerm(null);
     setSearchQuery("");
     setSelectedCourseGroups([]);
+    setNumCourses(1);
   };
 
   const handleDeleteGroup = (parent: Course) => {
@@ -200,25 +200,51 @@ export default function AddCoursesModal(props: {
             are considering for <span className="font-bold">Spring 2026.</span>
           </DialogDescription>
         </DialogHeader>
+        {/* how many courses prompt */}
+        <div className="flex w-full flex-col py-3">
+          <hr className="text-neu4 mb-6 h-[0.5px] w-full" />
+          <div className="flex w-full flex-row items-center justify-between max-[768px]:flex-col max-[768px]:gap-3 max-[768px]:text-center">
+            <div className="text-neu8 text-[16px] max-[768px]:text-sm">
+              How many courses are you taking this semester?
+            </div>
+            <div className="border-neu2 flex w-fit flex-row rounded-[28px] border bg-white p-1">
+              {[1, 2, 3, 4, 5, 6].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => setNumCourses(num)}
+                  className={`flex h-5.5 w-10.5 items-center justify-center rounded-[46px] px-2 py-1 text-xs font-semibold transition-colors ${
+                    numCourses === num
+                      ? "bg-red-500 text-white"
+                      : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
+          </div>
+          <hr className="text-neu4 mt-6 h-[0.5px] w-full" />
+        </div>
         {/* main dialog content */}
-        <div className="flex h-full w-full flex-row gap-2.5 pb-18 max-[768px]:flex-col max-[768px]:gap-4">
+        <div className="flex min-h-0 w-full flex-1 flex-row gap-2.5 max-[768px]:flex-col max-[768px]:gap-4">
           {/* selecting term, campus, search, and search results */}
-          <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 overflow-hidden max-[768px]:h-1/2 max-[768px]:w-full">
+          <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 max-[768px]:h-1/2 max-[768px]:w-full">
             <ModalSearchBar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
 
-            <ModalSearchResults
-              searchQuery={searchQuery}
-              term={hardcodedTerm}
-              onSelectCourse={handleSelectCourse}
-            />
+            {searchQuery && (
+              <ModalSearchResults
+                searchQuery={searchQuery}
+                term={hardcodedTerm}
+                onSelectCourse={handleSelectCourse}
+              />
+            )}
           </div>
           {/* selected course and generate button */}
-          <div className="flex w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
+          <div className="flex h-full min-h-0 w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
             {/* selected courses panel */}
-
             <div className="bg-neu25 flex min-h-0 flex-1 flex-col gap-1 rounded-lg p-2">
               {/* number of selections label */}
               <div className="flex items-center justify-start p-2">
@@ -226,7 +252,7 @@ export default function AddCoursesModal(props: {
                   {`${selectedCourseGroups.length} courses added, `}
                 </span>
               </div>
-              <div className="flex min-h-0 flex-col gap-y-1 overflow-y-auto">
+              <div className="flex min-h-0 flex-1 flex-col gap-y-1 overflow-y-auto">
                 {selectedCourseGroups.map((group, index) => (
                   <SelectedCourseGroup
                     key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}

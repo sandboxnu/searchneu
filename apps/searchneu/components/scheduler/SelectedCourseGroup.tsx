@@ -70,7 +70,7 @@ const SelectedCourseGroup = ({
   isLocked: boolean;
 }) => {
   return (
-    <div className="border-neu3 flex flex-col overflow-hidden rounded-lg border">
+    <div className="border-neu3 flex min-h-fit flex-col overflow-hidden rounded-lg border">
       {/* parent */}
       <SelectedCourseItem
         course={{

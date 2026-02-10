@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "lint": "eslint .",
+    "test": "node --test --import tsx ./**/*.test.ts",
     "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
     "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
   },
@@ -34,11 +36,13 @@
   },
   "devDependencies": {
     "@sneu/db": "workspace:*",
+    "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.1.0",
+    "@types/node": "^25.2.1",
+    "eslint": "^9.39.2",
+    "nock": "^14.0.10",
     "tsx": "^4.21.0",
-    "turbo": "^2.8.0",
     "typescript": "^5.9.3"
   }
 }

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
@@ -53,8 +53,6 @@ const main = defineCommand({
   async run({ args }) {
     if (args.verbose) consola.level = 4;
     if (args.veryverbose) consola.level = 999;
-
-    const interactive = args.interactive;
 
     const configStream = readFileSync(
       path.resolve(args.cachePath, "manifest.yaml"),
@@ -118,6 +116,12 @@ const main = defineCommand({
       const termData = safeTermData.data;
 
       try {
+        if (termData.version !== CACHE_VERSION) {
+          throw Error(
+            `invalid cache version (got ${termData.version}, expected ${CACHE_VERSION})`,
+          );
+        }
+
         await uploadCatalogTerm(termData, db, termConfig);
         consola.success(`uploaded term ${termConfig.term}`);
       } catch (e) {
@@ -156,77 +160,3 @@ function filterTerms(config: zinfer<typeof Config>, termArg: string) {
   }
   return filteredTerms;
 }
-
-// void (async () => {
-//   const options = parseArgs();
-//
-//   const configStream = readFileSync(path.resolve(CACHE_PATH, "manifest.yaml"), {
-//     encoding: "utf8",
-//   });
-//   const config = parse(configStream) as zinfer<typeof Config>;
-//
-//   const termsToUpload = filterTerms(config, options);
-//
-//   if (termsToUpload.length === 0) {
-//     console.log("ℹ️  No active terms to upload");
-//     return;
-//   }
-//
-//   // Check that cache files exist
-//   const missingCaches = termsToUpload.filter(
-//     (term) =>
-//       !existsSync(path.resolve(CACHE_PATH, CACHE_FORMAT(term.term.toString()))),
-//   );
-//
-//   if (missingCaches.length > 0) {
-//     console.log(
-//       `❌ Missing cache files for terms: ${missingCaches.map((t) => t.term).join(", ")}`,
-//     );
-//     console.log("   Run 'npm run scrape:gen' to generate cache files first");
-//     process.exit(1);
-//   }
-//
-//   console.log(
-//     `📤 Uploading ${termsToUpload.length} term${termsToUpload.length > 1 ? "s" : ""}: ${termsToUpload.map((t) => t.term).join(", ")}`,
-//   );
-//
-//   console.log("🔌 Connected to database");
-//
-//   // Insert config data once
-//   console.log("Inserting config data...");
-//   await insertConfigData(config, db);
-//   console.log("Config data inserted");
-//
-//   // Process each term
-//   for (const termConfig of config.terms) {
-//     const cachePath = path.resolve(
-//       CACHE_PATH,
-//       CACHE_FORMAT(termConfig.term.toString()),
-//     );
-//
-//     const cacheContent = readFileSync(cachePath, { encoding: "utf8" });
-//     const termData = JSON.parse(cacheContent) as TermScrape;
-//
-//     console.log(`📦 Uploading term ${termConfig.term}...`);
-//     if (termData.timestamp) {
-//       console.log(
-//         `   Cache generated: ${new Date(termData.timestamp).toLocaleString()}`,
-//       );
-//     }
-//
-//     await insertTermData(
-//       termData,
-//       db,
-//       config.attributes,
-//       new Date(termConfig?.activeUntil ?? "2000-01-01"),
-//     );
-//     console.log(`✅ Completed term ${termConfig.term}\n`);
-//
-//     console.log(
-//       `🎉 Successfully uploaded ${termsToUpload.length} term${termsToUpload.length > 1 ? "s" : ""}`,
-//     );
-//   }
-//
-//   console.log("\nAll terms processed successfully");
-//   process.exit(0);
-// })();

@@ -36,6 +36,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {process.env.NODE_ENV === "development" && <VercelToolbar />}
+        {/* eslint-disable-next-line turbo/no-undeclared-env-vars */}
         {process.env.REACT_SCAN && (
           <Script
             src="//unpkg.com/react-scan/dist/auto.global.js"

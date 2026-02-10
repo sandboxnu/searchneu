@@ -4,12 +4,14 @@
   "tasks": {
     "build": {
       "env": [
+        "NODE_ENV",
         "DATABASE_URL",
         "CRON_SECRET",
         "TWILIO_ACCOUNT_SID",
         "TWILIO_AUTH_TOKEN",
         "TWILIO_VERIFY_SID",
         "TWILIO_PHONE_NUMBER",
+        "TWILIO_SID",
         "JWT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
@@ -22,12 +24,14 @@
     },
     "dev": {
       "env": [
+        "NODE_ENV",
         "DATABASE_URL",
         "CRON_SECRET",
         "TWILIO_ACCOUNT_SID",
         "TWILIO_AUTH_TOKEN",
         "TWILIO_VERIFY_SID",
         "TWILIO_PHONE_NUMBER",
+        "TWILIO_SID",
         "JWT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
@@ -40,6 +44,7 @@
     },
     "test": {
       "env": [
+        "NODE_ENV",
         "DATABASE_URL",
         "CRON_SECRET",
         "TWILIO_ACCOUNT_SID",
@@ -55,32 +60,8 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
-    "db:generate": {
-      "env": ["DATABASE_URL"],
-      "cache": false
-    },
-    "db:migrate": {
-      "env": ["DATABASE_URL"],
-      "cache": false
-    },
-    "db:push": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
-    },
-    "db:studio": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
-    },
-    "scrape:gen": {
-      "cache": false,
-      "persistent": true
-    },
-    "scrape:up": {
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
+    "lint": {
+      "dependsOn": ["^lint"]
     }
   }
 }

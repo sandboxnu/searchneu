@@ -71,6 +71,7 @@ Database schema and client setup.
   - `/schema` - Database schema definitions and types
 
 **Scripts:**
+
 - `db:generate` - Generate database migrations
 - `db:migrate` - Apply migrations to database
 - `db:push` - Push schema changes directly (development only)
@@ -89,6 +90,7 @@ Course data scraper and updater.
   - `/notifs` - Notification generation when courses change
 
 **Scripts:**
+
 - `scrape:gen` - Generate/fetch fresh course data
 - `scrape:up` - Upload scraped data to the database
 
@@ -116,11 +118,13 @@ Shared TypeScript configuration.
 ### Monorepo Management
 
 **pnpm workspaces** - Package manager and workspace management
+
 - All packages defined in `pnpm-workspace.yaml`
 - Enables `workspace:*` protocol for internal dependencies
 - Single `node_modules` with package linking
 
 **Turborepo** - Build orchestration and caching
+
 - Configuration in `turbo.json`
 - Handles task dependencies (e.g., build packages before apps)
 - Caches build outputs for faster rebuilds
@@ -131,16 +135,19 @@ Shared TypeScript configuration.
 Run these from the repository root:
 
 **Development:**
+
 ```bash
 pnpm dev          # Start all apps in development mode
 ```
 
 **Building:**
+
 ```bash
 pnpm build        # Build all apps and packages
 ```
 
 **Database:**
+
 ```bash
 pnpm db:generate  # Generate database migrations
 pnpm db:migrate   # Apply migrations
@@ -151,6 +158,7 @@ pnpm db:studio    # Open database UI
 ### Local Development Environment
 
 **Docker Compose** (`compose.yaml`) provides:
+
 - **postgres** - ParadeDB (PostgreSQL with full-text search extensions)
 - **neon-proxy** - Local proxy that mimics Neon's serverless HTTP interface
 
@@ -159,17 +167,20 @@ This allows you to develop locally with the same database interface used in prod
 ### Technology Stack
 
 **Frontend:**
+
 - Next.js 16 (App Router)
 - React 19
 - Tailwind CSS 4
 - TypeScript 5
 
 **Backend/Database:**
+
 - PostgreSQL with ParadeDB
 - Drizzle ORM
 - Neon serverless (production)
 
 **Development Tools:**
+
 - pnpm for package management
 - Turborepo for builds
 - ESLint for linting
@@ -177,6 +188,7 @@ This allows you to develop locally with the same database interface used in prod
 - Docker Compose for local services
 
 **External Services:**
+
 - Vercel (hosting)
 - Twilio (SMS)
 - Google OAuth (authentication)
@@ -191,6 +203,7 @@ The codebase follows a monorepo architecture where:
 4. **Type safety** flows from packages → apps via TypeScript
 
 This structure makes it easy to:
+
 - Share database schema between scraper and web app
 - Reuse notification logic
 - Keep TypeScript configs consistent

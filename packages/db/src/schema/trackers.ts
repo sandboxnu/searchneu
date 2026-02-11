@@ -1,47 +1,19 @@
 import {
-  boolean,
   index,
   integer,
   pgTable,
   text,
   timestamp,
-  uniqueIndex,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { sectionsT } from "./catalog";
-
-export const usersT = pgTable(
-  "users",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    guid: uuid().notNull().unique().defaultRandom(),
-    name: text().notNull(),
-    email: text().notNull().unique(),
-    image: text(),
-    subject: varchar({ length: 255 }).notNull().unique(),
-    role: varchar({ length: 100 }).notNull().default("user"),
-    trackingLimit: integer().notNull().default(12),
-    acceptedTerms: timestamp(),
-    phoneNumber: text("phone_number").unique(),
-    phoneNumberVerified: boolean("phone_number_verified"),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [
-    uniqueIndex("guid_idx").on(table.guid),
-    uniqueIndex("sub_idx").on(table.subject),
-  ],
-);
+import { user as usersT } from "./auth";
 
 export const trackersT = pgTable(
-  "trackers",
+  "tracker",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer()
+    userId: text()
       .notNull()
       .references(() => usersT.id),
     sectionId: integer()
@@ -63,9 +35,9 @@ export const trackersT = pgTable(
   ],
 );
 
-export const notificationsT = pgTable("notifications", {
+export const notificationsT = pgTable("notification", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer().notNull(),
+  userId: text().notNull(),
   trackerId: integer().notNull(),
   method: varchar({ length: 10 }).notNull(),
   message: text(),

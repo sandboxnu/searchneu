@@ -11,17 +11,20 @@ import {
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { signIn } from "@/lib/auth/client";
 import { GoogleLogo } from "./icons/Google";
 import Link from "next/link";
 import { Magoskie } from "./icons/Magoskie";
+import { authClient } from "@/lib/auth-client";
 
 export function SignIn({ closeFn }: { closeFn: () => void }) {
   const [isPending, setIsPending] = useState(false);
 
   async function doSignIn() {
     setIsPending(true);
-    signIn();
+    await authClient.signIn.social({
+      provider: "google",
+      newUserCallbackURL: "/me/link",
+    });
   }
 
   return (

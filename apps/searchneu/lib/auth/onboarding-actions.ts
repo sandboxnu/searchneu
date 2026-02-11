@@ -1,38 +1,25 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { config } from "../auth/auth";
-import { verifyJWT } from "../auth/utils";
-import { db, usersT } from "@/lib/db";
+import { db, user as usersT } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { twilio } from "../twilio";
 import { logger } from "../logger";
-
-async function getGuid() {
-  const cookieJar = await cookies();
-  const jwt = cookieJar.get(config.cookieName)?.value;
-  if (!jwt) {
-    return null;
-  }
-
-  const guid = await verifyJWT(jwt);
-  if (!guid) {
-    return null;
-  }
-
-  return guid;
-}
+import { auth } from "../auth";
+import { headers } from "next/headers";
 
 export async function grantConsentAction() {
-  const guid = await getGuid();
-  if (!guid) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
     return { ok: false };
   }
 
   await db
     .update(usersT)
     .set({ acceptedTerms: new Date() })
-    .where(eq(usersT.guid, guid));
+    .where(eq(usersT.id, session.user.id));
 
   return {
     ok: true,
@@ -40,8 +27,11 @@ export async function grantConsentAction() {
 }
 
 export async function startPhoneVerificationAction(phoneNumber: string) {
-  const guid = await getGuid();
-  if (!guid) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
     return { ok: false };
   }
 
@@ -62,7 +52,7 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
     await db
       .update(usersT)
       .set({ phoneNumber: phoneNumber })
-      .where(eq(usersT.guid, guid));
+      .where(eq(usersT.id, session.user.id));
 
     return { ok: true };
   } catch (err) {
@@ -91,8 +81,11 @@ export async function startPhoneVerificationAction(phoneNumber: string) {
 }
 
 export async function verifyPhoneAction(phoneNumber: string, code: string) {
-  const guid = await getGuid();
-  if (!guid) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
     return { ok: false };
   }
 
@@ -111,7 +104,7 @@ export async function verifyPhoneAction(phoneNumber: string, code: string) {
     await db
       .update(usersT)
       .set({ phoneNumberVerified: true })
-      .where(eq(usersT.guid, guid));
+      .where(eq(usersT.id, session.user.id));
 
     return { ok: true };
   } catch (err) {

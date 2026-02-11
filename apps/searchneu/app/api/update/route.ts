@@ -4,7 +4,7 @@ import {
   sectionsT,
   termsT,
   trackersT,
-  usersT,
+  user as usersT,
   subjectsT,
 } from "@/lib/db";
 import { eq, gt } from "drizzle-orm";

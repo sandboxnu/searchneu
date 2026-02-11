@@ -183,7 +183,7 @@ const generateDefaultPlanTitle = () => {
          <div className="">
           <Label
             htmlFor="catalog-year-select"
-            className="text-neu7 text-xs font-bold"
+            className="text-neu7 text-xs font-bold text-neu6"
           >
             CATALOG YEAR
           </Label>
@@ -191,7 +191,7 @@ const generateDefaultPlanTitle = () => {
             value={catalogYear} 
             onValueChange={setCatalogYear}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full bg-transparent">
               <SelectValue placeholder="Select catalog year" />
             </SelectTrigger>
             <SelectContent>

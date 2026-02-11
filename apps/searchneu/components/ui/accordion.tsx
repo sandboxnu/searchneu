@@ -9,9 +9,9 @@ export interface AccordionType {
   title: string;
   description: string;
 };
-export default function FAQDropDown({ title, description }: AccordionType) {
+export function FAQDropDown({ title, description }: AccordionType) {
   return (
-    <div className="bg-neu1 flex flex-col items-start gap-[16px] self-stretch rounded-lg p-[24px]">
+    <div className="bg-neu1 flex flex-col items-start mb-[16px] self-stretch rounded-lg p-[24px]">
       <Accordion.Root type="single" collapsible className="w-full">
         <Accordion.Item value="item1">
           <Accordion.Header>

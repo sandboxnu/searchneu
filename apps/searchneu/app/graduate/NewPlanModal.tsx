@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button, FormField, Input, Modal, Checkbox,  ModalFooter } from "./Modal";
 import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
 import { GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "@/lib/graduate/api-response-types";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SPMultiselectGroups } from "@/components/catalog/search/SPMultiselectGroups";
+import { Marko_One } from "next/font/google";
+import { MultiSelect, MultiSelectContent, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "@/components/ui/multi-select";
 
 export default function NewPlanModal() {
   const catalogYearOptions = [
@@ -22,8 +25,7 @@ export default function NewPlanModal() {
   const [supportedMajorsData, setSupportedMajorsData] = useState<GetSupportedMajorsResponse | null>(null);
   const [majorOptions, setMajorOptions] = useState<{ value: string; label: string }[]>([]);
   const [isLoadingMajors, setIsLoadingMajors] = useState(false);
-  const [major, setMajor] = useState('');
-
+  const [majors, setMajors] = useState<string[]>([]);
   //minors
   const [supportedMinorsData, setSupportedMinorsData] = useState<GetSupportedMinorsResponse | null>(null);
   const [minorOptions, setMinorOptions] = useState<{ value: string; label: string }[]>([]);
@@ -77,7 +79,7 @@ export default function NewPlanModal() {
 useEffect(() => {
   if (!catalogYear || !supportedMajorsData) {
     setMajorOptions([]);
-    setMajor(''); 
+    setMajors([]); 
     return;
   }
   const majorsForYear = supportedMajorsData.supportedMajors[catalogYear];
@@ -95,7 +97,7 @@ useEffect(() => {
     setMajorOptions([]);
   }
   
-  setMajor('');
+  setMajors([]);
 }, [catalogYear, supportedMajorsData]);
 
 //change supported minors based on catalog year
@@ -127,13 +129,14 @@ useEffect(() => {
 //change concentrations based on major
 useEffect(() => {
   setIsLoadingConcentration(true);
-  if (!major || !catalogYear || !supportedMajorsData) {
+  if (!majors || !catalogYear || !supportedMajorsData) {
     setConcentrationOptions([]);
     setConcentration('');
     return;
   }
   
-  const majorData = supportedMajorsData.supportedMajors[catalogYear]?.[major];
+  {/*TODO: which major should concentrations come from?*/}
+  const majorData = supportedMajorsData.supportedMajors[catalogYear]?.[majors[0]];
   
   if (majorData?.concentrations && majorData.concentrations.length > 0) {
     const options = majorData.concentrations.map(name => ({
@@ -146,7 +149,7 @@ useEffect(() => {
     setConcentration('');
   }
   setIsLoadingConcentration(false);
-}, [major, catalogYear, supportedMajorsData]);
+}, [majors, catalogYear, supportedMajorsData]);
 
 
 // generate default plan title using formatted date and time
@@ -183,7 +186,7 @@ const generateDefaultPlanTitle = () => {
          <div className="">
           <Label
             htmlFor="catalog-year-select"
-            className="text-neu7 text-xs font-bold text-neu6"
+            className="text-xs font-bold text-neu6"
           >
             CATALOG YEAR
           </Label>
@@ -194,7 +197,7 @@ const generateDefaultPlanTitle = () => {
             <SelectTrigger className="w-full bg-transparent">
               <SelectValue placeholder="Select catalog year" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="border-neu6">
               {catalogYearOptions.map((t) => (
                 <SelectItem key={t.label} value={t.value}>
                   {t.label}
@@ -205,38 +208,49 @@ const generateDefaultPlanTitle = () => {
         </div>
          
 
+         {/*major*/}
+          <div className="">
+            <Label className="text-neu7 text-xs font-bold">
+              MAJOR(S)
+            </Label>
+            <MultiSelect 
+              values={majors}
+              onValuesChange={setMajors}
+            >
+              <MultiSelectTrigger className="w-full">
+                <MultiSelectValue 
+                  placeholder={isLoadingMajors ? "Loading majors..." : "Select majors"}
+                />
+              </MultiSelectTrigger>
+              <MultiSelectContent>
+                {majorOptions.map((major) => (
+                  <MultiSelectItem key={major.value} value={major.value}>
+                    {major.label}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelectContent>
+            </MultiSelect>
 
+            {/*no major checkbox + tooltip*/}
+            <Checkbox
+              label="Can't find my major?"
+              checked={isNoMajorSelected}
+              onChange={() => setIsNoMajorSelected(!isNoMajorSelected)}
+              helpText={noMajorHelperLabel}
+            />
+          </div>
 
-        
-      {/* major
-      <Suspense fallback={<MultiselectSkeleton />}>
-          <SPMultiselectGroups
-            label="MAJOR(S)"
-            opts={Promise.resolve(majorOptions)}
-            spCode="mjrs"
-            placeholder = {isLoadingMajors ? "Loading majors ..." : "Select a major"}
-          />
-          </ Suspense> */}
-
-      <Checkbox
-        label = "Can't find my major?"
-        checked = {isNoMajorSelected}
-        onChange = {() => setIsNoMajorSelected(!isNoMajorSelected)}
-        helpText = {noMajorHelperLabel}
-      />
-
-        {/*no major checkbox + tooltip*/}
-
-       {/* concentration
         {concentrationOptions.length > 0 &&
         <FormField label = "Concentration">
-            <Select 
+          <Suspense fallback={<MultiselectSkeleton />}>
+              <SPMultiselectGroups
+                label="CONCENTRATION(S)"
+                opts={Promise.resolve(concentrationOptions.map((conc) => ({name : conc.label, group: null})))}
+                spCode="cntrs"
                 placeholder= { isLoadingConcentration ? "Loading concentrations..." : "Select a concentration"}
-                value = {concentration}
-                options={concentrationOptions}
-                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setConcentration(e.target.value)}
-                />
-        </FormField>} */}
+              />
+            </ Suspense>
+        </FormField>}
 
         {/* minor
         <FormField label = "MINOR(S)">
@@ -257,4 +271,9 @@ const generateDefaultPlanTitle = () => {
       </Modal>
     </>
   );
+
+  
+function MultiselectSkeleton() {
+  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-lg"></div>;
+}
 }

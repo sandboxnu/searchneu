@@ -1,6 +1,6 @@
 import { StaticImageData } from "next/image";
 
-interface CardProps {
+export interface CardProps {
     img: string;
     title: string;
     description: string;

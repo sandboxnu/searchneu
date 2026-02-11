@@ -1,9 +1,6 @@
 import { NextRequest } from "next/server";
 import { CreateAuditPlanDto } from "@/lib/graduate/api-dtos";
-import {
-  createAuditPlan,
-  verifyUser,
-} from "@/lib/controllers/auditPlans";
+import { createAuditPlan, verifyUser } from "@/lib/controllers/auditPlans";
 
 /**
  * Creates a new audit plan for the authenticated user
@@ -16,35 +13,45 @@ import {
  * @returns 400 if request body is invalid or plan creation fails
  */
 export async function POST(req: NextRequest) {
-  const user = await verifyUser();
+  try {
+    const user = await verifyUser();
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-    });
-  }
-  const body = await req.json();
-  const postReq = CreateAuditPlanDto.safeParse(body);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+      });
+    }
+    const body = await req.json();
+    const postReq = CreateAuditPlanDto.safeParse(body);
 
-  if (!postReq.success) {
+    if (!postReq.success) {
+      return new Response(
+        JSON.stringify({ error: "Invalid create audit plan request" }),
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const plan = await createAuditPlan(postReq.data, user.id);
+
+    if (!plan) {
+      return new Response(
+        JSON.stringify({ error: "Failed to create audit plan" }),
+        {
+          status: 400,
+        },
+      );
+    }
+
+    return Response.json(plan);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : JSON.stringify(error);
+
     return new Response(
-      JSON.stringify({ error: "Invalid create audit plan request" }),
-      {
-        status: 400,
-      },
+      JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+      { status: 400 },
     );
   }
-
-  const plan = await createAuditPlan(postReq.data, user.id);
-
-  if (!plan) {
-    return new Response(
-      JSON.stringify({ error: "Failed to create audit plan" }),
-      {
-        status: 400,
-      },
-    );
-  }
-
-  return Response.json(plan);
 }

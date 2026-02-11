@@ -1,0 +1,36 @@
+{
+    "faqs": [
+        {
+            "title": "What is SearchNEU?",
+            "description": "SearchNEU is a search engine built for easier navigation of class and professor information to help students with course registration. Users can search for and explore all class offerings within a semester, all faculty of the University, sections for each class, and other important information. Additionally, SearchNEU allows students to subscribe to notifications for a class with no remaining seats, to get notified when an opening appears in the class."
+        },
+        {
+            "title": "Is there a limit on the number of notifications I could subscribe to?",
+            "description": "Each user is limited to 12 subscriptions per semester. We recommend users unsubscribe from courses they no longer need to clear up space for different subscriptions."
+        },
+        {
+            "title": "How can I plan and track courses I have taken/want to take?",
+            "description": "Use GraduateNU! GraduateNU is a Sandbox project that helps students Navigate the Northeastern graduation requirements and create a personalized plan of study."
+        },
+        {
+            "title": "When will next semester's classes become available?",
+            "description": "SearchNEU is updated with the next semester's classes typically within 3 days of course information being released by Northeastern University."
+        },
+        {
+            "title": "How do I ask a question/report an issue?",
+            "description": "Please share your thoughts using the Search NEU Contact Form."
+        },
+        {
+            "title": "Where does SearchNEU get its data?",
+            "description":"All of our course data is public information we scrape from Northeastern, so you can access any info with a quick search on searchneu.com. For more information, refer to our developer documentation here: https://docs.searchneu.com/#/"
+        },
+        {
+            "title": "Who currently works on / maintains SearchNEU?",
+            "description": "SearchNEU is now developed and maintained by Sandbox. View our current team of developers and designers here: https://github.com/sandboxnu/searchneu?tab=readme-ov-file#contributors"
+        },
+        {
+            "title": "What's next for SearchNEU?",
+            "description":"We're always looking for ways to enhance the experience of using SearchNEU. Right now, we're exploring new features and potential integrations between SearchNEU and GraduateNU. We'd love to hear your ideas—share your suggestions with us through the SearchNEU Contact Form!"
+        }
+    ]
+}

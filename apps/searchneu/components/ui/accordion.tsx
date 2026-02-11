@@ -3,15 +3,14 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "lucide-react";
 
-import { cn } from "@/lib/cn";
-
-type AccordionType = {
+export interface AccordionType {
   title: string;
   description: string;
 }
-export default function FAQDropDown({title, description}: AccordionType) {
+
+export function FAQDropDown({title, description}: AccordionType) {
   return(
-	<div className="rounded-lg self-stretch flex flex-col items-start p-[24px] gap-[16px] bg-neu1">
+	<div className="rounded-lg self-stretch flex flex-col items-start p-[24px] mb-[16px] bg-neu1">
 		<Accordion.Root type="single" collapsible className="w-full">
 			<Accordion.Item value="item1">
 				<Accordion.Header>

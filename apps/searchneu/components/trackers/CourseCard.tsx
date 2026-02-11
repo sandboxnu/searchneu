@@ -1,6 +1,4 @@
-// components/trackers/CourseCard.tsx
 "use client";
-import React from "react";
 import SectionCard from "./SectionCard";
 
 interface Section {
@@ -40,7 +38,6 @@ export default function CourseCard({
 }: CourseCardProps) {
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4">
-      {/* Course Header */}
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-utility-gray text-2xl font-bold">{courseName}</h3>
@@ -51,7 +48,6 @@ export default function CourseCard({
         </button>
       </div>
 
-      {/* Sections Grid - Using flex with tighter spacing */}
       <div className="flex flex-wrap gap-5">
         {sections.map((section) => (
           <SectionCard

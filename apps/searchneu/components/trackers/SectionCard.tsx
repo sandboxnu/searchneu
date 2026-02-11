@@ -1,4 +1,3 @@
-// components/trackers/SectionCard.tsx
 "use client";
 import React from "react";
 
@@ -58,9 +57,7 @@ export default function SectionCard({
         />
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid w-full grid-cols-2 gap-x-6 gap-y-3">
-        {/* Left Column */}
         <div className="flex flex-col gap-3">
           <InfoSection label="MEETING TIMES">
             <MeetingTimes days={meetingTimes.days} time={meetingTimes.time} />
@@ -71,7 +68,6 @@ export default function SectionCard({
           </InfoSection>
         </div>
 
-        {/* Right Column */}
         <div className="flex flex-col gap-3">
           <InfoSection label="PROFESSOR">
             <span className="text-utility-gray text-base">{professor}</span>
@@ -82,7 +78,6 @@ export default function SectionCard({
           </InfoSection>
         </div>
 
-        {/* Seat Counters */}
         <SeatCounter
           label="ENROLLMENT SEATS"
           current={enrollmentSeats.current}
@@ -99,7 +94,6 @@ export default function SectionCard({
   );
 }
 
-// Reusable sub-components
 function NotificationBells({
   messagesSent,
   messageLimit,
@@ -112,7 +106,7 @@ function NotificationBells({
   const filledBells = messageLimit - messagesSent;
   const diamonds = messagesSent;
 
-  const bellColor = isSubscribed ? "#EF4444" : "rgba(239, 68, 68, 0.35)"; // muted red like Figma
+  const bellColor = isSubscribed ? "#EF4444" : "rgba(239, 68, 68, 0.35)";
 
   const diamondColor = isSubscribed
     ? "rgba(241, 91, 80, 0.25)"
@@ -120,14 +114,12 @@ function NotificationBells({
 
   return (
     <div className="flex items-center gap-1">
-      {/* Diamonds */}
       {Array.from({ length: diamonds }).map((_, i) => (
         <svg key={`diamond-${i}`} width="6" height="6" viewBox="0 0 6 6">
           <path d="M3 0L6 3L3 6L0 3L3 0Z" fill={diamondColor} />
         </svg>
       ))}
 
-      {/* Bells */}
       {Array.from({ length: filledBells }).map((_, i) => (
         <svg key={`filled-${i}`} width="12" height="12" viewBox="0 0 12 12">
           <path

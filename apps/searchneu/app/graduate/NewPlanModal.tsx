@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
-import { Button, FormField, Input, Modal, Checkbox, Select, ModalFooter } from "./Modal";
+import { Button, FormField, Input, Modal, Checkbox,  ModalFooter } from "./Modal";
 import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
 import { GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "@/lib/graduate/api-response-types";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function NewPlanModal() {
+  const catalogYearOptions = [
+    { label: '2021', value: '2021' },
+    { label: '2022', value: '2022' },
+    { label: '2023', value: '2023' },
+    { label: '2024', value: '2024' },
+  ];
+
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -140,7 +149,7 @@ useEffect(() => {
 }, [major, catalogYear, supportedMajorsData]);
 
 
-// Generate default plan title using formatted date and time
+// generate default plan title using formatted date and time
 const generateDefaultPlanTitle = () => {
     const now = new Date();
     return `Plan ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
@@ -155,7 +164,7 @@ const generateDefaultPlanTitle = () => {
       >
         {/*import from UAchieve*/}
         <div className="flex justify-center">
-          <button className="border-gray-500 rounded-4xl border-1 p-2 pl-5 pr-5">
+          <button className="border-gray-500 rounded-4xl border p-2 pl-5 pr-5">
           Import from UAchieve
         </button>
         </div>
@@ -171,30 +180,43 @@ const generateDefaultPlanTitle = () => {
         </FormField>
 
          {/*catalog year*/}
-        <FormField label = "CATALOG YEAR">
-            <Select 
-                placeholder="Select Catalog Year"
-                value = {catalogYear}
-                options={[
-                    { value: '2021', label: '2021' },
-                    { value: '2022', label: '2022' },
-                    { value: '2023', label: '2023' },
-                    { value: '2024', label: '2024' },
-                ]}
-                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setCatalogYear(e.target.value)}
-                />
-        </FormField>
+         <div className="">
+          <Label
+            htmlFor="catalog-year-select"
+            className="text-neu7 text-xs font-bold"
+          >
+            CATALOG YEAR
+          </Label>
+          <Select 
+            value={catalogYear} 
+            onValueChange={setCatalogYear}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select catalog year" />
+            </SelectTrigger>
+            <SelectContent>
+              {catalogYearOptions.map((t) => (
+                <SelectItem key={t.label} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+         
+
+
 
         
-      {/*major*/}
-        <FormField label = "Major(s)">
-            <Select 
-                placeholder = {isLoadingMajors ? "Loading majors ..." : "Select a major"}
-                value = {major}
-                options={majorOptions}
-                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMajor(e.target.value)}
-                />
-        </FormField>
+      {/* major
+      <Suspense fallback={<MultiselectSkeleton />}>
+          <SPMultiselectGroups
+            label="MAJOR(S)"
+            opts={Promise.resolve(majorOptions)}
+            spCode="mjrs"
+            placeholder = {isLoadingMajors ? "Loading majors ..." : "Select a major"}
+          />
+          </ Suspense> */}
 
       <Checkbox
         label = "Can't find my major?"
@@ -205,7 +227,7 @@ const generateDefaultPlanTitle = () => {
 
         {/*no major checkbox + tooltip*/}
 
-       {/*concentration*/}
+       {/* concentration
         {concentrationOptions.length > 0 &&
         <FormField label = "Concentration">
             <Select 
@@ -214,17 +236,17 @@ const generateDefaultPlanTitle = () => {
                 options={concentrationOptions}
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setConcentration(e.target.value)}
                 />
-        </FormField>}
+        </FormField>} */}
 
-        {/*minor*/}
-        <FormField label = "Minor(s)">
+        {/* minor
+        <FormField label = "MINOR(S)">
             <Select 
                 placeholder= { isLoadingMinors ? "Loading minors..." : "Select a minor"}
                 value = {minor}
                 options={minorOptions}
                 onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMinor(e.target.value)}
                 />
-        </FormField>
+        </FormField> */}
 
 
         <ModalFooter>

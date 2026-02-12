@@ -30,12 +30,12 @@ export const course = (
 // Converts a TestCourse to a AuditCourse
 export function convert(c: TestCourse): AuditCourse<unknown> {
   return {
-  ...c,
-  classId: String(c.classId),
-  name: courseToString(c),
-  numCreditsMax: c.credits,
-  numCreditsMin: c.credits,
-  id: null,
+    ...c,
+    classId: String(c.classId),
+    name: courseToString(c),
+    numCreditsMax: c.credits,
+    numCreditsMin: c.credits,
+    id: null,
   };
 }
 
@@ -50,8 +50,8 @@ export function or(...courses: Requirement[]): IOrCourse {
 // Creates an AND requirement
 export function and(...courses: Requirement[]): IAndCourse {
   return {
-  type: "AND",
-  courses,
+    type: "AND",
+    courses,
   };
 }
 
@@ -91,15 +91,15 @@ export function section(
   requirements: Requirement[],
 ): { type: "SECTION" } & Section {
   return {
-  title,
-  requirements,
-  minRequirementCount,
-  type: "SECTION",
+    title,
+    requirements,
+    minRequirementCount,
+    type: "SECTION",
   };
 }
 
 // creates a concentration object
-export function concentrations (
+export function concentrations(
   minOptions: number,
   ...concentrationOptions: Section[]
 ): Concentrations {
@@ -119,12 +119,12 @@ export function solution(...sol: (string | TestCourse)[]) {
     maxCredits: credits,
     sol: sol.map((s) => (typeof s === "string" ? s : courseToString(s))),
   };
-};
+}
 
 // makes a MajorValidationTracker with the test courses
 export function makeTracker(...courses: TestCourse[]) {
   return new MajorValidationTracker(courses.map(convert));
-};
+}
 
 // converts old major to Major
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

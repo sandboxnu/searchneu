@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import FeedbackModal from "@/components/feedback/FeedbackModal";
 import { VercelToolbar } from "@vercel/toolbar/next";
 import Script from "next/script";
+import { ClientLayout } from "@/components/ClientLayout";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -43,10 +42,7 @@ export default function RootLayout({
             strategy="beforeInteractive"
           />
         )}
-        <main className="min-h-[100dvh] w-screen grow">{children}</main>
-
-        <FeedbackModal />
-        <Toaster closeButton />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

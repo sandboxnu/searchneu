@@ -1,18 +1,13 @@
-// import {
-//   PlanModel,
-// } from "@graduate/common";
-import { 
-  CoReqWarnings, 
-  PreReqWarnings, 
-  ScheduleCourse2, 
-  ScheduleYear2, 
-  SeasonEnum 
-} from "@/app/graduate/common/src/types";
+
+
+import { PlanModel } from "@/lib/graduate/api-response-types";
+import { CoReqWarnings, PreReqWarnings, ScheduleCourse2, ScheduleYear2, SeasonEnum } from "@/lib/graduate/types";
 import { useState, createContext } from "react";
+import { ScheduleYear } from "./ScheduleYear";
 // import { addClassesToTerm, removeYearFromPlan } from "../../utils";
 // import { removeCourseFromTerm } from "../../utils";
 // import { ScheduleYear } from "./ScheduleYear";
-// import { useDroppable } from "@dnd-kit/core";
+ import { useDroppable } from "@dnd-kit/core";
 // import { AddYearButton } from "./AddYearButton";
 
 interface PlanProps {
@@ -122,13 +117,13 @@ export const Plan: React.FC<PlanProps> = ({
   return (
     <TotalYearsContext.Provider value={totalYears}>
       <PlanContext.Provider value={plan}>
-        <Flex direction="column" rowGap="sm">
-          <Flex flexDirection="column" rowGap="4xs" ref={setNodeRef}>
+        {/* <Flex direction="column" rowGap="sm">
+          <Flex flexDirection="column" rowGap="4xs" ref={setNodeRef}> */}
             {plan.schedule.years.map((scheduleYear) => {
               const isExpanded = expandedYears.has(scheduleYear.year);
 
               return (
-                <Flex key={scheduleYear.year} flexDirection="column">
+                // <Flex key={scheduleYear.year} flexDirection="column">
                   <ScheduleYear
                     catalogYear={plan.catalogYear}
                     yearCoReqError={coReqErr?.years.find(
@@ -150,19 +145,20 @@ export const Plan: React.FC<PlanProps> = ({
                     setIsRemove={setIsRemove}
                     isSharedPlan={isSharedPlan}
                   />
-                </Flex>
+                // </Flex>
               );
             })}
-          </Flex>
-          <Flex>
+          {/* </Flex>
+          <Flex> */}
             {!isSharedPlan && (
-              <AddYearButton
-                plan={plan}
-                mutateStudentWithUpdatedPlan={mutateStudentWithUpdatedPlan}
-              />
+              <div></div>
+              // <AddYearButton
+              //   plan={plan}
+              //   mutateStudentWithUpdatedPlan={mutateStudentWithUpdatedPlan}
+              // />
             )}
-          </Flex>
-        </Flex>
+          {/* </Flex>
+        </Flex> */}
       </PlanContext.Provider>
     </TotalYearsContext.Provider>
   );

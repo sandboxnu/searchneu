@@ -1,14 +1,6 @@
-
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  courseToString,
-  INEUReqError,
-  IRequiredCourse,
-  ScheduleCourse2,
-  ScheduleTerm2,
-  SeasonEnum,
-} from "@graduate/common";
+import { INEUReqError, IRequiredCourse, ScheduleCourse2, ScheduleTerm2, SeasonEnum } from "@/lib/graduate/types";
 import {
   forwardRef,
   PropsWithChildren,
@@ -16,17 +8,11 @@ import {
   useState,
   useContext,
 } from "react";
-import {
-  COOP_TITLE,
-  DELETE_COURSE_AREA_DND_ID,
-  FALL_1,
-  SEARCH_NEU_FETCH_COURSE_ERROR_MSG,
-  isCourseFromSidebar,
-} from "../../utils";
-import { ReqErrorModal } from "../Plan/ReqErrorModal";
+import { COOP_TITLE, DELETE_COURSE_AREA_DND_ID, FALL_1 } from "../utils/constants";
+import { isCourseFromSidebar } from "../utils/course/isCourseFromSidebar";
+import { courseToString } from "@/app/graduate/packages/src/course-utils";
 import { CourseDragIcon } from "./CourseDragIcon";
-import { CourseTrashButton } from "./CourseTrashButton";
-import { GraduateToolTip } from "../GraduateTooltip";
+import { DeleteIcon } from "lucide-react";
 import { TotalYearsContext } from "../Plan/Plan";
 import { COOP_BLOCK } from "../Sidebar/Sidebar";
 
@@ -79,7 +65,7 @@ export const DraggableScheduleCourse: React.FC<
     <ScheduleCourse
       coReqErr={coReqErr}
       preReqErr={preReqErr}
-      ref={setNodeRef}
+      //ref={setNodeRef}
       scheduleCourse={scheduleCourse}
       scheduleTerm={scheduleTerm}
       removeCourse={removeCourse}
@@ -138,37 +124,6 @@ export const NonDraggableScheduleCourse: React.FC<
       removeCourse={removeCourse}
       isDraggable={false}
     />
-  );
-};
-
-interface PlaceholderScheduleCourseProps {
-  course: IRequiredCourse;
-}
-
-export const PlaceholderScheduleCourse: React.FC<
-  PlaceholderScheduleCourseProps
-> = ({ course }) => {
-  return (
-    <GraduateToolTip label={SEARCH_NEU_FETCH_COURSE_ERROR_MSG}>
-      <div
-        style={{
-          backgroundColor: "white",
-          display: "flex",
-          borderRadius: "5px",
-          fontSize: "14px",
-          alignItems: "stretch",
-          marginBottom: "6px",
-          padding: "6px",
-          transition: "transform 0.15s ease",
-          justifyContent: "space-between",
-        }}
-      >
-        <p style={{ fontWeight: "bold" }}>
-          {course.subject}
-          <span style={{ marginLeft: "2px" }}>{course.classId}</span>
-        </p>
-      </div>
-    </GraduateToolTip>
   );
 };
 
@@ -277,42 +232,42 @@ const ScheduleCourse = forwardRef<HTMLElement | null, ScheduleCourseProps>(
           isDraggable={isDraggable}
           isSharedPlan={isSharedPlan}
         />
-        <Flex alignItems={"center"}>
-          {isCourseError && (
-            <ReqErrorModal
-              setHovered={setHovered}
-              course={scheduleCourse}
-              term={scheduleTerm}
-              coReqErr={coReqErr}
-              preReqErr={preReqErr}
-            />
+        <div >
+          {isCourseError && (<div></div>
+            // <ReqErrorModal
+            //   setHovered={setHovered}
+            //   course={scheduleCourse}
+            //   term={scheduleTerm}
+            //   coReqErr={coReqErr}
+            //   preReqErr={preReqErr}
+            // />
           )}
-          {isEditable && hovered && !isSharedPlan && (
-            <CourseTrashButton
-              onClick={
-                removeCourse ? () => removeCourse(scheduleCourse) : undefined
-              }
-            />
+          {isEditable && hovered && !isSharedPlan && (<div></div>
+            // <CourseTrashButton
+            //   onClick={
+            //     removeCourse ? () => removeCourse(scheduleCourse) : undefined
+            //   }
+            // />
           )}
-          {isInSidebar && isChecked && (
-            <Box
-              bg={"states.success.main"}
-              borderColor={"states.success.main"}
-              color={"white"}
-              borderWidth="1px"
-              width="18px"
-              height="18px"
-              display="flex"
-              transition="background 0.25s ease, color 0.25s ease, border 0.25s ease"
-              transitionDelay="0.1s"
-              alignItems="center"
-              justifyContent="center"
-              borderRadius="2xl"
-              margin="8px"
-              p="xs"
-            >
-              <CheckIcon position="absolute" boxSize="9px" />
-            </Box>
+          {isInSidebar && isChecked && (<div> </div>
+            // <Box
+            //   bg={"states.success.main"}
+            //   borderColor={"states.success.main"}
+            //   color={"white"}
+            //   borderWidth="1px"
+            //   width="18px"
+            //   height="18px"
+            //   display="flex"
+            //   transition="background 0.25s ease, color 0.25s ease, border 0.25s ease"
+            //   transitionDelay="0.1s"
+            //   alignItems="center"
+            //   justifyContent="center"
+            //   borderRadius="2xl"
+            //   margin="8px"
+            //   p="xs"
+            // >
+            //   <CheckIcon position="absolute" boxSize="9px" />
+            // </Box>
           )}
 
           {isEditable && !hovered && <ScheduleCourseSpacer />}
@@ -324,7 +279,7 @@ const ScheduleCourse = forwardRef<HTMLElement | null, ScheduleCourseProps>(
               <ScheduleCourseSpacer />
             </>
           )}
-        </Flex>
+        </div>
       </div>
     );
 

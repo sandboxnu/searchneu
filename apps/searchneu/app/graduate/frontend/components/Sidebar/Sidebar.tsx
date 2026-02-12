@@ -1,3 +1,5 @@
+import { NUPathEnum, ScheduleCourse2 } from "@/lib/graduate/types";
+import { SIDEBAR_DND_ID_PREFIX } from "../utils/constants";
 
 export const COOP_BLOCK: ScheduleCourse2<string> = {
   name: "Co-op Education",

@@ -17,5 +17,8 @@
   "packageManager": "pnpm@10.27.0",
   "engine": {
     "node": "24.x"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1"
   }
 }

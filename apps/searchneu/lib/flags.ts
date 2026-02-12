@@ -39,3 +39,11 @@ export const notificationsFlag = flag({
     return true;
   },
 });
+
+export const notificationTrackersFlag = flag({
+  key: "notification-trackers",
+  description: "Enable notification trackers feature",
+  decide() {
+    return false;
+  },
+});

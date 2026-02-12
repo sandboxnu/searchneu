@@ -1,6 +1,6 @@
 "use client";
 
-import CourseCard from "@/components/trackers/CourseCard";
+import CourseCard from "./CourseCard";
 
 export function NotificationsView() {
   const mockCourses = [
@@ -80,7 +80,7 @@ export function NotificationsView() {
           messageLimit: 3,
           isSubscribed: false,
           meetingTimes: {
-            days: ["W"],
+            days: ["W"], 
             time: "10:30 AM–1:25 PM",
           },
           professor: "Full Name Doe",
@@ -97,7 +97,7 @@ export function NotificationsView() {
       sections: [
         {
           crn: "10563",
-          messagesSent: 1,
+          messagesSent: 2,
           messageLimit: 3,
           isSubscribed: true,
           meetingTimes: {

@@ -105,7 +105,7 @@ type CheckboxProps = {
 }
 
 const Checkbox = ({ label, checked, onChange, helpText }: CheckboxProps) => (
-  <div className="flex items-center gap-2">
+  <div className="flex items-center gap-2 mt-2">
     <input
       type="checkbox"
       checked={checked}

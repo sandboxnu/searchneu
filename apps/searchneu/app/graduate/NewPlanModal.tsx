@@ -188,7 +188,7 @@ const generateDefaultPlanTitle = () => {
          <div className="mb-6">
           <Label
             htmlFor="catalog-year-select"
-            className="text-xs font-bold text-neu6"
+            className="text-neu6 text-xs font-bold"
           >
             CATALOG YEAR
           </Label>
@@ -211,17 +211,18 @@ const generateDefaultPlanTitle = () => {
          
 
          {/*major*/}
-          <div className="mb-8px">
+          <div className="mb-6">
             <Label className="text-neu6 text-xs font-bold">
               MAJOR(S)
             </Label>
             <MultiSelect 
               values={majors}
               onValuesChange={setMajors}
+              disabled={!catalogYear}
             >
-              <MultiSelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl shadow-none">
+              <MultiSelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl shadow-none disabled:bg-neu3 disabled:cursor-not-allowed">
                 <MultiSelectValue 
-                  placeholder={isLoadingMajors ? "Loading majors..." : "Select majors"}
+                  placeholder={isLoadingMajors ? "Loading majors..." : "Select a major"}
                 />
               </MultiSelectTrigger>
               <MultiSelectContent>
@@ -243,17 +244,33 @@ const generateDefaultPlanTitle = () => {
           </div>
 
           {/*concentration*/}
-        {concentrationOptions.length > 0 &&
-        <FormField label = "Concentration">
-          <Suspense fallback={<MultiselectSkeleton />}>
-              <SPMultiselectGroups
-                label="CONCENTRATION(S)"
-                opts={Promise.resolve(concentrationOptions.map((conc) => ({name : conc.label, group: null})))}
-                spCode="cntrs"
-                placeholder= { isLoadingConcentration ? "Loading concentrations..." : "Select a concentration"}
-              />
-            </ Suspense>
-        </FormField>}
+          <div className="mb-6">
+            <Label
+              htmlFor="catalog-year-select"
+              className="text-neu6 text-xs font-bold"
+            >
+              CONCENTRATION
+            </Label>
+            {concentrationOptions.length > 0 &&
+              <Select 
+              value={concentration} 
+              onValueChange={setConcentration}
+            >
+              <SelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl">
+                <SelectValue placeholder="Select a Concentration" />
+              </SelectTrigger>
+              <SelectContent>
+                {concentrationOptions.map((t) => (
+                  <SelectItem key={t.label} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          }
+          </div>
+
+          
 
         {/* minor
         <FormField label = "MINOR(S)">

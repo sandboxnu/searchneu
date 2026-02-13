@@ -1,9 +1,7 @@
-'use client';
 
-import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { X } from 'lucide-react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, } from 'react';
 
 type ModalProps = {
   isOpen: boolean;

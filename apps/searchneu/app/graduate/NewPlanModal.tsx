@@ -5,7 +5,6 @@ import { GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "@/lib/gr
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SPMultiselectGroups } from "@/components/catalog/search/SPMultiselectGroups";
-import { Marko_One } from "next/font/google";
 import { MultiSelect, MultiSelectContent, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "@/components/ui/multi-select";
 
 export default function NewPlanModal() {

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/lib/auth/client";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import FeedbackModal from "@/components/feedback/FeedbackModal";
@@ -44,12 +43,10 @@ export default function RootLayout({
             strategy="beforeInteractive"
           />
         )}
-        <AuthProvider>
-          <main className="min-h-[100dvh] w-screen grow">{children}</main>
+        <main className="min-h-[100dvh] w-screen grow">{children}</main>
 
-          <FeedbackModal />
-          <Toaster closeButton />
-        </AuthProvider>
+        <FeedbackModal />
+        <Toaster closeButton />
       </body>
     </html>
   );

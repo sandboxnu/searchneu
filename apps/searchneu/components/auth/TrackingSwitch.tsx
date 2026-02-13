@@ -7,7 +7,6 @@ import {
 import { Switch } from "../ui/switch";
 import { TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
-import { useAuth } from "@/lib/auth/client";
 import { TooltipContent, Tooltip, TooltipTrigger } from "../ui/tooltip";
 import {
   Dialog,
@@ -24,6 +23,7 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
+import { authClient } from "@/lib/auth-client";
 
 export function TrackingSwitch({
   sectionId,
@@ -36,7 +36,7 @@ export function TrackingSwitch({
   inital: boolean;
   isTermActive: boolean;
 } & React.ComponentProps<typeof Switch>) {
-  const { user, isPending: loading } = useAuth();
+  const { data: session, isPending: loading } = authClient.useSession();
   const [checked, setChecked] = useState(inital);
   const [oneMoreStep, setOneMoreStep] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -115,7 +115,7 @@ export function TrackingSwitch({
     );
   }
 
-  if (!user.guid) {
+  if (!session) {
     return (
       <div className="flex w-full justify-center">
         <Tooltip delayDuration={0}>

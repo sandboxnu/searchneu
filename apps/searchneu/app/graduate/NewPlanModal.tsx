@@ -29,7 +29,7 @@ export default function NewPlanModal() {
   const [supportedMinorsData, setSupportedMinorsData] = useState<GetSupportedMinorsResponse | null>(null);
   const [minorOptions, setMinorOptions] = useState<{ value: string; label: string }[]>([]);
   const [isLoadingMinors, setIsLoadingMinors] = useState(false);  
-  const [minor, setMinor] = useState('');
+  const [minors, setMinors] = useState<string[]>([]);
 
   //concentrations
   const [concentration, setConcentration] = useState('');
@@ -103,7 +103,7 @@ useEffect(() => {
 useEffect(() => {
   if (!catalogYear || !supportedMinorsData) {
     setMinorOptions([]);
-    setMinor(''); 
+    setMinors([]); 
     return;
   }
   
@@ -122,7 +122,7 @@ useEffect(() => {
     setMinorOptions([]);
   }
   
-  setMinor('');
+  setMinors([]);
 }, [catalogYear, supportedMinorsData]);
 
 //change concentrations based on major
@@ -244,14 +244,15 @@ const generateDefaultPlanTitle = () => {
           </div>
 
           {/*concentration*/}
+          {concentrationOptions.length > 0 &&
           <div className="mb-6">
+             
             <Label
               htmlFor="catalog-year-select"
               className="text-neu6 text-xs font-bold"
             >
               CONCENTRATION
             </Label>
-            {concentrationOptions.length > 0 &&
               <Select 
               value={concentration} 
               onValueChange={setConcentration}
@@ -267,21 +268,33 @@ const generateDefaultPlanTitle = () => {
                 ))}
               </SelectContent>
             </Select>
-          }
           </div>
+          }
 
-          
-
-        {/* minor
-        <FormField label = "MINOR(S)">
-            <Select 
-                placeholder= { isLoadingMinors ? "Loading minors..." : "Select a minor"}
-                value = {minor}
-                options={minorOptions}
-                onChange = {(e: React.ChangeEvent<HTMLSelectElement>) => setMinor(e.target.value)}
+          {/*minor*/}
+          <div className="mb-6">
+            <Label className="text-neu6 text-xs font-bold">
+              MINOR(S)
+            </Label>
+            <MultiSelect 
+              values={minors}
+              onValuesChange={setMinors}
+              disabled={!catalogYear}
+            >
+              <MultiSelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl shadow-none disabled:bg-neu3 disabled:cursor-not-allowed">
+                <MultiSelectValue 
+                  placeholder={isLoadingMinors ? "Loading minors..." : "Select a minor"}
                 />
-        </FormField> */}
-
+              </MultiSelectTrigger>
+              <MultiSelectContent>
+                {minorOptions.map((minor) => (
+                  <MultiSelectItem key={minor.value} value={minor.value}>
+                    {minor.label}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelectContent>
+            </MultiSelect>
+          </div>
 
         <ModalFooter>
             <Button variant="secondary"> Cancel </Button>
@@ -291,9 +304,4 @@ const generateDefaultPlanTitle = () => {
       </Modal>
     </>
   );
-
-  
-function MultiselectSkeleton() {
-  return <div className="bg-neu3 h-9 w-full animate-pulse rounded-lg"></div>;
-}
 }

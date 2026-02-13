@@ -2,15 +2,16 @@ import {
   CreateAuditPlanInput,
   UpdateAuditPlanInput,
 } from "../graduate/api-dtos";
-import { db, usersT, auditPlansT } from "@/lib/db";
+import { db, user as usersT, auditPlansT } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
-import { getGuid } from "@/lib/auth/utils";
 import {
   getByMajorAndYear,
   getByMinorAndYear,
   isMajorInYear,
   isValidConcentrationForMajor,
 } from "./majors";
+import {auth} from "@/lib/auth";
+import {headers} from "next/headers";
 
 /**
  * Verifies the current user from their JWT token and returns their user data.
@@ -18,18 +19,21 @@ import {
  * @returns the authenticated user object with their ID, or null if not authenticated
  */
 export async function verifyUser() {
-  const guid = await getGuid();
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
 
-  if (!guid) {
-    return null;
-  }
+    if (!session) {
+        return null;
+    }
+
 
   const users = await db
     .select({
       id: usersT.id,
     })
     .from(usersT)
-    .where(eq(usersT.guid, guid));
+    .where(eq(usersT.id, session.user.id));
 
   if (users.length === 0) {
     return null;
@@ -52,7 +56,7 @@ export async function verifyUser() {
  *
  * @returns the audit plan if found and belongs to the user, null otherwise
  */
-export async function getAuditPlan(id: number, userId: number) {
+export async function getAuditPlan(id: number, userId: string) {
   const auditPlan = await db.query.auditPlansT.findFirst({
     where: and(eq(auditPlansT.id, id), eq(auditPlansT.userId, userId)),
   });
@@ -70,7 +74,7 @@ export async function getAuditPlan(id: number, userId: number) {
  */
 export async function createAuditPlan(
   createAuditPlanInput: CreateAuditPlanInput,
-  userId: number,
+  userId: string,
 ) {
   const { name, schedule, major, minor, concentration, catalogYear } =
     createAuditPlanInput;
@@ -158,7 +162,7 @@ export async function createAuditPlan(
 export async function updateAuditPlan(
   updateAuditPlanInput: UpdateAuditPlanInput,
   id: number,
-  userId: number,
+  userId: string,
 ) {
   const {
     major: newMajorName,
@@ -331,7 +335,7 @@ export async function updateAuditPlan(
  *
  * @returns the deleted audit plan object, or null if deletion failed
  */
-export async function deleteAuditPlan(id: number, userId: number) {
+export async function deleteAuditPlan(id: number, userId: string) {
   const deleteResult = await db
     .delete(auditPlansT)
     .where(and(eq(auditPlansT.id, id), eq(auditPlansT.userId, userId)))

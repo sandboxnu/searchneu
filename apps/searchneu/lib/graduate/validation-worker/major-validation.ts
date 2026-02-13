@@ -70,12 +70,12 @@ type CourseError = {
   requiredCourse: string;
 };
 
-export function CourseError(c: IRequiredCourse): CourseError{
+export function CourseError(c: IRequiredCourse): CourseError {
   return {
     type: MajorValidationErrorType.Course,
     requiredCourse: courseToString(c),
   };
-};
+}
 
 type AndError = {
   type: typeof MajorValidationErrorType.And.Type;

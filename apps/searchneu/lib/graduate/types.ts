@@ -138,8 +138,10 @@ export interface ParsedCourse {
   classId: string;
 }
 
-
-export type INEUReqError = | INEUReqCourseError | INEUReqAndError | INEUReqOrError;
+export type INEUReqError =
+  | INEUReqCourseError
+  | INEUReqAndError
+  | INEUReqOrError;
 
 export enum ReqErrorType {
   COURSE = "course",

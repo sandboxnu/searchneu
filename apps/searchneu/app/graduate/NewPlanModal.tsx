@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SPMultiselectGroups } from "@/components/catalog/search/SPMultiselectGroups";
 import { MultiSelect, MultiSelectContent, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "@/components/ui/multi-select";
+import { FileUp } from "lucide-react";
 
 export default function NewPlanModal() {
   const catalogYearOptions = [
@@ -165,10 +166,11 @@ const generateDefaultPlanTitle = () => {
         title="New Plan"
       >
         {/*import from UAchieve*/}
-        <div className="flex justify-center">
-          <button className="border-gray-500 rounded-4xl border p-2 pl-5 pr-5">
-          Import from UAchieve
-        </button>
+        <div className="flex justify-center mb-6">
+            <button className="flex items-center gap-2 border-r1 bg-r1/30 rounded-4xl border text-[#E63946] font-bold p-2 pl-5 pr-5">
+                Import from UAchieve
+                <FileUp />
+            </button>
         </div>
         
 
@@ -246,7 +248,6 @@ const generateDefaultPlanTitle = () => {
           {/*concentration*/}
           {concentrationOptions.length > 0 &&
           <div className="mb-6">
-             
             <Label
               htmlFor="catalog-year-select"
               className="text-neu6 text-xs font-bold"

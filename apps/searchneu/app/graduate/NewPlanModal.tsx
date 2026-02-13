@@ -135,7 +135,8 @@ useEffect(() => {
     return;
   }
   
-  {/*TODO: which major should concentrations come from?*/}
+
+  {/*NOTE: for now, concentrations are chosen from the first major that is selected */}
   const majorData = supportedMajorsData.supportedMajors[catalogYear]?.[majors[0]];
   
   if (majorData?.concentrations && majorData.concentrations.length > 0) {

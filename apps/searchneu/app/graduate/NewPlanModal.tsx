@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SPMultiselectGroups } from "@/components/catalog/search/SPMultiselectGroups";
 import { MultiSelect, MultiSelectContent, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "@/components/ui/multi-select";
 import { FileUp } from "lucide-react";
+import { MessagingGeopermissionsInstance } from "twilio/lib/rest/accounts/v1/messagingGeopermissions";
 
 export default function NewPlanModal() {
   const catalogYearOptions = [
@@ -19,6 +20,7 @@ export default function NewPlanModal() {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState('');
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
+  const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState('');
 
   //majors 
@@ -158,6 +160,43 @@ const generateDefaultPlanTitle = () => {
     const now = new Date();
     return `Plan ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
   };
+
+  //plan DTO
+  interface CreatePlanDto {
+  title: string; 
+  majors: string[]; 
+  minors?: string[];
+  catalogYear: number;
+  concentration?: string;
+}
+
+//create plan
+const handleCreatePlan = () => {
+  //validation 
+  if (!catalogYear) {
+    console.error('Catalog year is required');
+    return;
+  }
+
+  if (!isNoMajorSelected && (!majors || majors.length === 0 || majors.every(m => !m))) {
+    console.error('At least one major is required');
+    return;
+  }
+
+
+  // creation of plan object 
+  const newPlan: CreatePlanDto = {
+    title: message || generateDefaultPlanTitle(),
+    catalogYear: parseInt(catalogYear),
+    majors: isNoMajorSelected ? [] : majors, 
+    minors: isNoMinorSelected ? [] : minors, 
+    concentration: concentration || undefined,
+  };
+
+  console.log('Creating plan:', newPlan);
+  //TODO: add bryan's api call 
+  handleClose();
+};
 
   return (
     <>
@@ -299,8 +338,18 @@ const generateDefaultPlanTitle = () => {
           </div>
 
         <ModalFooter>
-            <Button variant="secondary"> Cancel </Button>
-            <Button variant="primary" onClick={handleClose}> Create Plan </Button>
+            <Button 
+              variant="secondary"
+              onClick={handleClose}> 
+                Cancel 
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={handleCreatePlan}
+                isDisabled={!catalogYear || (!isNoMajorSelected && (!majors || majors.length === 0 || majors.every(m => !m)))}
+              > 
+                Create Plan 
+              </Button>
         </ModalFooter>        
         
       </Modal>

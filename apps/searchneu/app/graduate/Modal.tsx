@@ -52,8 +52,8 @@ type FormFieldProps = {
 };
 
 const FormField = ({ label, children, required }: FormFieldProps) => (
-  <div className="mb-4 mt-4">
-    <label className="block text-xs font-bold text-neu6 mb-1">
+  <div className="">
+    <label className="block text-xs font-bold text-neu6">
       {label}
     </label>
     {children}
@@ -71,7 +71,7 @@ const Input = ({ placeholder, value, onChange, }: InputProps) => (
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full px-4 py-3 border border-neu2 rounded-4xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none text-sm text-gray-500"
+          className="w-full px-4 py-3 border border-neu2 focus:outline-none rounded-4xl bg-white appearance-none text-sm text-neu6"
         />
 );
 

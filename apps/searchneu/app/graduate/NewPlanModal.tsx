@@ -173,16 +173,19 @@ const generateDefaultPlanTitle = () => {
         
 
         {/*title*/}
-        <FormField label="TITLE">
+        <div className="mb-6">
+          <FormField label="TITLE">
           <Input
             placeholder= {generateDefaultPlanTitle()}
             value={message}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
           />
         </FormField>
+        </div>
+        
 
          {/*catalog year*/}
-         <div className="">
+         <div className="mb-6">
           <Label
             htmlFor="catalog-year-select"
             className="text-xs font-bold text-neu6"
@@ -193,10 +196,10 @@ const generateDefaultPlanTitle = () => {
             value={catalogYear} 
             onValueChange={setCatalogYear}
           >
-            <SelectTrigger className="w-full bg-transparent">
+            <SelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl">
               <SelectValue placeholder="Select catalog year" />
             </SelectTrigger>
-            <SelectContent className="border-neu6">
+            <SelectContent>
               {catalogYearOptions.map((t) => (
                 <SelectItem key={t.label} value={t.value}>
                   {t.label}
@@ -208,15 +211,15 @@ const generateDefaultPlanTitle = () => {
          
 
          {/*major*/}
-          <div className="">
-            <Label className="text-neu7 text-xs font-bold">
+          <div className="mb-8px">
+            <Label className="text-neu6 text-xs font-bold">
               MAJOR(S)
             </Label>
             <MultiSelect 
               values={majors}
               onValuesChange={setMajors}
             >
-              <MultiSelectTrigger className="w-full">
+              <MultiSelectTrigger className="w-full bg-transparent border border-neu2 rounded-4xl shadow-none">
                 <MultiSelectValue 
                   placeholder={isLoadingMajors ? "Loading majors..." : "Select majors"}
                 />
@@ -239,6 +242,7 @@ const generateDefaultPlanTitle = () => {
             />
           </div>
 
+          {/*concentration*/}
         {concentrationOptions.length > 0 &&
         <FormField label = "Concentration">
           <Suspense fallback={<MultiselectSkeleton />}>

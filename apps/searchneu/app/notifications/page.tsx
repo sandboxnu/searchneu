@@ -28,7 +28,6 @@ export default async function Page() {
 
   const sections = await getSectionInfo(trackedSections);
   console.log("SECTION", sections);
-  console.log("SECTION FIRST", sections);
 
   return (
     <div className="bg-secondary h-full min-h-0 w-full overflow-hidden px-4 xl:px-6">

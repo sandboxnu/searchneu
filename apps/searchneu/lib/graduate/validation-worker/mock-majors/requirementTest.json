@@ -1,0 +1,162 @@
+{
+  "name": "Requirement Types",
+  "yearVersion": 2024,
+  "isLanguageRequired": false,
+  "totalCreditsRequired": 0,
+  "concentrations": {
+    "minOptions": 0,
+    "maxOptions": 0,
+    "concentrationOptions": []
+  },
+  "nupaths": [],
+  "requirementGroups": [
+    "IRequiredCourse",
+    "IAndCourse",
+    "IOrCourse",
+    "ICourseRange",
+    "IXofManyCourse",
+    "Section"
+  ],
+  "requirementGroupMap": {
+    "IRequiredCourse": {
+      "type": "AND",
+      "name": "IRequiredCourse",
+      "requirements": [
+        {
+          "type": "COURSE",
+          "classId": 1800,
+          "subject": "CS"
+        }
+      ]
+    },
+    "IAndCourse": {
+      "type": "AND",
+      "name": "IAndCourse",
+      "requirements": [
+        {
+          "type": "AND",
+          "courses": [
+            {
+              "type": "COURSE",
+              "classId": 1200,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 1210,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 1800,
+              "subject": "CS"
+            }
+          ]
+        }
+      ]
+    },
+    "IOrCourse": {
+      "type": "AND",
+      "name": "IOrCourse",
+      "requirements": [
+        {
+          "type": "OR",
+          "courses": [
+            {
+              "type": "COURSE",
+              "classId": 2500,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 2501,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 2510,
+              "subject": "CS"
+            }
+          ]
+        }
+      ]
+    },
+    "ICourseRange": {
+      "type": "RANGE",
+      "name": "ICourseRange",
+      "numCreditsMin": 8,
+      "numCreditsMax": 8,
+      "requirements": {
+        "type": "RANGE",
+        "creditsRequired": 8,
+        "ranges": [
+          {
+            "subject": "CS",
+            "idRangeStart": 3000,
+            "idRangeEnd": 4999
+          }
+        ]
+      }
+    },
+    "IXofManyCourse": {
+      "type": "OR",
+      "name": "IXofManyCourse",
+      "numCreditsMin": 8,
+      "numCreditsMax": 8,
+      "requirements": [
+        {
+          "type": "OR",
+          "courses": [
+            {
+              "type": "COURSE",
+              "classId": 3500,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 3650,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 3700,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 3800,
+              "subject": "CS"
+            },
+            {
+              "type": "COURSE",
+              "classId": 4400,
+              "subject": "CS"
+            }
+          ]
+        }
+      ]
+    },
+    "Section": {
+      "type": "AND",
+      "name": "Section",
+      "requirements": [
+        {
+          "type": "AND",
+          "name": "Subsection",
+          "requirements": [
+            {
+              "type": "COURSE",
+              "classId": 1341,
+              "subject": "MATH"
+            },
+            {
+              "type": "COURSE",
+              "classId": 1342,
+              "subject": "MATH"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

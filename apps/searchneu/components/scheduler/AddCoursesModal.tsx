@@ -19,7 +19,6 @@ const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
 interface SelectedCourseGroup {
   parent: Course;
   coreqs: Course[];
-  isLocked: boolean;
 }
 
 export default function AddCoursesModal(props: {
@@ -169,18 +168,38 @@ export default function AddCoursesModal(props: {
     clear();
   };
 
-  const handleToggleLock = (parent: Course) => {
-    setSelectedCourseGroups((prev) =>
-      prev.map((group) => {
-        if (
-          group.parent.subject === parent.subject &&
-          group.parent.courseNumber === parent.courseNumber
-        ) {
-          return { ...group, isLocked: !group.isLocked };
-        }
-        return group;
-      }),
+  const getSelectionTextWithCoreqs = () => {
+    const numParentCourses = selectedCourseGroups.length;
+
+    if (numParentCourses === 0) {
+      return "No courses added.";
+    }
+
+    const numSelectedCoreqs = selectedCourseGroups.reduce(
+      (acc, group) => acc + (group.coreqs?.length || 0),
+      0,
     );
+
+    const numTotalPossibleCoreqs = selectedCourseGroups.reduce((acc, group) => {
+      const possible = group.parent.coreqs
+        ? extractCoreqCourses(group.parent.coreqs).length
+        : 0;
+      return acc + possible;
+    }, 0);
+
+    const numAbsentCoreqs = numTotalPossibleCoreqs - numSelectedCoreqs;
+    const parentText = `${numParentCourses} course${numParentCourses !== 1 ? "s" : ""} added`;
+    const coreqText =
+      numSelectedCoreqs > 0
+        ? `, ${numSelectedCoreqs} corequisite${numSelectedCoreqs !== 1 ? "s" : ""} added`
+        : "";
+
+    const absentText =
+      numAbsentCoreqs > 0
+        ? `, ${numAbsentCoreqs} unadded corequisite${numAbsentCoreqs !== 1 ? "s" : ""}`
+        : "";
+
+    return `${parentText}${coreqText}${absentText}.`;
   };
 
   return (
@@ -233,14 +252,13 @@ export default function AddCoursesModal(props: {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
-
-            {searchQuery && (
+            {
               <ModalSearchResults
                 searchQuery={searchQuery}
                 term={hardcodedTerm}
                 onSelectCourse={handleSelectCourse}
               />
-            )}
+            }
           </div>
           {/* selected course and generate button */}
           <div className="flex h-full min-h-0 w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
@@ -249,7 +267,7 @@ export default function AddCoursesModal(props: {
               {/* number of selections label */}
               <div className="flex items-center justify-start p-2">
                 <span className="text-neu5 text-xs">
-                  {`${selectedCourseGroups.length} courses added, `}
+                  {getSelectionTextWithCoreqs()}
                 </span>
               </div>
               <div className="flex min-h-0 flex-1 flex-col gap-y-1 overflow-y-auto">
@@ -261,8 +279,6 @@ export default function AddCoursesModal(props: {
                     onDeleteCourse={(course, isCoreq) =>
                       handleDelete(course, isCoreq)
                     }
-                    onToggleLock={() => handleToggleLock(group.parent)}
-                    isLocked={group.isLocked}
                   />
                 ))}
               </div>

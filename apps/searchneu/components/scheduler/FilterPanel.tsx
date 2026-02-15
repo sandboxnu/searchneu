@@ -37,6 +37,7 @@ interface FilterPanelProps {
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
+    numCourses?: number,
   ) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];

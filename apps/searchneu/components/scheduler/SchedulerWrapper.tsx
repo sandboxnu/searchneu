@@ -32,6 +32,7 @@ export function SchedulerWrapper({
   const handleGenerateSchedules = async (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
+    numCourses?: number,
   ) => {
     startTransition(() => {
       // Navigate to the same page with course IDs in the URL
@@ -42,6 +43,9 @@ export function SchedulerWrapper({
       }
       if (optionalCourseIds.length > 0) {
         params.set("optionalCourseIds", optionalCourseIds.join(","));
+      }
+      if (numCourses !== undefined) {
+        params.set("numCourses", numCourses.toString());
       }
       router.push(`/scheduler?${params.toString()}`);
     });

@@ -28,6 +28,7 @@ export default function AddCoursesModal(props: {
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
+    numCourses?: number,
   ) => void;
 }) {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -35,6 +36,10 @@ export default function AddCoursesModal(props: {
     SelectedCourseGroup[]
   >([]);
   const [numCourses, setNumCourses] = useState<number>(1);
+  // TODO:
+  // 1. read url params for locked and unlocked courses when editing an existing plan
+  // 2. populate modal selected courses if editing an existing plan
+  // 3. lookup course data based on url params to obtain course objects
 
   const terms = use(props.terms);
   const hardcodedTerm = terms.neu[0]?.term ?? "";
@@ -132,7 +137,7 @@ export default function AddCoursesModal(props: {
   ) => {
     if (!req || typeof req !== "object") return acc;
 
-    // empty object {}
+    // empty object
     if (Object.keys(req).length === 0) return acc;
 
     // single course
@@ -149,18 +154,13 @@ export default function AddCoursesModal(props: {
   };
 
   const handleGeneratation = () => {
-    // parse locked course IDs by checking which courses are locked
-    const lockedCourseIds = selectedCourseGroups
-      .filter((group) => group.isLocked)
-      .map((group) => parseInt(group.parent.courseNumber));
-
     // parse optional course IDs
-    const optionalCourseIds = selectedCourseGroups
-      .filter((group) => !group.isLocked)
-      .map((group) => parseInt(group.parent.courseNumber));
+    const optionalCourseIds = selectedCourseGroups.map((group) =>
+      parseInt(group.parent.courseNumber),
+    );
 
-    if (lockedCourseIds.length > 0) {
-      props.onGenerateSchedules(lockedCourseIds, optionalCourseIds);
+    if (optionalCourseIds.length > 0) {
+      props.onGenerateSchedules([], optionalCourseIds, numCourses);
     }
 
     // close modal and clear state
@@ -210,7 +210,7 @@ export default function AddCoursesModal(props: {
         clear();
       }}
     >
-      <DialogContent className="flex h-[700px] flex-col items-start justify-start overflow-hidden px-6 py-9 sm:max-w-[925px]">
+      <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px]">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
@@ -231,7 +231,7 @@ export default function AddCoursesModal(props: {
                 <button
                   key={num}
                   onClick={() => setNumCourses(num)}
-                  className={`flex h-5.5 w-10.5 items-center justify-center rounded-[46px] px-2 py-1 text-xs font-semibold transition-colors ${
+                  className={`flex h-5.5 w-10.5 cursor-pointer items-center justify-center rounded-[46px] px-2 py-1 text-xs font-semibold transition-colors ${
                     numCourses === num
                       ? "bg-red-500 text-white"
                       : "text-foreground hover:bg-muted"
@@ -284,7 +284,13 @@ export default function AddCoursesModal(props: {
               </div>
             </div>
 
-            <Button onClick={handleGeneratation}>Generate Schedules</Button>
+            <Button
+              disabled={selectedCourseGroups.length < numCourses}
+              onClick={handleGeneratation}
+              className="cursor-pointer"
+            >
+              Generate Schedules
+            </Button>
           </div>
         </div>
       </DialogContent>

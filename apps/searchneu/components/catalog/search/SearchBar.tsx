@@ -23,7 +23,9 @@ export function SearchBar() {
         window.history.replaceState(
           null,
           "",
-          params.toString() ? `${pathname}?${params.toString()}` : `${pathname}`,
+          params.toString()
+            ? `${pathname}?${params.toString()}`
+            : `${pathname}`,
         );
         return;
       }

@@ -23,7 +23,7 @@ export function SearchBar() {
         window.history.replaceState(
           null,
           "",
-          `${pathname}?${params.toString()}`,
+          params.toString() ? `${pathname}?${params.toString()}` : `${pathname}`,
         );
         return;
       }
@@ -66,7 +66,7 @@ export function SearchBar() {
 
   function handleSubmit() {
     const params = new URLSearchParams(searchParams);
-    setQuery(inputValue);
+    setQuery(inputValue.trim());
     if (!query.trim()) {
       params.delete("q");
       window.history.pushState(null, "", `${pathname}?${params.toString()}`);
@@ -99,8 +99,11 @@ export function SearchBar() {
         ref={searchInputRef}
         className="bg-neu1 focus:border-neu3 hidden border pl-10 md:block"
         placeholder="Search by course or phrase..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          setQuery(e.target.value);
+        }}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
       />
       <span className="bg-neu2 text-neu7 absolute top-2 right-2 bottom-2 hidden items-center rounded-full px-3 text-xs font-medium md:flex">

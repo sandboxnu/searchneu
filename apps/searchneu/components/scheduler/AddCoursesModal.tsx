@@ -10,17 +10,45 @@ import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
 import { useState, use } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
-import { Course } from "@sneu/scraper/types";
 import SelectedCourseGroup from "./SelectedCourseGroup";
+import { Course } from "@sneu/scraper/types";
 import { getCourse } from "@/lib/controllers/getCourse";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
 
-interface SelectedCourseGroup {
+interface SelectedCourseGroupData {
   parent: Course;
   coreqs: Course[];
 }
+
+const isCourseCoreq = (req: { subject: string; courseNumber: string }) => {
+  return (
+    req && typeof req === "object" && "subject" in req && "courseNumber" in req
+  );
+};
+
+const extractCoreqCourses = (
+  req: any,
+  acc: { subject: string; courseNumber: string }[] = [],
+) => {
+  if (!req || typeof req !== "object") return acc;
+
+  // empty object
+  if (Object.keys(req).length === 0) return acc;
+
+  // single course
+  if (isCourseCoreq(req)) {
+    acc.push(req);
+    return acc;
+  }
+
+  if ("type" in req && Array.isArray(req.items)) {
+    req.items.forEach((item: any) => extractCoreqCourses(item, acc));
+  }
+
+  return acc;
+};
 
 export default function AddCoursesModal(props: {
   open: boolean;
@@ -34,13 +62,9 @@ export default function AddCoursesModal(props: {
 }) {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
-    SelectedCourseGroup[]
+    SelectedCourseGroupData[]
   >([]);
   const [numCourses, setNumCourses] = useState<number>(1);
-  // TODO:
-  // 1. read url params for locked and unlocked courses when editing an existing plan
-  // 2. populate modal selected courses if editing an existing plan
-  // 3. lookup course data based on url params to obtain course objects
 
   const terms = use(props.terms);
   const hardcodedTerm = terms.neu[0]?.term ?? "";
@@ -143,37 +167,6 @@ export default function AddCoursesModal(props: {
     }
   };
 
-  const isCourseCoreq = (req: { subject: string; courseNumber: string }) => {
-    return (
-      req &&
-      typeof req === "object" &&
-      "subject" in req &&
-      "courseNumber" in req
-    );
-  };
-
-  const extractCoreqCourses = (
-    req: any,
-    acc: { subject: string; courseNumber: string }[] = [],
-  ) => {
-    if (!req || typeof req !== "object") return acc;
-
-    // empty object
-    if (Object.keys(req).length === 0) return acc;
-
-    // single course
-    if (isCourseCoreq(req)) {
-      acc.push(req);
-      return acc;
-    }
-
-    if ("type" in req && Array.isArray(req.items)) {
-      req.items.forEach((item: any) => extractCoreqCourses(item, acc));
-    }
-
-    return acc;
-  };
-
   const handleGeneratation = () => {
     const optionalCourseIds = selectedCourseGroups.flatMap((group) => [
       group.parent.id,
@@ -185,7 +178,6 @@ export default function AddCoursesModal(props: {
     }
 
     props.closeFn();
-    clear();
   };
 
   const hasEnoughCourses = () => {
@@ -233,9 +225,10 @@ export default function AddCoursesModal(props: {
   return (
     <Dialog
       open={props.open}
-      onOpenChange={() => {
-        props.closeFn();
-        clear();
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          props.closeFn();
+        }
       }}
     >
       <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px]">

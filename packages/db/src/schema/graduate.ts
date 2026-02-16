@@ -18,8 +18,8 @@ export const auditPlansT = pgTable(
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
     schedule: json(),
-    major: text(),
-    minor: text(),
+    majors: text().array(),
+    minors: text().array(),
     concentration: text(),
     catalogYear: smallint(),
     createdAt: timestamp().notNull().defaultNow(),

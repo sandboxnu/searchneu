@@ -12,16 +12,21 @@ const UNDECIDED_STRING = "Undecided";
  * @returns the major object if found, null otherwise
  */
 export async function getByMajorAndYear(
-  majorName: string,
+  majorNames: string[],
   catalogYear: number,
 ): Promise<Major | null> {
-  const major = await GraduateAPI.majors.get(catalogYear, majorName);
+  try {
+    const majors = await Promise.all(
+      majorNames.map((majorName) =>
+        GraduateAPI.majors.get(catalogYear, majorName),
+      ),
+    );
 
-  if (!major) {
+    return majors[0];
+  } catch (error) {
+    console.error("error getting by major and year", error);
     return null;
   }
-
-  return major;
 }
 
 /**
@@ -33,16 +38,21 @@ export async function getByMajorAndYear(
  * @returns the minor object if found, null otherwise
  */
 export async function getByMinorAndYear(
-  minorName: string,
+  minorNames: string[],
   catalogYear: number,
 ): Promise<Minor | null> {
-  const minor = await GraduateAPI.minors.get(catalogYear, minorName);
+  try {
+    const minors = await Promise.all(
+      minorNames.map((minorName) =>
+        GraduateAPI.minors.get(catalogYear, minorName),
+      ),
+    );
 
-  if (!minor) {
+    return minors[0];
+  } catch (error) {
+    console.error("error getting by minor and year", error);
     return null;
   }
-
-  return minor;
 }
 
 /**
@@ -54,11 +64,11 @@ export async function getByMinorAndYear(
  * @returns a SupportedConcentrationsobject if found, null if otherwise
  */
 export async function getConcentrationsInfoForMajor(
-  majorName: string,
+  majorNames: string[],
   catalogYear: number,
 ): Promise<SupportedConcentrations | null> {
   try {
-    const major = await GraduateAPI.majors.get(catalogYear, majorName);
+    const major = await getByMajorAndYear(majorNames, catalogYear);
 
     if (!major) {
       return null;
@@ -76,7 +86,7 @@ export async function getConcentrationsInfoForMajor(
     };
   } catch (error) {
     console.error("Failed to get concentrations info", {
-      majorName,
+      majorNames,
       catalogYear,
       error,
     });
@@ -94,18 +104,18 @@ export async function getConcentrationsInfoForMajor(
  * @returns true, if concentration is valid, false otherwise
  */
 export async function isValidConcentrationForMajor(
-  majorName: string,
+  majorNames: string[],
   catalogYear: number,
   concentrationName: string,
 ): Promise<boolean> {
   const concentrationsInfo = await getConcentrationsInfoForMajor(
-    majorName,
+    majorNames,
     catalogYear,
   );
 
   if (!concentrationsInfo) {
     console.debug("Concentration info for major not found", {
-      majorName,
+      majorNames,
       catalogYear,
       concentrationName,
     });
@@ -123,7 +133,7 @@ export async function isValidConcentrationForMajor(
     console.debug(
       "Concentration not provided for major with required concentration",
       {
-        majorName,
+        majorNames,
         catalogYear,
         minRequiredConcentrations,
       },
@@ -137,7 +147,7 @@ export async function isValidConcentrationForMajor(
 
   if (!isValidConcentrationName) {
     console.debug("Invalid concentration name for major", {
-      majorName,
+      majorNames,
       catalogYear,
       concentrationName,
     });
@@ -156,15 +166,15 @@ export async function isValidConcentrationForMajor(
  * @returns true if the major exists in the catalog year, false otherwise
  */
 export async function isMajorInYear(
-  majorName: string,
+  majorNames: string[],
   catalogYear: number,
 ): Promise<boolean> {
   try {
-    const major = await GraduateAPI.majors.get(catalogYear, majorName);
+    const major = await getByMajorAndYear(majorNames, catalogYear);
 
     if (!major) {
       console.debug("Invalid catalog year for major", {
-        majorName,
+        majorNames,
         catalogYear,
       });
       return false;
@@ -172,7 +182,7 @@ export async function isMajorInYear(
 
     return true;
   } catch (error) {
-    console.debug("Major not found", { majorName, catalogYear, error });
+    console.debug("Major not found", { majorNames, catalogYear, error });
     return false;
   }
 }

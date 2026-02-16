@@ -12,14 +12,7 @@ import {
   validateMajor,
   validateRequirement,
 } from "./major-validation";
-import {
-  type Major,
-  Section,
-  Err,
-  Ok,
-  ResultType,
-  Concentrations,
-} from "../types";
+import { type Major, Section, Err, Ok, ResultType } from "../types";
 import {
   course,
   convert,
@@ -32,7 +25,6 @@ import {
   concentrations,
   makeTracker,
   convertToMajor,
-  TestCourse,
 } from "./test-utils";
 import bscs from "./mock-majors/bscs.json";
 import { test, describe } from "node:test";

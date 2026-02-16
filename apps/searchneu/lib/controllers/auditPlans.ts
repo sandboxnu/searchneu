@@ -75,11 +75,11 @@ export async function createAuditPlan(
   createAuditPlanInput: CreateAuditPlanInput,
   userId: string,
 ) {
-  const { name, schedule, major, minor, concentration, catalogYear } =
+  const { name, schedule, majors, minors, concentration, catalogYear } =
     createAuditPlanInput;
 
-  if (major) {
-    const majorName = await getByMajorAndYear(major, catalogYear ?? 0);
+  if (majors) {
+    const majorName = await getByMajorAndYear(majors, catalogYear ?? 0);
 
     if (!majorName) {
       console.debug(
@@ -89,26 +89,26 @@ export async function createAuditPlan(
     }
   }
 
-  if (major && catalogYear) {
-    const isValidYear = await isMajorInYear(major, catalogYear);
+  if (majors && catalogYear) {
+    const isValidYear = await isMajorInYear(majors, catalogYear);
 
     if (!isValidYear) {
       console.debug("Attempting to create plan with invalid catalog year", {
-        major,
+        majors,
         catalogYear,
       });
       return null;
     }
 
     const isValidConcentration = await isValidConcentrationForMajor(
-      major,
+      majors,
       catalogYear,
       concentration ?? "",
     );
 
     if (!isValidConcentration) {
       console.debug("Attempting to create plan with invalid concentration", {
-        major,
+        majors,
         catalogYear,
         concentration,
       });
@@ -116,8 +116,8 @@ export async function createAuditPlan(
     }
   }
 
-  if (minor) {
-    const minorName = await getByMinorAndYear(minor, catalogYear ?? 0);
+  if (minors) {
+    const minorName = await getByMinorAndYear(minors, catalogYear ?? 0);
 
     if (!minorName) {
       console.debug(
@@ -133,8 +133,8 @@ export async function createAuditPlan(
       name,
       userId,
       schedule,
-      major,
-      minor,
+      majors,
+      minors,
       concentration,
       catalogYear,
     })
@@ -164,8 +164,8 @@ export async function updateAuditPlan(
   userId: string,
 ) {
   const {
-    major: newMajorName,
-    minor: newMinorName,
+    majors: newMajors,
+    minors: newMinors,
     catalogYear: newCatalogYear,
     concentration: newConcentrationName,
     schedule: newSchedule,
@@ -178,20 +178,23 @@ export async function updateAuditPlan(
     return null;
   }
 
-  const isMajorInfoUpdate =
-    newMajorName || newCatalogYear || newConcentrationName;
+  const isMajorInfoUpdate = newMajors || newCatalogYear || newConcentrationName;
 
   /** Wipe Major => Remove existing major from the plan. */
   const isWipeMajorUpdate =
-    !newMajorName &&
+    !newMajors &&
     !newCatalogYear &&
     !newConcentrationName &&
-    currentAuditPlan.major;
+    currentAuditPlan.majors?.[0];
 
   /** Wipe Minor => Remove existing minor from the plan. */
-  const isWipeMinorUpdate = newMinorName === "" && currentAuditPlan.minor;
+  const isWipeMinorUpdate =
+    (!newMinors || newMinors.length === 0) &&
+    currentAuditPlan.minors &&
+    currentAuditPlan.minors.length > 0;
 
-  const isMinorInfoUpdate = newMinorName || newCatalogYear;
+  const isMinorInfoUpdate =
+    (newMinors && newMinors.length > 0) || newCatalogYear;
 
   const isScheduleUpdate = newSchedule && !isMajorInfoUpdate;
 
@@ -212,7 +215,7 @@ export async function updateAuditPlan(
 
   // validate the major info if major is being updated
   if (isMajorInfoUpdate) {
-    const majorToValidate = newMajorName || currentAuditPlan.major;
+    const majorToValidate = newMajors || currentAuditPlan.majors;
     const yearToValidate = newCatalogYear || currentAuditPlan.catalogYear;
     const concentrationToValidate =
       newConcentrationName ?? currentAuditPlan.concentration;
@@ -247,12 +250,12 @@ export async function updateAuditPlan(
 
   if (
     isMinorInfoUpdate &&
-    (newMinorName || currentAuditPlan.minor) &&
+    (newMinors || currentAuditPlan.minors) &&
     (newCatalogYear || currentAuditPlan.catalogYear)
   ) {
     const yearToValidate = newCatalogYear || currentAuditPlan.catalogYear;
     const minorName = await getByMinorAndYear(
-      newMinorName ?? currentAuditPlan.minor ?? "",
+      newMinors ?? currentAuditPlan.minors ?? [],
       yearToValidate ?? 0,
     );
 
@@ -266,8 +269,8 @@ export async function updateAuditPlan(
 
   let name = currentAuditPlan.name;
   let schedule = currentAuditPlan.schedule;
-  let major = isWipeMajorUpdate ? undefined : currentAuditPlan.major;
-  let minor = isWipeMinorUpdate ? undefined : currentAuditPlan.minor;
+  let majors = isWipeMajorUpdate ? undefined : currentAuditPlan.majors;
+  let minors = isWipeMinorUpdate ? undefined : currentAuditPlan.minors;
   let catalogYear = isWipeMajorUpdate
     ? undefined
     : currentAuditPlan.catalogYear;
@@ -283,24 +286,24 @@ export async function updateAuditPlan(
     name = newName;
   }
 
-  if (newMajorName) {
-    major = newMajorName;
+  if (newMajors) {
+    majors = newMajors;
     catalogYear = newCatalogYear;
     concentration = newConcentrationName;
   }
 
-  if (newMinorName) {
-    minor = newMinorName;
+  if (newMinors) {
+    minors = newMinors;
   }
 
-  if (newMinorName === null) {
-    minor = null;
+  if (newMinors && newMinors.length > 0) {
+    minors = newMinors;
   }
 
   const newPlan = {
     name,
-    major,
-    minor,
+    majors,
+    minors,
     catalogYear,
     concentration,
     schedule,
@@ -311,8 +314,8 @@ export async function updateAuditPlan(
     .set({
       name: newPlan.name,
       schedule: newPlan.schedule,
-      major: newPlan.major,
-      minor: newPlan.minor,
+      majors: newPlan.majors,
+      minors: newPlan.minors,
       concentration: newPlan.concentration,
       catalogYear: newPlan.catalogYear,
     })

@@ -67,8 +67,7 @@ export const getCourse = cache(
         coursesT.coreqs,
         coursesT.postreqs,
         coursesT.updatedAt,
-      )
-      .then((rows) => rows[0]);
+      );
   },
 );
 

@@ -103,7 +103,8 @@ export default function AddCoursesModal(props: {
 
     const rawResults = await Promise.all(
       neededCoreqReqs.map(async (c) => {
-        const res = await getCourse(hardcodedTerm, c.subject, c.courseNumber);
+        const rows = await getCourse(hardcodedTerm, c.subject, c.courseNumber);
+        const res = rows[0];
         if (!res) return null;
 
         return {

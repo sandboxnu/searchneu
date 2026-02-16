@@ -27,10 +27,7 @@ const SelectedCourseItem = ({
         <span className="text-neu8 shrink-0 text-[14px] font-bold">
           {course.subject} {course.courseNumber}
         </span>
-        <span className="truncate">
-          {isCorequisite ? "Lab/Recitation for " : ""}
-          {course.title}
-        </span>
+        <span className="truncate">{course.title}</span>
       </p>
       <button
         onClick={course.handleDelete}

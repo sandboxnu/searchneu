@@ -12,6 +12,7 @@ import { useState, use } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import { Course } from "@sneu/scraper/types";
 import SelectedCourseGroup from "./SelectedCourseGroup";
+import { getCourse } from "@/lib/controllers/getCourse";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
@@ -44,36 +45,59 @@ export default function AddCoursesModal(props: {
   const terms = use(props.terms);
   const hardcodedTerm = terms.neu[0]?.term ?? "";
 
-  const handleSelectCourse = (course: Course) => {
-    setSelectedCourseGroups((prev) => {
-      // already selected
-      if (
-        prev.some(
-          (g) =>
-            g.parent.subject === course.subject &&
-            g.parent.courseNumber === course.courseNumber,
-        )
-      ) {
-        return prev;
-      }
+  const handleSelectCourse = async (course: Course) => {
+    const isCourseSelected = selectedCourseGroups.some(
+      (g) =>
+        (g.parent.subject === course.subject &&
+          g.parent.courseNumber === course.courseNumber) ||
+        g.coreqs.some(
+          (c) =>
+            c.subject === course.subject &&
+            c.courseNumber === course.courseNumber,
+        ),
+    );
 
-      if (prev.length >= 10) return prev;
+    if (isCourseSelected || selectedCourseGroups.length >= 10) return;
 
-      const coreqs = course.coreqs
-        ? extractCoreqCourses(course.coreqs).map(
+    const allCoreqReqs = extractCoreqCourses(course.coreqs);
+
+    // filter for coreqs not already selected to avoid duplicates
+    const neededCoreqReqs = allCoreqReqs.filter((req) => {
+      const isAlreadyInSchedule = selectedCourseGroups.some(
+        (g) =>
+          // check parent courses
+          (g.parent.subject === req.subject &&
+            g.parent.courseNumber === req.courseNumber) ||
+          // check already selected coreqs
+          g.coreqs.some(
             (c) =>
-              ({
-                ...course,
-                subject: c.subject,
-                courseNumber: c.courseNumber,
-              }) as Course,
-          )
-        : [];
-
-      return [...prev, { parent: course, coreqs, isLocked: false }];
+              c.subject === req.subject && c.courseNumber === req.courseNumber,
+          ),
+      );
+      return !isAlreadyInSchedule;
     });
 
-    console.log("Selected courses:", selectedCourseGroups);
+    const rawResults = await Promise.all(
+      neededCoreqReqs.map(async (c) => {
+        const res = await getCourse(hardcodedTerm, c.subject, c.courseNumber);
+        if (!res) return null;
+
+        return {
+          ...res,
+          subject: c.subject,
+          minCredits: Number(res.minCredits),
+          maxCredits: Number(res.maxCredits),
+          specialTopics: false,
+          attributes: res.nupaths || [],
+        } as Course;
+      }),
+    );
+
+    const validCoreqs = rawResults.filter((c): c is Course => c !== null);
+    setSelectedCourseGroups((prev) => [
+      ...prev,
+      { parent: course, coreqs: validCoreqs },
+    ]);
   };
 
   const clear = () => {
@@ -85,7 +109,6 @@ export default function AddCoursesModal(props: {
   const handleDeleteGroup = (parent: Course) => {
     // deleting parent deletes whole group
     // deleting a child only deletes child
-
     setSelectedCourseGroups((prev) =>
       prev.filter(
         (g) =>
@@ -120,9 +143,7 @@ export default function AddCoursesModal(props: {
     }
   };
 
-  const isCourseCoreq = (
-    req: any,
-  ): req is { subject: string; courseNumber: string } => {
+  const isCourseCoreq = (req: { subject: string; courseNumber: string }) => {
     return (
       req &&
       typeof req === "object" &&
@@ -154,18 +175,25 @@ export default function AddCoursesModal(props: {
   };
 
   const handleGeneratation = () => {
-    // parse optional course IDs
-    const optionalCourseIds = selectedCourseGroups.map((group) =>
-      parseInt(group.parent.courseNumber),
-    );
+    const optionalCourseIds = selectedCourseGroups.flatMap((group) => [
+      group.parent.id,
+      ...group.coreqs.map((c) => c.id),
+    ]);
 
     if (optionalCourseIds.length > 0) {
       props.onGenerateSchedules([], optionalCourseIds, numCourses);
     }
 
-    // close modal and clear state
     props.closeFn();
     clear();
+  };
+
+  const hasEnoughCourses = () => {
+    const parentCourses = selectedCourseGroups.map((group) => group.parent);
+    const coreqCourses = selectedCourseGroups.flatMap((group) => group.coreqs);
+    const totalCourses = parentCourses.length + coreqCourses.length;
+
+    return totalCourses >= numCourses;
   };
 
   const getSelectionTextWithCoreqs = () => {
@@ -285,7 +313,7 @@ export default function AddCoursesModal(props: {
             </div>
 
             <Button
-              disabled={selectedCourseGroups.length < numCourses}
+              disabled={!hasEnoughCourses()}
               onClick={handleGeneratation}
               className="cursor-pointer"
             >

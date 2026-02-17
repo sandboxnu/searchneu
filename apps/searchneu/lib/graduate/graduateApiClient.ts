@@ -72,8 +72,8 @@ class GraduateAPIClient {
       this.req("GET", `/templates/${catalogYear}`),
 
     getForMajor: (
-      majorName: string,
       catalogYear: number,
+      majorName: string,
     ): Promise<Major | null> =>
       this.req("GET", `/templates/${catalogYear}/${majorName}`),
 

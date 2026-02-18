@@ -9,6 +9,7 @@ export default async function Page({
   searchParams: Promise<{
     lockedCourseIds?: string;
     optionalCourseIds?: string;
+    numCourses?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -26,10 +27,15 @@ export default async function Page({
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id)) || [];
 
+  // Parse numCourses from URL search params
+  const numCourses = params.numCourses
+    ? parseInt(params.numCourses)
+    : undefined;
+
   // Generate schedules if any course IDs are provided (locked or optional)
   const allSchedules =
     lockedCourseIds.length > 0 || optionalCourseIds.length > 0
-      ? await generateSchedules(lockedCourseIds, optionalCourseIds)
+      ? await generateSchedules(lockedCourseIds, optionalCourseIds, numCourses)
       : [];
 
   // Fetch available NUPath options

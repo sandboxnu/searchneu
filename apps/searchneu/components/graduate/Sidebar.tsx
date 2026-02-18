@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Major, Minor, type Section } from "../../lib/graduate/types";
+import { useMajor } from "../../lib/graduate/useGraduateApi";
 
 export enum SidebarValidationStatus {
   Loading = "Loading",
@@ -11,9 +12,14 @@ export enum SidebarValidationStatus {
 const UNDECIDED_CONCENTRATION = "Concentration Undecided";
 
 interface SidebarProps {
+  /** When provided, Sidebar fetches major data via useMajor. Prefer this over passing currentMajor. */
+  catalogYear?: number;
+  /** When provided with catalogYear, Sidebar fetches this major's data. */
+  majorName?: string | null;
+  /** Optional preloaded major (e.g. from parent). If catalogYear + majorName are provided, useMajor takes precedence. */
   currentMajor?: Major;
   selectedPlan?: { id: string; concentration: string };
-  courseData?: any;
+  courseData?: boolean;
   creditsTaken?: number;
   isSharedPlan?: boolean;
   isCoursesLoading?: boolean;
@@ -119,15 +125,28 @@ function CollapsibleSection({
 
 export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
   const {
-    currentMajor,
+    catalogYear,
+    majorName,
+    currentMajor: currentMajorProp,
     selectedPlan,
     courseData,
     currentMinor,
-    isMajorLoading,
-    majorError,
+    isMajorLoading: isMajorLoadingProp,
+    majorError: majorErrorProp,
   } = props;
 
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
+
+  const useHook =
+    catalogYear != null && majorName != null && majorName.length > 0;
+  const { data: majorFromHook, error: majorErrorFromHook, loading: majorLoadingFromHook } = useMajor(
+    catalogYear ?? 0,
+    useHook ? majorName : null,
+  );
+
+  const currentMajor = useHook ? majorFromHook ?? undefined : currentMajorProp;
+  const majorError = useHook ? majorErrorFromHook : majorErrorProp;
+  const isMajorLoading = useHook ? majorLoadingFromHook : isMajorLoadingProp;
 
   // ERROR STATE
   if (majorError) {
@@ -303,7 +322,12 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
   );
 });
 
-export const NoMajorSidebar: React.FC<any> = ({
+interface NoMajorSidebarProps {
+  selectedPlan?: { id: string; concentration: string };
+  transferCourses?: unknown;
+}
+
+export const NoMajorSidebar: React.FC<NoMajorSidebarProps> = ({
   selectedPlan,
   transferCourses,
 }) => {

@@ -18,11 +18,11 @@ class GraduateAPIClient {
     body?: unknown,
     params?: Record<string, string | number>,
   ): Promise<T> {
-    const base =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "http://localhost:3000";
-    const fullUrl = new URL(`${this.baseURL}${url}`, base);
+    const baseURL = this.baseURL.startsWith("http")
+      ? this.baseURL
+      : `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}${this.baseURL}`;
+  
+    const fullUrl = new URL(`${baseURL}${url}`);
 
     if (params) {
       Object.keys(params).forEach((key) =>
@@ -55,12 +55,18 @@ class GraduateAPIClient {
       this.req("GET", "/majors/supportedMajors"),
 
     get: (catalogYear: number, majorName: string): Promise<Major> =>
-      this.req("GET", `/majors/${catalogYear}/${majorName}`),
+      this.req(
+        "GET",
+        `/majors/${catalogYear}/${encodeURIComponent(majorName)}`,
+      ),
   };
 
   minors = {
     get: (catalogYear: number, minorName: string): Promise<Minor> =>
-      this.req("GET", `/minors/${catalogYear}/${minorName}`),
+      this.req(
+        "GET",
+        `/minors/${catalogYear}/${encodeURIComponent(minorName)}`,
+      ),
 
     getSupportedMinors: (): Promise<GetSupportedMinorsResponse> =>
       this.req("GET", "/minors/supportedMinors"),

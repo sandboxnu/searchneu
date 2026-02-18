@@ -2,10 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Sidebar } from "../../components/graduate/Sidebar";
-import {
-  useSupportedMajors,
-  useMajor,
-} from "../../lib/graduate/useGraduateApi";
+import { useSupportedMajors } from "../../lib/graduate/useGraduateApi";
 
 const DEFAULT_CATALOG_YEAR = 2024;
 
@@ -31,11 +28,6 @@ export default function Page() {
       ? selectedMajorName
       : majorNames[0] ?? null;
 
-  const { data: fullMajor, error: majorError, loading: majorLoading } = useMajor(
-    catalogYear,
-    effectiveMajorName,
-  );
-
   if (error)
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
   if (!data) return <div className="p-4">Loading...</div>;
@@ -43,13 +35,12 @@ export default function Page() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white">
       {/* SIDEBAR */}
-      <aside className="h-full w-80 flex-shrink-0">
+      <aside className="h-full w-80 shrink-0">
         <Sidebar
-          currentMajor={fullMajor ?? undefined}
+          catalogYear={catalogYear}
+          majorName={effectiveMajorName}
           selectedPlan={{ id: "1", concentration: "Undecided" }}
           courseData={true}
-          isMajorLoading={majorLoading}
-          majorError={majorError}
         />
       </aside>
 
@@ -57,12 +48,6 @@ export default function Page() {
         <header className="mb-6">
           <h1 className="text-3xl font-bold">Graduate Programs</h1>
         </header>
-
-        {majorError && (
-          <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-            Failed to load major: {majorError.message}
-          </div>
-        )}
 
         <div className="grid gap-4">
           {majorNames.map((name) => (
@@ -76,11 +61,6 @@ export default function Page() {
               }`}
             >
               <h3 className="font-semibold">{name}</h3>
-              {fullMajor?.name === name && (
-                <p className="text-sm text-slate-500">
-                  {fullMajor.totalCreditsRequired} Credits Required
-                </p>
-              )}
             </button>
           ))}
         </div>

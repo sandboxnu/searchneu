@@ -1,0 +1,1076 @@
+diff --git a/apps/searchneu/app/graduate/page.tsx b/apps/searchneu/app/graduate/page.tsx
+index a6f6d99..e54c572 100644
+--- a/apps/searchneu/app/graduate/page.tsx
++++ b/apps/searchneu/app/graduate/page.tsx
+@@ -1,18 +1,70 @@
+ "use client";
+ 
++import React, { useState, useMemo } from "react";
++import { Sidebar } from "../../components/graduate/Sidebar";
+ import { useSupportedMajors } from "../../lib/graduate/useGraduateApi";
+ 
++const DEFAULT_CATALOG_YEAR = 2024;
++
+ export default function Page() {
+   const { data, error } = useSupportedMajors();
++  const [selectedMajorName, setSelectedMajorName] = useState<string | null>(
++    null,
++  );
++
++  const { catalogYear, majorNames } = useMemo(() => {
++    const supported = data?.supportedMajors ?? {};
++    const yearKey =
++      Object.keys(supported)[0] ?? String(DEFAULT_CATALOG_YEAR);
++    const majorsForYear = supported[yearKey] ?? {};
++    return {
++      catalogYear: parseInt(yearKey, 10) || DEFAULT_CATALOG_YEAR,
++      majorNames: Object.keys(majorsForYear),
++    };
++  }, [data]);
+ 
+-  if (error) return <div>Error: {error.message}</div>;
+-  if (!data) return <div>No data available</div>;
++  const effectiveMajorName =
++    selectedMajorName && majorNames.includes(selectedMajorName)
++      ? selectedMajorName
++      : majorNames[0] ?? null;
++
++  if (error)
++    return <div className="p-4 text-red-500">Error: {error.message}</div>;
++  if (!data) return <div className="p-4">Loading...</div>;
+ 
+   return (
+-    <div>
+-      <h1>Hello graduates!</h1>
+-      <h2>Supported Majors:</h2>
+-      <pre>{JSON.stringify(data.supportedMajors, null, 2)}</pre>
++    <div className="flex h-screen w-full overflow-hidden bg-white">
++      {/* SIDEBAR */}
++      <aside className="h-full w-80 shrink-0">
++        <Sidebar
++          catalogYear={catalogYear}
++          majorName={effectiveMajorName}
++          selectedPlan={{ id: "1", concentration: "Undecided" }}
++          courseData={true}
++        />
++      </aside>
++
++      <main className="h-full flex-1 overflow-y-auto p-10">
++        <header className="mb-6">
++          <h1 className="text-3xl font-bold">Graduate Programs</h1>
++        </header>
++
++        <div className="grid gap-4">
++          {majorNames.map((name) => (
++            <button
++              key={name}
++              onClick={() => setSelectedMajorName(name)}
++              className={`rounded-xl border p-5 text-left transition-all ${
++                effectiveMajorName === name
++                  ? "border-blue-600 bg-blue-50"
++                  : "border-slate-200 hover:bg-slate-50"
++              }`}
++            >
++              <h3 className="font-semibold">{name}</h3>
++            </button>
++          ))}
++        </div>
++      </main>
+     </div>
+   );
+ }
+diff --git a/apps/searchneu/components/graduate/Sidebar.tsx b/apps/searchneu/components/graduate/Sidebar.tsx
+new file mode 100644
+index 0000000..e8792b9
+--- /dev/null
++++ b/apps/searchneu/components/graduate/Sidebar.tsx
+@@ -0,0 +1,373 @@
++import React, { useState } from "react";
++import { Major, Minor, type Section } from "../../lib/graduate/types";
++import { useMajor } from "../../lib/graduate/useGraduateApi";
++
++export enum SidebarValidationStatus {
++  Loading = "Loading",
++  Error = "Error",
++  Complete = "Complete",
++  InProgress = "InProgress",
++}
++
++const UNDECIDED_CONCENTRATION = "Concentration Undecided";
++
++interface SidebarProps {
++  /** When provided, Sidebar fetches major data via useMajor. Prefer this over passing currentMajor. */
++  catalogYear?: number;
++  /** When provided with catalogYear, Sidebar fetches this major's data. */
++  majorName?: string | null;
++  /** Optional preloaded major (e.g. from parent). If catalogYear + majorName are provided, useMajor takes precedence. */
++  currentMajor?: Major;
++  selectedPlan?: { id: string; concentration: string };
++  courseData?: boolean;
++  creditsTaken?: number;
++  isSharedPlan?: boolean;
++  isCoursesLoading?: boolean;
++  isMajorLoading?: boolean;
++  majorError?: Error | null;
++  coursesTaken?: unknown[];
++  currentMinor?: Minor;
++  majors?: Major[];
++  currentMajorIndex?: number;
++  handlePrevMajor?: () => void;
++  handleNextMajor?: () => void;
++  minors?: Minor[];
++  currentMinorIndex?: number;
++  handlePrevMinor?: () => void;
++  handleNextMinor?: () => void;
++  validationStatus?: any;
++  getSectionErrorByType?: any;
++  getSidebarValidationStatus?: any;
++  concentration?: any;
++  concentrationValidationStatus?: any;
++}
++
++/** Collapsible section row matching graduatenu SidebarSection / NUPathSection look */
++function CollapsibleSection({
++  title,
++  children,
++  defaultOpen = false,
++  status = SidebarValidationStatus.Complete,
++}: {
++  title: string;
++  children: React.ReactNode;
++  defaultOpen?: boolean;
++  status?: SidebarValidationStatus;
++}) {
++  const [opened, setOpened] = useState(defaultOpen);
++  const isComplete = status === SidebarValidationStatus.Complete;
++  const isError = status === SidebarValidationStatus.Error;
++  const isInProgress = status === SidebarValidationStatus.InProgress;
++  const isLoading = status === SidebarValidationStatus.Loading;
++
++  return (
++    <div
++      className="border-t border-neutral-200 cursor-pointer select-none transition-[background-color] duration-150 ease-out"
++      onClick={() => setOpened(!opened)}
++    >
++      <div
++        className="flex flex-row justify-between items-start font-bold py-4 px-4 m-0 bg-neutral-50 hover:bg-neutral-100 active:bg-neutral-200 sticky top-0 z-10 transition-colors duration-150 ease-out"
++        style={{ transitionDelay: "0.1s" }}
++      >
++        <div className="flex flex-row h-full gap-2">
++          {/* Status circle - same as SidebarSection/NUPathSection */}
++          <div
++            className={`
++              w-[18px] h-[18px] min-w-[18px] min-h-[18px] flex items-center justify-center rounded-full border mt-0.5
++              transition-[background-color,border-color,color] duration-150 ease-out
++              ${isComplete ? "bg-emerald-600 border-emerald-600 text-white" : ""}
++              ${isError ? "bg-neutral-400 border-neutral-400 text-white" : ""}
++              ${isInProgress ? "bg-orange-500 border-orange-500 text-white" : ""}
++              ${isLoading ? "bg-transparent border-neutral-400 text-neutral-400" : ""}
++            `}
++          >
++            {isComplete && (
++              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
++                <polyline points="20 6 9 17 4 12" />
++              </svg>
++            )}
++            {isError && (
++              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
++                <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 0 0-1.41 1.41L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.88a.996.996 0 1 0 1.41-1.41L13.41 12l4.88-4.89z" />
++              </svg>
++            )}
++            {isLoading && (
++              <div className="w-2.5 h-2.5 rounded-full border-2 border-neutral-400 border-t-transparent animate-spin" />
++            )}
++            {isInProgress && <span className="text-[10px] text-white">...</span>}
++          </div>
++          <span className="text-sm text-blue-900 mt-0">{title}</span>
++        </div>
++        <div className="ml-1 flex items-center">
++          {opened ? (
++            <svg width="25" height="25" viewBox="0 0 24 24" fill="currentColor" className="text-blue-900 shrink-0">
++              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
++            </svg>
++          ) : (
++            <svg width="25" height="25" viewBox="0 0 24 24" fill="currentColor" className="text-blue-900 shrink-0">
++              <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
++            </svg>
++          )}
++        </div>
++      </div>
++      {opened && (
++        <div
++          className="bg-neutral-100 border-t border-neutral-200 pt-2.5 pr-5 pb-4 pl-2.5 cursor-default"
++          style={{ borderTopWidth: "0.5px" }}
++          onClick={(e) => e.stopPropagation()}
++        >
++          {children}
++        </div>
++      )}
++    </div>
++  );
++}
++
++export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
++  const {
++    catalogYear,
++    majorName,
++    currentMajor: currentMajorProp,
++    selectedPlan,
++    courseData,
++    currentMinor,
++    isMajorLoading: isMajorLoadingProp,
++    majorError: majorErrorProp,
++  } = props;
++
++  const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
++
++  const useHook =
++    catalogYear != null && majorName != null && majorName.length > 0;
++  const { data: majorFromHook, error: majorErrorFromHook, loading: majorLoadingFromHook } = useMajor(
++    catalogYear ?? 0,
++    useHook ? majorName : null,
++  );
++
++  const currentMajor = useHook ? majorFromHook ?? undefined : currentMajorProp;
++  const majorError = useHook ? majorErrorFromHook : majorErrorProp;
++  const isMajorLoading = useHook ? majorLoadingFromHook : isMajorLoadingProp;
++
++  // ERROR STATE
++  if (majorError) {
++    return (
++      <div className="flex min-h-full w-full items-center justify-center border-r border-neutral-200 bg-neutral-50 p-8 text-center">
++        <div className="flex flex-col items-center gap-2">
++          <span className="text-sm font-medium text-red-600">
++            Failed to load major
++          </span>
++          <span className="text-xs text-neutral-500">{majorError.message}</span>
++        </div>
++      </div>
++    );
++  }
++
++  // LOADING GUARD
++  if (!currentMajor || !selectedPlan || isMajorLoading) {
++    return (
++      <div className="flex min-h-full w-full items-center justify-center border-r border-neutral-200 bg-neutral-50 p-8 text-center">
++        <div className="flex flex-col items-center gap-2">
++          <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-300 border-t-blue-600" />
++          <span className="text-sm font-medium text-neutral-500">
++            Loading requirement data...
++          </span>
++        </div>
++      </div>
++    );
++  }
++
++  const subtitle =
++    selectedPlan.concentration === "Undecided"
++      ? UNDECIDED_CONCENTRATION
++      : selectedPlan.concentration;
++  const isUndecided = subtitle === UNDECIDED_CONCENTRATION;
++  const creditsToTake = currentMajor.totalCreditsRequired ?? 128;
++  const creditsTaken = props.creditsTaken ?? 0;
++  const renderBetaMajorBlock = currentMajor.metadata?.verified !== true;
++
++  return (
++    <div className="flex min-h-full w-full flex-col overflow-hidden border-r border-neutral-200 bg-neutral-50 pt-8">
++      {/* Header block - SidebarContainer style */}
++      <div className="px-4 pb-4">
++        {renderBetaMajorBlock && (
++          <div className="flex items-center pb-3">
++            <span className="rounded-md border border-red-500 px-2 py-0.5 text-sm font-bold text-red-600">
++              BETA MAJOR
++            </span>
++          </div>
++        )}
++        <div className="pb-3">
++          <h1 className="text-2xl font-bold text-blue-900">{currentMajor.name}</h1>
++          {subtitle && (
++            <p
++              className={`text-sm ${isUndecided ? "text-red-500 italic" : "text-blue-900"}`}
++            >
++              {subtitle}
++            </p>
++          )}
++        </div>
++        <div className="mb-3 flex items-baseline gap-1">
++          <span className="text-2xl font-bold text-blue-900">
++            {creditsTaken}
++            {creditsToTake != null ? `/${creditsToTake}` : ""}
++          </span>
++          <span className="text-blue-900">Credits Completed</span>
++        </div>
++      </div>
++
++      <div className="flex-1 overflow-y-auto">
++        {courseData && (
++          <>
++            {/* GenericSection-style placeholder */}
++            <CollapsibleSection title="General Requirements" defaultOpen={false}>
++              <p className="text-sm italic text-neutral-600">
++                Course requirements will appear here.
++              </p>
++            </CollapsibleSection>
++
++            {/* NUPathSection-style placeholder */}
++            <CollapsibleSection title="NUpath Requirements" defaultOpen={false}>
++              <p className="text-sm italic text-neutral-600 pl-1 pt-1">
++                Complete the following NUpath requirements:
++              </p>
++            </CollapsibleSection>
++
++            {/* Tabs - same as original: enclosed, blue.800 selected, neutral.50 bg */}
++            <div className="pt-3 bg-neutral-50">
++              <div className="flex gap-2 border-b-2 border-neutral-200 px-4">
++                <button
++                  type="button"
++                  onClick={() => setActiveTab("major")}
++                  className={`flex-[0.4] rounded-t-lg py-1 px-1 text-xs font-bold uppercase transition-all ${
++                    activeTab === "major"
++                      ? "bg-blue-800 text-white shadow-md"
++                      : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
++                  }`}
++                >
++                  MAJOR
++                </button>
++                {currentMinor && (
++                  <button
++                    type="button"
++                    onClick={() => setActiveTab("minor")}
++                    className={`flex-[0.4] rounded-t-lg py-1 px-1 text-xs font-bold uppercase transition-all ${
++                      activeTab === "minor"
++                        ? "bg-blue-800 text-white shadow-md"
++                        : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
++                    }`}
++                  >
++                    MINOR
++                  </button>
++                )}
++              </div>
++
++              {/* Tab panel - RequirementTabPanel style: blue.50 strip, then sections */}
++              <div className="w-full p-0 m-0">
++                <div className="flex items-center justify-between px-4 py-3 bg-blue-50 border-b border-neutral-200">
++                  <div className="flex-1" />
++                  <h2 className="text-base font-semibold text-blue-900 text-center flex-1">
++                    {activeTab === "major"
++                      ? currentMajor.name
++                      : currentMinor?.name ?? "Minor"}
++                  </h2>
++                  <div className="flex-1" />
++                </div>
++
++                {activeTab === "minor" && currentMinor && (
++                  <h3 className="text-base font-semibold text-blue-900 py-4 px-4">
++                    Minor Requirements
++                  </h3>
++                )}
++
++                {/* Requirement sections - SidebarSection style */}
++                {(activeTab === "major"
++                  ? currentMajor.requirementSections
++                  : currentMinor?.requirementSections ?? []
++                ).map((section: Section, index: number) => (
++                  <CollapsibleSection
++                    key={section.title ?? index}
++                    title={section.title}
++                    defaultOpen={index === 0}
++                  >
++                    {section.minRequirementCount < section.requirements.length && (
++                      <p className="text-sm italic text-neutral-700">
++                        Complete {section.minRequirementCount} of the
++                        following:
++                      </p>
++                    )}
++                    <p className="text-sm text-neutral-600 pl-1 pt-1">
++                      Requirement details will appear here.
++                    </p>
++                  </CollapsibleSection>
++                ))}
++
++                {activeTab === "major" &&
++                  (!currentMajor.requirementSections?.length) && (
++                    <p className="px-4 py-3 text-sm italic text-neutral-500">
++                      No requirement sections
++                    </p>
++                  )}
++                {activeTab === "minor" &&
++                  !currentMinor?.requirementSections?.length && (
++                    <p className="px-4 py-3 text-sm italic text-neutral-500">
++                      No requirement sections
++                    </p>
++                  )}
++              </div>
++            </div>
++          </>
++        )}
++      </div>
++    </div>
++  );
++});
++
++interface NoMajorSidebarProps {
++  selectedPlan?: { id: string; concentration: string };
++  transferCourses?: unknown;
++}
++
++export const NoMajorSidebar: React.FC<NoMajorSidebarProps> = ({
++  selectedPlan,
++  transferCourses,
++}) => {
++  return (
++    <div className="flex min-h-full w-full flex-col border-r border-neutral-200 bg-neutral-50 pt-8">
++      <div className="px-4 pb-4">
++        <h1 className="text-2xl font-bold text-blue-900">No Major</h1>
++      </div>
++      <div className="space-y-4 px-4 pb-4">
++        <p className="text-sm leading-relaxed text-neutral-700">
++          A major has not been selected for this plan. Please select one if you
++          would like to see major requirements. If we do not support your major,
++          you can{" "}
++          <a
++            href="https://forms.gle/o5AHSuFSwDJREEPp7"
++            target="_blank"
++            rel="noopener noreferrer"
++            className="font-bold text-blue-700 underline hover:text-blue-900"
++          >
++            request it here
++          </a>
++          .
++        </p>
++        <p className="text-sm text-neutral-600">
++          Use the &ldquo;Add Course&rdquo; button in the schedule to add a course
++          to a semester.
++        </p>
++      </div>
++    </div>
++  );
++};
++
++export const NoPlanSidebar: React.FC = () => {
++  return (
++    <div className="flex min-h-full items-center justify-center border-r border-neutral-200 bg-neutral-50 p-4 text-center">
++      <p className="text-sm font-bold tracking-widest uppercase text-neutral-400">
++        No Plan Selected
++      </p>
++    </div>
++  );
++};
++
++Sidebar.displayName = "Sidebar";
+diff --git a/apps/searchneu/lib/graduate/graduateApiClient.ts b/apps/searchneu/lib/graduate/graduateApiClient.ts
+index 8afec9d..74e466a 100644
+--- a/apps/searchneu/lib/graduate/graduateApiClient.ts
++++ b/apps/searchneu/lib/graduate/graduateApiClient.ts
+@@ -18,11 +18,11 @@ class GraduateAPIClient {
+     body?: unknown,
+     params?: Record<string, string | number>,
+   ): Promise<T> {
+-    const base =
+-      typeof window !== "undefined"
+-        ? window.location.origin
+-        : "http://localhost:3000";
+-    const fullUrl = new URL(`${this.baseURL}${url}`, base);
++    const baseURL = this.baseURL.startsWith("http")
++      ? this.baseURL
++      : `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}${this.baseURL}`;
++  
++    const fullUrl = new URL(`${baseURL}${url}`);
+ 
+     if (params) {
+       Object.keys(params).forEach((key) =>
+@@ -55,12 +55,18 @@ class GraduateAPIClient {
+       this.req("GET", "/majors/supportedMajors"),
+ 
+     get: (catalogYear: number, majorName: string): Promise<Major> =>
+-      this.req("GET", `/majors/${catalogYear}/${majorName}`),
++      this.req(
++        "GET",
++        `/majors/${catalogYear}/${encodeURIComponent(majorName)}`,
++      ),
+   };
+ 
+   minors = {
+     get: (catalogYear: number, minorName: string): Promise<Minor> =>
+-      this.req("GET", `/minors/${catalogYear}/${minorName}`),
++      this.req(
++        "GET",
++        `/minors/${catalogYear}/${encodeURIComponent(minorName)}`,
++      ),
+ 
+     getSupportedMinors: (): Promise<GetSupportedMinorsResponse> =>
+       this.req("GET", "/minors/supportedMinors"),
+diff --git a/apps/searchneu/lib/graduate/useGraduateApi.ts b/apps/searchneu/lib/graduate/useGraduateApi.ts
+index 5877f31..af020f4 100644
+--- a/apps/searchneu/lib/graduate/useGraduateApi.ts
++++ b/apps/searchneu/lib/graduate/useGraduateApi.ts
+@@ -1,9 +1,6 @@
+ import { useState, useEffect } from "react";
+ import { GraduateAPI } from "./graduateApiClient";
+-import {
+-  GetSupportedMajorsResponse,
+-  GetSupportedMinorsResponse,
+-} from "./api-response-types";
++import { GetSupportedMajorsResponse } from "./api-response-types";
+ import { Major, Minor } from "./types";
+ 
+ export function useSupportedMajors() {
+@@ -28,29 +25,50 @@ export function useSupportedMajors() {
+   return { data, error };
+ }
+ 
+-export function useGraduateMajor(year: string | null, major: string | null) {
++export function useMajor(catalogYear: number, majorName: string | null) {
+   const [data, setData] = useState<Major | null>(null);
+   const [error, setError] = useState<Error | null>(null);
++  const [loading, setLoading] = useState(false);
+ 
+   useEffect(() => {
++    if (!majorName) {
++      setData(null);
++      setError(null);
++      return;
++    }
++
++    let cancelled = false;
++    setLoading(true);
++    setError(null);
++
+     const fetchMajor = async () => {
+       try {
+-        const response = await GraduateAPI.majors.get(
+-          parseInt(year ?? "0"),
+-          major ?? "",
+-        );
+-        setData(response);
++        const response = await GraduateAPI.majors.get(catalogYear, majorName);
++        if (!cancelled) {
++          setData(response);
++        }
+       } catch (err) {
+-        setError(
+-          err instanceof Error ? err : new Error("Failed to fetch major"),
+-        );
++        if (!cancelled) {
++          setError(
++            err instanceof Error ? err : new Error("Failed to fetch major"),
++          );
++          setData(null);
++        }
++      } finally {
++        if (!cancelled) {
++          setLoading(false);
++        }
+       }
+     };
+ 
+     fetchMajor();
+-  }, [year, major]);
+ 
+-  return { majorData: data, error };
++    return () => {
++      cancelled = true;
++    };
++  }, [catalogYear, majorName]);
++
++  return { data, error, loading };
+ }
+ 
+ export function useGraduateMinor(year: string | null, minor: string | null) {
+@@ -71,8 +89,9 @@ export function useGraduateMinor(year: string | null, minor: string | null) {
+         );
+       }
+     };
++
+     fetchMinor();
+-  }, []);
++  }, [year, minor]);
+ 
+   return { minorData: data, error };
+ }
+diff --git a/apps/searchneu/next.config.ts b/apps/searchneu/next.config.ts
+index 581c5ff..8b66b99 100644
+--- a/apps/searchneu/next.config.ts
++++ b/apps/searchneu/next.config.ts
+@@ -1,65 +1,94 @@
+-import type { NextConfig } from "next";
+-import withVercelToolbar from "@vercel/toolbar/plugins/next";
+-import createMDX from "@next/mdx";
+-
+-const nextConfig: NextConfig = {
+-  /* config options here */
+-  serverExternalPackages: ["typescript"],
+-  pageExtensions: ["ts", "tsx", "js", "jsx", "mdx", "md"],
+-  outputFileTracingIncludes: {
+-    "/content/api/": ["./content/api/*"],
+-  },
+-  // cacheComponents: true, /* BUG: unstable for the time being */
+-  reactCompiler: true,
+-
+-  async rewrites() {
+-    return [
+-      {
+-        source: "/api/graduate/:path*",
+-        destination: "https://api.graduatenu.com/api/:path*",
+-      },
+-    ];
+-  },
+-
+-  async redirects() {
+-    return [
+-      {
+-        source: "/NEU",
+-        destination: "/",
+-        statusCode: 307,
+-      },
+-      {
+-        source: "/NEU/:s",
+-        destination: "/",
+-        statusCode: 307,
+-      },
+-      {
+-        source: "/CPS",
+-        destination: "/",
+-        statusCode: 307,
+-      },
+-      {
+-        source: "/CPS/:s",
+-        destination: "/",
+-        statusCode: 307,
+-      },
+-      {
+-        source: "/LAW",
+-        destination: "/",
+-        statusCode: 307,
+-      },
+-      {
+-        source: "/LAW/:s",
+-        destination: "/",
+-        statusCode: 307,
++import {
++  GetMetaInfoResponse,
++  GetSupportedMajorsResponse,
++  GetSupportedMinorsResponse,
++} from "./lib/graduate/api-response-types";
++import { Major, Minor } from "./lib/graduate/types";
++
++class GraduateAPIClient {
++  private baseURL: string;
++
++  constructor(baseURL: string) {
++    this.baseURL = baseURL;
++  }
++
++  private async req<T>(
++    method: string,
++    url: string,
++    body?: unknown,
++    params?: Record<string, string | number>,
++  ): Promise<T> {
++    const baseURL = this.baseURL.startsWith("http")
++      ? this.baseURL
++      : `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}${this.baseURL}`;
++
++    const fullUrl = new URL(
++      `${baseURL.replace(/\/$/, "")}/${url.replace(/^\//, "")}`,
++    );
++
++    if (params) {
++      Object.keys(params).forEach((key) =>
++        fullUrl.searchParams.append(key, String(params[key])),
++      );
++    }
++
++    const response = await fetch(fullUrl.toString(), {
++      method,
++      headers: {
++        "Content-Type": "application/json",
+       },
+-    ];
+-  },
+-};
++      credentials: "include",
++      body: body ? JSON.stringify(body) : undefined,
++    });
++
++    if (!response.ok) {
++      throw new Error(`HTTP error! status: ${response.status}`);
++    }
++
++    return response.json() as Promise<T>;
++  }
++
++  meta = {
++    getInfo: (): Promise<GetMetaInfoResponse> => this.req("GET", "/meta/info"),
++  };
++
++  majors = {
++    getSupportedMajors: (): Promise<GetSupportedMajorsResponse> =>
++      this.req("GET", "/majors/supportedMajors"),
++
++    get: (catalogYear: number, majorName: string): Promise<Major> =>
++      this.req(
++        "GET",
++        `/majors/${catalogYear}/${encodeURIComponent(majorName)}`,
++      ),
++  };
++
++  minors = {
++    get: (catalogYear: number, minorName: string): Promise<Minor> =>
++      this.req(
++        "GET",
++        `/minors/${catalogYear}/${encodeURIComponent(minorName)}`,
++      ),
++
++    getSupportedMinors: (): Promise<GetSupportedMinorsResponse> =>
++      this.req("GET", "/minors/supportedMinors"),
++  };
++
++  templates = {
++    getForYear: (catalogYear: number): Promise<Record<string, Major>> =>
++      this.req("GET", `/templates/${catalogYear}`),
++
++    getForMajor: (
++      catalogYear: number,
++      majorName: string,
++    ): Promise<Major | null> =>
++      this.req("GET", `/templates/${catalogYear}/${majorName}`),
+ 
+-const vercelToolbar = withVercelToolbar();
+-const withMDX = createMDX({
+-  extension: /\.(md|mdx)$/,
+-});
++    getAll: (): Promise<Record<string, Record<string, Major>>> =>
++      this.req("GET", "/templates"),
++  };
++}
+ 
+-export default vercelToolbar(withMDX(nextConfig));
++export const GraduateAPI = new GraduateAPIClient(
++  process.env.NEXT_PUBLIC_GRADUATE_API_URL ?? "/api/graduate",
++);
+\ No newline at end of file
+diff --git a/packages/notifs/dist/index.d.ts b/packages/notifs/dist/index.d.ts
+new file mode 100644
+index 0000000..e11d656
+--- /dev/null
++++ b/packages/notifs/dist/index.d.ts
+@@ -0,0 +1,4 @@
++export * from "./types";
++export * from "./manager";
++export * from "./senders/sms";
++//# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/index.d.ts.map b/packages/notifs/dist/index.d.ts.map
+new file mode 100644
+index 0000000..114c0c1
+--- /dev/null
++++ b/packages/notifs/dist/index.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,cAAc,SAAS,CAAC;AACxB,cAAc,WAAW,CAAC;AAC1B,cAAc,eAAe,CAAC"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/index.js b/packages/notifs/dist/index.js
+new file mode 100644
+index 0000000..ab4bae8
+--- /dev/null
++++ b/packages/notifs/dist/index.js
+@@ -0,0 +1,4 @@
++export * from "./types";
++export * from "./manager";
++export * from "./senders/sms";
++//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/index.js.map b/packages/notifs/dist/index.js.map
+new file mode 100644
+index 0000000..5b54c43
+--- /dev/null
++++ b/packages/notifs/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,cAAc,SAAS,CAAC;AACxB,cAAc,WAAW,CAAC;AAC1B,cAAc,eAAe,CAAC"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/manager.d.ts b/packages/notifs/dist/manager.d.ts
+new file mode 100644
+index 0000000..21f04e7
+--- /dev/null
++++ b/packages/notifs/dist/manager.d.ts
+@@ -0,0 +1,8 @@
++import type { NotificationSender, NotificationMethod, NotificationMessage, NotificationResult } from "./types";
++export declare class NotificationManager {
++    private senders;
++    registerSender(sender: NotificationSender): void;
++    send(method: NotificationMethod, message: NotificationMessage): Promise<NotificationResult>;
++    hasSender(method: NotificationMethod): boolean;
++}
++//# sourceMappingURL=manager.d.ts.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/manager.d.ts.map b/packages/notifs/dist/manager.d.ts.map
+new file mode 100644
+index 0000000..44512c4
+--- /dev/null
++++ b/packages/notifs/dist/manager.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"manager.d.ts","sourceRoot":"","sources":["../src/manager.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EACV,kBAAkB,EAClB,kBAAkB,EAClB,mBAAmB,EACnB,kBAAkB,EACnB,MAAM,SAAS,CAAC;AAEjB,qBAAa,mBAAmB;IAC9B,OAAO,CAAC,OAAO,CAA0D;IAEzE,cAAc,CAAC,MAAM,EAAE,kBAAkB,GAAG,IAAI;IAI1C,IAAI,CACR,MAAM,EAAE,kBAAkB,EAC1B,OAAO,EAAE,mBAAmB,GAC3B,OAAO,CAAC,kBAAkB,CAAC;IAa9B,SAAS,CAAC,MAAM,EAAE,kBAAkB,GAAG,OAAO;CAG/C"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/manager.js b/packages/notifs/dist/manager.js
+new file mode 100644
+index 0000000..97b5e3b
+--- /dev/null
++++ b/packages/notifs/dist/manager.js
+@@ -0,0 +1,22 @@
++export class NotificationManager {
++    constructor() {
++        this.senders = new Map();
++    }
++    registerSender(sender) {
++        this.senders.set(sender.getMethod(), sender);
++    }
++    async send(method, message) {
++        const sender = this.senders.get(method);
++        if (!sender) {
++            return {
++                success: false,
++                error: new Error(`no sender registered for method: ${method}`),
++            };
++        }
++        return sender.send(message);
++    }
++    hasSender(method) {
++        return this.senders.has(method);
++    }
++}
++//# sourceMappingURL=manager.js.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/manager.js.map b/packages/notifs/dist/manager.js.map
+new file mode 100644
+index 0000000..f788a99
+--- /dev/null
++++ b/packages/notifs/dist/manager.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"manager.js","sourceRoot":"","sources":["../src/manager.ts"],"names":[],"mappings":"AAOA,MAAM,OAAO,mBAAmB;IAAhC;QACU,YAAO,GAAgD,IAAI,GAAG,EAAE,CAAC;IAyB3E,CAAC;IAvBC,cAAc,CAAC,MAA0B;QACvC,IAAI,CAAC,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,SAAS,EAAE,EAAE,MAAM,CAAC,CAAC;IAC/C,CAAC;IAED,KAAK,CAAC,IAAI,CACR,MAA0B,EAC1B,OAA4B;QAE5B,MAAM,MAAM,GAAG,IAAI,CAAC,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,CAAC;QAExC,IAAI,CAAC,MAAM,EAAE,CAAC;YACZ,OAAO;gBACL,OAAO,EAAE,KAAK;gBACd,KAAK,EAAE,IAAI,KAAK,CAAC,oCAAoC,MAAM,EAAE,CAAC;aAC/D,CAAC;QACJ,CAAC;QAED,OAAO,MAAM,CAAC,IAAI,CAAC,OAAO,CAAC,CAAC;IAC9B,CAAC;IAED,SAAS,CAAC,MAA0B;QAClC,OAAO,IAAI,CAAC,OAAO,CAAC,GAAG,CAAC,MAAM,CAAC,CAAC;IAClC,CAAC;CACF"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/senders/sms.d.ts b/packages/notifs/dist/senders/sms.d.ts
+new file mode 100644
+index 0000000..409997d
+--- /dev/null
++++ b/packages/notifs/dist/senders/sms.d.ts
+@@ -0,0 +1,16 @@
++import type { NotificationSender, NotificationMessage, NotificationResult, Logger } from "../types";
++export interface SMSConfig {
++    twilioSid: string;
++    twilioAuthToken: string;
++    fromPhoneNumber: string;
++    logger?: Logger;
++}
++export declare class SMSSender implements NotificationSender {
++    private client;
++    private fromPhoneNumber;
++    private logger?;
++    constructor(config: SMSConfig);
++    getMethod(): "SMS";
++    send(message: NotificationMessage): Promise<NotificationResult>;
++}
++//# sourceMappingURL=sms.d.ts.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/senders/sms.d.ts.map b/packages/notifs/dist/senders/sms.d.ts.map
+new file mode 100644
+index 0000000..8c9747b
+--- /dev/null
++++ b/packages/notifs/dist/senders/sms.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"sms.d.ts","sourceRoot":"","sources":["../../src/senders/sms.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EACV,kBAAkB,EAClB,mBAAmB,EACnB,kBAAkB,EAClB,MAAM,EACP,MAAM,UAAU,CAAC;AAElB,MAAM,WAAW,SAAS;IACxB,SAAS,EAAE,MAAM,CAAC;IAClB,eAAe,EAAE,MAAM,CAAC;IACxB,eAAe,EAAE,MAAM,CAAC;IACxB,MAAM,CAAC,EAAE,MAAM,CAAC;CACjB;AAED,qBAAa,SAAU,YAAW,kBAAkB;IAClD,OAAO,CAAC,MAAM,CAAS;IACvB,OAAO,CAAC,eAAe,CAAS;IAChC,OAAO,CAAC,MAAM,CAAC,CAAS;gBAEZ,MAAM,EAAE,SAAS;IAM7B,SAAS,IACA,KAAK;IAGR,IAAI,CAAC,OAAO,EAAE,mBAAmB,GAAG,OAAO,CAAC,kBAAkB,CAAC;CAgCtE"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/senders/sms.js b/packages/notifs/dist/senders/sms.js
+new file mode 100644
+index 0000000..d943736
+--- /dev/null
++++ b/packages/notifs/dist/senders/sms.js
+@@ -0,0 +1,40 @@
++import { Twilio } from "twilio";
++export class SMSSender {
++    constructor(config) {
++        this.client = new Twilio(config.twilioSid, config.twilioAuthToken);
++        this.fromPhoneNumber = config.fromPhoneNumber;
++        this.logger = config.logger;
++    }
++    getMethod() {
++        return "SMS";
++    }
++    async send(message) {
++        var _a, _b, _c;
++        try {
++            const result = await this.client.messages.create({
++                body: message.body,
++                from: this.fromPhoneNumber,
++                to: message.to,
++            });
++            (_a = this.logger) === null || _a === void 0 ? void 0 : _a.info(`Sent notification text to ${message.to}`);
++            return {
++                success: true,
++                messageId: result.sid,
++            };
++        }
++        catch (err) {
++            const error = err;
++            if (error.code === 21610) {
++                (_b = this.logger) === null || _b === void 0 ? void 0 : _b.warn(`${message.to} has unsubscribed from notifications`);
++            }
++            else {
++                (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error(`Error trying to send notification text to ${message.to}`, error);
++            }
++            return {
++                success: false,
++                error: error,
++            };
++        }
++    }
++}
++//# sourceMappingURL=sms.js.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/senders/sms.js.map b/packages/notifs/dist/senders/sms.js.map
+new file mode 100644
+index 0000000..8468f6b
+--- /dev/null
++++ b/packages/notifs/dist/senders/sms.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"sms.js","sourceRoot":"","sources":["../../src/senders/sms.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,QAAQ,CAAC;AAehC,MAAM,OAAO,SAAS;IAKpB,YAAY,MAAiB;QAC3B,IAAI,CAAC,MAAM,GAAG,IAAI,MAAM,CAAC,MAAM,CAAC,SAAS,EAAE,MAAM,CAAC,eAAe,CAAC,CAAC;QACnE,IAAI,CAAC,eAAe,GAAG,MAAM,CAAC,eAAe,CAAC;QAC9C,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC,MAAM,CAAC;IAC9B,CAAC;IAED,SAAS;QACP,OAAO,KAAc,CAAC;IACxB,CAAC;IAED,KAAK,CAAC,IAAI,CAAC,OAA4B;;QACrC,IAAI,CAAC;YACH,MAAM,MAAM,GAAG,MAAM,IAAI,CAAC,MAAM,CAAC,QAAQ,CAAC,MAAM,CAAC;gBAC/C,IAAI,EAAE,OAAO,CAAC,IAAI;gBAClB,IAAI,EAAE,IAAI,CAAC,eAAe;gBAC1B,EAAE,EAAE,OAAO,CAAC,EAAE;aACf,CAAC,CAAC;YAEH,MAAA,IAAI,CAAC,MAAM,0CAAE,IAAI,CAAC,6BAA6B,OAAO,CAAC,EAAE,EAAE,CAAC,CAAC;YAE7D,OAAO;gBACL,OAAO,EAAE,IAAI;gBACb,SAAS,EAAE,MAAM,CAAC,GAAG;aACtB,CAAC;QACJ,CAAC;QAAC,OAAO,GAAG,EAAE,CAAC;YACb,MAAM,KAAK,GAAG,GAAgC,CAAC;YAE/C,IAAI,KAAK,CAAC,IAAI,KAAK,KAAK,EAAE,CAAC;gBACzB,MAAA,IAAI,CAAC,MAAM,0CAAE,IAAI,CAAC,GAAG,OAAO,CAAC,EAAE,sCAAsC,CAAC,CAAC;YACzE,CAAC;iBAAM,CAAC;gBACN,MAAA,IAAI,CAAC,MAAM,0CAAE,KAAK,CAChB,6CAA6C,OAAO,CAAC,EAAE,EAAE,EACzD,KAAK,CACN,CAAC;YACJ,CAAC;YAED,OAAO;gBACL,OAAO,EAAE,KAAK;gBACd,KAAK,EAAE,KAAK;aACb,CAAC;QACJ,CAAC;IACH,CAAC;CACF"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/types.d.ts b/packages/notifs/dist/types.d.ts
+new file mode 100644
+index 0000000..5a64c7d
+--- /dev/null
++++ b/packages/notifs/dist/types.d.ts
+@@ -0,0 +1,22 @@
++export type NotificationMethod = "SMS";
++export interface NotificationMessage {
++    to: string;
++    body: string;
++    metadata?: Record<string, any>;
++}
++export interface NotificationResult {
++    success: boolean;
++    error?: Error;
++    messageId?: string;
++}
++export interface Logger {
++    debug(message?: any, ...optionalParams: any[]): void;
++    info(message?: any, ...optionalParams: any[]): void;
++    warn(message?: any, ...optionalParams: any[]): void;
++    error(message?: any, ...optionalParams: any[]): void;
++}
++export interface NotificationSender {
++    send(message: NotificationMessage): Promise<NotificationResult>;
++    getMethod(): NotificationMethod;
++}
++//# sourceMappingURL=types.d.ts.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/types.d.ts.map b/packages/notifs/dist/types.d.ts.map
+new file mode 100644
+index 0000000..7225284
+--- /dev/null
++++ b/packages/notifs/dist/types.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"types.d.ts","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,kBAAkB,GAAG,KAAK,CAAC;AAEvC,MAAM,WAAW,mBAAmB;IAClC,EAAE,EAAE,MAAM,CAAC;IACX,IAAI,EAAE,MAAM,CAAC;IACb,QAAQ,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,CAAC;CAChC;AAED,MAAM,WAAW,kBAAkB;IACjC,OAAO,EAAE,OAAO,CAAC;IACjB,KAAK,CAAC,EAAE,KAAK,CAAC;IACd,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB;AAED,MAAM,WAAW,MAAM;IACrB,KAAK,CAAC,OAAO,CAAC,EAAE,GAAG,EAAE,GAAG,cAAc,EAAE,GAAG,EAAE,GAAG,IAAI,CAAC;IACrD,IAAI,CAAC,OAAO,CAAC,EAAE,GAAG,EAAE,GAAG,cAAc,EAAE,GAAG,EAAE,GAAG,IAAI,CAAC;IACpD,IAAI,CAAC,OAAO,CAAC,EAAE,GAAG,EAAE,GAAG,cAAc,EAAE,GAAG,EAAE,GAAG,IAAI,CAAC;IACpD,KAAK,CAAC,OAAO,CAAC,EAAE,GAAG,EAAE,GAAG,cAAc,EAAE,GAAG,EAAE,GAAG,IAAI,CAAC;CACtD;AAED,MAAM,WAAW,kBAAkB;IACjC,IAAI,CAAC,OAAO,EAAE,mBAAmB,GAAG,OAAO,CAAC,kBAAkB,CAAC,CAAC;IAChE,SAAS,IAAI,kBAAkB,CAAC;CACjC"}
+\ No newline at end of file
+diff --git a/packages/notifs/dist/types.js b/packages/notifs/dist/types.js
+new file mode 100644
+index 0000000..718fd38
+--- /dev/null
++++ b/packages/notifs/dist/types.js
+@@ -0,0 +1,2 @@
++export {};
++//# sourceMappingURL=types.js.map
+\ No newline at end of file
+diff --git a/packages/notifs/dist/types.js.map b/packages/notifs/dist/types.js.map
+new file mode 100644
+index 0000000..c768b79
+--- /dev/null
++++ b/packages/notifs/dist/types.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"types.js","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":""}
+\ No newline at end of file
+diff --git a/packages/notifs/node_modules/.bin/tsc b/packages/notifs/node_modules/.bin/tsc
+new file mode 100755
+index 0000000..6b91170
+--- /dev/null
++++ b/packages/notifs/node_modules/.bin/tsc
+@@ -0,0 +1,21 @@
++#!/bin/sh
++basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
++
++case `uname` in
++    *CYGWIN*|*MINGW*|*MSYS*)
++        if command -v cygpath > /dev/null 2>&1; then
++            basedir=`cygpath -w "$basedir"`
++        fi
++    ;;
++esac
++
++if [ -z "$NODE_PATH" ]; then
++  export NODE_PATH="/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/node_modules"
++else
++  export NODE_PATH="/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/node_modules:$NODE_PATH"
++fi
++if [ -x "$basedir/node" ]; then
++  exec "$basedir/node"  "$basedir/../typescript/bin/tsc" "$@"
++else
++  exec node  "$basedir/../typescript/bin/tsc" "$@"
++fi
+diff --git a/packages/notifs/node_modules/.bin/tsserver b/packages/notifs/node_modules/.bin/tsserver
+new file mode 100755
+index 0000000..12e6938
+--- /dev/null
++++ b/packages/notifs/node_modules/.bin/tsserver
+@@ -0,0 +1,21 @@
++#!/bin/sh
++basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
++
++case `uname` in
++    *CYGWIN*|*MINGW*|*MSYS*)
++        if command -v cygpath > /dev/null 2>&1; then
++            basedir=`cygpath -w "$basedir"`
++        fi
++    ;;
++esac
++
++if [ -z "$NODE_PATH" ]; then
++  export NODE_PATH="/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/node_modules"
++else
++  export NODE_PATH="/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/typescript@5.9.3/node_modules:/Users/jake.langlois/Documents/searchneu/node_modules/.pnpm/node_modules:$NODE_PATH"
++fi
++if [ -x "$basedir/node" ]; then
++  exec "$basedir/node"  "$basedir/../typescript/bin/tsserver" "$@"
++else
++  exec node  "$basedir/../typescript/bin/tsserver" "$@"
++fi
+diff --git a/packages/notifs/node_modules/@sneu/tsconfig b/packages/notifs/node_modules/@sneu/tsconfig
+new file mode 120000
+index 0000000..f93be50
+--- /dev/null
++++ b/packages/notifs/node_modules/@sneu/tsconfig
+@@ -0,0 +1 @@
++../../../tsconfig
+\ No newline at end of file
+diff --git a/packages/notifs/node_modules/@types/node b/packages/notifs/node_modules/@types/node
+new file mode 120000
+index 0000000..9e7f6a5
+--- /dev/null
++++ b/packages/notifs/node_modules/@types/node
+@@ -0,0 +1 @@
++../../../../node_modules/.pnpm/@types+node@25.1.0/node_modules/@types/node
+\ No newline at end of file
+diff --git a/packages/notifs/node_modules/twilio b/packages/notifs/node_modules/twilio
+new file mode 120000
+index 0000000..f85e7ca
+--- /dev/null
++++ b/packages/notifs/node_modules/twilio
+@@ -0,0 +1 @@
++../../../node_modules/.pnpm/twilio@5.12.0/node_modules/twilio
+\ No newline at end of file
+diff --git a/packages/notifs/node_modules/typescript b/packages/notifs/node_modules/typescript
+new file mode 120000
+index 0000000..949dba4
+--- /dev/null
++++ b/packages/notifs/node_modules/typescript
+@@ -0,0 +1 @@
++../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript
+\ No newline at end of file

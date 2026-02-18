@@ -63,3 +63,24 @@ export async function deleteTrackerAction(id: number) {
 
   return { ok: true };
 }
+
+export async function deleteAllTrackersAction() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return { ok: false, msg: "no valid session" };
+  }
+
+  await db
+    .update(trackersT)
+    .set({
+      deletedAt: new Date(),
+    })
+    .where(
+      and(eq(trackersT.userId, session.user.id), isNull(trackersT.deletedAt)),
+    );
+
+  return { ok: true };
+}

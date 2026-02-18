@@ -1,8 +1,13 @@
 "use client";
 
 import NotificationsCourseCard from "./NotificationsCourseCard";
+import { TrackerSection } from "@/app/notifications/page";
 
-export function NotificationsView() {
+export function NotificationsView({
+  sections,
+}: {
+  sections: TrackerSection[];
+}) {
   const mockCourses = [
     {
       courseName: "CHEM 2311",
@@ -131,7 +136,7 @@ export function NotificationsView() {
       ],
     },
   ];
-
+  console.log("Sections:", sections);
   return (
     <div className="h-full min-h-0 overflow-y-auto">
       <div className="flex flex-col gap-6 pb-6">

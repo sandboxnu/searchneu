@@ -58,7 +58,7 @@ export const savedPlansT = pgTable(
   "saved_plans",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer()
+    userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
     term: varchar({ length: 6 })

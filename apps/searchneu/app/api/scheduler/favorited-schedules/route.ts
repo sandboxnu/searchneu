@@ -1,5 +1,5 @@
-import { db, savedPlansT, favoritedSchedulesT, favoritedScheduleSectionsT, usersT } from "@/lib/db";
-import { getGuid } from "@/lib/auth/utils";
+import { db, savedPlansT, favoritedSchedulesT, favoritedScheduleSectionsT } from "@/lib/db";
+import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
@@ -11,17 +11,9 @@ interface CreateFavoritedScheduleRequest {
 
 // POST create a new favorited schedule
 export async function POST(req: NextRequest) {
-  const guid = await getGuid();
-  if (!guid) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const user = await db.query.usersT.findFirst({
-    where: eq(usersT.guid, guid),
-  });
-
+  const user = await verifyUser();
   if (!user) {
-    return Response.json({ error: "User not found" }, { status: 404 });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   let body: CreateFavoritedScheduleRequest;

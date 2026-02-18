@@ -63,14 +63,18 @@ export function FilterMultiSelect({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Label className="text-muted-foreground text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-muted-foreground cursor-pointer text-xs font-bold"
+        >
           {label}
-        </Label>
+        </button>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-xs text-blue-600 hover:text-blue-600/80"
+              className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
               Clear all
             </button>
@@ -80,7 +84,7 @@ export function FilterMultiSelect({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
               >
                 <PlusIcon
                   className={cn(
@@ -148,7 +152,7 @@ export function FilterMultiSelect({
         </div>
       </div>
       {selectedOptions.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-3">
+        <div className="flex flex-wrap gap-2">
           {selectedOptions.slice(0, 3).map((opt) => (
             <span
               key={opt.value}
@@ -171,7 +175,7 @@ export function FilterMultiSelect({
               <button
                 onClick={() => removeOption(opt.value)}
                 aria-label={`Remove ${opt.label}`}
-                className="text-muted-foreground hover:text-foreground ml-2 rounded-full py-0.5 text-lg leading-none"
+                className="cursor-pointer text-muted-foreground hover:text-foreground ml-2 rounded-full py-0.5 text-lg leading-none"
               >
                 ×
               </button>

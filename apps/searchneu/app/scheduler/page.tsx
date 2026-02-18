@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { db, nupathsT } from "@/lib/db";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
@@ -38,11 +39,13 @@ export default async function Page({
     .then((c) => c.map((e) => ({ label: e.name, value: e.short })));
 
   return (
-    <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
-      <SchedulerWrapper
-        initialSchedules={allSchedules}
-        nupathOptions={nupathOptions}
-      />
+    <div className="bg-secondary min-h-0 w-full flex-1 overflow-hidden px-4 pt-4 xl:px-6">
+      <Suspense>
+        <SchedulerWrapper
+          initialSchedules={allSchedules}
+          nupathOptions={nupathOptions}
+        />
+      </Suspense>
     </div>
   );
 }

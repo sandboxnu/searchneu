@@ -1,56 +1,63 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/lib/cn";
-import { Lock, Unlock } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 
 interface SectionRowProps {
   section: SectionWithCourse;
+  hidden: boolean;
+  onToggleHidden: () => void;
 }
 
-export function SectionRow({ section }: SectionRowProps) {
-  const [locked, setLocked] = useState(false);
-  const seatDelta = section.seatRemaining / section.seatCapacity;
+export function SectionRow({ section, hidden, onToggleHidden }: SectionRowProps) {
+  const seatDelta = section.seatCapacity > 0 ? section.seatRemaining / section.seatCapacity : 0;
+
+  const EyeIcon = hidden ? EyeOff : Eye;
+
   return (
-    <div className="flex items-start justify-between px-3 py-3">
-      <div className="flex items-start gap-3">
-        <button
-          onClick={() => setLocked((l) => !l)}
-          aria-label={locked ? "Unlock section" : "Lock section"}
-          className="self-start p-1"
-        >
-          {locked ? (
-            <Lock className="h-4 w-4 text-red-500" />
-          ) : (
-            <Unlock className="h-4 w-4 text-gray-400" />
-          )}
-        </button>
-        <div>
-          <div className="text-neu8 my-1 text-sm font-bold">
-            CRN {section.crn}
-          </div>
-          <div className="text-neu6 text-sm">
-            {formatFaculty(section.faculty)}
-          </div>
-          <div className="text-neu6 mb-1 text-sm">
-            <MeetingTimes meetings={section.meetingTimes} />
-          </div>
-          <span
-            className={cn(
-              "inline-block shrink-0 rounded-full px-2 py-1 text-sm font-medium whitespace-nowrap",
-              seatDelta > 0.2 && "bg-green-100 text-green-700",
-              seatDelta <= 0.2 &&
-                seatDelta > 0.05 &&
-                "bg-yellow-100 text-yellow-700",
-              seatDelta <= 0.05 && "bg-red-100 text-red-700",
-            )}
-          >
-            {section.seatRemaining} / {section.seatCapacity}
-          </span>
+    <div className={`flex items-start gap-2 px-3 py-2 transition-opacity ${hidden ? "opacity-30" : ""}`}>
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <span className="text-xs font-bold text-[#5f5f5f]">
+          CRN {section.crn}
+        </span>
+        <div className="flex flex-col gap-1 text-sm">
+          <MeetingTimes meetings={section.meetingTimes} />
         </div>
+        <span className="truncate text-sm text-[#858585]">
+          {formatFaculty(section.faculty)}
+        </span>
+        <SeatBadge remaining={section.seatRemaining} capacity={section.seatCapacity} delta={seatDelta} />
       </div>
+      <EyeIcon
+        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer text-[#a3a3a3] transition-colors hover:text-[#666]"
+        onClick={onToggleHidden}
+      />
     </div>
+  );
+}
+
+function SeatBadge({ remaining, capacity, delta }: { remaining: number; capacity: number; delta: number }) {
+  if (delta > 0.2) {
+    return (
+      <span className="inline-flex w-fit items-center gap-1 rounded-full border border-[#d6f5e2] bg-[rgba(214,245,226,0.4)] px-2 py-1 text-xs text-[#178459]">
+        <User className="h-3.5 w-3.5" />
+        {remaining} / {capacity}
+      </span>
+    );
+  }
+  if (delta > 0.05) {
+    return (
+      <span className="inline-flex w-fit items-center gap-1 rounded-full border border-yellow-200 bg-yellow-50/40 px-2 py-1 text-xs text-yellow-700">
+        <User className="h-3.5 w-3.5" />
+        {remaining} / {capacity}
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex w-fit items-center gap-1 rounded-full border border-red-200 bg-red-50/40 px-2 py-1 text-xs text-red-700">
+      <User className="h-3.5 w-3.5" />
+      {remaining} / {capacity}
+    </span>
   );
 }
 
@@ -59,25 +66,29 @@ function MeetingTimes({
 }: {
   meetings: SectionWithCourse["meetingTimes"];
 }) {
-  const dayLetters = ["S", "M", "Tu", "W", "Th", "F", "S"];
+  const dayLetters = ["S", "M", "T", "W", "T", "F", "S"];
 
   if (!meetings || meetings.length === 0 || meetings[0].days.length === 0) {
-    return <span>TBA</span>;
+    return <span className="text-[#858585]">TBA</span>;
   }
 
   return (
-    <div className="flex flex-col">
+    <>
       {meetings.map((m, i) => {
         const days = Array.from(new Set(m.days)).sort((a, b) => a - b);
-        const daysStr = days.map((d) => dayLetters[d] ?? "").join("");
         const timeStr = formatTimeRange(m.startTime, m.endTime);
         return (
           <span key={i} className="whitespace-nowrap">
-            {daysStr}: {timeStr}
+            {days.map((d) => (
+              <span key={d} className="font-semibold text-[#333]">
+                {dayLetters[d]}{" "}
+              </span>
+            ))}
+            <span className="text-[#858585]">{timeStr}</span>
           </span>
         );
       })}
-    </div>
+    </>
   );
 }
 
@@ -96,7 +107,7 @@ function formatTimeRange(startTime: number, endTime: number) {
   const formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
   const formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
 
-  return `${formattedStart}${startIsPM ? "pm" : "am"} - ${formattedEnd}${endIsPM ? "pm" : "am"}`;
+  return `${formattedStart} ${startIsPM ? "PM" : "AM"} – ${formattedEnd} ${endIsPM ? "PM" : "AM"}`;
 }
 
 function formatFaculty(f: string) {
@@ -104,5 +115,5 @@ function formatFaculty(f: string) {
   if (!lastName || !firstName) {
     return "NA";
   }
-  return `${firstName.trim()[0]}. ${lastName}`;
+  return `${firstName.trim()} ${lastName.trim()}`;
 }

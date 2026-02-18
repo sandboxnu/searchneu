@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { use } from "react";
 import { useSearchParams } from "next/navigation";
 import { SectionTableRow } from "./SectionTableRow";
 
@@ -47,14 +47,13 @@ export function SectionTable({
   trackedSectionsPromise: Promise<number[]>;
   isTermActive: boolean;
 }) {
-  const [showAll, setShowAll] = useState(false);
   const searchParams = useSearchParams();
 
   const sections = use(sectionsPromise);
   const trackedSections = use(trackedSectionsPromise);
 
-  const totalSeats = sections.reduce((agg, s) => agg + s.seatCapacity, 0);
-  const seatsRemaining = sections.reduce((agg, s) => agg + s.seatRemaining, 0);
+  // const totalSeats = sections.reduce((agg, s) => agg + s.seatCapacity, 0);
+  // const seatsRemaining = sections.reduce((agg, s) => agg + s.seatRemaining, 0);
 
   const campusFilter = searchParams.getAll("camp");
   const classTypeFilter = searchParams.getAll("clty");

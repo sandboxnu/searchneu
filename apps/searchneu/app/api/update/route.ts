@@ -1,16 +1,13 @@
 import {
   db,
-  buildingsT,
   coursesT,
-  meetingTimesT,
-  roomsT,
   sectionsT,
   termsT,
   trackersT,
-  usersT,
+  user as usersT,
   subjectsT,
 } from "@/lib/db";
-import { eq, gt, and } from "drizzle-orm";
+import { eq, gt } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
@@ -46,7 +43,6 @@ export async function GET(req: NextRequest) {
       sectionsWithUpdatedSeatCapacity: updatedSeatsCapacity,
       sectionsWithUpdatedWaitlistSeatCapacity: updatedWaitlistCapacity,
       newSections,
-      newSectionCourseKeys,
     } = await updateTerm(term, db, console);
 
     // get seat trackers & send notifs

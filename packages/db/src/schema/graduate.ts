@@ -7,14 +7,14 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { usersT } from "./platform";
+import { user as usersT } from "./auth";
 
 export const auditPlansT = pgTable(
   "audit_plans",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text().notNull(),
-    userId: integer()
+    userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
     schedule: json(),
@@ -35,7 +35,7 @@ export const auditMetadataT = pgTable(
   "audit_metadata",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer()
+    userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
     academicYear: smallint(),
@@ -58,4 +58,3 @@ export const auditMetadataT = pgTable(
 
   (table) => [index("audit_metadata_user_id_idx").on(table.userId)],
 );
-

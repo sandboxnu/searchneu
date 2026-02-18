@@ -9,14 +9,14 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { usersT } from "./platform";
+import { user as usersT } from "./auth";
 import { termsT, sectionsT } from "./catalog";
 
 export const generatedSchedulesT = pgTable(
   "generated_schedules",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    userId: integer()
+    userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
     term: varchar({ length: 6 })

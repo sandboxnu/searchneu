@@ -44,7 +44,7 @@ export default async function Home() {
           </div>
         </div>
       </ClickSpark>
-      <Footer/>
+      <Footer />
     </>
   );
 }

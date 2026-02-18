@@ -8,7 +8,7 @@ interface Notif {
   id: number;
   term: string;
   sectionCrn: string;
-  uid: number;
+  uid: string;
   method: string;
   count: number;
   limit: number;

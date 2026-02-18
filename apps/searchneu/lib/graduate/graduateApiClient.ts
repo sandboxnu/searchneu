@@ -1,38 +1,42 @@
-import { GetMetaInfoResponse, GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "./api-response-types";
+import {
+  GetMetaInfoResponse,
+  GetSupportedMajorsResponse,
+  GetSupportedMinorsResponse,
+} from "./api-response-types";
 import { Major, Minor } from "./types";
 
 class GraduateAPIClient {
   private baseURL: string;
 
   constructor(baseURL?: string) {
-    this.baseURL = baseURL ?? (
-      process.env.NODE_ENV === 'development' 
-        ? '/api/graduate'
-        : 'https://api.graduatenu.com/api' 
-    );
+    this.baseURL =
+      baseURL ??
+      (process.env.NODE_ENV === "development"
+        ? "/api/graduate"
+        : "https://api.graduatenu.com/api");
   }
 
   private async req<T>(
     method: string,
     url: string,
-    body?: any,
-    params?: Record<string, string | number>
+    body?: unknown,
+    params?: Record<string, string | number>,
   ): Promise<T> {
-    const base = typeof window !== 'undefined' ? window.location.origin : '';
+    const base = typeof window !== "undefined" ? window.location.origin : "";
     const fullUrl = new URL(`${this.baseURL}${url}`, base);
-    
+
     if (params) {
-      Object.keys(params).forEach(key => 
-        fullUrl.searchParams.append(key, String(params[key]))
+      Object.keys(params).forEach((key) =>
+        fullUrl.searchParams.append(key, String(params[key])),
       );
     }
 
     const response = await fetch(fullUrl.toString(), {
       method,
-      headers: { 
-        "Content-Type": "application/json" 
+      headers: {
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
       body: body ? JSON.stringify(body) : undefined,
     });
 
@@ -44,14 +48,13 @@ class GraduateAPIClient {
   }
 
   meta = {
-    getInfo: (): Promise<GetMetaInfoResponse> =>
-      this.req("GET", "/meta/info"),
+    getInfo: (): Promise<GetMetaInfoResponse> => this.req("GET", "/meta/info"),
   };
 
   majors = {
     getSupportedMajors: (): Promise<GetSupportedMajorsResponse> =>
       this.req("GET", "/majors/supportedMajors"),
-    
+
     get: (catalogYear: number, majorName: string): Promise<Major> =>
       this.req("GET", `/majors/${catalogYear}/${majorName}`),
   };
@@ -59,7 +62,7 @@ class GraduateAPIClient {
   minors = {
     get: (catalogYear: number, minorName: string): Promise<Minor> =>
       this.req("GET", `/minors/${catalogYear}/${minorName}`),
-    
+
     getSupportedMinors: (): Promise<GetSupportedMinorsResponse> =>
       this.req("GET", "/minors/supportedMinors"),
   };
@@ -67,10 +70,13 @@ class GraduateAPIClient {
   templates = {
     getForYear: (catalogYear: number): Promise<Record<string, Major>> =>
       this.req("GET", `/templates/${catalogYear}`),
-    
-    getForMajor: (majorName: string, catalogYear: number): Promise<Major | null> =>
+
+    getForMajor: (
+      catalogYear: number,
+      majorName: string,
+    ): Promise<Major | null> =>
       this.req("GET", `/templates/${catalogYear}/${majorName}`),
-    
+
     getAll: (): Promise<Record<string, Record<string, Major>>> =>
       this.req("GET", "/templates"),
   };

@@ -6,7 +6,7 @@ export interface Notif {
   id: number;
   term: string;
   sectionCrn: string;
-  uid: number;
+  uid: string;
   method: string;
   count: number;
   limit: number;
@@ -25,7 +25,11 @@ export async function sendNotifications(
   waitlistNotifs: Notif[],
   db: ReturnType<typeof createDbClient>,
   sender: NotificationSender,
-  logger?: { info: (msg: string) => void; warn: (msg: string) => void; error: (msg: string, err?: any) => void },
+  logger?: {
+    info: (msg: string) => void;
+    warn: (msg: string) => void;
+    error: (msg: string, err?: Error) => void;
+  },
 ) {
   const log = logger ?? console;
 
@@ -77,7 +81,7 @@ export async function sendNotifications(
           .where(eq(trackersT.id, t.id))
           .catch((err) => log.error("failed to update message count", err));
       })
-      .catch(async (err: any) => {
+      .catch(async (err) => {
         switch (err.code) {
           case 21610:
             log.warn(`${t.phoneNumber} has unsubscribed from notifications`);

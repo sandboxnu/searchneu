@@ -33,4 +33,3 @@ Huzzah! You finally finished the brutal ticket that's taken a small piece of you
 `git rebase -i` is an insanely powerful tool; the -i flag is to make your rebase session interactive, enabling you to have full control over how you want your commits to look. To keep the docs a bit shorter, and to ensure you have access to the best information, please review [this](https://hackernoon.com/beginners-guide-to-interactive-rebasing-346a3f9c3a6d) guide on how to perform interactive rebasing.
 
 Okay; now that everything is ready, push your changes and put up a PR. When writing a PR message, please keep it precise AND concise; it should be like a little synopsis for your code. And BOOM! You're all done! Move your ticket to the "in review" column and ping your reviewers that the PR is up.
-

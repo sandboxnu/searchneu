@@ -82,5 +82,5 @@ class GraduateAPIClient {
 }
 
 export const GraduateAPI = new GraduateAPIClient(
-  process.env.NEXT_PUBLIC_GRADUATE_API_URL ?? "https://api.graduatenu.com/api",
+  process.env.NEXT_PUBLIC_GRADUATE_API_URL ?? "/api/graduate",
 );

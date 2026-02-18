@@ -73,7 +73,7 @@ export default async function Page() {
       .where(inArray(sectionsT.id, trackedSectionIds));
 
     return (
-      <div className="bg-secondary h-full min-h-0 w-full overflow-hidden px-4 xl:px-6">
+      <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
         <NotificationsWrapper
           subscribedCount={trackers.length}
           totalLimit={currentUser?.trackingLimit ?? 12}

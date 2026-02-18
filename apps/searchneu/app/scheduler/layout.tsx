@@ -5,7 +5,7 @@ import { Suspense, type ReactNode } from "react";
 
 export default async function Layout({ children }: LayoutProps<"/rooms">) {
   return (
-    <div className="pt-4">
+    <div className="flex h-screen flex-col pt-4">
       <Header />
       <Suspense>
         <FlagCheck>{children}</FlagCheck>

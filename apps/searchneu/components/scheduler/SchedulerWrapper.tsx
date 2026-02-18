@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   filterSchedules,
   type ScheduleFilters,
@@ -10,6 +10,91 @@ import {
 import { SchedulerView } from "./SchedulerView";
 import { FilterPanel } from "./FilterPanel";
 import { GroupedTerms } from "@/lib/types";
+
+type Params = { get(name: string): string | null };
+
+function parseFiltersFromParams(params: Params): ScheduleFilters {
+  const filters: ScheduleFilters = {
+    includesOnline: params.get("online") !== "false",
+    includeHonors: params.get("honors") !== "false",
+  };
+
+  const startTime = params.get("startTime");
+  if (startTime) {
+    const v = parseInt(startTime);
+    if (!isNaN(v)) filters.startTime = v;
+  }
+
+  const endTime = params.get("endTime");
+  if (endTime) {
+    const v = parseInt(endTime);
+    if (!isNaN(v)) filters.endTime = v;
+  }
+
+  const freeDays = params.get("freeDays");
+  if (freeDays) {
+    const days = freeDays
+      .split(",")
+      .map(Number)
+      .filter((n) => !isNaN(n));
+    if (days.length > 0) filters.specificDaysFree = days;
+  }
+
+  const nupaths = params.get("nupaths");
+  if (nupaths) {
+    const values = nupaths.split(",").filter(Boolean);
+    if (values.length > 0) filters.nupaths = values;
+  }
+
+  const minSeats = params.get("minSeats");
+  if (minSeats) {
+    const v = parseInt(minSeats);
+    if (!isNaN(v)) filters.minSeatsLeft = v;
+  }
+
+  return filters;
+}
+
+function parseHiddenSections(params: Params): Set<string> {
+  const hidden = params.get("hiddenSections");
+  if (!hidden) return new Set();
+  return new Set(hidden.split(",").filter(Boolean));
+}
+
+function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
+  const params = new URLSearchParams(window.location.search);
+
+  const filterKeys = [
+    "startTime",
+    "endTime",
+    "freeDays",
+    "nupaths",
+    "honors",
+    "online",
+    "minSeats",
+    "hiddenSections",
+  ];
+  filterKeys.forEach((k) => params.delete(k));
+
+  if (filters.startTime != null)
+    params.set("startTime", String(filters.startTime));
+  if (filters.endTime != null) params.set("endTime", String(filters.endTime));
+  if (filters.specificDaysFree?.length)
+    params.set("freeDays", filters.specificDaysFree.join(","));
+  if (filters.nupaths?.length) params.set("nupaths", filters.nupaths.join(","));
+  if (filters.includeHonors === false) params.set("honors", "false");
+  if (filters.includesOnline === false) params.set("online", "false");
+  if (filters.minSeatsLeft != null)
+    params.set("minSeats", String(filters.minSeatsLeft));
+  if (hiddenSections.size > 0)
+    params.set("hiddenSections", Array.from(hiddenSections).join(","));
+
+  const search = params.toString();
+  const url = search
+    ? `${window.location.pathname}?${search}`
+    : window.location.pathname;
+  window.history.replaceState(null, "", url);
+}
 
 interface SchedulerWrapperProps {
   initialSchedules: SectionWithCourse[][];
@@ -23,11 +108,29 @@ export function SchedulerWrapper({
   terms,
 }: SchedulerWrapperProps) {
   const router = useRouter();
-  const [filters, setFilters] = useState<ScheduleFilters>({
-    includesOnline: true,
-    includeHonors: true,
-  });
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+
+  const [filters, setFilters] = useState<ScheduleFilters>(() =>
+    parseFiltersFromParams(searchParams),
+  );
+
+  const [hiddenSections, setHiddenSections] = useState<Set<string>>(() =>
+    parseHiddenSections(searchParams),
+  );
+
+  const toggleHiddenSection = useCallback((crn: string) => {
+    setHiddenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(crn)) next.delete(crn);
+      else next.add(crn);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    syncToUrl(filters, hiddenSections);
+  }, [filters, hiddenSections]);
 
   const handleGenerateSchedules = async (
     lockedCourseIds: number[],
@@ -35,27 +138,29 @@ export function SchedulerWrapper({
     numCourses?: number,
   ) => {
     startTransition(() => {
-      // Navigate to the same page with course IDs in the URL
-      // This will trigger a server-side re-render with the new schedules
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(window.location.search);
+
       if (lockedCourseIds.length > 0) {
         params.set("lockedCourseIds", lockedCourseIds.join(","));
+      } else {
+        params.delete("lockedCourseIds");
       }
+
       if (optionalCourseIds.length > 0) {
         params.set("optionalCourseIds", optionalCourseIds.join(","));
+      } else {
+        params.delete("optionalCourseIds");
       }
+
       if (numCourses !== undefined) {
         params.set("numCourses", numCourses.toString());
       }
-      router.push(`/scheduler?${params.toString()}`);
+
+      router.push(`/scheduler/generator?${params.toString()}`);
     });
   };
 
-  // Apply filters
-  const filteredSchedules =
-    Object.keys(filters).length > 0
-      ? filterSchedules(initialSchedules, filters)
-      : initialSchedules;
+  const filteredSchedules = filterSchedules(initialSchedules, filters);
 
   return (
     <div className="grid w-full grid-cols-6">
@@ -64,13 +169,14 @@ export function SchedulerWrapper({
           filters={filters}
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
-          isGenerating={isPending}
           nupathOptions={nupathOptions}
           filteredSchedules={filteredSchedules}
+          hiddenSections={hiddenSections}
+          onToggleHiddenSection={toggleHiddenSection}
           terms={terms}
         />
       </div>
-      <div className="col-span-5 pl-6">
+      <div className="col-span-5 min-w-0 pl-6">
         <SchedulerView schedules={filteredSchedules} filters={filters} />
       </div>
     </div>

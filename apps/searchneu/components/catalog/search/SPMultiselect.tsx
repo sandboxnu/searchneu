@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CheckIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface Option {

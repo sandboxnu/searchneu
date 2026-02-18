@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface Option {
@@ -39,9 +39,7 @@ export function FilterMultiSelect({
 }: FilterMultiSelectProps) {
   const [open, setOpen] = useState(false);
 
-  const selectedOptions = options.filter((opt) =>
-    selected.includes(opt.value)
-  );
+  const selectedOptions = options.filter((opt) => selected.includes(opt.value));
 
   const clearAll = () => {
     onSelectedChange([]);
@@ -65,14 +63,18 @@ export function FilterMultiSelect({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Label className="text-muted-foreground text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-muted-foreground cursor-pointer text-xs font-bold"
+        >
           {label}
-        </Label>
+        </button>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-blue-600 hover:text-blue-600/80 text-xs"
+              className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
               Clear all
             </button>
@@ -82,20 +84,17 @@ export function FilterMultiSelect({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
               >
                 <PlusIcon
                   className={cn(
                     "size-5 transition-transform",
-                    open && "rotate-45"
+                    open && "rotate-45",
                   )}
                 />
               </button>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-[280px] p-0"
-              align="end"
-            >
+            <PopoverContent className="w-[280px] p-0" align="end">
               <Command
                 filter={(value, search, keywords) => {
                   const v = value.toLowerCase();
@@ -121,13 +120,13 @@ export function FilterMultiSelect({
                         keywords={[opt.label]}
                         onSelect={toggleOption}
                         className={cn(
-                          "flex items-center gap-2 py-3 px-4 cursor-pointer",
-                          selected.includes(opt.value) && "font-semibold"
+                          "flex cursor-pointer items-center gap-2 px-4 py-3",
+                          selected.includes(opt.value) && "font-semibold",
                         )}
                       >
                         {opt.value !== opt.label && (
                           <div
-                            className={cn("font-bold text-muted-foreground", {
+                            className={cn("text-muted-foreground font-bold", {
                               "text-foreground": selected.includes(opt.value),
                             })}
                           >
@@ -137,7 +136,7 @@ export function FilterMultiSelect({
                         <div
                           className={cn("text-muted-foreground", {
                             "text-foreground font-semibold": selected.includes(
-                              opt.value
+                              opt.value,
                             ),
                           })}
                         >
@@ -153,21 +152,21 @@ export function FilterMultiSelect({
         </div>
       </div>
       {selectedOptions.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-3">
+        <div className="flex flex-wrap gap-2">
           {selectedOptions.slice(0, 3).map((opt) => (
             <span
               key={opt.value}
-              className="inline-flex w-fit items-center rounded-full border bg-secondary px-3 py-1 text-xs"
+              className="bg-secondary inline-flex w-fit items-center rounded-full border px-3 py-1 text-xs"
             >
               <span className="flex items-center gap-2">
                 {opt.value !== opt.label && (
-                  <span className="font-bold text-foreground">{opt.value}</span>
+                  <span className="text-foreground font-bold">{opt.value}</span>
                 )}
                 <span
                   className={cn(
                     opt.value === opt.label
                       ? "text-foreground"
-                      : "text-muted-foreground"
+                      : "text-muted-foreground",
                   )}
                 >
                   {opt.label}
@@ -176,7 +175,7 @@ export function FilterMultiSelect({
               <button
                 onClick={() => removeOption(opt.value)}
                 aria-label={`Remove ${opt.label}`}
-                className="ml-2 rounded-full py-0.5 text-lg leading-none text-muted-foreground hover:text-foreground"
+                className="cursor-pointer text-muted-foreground hover:text-foreground ml-2 rounded-full py-0.5 text-lg leading-none"
               >
                 ×
               </button>

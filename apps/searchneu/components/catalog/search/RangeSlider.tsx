@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
+import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/cn";
 
@@ -35,7 +35,7 @@ export function RangeSlider() {
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [d]);
+  });
 
   return (
     <>

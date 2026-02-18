@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable */
+
 import React, {
   useCallback,
   useEffect,

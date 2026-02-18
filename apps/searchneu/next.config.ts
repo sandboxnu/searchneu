@@ -1,14 +1,25 @@
 import type { NextConfig } from "next";
 import withVercelToolbar from "@vercel/toolbar/plugins/next";
+import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   /* config options here */
   serverExternalPackages: ["typescript"],
+  pageExtensions: ["ts", "tsx", "js", "jsx", "mdx", "md"],
   outputFileTracingIncludes: {
     "/content/api/": ["./content/api/*"],
   },
   // cacheComponents: true, /* BUG: unstable for the time being */
   reactCompiler: true,
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/graduate/:path*",
+        destination: "https://api.graduatenu.com/api/:path*",
+      },
+    ];
+  },
 
   async redirects() {
     return [
@@ -47,5 +58,8 @@ const nextConfig: NextConfig = {
 };
 
 const vercelToolbar = withVercelToolbar();
+const withMDX = createMDX({
+  extension: /\.(md|mdx)$/,
+});
 
-export default vercelToolbar(nextConfig);
+export default vercelToolbar(withMDX(nextConfig));

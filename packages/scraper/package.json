@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "lint": "eslint .",
+    "test": "node --test --import tsx ./**/*.test.ts",
     "scrape:gen": "node --import tsx ./src/scripts/generate.ts",
     "scrape:up": "node --env-file .env --import tsx ./src/scripts/upload.ts"
   },
@@ -24,21 +26,23 @@
     }
   },
   "dependencies": {
-    "citty": "^0.1.6",
+    "citty": "^0.2.0",
     "consola": "^3.4.2",
     "drizzle-orm": "^0.45.1",
     "html-entities": "^2.6.0",
     "node-html-parser": "^7.0.2",
     "yaml": "^2.8.2",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@sneu/db": "workspace:*",
+    "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.0.8",
+    "@types/node": "^25.2.1",
+    "eslint": "^9.39.2",
+    "nock": "^14.0.10",
     "tsx": "^4.21.0",
-    "turbo": "^2.7.4",
     "typescript": "^5.9.3"
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
+import { ChevronDown, Lock } from "lucide-react";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { SectionRow } from "./SectionRow";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
@@ -9,45 +9,86 @@ import { type CourseColor } from "@/lib/scheduler/courseColors";
 interface CourseBoxProps {
   sections: SectionWithCourse[];
   color?: CourseColor;
+  open: boolean;
+  onToggle: () => void;
+  hiddenSections: Set<string>;
+  onToggleHiddenSection: (crn: string) => void;
 }
 
-export function CourseBox({ sections, color }: CourseBoxProps) {
-  const [open, setOpen] = useState(false);
-  const [courseLocked, setCourseLocked] = useState(false);
+export function CourseBox({
+  sections,
+  color,
+  open,
+  onToggle,
+  hiddenSections,
+  onToggleHiddenSection,
+}: CourseBoxProps) {
+  const [locked, setLocked] = useState(false);
 
-  const courseId = sections[0] ? `${sections[0].courseSubject} ${sections[0].courseNumber}` : "";
+  const courseId = sections[0]
+    ? `${sections[0].courseSubject} ${sections[0].courseNumber}`
+    : "";
   const courseName = sections[0] ? sections[0].courseName : "";
 
   return (
-    <div className="mb-3">
-      <div
-        className="rounded-md px-3 py-2 flex items-start justify-between border"
-        style={{ borderColor: `${color?.stroke}`, backgroundColor: `${color?.fill}` }}
-      >
-        <div className="flex items-start gap-3">
-          <button
-            onClick={() => setCourseLocked((c) => !c)}
-            aria-label={courseLocked ? "Unlock course" : "Lock course"}
-            className="p-1 self-start"
-          >
-            {courseLocked ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-gray-400" />}
-          </button>
-          <div className="mt-1 leading-tight">
-            <div className="font-bold text-sm text-neu8 mb-1">{courseId}</div>
-            <div className="text-sm text-neu7">{courseName}</div>
-          </div>
-        </div>
-        <button onClick={() => setOpen((s) => !s)} aria-label={open ? "Collapse" : "Expand"} className="p-1">
-          {open ? <ChevronUp className="w-5 h-5 text-gray-600" /> : <ChevronDown className="w-5 h-5 text-gray-600" />}
-        </button>
+    <div
+      className={`group flex min-h-0 overflow-clip rounded-lg pl-1 py-1 ${open ? "flex-1" : "shrink-0"}`}
+      style={{
+        backgroundColor: color?.fill,
+        border: open ? `1px solid ${color?.accent}66` : "1px solid transparent",
+      }}
+    >
+      {/* Left accent pill */}
+      <div className="flex items-center py-0.5">
+        <div
+          className="h-full w-1 rounded-full"
+          style={{ backgroundColor: color?.accent }}
+        />
       </div>
 
-      {open && (
-        <div className="rounded-md mt-2 overflow-hidden border" style={{ borderColor: `${color?.fill}` }}>
-          {sections.map((s) => (
-            <SectionRow key={s.crn} section={s} />
-          ))}
-        </div>)}
+      {/* Content */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        {/* Course header - always visible */}
+        <button
+          onClick={onToggle}
+          className="flex w-full shrink-0 cursor-pointer items-center gap-1.5 px-3 py-1"
+        >
+          <span className="shrink-0 text-sm font-bold text-[#333]">
+            {courseId}
+          </span>
+          <span className="min-w-0 flex-1 truncate text-left text-sm text-[#858585]">
+            {courseName}
+          </span>
+          <Lock
+            className={`h-3.5 w-3.5 shrink-0 cursor-pointer transition-colors ${
+              locked
+                ? "block text-red-500"
+                : "hidden text-[#a3a3a3] hover:text-[#666] group-hover:block"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setLocked((prev) => !prev);
+            }}
+          />
+          <ChevronDown
+            className={`h-4 w-4 shrink-0 text-[#858585] transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {/* Expanded sections - scrollable */}
+        {open && (
+          <div className="min-h-0 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {sections.map((s) => (
+              <SectionRow
+                key={s.crn}
+                section={s}
+                hidden={hiddenSections.has(s.crn)}
+                onToggleHidden={() => onToggleHiddenSection(s.crn)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

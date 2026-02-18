@@ -1,0 +1,44 @@
+---
+title: Frontend
+description: Learn more about the killer SearchNEU design
+---
+
+This page serves to give a rough outline of the organization of the different components that make up the frontend for SearchNEU. While we won't dive into the specific locations
+of each and every file, we hope that this page helps give you a better sense of where different _types_ of components are located, as well as how these components interact with the Search database.
+
+### An Overview
+
+Generally speaking, finding a specific component involves the same process you would use for any Next.js application:
+
+1. Look through the `/app` folder to find the specific page (via route) you're working on.
+
+2. Look at either layout.tsx for website-specific changes or page.tsx for page-specific changes.
+
+3. If you want to modify a specific component, navigate to that component from the current file you're on (VSCode lets you find implementations by right clicking on a specific component).
+
+And that's really it! It might take a little bit to get familiar with the different endpoints and various pages, but if you take about 10-20 minutes sitting down and looking through the `/app` folder, and it'll get a bit easier to navigate.
+
+### For Editing Existing/New Work
+
+Once you've arrived at the specific component/page/layout to modify, you'll likely be either adding new CSS/HTML or an entirely new feature altogether. Unfortunately, there is no
+"one-size-fits-all" way to explain how to go about editing. Generally, however, there are a few principles worth following, both in terms of syntax and general practice.
+
+- **Reuse the work that previously exists**: we don't want five billion variations of the same button. When thinking about including a component, make sure to go through `/components` and see if something like it already exists instead of trying to rework it from scratch.
+  On the other hand, if you're unsure of how to do write a piece of code out, look at what other people have written; Search is old, and oftentimes, whatever you want to do has in some capacity been done before.
+
+- **Always fall back to Figma**: Our goated designers work their butts off to provide us with amazing outlines to work off of. When in doubt, either about CSS/HTML/general form, you should rely on the Figma first and foremost.
+
+- **Use browser developer tools**: This one may seem obvious, but if you're ever struggling to pin down a specific component, or want to easily see how a specific part of Search was created, use your browsers developer tools to look at it.
+  Oftentimes, you can copy/paste a specific piece of HTML from your browser's web tools into VSCode's text search feature to find the exact component being displayed.
+
+### Tailwind CSS
+
+As a general note, SearchNEU uses TailwindCSS for ease-of-use when formatting and decorating the website. If you ever need access to a specific color, BEFORE adding it in, be sure to review the `/app/globals.css` file to see if it already exists under another name.
+
+**PLEASE MENTION HERE ABOUT LOCAL FONT HOSTING**
+
+### Other Assets
+
+Images are located in the `\public\images` folder. As of the writing of these docs, Search only has images for the changelog. Please maintain the general image naming convention for ease-of-use, and be sure to document (via a specific folder) where the images are being used.
+
+All SVGs are stored in .tsx files in the `\components\icons` folder via exported functions. If you would like to add a new SVG, please follow-suit with the other SVGs present in this folder.

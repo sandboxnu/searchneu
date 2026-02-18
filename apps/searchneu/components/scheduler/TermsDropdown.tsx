@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -8,25 +7,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
-import type { GroupedTerms, Subject } from "@/lib/types";
+import { use, ComponentProps } from "react";
+import type { GroupedTerms } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
-export function TermSelect(
-  props: { terms: Promise<GroupedTerms> } & ComponentProps<
-    typeof SelectTrigger
-  >,
-) {
-  const terms = use(props.terms);
+export function TermsDropdown({
+  terms: termsPromise,
+  selectedCollege,
+  selectedTerm,
+  onTermChange,
+  ...selectTriggerProps
+}: { 
+  terms: Promise<GroupedTerms>;
+  selectedCollege: string;
+  selectedTerm: string | null;
+  onTermChange: (term: string) => void;
+} & ComponentProps<typeof SelectTrigger>) {
 
-  const { term } = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const activeCollege =
-    Object.keys(terms).find((k) =>
-      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-    ) ?? "neu";
+  const terms = use(termsPromise);
+  const activeCollege = selectedCollege;
+
 
   // Group terms by year and sort them
   const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
@@ -70,14 +71,12 @@ export function TermSelect(
   return (
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select
-        onValueChange={(e) =>
-          router.push(`/catalog/${e}?${searchParams.toString()}`) 
-        }
-        value={term?.toString()}
+        onValueChange={onTermChange}
+        value={selectedTerm ?? undefined}
       >
         <SelectTrigger
           className="bg-secondary border-neu25 w-full border border-solid"
-          {...props}
+          {...selectTriggerProps}
         >
           <SelectValue placeholder="Select term" />
         </SelectTrigger>
@@ -97,7 +96,7 @@ export function TermSelect(
                   value={t.term}
                   className={cn(
                     "pl-4",
-                    t.term === term?.toString()
+                    t.term === selectedTerm
                       ? "text-neu8 font-[600]"
                       : "text-neu6 font-[400]",
                   )}

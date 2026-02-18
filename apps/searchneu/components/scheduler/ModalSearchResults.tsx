@@ -15,7 +15,7 @@ const ResultCard = ({
   return (
     <div
       onClick={() => onSelect(result)}
-      className="group text-neu6 hover:bg-neu2 bg-neu1 h-[40px] w-full cursor-pointer px-[16px] py-[12px] text-[14px] transition-colors"
+      className="group text-neu6 hover:bg-neu2 bg-neu1 h-10 w-full cursor-pointer px-4 py-3 text-[14px] transition-colors"
     >
       <p className="flex min-w-0 items-center gap-1">
         <span className="group-hover:text-neu8 shrink-0 font-bold transition-all">
@@ -94,7 +94,7 @@ function ResultsList({
   const parentRef = useRef<HTMLDivElement>(null);
 
   const virtual = useVirtualizer({
-    count: Array.isArray(results) ? results.length : 0,
+    count: Array.isArray(results) ? Math.min(results.length, 20) : 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 48,
     overscan: 5,
@@ -150,11 +150,11 @@ function ResultsListSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="bg-neu3 flex h-[40px] w-full animate-pulse items-center justify-between rounded-lg px-[16px] py-[12px]"
+          className="bg-neu3 flex h-10 w-full animate-pulse items-center justify-between rounded-lg px-4 py-3"
         >
           {/* simulate subject & courseNumber */}
           <div className="flex min-w-0 items-center gap-1">
-            <div className="bg-neu4 h-[14px] w-[40px] rounded"></div>
+            <div className="bg-neu4 h-[14px] w-10 rounded"></div>
             <div className="bg-neu4 h-[14px] flex-1 rounded"></div>
           </div>
         </div>

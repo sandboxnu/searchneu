@@ -37,6 +37,7 @@ interface FilterPanelProps {
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
+    numCourses?: number,
   ) => void;
   isGenerating: boolean;
   nupathOptions: { label: string; value: string }[];
@@ -114,7 +115,7 @@ export function FilterPanel({
           value={lockedCourseIdsInput}
           onChange={(e) => setLockedCourseIdsInput(e.target.value)}
           placeholder="Enter locked course IDs separated by commas (e.g., 2953, 160)"
-          className="mt-2 min-h-[60px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="mt-2 min-h-15 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -127,7 +128,7 @@ export function FilterPanel({
           value={optionalCourseIdsInput}
           onChange={(e) => setOptionalCourseIdsInput(e.target.value)}
           placeholder="Enter optional course IDs separated by commas (e.g., 142, 5857)"
-          className="mt-2 min-h-[60px] w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="mt-2 min-h-15 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 

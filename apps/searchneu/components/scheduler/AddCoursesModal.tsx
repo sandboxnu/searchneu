@@ -54,6 +54,7 @@ export default function AddCoursesModal(props: {
   open: boolean;
   closeFn: () => void;
   terms: Promise<GroupedTerms>;
+  selectedTerm: string | null;
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
@@ -67,7 +68,11 @@ export default function AddCoursesModal(props: {
   const [numCourses, setNumCourses] = useState<number>(1);
 
   const terms = use(props.terms);
-  const hardcodedTerm = terms.neu[0]?.term ?? "";
+  const activeTerm = props.selectedTerm ?? terms.neu[0]?.term ?? "";
+  const activeTermLabel =
+    Object.values(terms)
+      .flat()
+      .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
 
   const handleSelectCourse = async (course: Course) => {
     const isCourseSelected = selectedCourseGroups.some(
@@ -103,7 +108,7 @@ export default function AddCoursesModal(props: {
 
     const rawResults = await Promise.all(
       neededCoreqReqs.map(async (c) => {
-        const rows = await getCourse(hardcodedTerm, c.subject, c.courseNumber);
+        const rows = await getCourse(activeTerm, c.subject, c.courseNumber);
         const res = rows[0];
         if (!res) return null;
 
@@ -123,12 +128,6 @@ export default function AddCoursesModal(props: {
       ...prev,
       { parent: course, coreqs: validCoreqs },
     ]);
-  };
-
-  const clear = () => {
-    setSearchQuery("");
-    setSelectedCourseGroups([]);
-    setNumCourses(1);
   };
 
   const handleDeleteGroup = (parent: Course) => {
@@ -238,7 +237,13 @@ export default function AddCoursesModal(props: {
           <DialogDescription className="text-center">
             Add up to 6 courses{" "}
             <span className="italic">(excluding corequisites)</span> that you
-            are considering for <span className="font-bold">Spring 2026.</span>
+            are considering for{" "}
+            <span className="font-bold">
+              {activeTermLabel.split(" ")[0] +
+                " " +
+                activeTermLabel.split(" ")[1] +
+                "."}
+            </span>
           </DialogDescription>
         </DialogHeader>
         {/* how many courses prompt */}
@@ -277,7 +282,7 @@ export default function AddCoursesModal(props: {
             {
               <ModalSearchResults
                 searchQuery={searchQuery}
-                term={hardcodedTerm}
+                term={activeTerm}
                 onSelectCourse={handleSelectCourse}
               />
             }

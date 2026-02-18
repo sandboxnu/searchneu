@@ -47,7 +47,7 @@ export function SchedulerWrapper({
       if (numCourses !== undefined) {
         params.set("numCourses", numCourses.toString());
       }
-      router.push(`/scheduler?${params.toString()}`);
+      router.push(`/scheduler/generator?${params.toString()}`);
     });
   };
 

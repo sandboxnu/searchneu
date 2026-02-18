@@ -8,7 +8,6 @@ import {
   or,
   and,
   section,
-  course,
 } from "./test-utils";
 import { validateRequirement } from "./major-validation";
 import * as c from "./mock-courses";

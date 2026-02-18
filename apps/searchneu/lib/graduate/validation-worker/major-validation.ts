@@ -574,7 +574,7 @@ function crawlRequirement(
     case "RANGE":
       break;
     default:
-      return assertUnreachable(req);
+      return assertUnreachable();
   }
 }
 
@@ -607,7 +607,7 @@ export function getConcentrationsRequirement(
           case "string":
             return c === cf.title;
           default:
-            return assertUnreachable(c);
+            return assertUnreachable();
         }
       },
     );
@@ -676,7 +676,7 @@ export const validateRequirement = (
     case "SECTION":
       return validateSectionRequirement(req, tracker);
     default:
-      return assertUnreachable(req);
+      return assertUnreachable();
   }
 };
 

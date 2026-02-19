@@ -6,7 +6,7 @@ import { ScheduleTerm } from "./ScheduleTerm";
 
 interface ScheduleYearProps {
   scheduleYear: PlanYear;
-  onRemoveCourse?: (course: PlanCourse) => void;
+  onRemoveCourse?: (termId: string, courseId: string) => void;
 }
 
 export function ScheduleYear({ scheduleYear, onRemoveCourse }: ScheduleYearProps) {
@@ -19,9 +19,7 @@ export function ScheduleYear({ scheduleYear, onRemoveCourse }: ScheduleYearProps
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`flex w-full cursor-pointer items-center justify-between border-0 px-4 py-3 text-left transition-colors ${
-          isExpanded ? "bg-blue-800" : "bg-blue-600 hover:bg-blue-700"
-        }`}
+        className="flex w-full cursor-pointer items-center justify-between border-0 px-4 py-3 text-left transition-colors bg-blue-800"
       >
         <div className="flex flex-col">
           <span className="text-lg font-bold text-white">Year {scheduleYear.year}</span>

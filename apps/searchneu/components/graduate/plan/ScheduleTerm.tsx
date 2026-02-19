@@ -7,17 +7,35 @@ import { getSeasonDisplayWord } from "../../../lib/graduate/planUtils";
 
 interface ScheduleTermProps {
   scheduleTerm: PlanTerm;
-  onRemoveCourse?: (course: PlanCourse) => void;
+  onRemoveCourse?: (termId: string, courseId: string) => void;
 }
 
-function PlanCourseCard({ course }: { course: PlanCourse }) {
+function PlanCourseCard({
+  course,
+  onRemove,
+}: {
+  course: PlanCourse;
+  onRemove?: () => void;
+}) {
   return (
-    <div className="mb-1.5 flex items-center justify-between rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm shadow-sm transition-shadow last:mb-0">
+    <div className="mb-1.5 flex items-center justify-between rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm shadow-sm transition-shadow last:mb-0 group">
       <span className="font-semibold text-blue-900">
         {course.subject} {course.classId}
       </span>
       {course.name && course.name !== `${course.subject} ${course.classId}` && (
         <span className="ml-2 truncate text-neutral-600">{course.name}</span>
+      )}
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          className="ml-2 shrink-0 rounded p-0.5 text-neutral-400 hover:bg-red-50 hover:text-red-500 transition-all"
+          aria-label="Remove course"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 0 0-1.41 1.41L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.88a.996.996 0 1 0 1.41-1.41L13.41 12l4.88-4.89z" />
+          </svg>
+        </button>
       )}
     </div>
   );
@@ -25,7 +43,7 @@ function PlanCourseCard({ course }: { course: PlanCourse }) {
 
 export function ScheduleTerm({ scheduleTerm, onRemoveCourse }: ScheduleTermProps) {
   const { isOver, setNodeRef } = useDroppable({ id: scheduleTerm.id });
-  const credits = scheduleTerm.classes.length * 4; // assume 4 credits per course for display
+  const credits = scheduleTerm.classes.length * 4;
 
   return (
     <div
@@ -47,6 +65,11 @@ export function ScheduleTerm({ scheduleTerm, onRemoveCourse }: ScheduleTermProps
           <PlanCourseCard
             key={course.id}
             course={course}
+            onRemove={
+              onRemoveCourse
+                ? () => onRemoveCourse(scheduleTerm.id, course.id)
+                : undefined
+            }
           />
         ))}
       </div>

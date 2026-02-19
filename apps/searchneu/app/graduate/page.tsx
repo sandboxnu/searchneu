@@ -16,6 +16,7 @@ import {
   createEmptyPlan,
   addCourseToTerm,
   flattenScheduleToTerms,
+  removeCourseFromTerm,
 } from "../../lib/graduate/planUtils";
 import type { Plan as PlanType, PlanCourse } from "../../lib/graduate/types";
 import { useSupportedMajors } from "../../lib/graduate/useGraduateApi";
@@ -109,6 +110,19 @@ export default function Page() {
     }
   };
 
+  const handleRemoveCourse = async (termId: string, courseId: string) => {
+    const updatedPlan = removeCourseFromTerm(plan, termId, courseId);
+    setPlan(updatedPlan);
+    try {
+      if (planId !== null) {
+        await updateAuditPlan(planId, { schedule: updatedPlan.schedule });
+      }
+    } catch (err) {
+      setPlanError(err instanceof Error ? err.message : "Failed to remove course");
+      setPlan(plan);
+    }
+  };
+
   if (error)
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
   if (!data) return <div className="p-4">Loading...</div>;
@@ -135,29 +149,8 @@ export default function Page() {
               {planError}
             </div>
           )}
-          <header className="shrink-0 border-b border-neutral-200 bg-white px-6 py-4">
-            <div className="mb-4 flex items-center gap-4">
-              <h1 className="text-2xl font-bold text-blue-900">Your Plan</h1>
-              <div className="flex gap-2">
-                {majorNames.map((name) => (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={() => setSelectedMajorName(name)}
-                    className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-all ${
-                      effectiveMajorName === name
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50"
-                    }`}
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </header>
           <div className="flex-1 overflow-y-auto p-6">
-            <Plan plan={plan} />
+            <Plan plan={plan} onRemoveCourse={handleRemoveCourse} />
           </div>
         </main>
       </div>

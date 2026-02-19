@@ -111,3 +111,25 @@ export function addCourseToTerm(
   };
   return newPlan;
 }
+
+export function removeCourseFromTerm(
+  plan: Plan,
+  termId: string,
+  courseId: string
+): Plan {
+  return {
+    schedule: {
+      years: plan.schedule.years.map((y) => ({
+        year: y.year,
+        fall:
+          y.fall.id === termId
+            ? { ...y.fall, classes: y.fall.classes.filter((c) => c.id !== courseId) }
+            : y.fall,
+        spring:
+          y.spring.id === termId
+            ? { ...y.spring, classes: y.spring.classes.filter((c) => c.id !== courseId) }
+            : y.spring,
+      })),
+    },
+  };
+}

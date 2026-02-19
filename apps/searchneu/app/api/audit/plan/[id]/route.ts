@@ -66,7 +66,7 @@ export async function PATCH(
       error instanceof Error ? error.message : JSON.stringify(error);
 
     return new Response(
-      JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+      JSON.stringify({ error: `Failed to update audit plan: ${message}` }),
       { status: 400 },
     );
   }

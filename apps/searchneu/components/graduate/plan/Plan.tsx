@@ -6,7 +6,7 @@ import { ScheduleYear } from "./ScheduleYear";
 
 interface PlanProps {
   plan: PlanType;
-  onRemoveCourse?: (course: PlanCourse) => void;
+  onRemoveCourse?: (termId: string, courseId: string) => void;
 }
 
 export function Plan({ plan, onRemoveCourse }: PlanProps) {

@@ -27,6 +27,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       waitlistCapacity: sectionsT.waitlistCapacity,
       waitlistRemaining: sectionsT.waitlistRemaining,
       // Course data
+      courseId: coursesT.id,
       courseName: coursesT.name,
       courseSubject: subjectsT.code,
       courseNumber: coursesT.courseNumber,
@@ -59,6 +60,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       sectionsT.seatCapacity,
       sectionsT.waitlistCapacity,
       sectionsT.waitlistRemaining,
+      coursesT.id,
       coursesT.name,
       coursesT.subject,
       subjectsT.code,
@@ -85,6 +87,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
             seatCapacity: row.seatCapacity,
             waitlistCapacity: row.waitlistCapacity,
             waitlistRemaining: row.waitlistRemaining,
+            courseId: row.courseId,
             courseName: row.courseName,
             courseSubject: row.courseSubject,
             courseNumber: row.courseNumber,

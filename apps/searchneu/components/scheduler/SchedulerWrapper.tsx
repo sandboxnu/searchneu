@@ -52,6 +52,15 @@ function parseFiltersFromParams(params: Params): ScheduleFilters {
     if (!isNaN(v)) filters.minSeatsLeft = v;
   }
 
+  const lockedCourseIds = params.get("lockedCourseIds");
+  if (lockedCourseIds) {
+    const ids = lockedCourseIds
+      .split(",")
+      .map(Number)
+      .filter((n) => !isNaN(n));
+    if (ids.length > 0) filters.lockedCourseIds = ids;
+  }
+
   return filters;
 }
 
@@ -73,6 +82,7 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     "online",
     "minSeats",
     "hiddenSections",
+    "lockedCourseIds",
   ];
   filterKeys.forEach((k) => params.delete(k));
 
@@ -88,6 +98,8 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     params.set("minSeats", String(filters.minSeatsLeft));
   if (hiddenSections.size > 0)
     params.set("hiddenSections", Array.from(hiddenSections).join(","));
+  if (filters.lockedCourseIds?.length)
+    params.set("lockedCourseIds", filters.lockedCourseIds.join(","));
 
   const search = params.toString();
   const url = search
@@ -162,6 +174,13 @@ export function SchedulerWrapper({
 
   const filteredSchedules = filterSchedules(initialSchedules, filters);
 
+  const handleLockedCourseIdsChange = useCallback((ids: number[]) => {
+    setFilters((prev) => ({
+      ...prev,
+      lockedCourseIds: ids.length > 0 ? ids : undefined,
+    }));
+  }, []);
+
   return (
     <div className="grid w-full grid-cols-6">
       <div className="col-span-1 w-full">
@@ -174,6 +193,8 @@ export function SchedulerWrapper({
           hiddenSections={hiddenSections}
           onToggleHiddenSection={toggleHiddenSection}
           terms={terms}
+          lockedCourseIds={filters.lockedCourseIds ?? []}
+          onLockedCourseIdsChange={handleLockedCourseIdsChange}
         />
       </div>
       <div className="col-span-5 min-w-0 pl-6">

@@ -24,6 +24,8 @@ interface FilterPanelProps {
     optionalCourseIds: number[],
     numCourses?: number,
   ) => void;
+  lockedCourseIds: number[];
+  onLockedCourseIdsChange: (ids: number[]) => void;
 }
 
 type Tab = "courses" | "filters";
@@ -37,6 +39,8 @@ export function FilterPanel({
   onToggleHiddenSection,
   onGenerateSchedules,
   terms,
+  lockedCourseIds,
+  onLockedCourseIdsChange,
 }: FilterPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>("courses");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,6 +86,8 @@ export function FilterPanel({
             filteredSchedules={filteredSchedules}
             hiddenSections={hiddenSections}
             onToggleHiddenSection={onToggleHiddenSection}
+            lockedCourseIds={lockedCourseIds}
+            onLockedCourseIdsChange={onLockedCourseIdsChange}
           />
         ) : (
           <FiltersTab

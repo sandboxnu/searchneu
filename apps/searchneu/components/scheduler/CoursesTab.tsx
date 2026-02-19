@@ -9,12 +9,16 @@ interface CoursesTabProps {
   filteredSchedules: SectionWithCourse[][];
   hiddenSections: Set<string>;
   onToggleHiddenSection: (crn: string) => void;
+  lockedCourseIds: number[];
+  onLockedCourseIdsChange: (ids: number[]) => void;
 }
 
 export function CoursesTab({
   filteredSchedules,
   hiddenSections,
   onToggleHiddenSection,
+  lockedCourseIds,
+  onLockedCourseIdsChange,
 }: CoursesTabProps) {
   const colorMap = useMemo(
     () => getCourseColorMap(filteredSchedules),
@@ -41,19 +45,38 @@ export function CoursesTab({
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-1">
-      {courseEntries.map(([courseKey, sectionsMap]) => (
-        <CourseBox
-          key={courseKey}
-          sections={Array.from(sectionsMap.values())}
-          color={colorMap.get(courseKey)}
-          open={expandedCourse === courseKey}
-          onToggle={() =>
-            setExpandedCourse((prev) => (prev === courseKey ? null : courseKey))
-          }
-          hiddenSections={hiddenSections}
-          onToggleHiddenSection={onToggleHiddenSection}
-        />
-      ))}
+      {courseEntries.map(([courseKey, sectionsMap]) => {
+        const sections = Array.from(sectionsMap.values());
+        const courseId = sections[0]?.courseId;
+        const isLocked = courseId ? lockedCourseIds.includes(courseId) : false;
+
+        return (
+          <CourseBox
+            key={courseKey}
+            sections={sections}
+            color={colorMap.get(courseKey)}
+            open={expandedCourse === courseKey}
+            onToggle={() =>
+              setExpandedCourse((prev) =>
+                prev === courseKey ? null : courseKey,
+              )
+            }
+            hiddenSections={hiddenSections}
+            onToggleHiddenSection={onToggleHiddenSection}
+            locked={isLocked}
+            onToggleLock={() => {
+              if (!courseId) return;
+              if (isLocked) {
+                onLockedCourseIdsChange(
+                  lockedCourseIds.filter((id) => id !== courseId),
+                );
+              } else {
+                onLockedCourseIdsChange([...lockedCourseIds, courseId]);
+              }
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

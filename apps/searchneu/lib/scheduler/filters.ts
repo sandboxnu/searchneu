@@ -1,6 +1,7 @@
 import type { SectionTableSection } from "@/components/catalog/SectionTable";
 
 export type SectionWithCourse = SectionTableSection & {
+  courseId: number;
   courseName: string;
   courseSubject: string;
   courseNumber: string;
@@ -16,6 +17,7 @@ export type ScheduleFilters = {
   includeHonors?: boolean;
   nupaths?: string[];
   includesOnline?: boolean;
+  lockedCourseIds?: number[]; // courses that must be present in the schedule
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -156,6 +158,17 @@ export const schedulePassesFilters = (
   // Check NUPath requirements (only if provided)
   if (filters.nupaths && filters.nupaths.length > 0) {
     if (!scheduleHasRequiredNupaths(schedule, filters.nupaths)) {
+      return false;
+    }
+  }
+
+  // Check that all locked courses are present in the schedule
+  if (filters.lockedCourseIds && filters.lockedCourseIds.length > 0) {
+    const scheduleCourseIds = new Set(schedule.map((s) => s.courseId));
+    const allLockedPresent = filters.lockedCourseIds.every((id) =>
+      scheduleCourseIds.has(id),
+    );
+    if (!allLockedPresent) {
       return false;
     }
   }

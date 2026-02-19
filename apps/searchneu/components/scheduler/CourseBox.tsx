@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDown, Lock } from "lucide-react";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { SectionRow } from "./SectionRow";
@@ -13,6 +12,8 @@ interface CourseBoxProps {
   onToggle: () => void;
   hiddenSections: Set<string>;
   onToggleHiddenSection: (crn: string) => void;
+  locked: boolean;
+  onToggleLock: () => void;
 }
 
 export function CourseBox({
@@ -22,9 +23,9 @@ export function CourseBox({
   onToggle,
   hiddenSections,
   onToggleHiddenSection,
+  locked,
+  onToggleLock,
 }: CourseBoxProps) {
-  const [locked, setLocked] = useState(false);
-
   const courseId = sections[0]
     ? `${sections[0].courseSubject} ${sections[0].courseNumber}`
     : "";
@@ -32,7 +33,7 @@ export function CourseBox({
 
   return (
     <div
-      className={`group flex min-h-0 overflow-clip rounded-lg pl-1 py-1 ${open ? "flex-1" : "shrink-0"}`}
+      className={`group flex min-h-0 overflow-clip rounded-lg py-1 pl-1 ${open ? "flex-1" : "shrink-0"}`}
       style={{
         backgroundColor: color?.fill,
         border: open ? `1px solid ${color?.accent}66` : "1px solid transparent",
@@ -63,11 +64,11 @@ export function CourseBox({
             className={`h-3.5 w-3.5 shrink-0 cursor-pointer transition-colors ${
               locked
                 ? "block text-red-500"
-                : "hidden text-[#a3a3a3] hover:text-[#666] group-hover:block"
+                : "hidden text-[#a3a3a3] group-hover:block hover:text-[#666]"
             }`}
             onClick={(e) => {
               e.stopPropagation();
-              setLocked((prev) => !prev);
+              onToggleLock();
             }}
           />
           <ChevronDown
@@ -77,7 +78,7 @@ export function CourseBox({
 
         {/* Expanded sections - scrollable */}
         {open && (
-          <div className="min-h-0 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="min-h-0 flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {sections.map((s) => (
               <SectionRow
                 key={s.crn}

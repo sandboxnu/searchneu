@@ -1,4 +1,9 @@
-import { db, savedPlansT, savedPlanCoursesT, savedPlanSectionsT } from "@/lib/db";
+import {
+  db,
+  savedPlansT,
+  savedPlanCoursesT,
+  savedPlanSectionsT,
+} from "@/lib/db";
 import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -117,9 +122,6 @@ export async function POST(req: NextRequest) {
     return Response.json(completePlan, { status: 201 });
   } catch (error) {
     console.error("Error saving plan:", error);
-    return Response.json(
-      { error: "Failed to save plan" },
-      { status: 500 },
-    );
+    return Response.json({ error: "Failed to save plan" }, { status: 500 });
   }
 }

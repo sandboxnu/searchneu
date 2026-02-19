@@ -1,4 +1,10 @@
-import { db, savedPlansT, savedPlanCoursesT, savedPlanSectionsT } from "@/lib/db";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  db,
+  savedPlansT,
+  savedPlanCoursesT,
+  savedPlanSectionsT,
+} from "@/lib/db";
 import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq, and } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -30,7 +36,7 @@ interface UpdatePlanRequest {
 // PATCH update an existing saved plan
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await verifyUser();
   if (!user) {
@@ -45,10 +51,7 @@ export async function PATCH(
 
   // Check if plan exists and belongs to user
   const existingPlan = await db.query.savedPlansT.findFirst({
-    where: and(
-      eq(savedPlansT.id, planId),
-      eq(savedPlansT.userId, user.id)
-    ),
+    where: and(eq(savedPlansT.id, planId), eq(savedPlansT.userId, user.id)),
   });
 
   if (!existingPlan) {
@@ -69,9 +72,12 @@ export async function PATCH(
     if (body.startTime !== undefined) updateData.startTime = body.startTime;
     if (body.endTime !== undefined) updateData.endTime = body.endTime;
     if (body.freeDays !== undefined) updateData.freeDays = body.freeDays;
-    if (body.includeHonorsSections !== undefined) updateData.includeHonorsSections = body.includeHonorsSections;
-    if (body.includeRemoteSections !== undefined) updateData.includeRemoteSections = body.includeRemoteSections;
-    if (body.hideFilledSections !== undefined) updateData.hideFilledSections = body.hideFilledSections;
+    if (body.includeHonorsSections !== undefined)
+      updateData.includeHonorsSections = body.includeHonorsSections;
+    if (body.includeRemoteSections !== undefined)
+      updateData.includeRemoteSections = body.includeRemoteSections;
+    if (body.hideFilledSections !== undefined)
+      updateData.hideFilledSections = body.hideFilledSections;
     if (body.campuses !== undefined) updateData.campuses = body.campuses;
     if (body.nupaths !== undefined) updateData.nupaths = body.nupaths;
 
@@ -140,7 +146,7 @@ export async function PATCH(
 // DELETE a saved plan
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await verifyUser();
   if (!user) {
@@ -157,12 +163,7 @@ export async function DELETE(
     // Delete the plan (cascade will automatically delete courses and sections)
     const result = await db
       .delete(savedPlansT)
-      .where(
-        and(
-          eq(savedPlansT.id, planId),
-          eq(savedPlansT.userId, user.id)
-        )
-      )
+      .where(and(eq(savedPlansT.id, planId), eq(savedPlansT.userId, user.id)))
       .returning();
 
     if (result.length === 0) {

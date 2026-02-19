@@ -1,12 +1,21 @@
-import { db, favoritedSchedulesT, favoritedScheduleSectionsT, savedPlansT, sectionsT, coursesT, subjectsT, meetingTimesT } from "@/lib/db";
+import {
+  db,
+  favoritedSchedulesT,
+  favoritedScheduleSectionsT,
+  savedPlansT,
+  sectionsT,
+  coursesT,
+  subjectsT,
+  meetingTimesT,
+} from "@/lib/db";
 import { verifyUser } from "@/lib/controllers/auditPlans";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 // GET a favorited schedule with detailed section information
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await verifyUser();
   if (!user) {
@@ -16,7 +25,10 @@ export async function GET(
   const { id } = await params;
   const favoritedScheduleId = parseInt(id);
   if (isNaN(favoritedScheduleId)) {
-    return Response.json({ error: "Favorited schedule ID is not a number" }, { status: 400 });
+    return Response.json(
+      { error: "Favorited schedule ID is not a number" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -26,7 +38,10 @@ export async function GET(
     });
 
     if (!favoritedSchedule) {
-      return Response.json({ error: "Favorited schedule not found" }, { status: 404 });
+      return Response.json(
+        { error: "Favorited schedule not found" },
+        { status: 404 },
+      );
     }
 
     // Verify the associated plan belongs to the user
@@ -35,7 +50,10 @@ export async function GET(
     });
 
     if (!plan || plan.userId !== user.id) {
-      return Response.json({ error: "Favorited schedule not found" }, { status: 404 });
+      return Response.json(
+        { error: "Favorited schedule not found" },
+        { status: 404 },
+      );
     }
 
     // Get all sections for this favorited schedule with course details
@@ -46,10 +64,15 @@ export async function GET(
         courseNumber: coursesT.courseNumber,
       })
       .from(favoritedScheduleSectionsT)
-      .innerJoin(sectionsT, eq(favoritedScheduleSectionsT.sectionId, sectionsT.id))
+      .innerJoin(
+        sectionsT,
+        eq(favoritedScheduleSectionsT.sectionId, sectionsT.id),
+      )
       .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-      .where(eq(favoritedScheduleSectionsT.favoritedScheduleId, favoritedScheduleId));
+      .where(
+        eq(favoritedScheduleSectionsT.favoritedScheduleId, favoritedScheduleId),
+      );
 
     // Get meeting times for each section
     const sectionsWithMeetings = await Promise.all(
@@ -69,7 +92,7 @@ export async function GET(
           courseNumber: section.courseNumber,
           meetingTimes,
         };
-      })
+      }),
     );
 
     return Response.json({
@@ -88,7 +111,7 @@ export async function GET(
 // DELETE a favorited schedule
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await verifyUser();
   if (!user) {
@@ -98,7 +121,10 @@ export async function DELETE(
   const { id } = await params;
   const favoritedScheduleId = parseInt(id);
   if (isNaN(favoritedScheduleId)) {
-    return Response.json({ error: "Favorited schedule ID is not a number" }, { status: 400 });
+    return Response.json(
+      { error: "Favorited schedule ID is not a number" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -108,7 +134,10 @@ export async function DELETE(
     });
 
     if (!favoritedSchedule) {
-      return Response.json({ error: "Favorited schedule not found" }, { status: 404 });
+      return Response.json(
+        { error: "Favorited schedule not found" },
+        { status: 404 },
+      );
     }
 
     // Verify the associated plan belongs to the user
@@ -117,7 +146,10 @@ export async function DELETE(
     });
 
     if (!plan || plan.userId !== user.id) {
-      return Response.json({ error: "Favorited schedule not found" }, { status: 404 });
+      return Response.json(
+        { error: "Favorited schedule not found" },
+        { status: 404 },
+      );
     }
 
     // Delete the favorited schedule (cascade will delete sections)

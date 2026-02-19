@@ -1,4 +1,9 @@
-import { db, savedPlansT, favoritedSchedulesT, favoritedScheduleSectionsT } from "@/lib/db";
+import {
+  db,
+  savedPlansT,
+  favoritedSchedulesT,
+  favoritedScheduleSectionsT,
+} from "@/lib/db";
 import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -25,7 +30,10 @@ export async function POST(req: NextRequest) {
 
   // Validate required fields
   if (!body.planId || typeof body.planId !== "number") {
-    return Response.json({ error: "planId is required and must be a number" }, { status: 400 });
+    return Response.json(
+      { error: "planId is required and must be a number" },
+      { status: 400 },
+    );
   }
 
   if (!body.name) {
@@ -33,7 +41,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (!Array.isArray(body.sectionIds)) {
-    return Response.json({ error: "sectionIds must be an array" }, { status: 400 });
+    return Response.json(
+      { error: "sectionIds must be an array" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -66,9 +77,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch the complete favorited schedule with sections
-    const completeFavoritedSchedule = await db.query.favoritedSchedulesT.findFirst({
-      where: eq(favoritedSchedulesT.id, favoritedSchedule.id),
-    });
+    const completeFavoritedSchedule =
+      await db.query.favoritedSchedulesT.findFirst({
+        where: eq(favoritedSchedulesT.id, favoritedSchedule.id),
+      });
 
     return Response.json(completeFavoritedSchedule, { status: 201 });
   } catch (error) {

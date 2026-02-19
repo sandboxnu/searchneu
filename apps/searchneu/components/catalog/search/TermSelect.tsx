@@ -71,7 +71,7 @@ export function TermSelect(
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select
         onValueChange={(e) =>
-          router.push(`/catalog/${e}?${searchParams.toString()}`) 
+          router.push(`/catalog/${e}?${searchParams.toString()}`)
         }
         value={term?.toString()}
       >

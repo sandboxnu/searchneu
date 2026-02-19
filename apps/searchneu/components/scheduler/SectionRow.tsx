@@ -9,13 +9,20 @@ interface SectionRowProps {
   onToggleHidden: () => void;
 }
 
-export function SectionRow({ section, hidden, onToggleHidden }: SectionRowProps) {
-  const seatDelta = section.seatCapacity > 0 ? section.seatRemaining / section.seatCapacity : 0;
+export function SectionRow({
+  section,
+  hidden,
+  onToggleHidden,
+}: SectionRowProps) {
+  const seatDelta =
+    section.seatCapacity > 0 ? section.seatRemaining / section.seatCapacity : 0;
 
   const EyeIcon = hidden ? EyeOff : Eye;
 
   return (
-    <div className={`flex items-start gap-2 px-3 py-2 transition-opacity ${hidden ? "opacity-30" : ""}`}>
+    <div
+      className={`flex items-start gap-2 px-3 py-2 transition-opacity ${hidden ? "opacity-30" : ""}`}
+    >
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <span className="text-xs font-bold text-[#5f5f5f]">
           CRN {section.crn}
@@ -26,7 +33,11 @@ export function SectionRow({ section, hidden, onToggleHidden }: SectionRowProps)
         <span className="truncate text-sm text-[#858585]">
           {formatFaculty(section.faculty)}
         </span>
-        <SeatBadge remaining={section.seatRemaining} capacity={section.seatCapacity} delta={seatDelta} />
+        <SeatBadge
+          remaining={section.seatRemaining}
+          capacity={section.seatCapacity}
+          delta={seatDelta}
+        />
       </div>
       <EyeIcon
         className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer text-[#a3a3a3] transition-colors hover:text-[#666]"
@@ -36,7 +47,15 @@ export function SectionRow({ section, hidden, onToggleHidden }: SectionRowProps)
   );
 }
 
-function SeatBadge({ remaining, capacity, delta }: { remaining: number; capacity: number; delta: number }) {
+function SeatBadge({
+  remaining,
+  capacity,
+  delta,
+}: {
+  remaining: number;
+  capacity: number;
+  delta: number;
+}) {
   if (delta > 0.2) {
     return (
       <span className="inline-flex w-fit items-center gap-1 rounded-full border border-[#d6f5e2] bg-[rgba(214,245,226,0.4)] px-2 py-1 text-xs text-[#178459]">

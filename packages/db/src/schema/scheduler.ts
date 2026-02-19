@@ -73,7 +73,7 @@ export const savedPlansT = pgTable(
     hideFilledSections: boolean().notNull().default(false),
     campuses: integer(),
     nupaths: integer().array().notNull().default([]),
-    
+
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
@@ -95,16 +95,14 @@ export const savedPlanCoursesT = pgTable(
       .references(() => savedPlansT.id, { onDelete: "cascade" }),
     courseId: integer().notNull(),
     isLocked: boolean().notNull().default(false),
-    
+
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("spc_plan_idx").on(table.planId),
-  ],
+  (table) => [index("spc_plan_idx").on(table.planId)],
 );
 
 export const savedPlanSectionsT = pgTable(
@@ -118,16 +116,14 @@ export const savedPlanSectionsT = pgTable(
       .notNull()
       .references(() => sectionsT.id, { onDelete: "cascade" }),
     isHidden: boolean().notNull().default(false),
-    
+
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("sps_saved_plan_course_idx").on(table.savedPlanCourseId),
-  ],
+  (table) => [index("sps_saved_plan_course_idx").on(table.savedPlanCourseId)],
 );
 
 export const favoritedSchedulesT = pgTable(
@@ -138,16 +134,14 @@ export const favoritedSchedulesT = pgTable(
       .notNull()
       .references(() => savedPlansT.id, { onDelete: "cascade" }),
     name: text().notNull(),
-    
+
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("fs_plan_idx").on(table.planId),
-  ],
+  (table) => [index("fs_plan_idx").on(table.planId)],
 );
 
 export const favoritedScheduleSectionsT = pgTable(
@@ -160,7 +154,7 @@ export const favoritedScheduleSectionsT = pgTable(
     sectionId: integer()
       .notNull()
       .references(() => sectionsT.id, { onDelete: "cascade" }),
-    
+
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
       .notNull()
@@ -177,17 +171,23 @@ export const savedPlansRelations = relations(savedPlansT, ({ many }) => ({
   courses: many(savedPlanCoursesT),
 }));
 
-export const savedPlanCoursesRelations = relations(savedPlanCoursesT, ({ one, many }) => ({
-  plan: one(savedPlansT, {
-    fields: [savedPlanCoursesT.planId],
-    references: [savedPlansT.id],
+export const savedPlanCoursesRelations = relations(
+  savedPlanCoursesT,
+  ({ one, many }) => ({
+    plan: one(savedPlansT, {
+      fields: [savedPlanCoursesT.planId],
+      references: [savedPlansT.id],
+    }),
+    sections: many(savedPlanSectionsT),
   }),
-  sections: many(savedPlanSectionsT),
-}));
+);
 
-export const savedPlanSectionsRelations = relations(savedPlanSectionsT, ({ one }) => ({
-  course: one(savedPlanCoursesT, {
-    fields: [savedPlanSectionsT.savedPlanCourseId],
-    references: [savedPlanCoursesT.id],
+export const savedPlanSectionsRelations = relations(
+  savedPlanSectionsT,
+  ({ one }) => ({
+    course: one(savedPlanCoursesT, {
+      fields: [savedPlanSectionsT.savedPlanCourseId],
+      references: [savedPlanCoursesT.id],
+    }),
   }),
-}));
+);

@@ -26,12 +26,19 @@ interface SelectedCourseGroupData {
   coreqs: Course[];
 }
 
-const mapToCourse = (raw: any): Course => ({
+interface CourseReq {
+  subject?: string;
+  courseNumber?: string;
+  type?: string;
+  items?: CourseReq[];
+}
+
+const mapToCourse = (raw: Course): Course => ({
   ...raw,
   minCredits: Number(raw.minCredits),
   maxCredits: Number(raw.maxCredits),
   specialTopics: false,
-  attributes: raw.nupaths || raw.attributes || [],
+  attributes: raw.attributes || [],
 });
 
 const isCourseMatch = (
@@ -50,15 +57,15 @@ const isAlreadySelected = (
   );
 
 const extractCoreqReqs = (
-  req: any,
+  req: CourseReq | null | undefined,
   acc: { subject: string; courseNumber: string }[] = [],
-) => {
-  if (!req || typeof req !== "object" || Object.keys(req).length === 0)
-    return acc;
-  if ("subject" in req && "courseNumber" in req) {
-    acc.push(req);
-  } else if ("type" in req && Array.isArray(req.items)) {
-    req.items.forEach((item: any) => extractCoreqReqs(item, acc));
+): { subject: string; courseNumber: string }[] => {
+  if (!req || typeof req !== "object") return acc;
+
+  if (req.subject && req.courseNumber) {
+    acc.push({ subject: req.subject, courseNumber: req.courseNumber });
+  } else if (req.items && Array.isArray(req.items)) {
+    req.items.forEach((item) => extractCoreqReqs(item, acc));
   }
   return acc;
 };
@@ -104,7 +111,7 @@ export default function AddCoursesModal(props: {
 
   const fetchCoreqs = useCallback(
     async (course: Course, currentGroups: SelectedCourseGroupData[]) => {
-      const allReqs = extractCoreqReqs(course.coreqs);
+      const allReqs = extractCoreqReqs(course.coreqs as CourseReq);
       const neededReqs = allReqs.filter(
         (req) => !isAlreadySelected(currentGroups, req),
       );
@@ -117,7 +124,10 @@ export default function AddCoursesModal(props: {
             req.courseNumber,
           );
           return rows[0]
-            ? mapToCourse({ ...rows[0], subject: req.subject })
+            ? mapToCourse({
+                ...(rows[0] as unknown as Course),
+                subject: req.subject,
+              })
             : null;
         }),
       );
@@ -126,17 +136,57 @@ export default function AddCoursesModal(props: {
     [activeTerm],
   );
 
+  const sortGroups = (
+    groups: SelectedCourseGroupData[],
+  ): SelectedCourseGroupData[] => {
+    return [...groups].map((group) => {
+      const allInGroup = [group.parent, ...group.coreqs].sort((a, b) =>
+        a.courseNumber.localeCompare(b.courseNumber, undefined, {
+          numeric: true,
+        }),
+      );
+
+      return {
+        parent: allInGroup[0],
+        coreqs: allInGroup.slice(1),
+      };
+    });
+  };
+
   const handleSelectCourse = async (course: Course) => {
     if (
       isAlreadySelected(selectedCourseGroups, course) ||
       selectedCourseGroups.length >= 10
     )
       return;
+
+    const parentGroupIndex = selectedCourseGroups.findIndex((g) => {
+      const parentCoreqReqs = extractCoreqReqs(g.parent.coreqs as CourseReq);
+      return parentCoreqReqs.some((req) => isCourseMatch(req, course));
+    });
+
+    if (parentGroupIndex !== -1) {
+      setSelectedCourseGroups((prev) => {
+        const next = [...prev];
+
+        const groupToUpdate = next[parentGroupIndex];
+        const updatedGroup = {
+          ...groupToUpdate,
+          coreqs: [...groupToUpdate.coreqs, course],
+        };
+
+        const sortedArray = sortGroups([updatedGroup]);
+        next[parentGroupIndex] = sortedArray[0];
+
+        return sortGroups(next);
+      });
+      return;
+    }
+
     const validCoreqs = await fetchCoreqs(course, selectedCourseGroups);
-    setSelectedCourseGroups((prev) => [
-      ...prev,
-      { parent: course, coreqs: validCoreqs },
-    ]);
+    setSelectedCourseGroups((prev) =>
+      sortGroups([...prev, { parent: course, coreqs: validCoreqs }]),
+    );
   };
 
   useEffect(() => {
@@ -150,7 +200,7 @@ export default function AddCoursesModal(props: {
 
       const newGroups: SelectedCourseGroupData[] = [];
       for (const raw of fetchedCourses) {
-        const course = mapToCourse(raw);
+        const course = mapToCourse(raw as unknown as Course);
         if (isAlreadySelected(newGroups, course) || newGroups.length >= 10)
           continue;
         const coreqs = await fetchCoreqs(course, newGroups);
@@ -181,7 +231,7 @@ export default function AddCoursesModal(props: {
       0,
     );
     const possible = selectedCourseGroups.reduce(
-      (acc, g) => acc + extractCoreqReqs(g.parent.coreqs).length,
+      (acc, g) => acc + extractCoreqReqs(g.parent.coreqs as CourseReq).length,
       0,
     );
     const absent = possible - coreqs;

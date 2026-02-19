@@ -17,17 +17,14 @@ export function TermsDropdown({
   selectedTerm,
   onTermChange,
   ...selectTriggerProps
-}: { 
+}: {
   terms: Promise<GroupedTerms>;
   selectedCollege: string;
   selectedTerm: string | null;
   onTermChange: (term: string) => void;
 } & ComponentProps<typeof SelectTrigger>) {
-
-
   const terms = use(termsPromise);
   const activeCollege = selectedCollege;
-
 
   // Group terms by year and sort them
   const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
@@ -70,10 +67,7 @@ export function TermsDropdown({
 
   return (
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
-      <Select
-        onValueChange={onTermChange}
-        value={selectedTerm ?? undefined}
-      >
+      <Select onValueChange={onTermChange} value={selectedTerm ?? undefined}>
         <SelectTrigger
           className="bg-secondary border-neu25 w-full border border-solid"
           {...selectTriggerProps}

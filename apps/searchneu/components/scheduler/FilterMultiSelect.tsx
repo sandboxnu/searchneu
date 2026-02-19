@@ -84,7 +84,7 @@ export function FilterMultiSelect({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
               >
                 <PlusIcon
                   className={cn(
@@ -175,7 +175,7 @@ export function FilterMultiSelect({
               <button
                 onClick={() => removeOption(opt.value)}
                 aria-label={`Remove ${opt.label}`}
-                className="cursor-pointer text-muted-foreground hover:text-foreground ml-2 rounded-full py-0.5 text-lg leading-none"
+                className="text-muted-foreground hover:text-foreground ml-2 cursor-pointer rounded-full py-0.5 text-lg leading-none"
               >
                 ×
               </button>

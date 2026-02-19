@@ -1,4 +1,15 @@
-import { db, savedPlansT, savedPlanCoursesT, savedPlanSectionsT, favoritedSchedulesT, favoritedScheduleSectionsT, sectionsT, coursesT, subjectsT, meetingTimesT } from "@/lib/db";
+import {
+  db,
+  savedPlansT,
+  savedPlanCoursesT,
+  savedPlanSectionsT,
+  favoritedSchedulesT,
+  favoritedScheduleSectionsT,
+  sectionsT,
+  coursesT,
+  subjectsT,
+  meetingTimesT,
+} from "@/lib/db";
 import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq, and, desc } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -6,7 +17,7 @@ import { NextRequest } from "next/server";
 // GET all saved plans for a user in a specific term
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ term: string }> }
+  { params }: { params: Promise<{ term: string }> },
 ) {
   const user = await verifyUser();
   if (!user) {
@@ -49,11 +60,16 @@ export async function GET(
                 isHidden: savedPlanSectionsT.isHidden,
               })
               .from(savedPlanSectionsT)
-              .innerJoin(savedPlanCoursesT, eq(savedPlanSectionsT.savedPlanCourseId, savedPlanCoursesT.id))
-              .where(and(
-                eq(savedPlanCoursesT.planId, plan.id),
-                eq(savedPlanCoursesT.courseId, course.courseId)
-              ));
+              .innerJoin(
+                savedPlanCoursesT,
+                eq(savedPlanSectionsT.savedPlanCourseId, savedPlanCoursesT.id),
+              )
+              .where(
+                and(
+                  eq(savedPlanCoursesT.planId, plan.id),
+                  eq(savedPlanCoursesT.courseId, course.courseId),
+                ),
+              );
 
             return {
               courseId: course.courseId,
@@ -63,7 +79,7 @@ export async function GET(
               courseName: course.courseName,
               sections,
             };
-          })
+          }),
         );
 
         // Get favorited schedules for this plan
@@ -83,10 +99,18 @@ export async function GET(
                 courseNumber: coursesT.courseNumber,
               })
               .from(favoritedScheduleSectionsT)
-              .innerJoin(sectionsT, eq(favoritedScheduleSectionsT.sectionId, sectionsT.id))
+              .innerJoin(
+                sectionsT,
+                eq(favoritedScheduleSectionsT.sectionId, sectionsT.id),
+              )
               .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
               .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-              .where(eq(favoritedScheduleSectionsT.favoritedScheduleId, favSchedule.id));
+              .where(
+                eq(
+                  favoritedScheduleSectionsT.favoritedScheduleId,
+                  favSchedule.id,
+                ),
+              );
 
             // Get meeting times for each section
             const sectionsWithMeetings = await Promise.all(
@@ -108,7 +132,7 @@ export async function GET(
                   courseNumber: section.courseNumber,
                   meetingTimes,
                 };
-              })
+              }),
             );
 
             return {
@@ -118,7 +142,7 @@ export async function GET(
               updatedAt: favSchedule.updatedAt,
               sections: sectionsWithMeetings,
             };
-          })
+          }),
         );
 
         return {
@@ -126,7 +150,7 @@ export async function GET(
           courses: coursesWithSections,
           favoritedSchedules: favoritedSchedulesWithDetails,
         };
-      })
+      }),
     );
 
     return Response.json(plansWithDetails);

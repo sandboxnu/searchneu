@@ -81,7 +81,7 @@ export function FiltersTab({
   };
 
   return (
-    <div className="flex h-full flex-col gap-6 overflow-y-auto pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex h-full flex-col gap-6 overflow-y-auto pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {/* CAMPUSES */}
       <div className="flex flex-col gap-3">
         <FilterMultiSelect
@@ -98,7 +98,7 @@ export function FiltersTab({
       {/* TIME */}
       <section className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase leading-[1.5] text-[#5f5f5f]">
+          <span className="text-xs leading-[1.5] font-bold text-[#5f5f5f] uppercase">
             Time
           </span>
           {(filters.startTime || filters.endTime) && (
@@ -128,9 +128,7 @@ export function FiltersTab({
           <div className="cursor-pointer rounded-lg border border-[#f1f2f2] bg-white px-2 py-1">
             <TimeInput
               value={
-                filters.startTime
-                  ? militaryToTimeString(filters.startTime)
-                  : ""
+                filters.startTime ? militaryToTimeString(filters.startTime) : ""
               }
               onChange={(value) =>
                 updateFilter(
@@ -150,9 +148,7 @@ export function FiltersTab({
           <span
             className={cn(
               "text-sm",
-              filters.endTime
-                ? "font-semibold text-[#333]"
-                : "text-[#858585]",
+              filters.endTime ? "font-semibold text-[#333]" : "text-[#858585]",
             )}
           >
             End before
@@ -183,7 +179,7 @@ export function FiltersTab({
       {/* FREE DAYS */}
       <section className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase leading-[1.5] text-[#5f5f5f]">
+          <span className="text-xs leading-[1.5] font-bold text-[#5f5f5f] uppercase">
             Free Days
           </span>
           {(filters.specificDaysFree?.length ?? 0) > 0 && (
@@ -236,7 +232,7 @@ export function FiltersTab({
 
       {/* INCLUDE HONORS SECTIONS */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase leading-[14px] text-[#5f5f5f]">
+        <span className="text-xs leading-[14px] font-bold text-[#5f5f5f] uppercase">
           Include Honors Sections
         </span>
         <Switch
@@ -250,7 +246,7 @@ export function FiltersTab({
 
       {/* HIDE FILLED SECTIONS */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase leading-[14px] text-[#5f5f5f]">
+        <span className="text-xs leading-[14px] font-bold text-[#5f5f5f] uppercase">
           Hide Filled Sections
         </span>
         <Switch

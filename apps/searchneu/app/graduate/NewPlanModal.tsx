@@ -57,8 +57,6 @@ export default function NewPlanModal({
   ];
 
   const [message, setMessage] = useState("");
-  const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
-  const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState("");
 
   //majors
@@ -96,7 +94,7 @@ export default function NewPlanModal({
 
   //template
   const hasTemplate = useTemplate(majors, catalogYear);
-  const { template, isLoading } = useTemplate(
+  const { template, isLoading: isLoadingTemplate } = useTemplate(
     useRecommendedTemplate ? majors : null,
     useRecommendedTemplate ? catalogYear : null,
   );
@@ -105,8 +103,6 @@ export default function NewPlanModal({
   const handleClose = () => {
     onClose();
     setMessage("");
-    setIsNoMajorSelected(false);
-    setIsNoMinorSelected(false);
     setCatalogYear("");
     setMajors([]);
     setMinors([]);
@@ -397,7 +393,7 @@ export default function NewPlanModal({
   //create plan
   const handleCreatePlan = async () => {
     //validation
-    if (!isNoMajorSelected) {
+    if (majors != null && majors.length == 0) {
       if (!catalogYear) {
         console.error("Catalog year is required");
         return;
@@ -419,7 +415,7 @@ export default function NewPlanModal({
           console.log("creating schedule from template");
           schedule = createScheduleFromTemplate(template);
         } catch (error) {
-          console.error("e  rror creating schedule from template:", error);
+          console.error("error creating schedule from template:", error);
           schedule = createEmptySchedule();
         }
       } else {
@@ -429,12 +425,11 @@ export default function NewPlanModal({
       const newPlan = {
         name: message || generateDefaultPlanTitle(),
         schedule: schedule,
-        majors: isNoMajorSelected ? undefined : majors,
-        minors: isNoMinorSelected || !minors?.length ? undefined : minors,
-        catalogYear: isNoMajorSelected ? undefined : parseInt(catalogYear),
-        concentration: isNoMajorSelected
-          ? undefined
-          : concentration || undefined,
+        majors: majors.length == 0 ? undefined : majors,
+        minors: minors.length == 0 || !minors?.length ? undefined : minors,
+        catalogYear: majors.length == 0 ? undefined : parseInt(catalogYear),
+        concentration:
+          majors.length == 0 ? undefined : concentration || undefined,
       };
 
       console.log("Creating plan:", newPlan);
@@ -492,7 +487,7 @@ export default function NewPlanModal({
         </div>
 
         {/*catalog year*/}
-        {!isNoMajorSelected && (
+        {majors && (
           <div className="mb-6">
             <Label
               htmlFor="catalog-year-select"
@@ -516,7 +511,7 @@ export default function NewPlanModal({
         )}
 
         {/*major*/}
-        {!isNoMajorSelected && (
+        {catalogYear && (
           <div className="mb-2">
             <Label className="text-neu6 text-xs font-bold">MAJOR(S)</Label>
             <MultiSelect
@@ -569,14 +564,14 @@ export default function NewPlanModal({
           {/*no major checkbox + tooltip*/}
           <Checkbox
             label="Can't find my major?"
-            checked={isNoMajorSelected}
-            onChange={() => setIsNoMajorSelected(!isNoMajorSelected)}
+            checked={majors[0] == "No Major" && majors.length != 1}
+            onChange={() => setMajors(["No Major"])}
             helpText={noMajorHelperLabel}
           />
         </div>
 
         {/*concentration*/}
-        {concentrationOptions.length > 0 && !isNoMajorSelected && (
+        {concentrationOptions.length > 0 && majors.length > 0 && (
           <div className="mb-6">
             <Label
               htmlFor="catalog-year-select"
@@ -606,7 +601,7 @@ export default function NewPlanModal({
         )}
 
         {/*minors*/}
-        {!isNoMajorSelected && (
+        {majors.length > 0 && (
           <div className="">
             <Label className="text-neu6 text-xs font-bold">MINOR(S)</Label>
             <MultiSelect
@@ -656,8 +651,9 @@ export default function NewPlanModal({
         <ModalFooter>
           <div className="flex w-full flex-col gap-4">
             {/* Recommended Template box */}
-            {hasTemplate && majors && catalogYear && !isNoMajorSelected && (
+            {majors && catalogYear && hasTemplate && majors.length > 0 && (
               <div className="gap-8 rounded-xl border bg-[#F8F9F9] px-6 py-4">
+                <p>{majors}</p>
                 <Checkbox
                   label="Use recommended template"
                   checked={useRecommendedTemplate}
@@ -679,10 +675,11 @@ export default function NewPlanModal({
                 onClick={handleCreatePlan}
                 isDisabled={
                   isSubmitting ||
-                  (!isNoMajorSelected &&
-                    (!catalogYear || !majors || majors.length === 0) &&
-                    //disable button if template is loading
-                    isLoading)
+                  majors.length < 1 ||
+                  (concentration.length < 1 &&
+                    concentrationOptions.length > 0) ||
+                  catalogYear.length < 1 ||
+                  isLoadingTemplate
                 }
               >
                 Create Plan

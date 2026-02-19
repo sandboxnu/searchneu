@@ -88,7 +88,10 @@ export function DashboardClient(props: { terms: Promise<GroupedTerms> }) {
           onTermChange={setSelectedTerm}
         />
 
-        <Button className="mt-auto w-full" onClick={() => setIsModalOpen(true)}>
+        <Button
+          className="mt-auto w-full cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        >
           Create a Plan
         </Button>
       </div>

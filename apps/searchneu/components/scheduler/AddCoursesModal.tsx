@@ -3,6 +3,7 @@
 import { GroupedTerms } from "@/lib/types";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -245,7 +246,7 @@ export default function AddCoursesModal(props: {
 
   return (
     <Dialog open={props.open} onOpenChange={(open) => !open && props.closeFn()}>
-      <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px]">
+      <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px] [&_[data-slot=dialog-close]]:cursor-pointer">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">

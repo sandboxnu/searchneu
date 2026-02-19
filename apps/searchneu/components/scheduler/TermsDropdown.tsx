@@ -69,7 +69,7 @@ export function TermsDropdown({
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
       <Select onValueChange={onTermChange} value={selectedTerm ?? undefined}>
         <SelectTrigger
-          className="bg-secondary border-neu25 w-full border border-solid"
+          className="bg-secondary border-neu25 w-full cursor-pointer border border-solid"
           {...selectTriggerProps}
         >
           <SelectValue placeholder="Select term" />
@@ -89,7 +89,7 @@ export function TermsDropdown({
                   key={t.term}
                   value={t.term}
                   className={cn(
-                    "pl-4",
+                    "cursor-pointer pl-4",
                     t.term === selectedTerm
                       ? "text-neu8 font-[600]"
                       : "text-neu6 font-[400]",

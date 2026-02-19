@@ -71,6 +71,50 @@ export const getCourse = cache(
   },
 );
 
+export const getCourseById = cache(async (id: number) => {
+  return db
+    .select({
+      id: coursesT.id,
+      name: coursesT.name,
+      subject: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+      register: coursesT.register,
+      description: coursesT.description,
+      minCredits: coursesT.minCredits,
+      maxCredits: coursesT.maxCredits,
+      prereqs: coursesT.prereqs,
+      coreqs: coursesT.coreqs,
+      postreqs: coursesT.postreqs,
+      updatedAt: coursesT.updatedAt,
+      nupaths: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
+      nupathNames: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
+    })
+    .from(coursesT)
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
+    .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
+    .where(eq(coursesT.id, id))
+    .groupBy(
+      coursesT.id,
+      coursesT.name,
+      subjectsT.code,
+      coursesT.courseNumber,
+      coursesT.register,
+      coursesT.description,
+      coursesT.minCredits,
+      coursesT.maxCredits,
+      coursesT.prereqs,
+      coursesT.coreqs,
+      coursesT.postreqs,
+      coursesT.updatedAt,
+    )
+    .limit(1);
+});
+
 export const getCourseSections = cache(async (courseId: number) => {
   return db
     .select({

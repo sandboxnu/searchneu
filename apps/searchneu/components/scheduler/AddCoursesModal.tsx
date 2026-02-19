@@ -10,11 +10,12 @@ import {
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
 import { Course } from "@sneu/scraper/types";
-import { getCourse } from "@/lib/controllers/getCourse";
+import { useSearchParams } from "next/navigation";
+import { getCourse, getCourseById } from "@/lib/controllers/getCourse";
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
@@ -63,11 +64,29 @@ export default function AddCoursesModal(props: {
     numCourses?: number,
   ) => void;
 }) {
+  const searchParams = useSearchParams();
+
+  const rawLocked = searchParams.getAll("lockedCourseIds");
+  const rawOptional = searchParams.getAll("optionalCourseIds");
+
+  const parseIds = (raw: string[]) => {
+    return raw
+      .flatMap((val) => val.split(","))
+      .map(Number)
+      .filter((id) => !isNaN(id) && id > 0);
+  };
+
+  const lockedCourseIds = parseIds(rawLocked);
+  const optionalCourseIds = parseIds(rawOptional);
+  const allCourseIds = lockedCourseIds.concat(optionalCourseIds);
+  const parsedNum = parseInt(searchParams.get("numCourses") ?? "1");
+  const numCoursesValue = isNaN(parsedNum) ? 1 : parsedNum;
+
+  const [numCourses, setNumCourses] = useState<number>(numCoursesValue);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroupData[]
   >([]);
-  const [numCourses, setNumCourses] = useState<number>(1);
 
   const terms = use(props.terms);
   const activeTerm = props.selectedTerm ?? terms.neu[0]?.term ?? "";
@@ -131,6 +150,82 @@ export default function AddCoursesModal(props: {
       { parent: course, coreqs: validCoreqs },
     ]);
   };
+
+  useEffect(() => {
+    if (allCourseIds.length === 0) return;
+
+    const populateSelectedCourses = async () => {
+      const rawResults = await Promise.all(
+        allCourseIds.map((id) => getCourseById(id)),
+      );
+      const fetchedCourses = rawResults.map((res) => res[0]).filter(Boolean);
+
+      const newGroups: SelectedCourseGroupData[] = [];
+
+      for (const course of fetchedCourses) {
+        const mappedCourse = {
+          ...course,
+          minCredits: Number(course.minCredits),
+          maxCredits: Number(course.maxCredits),
+          specialTopics: false,
+          attributes: course.nupaths || [],
+        } as Course;
+
+        const isAlreadyAdded = newGroups.some(
+          (g) =>
+            (g.parent.subject === mappedCourse.subject &&
+              g.parent.courseNumber === mappedCourse.courseNumber) ||
+            g.coreqs.some(
+              (c) =>
+                c.subject === mappedCourse.subject &&
+                c.courseNumber === mappedCourse.courseNumber,
+            ),
+        );
+
+        if (isAlreadyAdded || newGroups.length >= 10) continue;
+
+        const allCoreqReqs = extractCoreqCourses(mappedCourse.coreqs);
+        const neededCoreqReqs = allCoreqReqs.filter((req) => {
+          return !newGroups.some(
+            (g) =>
+              (g.parent.subject === req.subject &&
+                g.parent.courseNumber === req.courseNumber) ||
+              g.coreqs.some(
+                (c) =>
+                  c.subject === req.subject &&
+                  c.courseNumber === req.courseNumber,
+              ),
+          );
+        });
+
+        const rawCoreqResults = await Promise.all(
+          neededCoreqReqs.map(async (c) => {
+            const rows = await getCourse(activeTerm, c.subject, c.courseNumber);
+            const res = rows[0];
+            if (!res) return null;
+            return {
+              ...res,
+              subject: c.subject,
+              minCredits: Number(res.minCredits),
+              maxCredits: Number(res.maxCredits),
+              specialTopics: false,
+              attributes: res.nupaths || [],
+            } as Course;
+          }),
+        );
+
+        const validCoreqs = rawCoreqResults.filter(
+          (c): c is Course => c !== null,
+        );
+
+        newGroups.push({ parent: mappedCourse, coreqs: validCoreqs });
+      }
+
+      setSelectedCourseGroups(newGroups);
+    };
+
+    populateSelectedCourses();
+  }, [activeTerm]);
 
   const handleDeleteGroup = (parent: Course) => {
     // deleting parent deletes whole group

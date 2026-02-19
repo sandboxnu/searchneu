@@ -30,8 +30,18 @@ export function useSupportedMajors() {
 export function useGraduateMajor(year: string | null, major: string | null) {
   const [data, setData] = useState<Major | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const shouldFetch = year != null && major != null && major.length > 0;
+    if (!shouldFetch) {
+      setData(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     const fetchMajor = async () => {
       try {
         const response = await GraduateAPI.majors.get(
@@ -39,17 +49,20 @@ export function useGraduateMajor(year: string | null, major: string | null) {
           major ?? "",
         );
         setData(response);
+        setError(null);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch major"),
         );
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMajor();
   }, [year, major]);
 
-  return { majorData: data, error };
+  return { majorData: data, error, loading };
 }
 
 export function useGraduateMinor(year: string | null, minor: string | null) {

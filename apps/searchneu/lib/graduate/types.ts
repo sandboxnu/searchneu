@@ -414,3 +414,46 @@ export type OptionObject = {
   label: string | number;
   value: string | number;
 };
+
+// SidebarValidationStatus is used to determine the validation status of a section in the sidebar
+export enum SidebarValidationStatus {
+  Loading = "Loading",
+  Error = "Error",
+  Complete = "Complete",
+  InProgress = "InProgress",
+}
+
+// --- Plan (4-year schedule, Fall/Spring only) for drag-and-drop ---
+
+/** A course as placed in a plan slot (has dnd id). */
+export interface PlanCourse {
+  id: string;
+  subject: string;
+  classId: string;
+  name: string;
+}
+
+/** A single term (e.g. Fall Year 1) with droppable id. */
+export interface PlanTerm {
+  id: string;
+  season: SeasonEnum;
+  classes: PlanCourse[];
+}
+
+/** One academic year: fall and spring only. */
+export interface PlanYear {
+  year: number;
+  fall: PlanTerm;
+  spring: PlanTerm;
+}
+
+/** Schedule is a list of years. */
+export interface PlanSchedule {
+  years: PlanYear[];
+}
+
+/** Full plan model for the graduate plan view. */
+export interface Plan {
+  schedule: PlanSchedule;
+}
+

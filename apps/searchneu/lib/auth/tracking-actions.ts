@@ -1,44 +1,30 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { config } from "./auth";
-import { getGuid } from "./utils";
-import { db, trackersT, usersT } from "@/lib/db";
+import { headers } from "next/headers";
+import { db, trackersT } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
-import { track } from "@vercel/analytics/server";
+import { auth } from "../auth";
 
 export async function createTrackerAction(id: number) {
-  const guid = await getGuid();
-  if (!guid) {
-    const cookieJar = await cookies();
-    cookieJar.delete(config.cookieName);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
+  if (!session) {
     return { ok: false, msg: "no valid session" };
   }
 
-  const user = await db.query.usersT.findFirst({
-    where: eq(usersT.guid, guid),
-  });
-
-  if (!user) {
-    const cookieJar = await cookies();
-    cookieJar.delete(config.cookieName);
-
-    return { ok: false, msg: "no user found matching session" };
-  }
-
-  if (!user.phoneNumberVerified)
+  if (!session.user.phoneNumberVerified)
     return { ok: false, msg: "phone number not verified" };
 
   const existingTrackers = await db.query.trackersT.findMany({
     where: and(
-      eq(trackersT.userId, user.id),
-      // eq(trackersT.crn, crn),
+      eq(trackersT.userId, session.user.id),
       isNull(trackersT.deletedAt),
     ),
   });
 
-  if (user.trackingLimit <= existingTrackers.length)
+  if (session.user.trackingLimit <= existingTrackers.length)
     return { ok: false, msg: "tracker limit reached" };
 
   if (existingTrackers.filter((t) => t.sectionId === id).length > 0) {
@@ -46,33 +32,20 @@ export async function createTrackerAction(id: number) {
   }
 
   await db.insert(trackersT).values({
-    userId: user.id,
+    userId: session.user.id,
     sectionId: id,
   });
-
-  track("tracker-add");
 
   return { ok: true };
 }
 
 export async function deleteTrackerAction(id: number) {
-  const guid = await getGuid();
-  if (!guid) {
-    const cookieJar = await cookies();
-    cookieJar.delete(config.cookieName);
-
-    return { ok: false, msg: "no valid session" };
-  }
-
-  const user = await db.query.usersT.findFirst({
-    where: eq(usersT.guid, guid),
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
 
-  if (!user) {
-    const cookieJar = await cookies();
-    cookieJar.delete(config.cookieName);
-
-    return { ok: false, msg: "no user found matching session" };
+  if (!session) {
+    return { ok: false, msg: "no valid session" };
   }
 
   await db
@@ -82,13 +55,11 @@ export async function deleteTrackerAction(id: number) {
     })
     .where(
       and(
-        eq(trackersT.userId, user.id),
+        eq(trackersT.userId, session.user.id),
         eq(trackersT.sectionId, id),
         isNull(trackersT.deletedAt),
       ),
     );
-
-  track("tracker-remove");
 
   return { ok: true };
 }

@@ -1,6 +1,11 @@
 "use client";
-import { Bookmark, CircleQuestionMark, DoorOpen, GraduationCapIcon } from "lucide-react";
-import { use } from "react";
+import {
+  Bookmark,
+  CircleQuestionMark,
+  DoorOpen,
+  GraduationCapIcon,
+} from "lucide-react";
+import { type ReactNode, use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
@@ -20,8 +25,6 @@ export function NavBar({
 
   const pathname = usePathname();
 
-  const LinkWrapper = closeable ? SheetClose : ({ children }: { children: React.ReactNode }) => <>{children}</>;
-
   return (
     <nav className="flex gap-2 font-semibold">
       <FlagValues
@@ -32,7 +35,7 @@ export function NavBar({
         }}
       />
       {roomsFlag && (
-        <LinkWrapper asChild={closeable}>
+        <LinkWrapper mobileNav={closeable}>
           <Link
             href="/rooms"
             data-active={pathname === "/rooms"}
@@ -43,7 +46,7 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      <LinkWrapper asChild={closeable}>
+      <LinkWrapper mobileNav={closeable}>
         <Link
           href="/catalog"
           data-active={pathname.startsWith("/catalog")}
@@ -54,7 +57,7 @@ export function NavBar({
         </Link>
       </LinkWrapper>
       {schedulerFlag && (
-        <LinkWrapper asChild={closeable}>
+        <LinkWrapper mobileNav={closeable}>
           <Link
             href="/scheduler"
             data-active={pathname === "/scheduler"}
@@ -65,7 +68,7 @@ export function NavBar({
         </LinkWrapper>
       )}
       {graduateFlag && (
-        <LinkWrapper asChild={closeable}>
+        <LinkWrapper mobileNav={closeable}>
           <Link
             href="/graduate"
             data-active={pathname === "/graduate"}
@@ -77,7 +80,7 @@ export function NavBar({
         </LinkWrapper>
       )}
       {faqFlag && (
-        <LinkWrapper asChild={closeable}>
+        <LinkWrapper mobileNav={closeable}>
           <Link
             href="/faq"
             data-active={pathname === "/faq"}
@@ -89,4 +92,18 @@ export function NavBar({
       )}
     </nav>
   );
+}
+
+function LinkWrapper({
+  mobileNav,
+  children,
+}: {
+  mobileNav: boolean;
+  children: ReactNode;
+}) {
+  if (mobileNav) {
+    return <SheetClose asChild={true}>{children}</SheetClose>;
+  }
+
+  return children;
 }

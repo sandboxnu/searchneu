@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
+import { useState, use } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Command,
@@ -16,15 +16,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CheckIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-export function SPMultiselectGroups<T>(props: {
+export function SPMultiselectGroups(props: {
   id?: string;
   opts: Promise<{ name: string | null; group: string | null }[]>;
   spCode: string;

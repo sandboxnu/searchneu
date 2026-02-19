@@ -20,13 +20,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error() {
   return (
     <div className="flex min-h-screen w-screen flex-col overflow-hidden px-6 pt-4 pb-6">
       <ErrorHeader />

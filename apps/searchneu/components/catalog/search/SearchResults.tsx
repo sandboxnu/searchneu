@@ -79,6 +79,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
 
   const parentRef = useRef(null);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtual = useVirtualizer({
     count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,

@@ -8,7 +8,12 @@ export async function CourseCards() {
   const term = terms.neu[0].term;
   const courses = await getSearch(term, "", [], -1, -1, [], [], [], false);
 
+  // WARN: we should obv fix this and remove the ignore
+  // eslint-disable-next-line react-hooks/purity
   const cardAStarting = Math.floor(Math.random() * (courses.length - 20));
+
+  // WARN: we should obv fix this and remove the ignore
+  // eslint-disable-next-line react-hooks/purity
   const cardBStarting = Math.floor(Math.random() * (courses.length - 20));
 
   const cardsA = courses.slice(cardAStarting, cardAStarting + 20).map((s) => ({

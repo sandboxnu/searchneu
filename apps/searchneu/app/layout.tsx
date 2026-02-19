@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/lib/auth/client";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import FeedbackModal from "@/components/feedback/FeedbackModal";
 import { VercelToolbar } from "@vercel/toolbar/next";
 import Script from "next/script";
+import { ClientLayout } from "@/components/ClientLayout";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -36,6 +34,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {process.env.NODE_ENV === "development" && <VercelToolbar />}
+        {/* eslint-disable-next-line turbo/no-undeclared-env-vars */}
         {process.env.REACT_SCAN && (
           <Script
             src="//unpkg.com/react-scan/dist/auto.global.js"
@@ -43,12 +42,7 @@ export default function RootLayout({
             strategy="beforeInteractive"
           />
         )}
-        <AuthProvider>
-          <main className="min-h-[100dvh] w-screen grow">{children}</main>
-
-          <FeedbackModal />
-          <Toaster closeButton />
-        </AuthProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

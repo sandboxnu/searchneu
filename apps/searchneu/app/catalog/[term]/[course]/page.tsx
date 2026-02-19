@@ -1,6 +1,5 @@
-import { db, termsT, trackersT, usersT } from "@/lib/db";
+import { db, termsT, trackersT } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
-import { getGuid } from "@/lib/auth/utils";
 import { ExpandableDescription } from "@/components/catalog/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
@@ -16,6 +15,8 @@ import {
 import { type Metadata } from "next";
 import { RequisiteBlock } from "@/components/catalog/Requisites";
 import { getCourse, getCourseSections } from "@/lib/controllers/getCourse";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
   revalidate: 3600,
@@ -23,16 +24,16 @@ const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
 });
 
 async function getTrackedSections() {
-  const guid = await getGuid();
-  if (!guid) return [];
-
-  const user = await db.query.usersT.findFirst({
-    where: eq(usersT.guid, guid),
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
-  if (!user) return [];
+  if (!session) return [];
 
   const trackedSections = await db.query.trackersT.findMany({
-    where: and(eq(trackersT.userId, user.id), isNull(trackersT.deletedAt)),
+    where: and(
+      eq(trackersT.userId, session.user.id),
+      isNull(trackersT.deletedAt),
+    ),
   });
 
   return trackedSections.map((t) => t.sectionId);

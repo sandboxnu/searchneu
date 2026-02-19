@@ -11,13 +11,13 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Iconskie } from "../icons/Iconskie";
-import { useAuth, signOut } from "@/lib/auth/client";
+import { authClient } from "@/lib/auth-client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);
-  const { user, isPending } = useAuth();
+  const { data: session, isPending } = authClient.useSession();
 
-  if (!isPending && user.guid) {
+  if (!isPending && session) {
     return <UserMenu />;
   }
 
@@ -51,7 +51,10 @@ function UserMenu() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => signOut()} variant="destructive">
+          <DropdownMenuItem
+            onClick={() => authClient.signOut()}
+            variant="destructive"
+          >
             Sign Out
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -65,7 +68,7 @@ function UserMenu() {
         <Button
           variant="destructive"
           className="bg-neu1 border-red text-red hover:bg-r1/30 h-10 w-full flex-1 rounded-full border"
-          onClick={() => signOut()}
+          onClick={() => authClient.signOut()}
         >
           Sign Out
         </Button>

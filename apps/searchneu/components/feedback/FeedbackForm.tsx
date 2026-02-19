@@ -27,7 +27,12 @@ export default function FeedbackForm() {
     setSubmitting(true);
     try {
       const currentUrl = window.location.href;
-      const res = await sendFeedbackToSlack(feedbackType, message, contact, currentUrl);
+      const res = await sendFeedbackToSlack(
+        feedbackType,
+        message,
+        contact,
+        currentUrl,
+      );
       if (res == 200) {
         setMessage("");
         setContact("");

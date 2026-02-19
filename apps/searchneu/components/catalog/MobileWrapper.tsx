@@ -2,16 +2,15 @@
 
 import { SearchPanel } from "./search/FilterBar";
 import { GroupedTerms, Subject } from "@/lib/types";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./search/SearchBar";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
   DrawerFooter,
-  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
@@ -38,6 +37,20 @@ export function MobileWrapper(props: {
   coursePage: ReactNode;
 }) {
   const { course } = useParams();
+  const searchParams = useSearchParams();
+  const [newSearch, setNewSearch] = useState(false);
+
+  useEffect(() => {
+    // WARN: we should obv fix this and remove the ignore
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNewSearch(true);
+  }, [searchParams]);
+
+  useEffect(() => {
+    // WARN: we should obv fix this and remove the ignore
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNewSearch(false);
+  }, [course]);
 
   return (
     <div className="bg-neu2 flex min-h-0 w-screen min-w-0 flex-1 px-4 pt-4 xl:px-6">
@@ -80,13 +93,15 @@ export function MobileWrapper(props: {
         <div className="flex h-full min-h-0 w-full min-w-0">
           <div
             data-show={Boolean(course)}
-            className="w-full data-[show=false]:block data-[show=true]:hidden xl:block! xl:max-w-[320px]"
+            data-firsttime={Boolean(newSearch)}
+            className="w-full data-[firsttime=true]:data-[show=false]:block data-[firsttime=false]:data-[show=true]:hidden xl:block! xl:max-w-[320px]"
           >
             <SearchResults />
           </div>
           <div
             data-show={Boolean(course)}
-            className="hidden min-w-0 flex-1 data-[show=true]:block xl:block"
+            data-firsttime={Boolean(newSearch)}
+            className="hidden min-w-0 flex-1 data-[firsttime=false]:data-[show=true]:block xl:block"
           >
             {props.coursePage}
           </div>

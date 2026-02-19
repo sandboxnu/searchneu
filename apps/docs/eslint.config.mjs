@@ -1,26 +1,6 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
+import { config } from "@sneu/eslint-config/next-js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const eslintConfig = [...config, { ignores: [".source/**"] }];
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
-  {
-    ignores: [
-      'node_modules/**',
-      '.next/**',
-      'out/**',
-      'build/**',
-      '.source/**',
-      'next-env.d.ts',
-    ],
-  },
-];
-
+/** @type {import("eslint").Linter.Config} */
 export default eslintConfig;

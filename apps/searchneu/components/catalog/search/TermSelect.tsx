@@ -8,8 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useEffect, use, Suspense, ComponentProps } from "react";
-import type { GroupedTerms, Subject } from "@/lib/types";
+import { use, type ComponentProps } from "react";
+import type { GroupedTerms } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
 export function TermSelect(

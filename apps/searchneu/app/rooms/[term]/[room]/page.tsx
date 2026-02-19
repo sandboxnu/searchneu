@@ -128,8 +128,6 @@ export default async function RoomDetailPage({
                   {meetingsByDay[dayIndex + 1]?.map((meeting, idx) => {
                     const startHour = Math.floor(meeting.startMinutes / 60);
                     const startMinute = meeting.startMinutes % 60;
-                    const endHour = Math.floor(meeting.endMinutes / 60);
-                    const endMinute = meeting.endMinutes % 60;
 
                     // Check if this meeting occurs in this hour slot
                     if (startHour === hour) {

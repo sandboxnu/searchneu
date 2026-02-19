@@ -10,12 +10,13 @@ import {
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, useCallback } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
 import { Course } from "@sneu/scraper/types";
 import { useSearchParams } from "next/navigation";
 import { getCourse, getCourseById } from "@/lib/controllers/getCourse";
+
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
@@ -25,31 +26,40 @@ interface SelectedCourseGroupData {
   coreqs: Course[];
 }
 
-const isCourseCoreq = (req: { subject: string; courseNumber: string }) => {
-  return (
-    req && typeof req === "object" && "subject" in req && "courseNumber" in req
-  );
-};
+const mapToCourse = (raw: any): Course => ({
+  ...raw,
+  minCredits: Number(raw.minCredits),
+  maxCredits: Number(raw.maxCredits),
+  specialTopics: false,
+  attributes: raw.nupaths || raw.attributes || [],
+});
 
-const extractCoreqCourses = (
+const isCourseMatch = (
+  c1: { subject: string; courseNumber: string },
+  c2: { subject: string; courseNumber: string },
+) => c1.subject === c2.subject && c1.courseNumber === c2.courseNumber;
+
+const isAlreadySelected = (
+  groups: SelectedCourseGroupData[],
+  course: { subject: string; courseNumber: string },
+) =>
+  groups.some(
+    (g) =>
+      isCourseMatch(g.parent, course) ||
+      g.coreqs.some((c) => isCourseMatch(c, course)),
+  );
+
+const extractCoreqReqs = (
   req: any,
   acc: { subject: string; courseNumber: string }[] = [],
 ) => {
-  if (!req || typeof req !== "object") return acc;
-
-  // empty object
-  if (Object.keys(req).length === 0) return acc;
-
-  // single course
-  if (isCourseCoreq(req)) {
-    acc.push(req);
+  if (!req || typeof req !== "object" || Object.keys(req).length === 0)
     return acc;
+  if ("subject" in req && "courseNumber" in req) {
+    acc.push(req);
+  } else if ("type" in req && Array.isArray(req.items)) {
+    req.items.forEach((item: any) => extractCoreqReqs(item, acc));
   }
-
-  if ("type" in req && Array.isArray(req.items)) {
-    req.items.forEach((item: any) => extractCoreqCourses(item, acc));
-  }
-
   return acc;
 };
 
@@ -59,92 +69,70 @@ export default function AddCoursesModal(props: {
   terms: Promise<GroupedTerms>;
   selectedTerm: string | null;
   onGenerateSchedules: (
-    lockedCourseIds: number[],
-    optionalCourseIds: number[],
-    numCourses?: number,
+    locked: number[],
+    optional: number[],
+    num?: number,
   ) => void;
 }) {
   const searchParams = useSearchParams();
+  const terms = use(props.terms);
 
-  const rawLocked = searchParams.getAll("lockedCourseIds");
-  const rawOptional = searchParams.getAll("optionalCourseIds");
-
-  const parseIds = (raw: string[]) => {
-    return raw
-      .flatMap((val) => val.split(","))
-      .map(Number)
-      .filter((id) => !isNaN(id) && id > 0);
-  };
-
-  const lockedCourseIds = parseIds(rawLocked);
-  const optionalCourseIds = parseIds(rawOptional);
-  const allCourseIds = lockedCourseIds.concat(optionalCourseIds);
   const parsedNum = parseInt(searchParams.get("numCourses") ?? "1");
   const numCoursesValue = isNaN(parsedNum) ? 1 : parsedNum;
 
   const [numCourses, setNumCourses] = useState<number>(numCoursesValue);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroupData[]
   >([]);
 
-  const terms = use(props.terms);
   const activeTerm = props.selectedTerm ?? terms.neu[0]?.term ?? "";
   const activeTermLabel =
     Object.values(terms)
       .flat()
       .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
 
-  const handleSelectCourse = async (course: Course) => {
-    const isCourseSelected = selectedCourseGroups.some(
-      (g) =>
-        (g.parent.subject === course.subject &&
-          g.parent.courseNumber === course.courseNumber) ||
-        g.coreqs.some(
-          (c) =>
-            c.subject === course.subject &&
-            c.courseNumber === course.courseNumber,
-        ),
-    );
+  const allCourseIds = [
+    ...searchParams.getAll("lockedCourseIds"),
+    ...searchParams.getAll("optionalCourseIds"),
+  ]
+    .flatMap((val) => val.split(","))
+    .map(Number)
+    .filter((id) => !isNaN(id) && id > 0);
 
-    if (isCourseSelected || selectedCourseGroups.length >= 10) return;
+  // helpers
 
-    const allCoreqReqs = extractCoreqCourses(course.coreqs);
-
-    // filter for coreqs not already selected to avoid duplicates
-    const neededCoreqReqs = allCoreqReqs.filter((req) => {
-      const isAlreadyInSchedule = selectedCourseGroups.some(
-        (g) =>
-          // check parent courses
-          (g.parent.subject === req.subject &&
-            g.parent.courseNumber === req.courseNumber) ||
-          // check already selected coreqs
-          g.coreqs.some(
-            (c) =>
-              c.subject === req.subject && c.courseNumber === req.courseNumber,
-          ),
+  const fetchCoreqs = useCallback(
+    async (course: Course, currentGroups: SelectedCourseGroupData[]) => {
+      const allReqs = extractCoreqReqs(course.coreqs);
+      const neededReqs = allReqs.filter(
+        (req) => !isAlreadySelected(currentGroups, req),
       );
-      return !isAlreadyInSchedule;
-    });
 
-    const rawResults = await Promise.all(
-      neededCoreqReqs.map(async (c) => {
-        const rows = await getCourse(activeTerm, c.subject, c.courseNumber);
-        const res = rows[0];
-        if (!res) return null;
+      const results = await Promise.all(
+        neededReqs.map(async (req) => {
+          const rows = await getCourse(
+            activeTerm,
+            req.subject,
+            req.courseNumber,
+          );
+          return rows[0]
+            ? mapToCourse({ ...rows[0], subject: req.subject })
+            : null;
+        }),
+      );
+      return results.filter((c): c is Course => c !== null);
+    },
+    [activeTerm],
+  );
 
-        return {
-          ...res,
-          subject: c.subject,
-          minCredits: Number(res.minCredits),
-          maxCredits: Number(res.maxCredits),
-          specialTopics: false,
-          attributes: res.nupaths || [],
-        } as Course;
-      }),
-    );
-
-    const validCoreqs = rawResults.filter((c): c is Course => c !== null);
+  const handleSelectCourse = async (course: Course) => {
+    if (
+      isAlreadySelected(selectedCourseGroups, course) ||
+      selectedCourseGroups.length >= 10
+    )
+      return;
+    const validCoreqs = await fetchCoreqs(course, selectedCourseGroups);
     setSelectedCourseGroups((prev) => [
       ...prev,
       { parent: course, coreqs: validCoreqs },
@@ -154,211 +142,86 @@ export default function AddCoursesModal(props: {
   useEffect(() => {
     if (allCourseIds.length === 0) return;
 
-    const populateSelectedCourses = async () => {
+    const syncFromUrl = async () => {
       const rawResults = await Promise.all(
         allCourseIds.map((id) => getCourseById(id)),
       );
       const fetchedCourses = rawResults.map((res) => res[0]).filter(Boolean);
 
       const newGroups: SelectedCourseGroupData[] = [];
-
-      for (const course of fetchedCourses) {
-        const mappedCourse = {
-          ...course,
-          minCredits: Number(course.minCredits),
-          maxCredits: Number(course.maxCredits),
-          specialTopics: false,
-          attributes: course.nupaths || [],
-        } as Course;
-
-        const isAlreadyAdded = newGroups.some(
-          (g) =>
-            (g.parent.subject === mappedCourse.subject &&
-              g.parent.courseNumber === mappedCourse.courseNumber) ||
-            g.coreqs.some(
-              (c) =>
-                c.subject === mappedCourse.subject &&
-                c.courseNumber === mappedCourse.courseNumber,
-            ),
-        );
-
-        if (isAlreadyAdded || newGroups.length >= 10) continue;
-
-        const allCoreqReqs = extractCoreqCourses(mappedCourse.coreqs);
-        const neededCoreqReqs = allCoreqReqs.filter((req) => {
-          return !newGroups.some(
-            (g) =>
-              (g.parent.subject === req.subject &&
-                g.parent.courseNumber === req.courseNumber) ||
-              g.coreqs.some(
-                (c) =>
-                  c.subject === req.subject &&
-                  c.courseNumber === req.courseNumber,
-              ),
-          );
-        });
-
-        const rawCoreqResults = await Promise.all(
-          neededCoreqReqs.map(async (c) => {
-            const rows = await getCourse(activeTerm, c.subject, c.courseNumber);
-            const res = rows[0];
-            if (!res) return null;
-            return {
-              ...res,
-              subject: c.subject,
-              minCredits: Number(res.minCredits),
-              maxCredits: Number(res.maxCredits),
-              specialTopics: false,
-              attributes: res.nupaths || [],
-            } as Course;
-          }),
-        );
-
-        const validCoreqs = rawCoreqResults.filter(
-          (c): c is Course => c !== null,
-        );
-
-        newGroups.push({ parent: mappedCourse, coreqs: validCoreqs });
+      for (const raw of fetchedCourses) {
+        const course = mapToCourse(raw);
+        if (isAlreadySelected(newGroups, course) || newGroups.length >= 10)
+          continue;
+        const coreqs = await fetchCoreqs(course, newGroups);
+        newGroups.push({ parent: course, coreqs });
       }
-
       setSelectedCourseGroups(newGroups);
     };
 
-    populateSelectedCourses();
+    syncFromUrl();
   }, [activeTerm]);
 
-  const handleDeleteGroup = (parent: Course) => {
-    // deleting parent deletes whole group
-    // deleting a child only deletes child
-    setSelectedCourseGroups((prev) =>
-      prev.filter(
-        (g) =>
-          !(
-            g.parent.subject === parent.subject &&
-            g.parent.courseNumber === parent.courseNumber
-          ),
-      ),
-    );
-  };
-
-  const handleDeleteChild = (child: Course) => {
-    setSelectedCourseGroups((prev) =>
-      prev.map((group) => ({
-        ...group,
-        coreqs: group.coreqs.filter(
-          (c) =>
-            !(
-              c.subject === child.subject &&
-              c.courseNumber === child.courseNumber
-            ),
-        ),
-      })),
-    );
-  };
-
   const handleDelete = (course: Course, isCoreq: boolean) => {
-    if (isCoreq) {
-      handleDeleteChild(course);
-    } else {
-      handleDeleteGroup(course);
-    }
+    setSelectedCourseGroups((prev) =>
+      isCoreq
+        ? prev.map((g) => ({
+            ...g,
+            coreqs: g.coreqs.filter((c) => !isCourseMatch(c, course)),
+          }))
+        : prev.filter((g) => !isCourseMatch(g.parent, course)),
+    );
   };
 
-  const handleGeneratation = () => {
-    const optionalCourseIds = selectedCourseGroups.flatMap((group) => [
-      group.parent.id,
-      ...group.coreqs.map((c) => c.id),
-    ]);
-
-    if (optionalCourseIds.length > 0) {
-      props.onGenerateSchedules([], optionalCourseIds, numCourses);
-    }
-
-    props.closeFn();
-  };
-
-  const hasEnoughCourses = () => {
-    const parentCourses = selectedCourseGroups.map((group) => group.parent);
-    const coreqCourses = selectedCourseGroups.flatMap((group) => group.coreqs);
-    const totalCourses = parentCourses.length + coreqCourses.length;
-
-    return totalCourses >= numCourses;
-  };
-
-  const getSelectionTextWithCoreqs = () => {
-    const numParentCourses = selectedCourseGroups.length;
-
-    if (numParentCourses === 0) {
-      return "No courses added.";
-    }
-
-    const numSelectedCoreqs = selectedCourseGroups.reduce(
-      (acc, group) => acc + (group.coreqs?.length || 0),
+  const getSelectionText = () => {
+    const parents = selectedCourseGroups.length;
+    if (parents === 0) return "No courses added.";
+    const coreqs = selectedCourseGroups.reduce(
+      (acc, g) => acc + g.coreqs.length,
       0,
     );
+    const possible = selectedCourseGroups.reduce(
+      (acc, g) => acc + extractCoreqReqs(g.parent.coreqs).length,
+      0,
+    );
+    const absent = possible - coreqs;
 
-    const numTotalPossibleCoreqs = selectedCourseGroups.reduce((acc, group) => {
-      const possible = group.parent.coreqs
-        ? extractCoreqCourses(group.parent.coreqs).length
-        : 0;
-      return acc + possible;
-    }, 0);
-
-    const numAbsentCoreqs = numTotalPossibleCoreqs - numSelectedCoreqs;
-    const parentText = `${numParentCourses} course${numParentCourses !== 1 ? "s" : ""} added`;
-    const coreqText =
-      numSelectedCoreqs > 0
-        ? `, ${numSelectedCoreqs} corequisite${numSelectedCoreqs !== 1 ? "s" : ""} added`
-        : "";
-
-    const absentText =
-      numAbsentCoreqs > 0
-        ? `, ${numAbsentCoreqs} unadded corequisite${numAbsentCoreqs !== 1 ? "s" : ""}`
-        : "";
-
-    return `${parentText}${coreqText}${absentText}.`;
+    return `${parents} course${parents !== 1 ? "s" : ""} added${
+      coreqs > 0
+        ? `, ${coreqs} corequisite${coreqs !== 1 ? "s" : ""} added`
+        : ""
+    }${absent > 0 ? `, ${absent} unadded corequisite${absent !== 1 ? "s" : ""}` : ""}.`;
   };
 
   return (
-    <Dialog
-      open={props.open}
-      onOpenChange={(isOpen) => {
-        if (!isOpen) {
-          props.closeFn();
-        }
-      }}
-    >
+    <Dialog open={props.open} onOpenChange={(open) => !open && props.closeFn()}>
       <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px]">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
             Add up to 6 courses{" "}
-            <span className="italic">(excluding corequisites)</span> that you
-            are considering for{" "}
+            <span className="italic">(excluding corequisites)</span> for{" "}
             <span className="font-bold">
-              {activeTermLabel.split(" ")[0] +
-                " " +
-                activeTermLabel.split(" ")[1] +
-                "."}
+              {activeTermLabel.split(" ").slice(0, 2).join(" ")}.
             </span>
           </DialogDescription>
         </DialogHeader>
-        {/* how many courses prompt */}
+
         <div className="flex w-full flex-col py-3">
-          <hr className="text-neu4 mb-6 h-[0.5px] w-full" />
-          <div className="flex w-full flex-row items-center justify-between max-[768px]:flex-col max-[768px]:gap-3 max-[768px]:text-center">
-            <div className="text-neu8 text-[16px] max-[768px]:text-sm">
-              How many courses are you taking this semester?
+          <hr className="mb-6 h-[0.5px] w-full" />
+          <div className="flex w-full items-center justify-between max-[768px]:flex-col">
+            <div className="text-neu8 text-[16px]">
+              How many courses are you taking?
             </div>
-            <div className="border-neu2 flex w-fit flex-row rounded-[28px] border bg-white p-1">
+            <div className="border-neu2 flex rounded-[28px] border bg-white p-1">
               {[1, 2, 3, 4, 5, 6].map((num) => (
                 <button
                   key={num}
                   onClick={() => setNumCourses(num)}
-                  className={`flex h-5.5 w-10.5 cursor-pointer items-center justify-center rounded-[46px] px-2 py-1 text-xs font-semibold transition-colors ${
+                  className={`flex h-5.5 w-10.5 cursor-pointer items-center justify-center rounded-[46px] text-xs font-semibold ${
                     numCourses === num
                       ? "bg-red-500 text-white"
-                      : "text-foreground hover:bg-muted"
+                      : "hover:bg-muted"
                   }`}
                 >
                   {num}
@@ -366,52 +229,56 @@ export default function AddCoursesModal(props: {
               ))}
             </div>
           </div>
-          <hr className="text-neu4 mt-6 h-[0.5px] w-full" />
+          <hr className="mt-6 h-[0.5px] w-full" />
         </div>
-        {/* main dialog content */}
-        <div className="flex min-h-0 w-full flex-1 flex-row gap-2.5 max-[768px]:flex-col max-[768px]:gap-4">
-          {/* selecting term, campus, search, and search results */}
-          <div className="flex h-full min-h-0 w-1/2 flex-col gap-4 max-[768px]:h-1/2 max-[768px]:w-full">
+
+        <div className="flex min-h-0 w-full flex-1 gap-2.5 max-[768px]:flex-col">
+          <div className="flex h-full w-1/2 flex-col gap-4 max-[768px]:w-full">
             <ModalSearchBar
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
-            {
-              <ModalSearchResults
-                searchQuery={searchQuery}
-                term={activeTerm}
-                onSelectCourse={handleSelectCourse}
-              />
-            }
+            <ModalSearchResults
+              searchQuery={searchQuery}
+              term={activeTerm}
+              onSelectCourse={handleSelectCourse}
+            />
           </div>
-          {/* selected course and generate button */}
-          <div className="flex h-full min-h-0 w-1/2 flex-col gap-2.5 max-[768px]:h-1/2 max-[768px]:w-full">
-            {/* selected courses panel */}
-            <div className="bg-neu25 flex min-h-0 flex-1 flex-col gap-1 rounded-lg p-2">
-              {/* number of selections label */}
-              <div className="flex items-center justify-start p-2">
-                <span className="text-neu5 text-xs">
-                  {getSelectionTextWithCoreqs()}
-                </span>
-              </div>
-              <div className="flex min-h-0 flex-1 flex-col gap-y-1 overflow-y-auto">
-                {selectedCourseGroups.map((group, index) => (
+
+          <div className="flex h-full w-1/2 flex-col gap-2.5 max-[768px]:w-full">
+            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-2">
+              <div className="text-neu5 p-2 text-xs">{getSelectionText()}</div>
+              <div className="flex flex-1 flex-col gap-y-1 overflow-y-auto">
+                {selectedCourseGroups.map((group, i) => (
                   <SelectedCourseGroup
-                    key={`${group.parent.subject}-${group.parent.courseNumber}-${index}`}
+                    key={`${group.parent.id}-${i}`}
                     parent={group.parent}
                     coreqs={group.coreqs}
-                    onDeleteCourse={(course, isCoreq) =>
-                      handleDelete(course, isCoreq)
-                    }
+                    onDeleteCourse={handleDelete}
                   />
                 ))}
               </div>
             </div>
-
             <Button
-              disabled={!hasEnoughCourses()}
-              onClick={handleGeneratation}
               className="cursor-pointer"
+              disabled={
+                selectedCourseGroups.length +
+                  selectedCourseGroups.flatMap((g) => g.coreqs).length <
+                numCourses
+              }
+              onClick={() => {
+                props.onGenerateSchedules(
+                  // ASK: do we want to reset all the locks whenever editing a schedule?
+                  // the user would have to manually lock them again after generation
+                  [],
+                  selectedCourseGroups.flatMap((g) => [
+                    g.parent.id,
+                    ...g.coreqs.map((c) => c.id),
+                  ]),
+                  numCourses,
+                );
+                props.closeFn();
+              }}
             >
               Generate Schedules
             </Button>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { GraduateAPI } from "./graduateApiClient";
 import {
   GetSupportedMajorsResponse,
-  GetSupportedMinorsResponse,
+  //GetSupportedMinorsResponse,
 } from "./api-response-types";
 import { Major, Minor, Template } from "./types";
 

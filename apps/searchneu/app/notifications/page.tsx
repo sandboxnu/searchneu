@@ -21,6 +21,8 @@ export interface TrackerSection {
   faculty: string;
   meetingTimes: SectionTableMeetingTime[];
   campus: string;
+  courseName: string;
+  courseRegister: string;
   seatRemaining: number;
   seatCapacity: number;
   waitlistCapacity: number;

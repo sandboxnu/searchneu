@@ -50,7 +50,7 @@ export function NavBar({
         <Link
           href="/catalog"
           data-active={pathname === "/catalog"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
         >
           <BookMarked className="size-4" />
           <span>Catalog</span>
@@ -61,7 +61,7 @@ export function NavBar({
           <Link
             href="/scheduler"
             data-active={pathname === "/scheduler"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 px-4 text-sm"
+            className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center rounded-full border-1 p-2 px-4 text-sm"
           >
             Scheduler
           </Link>

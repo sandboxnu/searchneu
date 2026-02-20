@@ -126,14 +126,13 @@ export async function uploadCatalogTerm(
         code: roomsT.code,
       })
       .from(roomsT);
-    const roomsMap = rooms.reduce(
-      (agg, r) => agg.set(r.code, r.id),
-      new Map<string, number>(),
-    );
-    const buildingRoomMap = buildings.reduce(
-      (agg, b) => agg.set(b.code, { id: b.id, rooms: roomsMap }),
-      new Map<string, { id: number; rooms: Map<string, number> }>(),
-    );
+    const buildingRoomMap = buildings.reduce((agg, b) => {
+      const roomsMap = rooms
+        .filter((r) => r.buildingId === b.id)
+        .reduce((agg, r) => agg.set(r.code, r.id), new Map<string, number>());
+
+      return agg.set(b.code, { id: b.id, rooms: roomsMap });
+    }, new Map<string, { id: number; rooms: Map<string, number> }>());
     consola.debug("inserted buildings");
 
     // nupaths
@@ -295,7 +294,7 @@ export async function uploadCatalogTerm(
 
           const facultyObj = s.faculty.filter((f) => f.primary);
           let faculty = "NA";
-          if (facultyObj.length === 1) {
+          if (facultyObj.length > 0) {
             faculty = facultyObj[0].displayName;
           }
 

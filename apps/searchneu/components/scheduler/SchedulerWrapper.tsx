@@ -182,8 +182,8 @@ export function SchedulerWrapper({
   }, []);
 
   return (
-    <div className="grid w-full grid-cols-6">
-      <div className="col-span-1 w-full">
+    <div className="flex h-full w-full overflow-hidden">
+      <div className="h-full w-75 shrink-0">
         <FilterPanel
           filters={filters}
           onFiltersChange={setFilters}
@@ -197,7 +197,7 @@ export function SchedulerWrapper({
           onLockedCourseIdsChange={handleLockedCourseIdsChange}
         />
       </div>
-      <div className="col-span-5 min-w-0 pl-6">
+      <div className="min-w-0 flex-1">
         <SchedulerView schedules={filteredSchedules} filters={filters} />
       </div>
     </div>

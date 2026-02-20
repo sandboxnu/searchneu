@@ -33,7 +33,7 @@ export function CourseBox({
 
   return (
     <div
-      className={`group flex min-h-0 overflow-clip rounded-lg py-1 pl-1 ${open ? "flex-1" : "shrink-0"}`}
+      className={`group flex min-h-0 overflow-clip rounded-lg py-1 pl-1 ${open ? "min-h-0 flex-initial overflow-hidden" : "shrink-0"}`}
       style={{
         backgroundColor: color?.fill,
         border: open ? `1px solid ${color?.accent}66` : "1px solid transparent",
@@ -78,7 +78,7 @@ export function CourseBox({
 
         {/* Expanded sections - scrollable */}
         {open && (
-          <div className="min-h-0 flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="min-h-0 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {sections.map((s) => (
               <SectionRow
                 key={s.crn}

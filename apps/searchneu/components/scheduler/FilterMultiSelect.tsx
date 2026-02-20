@@ -66,7 +66,7 @@ export function FilterMultiSelect({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="text-muted-foreground cursor-pointer text-xs font-bold"
+          className="text-neu7 cursor-pointer text-xs font-bold"
         >
           {label}
         </button>

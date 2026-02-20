@@ -63,6 +63,7 @@ export default function NewPlanModal() {
       .sort()
       .map((year) => ({ label: String(year), value: year }));
   }, [supportedMajorsData]);
+
   const isLoadingMajors = !supportedMajorsData && !majorsError;
   const [majorOptions, setMajorOptions] = useState<{ majorName: string }[]>([]);
   const [majors, setMajors] = useState<string[]>([]);

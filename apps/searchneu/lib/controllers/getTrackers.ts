@@ -8,6 +8,7 @@ import {
   meetingTimesT,
   roomsT,
   buildingsT,
+  coursesT,
 } from "../db";
 import { TrackerSection } from "@/app/notifications/page";
 
@@ -24,6 +25,9 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
       seatCapacity: sectionsT.seatCapacity,
       waitlistCapacity: sectionsT.waitlistCapacity,
       waitlistRemaining: sectionsT.waitlistRemaining,
+      // course info
+      courseName: coursesT.name,
+      courseRegister: coursesT.register,
       // meeting time info
       meetingTimeId: meetingTimesT.id,
       days: meetingTimesT.days,
@@ -37,6 +41,7 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
       buildingName: buildingsT.name,
     })
     .from(sectionsT)
+    .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
     .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
     .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
@@ -54,6 +59,8 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
         crn: row.crn,
         faculty: row.faculty,
         campus: row.campus,
+        courseName: row.courseName,
+        courseRegister: row.courseRegister,
         seatRemaining: row.seatRemaining,
         seatCapacity: row.seatCapacity,
         waitlistCapacity: row.waitlistCapacity,

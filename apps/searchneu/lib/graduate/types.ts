@@ -414,3 +414,20 @@ export type OptionObject = {
   label: string | number;
   value: string | number;
 };
+
+export interface TemplateMetadata {
+  branch: string;
+}
+
+export interface Template {
+  name: string;
+  yearVersion: number;
+  metadata?: TemplateMetadata;
+  templateData?: {
+    [templateName: string]: {
+      [yearKey: string]: {
+        [termKey: string]: string[];
+      };
+    };
+  };
+}

@@ -18,7 +18,7 @@ interface FilterPanelProps {
   filteredSchedules: SectionWithCourse[][];
   hiddenSections: Set<string>;
   onToggleHiddenSection: (crn: string) => void;
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],

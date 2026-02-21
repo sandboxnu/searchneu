@@ -74,7 +74,7 @@ const extractCoreqReqs = (
 export default function AddCoursesModal(props: {
   open: boolean;
   closeFn: () => void;
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
   selectedTerm: string | null;
   onGenerateSchedules: (
     locked: number[],
@@ -83,7 +83,6 @@ export default function AddCoursesModal(props: {
   ) => void;
 }) {
   const searchParams = useSearchParams();
-  const terms = use(props.terms);
 
   const parsedNum = parseInt(searchParams.get("numCourses") ?? "1");
   const numCoursesValue = isNaN(parsedNum) ? 1 : parsedNum;
@@ -94,9 +93,9 @@ export default function AddCoursesModal(props: {
     SelectedCourseGroupData[]
   >([]);
 
-  const activeTerm = props.selectedTerm ?? terms.neu[0]?.term ?? "";
+  const activeTerm = props.selectedTerm ?? props.terms.neu[0]?.term ?? "";
   const activeTermLabel =
-    Object.values(terms)
+    Object.values(props.terms)
       .flat()
       .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
 

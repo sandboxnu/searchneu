@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Searchskie } from "../icons/Searchskie";
 import AddCoursesModal from "./AddCoursesModal";
 
-export function DashboardClient(props: { terms: Promise<GroupedTerms> }) {
+export function DashboardClient(props: { terms: GroupedTerms }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 

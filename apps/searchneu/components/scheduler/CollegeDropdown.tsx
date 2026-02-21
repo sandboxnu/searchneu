@@ -7,18 +7,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import type { GroupedTerms } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
 export function CollegeDropdown(props: {
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
   selectedCollege: string;
   onCollegeChange: (college: string) => void;
   onTermChange: (term: string) => void;
 }) {
-  const terms = use(props.terms);
-
   const collegeOptions = [
     { value: "neu", label: "Northeastern University" },
     { value: "cps", label: "College of Professional Studies" },
@@ -26,7 +24,7 @@ export function CollegeDropdown(props: {
   ];
 
   const availableTerms =
-    terms[props.selectedCollege as keyof GroupedTerms] ?? [];
+    props.terms[props.selectedCollege as keyof GroupedTerms] ?? [];
 
   // Auto-select first term when college changes or on initial load
   useEffect(() => {

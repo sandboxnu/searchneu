@@ -7,9 +7,11 @@ export default async function Layout({ children }: LayoutProps<"/rooms">) {
   return (
     <div className="flex h-screen flex-col pt-4">
       <Header />
-      <Suspense>
-        <FlagCheck>{children}</FlagCheck>
-      </Suspense>
+      <div className="flex-1 min-h-0">
+        <Suspense>
+          <FlagCheck>{children}</FlagCheck>
+        </Suspense>
+      </div>
     </div>
   );
 }

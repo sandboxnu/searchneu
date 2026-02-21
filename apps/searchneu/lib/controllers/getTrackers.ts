@@ -1,6 +1,5 @@
 import { SectionTableRoom } from "@/components/catalog/SectionTable";
 import { eq, inArray } from "drizzle-orm";
-import { cache } from "react";
 import {
   db,
   sectionsT,
@@ -9,10 +8,14 @@ import {
   roomsT,
   buildingsT,
   coursesT,
+  subjectsT,
 } from "../db";
 import { TrackerSection } from "@/app/notifications/page";
 
-export const getSectionInfo = cache(async (sectionIds: number[]) => {
+export const getSectionInfo = async (
+  sectionIds: number[],
+  trackerMap: Map<number, { messageCount: number; messageLimit: number }>,
+) => {
   if (sectionIds.length === 0) return [];
 
   const rows = await db
@@ -28,6 +31,8 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
       // course info
       courseName: coursesT.name,
       courseRegister: coursesT.register,
+      courseSubject: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
       // meeting time info
       meetingTimeId: meetingTimesT.id,
       days: meetingTimesT.days,
@@ -42,6 +47,7 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
     })
     .from(sectionsT)
     .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
     .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
     .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
     .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
@@ -57,10 +63,14 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
       section = {
         id: row.id,
         crn: row.crn,
+        messageCount: trackerMap.get(row.id)?.messageCount ?? 0,
+        messageLimit: trackerMap.get(row.id)?.messageLimit ?? 3,
         faculty: row.faculty,
         campus: row.campus,
         courseName: row.courseName,
         courseRegister: row.courseRegister,
+        courseSubject: row.courseSubject,
+        courseNumber: row.courseNumber,
         seatRemaining: row.seatRemaining,
         seatCapacity: row.seatCapacity,
         waitlistCapacity: row.waitlistCapacity,
@@ -95,4 +105,4 @@ export const getSectionInfo = cache(async (sectionIds: number[]) => {
   }
 
   return Array.from(sectionMap.values());
-});
+};

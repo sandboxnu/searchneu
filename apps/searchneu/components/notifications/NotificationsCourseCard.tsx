@@ -27,6 +27,9 @@ interface NotificationsCourseCardProps {
   courseTitle: string;
   sections: Section[];
   onToggleSubscription?: (crn: string) => void;
+  onViewAllSections?: () => void;
+  onUnsubscribeAll?: () => void;
+  isPending?: boolean;
 }
 
 export default function NotificationsCourseCard({
@@ -34,6 +37,9 @@ export default function NotificationsCourseCard({
   courseTitle,
   sections,
   onToggleSubscription,
+  onViewAllSections,
+  onUnsubscribeAll,
+  isPending,
 }: NotificationsCourseCardProps) {
   const unsubscribedCount = sections.filter((s) => !s.isSubscribed).length;
   const totalSections = sections.length;
@@ -50,13 +56,15 @@ export default function NotificationsCourseCard({
         <div className="flex items-center gap-2">
           <button
             className="border-neu2 bg-neu2 hover:bg-neu3 text-neu7 flex h-9 items-center gap-[10px] rounded-[24px] border px-4 py-2 text-[14px] leading-[16.8px] font-semibold transition"
-            onClick={() => console.log("View all sections")}
+            onClick={onViewAllSections}
+            disabled={isPending}
           >
             View all sections
           </button>
           <button
             className="border-neu2 bg-neu2 hover:bg-neu3 flex h-9 w-9 items-center justify-center rounded-[24px] border transition"
-            onClick={() => console.log("Delete course")}
+            onClick={onUnsubscribeAll}
+            disabled={isPending}
           >
             <Trash2 className="text-neu6 h-4 w-4 shrink-0" />
           </button>

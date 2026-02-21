@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { db, trackersT } from "@/lib/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { auth } from "../auth";
 
 export async function createTrackerAction(id: number) {
@@ -82,5 +82,24 @@ export async function deleteAllTrackersAction() {
       and(eq(trackersT.userId, session.user.id), isNull(trackersT.deletedAt)),
     );
 
+  return { ok: true };
+}
+
+export async function deleteAllTrackersForCourseAction(sectionIds: number[]) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return { ok: false, msg: "no valid session" };
+
+  await db
+    .update(trackersT)
+    .set({ deletedAt: new Date() })
+    .where(
+      and(
+        eq(trackersT.userId, session.user.id),
+        inArray(trackersT.sectionId, sectionIds),
+        isNull(trackersT.deletedAt),
+      ),
+    );
   return { ok: true };
 }

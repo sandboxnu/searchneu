@@ -20,6 +20,7 @@ export type NotificationsSidebarProps = {
 
 export type NotificationsProps = NotificationsSidebarProps & {
   sections: TrackerSection[];
+  termId: string;
 };
 
 export function NotificationsWrapper({
@@ -28,6 +29,7 @@ export function NotificationsWrapper({
   termNames,
   notifications,
   sections,
+  termId,
 }: NotificationsProps) {
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-6">
@@ -40,7 +42,7 @@ export function NotificationsWrapper({
         />
       </div>
       <div className="col-span-5 min-h-0 pl-6">
-        <NotificationsView sections={sections} />
+        <NotificationsView sections={sections} termId={termId} />
       </div>
     </div>
   );

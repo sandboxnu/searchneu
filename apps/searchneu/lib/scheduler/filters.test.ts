@@ -22,6 +22,7 @@ describe("filters", () => {
     seatCapacity: 30,
     waitlistCapacity: 5,
     waitlistRemaining: 0,
+    courseId: 1,
     courseName: "Introduction to Computer Science",
     courseSubject: "CS",
     courseNumber: "2500",

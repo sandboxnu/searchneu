@@ -3,9 +3,10 @@ import { type SectionWithCourse } from "./filters";
 export interface CourseColor {
   fill: string;
   stroke: string;
+  accent: string;
 }
 
-// Course color palette - same as defined in globals.css
+// Course color palette - hardcoded to match Figma design
 export const COURSE_COLORS: CourseColor[] = [
   { fill: "var(--scheduler-course-yellow-fill)", stroke: "var(--scheduler-course-yellow-stroke)" },
   { fill: "var(--scheduler-course-red-fill)", stroke: "var(--scheduler-course-red-stroke)" },

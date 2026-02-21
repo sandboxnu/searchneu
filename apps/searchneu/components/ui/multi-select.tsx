@@ -36,6 +36,7 @@ type MultiSelectContextType = {
   toggleValue: (value: string) => void;
   items: Map<string, ReactNode>;
   onItemAdded: (value: string, label: ReactNode) => void;
+  disabled?: boolean;
 };
 const MultiSelectContext = createContext<MultiSelectContextType | null>(null);
 
@@ -44,11 +45,13 @@ export function MultiSelect({
   values,
   defaultValues,
   onValuesChange,
+  disabled,
 }: {
   children: ReactNode;
   values?: string[];
   defaultValues?: string[];
   onValuesChange?: (values: string[]) => void;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [internalValues, setInternalValues] = useState(
@@ -87,9 +90,14 @@ export function MultiSelect({
         toggleValue,
         items,
         onItemAdded,
+        disabled,
       }}
     >
-      <Popover open={open} onOpenChange={setOpen} modal={true}>
+      <Popover
+        open={open}
+        onOpenChange={disabled ? () => {} : setOpen}
+        modal={true}
+      >
         {children}
       </Popover>
     </MultiSelectContext>
@@ -104,17 +112,18 @@ export function MultiSelectTrigger({
   className?: string;
   children?: ReactNode;
 } & ComponentPropsWithoutRef<typeof Button>) {
-  const { open } = useMultiSelectContext();
+  const { open, disabled } = useMultiSelectContext();
 
   return (
     <PopoverTrigger asChild>
       <Button
         {...props}
+        disabled={disabled || props.disabled}
         variant={props.variant ?? "outline"}
         role={props.role ?? "combobox"}
         aria-expanded={props["aria-expanded"] ?? open}
         className={cn(
-          "border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='text-'])]:text-muted-foreground flex h-auto min-h-9 w-fit items-center justify-between gap-2 overflow-hidden rounded-md border bg-transparent px-3 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='text-'])]:text-muted-foreground flex h-auto min-h-9 w-fit items-center justify-between gap-2 overflow-hidden rounded-md border bg-transparent px-3 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className,
         )}
       >
@@ -130,11 +139,13 @@ export function MultiSelectValue({
   clickToRemove = true,
   className,
   overflowBehavior = "wrap-when-open",
+  displayTagsUnderneath,
   ...props
 }: {
   placeholder?: string;
   clickToRemove?: boolean;
   overflowBehavior?: "wrap" | "wrap-when-open" | "cutoff";
+  displayTagsUnderneath?: boolean;
 } & Omit<ComponentPropsWithoutRef<"div">, "children">) {
   const { selectedValues, toggleValue, items, open } = useMultiSelectContext();
   const [overflowAmount, setOverflowAmount] = useState(0);
@@ -210,38 +221,46 @@ export function MultiSelectValue({
         className,
       )}
     >
-      {[...selectedValues]
-        .filter((value) => items.has(value))
-        .map((value) => (
+      {displayTagsUnderneath ? (
+        <span className="text-muted-foreground min-w-0 overflow-hidden font-normal">
+          {placeholder}
+        </span>
+      ) : (
+        <>
+          {[...selectedValues]
+            .filter((value) => items.has(value))
+            .map((value) => (
+              <Badge
+                variant="outline"
+                data-selected-item
+                className="group flex items-center gap-1"
+                key={value}
+                onClick={
+                  clickToRemove
+                    ? (e) => {
+                        e.stopPropagation();
+                        toggleValue(value);
+                      }
+                    : undefined
+                }
+              >
+                {items.get(value)}
+                {clickToRemove && (
+                  <XIcon className="text-muted-foreground group-hover:text-destructive size-2" />
+                )}
+              </Badge>
+            ))}
           <Badge
+            style={{
+              display: overflowAmount > 0 && !shouldWrap ? "block" : "none",
+            }}
             variant="outline"
-            data-selected-item
-            className="group flex items-center gap-1"
-            key={value}
-            onClick={
-              clickToRemove
-                ? (e) => {
-                    e.stopPropagation();
-                    toggleValue(value);
-                  }
-                : undefined
-            }
+            ref={overflowRef}
           >
-            {items.get(value)}
-            {clickToRemove && (
-              <XIcon className="text-muted-foreground group-hover:text-destructive size-2" />
-            )}
+            +{overflowAmount}
           </Badge>
-        ))}
-      <Badge
-        style={{
-          display: overflowAmount > 0 && !shouldWrap ? "block" : "none",
-        }}
-        variant="outline"
-        ref={overflowRef}
-      >
-        +{overflowAmount}
-      </Badge>
+        </>
+      )}
     </div>
   );
 }

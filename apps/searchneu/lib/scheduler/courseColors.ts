@@ -3,45 +3,40 @@ import { type SectionWithCourse } from "./filters";
 export interface CourseColor {
   fill: string;
   stroke: string;
+  accent: string;
 }
 
-// Course color palette - same as defined in globals.css
+// Course color palette matching Figma designs
 export const COURSE_COLORS: CourseColor[] = [
   {
-    fill: "var(--scheduler-course-yellow-fill)",
-    stroke: "var(--scheduler-course-yellow-stroke)",
+    fill: "#fffaf9",
+    stroke: "#ffe4e0",
+    accent: "#f08890",
   },
   {
-    fill: "var(--scheduler-course-red-fill)",
-    stroke: "var(--scheduler-course-red-stroke)",
+    fill: "#fff9f4",
+    stroke: "#fff1e4",
+    accent: "#ffb067",
   },
   {
-    fill: "var(--scheduler-course-blue-fill)",
-    stroke: "var(--scheduler-course-blue-stroke)",
+    fill: "#f1fbfd",
+    stroke: "#dbf4fb",
+    accent: "#98e1f5",
   },
   {
-    fill: "var(--scheduler-course-purple-fill)",
-    stroke: "var(--scheduler-course-purple-stroke)",
+    fill: "#fffdef",
+    stroke: "#fff9d8",
+    accent: "#fae98f",
   },
   {
-    fill: "var(--scheduler-course-green-fill)",
-    stroke: "var(--scheduler-course-green-stroke)",
+    fill: "#f4fcf7",
+    stroke: "#dbf6e5",
+    accent: "#89ecae",
   },
   {
-    fill: "var(--scheduler-course-orange-fill)",
-    stroke: "var(--scheduler-course-orange-stroke)",
-  },
-  {
-    fill: "var(--scheduler-course-pink-fill)",
-    stroke: "var(--scheduler-course-pink-stroke)",
-  },
-  {
-    fill: "var(--scheduler-course-gray-fill)",
-    stroke: "var(--scheduler-course-gray-stroke)",
-  },
-  {
-    fill: "var(--scheduler-course-brown-fill)",
-    stroke: "var(--scheduler-course-brown-stroke)",
+    fill: "#f6f6fd",
+    stroke: "#e2e0f8",
+    accent: "#c8c3fe",
   },
 ];
 

@@ -45,7 +45,7 @@ export default async function Page({
     .then((c) => c.map((e) => ({ label: e.name, value: e.short })));
 
   // Fetch terms from the db
-  const terms = getTerms();
+  const terms = await getTerms();
 
   return (
     <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">

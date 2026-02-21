@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useTransition } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   filterSchedules,
@@ -111,7 +111,7 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
 interface SchedulerWrapperProps {
   initialSchedules: SectionWithCourse[][];
   nupathOptions: { label: string; value: string }[];
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
 }
 
 export function SchedulerWrapper({
@@ -121,7 +121,6 @@ export function SchedulerWrapper({
 }: SchedulerWrapperProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
 
   const [filters, setFilters] = useState<ScheduleFilters>(() =>
     parseFiltersFromParams(searchParams),
@@ -149,27 +148,25 @@ export function SchedulerWrapper({
     optionalCourseIds: number[],
     numCourses?: number,
   ) => {
-    startTransition(() => {
-      const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
-      if (lockedCourseIds.length > 0) {
-        params.set("lockedCourseIds", lockedCourseIds.join(","));
-      } else {
-        params.delete("lockedCourseIds");
-      }
+    if (lockedCourseIds.length > 0) {
+      params.set("lockedCourseIds", lockedCourseIds.join(","));
+    } else {
+      params.delete("lockedCourseIds");
+    }
 
-      if (optionalCourseIds.length > 0) {
-        params.set("optionalCourseIds", optionalCourseIds.join(","));
-      } else {
-        params.delete("optionalCourseIds");
-      }
+    if (optionalCourseIds.length > 0) {
+      params.set("optionalCourseIds", optionalCourseIds.join(","));
+    } else {
+      params.delete("optionalCourseIds");
+    }
 
-      if (numCourses !== undefined) {
-        params.set("numCourses", numCourses.toString());
-      }
+    if (numCourses !== undefined) {
+      params.set("numCourses", numCourses.toString());
+    }
 
-      router.push(`/scheduler/generator?${params.toString()}`);
-    });
+    router.push(`/scheduler/generator?${params.toString()}`);
   };
 
   const filteredSchedules = filterSchedules(initialSchedules, filters);

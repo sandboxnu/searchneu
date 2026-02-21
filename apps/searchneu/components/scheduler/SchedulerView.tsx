@@ -146,7 +146,7 @@ export function SchedulerView({
                     >
                       <div
                         className="w-1 shrink-0 rounded-full"
-                        style={{ backgroundColor: sectionColor?.accent }}
+                        style={{ backgroundColor: sectionColor?.stroke }}
                       />
                       <div className="flex items-center gap-3 pl-2">
                         <div className="text-neu8 truncate text-sm font-bold">

@@ -132,7 +132,7 @@ export function CourseInfoPopup({
           <div className="flex items-stretch">
             <div
               className="w-1 rounded-full"
-              style={{ backgroundColor: color?.accent }}
+              style={{ backgroundColor: color?.stroke }}
             />
           </div>
 

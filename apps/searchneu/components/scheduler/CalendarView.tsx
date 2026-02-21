@@ -172,7 +172,7 @@ export function CalendarView({
                         <div
                           className="w-1 shrink-0 rounded-full"
                           style={{
-                            backgroundColor: sectionColor?.accent,
+                            backgroundColor: sectionColor?.stroke,
                           }}
                         />
                         {/* Content */}

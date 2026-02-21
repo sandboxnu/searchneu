@@ -111,7 +111,7 @@ export const MiniCalendar = memo(function MiniCalendar({
                 key={idx}
                 className="h-2 rounded-[2px]"
                 style={{
-                  backgroundColor: sectionColor?.accent,
+                  backgroundColor: sectionColor?.stroke,
                 }}
               />
             );
@@ -140,7 +140,7 @@ export const MiniCalendar = memo(function MiniCalendar({
                     className="absolute inset-x-[1px] rounded-[2px]"
                     style={{
                       ...position,
-                      backgroundColor: sectionColor?.accent,
+                      backgroundColor: sectionColor?.stroke,
                     }}
                   />
                 );

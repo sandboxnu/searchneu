@@ -38,7 +38,7 @@ export default async function Page({
     .then((c) => c.map((e) => ({ label: e.name, value: e.short })));
 
   return (
-    <div className="bg-secondary h-full w-full px-4 pt-4 xl:px-6">
+    <div className="bg-secondary h-[calc(100vh-72px)] w-full overflow-hidden px-4 pt-4 xl:px-6">
       <SchedulerWrapper
         initialSchedules={allSchedules}
         nupathOptions={nupathOptions}

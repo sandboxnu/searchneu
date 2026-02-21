@@ -74,26 +74,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Scheduler Course Colors */
-  --scheduler-course-yellow-fill: #fff9d8;
-  --scheduler-course-yellow-stroke: #fff6c7;
-  --scheduler-course-red-fill: #ffe4e0;
-  --scheduler-course-red-stroke: #ffd8d2;
-  --scheduler-course-blue-fill: #dbf4fb;
-  --scheduler-course-blue-stroke: #cceff9;
-  --scheduler-course-purple-fill: #e2e0f8;
-  --scheduler-course-purple-stroke: #d6d3f5;
-  --scheduler-course-green-fill: #dbf6e5;
-  --scheduler-course-green-stroke: #ccf2da;
-  --scheduler-course-orange-fill: #fff1e4;
-  --scheduler-course-orange-stroke: #ffebd9;
-  --scheduler-course-pink-fill: #ffe4f0;
-  --scheduler-course-pink-stroke: #ffd9ea;
-  --scheduler-course-gray-fill: #eaeaea;
-  --scheduler-course-gray-stroke: #e1e1e1;
-  --scheduler-course-brown-fill: #e9e0d9;
-  --scheduler-course-brown-stroke: #e0d3c9;
-
   --font-lato: "Lato", sans-serif;
 }
 

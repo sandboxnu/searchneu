@@ -190,58 +190,6 @@ export function FilterPanel({
 
       <Separator />
 
-      <Separator />
-
-      {/* Classes Filter*/}
-      <div className="flex items-center justify-between">
-        <h3 className="text-muted-foreground text-xs font-bold">CLASSES</h3>
-        <button
-          onClick={() => {}}
-          aria-label="Edit classes"
-          title="Edit classes"
-          className="rounded border border-transparent p-1 text-gray-600"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div>
-        {filteredSchedules &&
-          filteredSchedules.length > 0 &&
-          (() => {
-            // Build a map of course -> sections
-            const courseMap = new Map<string, Map<string, SectionWithCourse>>();
-            for (const schedule of filteredSchedules) {
-              for (const section of schedule) {
-                const courseKey = getCourseKey(section);
-                if (!courseMap.has(courseKey))
-                  courseMap.set(courseKey, new Map());
-                const inner = courseMap.get(courseKey)!;
-                if (!inner.has(section.crn)) inner.set(section.crn, section);
-              }
-            }
-
-            // Sort courses alphabetically
-            const courseEntries = Array.from(courseMap.entries()).sort((a, b) =>
-              a[0].localeCompare(b[0]),
-            );
-
-            return (
-              <div className="mt-2">
-                {courseEntries.map(([courseKey, sectionsMap]) => (
-                  <CourseBox
-                    key={courseKey}
-                    sections={Array.from(sectionsMap.values())}
-                    color={colorMap.get(courseKey)}
-                  />
-                ))}
-              </div>
-            );
-          })()}
-      </div>
-
-      <Separator />
-
       {/* Online Classes */}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-muted-foreground text-xs font-bold">

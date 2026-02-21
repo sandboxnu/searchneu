@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   filterSchedules,
@@ -193,12 +191,11 @@ export function SchedulerWrapper({
     [initialSchedules],
   );
 
-  // Auto-select first filtered schedule when none is selected
-  useEffect(() => {
-    if (!selectedScheduleKey && filteredSchedules.length > 0) {
-      setSelectedScheduleKey(getScheduleKey(filteredSchedules[0]));
-    }
-  }, [selectedScheduleKey, filteredSchedules]);
+  const currentScheduleKey =
+    selectedScheduleKey ??
+    (filteredSchedules.length > 0
+      ? getScheduleKey(filteredSchedules[0])
+      : null);
 
   const handleToggleFavorite = (key: string) => {
     setFavoritedKeys((prev) => {
@@ -209,8 +206,8 @@ export function SchedulerWrapper({
     });
   };
 
-  const isFavorited = selectedScheduleKey
-    ? favoritedKeys.has(selectedScheduleKey)
+  const isFavorited = currentScheduleKey
+    ? favoritedKeys.has(currentScheduleKey)
     : false;
 
   return (
@@ -234,7 +231,7 @@ export function SchedulerWrapper({
           <SchedulerView
             schedules={filteredSchedules}
             allSchedules={initialSchedules}
-            selectedScheduleKey={selectedScheduleKey}
+            selectedScheduleKey={currentScheduleKey}
             colorMap={colorMap}
             isFavorited={isFavorited}
             onToggleFavorite={() => {

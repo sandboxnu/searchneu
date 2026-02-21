@@ -19,9 +19,14 @@ import { deletePlanAction } from "@/lib/graduate/actions";
 interface HeaderClientProps {
   plans: AuditPlanSummary[];
   currentPlan: HydratedAuditPlan;
+  isGuest: boolean;
 }
 
-export function HeaderClient({ plans, currentPlan }: HeaderClientProps) {
+export function HeaderClient({
+  plans,
+  currentPlan,
+  isGuest,
+}: HeaderClientProps) {
   const router = useRouter();
   const [showNewPlan, setShowNewPlan] = useState(false);
 
@@ -168,7 +173,7 @@ export function HeaderClient({ plans, currentPlan }: HeaderClientProps) {
           </div>
         </div>
       </div>
-      <NewPlanModal open={showNewPlan} onOpenChange={setShowNewPlan} />
+      <NewPlanModal open={showNewPlan} onOpenChange={setShowNewPlan} isGuest />
     </div>
   );
 }

@@ -155,7 +155,7 @@ export default async function PlanPage({
 
   return (
     <div className="mx-auto flex flex-col gap-4 px-6">
-      <HeaderClient plans={userPlans} currentPlan={hydrated} />
+      <HeaderClient plans={userPlans} currentPlan={hydrated} isGuest={false} />
       <PlanClient plan={hydrated} courseNames={hydrated.courseNames} />
     </div>
   );

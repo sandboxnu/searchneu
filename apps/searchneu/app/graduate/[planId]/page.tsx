@@ -42,7 +42,7 @@ export default async function PlanPage({
     return (
       <PlanClient
         catalogYear={2023}
-        initialPlan={data.schedule}
+        initialPlan={data}
         planId={planId}
         majorName="Computer Science, BSCS"
       />

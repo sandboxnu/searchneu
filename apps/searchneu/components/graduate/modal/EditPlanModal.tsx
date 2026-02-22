@@ -27,18 +27,20 @@ import {
   useSupportedMinors,
 } from "@/lib/graduate/useGraduateApi";
 
+export interface PlanMetadata {
+  id: number;
+  name: string;
+  majors?: string[];
+  minors?: string[];
+  catalogYear?: number;
+  concentration?: string;
+}
+
 interface EditPlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPlanUpdated?: () => void;
-  plan: {
-    id: number;
-    name: string;
-    majors?: string[];
-    minors?: string[];
-    catalogYear?: number;
-    concentration?: string;
-  };
+  onPlanUpdated?: (updated: PlanMetadata) => void;
+  plan: PlanMetadata;
 }
 
 export default function EditPlanModal({
@@ -63,9 +65,7 @@ export default function EditPlanModal({
   const [catalogYear, setCatalogYear] = useState(plan.catalogYear ?? -1);
   const [majors, setMajors] = useState<string[]>(plan.majors ?? []);
   const [minors, setMinors] = useState<string[]>(plan.minors ?? []);
-  const [concentration, setConcentration] = useState(
-    plan.concentration ?? "",
-  );
+  const [concentration, setConcentration] = useState(plan.concentration ?? "");
 
   //majors
   const { data: supportedMajorsData, error: majorsError } =
@@ -200,12 +200,12 @@ export default function EditPlanModal({
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-            name: message || plan.name,
-            majors: isNoMajorSelected ? null : majors,
-            minors: isNoMinorSelected || !minors?.length ? null : minors,
-            catalogYear: isNoMajorSelected ? null : catalogYear,
-            concentration: isNoMajorSelected ? null : concentration || null,
-          }),
+          name: message || plan.name,
+          majors: isNoMajorSelected ? null : majors,
+          minors: isNoMinorSelected || !minors?.length ? null : minors,
+          catalogYear: isNoMajorSelected ? null : catalogYear,
+          concentration: isNoMajorSelected ? null : concentration || null,
+        }),
       });
 
       if (!response.ok) {
@@ -213,7 +213,14 @@ export default function EditPlanModal({
         throw new Error(text || "Failed to update plan");
       }
 
-      onPlanUpdated?.();
+      onPlanUpdated?.({
+        id: plan.id,
+        name: message || plan.name,
+        majors: isNoMajorSelected ? undefined : majors,
+        minors: isNoMinorSelected || !minors?.length ? undefined : minors,
+        catalogYear: isNoMajorSelected ? undefined : catalogYear,
+        concentration: isNoMajorSelected ? undefined : concentration || undefined,
+      });
       handleClose();
     } catch (error) {
       console.error("Error updating plan:", error);
@@ -246,12 +253,14 @@ export default function EditPlanModal({
           >
             CATALOG YEAR
           </Label>
-          <Select value={catalogYear.toString()}
-          onValueChange={(v) => {
-            setCatalogYear(Number(v));
-            setMajors([]);
-            setConcentration("");
-            }}>
+          <Select
+            value={catalogYear.toString()}
+            onValueChange={(v) => {
+              setCatalogYear(Number(v));
+              setMajors([]);
+              setConcentration("");
+            }}
+          >
             <SelectTrigger className="border-neu3 w-full rounded-4xl border bg-transparent">
               <SelectValue placeholder="Select catalog year" />
             </SelectTrigger>
@@ -302,9 +311,7 @@ export default function EditPlanModal({
                 >
                   <span>{major}</span>
                   <button
-                    onClick={() =>
-                      setMajors(majors.filter((m) => m !== major))
-                    }
+                    onClick={() => setMajors(majors.filter((m) => m !== major))}
                     className="ml-1 cursor-pointer hover:opacity-70"
                   >
                     ✕
@@ -317,18 +324,18 @@ export default function EditPlanModal({
       )}
 
       <div className="mb-6">
-      <Checkbox
-      label="Can't find my major?"
-      checked={isNoMajorSelected}
-      onChange={() => {
-        setIsNoMajorSelected(!isNoMajorSelected);
-        if (!isNoMajorSelected) {
-            setMajors([]);
-            setConcentration("");
-    }
-  }}
-  helpText={noMajorHelperLabel}
-/>
+        <Checkbox
+          label="Can't find my major?"
+          checked={isNoMajorSelected}
+          onChange={() => {
+            setIsNoMajorSelected(!isNoMajorSelected);
+            if (!isNoMajorSelected) {
+              setMajors([]);
+              setConcentration("");
+            }
+          }}
+          helpText={noMajorHelperLabel}
+        />
       </div>
 
       {/*concentration*/}

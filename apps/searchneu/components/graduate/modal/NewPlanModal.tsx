@@ -35,18 +35,15 @@ import {
   useSupportedMinors,
   useTemplate,
 } from "@/lib/graduate/useGraduateApi";
+import { useRouter } from "next/navigation";
 
 interface NewPlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  setSelectedPlanId: (id: number | undefined | null) => void;
 }
 
-export default function NewPlanModal({
-  isOpen,
-  onClose,
-  setSelectedPlanId,
-}: NewPlanModalProps) {
+export default function NewPlanModal({ isOpen, onClose }: NewPlanModalProps) {
+  const router = useRouter();
   const catalogYearOptions = [
     { label: "2021", value: 2021 },
     { label: "2022", value: 2022 },
@@ -422,10 +419,9 @@ export default function NewPlanModal({
 
       const createdPlan = await response.json();
 
-      setSelectedPlanId(createdPlan.id);
-
       handleClose();
       console.log("Plan created successfully:", createdPlan);
+      router.push(`/graduate/${createdPlan.id}`);
     } catch (error) {
       console.error("Error creating plan:", error);
     } finally {

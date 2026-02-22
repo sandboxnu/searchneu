@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { GraduateAPI } from "./graduateApiClient";
 import { Major, Minor, Template } from "./types";
-import { GetSupportedMajorsResponse } from "./api-response-types";
+import { GetSupportedMajorsResponse, GetSupportedMinorsResponse } from "./api-response-types";
 
 export function useSupportedMajors() {
   const [data, setData] = useState<GetSupportedMajorsResponse | null>(null);

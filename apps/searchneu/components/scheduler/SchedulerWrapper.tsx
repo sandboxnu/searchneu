@@ -223,7 +223,7 @@ export function SchedulerWrapper({
           onFiltersChange={setFilters}
           onGenerateSchedules={handleGenerateSchedules}
           nupathOptions={nupathOptions}
-          filteredSchedules={filteredSchedules}
+          allSchedules={initialSchedules}
           hiddenSections={filters.hiddenSections ?? new Set()}
           onToggleHiddenSection={toggleHiddenSection}
           terms={terms}

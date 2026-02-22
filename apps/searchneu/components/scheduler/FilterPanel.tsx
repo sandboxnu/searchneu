@@ -15,7 +15,7 @@ interface FilterPanelProps {
   filters: ScheduleFilters;
   onFiltersChange: (filters: ScheduleFilters) => void;
   nupathOptions: { label: string; value: string }[];
-  filteredSchedules: SectionWithCourse[][];
+  allSchedules: SectionWithCourse[][];
   hiddenSections: Set<string>;
   onToggleHiddenSection: (crn: string) => void;
   terms: GroupedTerms;
@@ -34,7 +34,7 @@ export function FilterPanel({
   filters,
   onFiltersChange,
   nupathOptions,
-  filteredSchedules,
+  allSchedules,
   hiddenSections,
   onToggleHiddenSection,
   onGenerateSchedules,
@@ -83,7 +83,7 @@ export function FilterPanel({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {activeTab === "courses" ? (
           <CoursesTab
-            filteredSchedules={filteredSchedules}
+            filteredSchedules={allSchedules}
             hiddenSections={hiddenSections}
             onToggleHiddenSection={onToggleHiddenSection}
             lockedCourseIds={lockedCourseIds}

@@ -18,7 +18,7 @@ type Params = { get(name: string): string | null };
 
 function parseFiltersFromParams(params: Params): ScheduleFilters {
   const filters: ScheduleFilters = {
-    includesOnline: params.get("online") !== "false",
+    includesRemote: params.get("remote") !== "false",
     includeHonors: params.get("honors") !== "false",
   };
 
@@ -64,6 +64,12 @@ function parseFiltersFromParams(params: Params): ScheduleFilters {
     if (ids.length > 0) filters.lockedCourseIds = ids;
   }
 
+  const desiredCampuses = params.get("desiredCampuses");
+  if (desiredCampuses) {
+    const values = desiredCampuses.split(",").filter(Boolean);
+    if (values.length > 0) filters.desiredCampuses = values;
+  }
+
   return filters;
 }
 
@@ -82,7 +88,7 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     "freeDays",
     "nupaths",
     "honors",
-    "online",
+    "remote",
     "minSeats",
     "hiddenSections",
     "lockedCourseIds",
@@ -96,7 +102,7 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     params.set("freeDays", filters.specificDaysFree.join(","));
   if (filters.nupaths?.length) params.set("nupaths", filters.nupaths.join(","));
   if (filters.includeHonors === false) params.set("honors", "false");
-  if (filters.includesOnline === false) params.set("online", "false");
+  if (filters.includesRemote === false) params.set("remote", "false");
   if (filters.minSeatsLeft != null)
     params.set("minSeats", String(filters.minSeatsLeft));
   if (hiddenSections.size > 0)

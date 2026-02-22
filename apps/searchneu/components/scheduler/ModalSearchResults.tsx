@@ -154,8 +154,8 @@ function ResultsListSkeleton() {
         >
           {/* simulate subject & courseNumber */}
           <div className="flex min-w-0 items-center gap-1">
-            <div className="bg-neu4 h-[14px] w-10 rounded"></div>
-            <div className="bg-neu4 h-[14px] flex-1 rounded"></div>
+            <div className="bg-neu4 h-3.5 w-10 rounded"></div>
+            <div className="bg-neu4 h-3.5 flex-1 rounded"></div>
           </div>
         </div>
       ))}

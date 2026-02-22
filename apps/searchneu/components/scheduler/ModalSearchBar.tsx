@@ -1,10 +1,8 @@
 "use client";
 
-import { usePathname, useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
-import { track } from "@vercel/analytics";
 
 export function ModalSearchBar({
   searchQuery,

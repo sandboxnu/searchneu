@@ -11,7 +11,7 @@ import {
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
-import { useState, use, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
 import { Course } from "@sneu/scraper/types";
@@ -288,11 +288,13 @@ export default function AddCoursesModal(props: {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
-            <ModalSearchResults
-              searchQuery={searchQuery}
-              term={activeTerm}
-              onSelectCourse={handleSelectCourse}
-            />
+            {searchQuery && (
+              <ModalSearchResults
+                searchQuery={searchQuery}
+                term={activeTerm}
+                onSelectCourse={handleSelectCourse}
+              />
+            )}
           </div>
 
           <div className="flex h-full w-1/2 flex-col gap-2.5 max-[768px]:w-full">

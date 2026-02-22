@@ -158,7 +158,7 @@ export function FilterMultiSelect({
               key={opt.value}
               className="bg-secondary inline-flex w-fit items-center rounded-full border px-3 py-1 text-xs"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 {opt.value !== opt.label && (
                   <span className="text-foreground font-bold">{opt.value}</span>
                 )}
@@ -182,7 +182,7 @@ export function FilterMultiSelect({
             </span>
           ))}
           {selectedOptions.length > 3 && (
-            <span className="rounded-full border px-3 py-1 text-xs">
+            <span className="flex items-center justify-center rounded-full border px-3 py-0 text-xs">
               +{selectedOptions.length - 3}
             </span>
           )}

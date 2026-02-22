@@ -22,7 +22,6 @@ function militaryToTimeString(time: number): string {
 
 const CAMPUS_OPTIONS = [
   { label: "Boston", value: "Boston" },
-  { label: "Online", value: "Online" },
   { label: "Oakland", value: "Oakland" },
   { label: "Charlotte", value: "Charlotte" },
   { label: "Seattle", value: "Seattle" },
@@ -56,9 +55,6 @@ export function FiltersTab({
   onFiltersChange,
   nupathOptions,
 }: FiltersTabProps) {
-  // Local state for campuses (UI only until backend support is added)
-  const [selectedCampuses, setSelectedCampuses] = useState<string[]>([]);
-
   const updateFilter = <K extends keyof ScheduleFilters>(
     key: K,
     value: ScheduleFilters[K],
@@ -87,9 +83,26 @@ export function FiltersTab({
         <FilterMultiSelect
           label="CAMPUSES"
           options={CAMPUS_OPTIONS}
-          selected={selectedCampuses}
-          onSelectedChange={setSelectedCampuses}
+          selected={filters.desiredCampuses ?? []}
+          onSelectedChange={(values) =>
+            updateFilter(
+              "desiredCampuses",
+              values.length > 0 ? values : undefined,
+            )
+          }
           placeholder="Search campuses..."
+        />
+      </div>
+
+      {/* INCLUDE REMOTE SECTIONS*/}
+      <div className="flex items-center justify-between">
+        <span className="text-xs leading-[14px] font-bold text-[#5f5f5f] uppercase">
+          Include Remote Sections
+        </span>
+        <Switch
+          checked={filters.includesRemote}
+          onCheckedChange={(checked) => updateFilter("includesRemote", checked)}
+          className="cursor-pointer data-[state=checked]:bg-[#e63946]"
         />
       </div>
 

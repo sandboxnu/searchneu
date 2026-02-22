@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SavedPlan } from "./Dashboard";
 import { Pencil, Trash2, MapPin, Clock, Lock, Star } from "lucide-react";
-import { COURSE_COLORS, type CourseColor, getCourseColorMap } from "@/lib/scheduler/courseColors";
+import {
+  COURSE_COLORS,
+  type CourseColor,
+  getCourseColorMap,
+} from "@/lib/scheduler/courseColors";
 import { MiniCalendar } from "./MiniCalendar";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 
@@ -84,11 +88,11 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
     const courseKeys = plan.courses
       .map((c) => `${c.courseSubject} ${c.courseNumber}`)
       .sort();
-    
+
     courseKeys.forEach((key, index) => {
       map.set(key, COURSE_COLORS[index % COURSE_COLORS.length]);
     });
-    
+
     return map;
   }, [plan.courses]);
 
@@ -134,7 +138,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
   };
 
   // Build filter tags
-  const filterTags: JSX.Element[] = [];
+  const filterTags: ReactNode[] = [];
 
   // Location/Campus tag
   const campusText = getCampusText();
@@ -146,7 +150,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
       >
         <MapPin className="h-3 w-3" />
         {campusText}
-      </div>
+      </div>,
     );
   }
 
@@ -167,7 +171,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         >
           <Clock className="h-3 w-3" />
           {timeParts.join(", ")}
-        </div>
+        </div>,
       );
     }
   }
@@ -181,7 +185,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
       >
         {freeDaysText}
-      </div>
+      </div>,
     );
   }
 
@@ -193,7 +197,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
       >
         NU Paths {plan.nupaths.join(", ")}
-      </div>
+      </div>,
     );
   }
 
@@ -231,8 +235,8 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         )}
       </div>
 
-            {/* Included Courses Section */}
-            <div className="mb-6">
+      {/* Included Courses Section */}
+      <div className="mb-6">
         <h3 className="text-neu7 mb-3 text-xs font-bold uppercase">
           Included Courses
         </h3>
@@ -241,25 +245,28 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         ) : (
           <div className="flex flex-wrap gap-2">
             {plan.courses.map((course) => {
-              const color = getCourseColor(course.courseSubject, course.courseNumber);
+              const color = getCourseColor(
+                course.courseSubject,
+                course.courseNumber,
+              );
               return (
                 <div
                   key={course.courseId}
-                  className="bg-white text-neu8 relative flex items-center gap-2 rounded-lg border border-neu3 px-3 py-2.5 text-sm shadow-sm overflow-hidden"
+                  className="text-neu8 border-neu3 relative flex items-center gap-2 overflow-hidden rounded-lg border bg-white px-3 py-2.5 text-sm shadow-sm"
                 >
                   {/* Thin vertical color bar on left border */}
                   <div
-                    className="absolute left-0 top-0 h-full w-1"
+                    className="absolute top-0 left-0 h-full w-1"
                     style={{ backgroundColor: color.accent }}
                   />
-                  <span className="font-bold text-base">
+                  <span className="text-base font-bold">
                     {course.courseSubject} {course.courseNumber}
                   </span>
-                  <span className="text-neu6 truncate flex-1">
+                  <span className="text-neu6 flex-1 truncate">
                     {course.courseName}
                   </span>
                   {course.isLocked && (
-                    <Lock className="h-4 w-4 shrink-0 text-red" />
+                    <Lock className="text-red h-4 w-4 shrink-0" />
                   )}
                 </div>
               );
@@ -279,28 +286,29 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
           <div className="flex gap-3 overflow-x-auto pb-2">
             {plan.favoritedSchedules.map((schedule, scheduleIdx) => {
               // Transform favorited schedule sections to SectionWithCourse format
-              const scheduleSections: SectionWithCourse[] = schedule.sections.map((s) => ({
-                id: s.sectionId,
-                crn: "", // Not available in favorited schedule data
-                faculty: "",
-                campus: "",
-                honors: false,
-                classType: "",
-                seatRemaining: 0,
-                seatCapacity: 0,
-                waitlistCapacity: 0,
-                waitlistRemaining: 0,
-                meetingTimes: s.meetingTimes.map((mt) => ({
-                  days: mt.days,
-                  startTime: mt.startTime,
-                  endTime: mt.endTime,
-                  final: false,
-                })),
-                courseId: 0, // Not available
-                courseName: "",
-                courseSubject: s.courseSubject,
-                courseNumber: s.courseNumber,
-              }));
+              const scheduleSections: SectionWithCourse[] =
+                schedule.sections.map((s) => ({
+                  id: s.sectionId,
+                  crn: "", // Not available in favorited schedule data
+                  faculty: "",
+                  campus: "",
+                  honors: false,
+                  classType: "",
+                  seatRemaining: 0,
+                  seatCapacity: 0,
+                  waitlistCapacity: 0,
+                  waitlistRemaining: 0,
+                  meetingTimes: s.meetingTimes.map((mt) => ({
+                    days: mt.days,
+                    startTime: mt.startTime,
+                    endTime: mt.endTime,
+                    final: false,
+                  })),
+                  courseId: 0, // Not available
+                  courseName: "",
+                  courseSubject: s.courseSubject,
+                  courseNumber: s.courseNumber,
+                }));
 
               // Create color map for this schedule
               const scheduleColorMap = getCourseColorMap([scheduleSections]);
@@ -317,11 +325,11 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
               return (
                 <div
                   key={schedule.id}
-                  className="border-neu3 relative flex min-w-[200px] shrink-0 flex-col rounded-lg border bg-white p-3 shadow-sm"
+                  className="border-neu3 relative flex min-w-50 shrink-0 flex-col rounded-lg border bg-white p-3 shadow-sm"
                 >
                   {/* Star icon */}
-                  <Star className="absolute right-2 top-2 h-4 w-4 fill-red text-red z-10" />
-                  
+                  <Star className="fill-red text-red absolute top-2 right-2 z-10 h-4 w-4" />
+
                   {/* Mini Calendar */}
                   <div className="mb-2">
                     <MiniCalendar
@@ -340,7 +348,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
                       }}
                     />
                   </div>
-                  
+
                   {/* Schedule title */}
                   <div className="mb-2 text-sm font-semibold">
                     {schedule.name}
@@ -354,11 +362,11 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
                       return (
                         <span
                           key={courseKey}
-                          className="bg-neu1 text-neu8 flex items-center rounded px-1.5 py-0.5 text-xs font-medium overflow-hidden"
+                          className="bg-neu1 text-neu8 flex items-center overflow-hidden rounded px-1.5 py-0.5 text-xs font-medium"
                         >
                           {/* Thin vertical color bar */}
                           <div
-                            className="h-full w-0.5 shrink-0 mr-1"
+                            className="mr-1 h-full w-0.5 shrink-0"
                             style={{ backgroundColor: color.accent }}
                           />
                           {courseKey.replace(" ", "")}

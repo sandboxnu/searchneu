@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   filterSchedules,
   type ScheduleFilters,
   type SectionWithCourse,
 } from "@/lib/scheduler/filters";
+import { getCourseColorMap } from "@/lib/scheduler/courseColors";
+import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { SchedulerView } from "./SchedulerView";
+import { ScheduleSidebar } from "./ScheduleSidebar";
 import { FilterPanel } from "./FilterPanel";
 import { GroupedTerms } from "@/lib/types";
 
@@ -120,6 +123,10 @@ export function SchedulerWrapper({
   terms,
 }: SchedulerWrapperProps) {
   const router = useRouter();
+  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(
+    null,
+  );
+  const [favoritedKeys, setFavoritedKeys] = useState<Set<string>>(new Set());
   const searchParams = useSearchParams();
 
   const [filters, setFilters] = useState<ScheduleFilters>(() =>
@@ -178,9 +185,34 @@ export function SchedulerWrapper({
     }));
   }, []);
 
+  // Compute color map from all schedules (stable across filter changes)
+  const colorMap = useMemo(
+    () => getCourseColorMap(initialSchedules),
+    [initialSchedules],
+  );
+
+  const currentScheduleKey =
+    selectedScheduleKey ??
+    (filteredSchedules.length > 0
+      ? getScheduleKey(filteredSchedules[0])
+      : null);
+
+  const handleToggleFavorite = (key: string) => {
+    setFavoritedKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const isFavorited = currentScheduleKey
+    ? favoritedKeys.has(currentScheduleKey)
+    : false;
+
   return (
-    <div className="flex h-full w-full overflow-hidden">
-      <div className="h-full w-75 shrink-0">
+    <div className="grid h-[calc(100vh-72px)] w-full grid-cols-6 overflow-hidden">
+      <div className="col-span-1 w-full overflow-hidden">
         <FilterPanel
           filters={filters}
           onFiltersChange={setFilters}
@@ -194,8 +226,30 @@ export function SchedulerWrapper({
           onLockedCourseIdsChange={handleLockedCourseIdsChange}
         />
       </div>
-      <div className="min-w-0 flex-1">
-        <SchedulerView schedules={filteredSchedules} filters={filters} />
+      <div className="col-span-5 flex min-h-0 overflow-hidden pl-6">
+        <div className="min-w-0 flex-1">
+          <SchedulerView
+            schedules={filteredSchedules}
+            allSchedules={initialSchedules}
+            selectedScheduleKey={currentScheduleKey}
+            colorMap={colorMap}
+            isFavorited={isFavorited}
+            onToggleFavorite={() => {
+              if (selectedScheduleKey) {
+                handleToggleFavorite(selectedScheduleKey);
+              }
+            }}
+          />
+        </div>
+        <ScheduleSidebar
+          allSchedules={initialSchedules}
+          filteredSchedules={filteredSchedules}
+          favoritedKeys={favoritedKeys}
+          selectedScheduleKey={selectedScheduleKey}
+          colorMap={colorMap}
+          onSelectSchedule={setSelectedScheduleKey}
+          onToggleFavorite={handleToggleFavorite}
+        />
       </div>
     </div>
   );

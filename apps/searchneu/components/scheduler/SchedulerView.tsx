@@ -1,219 +1,190 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import {
-  type ScheduleFilters,
-  type SectionWithCourse,
-} from "@/lib/scheduler/filters";
+import { useMemo, useState } from "react";
+import { type SectionWithCourse } from "@/lib/scheduler/filters";
+import { type CourseColor, getSectionColor } from "@/lib/scheduler/courseColors";
+import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { CalendarView } from "./CalendarView";
-import { getCourseColorMap } from "@/lib/scheduler/courseColors";
-
-// Helper to get unique courses from a schedule
-function getCoursesFromSchedule(schedule: SectionWithCourse[]): string[] {
-  const courses = schedule.map(
-    (section) => `${section.courseSubject} ${section.courseNumber}`,
-  );
-  return Array.from(new Set(courses)).sort();
-}
-
-// Helper to create a key from course list
-function getCourseGroupKey(courses: string[]): string {
-  return courses.join("|");
-}
-
-// Helper to create a unique identifier for a schedule based on its CRNs
-// This key ensures that the same schedule remains displayed when filters change,
-// even if the schedule's position in the filtered list changes. By using CRNs
-// instead of array indices, we can track and preserve the user's selected schedule
-// across filter operations.
-function getScheduleKey(schedule: SectionWithCourse[]): string {
-  return schedule
-    .map((section) => section.crn)
-    .sort()
-    .join("|");
-}
-
-// Group schedules by their course combinations
-function groupSchedulesByCourses(
-  schedules: SectionWithCourse[][],
-): Map<string, SectionWithCourse[][]> {
-  const groups = new Map<string, SectionWithCourse[][]>();
-
-  for (const schedule of schedules) {
-    const courses = getCoursesFromSchedule(schedule);
-    const key = getCourseGroupKey(courses);
-
-    if (!groups.has(key)) {
-      groups.set(key, []);
-    }
-    groups.get(key)!.push(schedule);
-  }
-
-  return groups;
-}
+import { CourseInfoPopup } from "./CourseInfoPopup";
 
 interface SchedulerViewProps {
   schedules: SectionWithCourse[][];
-  filters: ScheduleFilters;
+  allSchedules: SectionWithCourse[][];
+  selectedScheduleKey: string | null;
+  colorMap: Map<string, CourseColor>;
+  isFavorited: boolean;
+  onToggleFavorite: () => void;
 }
 
-export function SchedulerView({ schedules }: SchedulerViewProps) {
-  const [selectedCourseGroupKey, setSelectedCourseGroupKey] = useState<
-    string | null
-  >(null);
-  const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(
-    null,
-  );
-
-  // Memoize the color map so it's only computed when schedules changes
-  const colorMap = useMemo(() => getCourseColorMap(schedules), [schedules]);
-
-  // Group schedules by course combinations
-  const courseGroups = useMemo(() => {
-    const groups = groupSchedulesByCourses(schedules);
-    return Array.from(groups.entries()).map(([key, schedules]) => ({
-      courseKey: key,
-      courses: key.split("|"),
-      schedules,
-    }));
-  }, [schedules]);
-
-  // Find the current course group and schedule indices based on keys
-  // If the selected course group is not found (e.g., filtered out), falls back to first course group
-  // If the selected schedule is not found (e.g., filtered out), falls back to first schedule of the current course group
-  const currentCourseGroupIndex = useMemo(() => {
-    if (!selectedCourseGroupKey || courseGroups.length === 0) return 0;
-    const index = courseGroups.findIndex(
-      (g) => g.courseKey === selectedCourseGroupKey,
+export function SchedulerView({
+  schedules,
+  allSchedules,
+  selectedScheduleKey,
+  colorMap,
+  isFavorited,
+  onToggleFavorite,
+}: SchedulerViewProps) {
+  const currentSchedule = useMemo(() => {
+    if (!selectedScheduleKey) return schedules[0] ?? allSchedules[0] ?? null;
+    // Search filtered first, then all schedules
+    return (
+      schedules.find((s) => getScheduleKey(s) === selectedScheduleKey) ??
+      allSchedules.find((s) => getScheduleKey(s) === selectedScheduleKey) ??
+      schedules[0] ??
+      null
     );
-    return index >= 0 ? index : 0;
-  }, [selectedCourseGroupKey, courseGroups]);
-
-  const currentCourseGroup = courseGroups[currentCourseGroupIndex];
-  const displaySchedules = useMemo(
-    () => currentCourseGroup?.schedules || [],
-    [currentCourseGroup],
-  );
+  }, [selectedScheduleKey, schedules, allSchedules]);
 
   const currentScheduleIndex = useMemo(() => {
-    if (!selectedScheduleKey || displaySchedules.length === 0) return 0;
-    const index = displaySchedules.findIndex(
-      (s) => getScheduleKey(s) === selectedScheduleKey,
+    if (!currentSchedule) return 0;
+    const currentKey = getScheduleKey(currentSchedule);
+    // Check filtered list first, then all
+    const filteredIdx = schedules.findIndex(
+      (s) => getScheduleKey(s) === currentKey,
     );
-    return index >= 0 ? index : 0;
-  }, [selectedScheduleKey, displaySchedules]);
+    if (filteredIdx >= 0) return filteredIdx;
+    const allIdx = allSchedules.findIndex(
+      (s) => getScheduleKey(s) === currentKey,
+    );
+    return allIdx >= 0 ? allIdx : 0;
+  }, [currentSchedule, schedules, allSchedules]);
 
-  const currentSchedule = displaySchedules[currentScheduleIndex];
+  const asyncCourses = useMemo(() => {
+    if (!currentSchedule) return [];
+    return currentSchedule.filter(
+      (section) =>
+        !section.meetingTimes ||
+        section.meetingTimes.length === 0 ||
+        section.meetingTimes.every((mt) => !mt.days || mt.days.length === 0),
+    );
+  }, [currentSchedule]);
 
-  // Auto-select the first course group and first schedule on initial load.
-  // These useEffects only run when the keys are null (not yet selected).
-  useEffect(() => {
-    if (!selectedCourseGroupKey && courseGroups.length > 0) {
-      // WARN: we should obv fix this and remove the ignore
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedCourseGroupKey(courseGroups[0].courseKey);
-    }
-  }, [selectedCourseGroupKey, courseGroups]);
+  const [asyncPopupState, setAsyncPopupState] = useState<{
+    section: SectionWithCourse;
+    rect: DOMRect;
+  } | null>(null);
 
-  useEffect(() => {
-    if (!selectedScheduleKey && displaySchedules.length > 0) {
-      // WARN: we should obv fix this and remove the ignore
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedScheduleKey(getScheduleKey(displaySchedules[0]));
-    }
-  }, [selectedScheduleKey, displaySchedules]);
-
-  // Handle course group change
-  const handleCourseGroupChange = (courseKey: string) => {
-    setSelectedCourseGroupKey(courseKey);
-    // Reset to first schedule of new course group
-    const newGroup = courseGroups.find((g) => g.courseKey === courseKey);
-    if (newGroup && newGroup.schedules.length > 0) {
-      setSelectedScheduleKey(getScheduleKey(newGroup.schedules[0]));
-    }
-  };
-
-  // Handle schedule change
-  const handleScheduleChange = (scheduleKey: string) => {
-    setSelectedScheduleKey(scheduleKey);
-  };
-
-  // Show message if no schedules available
-  const hasSchedules = courseGroups.length > 0 && displaySchedules.length > 0;
+  const hasSchedules = schedules.length > 0 && currentSchedule;
 
   return (
     <div
-      className="flex h-[calc(100vh-72px)] w-full flex-col px-6 py-4"
+      className="flex h-[calc(100vh-72px)] w-full flex-col"
       style={{ backgroundColor: "#F8F9F9" }}
     >
-      {/* Course Group Tabs (First Row) */}
-      {courseGroups.length > 0 && (
-        <div className="mb-2 flex items-center gap-2 overflow-x-auto pb-2">
-          {courseGroups.map((group, index) => (
-            <button
-              key={group.courseKey}
-              onClick={() => handleCourseGroupChange(group.courseKey)}
-              className={`text-neu8 flex items-center gap-2 rounded-lg border px-3 py-2 font-bold whitespace-nowrap ${
-                currentCourseGroupIndex === index
-                  ? "border-neu3 bg-white"
-                  : "border-neu3 bg-neu2 hover:bg-neu3"
-              } `}
+      {/* Schedule Heading */}
+      {hasSchedules && (
+        <div className="mb-2">
+          <p className="text-neu4 mb-1 text-sm font-bold uppercase">
+            Plan {currentScheduleIndex + 1}
+          </p>
+          <div className="flex items-center gap-2">
+          <h1 className="text-neu8 text-2xl font-bold">
+            Schedule {currentScheduleIndex + 1}
+          </h1>
+          <button onClick={onToggleFavorite} className="cursor-pointer">
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill={isFavorited ? "#E63946" : "none"}
+              stroke={isFavorited ? "#E63946" : "#858585"}
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
             >
-              {group.courses.map((course) => {
-                const color = colorMap.get(course);
-                return (
-                  <div
-                    key={course}
-                    className="rounded-sm px-2 py-1 text-sm"
-                    style={{
-                      backgroundColor: color?.fill,
-                      borderColor: color?.stroke,
-                    }}
-                  >
-                    {course}
-                  </div>
-                );
-              })}
-            </button>
-          ))}
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </button>
+          </div>
         </div>
       )}
 
-      {/* Schedule/Plan Tabs (Second Row) */}
-      {displaySchedules.length > 0 && (
-        <div className="mb-4 flex items-center gap-2 overflow-x-auto">
-          {displaySchedules.map((schedule, index) => {
-            const scheduleKey = getScheduleKey(schedule);
-            return (
-              <button
-                key={scheduleKey}
-                onClick={() => handleScheduleChange(scheduleKey)}
-                className={`rounded-lg border px-4 py-2 font-bold whitespace-nowrap ${
-                  currentScheduleIndex === index
-                    ? "border-gray-300 bg-white text-gray-900"
-                    : "border-gray-300 bg-gray-100 text-gray-600 hover:bg-gray-200"
-                } `}
+      {/* Days of Week Header + Async Courses */}
+      {hasSchedules && (
+        <div className="rounded-t-lg border-x border-t border-neu25 bg-white">
+          <div className="grid grid-cols-[65px_repeat(7,1fr)]">
+            <div className="rounded-tl-lg bg-white">
+              <div className="text-neu4 flex h-12 items-center justify-end pr-2 text-sm font-semibold">
+                EST
+              </div>
+            </div>
+            {[
+              "SUNDAY",
+              "MONDAY",
+              "TUESDAY",
+              "WEDNESDAY",
+              "THURSDAY",
+              "FRIDAY",
+              "SATURDAY",
+            ].map((day) => (
+              <div
+                key={day}
+                className={`flex h-12 items-center justify-center bg-white ${day === "SATURDAY" ? "rounded-tr-lg" : ""}`}
               >
-                Plan {index + 1}
-              </button>
-            );
-          })}
+                <div className="text-neu6 text-sm font-semibold">{day}</div>
+              </div>
+            ))}
+          </div>
+          {asyncCourses.length > 0 && (
+            <div className="grid grid-cols-[65px_1fr]">
+              <div />
+              <div className="space-y-2 px-1 py-2">
+                {asyncCourses.map((section, index) => {
+                  const sectionColor = getSectionColor(section, colorMap);
+                  return (
+                    <div
+                      key={index}
+                      className="flex cursor-pointer items-stretch gap-0 rounded-lg px-2 py-1.5 transition-[filter] hover:brightness-95"
+                      style={{ backgroundColor: sectionColor?.fill }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAsyncPopupState({
+                          section,
+                          rect: e.currentTarget.getBoundingClientRect(),
+                        });
+                      }}
+                    >
+                      <div
+                        className="w-1 shrink-0 rounded-full"
+                        style={{ backgroundColor: sectionColor?.stroke }}
+                      />
+                      <div className="flex items-center gap-3 pl-2">
+                        <div className="text-neu8 truncate text-sm font-bold">
+                          {section.courseSubject} {section.courseNumber}
+                        </div>
+                        <div className="text-neu6 truncate text-sm">
+                          #{section.crn}
+                        </div>
+                        <div className="text-neu6 truncate text-sm italic">
+                          Asynchronous
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* Calendar View */}
-      {hasSchedules && currentSchedule ? (
-        <div className="flex-1 overflow-hidden">
-          <CalendarView
-            schedule={currentSchedule}
-            scheduleNumber={currentScheduleIndex + 1}
-            colorMap={colorMap}
-          />
+      {hasSchedules ? (
+        <div className="min-h-0 flex-1 overflow-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <CalendarView schedule={currentSchedule} colorMap={colorMap} />
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center text-gray-500">
           No schedules found. Try adjusting your filters or course selection.
         </div>
+      )}
+      {asyncPopupState && (
+        <CourseInfoPopup
+          section={asyncPopupState.section}
+          color={getSectionColor(asyncPopupState.section, colorMap)}
+          anchorRect={asyncPopupState.rect}
+          onClose={() => setAsyncPopupState(null)}
+        />
       )}
     </div>
   );

@@ -8,12 +8,17 @@ import {
 import { TrackingSwitch } from "@/components/auth/TrackingSwitch";
 import { MeetingBlocks } from "@/components/catalog/SectionTableBlocks";
 import { TrackerSection } from "@/app/notifications/page";
+import { NotificationTerm } from "./NotificationsSidebar";
 
 export default function NotificationsSectionCard({
   section,
+  term,
 }: {
   section: TrackerSection;
+  term?: NotificationTerm;
 }) {
+  const now = new Date();
+
   return (
     <div className="bg-neu2 border-neu2 flex min-h-[229.538px] max-w-[450px] min-w-[328px] flex-1 flex-col items-start justify-center gap-[10px] rounded-lg border p-3">
       <div className="flex w-full items-center justify-between">
@@ -33,7 +38,7 @@ export default function NotificationsSectionCard({
           <TrackingSwitch
             sectionId={section.id}
             inital={true}
-            isTermActive={true}
+            isTermActive={!!term?.activeUntil && term.activeUntil > now}
           />
         </div>
       </div>

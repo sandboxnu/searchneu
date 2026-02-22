@@ -9,7 +9,6 @@ import { NotificationsView } from "./NotificationsView";
 
 export type NotificationsProps = NotificationsSidebarProps & {
   courses: TrackerCourse[];
-  termId: string;
 };
 
 export function NotificationsWrapper({
@@ -18,7 +17,6 @@ export function NotificationsWrapper({
   terms,
   notifications,
   courses,
-  termId,
 }: NotificationsProps) {
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-6">
@@ -31,7 +29,7 @@ export function NotificationsWrapper({
         />
       </div>
       <div className="col-span-5 min-h-0 pl-6">
-        <NotificationsView courses={courses} termId={termId} />
+        <NotificationsView courses={courses} terms={terms} />
       </div>
     </div>
   );

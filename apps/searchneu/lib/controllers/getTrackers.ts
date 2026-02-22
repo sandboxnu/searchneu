@@ -32,6 +32,7 @@ export const getSectionInfo = async (
       courseId: coursesT.id,
       courseName: coursesT.name,
       courseRegister: coursesT.register,
+      term: coursesT.term,
       courseSubject: subjectsT.code,
       courseNumber: coursesT.courseNumber,
       // meeting time info
@@ -68,6 +69,7 @@ export const getSectionInfo = async (
         messageLimit: trackerMap.get(row.id)?.messageLimit ?? 3,
         faculty: row.faculty,
         campus: row.campus,
+        term: row.term,
         courseId: row.courseId,
         courseName: row.courseName,
         courseRegister: row.courseRegister,

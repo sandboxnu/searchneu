@@ -2,7 +2,9 @@
 import { TrackerCourse } from "@/app/notifications/page";
 import NotificationsSectionCard from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
+import { NotificationTerm } from "./NotificationsSidebar";
 interface NotificationsCourseCardProps {
+  term?: NotificationTerm;
   course: TrackerCourse;
   onViewAllSections: () => void;
   onUnsubscribeAll: () => void;
@@ -10,6 +12,7 @@ interface NotificationsCourseCardProps {
 }
 
 export default function NotificationsCourseCard({
+  term,
   course,
   onViewAllSections,
   onUnsubscribeAll,
@@ -47,7 +50,7 @@ export default function NotificationsCourseCard({
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {sections.map((section, index) => (
-          <NotificationsSectionCard key={index} section={section} />
+          <NotificationsSectionCard key={index} section={section} term={term} />
         ))}
       </div>
 

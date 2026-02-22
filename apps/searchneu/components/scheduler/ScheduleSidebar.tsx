@@ -28,7 +28,7 @@ export function ScheduleSidebar({
   onSelectSchedule,
   onToggleFavorite,
 }: ScheduleSidebarProps) {
-  const [activeTab, setActiveTab] = useState<SidebarTab>("all");
+  const [activeTab, setActiveTab] = useState<SidebarTab>("filters");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayedSchedules = useMemo(() => {

@@ -1,34 +1,23 @@
 "use client";
 
-import { NotificationsSidebar } from "./NotificationsSidebar";
+import { TrackerCourse } from "@/app/notifications/page";
+import {
+  NotificationsSidebar,
+  NotificationsSidebarProps,
+} from "./NotificationsSidebar";
 import { NotificationsView } from "./NotificationsView";
-import { TrackerSection } from "@/app/notifications/page";
-
-export type NotificationsSidebarProps = {
-  subscribedCount: number;
-  totalLimit: number;
-  termNames: string[];
-  notifications: Array<{
-    id: number;
-    crn: string;
-    courseName: string;
-    courseSubject: string;
-    courseNumber: string;
-    sentAt: Date;
-  }>;
-};
 
 export type NotificationsProps = NotificationsSidebarProps & {
-  sections: TrackerSection[];
+  courses: TrackerCourse[];
   termId: string;
 };
 
 export function NotificationsWrapper({
   subscribedCount,
   totalLimit,
-  termNames,
+  terms,
   notifications,
-  sections,
+  courses,
   termId,
 }: NotificationsProps) {
   return (
@@ -37,12 +26,12 @@ export function NotificationsWrapper({
         <NotificationsSidebar
           subscribedCount={subscribedCount}
           totalLimit={totalLimit}
-          termNames={termNames}
+          terms={terms}
           notifications={notifications}
         />
       </div>
       <div className="col-span-5 min-h-0 pl-6">
-        <NotificationsView sections={sections} termId={termId} />
+        <NotificationsView courses={courses} termId={termId} />
       </div>
     </div>
   );

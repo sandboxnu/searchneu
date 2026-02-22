@@ -7,64 +7,32 @@ import {
 } from "@/components/ui/tooltip";
 import { TrackingSwitch } from "@/components/auth/TrackingSwitch";
 import { MeetingBlocks } from "@/components/catalog/SectionTableBlocks";
-import type { SectionTableMeetingTime } from "@/components/catalog/SectionTable";
-
-interface NotificationsSectionCardProps {
-  crn: string;
-  messagesSent: number;
-  messageLimit: number;
-  isSubscribed: boolean;
-  meetingTimes: SectionTableMeetingTime[];
-  professor: string;
-  location: string;
-  campus: string;
-  enrollmentSeats: {
-    current: number;
-    total: number;
-  };
-  waitlistSeats: {
-    current: number;
-    total: number;
-  };
-  onToggleSubscription?: () => void;
-}
+import { TrackerSection } from "@/app/notifications/page";
 
 export default function NotificationsSectionCard({
-  crn,
-  messagesSent,
-  messageLimit,
-  isSubscribed,
-  meetingTimes,
-  professor,
-  location,
-  campus,
-  enrollmentSeats,
-  waitlistSeats,
-  onToggleSubscription,
-}: NotificationsSectionCardProps) {
+  section,
+}: {
+  section: TrackerSection;
+}) {
   return (
     <div className="bg-neu2 border-neu2 flex min-h-[229.538px] max-w-[450px] min-w-[328px] flex-1 flex-col items-start justify-center gap-[10px] rounded-lg border p-3">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-neu7 text-sm leading-[130%] font-bold whitespace-nowrap">
-            CRN {crn}
+            CRN {section.crn}
           </span>
 
           <NotificationBells
-            messagesSent={messagesSent}
-            messageLimit={messageLimit}
-            isSubscribed={isSubscribed}
+            messagesSent={section.messageCount}
+            messageLimit={section.messageLimit}
+            isSubscribed={true}
           />
         </div>
 
         <div className="ml-auto">
           <TrackingSwitch
-            sectionId={parseInt(crn)}
-            inital={isSubscribed}
-            disabled={false}
-            onCheckedChange={() => {
-              onToggleSubscription?.();
-            }}
+            sectionId={section.id}
+            inital={true}
             isTermActive={true}
           />
         </div>
@@ -73,31 +41,33 @@ export default function NotificationsSectionCard({
 
       <div className="grid w-full grid-cols-2 gap-x-6 gap-y-3">
         <InfoSection label="MEETING TIMES">
-          <MeetingBlocks meetings={meetingTimes} crn={crn} />
+          <MeetingBlocks meetings={section.meetingTimes} crn={section.crn} />
         </InfoSection>
 
         <InfoSection label="PROFESSOR">
-          <span className="text-neu9 text-base">{professor}</span>
+          <span className="text-neu9 text-base">{section.faculty}</span>
         </InfoSection>
 
         <InfoSection label="LOCATION">
-          <span className="text-neu9 text-base">{location}</span>
+          <span className="text-neu9 text-base">
+            {section.meetingTimes?.[0]?.room?.building?.name ?? "TBA"}
+          </span>
         </InfoSection>
 
         <InfoSection label="CAMPUS">
-          <span className="text-neu9 text-base">{campus}</span>
+          <span className="text-neu9 text-base">{section.campus}</span>
         </InfoSection>
 
         <SeatCounter
           label="ENROLLMENT SEATS"
-          current={enrollmentSeats.current}
-          total={enrollmentSeats.total}
+          current={section.seatRemaining}
+          total={section.seatCapacity}
         />
 
         <SeatCounter
           label="WAITLIST SEATS"
-          current={waitlistSeats.current}
-          total={waitlistSeats.total}
+          current={section.waitlistRemaining}
+          total={section.waitlistCapacity}
         />
       </div>
     </div>
@@ -187,14 +157,23 @@ function SeatCounter({
       >
         {label}
       </span>
-      <div className="text-base leading-[18.2px]">
-        <span
-          className={focused ? "text-neu9 font-bold" : "text-neu7 font-normal"}
-        >
-          {current}
-        </span>
-        <span className={focused ? "text-neu7" : "text-neu5"}> / {total}</span>
-      </div>
+      {total > 0 ? (
+        <div className="text-base leading-[18.2px]">
+          <span
+            className={
+              focused ? "text-neu9 font-bold" : "text-neu7 font-normal"
+            }
+          >
+            {current}
+          </span>
+          <span className={focused ? "text-neu7" : "text-neu5"}>
+            {" "}
+            / {total}
+          </span>
+        </div>
+      ) : (
+        <span className="text-neu5 text-xs italic">None</span>
+      )}
     </div>
   );
 }

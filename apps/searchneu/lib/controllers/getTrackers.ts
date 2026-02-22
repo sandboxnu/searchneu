@@ -29,6 +29,7 @@ export const getSectionInfo = async (
       waitlistCapacity: sectionsT.waitlistCapacity,
       waitlistRemaining: sectionsT.waitlistRemaining,
       // course info
+      courseId: coursesT.id,
       courseName: coursesT.name,
       courseRegister: coursesT.register,
       courseSubject: subjectsT.code,
@@ -67,6 +68,7 @@ export const getSectionInfo = async (
         messageLimit: trackerMap.get(row.id)?.messageLimit ?? 3,
         faculty: row.faculty,
         campus: row.campus,
+        courseId: row.courseId,
         courseName: row.courseName,
         courseRegister: row.courseRegister,
         courseSubject: row.courseSubject,

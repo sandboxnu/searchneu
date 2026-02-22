@@ -24,6 +24,7 @@ export interface TrackerSection {
   faculty: string;
   meetingTimes: SectionTableMeetingTime[];
   campus: string;
+  courseId: number;
   courseName: string;
   courseRegister: string;
   courseSubject: string;
@@ -33,6 +34,15 @@ export interface TrackerSection {
   waitlistCapacity: number;
   waitlistRemaining: number;
 }
+
+export type TrackerCourse = {
+  courseId: number;
+  courseName: string;
+  courseTitle: string;
+  sections: TrackerSection[];
+  unsubscribedCount: number;
+  unsubscribedWithSeatsCount: number;
+};
 
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -89,14 +99,51 @@ export default async function Page() {
     .innerJoin(termsT, eq(sectionsT.term, termsT.term))
     .where(inArray(sectionsT.id, trackedSectionIds));
 
+  const courseMap = new Map<number, TrackerCourse>();
+
+  for (const section of sections) {
+    if (!courseMap.has(section.courseId)) {
+      courseMap.set(section.courseId, {
+        courseId: section.courseId,
+        courseName: section.courseRegister,
+        courseTitle: section.courseName,
+        unsubscribedCount: 0,
+        unsubscribedWithSeatsCount: 0,
+        sections: [],
+      });
+    }
+    courseMap.get(section.courseId)!.sections.push(section);
+  }
+
+  for (const course of courseMap.values()) {
+    const allSections = await db.query.sectionsT.findMany({
+      where: eq(sectionsT.courseId, course.courseId),
+    });
+
+    const subscribedSectionIds = new Set(course.sections.map((s) => s.id));
+
+    const allUnsubscribedSections = allSections.filter(
+      (section) => !subscribedSectionIds.has(section.id),
+    );
+
+    const unsubscribedSectionsWithSeats = allUnsubscribedSections.filter(
+      (section) => section.seatRemaining > 0,
+    );
+
+    course.unsubscribedCount = allUnsubscribedSections.length;
+    course.unsubscribedWithSeatsCount = unsubscribedSectionsWithSeats.length;
+  }
+
+  const courses = Array.from(courseMap.values());
+
   return (
     <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
       <NotificationsWrapper
         subscribedCount={trackers.length}
         totalLimit={currentUser?.trackingLimit ?? 12}
-        termNames={terms.map((term) => term.name)}
+        terms={terms}
         notifications={notifications}
-        sections={sections}
+        courses={courses}
         termId={terms[0]?.term ?? ""}
       />
     </div>

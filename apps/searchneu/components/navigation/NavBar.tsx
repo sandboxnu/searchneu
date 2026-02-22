@@ -29,7 +29,7 @@ export function NavBar({
     <nav className="flex gap-2 font-semibold">
       <FlagValues
         values={{
-          "faq-page": faqFlag,
+          faqs: faqFlag,
           rooms: roomsFlag,
           scheduler: schedulerFlag,
         }}

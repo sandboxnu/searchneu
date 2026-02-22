@@ -18,7 +18,7 @@ interface FilterPanelProps {
   filteredSchedules: SectionWithCourse[][];
   hiddenSections: Set<string>;
   onToggleHiddenSection: (crn: string) => void;
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
   onGenerateSchedules: (
     lockedCourseIds: number[],
     optionalCourseIds: number[],
@@ -80,7 +80,7 @@ export function FilterPanel({
       </div>
 
       {/* Tab Content */}
-      <div className="min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {activeTab === "courses" ? (
           <CoursesTab
             filteredSchedules={filteredSchedules}

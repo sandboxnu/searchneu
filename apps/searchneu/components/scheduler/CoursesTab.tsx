@@ -44,7 +44,7 @@ export function CoursesTab({
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-1">
+    <div className="flex h-full min-h-0 flex-col gap-1 overflow-y-auto">
       {courseEntries.map(([courseKey, sectionsMap]) => {
         const sections = Array.from(sectionsMap.values());
         const courseId = sections[0]?.courseId;

@@ -16,8 +16,9 @@ export type ScheduleFilters = {
   minSeatsLeft?: number;
   includeHonors?: boolean;
   nupaths?: string[];
-  includesOnline?: boolean;
+  includesRemote?: boolean;
   lockedCourseIds?: number[]; // courses that must be present in the schedule
+  desiredCampuses?: string[];
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -55,11 +56,31 @@ const sectionHasClassesOnDays = (
   return false;
 };
 
+// Helper function to check if a section belongs to specific campuses
+const sectiondesiredCampuses = (
+  section: SectionWithCourse,
+  campuses: string[],
+): boolean => {
+  for (const campus of campuses) {
+    if (section.campus === campus) {
+      return true;
+    }
+  }
+  return false;
+};
+
 // Check if a single section passes all filters
 export const sectionPassesFilters = (
   section: SectionWithCourse,
   filters: ScheduleFilters,
 ): boolean => {
+  // Check campuses (only if provided)
+  if (filters.desiredCampuses && filters.desiredCampuses.length > 0) {
+    if (!sectiondesiredCampuses(section, filters.desiredCampuses)) {
+      return false;
+    }
+  }
+
   // Check time constraints (only if provided)
   if (filters.startTime !== undefined || filters.endTime !== undefined) {
     if (
@@ -85,7 +106,7 @@ export const sectionPassesFilters = (
   }
 
   // The only time we care is if we want to exclude online courses
-  if (filters.includesOnline == false) {
+  if (filters.includesRemote == false) {
     if (section.campus == "Online") {
       return false;
     }

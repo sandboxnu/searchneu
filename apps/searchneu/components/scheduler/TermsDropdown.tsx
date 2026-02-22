@@ -7,27 +7,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { use, ComponentProps } from "react";
+import { ComponentProps } from "react";
 import type { GroupedTerms } from "@/lib/types";
 import { cn } from "@/lib/cn";
 
 export function TermsDropdown({
-  terms: termsPromise,
+  terms,
   selectedCollege,
   selectedTerm,
   onTermChange,
   ...selectTriggerProps
 }: {
-  terms: Promise<GroupedTerms>;
+  terms: GroupedTerms;
   selectedCollege: string;
   selectedTerm: string | null;
   onTermChange: (term: string) => void;
 } & ComponentProps<typeof SelectTrigger>) {
-  const terms = use(termsPromise);
-  const activeCollege = selectedCollege;
-
   // Group terms by year and sort them
-  const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
+  const groupedByYear = terms[selectedCollege as keyof GroupedTerms].reduce(
     (acc, t) => {
       const year = t.name
         .split(" ")

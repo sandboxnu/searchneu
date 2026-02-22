@@ -57,7 +57,7 @@ type SavedPlan = {
   }>;
 };
 
-export function DashboardClient(props: { terms: Promise<GroupedTerms> }) {
+export function DashboardClient(props: { terms: GroupedTerms }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 

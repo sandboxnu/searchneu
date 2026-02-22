@@ -64,7 +64,7 @@ function parseFiltersFromParams(params: Params): ScheduleFilters {
     if (ids.length > 0) filters.lockedCourseIds = ids;
   }
 
-  const desiredCampuses = params.get("desiredCampuses");
+  const desiredCampuses = params.get("campuses");
   if (desiredCampuses) {
     const values = desiredCampuses.split(",").filter(Boolean);
     if (values.length > 0) filters.desiredCampuses = values;
@@ -92,6 +92,7 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     "minSeats",
     "hiddenSections",
     "lockedCourseIds",
+    "campuses",
   ];
   filterKeys.forEach((k) => params.delete(k));
 
@@ -109,6 +110,8 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
     params.set("hiddenSections", Array.from(hiddenSections).join(","));
   if (filters.lockedCourseIds?.length)
     params.set("lockedCourseIds", filters.lockedCourseIds.join(","));
+  if (filters.desiredCampuses?.length)
+    params.set("campuses", filters.desiredCampuses.join(","));
 
   const search = params.toString();
   const url = search

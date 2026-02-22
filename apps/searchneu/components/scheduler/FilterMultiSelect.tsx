@@ -124,15 +124,6 @@ export function FilterMultiSelect({
                           selected.includes(opt.value) && "font-semibold",
                         )}
                       >
-                        {opt.value !== opt.label && (
-                          <div
-                            className={cn("text-muted-foreground font-bold", {
-                              "text-foreground": selected.includes(opt.value),
-                            })}
-                          >
-                            {opt.value}
-                          </div>
-                        )}
                         <div
                           className={cn("text-muted-foreground", {
                             "text-foreground font-semibold": selected.includes(

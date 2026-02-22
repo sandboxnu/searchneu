@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { type ScheduleFilters } from "@/lib/scheduler/filters";
 import { Switch } from "../ui/switch";
 import { TimeInput } from "./TimeInput";
@@ -22,16 +21,19 @@ function militaryToTimeString(time: number): string {
 
 const CAMPUS_OPTIONS = [
   { label: "Boston", value: "Boston" },
-  { label: "Oakland", value: "Oakland" },
-  { label: "Charlotte", value: "Charlotte" },
-  { label: "Seattle", value: "Seattle" },
-  { label: "San Francisco", value: "San Francisco" },
-  { label: "Portland, ME", value: "Portland, ME" },
+  { label: "Arlington", value: "Arlington, VA" },
+  { label: "Oakland", value: "Oakland, CA" },
+  { label: "Charlotte", value: "Charlotte, NC" },
+  { label: "Seattle", value: "Seattle, WA" },
+  { label: "San Francisco", value: "San Francisco, CA" },
+  { label: "Silicon Valley", value: "Silicon Valley, CA" },
+  { label: "Portland, ME", value: "Portland, Maine" },
   { label: "Burlington", value: "Burlington" },
-  { label: "Miami", value: "Miami" },
-  { label: "London", value: "London" },
-  { label: "Vancouver", value: "Vancouver" },
-  { label: "Toronto", value: "Toronto" },
+  { label: "Miami", value: "Miami, FL" },
+  // This may not be supported because banner doesnt list it as a campus. needs investigation
+  // { label: "London", value: "London" },
+  { label: "Vancouver", value: "Vancouver, Canada" },
+  { label: "Toronto", value: "Toronto, Canada" },
 ];
 
 const DAYS = [
@@ -84,12 +86,12 @@ export function FiltersTab({
           label="CAMPUSES"
           options={CAMPUS_OPTIONS}
           selected={filters.desiredCampuses ?? []}
-          onSelectedChange={(values) =>
+          onSelectedChange={(values) => {
             updateFilter(
               "desiredCampuses",
               values.length > 0 ? values : undefined,
-            )
-          }
+            );
+          }}
           placeholder="Search campuses..."
         />
       </div>

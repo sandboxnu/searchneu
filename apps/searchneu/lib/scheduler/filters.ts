@@ -18,6 +18,7 @@ export type ScheduleFilters = {
   nupaths?: string[];
   includesRemote?: boolean;
   lockedCourseIds?: number[]; // courses that must be present in the schedule
+  hiddenSections?: Set<string>; // sections that should NOT be present in the schedule
   desiredCampuses?: string[];
 };
 
@@ -192,6 +193,14 @@ export const schedulePassesFilters = (
     if (!allLockedPresent) {
       return false;
     }
+  }
+
+  // Check that all hidden courses are not present in the schedule
+  if (filters.hiddenSections && filters.hiddenSections.size > 0) {
+    const hasHiddenSection = schedule.some((s) =>
+      filters.hiddenSections!.has(s.crn),
+    );
+    if (hasHiddenSection) return false;
   }
 
   return true;

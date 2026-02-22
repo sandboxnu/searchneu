@@ -70,16 +70,16 @@ function parseFiltersFromParams(params: Params): ScheduleFilters {
     if (values.length > 0) filters.desiredCampuses = values;
   }
 
+  const hidden = params.get("hiddenSections");
+  if (hidden) {
+    const crns = new Set(hidden.split(",").filter(Boolean));
+    if (crns.size > 0) filters.hiddenSections = crns;
+  }
+
   return filters;
 }
 
-function parseHiddenSections(params: Params): Set<string> {
-  const hidden = params.get("hiddenSections");
-  if (!hidden) return new Set();
-  return new Set(hidden.split(",").filter(Boolean));
-}
-
-function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
+function syncToUrl(filters: ScheduleFilters) {
   const params = new URLSearchParams(window.location.search);
 
   const filterKeys = [
@@ -106,8 +106,8 @@ function syncToUrl(filters: ScheduleFilters, hiddenSections: Set<string>) {
   if (filters.includesRemote === false) params.set("remote", "false");
   if (filters.minSeatsLeft != null)
     params.set("minSeats", String(filters.minSeatsLeft));
-  if (hiddenSections.size > 0)
-    params.set("hiddenSections", Array.from(hiddenSections).join(","));
+  if (filters.hiddenSections?.size)
+    params.set("hiddenSections", Array.from(filters.hiddenSections).join(","));
   if (filters.lockedCourseIds?.length)
     params.set("lockedCourseIds", filters.lockedCourseIds.join(","));
   if (filters.desiredCampuses?.length)
@@ -142,22 +142,18 @@ export function SchedulerWrapper({
     parseFiltersFromParams(searchParams),
   );
 
-  const [hiddenSections, setHiddenSections] = useState<Set<string>>(() =>
-    parseHiddenSections(searchParams),
-  );
-
   const toggleHiddenSection = useCallback((crn: string) => {
-    setHiddenSections((prev) => {
-      const next = new Set(prev);
+    setFilters((prev) => {
+      const next = new Set(prev.hiddenSections ?? []);
       if (next.has(crn)) next.delete(crn);
       else next.add(crn);
-      return next;
+      return { ...prev, hiddenSections: next };
     });
   }, []);
 
   useEffect(() => {
-    syncToUrl(filters, hiddenSections);
-  }, [filters, hiddenSections]);
+    syncToUrl(filters);
+  }, [filters]);
 
   const handleGenerateSchedules = async (
     lockedCourseIds: number[],
@@ -228,7 +224,7 @@ export function SchedulerWrapper({
           onGenerateSchedules={handleGenerateSchedules}
           nupathOptions={nupathOptions}
           filteredSchedules={filteredSchedules}
-          hiddenSections={hiddenSections}
+          hiddenSections={filters.hiddenSections ?? new Set()}
           onToggleHiddenSection={toggleHiddenSection}
           terms={terms}
           lockedCourseIds={filters.lockedCourseIds ?? []}

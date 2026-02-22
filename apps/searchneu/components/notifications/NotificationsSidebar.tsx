@@ -8,16 +8,33 @@ import { PastNotificationCard } from "./PastNotificationCard";
 import { deleteAllTrackersAction } from "@/lib/auth/tracking-actions";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { NotificationsSidebarProps } from "./NotificationsWrapper";
+
+type Notification = {
+  id: number;
+  crn: string;
+  courseName: string;
+  courseSubject: string;
+  courseNumber: string;
+  sentAt: Date;
+};
+
+export type NotificationsSidebarProps = {
+  subscribedCount: number;
+  totalLimit: number;
+  terms: { name: string; term: string }[];
+  notifications: Notification[];
+};
 
 export function NotificationsSidebar({
   subscribedCount,
   totalLimit,
-  termNames,
+  terms,
   notifications,
 }: NotificationsSidebarProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  const termNames = terms.map((term) => term.name);
 
   const handleUnsubscribeAll = () => {
     startTransition(async () => {

@@ -1,57 +1,32 @@
 "use client";
+import { TrackerCourse } from "@/app/notifications/page";
 import NotificationsSectionCard from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
-import type { SectionTableMeetingTime } from "@/components/catalog/SectionTable";
-
-interface Section {
-  crn: string;
-  messagesSent: number;
-  messageLimit: number;
-  isSubscribed: boolean;
-  meetingTimes: SectionTableMeetingTime[];
-  professor: string;
-  location: string;
-  campus: string;
-  enrollmentSeats: {
-    current: number;
-    total: number;
-  };
-  waitlistSeats: {
-    current: number;
-    total: number;
-  };
-}
-
 interface NotificationsCourseCardProps {
-  courseName: string;
-  courseTitle: string;
-  sections: Section[];
-  onToggleSubscription?: (crn: string) => void;
-  onViewAllSections?: () => void;
-  onUnsubscribeAll?: () => void;
-  isPending?: boolean;
+  course: TrackerCourse;
+  onViewAllSections: () => void;
+  onUnsubscribeAll: () => void;
+  isPending: boolean;
 }
 
 export default function NotificationsCourseCard({
-  courseName,
-  courseTitle,
-  sections,
-  onToggleSubscription,
+  course,
   onViewAllSections,
   onUnsubscribeAll,
   isPending,
 }: NotificationsCourseCardProps) {
-  const unsubscribedCount = sections.filter((s) => !s.isSubscribed).length;
-  const totalSections = sections.length;
+  const sections = course.sections;
 
   return (
     <div className="border-neu2 flex flex-col gap-3 rounded-lg border bg-white p-4">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-neu8 text-xl leading-[120%] font-bold">
-            {courseName}
+            {course.courseName}
           </h3>
-          <p className="text-neu8 text-base font-normal">{courseTitle}</p>
+          <p className="text-neu8 text-base font-normal">
+            {course.courseTitle}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -72,19 +47,15 @@ export default function NotificationsCourseCard({
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {sections.map((section, index) => (
-          <NotificationsSectionCard
-            key={index}
-            {...section}
-            onToggleSubscription={() => onToggleSubscription?.(section.crn)}
-          />
+          <NotificationsSectionCard key={index} section={section} />
         ))}
       </div>
 
-      {unsubscribedCount > 0 && (
-        <p className="text-neu5 text-sm italic">
-          {unsubscribedCount}/{totalSections} unsubscribed sections available
-        </p>
-      )}
+      <p className="text-neu5 text-sm italic">
+        {course.unsubscribedCount > 0
+          ? `${course.unsubscribedWithSeatsCount}/${course.unsubscribedCount} unsubscribed sections available`
+          : "No unsubscribed section"}
+      </p>
     </div>
   );
 }

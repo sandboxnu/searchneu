@@ -247,10 +247,12 @@ export default function EditPlanModal({
           >
             CATALOG YEAR
           </Label>
-          <Select
-            value={catalogYear.toString()}
-            onValueChange={(v) => setCatalogYear(Number(v))}
-          >
+          <Select value={catalogYear.toString()}
+          onValueChange={(v) => {
+            setCatalogYear(Number(v));
+            setMajors([]);
+            setConcentration("");
+            }}>
             <SelectTrigger className="border-neu3 w-full rounded-4xl border bg-transparent">
               <SelectValue placeholder="Select catalog year" />
             </SelectTrigger>

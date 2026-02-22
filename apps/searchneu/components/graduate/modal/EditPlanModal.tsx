@@ -200,13 +200,12 @@ export default function EditPlanModal({
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          name: message || generateDefaultPlanTitle(),
-          majors: isNoMajorSelected ? undefined : majors,
-          minors: isNoMinorSelected || !minors?.length ? undefined : minors,
-          catalogYear: isNoMajorSelected ? undefined : catalogYear,
-          concentration:
-            isNoMajorSelected ? undefined : concentration || undefined,
-        }),
+            name: message || plan.name,
+            majors: isNoMajorSelected ? null : majors,
+            minors: isNoMinorSelected || !minors?.length ? null : minors,
+            catalogYear: isNoMajorSelected ? null : catalogYear,
+            concentration: isNoMajorSelected ? null : concentration || null,
+          }),
       });
 
       if (!response.ok) {
@@ -318,12 +317,18 @@ export default function EditPlanModal({
       )}
 
       <div className="mb-6">
-        <Checkbox
-          label="Can't find my major?"
-          checked={isNoMajorSelected}
-          onChange={() => setIsNoMajorSelected(!isNoMajorSelected)}
-          helpText={noMajorHelperLabel}
-        />
+      <Checkbox
+      label="Can't find my major?"
+      checked={isNoMajorSelected}
+      onChange={() => {
+        setIsNoMajorSelected(!isNoMajorSelected);
+        if (!isNoMajorSelected) {
+            setMajors([]);
+            setConcentration("");
+    }
+  }}
+  helpText={noMajorHelperLabel}
+/>
       </div>
 
       {/*concentration*/}

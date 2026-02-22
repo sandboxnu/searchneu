@@ -19,10 +19,10 @@ export const CreateAuditPlanDto = CreateAuditPlanDtoWithoutSchedule.extend({
 export const UpdateAuditPlanDto = z.strictObject({
   name: z.string().optional(),
   schedule: z.any().optional(),
-  majors: z.string().array().optional(),
+  majors: z.string().array().nullable().optional(),
   minors: z.string().array().nullable().optional(),
-  concentration: z.string().optional(),
-  catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).optional(),
+  concentration: z.string().nullable().optional(),
+  catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).nullable().optional(),
 });
 
 export type CreateAuditPlanInput = z.infer<typeof CreateAuditPlanDto>;

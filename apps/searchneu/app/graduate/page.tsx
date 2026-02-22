@@ -1,4 +1,5 @@
 "use client";
+// TODO: make this a server component
 
 import { useState } from "react";
 import { useSupportedMajors } from "@/lib/graduate/useGraduateApi";
@@ -8,17 +9,13 @@ import { Sidebar } from "../../components/graduate/sidebar/Sidebar";
 import { PlanDndWrapper } from "../../components/graduate/dnd/AuditDndWrapper";
 import type { Audit } from "../../lib/graduate/types";
 
-
 export default function Page() {
   //const [selectedMajorName, setSelectedMajorName] = useState<string | null>(null);
   // TODO: replace null with a real plan once plan creation is wired up
   const plan: Audit<string> | null = null;
   const { data, error } = useSupportedMajors();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<
-    number | undefined | null
-  >();
-const DEFAULT_CATALOG_YEAR = 2024;
+  const DEFAULT_CATALOG_YEAR = 2024;
 
   const { catalogYear, majorNames } = useMemo(() => {
     const supported = data?.supportedMajors ?? {};
@@ -40,42 +37,41 @@ const DEFAULT_CATALOG_YEAR = 2024;
     <Sidebar
       catalogYear={catalogYear}
       majorName={effectiveMajorName}
-      selectedPlan={{ id: "1", concentration: "Undecided" }}
+      selectedPlan={{ id: "-1", concentration: "NO SELECTED PLAN" }}
       courseData={true}
     />
   );
 
   return (
-      <main className="flex flex-1 flex-col overflow-hidden bg-neutral-100">
+    <main className="flex flex-1 flex-col overflow-hidden bg-neutral-100">
       {/* Sidebar always rendered */}
       <aside className="h-full w-80 shrink-0 border-r border-neutral-200">
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="rounded-2xl bg-red-800 p-10"
-      >
-        click me
-      </button>
-      <NewPlanModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        setSelectedPlanId={setSelectedPlanId}
-      ></NewPlanModal>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="rounded-2xl bg-red-800 p-10"
+        >
+          click me
+        </button>
+        <NewPlanModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        ></NewPlanModal>
         {sidebar}
       </aside>
 
       {/* Main content */}
-        {plan ? (
-          <PlanDndWrapper
-            plan={plan}
-            catalogYear={catalogYear}
-            onPlanUpdate={() => {}}
-          />
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
-            <p className="text-lg font-medium">No plan yet</p>
-            <p className="text-sm">Create a plan to get started</p>
-          </div>
-        )}
-      </main>
+      {plan ? (
+        <PlanDndWrapper
+          plan={plan}
+          catalogYear={catalogYear}
+          onPlanUpdate={() => {}}
+        />
+      ) : (
+        <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
+          <p className="text-lg font-medium">No plan yet</p>
+          <p className="text-sm">Create a plan to get started</p>
+        </div>
+      )}
+    </main>
   );
 }

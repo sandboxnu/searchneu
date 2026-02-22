@@ -430,7 +430,7 @@ export interface Template {
       };
     };
   };
-};
+}
 
 // SidebarValidationStatus is used to determine the validation status of a section in the sidebar
 export enum SidebarValidationStatus {

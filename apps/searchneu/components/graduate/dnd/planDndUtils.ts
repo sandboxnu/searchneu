@@ -4,13 +4,16 @@ import {
   AuditCourse,
   AuditTerm,
   AuditYear,
+  IRequiredCourse,
   SeasonEnum,
 } from "../../../lib/graduate/types";
-import {produce} from "immer";
+import { produce } from "immer";
+import { isSidebarCourse } from "./AuditCourse";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
 export const SIDEBAR_DND_ID_PREFIX = "sidebar";
+export const SIDEBAR_COURSE_DND_PREFIX = "sidebar-";
 export const DELETE_COURSE_AREA_DND_ID = "delete-course-area";
 
 const SEASON_DISPLAY: Record<string, string> = {
@@ -31,17 +34,13 @@ export class DuplicateCourseError extends Error {
 
 // ── Private Helpers ──────────────────────────────────────────────────────────
 
-function isSidebarCourse(dndId: string): boolean {
-  return dndId.startsWith(SIDEBAR_DND_ID_PREFIX);
-}
-
 function isCourseInTerm(
   classId: string,
   subject: string,
-  term: AuditTerm<unknown>
+  term: AuditTerm<unknown>,
 ): boolean {
   return term.classes.some(
-    (c) => c.classId === classId && c.subject === subject
+    (c) => c.classId === classId && c.subject === subject,
   );
 }
 
@@ -54,11 +53,11 @@ function getSeasonDisplayWord(season: SeasonEnum): string {
 // ── Flatten Helper ───────────────────────────────────────────────────────────
 
 export const flattenScheduleToTerms = <T>(
-  schedule: Audit<T>
+  schedule: Audit<T>,
 ): AuditTerm<T>[] => {
   const terms: AuditTerm<T>[] = [];
   schedule.years.forEach((year) =>
-    terms.push(year.fall, year.spring, year.summer1, year.summer2)
+    terms.push(year.fall, year.spring, year.summer1, year.summer2),
   );
   return terms;
 };
@@ -68,7 +67,7 @@ export const flattenScheduleToTerms = <T>(
 export const prepareClassesForDnd = (
   classes: AuditCourse<null>[],
   courseCount: number,
-  dndIdPrefix?: string
+  dndIdPrefix?: string,
 ): { dndClasses: AuditCourse<string>[]; updatedCount: number } => {
   let updatedCount = courseCount;
   const dndClasses = classes.map((course) => {
@@ -83,21 +82,25 @@ export const prepareClassesForDnd = (
 const prepareTermForDnd = (
   term: AuditTerm<null>,
   courseCount: number,
-  yearNumber: number
+  yearNumber: number,
 ): { dndTerm: AuditTerm<string>; updatedCount: number } => {
   const { dndClasses, updatedCount } = prepareClassesForDnd(
     term.classes,
-    courseCount
+    courseCount,
   );
   return {
-    dndTerm: { ...term, id: `${yearNumber}-${term.season}`, classes: dndClasses },
+    dndTerm: {
+      ...term,
+      id: `${yearNumber}-${term.season}`,
+      classes: dndClasses,
+    },
     updatedCount,
   };
 };
 
 const prepareYearForDnd = (
   year: AuditYear<null>,
-  courseCount: number
+  courseCount: number,
 ): { updatedYear: AuditYear<string>; updatedCount: number } => {
   let updatedCount = courseCount;
   let res;
@@ -124,19 +127,20 @@ const prepareYearForDnd = (
   };
 };
 
-export const preparePlanForDnd = (
-  plan: Audit<null>
-): Audit<string> => {
+export const preparePlanForDnd = (plan: Audit<null>): Audit<string> => {
   let courseCount = 0;
   const dndYears: AuditYear<string>[] = [];
+  if (!plan.years) {
+    console.log("DENNIS NO PLAN YEARS", plan);
+  }
 
   plan.years.forEach((year) => {
     const { updatedCount, updatedYear } = prepareYearForDnd(year, courseCount);
     courseCount = updatedCount;
     dndYears.push(updatedYear);
   });
-  
-  return {years : dndYears}
+
+  return { years: dndYears };
 };
 
 export const getCourseCount = (plan: Audit<unknown>): number => {
@@ -147,31 +151,41 @@ export const getCourseCount = (plan: Audit<unknown>): number => {
       year.spring.classes.length +
       year.summer1.classes.length +
       year.summer2.classes.length,
-    0
+    0,
   );
 };
 
+export function requiredCourseToAuditCourse(
+  c: IRequiredCourse,
+  dndId: string,
+): AuditCourse<string> {
+  return {
+    id: dndId,
+    subject: c.subject,
+    classId: String(c.classId),
+    name: c.description ?? `${c.subject} ${c.classId}`,
+    numCreditsMin: 0,
+    numCreditsMax: 0,
+  };
+}
+
 // ── Clean DnD IDs ────────────────────────────────────────────────────────────
 
-const cleanDndIdsFromTerm = (
-  term: AuditTerm<string>
-): AuditTerm<null> => ({
+const cleanDndIdsFromTerm = (term: AuditTerm<string>): AuditTerm<null> => ({
   ...term,
   id: null,
   classes: term.classes.map((course) => ({ ...course, id: null })),
 });
 
-export const cleanDndIdsFromPlan = (
-  plan: Audit<string>
-): Audit<null> => ({
+export const cleanDndIdsFromPlan = (plan: Audit<string>): Audit<null> => ({
   ...plan,
-  years:  plan.years.map((year) => ({
-      ...year,
-      fall: cleanDndIdsFromTerm(year.fall),
-      spring: cleanDndIdsFromTerm(year.spring),
-      summer1: cleanDndIdsFromTerm(year.summer1),
-      summer2: cleanDndIdsFromTerm(year.summer2),
-    })),
+  years: plan.years.map((year) => ({
+    ...year,
+    fall: cleanDndIdsFromTerm(year.fall),
+    spring: cleanDndIdsFromTerm(year.spring),
+    summer1: cleanDndIdsFromTerm(year.summer1),
+    summer2: cleanDndIdsFromTerm(year.summer2),
+  })),
 });
 
 // ── Drop Handler ─────────────────────────────────────────────────────────────
@@ -189,13 +203,13 @@ export const cleanDndIdsFromPlan = (
 export const updatePlanOnDragEnd = (
   plan: Audit<string>,
   draggedCourse: Active,
-  draggedOverTerm: Over | null = null
+  draggedOverTerm: Over | null = null,
 ): Audit<string> => {
   return produce(plan, (draftPlan: Audit<string>) => {
     const scheduleTerms = flattenScheduleToTerms<string>(draftPlan);
 
     const oldTerm = scheduleTerms.find((term) =>
-      term.classes.some((course) => course.id === draggedCourse.id)
+      term.classes.some((course) => course.id === draggedCourse.id),
     );
 
     if (!draggedOverTerm) {
@@ -207,13 +221,13 @@ export const updatePlanOnDragEnd = (
         throw new Error("Term the course is dragged from isn't found");
       }
       oldTerm.classes = oldTerm.classes.filter(
-        (course) => course.id !== draggedCourse.id
+        (course) => course.id !== draggedCourse.id,
       );
       return;
     }
 
     const newTerm = scheduleTerms.find(
-      (term) => term.id === draggedOverTerm.id
+      (term) => term.id === draggedOverTerm.id,
     );
     if (!newTerm) {
       throw new Error("Term the course is dragged over isn't found");
@@ -221,8 +235,12 @@ export const updatePlanOnDragEnd = (
 
     const year = plan.years.find((y) =>
       Object.values(y).find(
-        (val) => val && typeof val === "object" && "id" in val && val.id === newTerm.id
-      )
+        (val) =>
+          val &&
+          typeof val === "object" &&
+          "id" in val &&
+          val.id === newTerm.id,
+      ),
     );
     if (!year) {
       throw new Error("Year of the course that is dragged over isn't found");
@@ -238,12 +256,16 @@ export const updatePlanOnDragEnd = (
     const isSameTerm = !isFromSidebar && oldTerm && oldTerm.id === newTerm.id;
 
     if (
-      isCourseInTerm(draggedCourseDetails.classId, draggedCourseDetails.subject, newTerm) &&
+      isCourseInTerm(
+        draggedCourseDetails.classId,
+        draggedCourseDetails.subject,
+        newTerm,
+      ) &&
       !isSameTerm &&
       !draggedCourseDetails.generic
     ) {
       throw new DuplicateCourseError(
-        `${draggedCourseDetails.subject}${draggedCourseDetails.classId} already exists in Year ${year.year}, ${getSeasonDisplayWord(newTerm.season)}.`
+        `${draggedCourseDetails.subject}${draggedCourseDetails.classId} already exists in Year ${year.year}, ${getSeasonDisplayWord(newTerm.season)}.`,
       );
     }
 
@@ -255,7 +277,7 @@ export const updatePlanOnDragEnd = (
         throw new Error("Course is being dragged over its own term");
       }
       oldTerm.classes = oldTerm.classes.filter(
-        (course) => course.id !== draggedCourse.id
+        (course) => course.id !== draggedCourse.id,
       );
     }
 
@@ -264,4 +286,4 @@ export const updatePlanOnDragEnd = (
       id: "moving-course-temp",
     });
   });
-}
+};

@@ -7,12 +7,12 @@ import {
   SeasonEnum,
   AuditTerm,
   StatusEnum,
-} from "../../../lib/graduate/types"; // ADJUST THIS PATH
+  INEUReqError,
+} from "@/lib/graduate/types"; // ADJUST THIS PATH
 import { createContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import {produce }from "immer";
+import { produce } from "immer";
 import { ScheduleYear, YearError } from "./AuditYear";
-import { INEUReqError } from "./AuditCourse";
 
 // ── Warning types ────────────────────────────────────────────────────────────
 
@@ -35,7 +35,7 @@ function addClassesToTerm(
   classes: AuditCourse<null>[],
   termYear: number,
   termSeason: SeasonEnum,
-  plan: Audit<string>
+  plan: Audit<string>,
 ): Audit<string> {
   return produce(plan, (draft) => {
     const year = draft.years.find((y) => y.year === termYear);
@@ -43,16 +43,30 @@ function addClassesToTerm(
 
     let term;
     switch (termSeason) {
-      case SeasonEnum.FL: term = year.fall; break;
-      case SeasonEnum.SP: term = year.spring; break;
-      case SeasonEnum.S1: term = year.summer1; break;
-      case SeasonEnum.S2: term = year.summer2; break;
-      default: return;
+      case SeasonEnum.FL:
+        term = year.fall;
+        break;
+      case SeasonEnum.SP:
+        term = year.spring;
+        break;
+      case SeasonEnum.S1:
+        term = year.summer1;
+        break;
+      case SeasonEnum.S2:
+        term = year.summer2;
+        break;
+      default:
+        return;
     }
 
     const totalCourses = draft.years.reduce(
-      (n, y) => n + y.fall.classes.length + y.spring.classes.length + y.summer1.classes.length + y.summer2.classes.length,
-      0
+      (n, y) =>
+        n +
+        y.fall.classes.length +
+        y.spring.classes.length +
+        y.summer1.classes.length +
+        y.summer2.classes.length,
+      0,
     );
 
     let count = totalCourses;
@@ -70,7 +84,7 @@ function removeCourseFromTerm(
   courseIndex: number,
   termYear: number,
   termSeason: SeasonEnum,
-  plan: Audit<string>
+  plan: Audit<string>,
 ): Audit<string> {
   return produce(plan, (draft) => {
     const year = draft.years.find((y) => y.year === termYear);
@@ -78,33 +92,47 @@ function removeCourseFromTerm(
 
     let term;
     switch (termSeason) {
-      case SeasonEnum.FL: term = year.fall; break;
-      case SeasonEnum.SP: term = year.spring; break;
-      case SeasonEnum.S1: term = year.summer1; break;
-      case SeasonEnum.S2: term = year.summer2; break;
-      default: return;
+      case SeasonEnum.FL:
+        term = year.fall;
+        break;
+      case SeasonEnum.SP:
+        term = year.spring;
+        break;
+      case SeasonEnum.S1:
+        term = year.summer1;
+        break;
+      case SeasonEnum.S2:
+        term = year.summer2;
+        break;
+      default:
+        return;
     }
 
     term.classes = term.classes.filter(
       (c, idx) =>
         idx !== courseIndex ||
-        !(c.classId === course.classId && c.subject === course.subject)
+        !(c.classId === course.classId && c.subject === course.subject),
     );
   });
 }
 
-function removeYearFromPlan(plan: Audit<string>, yearNum: number): Audit<string> {
+function removeYearFromPlan(
+  plan: Audit<string>,
+  yearNum: number,
+): Audit<string> {
   return produce(plan, (draft) => {
     const idx = yearNum - 1;
     if (idx >= draft.years.length) return;
     draft.years.splice(idx, 1);
-    draft.years.forEach((y, i) => { y.year = i + 1; });
+    draft.years.forEach((y, i) => {
+      y.year = i + 1;
+    });
   });
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-interface PlanProps {
+export interface AuditPlanProps {
   plan: Audit<string>;
   preReqErr?: PreReqWarnings;
   coReqErr?: CoReqWarnings;
@@ -117,7 +145,7 @@ interface PlanProps {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export const AuditPlan: React.FC<PlanProps> = ({
+export const AuditPlan: React.FC<AuditPlanProps> = ({
   plan,
   mutatePlanWithUpdate,
   preReqErr,
@@ -127,7 +155,9 @@ export const AuditPlan: React.FC<PlanProps> = ({
   onErrorClick,
   renderAddCourse,
 }) => {
-  const [expandedYears, setExpandedYears] = useState<Set<number>>(() => new Set());
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(
+    () => new Set(),
+  );
   const totalYears = plan.years.length;
   const { setNodeRef } = useDroppable({ id: "plan" });
 
@@ -143,7 +173,7 @@ export const AuditPlan: React.FC<PlanProps> = ({
   const addClassesToTermInCurrPlan = (
     classes: AuditCourse<null>[],
     termYear: number,
-    termSeason: SeasonEnum
+    termSeason: SeasonEnum,
   ) => {
     mutatePlanWithUpdate(addClassesToTerm(classes, termYear, termSeason, plan));
   };
@@ -152,9 +182,11 @@ export const AuditPlan: React.FC<PlanProps> = ({
     course: AuditCourse<unknown>,
     courseIndex: number,
     termYear: number,
-    termSeason: SeasonEnum
+    termSeason: SeasonEnum,
   ) => {
-    mutatePlanWithUpdate(removeCourseFromTerm(course, courseIndex, termYear, termSeason, plan));
+    mutatePlanWithUpdate(
+      removeCourseFromTerm(course, courseIndex, termYear, termSeason, plan),
+    );
   };
 
   const removeYearFromCurrPlan = (yearNum: number) => {
@@ -181,13 +213,19 @@ export const AuditPlan: React.FC<PlanProps> = ({
                 key={scheduleYear.year}
                 scheduleYear={scheduleYear}
                 catalogYear={catalogYear}
-                yearCoReqError={coReqErr?.years.find((y) => y.year === scheduleYear.year)}
-                yearPreReqError={preReqErr?.years.find((y) => y.year === scheduleYear.year)}
+                yearCoReqError={coReqErr?.years.find(
+                  (y) => y.year === scheduleYear.year,
+                )}
+                yearPreReqError={preReqErr?.years.find(
+                  (y) => y.year === scheduleYear.year,
+                )}
                 isExpanded={expandedYears.has(scheduleYear.year)}
                 toggleExpanded={() => toggleExpanded(scheduleYear)}
                 addClassesToTermInCurrPlan={addClassesToTermInCurrPlan}
                 removeCourseFromTermInCurrPlan={removeCourseFromTermInCurrPlan}
-                removeYearFromCurrPlan={() => removeYearFromCurrPlan(scheduleYear.year)}
+                removeYearFromCurrPlan={() =>
+                  removeYearFromCurrPlan(scheduleYear.year)
+                }
                 setIsRemove={setIsRemove}
                 onErrorClick={onErrorClick}
                 renderAddCourse={renderAddCourse}
@@ -197,7 +235,7 @@ export const AuditPlan: React.FC<PlanProps> = ({
 
           {/* Add Year button */}
           <button
-            className="py-2 px-4 text-sm font-medium text-blue-600 border border-dashed border-blue-300 rounded-lg hover:bg-blue-50 transition-colors"
+            className="rounded-lg border border-dashed border-blue-300 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
             onClick={() => {
               const nextYear = totalYears + 1;
               const emptyTerm = (season: SeasonEnum): AuditTerm<string> => ({

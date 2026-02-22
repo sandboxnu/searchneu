@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { GraduateAPI } from "./graduateApiClient";
-import {
-  GetSupportedMajorsResponse,
-  GetSupportedMinorsResponse,
-} from "./api-response-types";
+import { GetSupportedMajorsResponse } from "./api-response-types";
 import { Major, Minor } from "./types";
 
 export function useSupportedMajors() {
@@ -72,7 +69,7 @@ export function useGraduateMinor(year: string | null, minor: string | null) {
       }
     };
     fetchMinor();
-  }, []);
+  }, [year, minor]);
 
   return { minorData: data, error };
 }

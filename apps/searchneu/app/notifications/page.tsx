@@ -24,6 +24,7 @@ export interface TrackerSection {
   faculty: string;
   meetingTimes: SectionTableMeetingTime[];
   campus: string;
+  term: string;
   courseId: number;
   courseName: string;
   courseRegister: string;
@@ -94,7 +95,11 @@ export default async function Page() {
       : [];
 
   const terms = await db
-    .selectDistinct({ name: termsT.name, term: termsT.term })
+    .selectDistinct({
+      name: termsT.name,
+      term: termsT.term,
+      activeUntil: termsT.activeUntil,
+    })
     .from(sectionsT)
     .innerJoin(termsT, eq(sectionsT.term, termsT.term))
     .where(inArray(sectionsT.id, trackedSectionIds));
@@ -144,7 +149,6 @@ export default async function Page() {
         terms={terms}
         notifications={notifications}
         courses={courses}
-        termId={terms[0]?.term ?? ""}
       />
     </div>
   );

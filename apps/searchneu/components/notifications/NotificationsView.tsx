@@ -5,13 +5,14 @@ import { TrackerCourse } from "@/app/notifications/page";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
+import { NotificationTerm } from "./NotificationsSidebar";
 
 export function NotificationsView({
   courses,
-  termId,
+  terms,
 }: {
   courses: TrackerCourse[];
-  termId: string;
+  terms: NotificationTerm[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -36,7 +37,7 @@ export function NotificationsView({
     if (!section) return;
 
     router.push(
-      `/catalog/${termId}/${section.courseSubject}%20${section.courseNumber}`,
+      `/catalog/${terms[0].term}/${section.courseSubject}%20${section.courseNumber}`,
     );
   };
 
@@ -55,6 +56,7 @@ export function NotificationsView({
           <NotificationsCourseCard
             key={course.courseName}
             course={course}
+            term={terms.find((term) => term.name === course.sections[0].term)}
             onViewAllSections={() => handleViewAllSections(course.courseId)}
             onUnsubscribeAll={() => handleUnsubscribeCourse(course.courseId)}
             isPending={isPending}

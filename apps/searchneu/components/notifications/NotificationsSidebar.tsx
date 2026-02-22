@@ -18,10 +18,16 @@ type Notification = {
   sentAt: Date;
 };
 
+export type NotificationTerm = {
+  name: string;
+  term: string;
+  activeUntil: Date;
+};
+
 export type NotificationsSidebarProps = {
   subscribedCount: number;
   totalLimit: number;
-  terms: { name: string; term: string }[];
+  terms: NotificationTerm[];
   notifications: Notification[];
 };
 

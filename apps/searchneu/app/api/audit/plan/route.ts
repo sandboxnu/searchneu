@@ -1,6 +1,10 @@
 import { NextRequest } from "next/server";
 import { CreateAuditPlanDto } from "@/lib/graduate/api-dtos";
-import { createAuditPlan, verifyUser } from "@/lib/controllers/auditPlans";
+import {
+  createAuditPlan,
+  verifyUser,
+  getAuditPlans,
+} from "@/lib/controllers/auditPlans";
 
 /**
  * Creates a new audit plan for the authenticated user
@@ -51,6 +55,39 @@ export async function POST(req: NextRequest) {
 
     return new Response(
       JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+      { status: 400 },
+    );
+  }
+}
+
+/**
+ * Gets an audit plan for the authenticated user
+ *
+ * @param req the request (we need the cookie)
+ * @param params route parameter containing the audit plan ID
+ *
+ * @returns 200 with the audit plan object
+ * @returns 403 if user is not authenticated
+ * @returns 400 if db fetch fails
+ */
+export async function GET() {
+  try {
+    const user = await verifyUser();
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 403,
+      });
+    }
+
+    const planResult = await getAuditPlans(user.id);
+    return Response.json(planResult);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : JSON.stringify(error);
+
+    return new Response(
+      JSON.stringify({ error: `Failed to fetch audit plan: ${message}` }),
       { status: 400 },
     );
   }

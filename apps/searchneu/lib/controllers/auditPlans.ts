@@ -64,6 +64,21 @@ export async function getAuditPlan(id: number, userId: string) {
 }
 
 /**
+ * Retrieves all audit plans for a specific user
+ *
+ * @param userId the ID of the user requesting the audit plan
+ *
+ * @returns the audit plans belonging to the user, empty arr otherwise
+ */
+export async function getAuditPlans(userId: string) {
+  const auditPlans = await db.query.auditPlansT.findMany({
+    where: eq(auditPlansT.userId, userId),
+  });
+
+  return auditPlans;
+}
+
+/**
  * Creates a new audit plan for a user with validation of major, minor, and concentration
  *
  * @param createAuditPlanInput the audit plan data: name, schedule, major, minor, concentration, and catalog year

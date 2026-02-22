@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
-import { type CourseColor, getSectionColor } from "@/lib/scheduler/courseColors";
+import {
+  type CourseColor,
+  getSectionColor,
+} from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { CalendarView } from "./CalendarView";
 import { CourseInfoPopup } from "./CourseInfoPopup";
@@ -78,30 +81,30 @@ export function SchedulerView({
             Plan {currentScheduleIndex + 1}
           </p>
           <div className="flex items-center gap-2">
-          <h1 className="text-neu8 text-2xl font-bold">
-            Schedule {currentScheduleIndex + 1}
-          </h1>
-          <button onClick={onToggleFavorite} className="cursor-pointer">
-            <svg
-              width="19"
-              height="19"
-              viewBox="0 0 24 24"
-              fill={isFavorited ? "#E63946" : "none"}
-              stroke={isFavorited ? "#E63946" : "#858585"}
-              strokeWidth="2"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-            >
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-          </button>
+            <h1 className="text-neu8 text-2xl font-bold">
+              Schedule {currentScheduleIndex + 1}
+            </h1>
+            <button onClick={onToggleFavorite} className="cursor-pointer">
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill={isFavorited ? "#E63946" : "none"}
+                stroke={isFavorited ? "#E63946" : "#858585"}
+                strokeWidth="2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </button>
           </div>
         </div>
       )}
 
       {/* Days of Week Header + Async Courses */}
       {hasSchedules && (
-        <div className="rounded-t-lg border-x border-t border-neu25 bg-white">
+        <div className="border-neu25 rounded-t-lg border-x border-t bg-white">
           <div className="grid grid-cols-[65px_repeat(7,1fr)]">
             <div className="rounded-tl-lg bg-white">
               <div className="text-neu4 flex h-12 items-center justify-end pr-2 text-sm font-semibold">

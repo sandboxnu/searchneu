@@ -32,10 +32,7 @@ export function timeToMinutes(time: number): number {
   return hours * 60 + minutes;
 }
 
-export function CalendarView({
-  schedule,
-  colorMap,
-}: CalendarViewProps) {
+export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
   // Define time range (7 AM to midnight)
   const startHour = 7;
   const endHour = 24;
@@ -89,11 +86,11 @@ export function CalendarView({
   };
 
   return (
-    <div className="mb-4 w-full overflow-clip rounded-b-lg border-x border-b border-neu25 bg-white">
+    <div className="border-neu25 mb-4 w-full overflow-clip rounded-b-lg border-x border-b bg-white">
       {/* Calendar Grid */}
       <div className="relative">
         <div
-          className="pt-3 grid grid-cols-[65px_repeat(7,1fr)]"
+          className="grid grid-cols-[65px_repeat(7,1fr)] pt-3"
           style={{ height: `${minCalendarHeight + 12}px` }}
         >
           {/* Time Column */}
@@ -187,8 +184,7 @@ export function CalendarView({
                           return (
                             <div className="flex min-w-0 flex-col gap-0.5 py-0.5 pl-1.5">
                               <div className="text-neu8 truncate text-sm font-bold">
-                                {section.courseSubject}{" "}
-                                {section.courseNumber}
+                                {section.courseSubject} {section.courseNumber}
                               </div>
                               {showAll && (
                                 <div className="text-neu6 truncate text-sm">

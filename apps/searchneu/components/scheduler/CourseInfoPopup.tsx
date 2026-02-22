@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
+import Link from "next/link";
 
 interface CourseInfoPopupProps {
   section: SectionWithCourse;
@@ -118,7 +119,7 @@ export function CourseInfoPopup({
       `}</style>
       <div
         ref={popupRef}
-        className="fixed z-50 rounded-lg border border-neu25 bg-white"
+        className="border-neu25 fixed z-50 rounded-lg border bg-white"
         style={{
           left: -9999,
           top: 0,
@@ -143,9 +144,7 @@ export function CourseInfoPopup({
               <p className="text-xs font-bold text-black">
                 {section.courseSubject} {section.courseNumber}
               </p>
-              <p className="truncate text-xs text-neu6">
-                {section.courseName}
-              </p>
+              <p className="text-neu6 truncate text-xs">{section.courseName}</p>
             </div>
 
             {/* Detail rows */}
@@ -153,8 +152,8 @@ export function CourseInfoPopup({
               <InfoRow label="CRN" value={section.crn} />
 
               <div className="flex items-center gap-2 pr-6">
-                <div className="w-[90px] shrink-0 py-1">
-                  <span className="text-[10px] font-bold text-neu4">
+                <div className="w-22.5 shrink-0 py-1">
+                  <span className="text-neu4 text-[10px] font-bold">
                     SEATS | WAITLIST
                   </span>
                 </div>
@@ -174,15 +173,15 @@ export function CourseInfoPopup({
 
               {meetingTimesWithDays.map((mt, i) => (
                 <div key={i} className="flex items-center gap-2 pr-6">
-                  <div className="w-[90px] shrink-0 py-1">
+                  <div className="w-22.5 shrink-0 py-1">
                     {i === 0 && (
-                      <span className="text-[10px] font-bold text-neu4">
+                      <span className="text-neu4 text-[10px] font-bold">
                         MEETING TIMES
                       </span>
                     )}
                   </div>
                   <div className="flex gap-1.5 text-xs">
-                    <span className="font-semibold text-neu8">
+                    <span className="text-neu8 font-semibold">
                       {mt.days.map((d) => DAY_ABBREVS[d]).join(" ")}
                     </span>
                     <span className="text-neu6">
@@ -201,10 +200,13 @@ export function CourseInfoPopup({
 
             {/* Footer link */}
             <div className="flex items-center justify-center py-1">
-              <span className="text-[10px] text-neu5">
+              <span className="text-neu5 text-[10px]">
                 Looking for more info?
               </span>
-              <a href="/catalog" className="ml-1 flex items-center gap-1 text-[10px] text-neu7 hover:underline">
+              <Link
+                href="/catalog"
+                className="text-neu7 ml-1 flex items-center gap-1 text-[10px] hover:underline"
+              >
                 Visit our catalog
                 <svg
                   width="6"
@@ -216,7 +218,7 @@ export function CourseInfoPopup({
                 >
                   <path d="M1 5L5 1M5 1H2M5 1V4" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -226,7 +228,7 @@ export function CourseInfoPopup({
               e.stopPropagation();
               handleClose();
             }}
-            className="absolute right-1.5 top-1.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded text-neu5 hover:text-neu8"
+            className="text-neu5 hover:text-neu8 absolute top-1.5 right-1.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded"
           >
             <svg
               width="10"
@@ -252,10 +254,10 @@ export function CourseInfoPopup({
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center gap-2 pr-6">
-      <div className="w-[90px] shrink-0 py-1">
-        <span className="text-[10px] font-bold text-neu4">{label}</span>
+      <div className="w-22.5 shrink-0 py-1">
+        <span className="text-neu4 text-[10px] font-bold">{label}</span>
       </div>
-      <span className="text-xs text-neu8">{value}</span>
+      <span className="text-neu8 text-xs">{value}</span>
     </div>
   );
 }
@@ -272,9 +274,7 @@ function SeatPill({
   return (
     <div
       className={`flex items-center gap-1 rounded-full border px-2 py-1 ${
-        isFull
-          ? "border-red-200 bg-red-50"
-          : "border-[#d6f5e2] bg-[#eafbf0]"
+        isFull ? "border-red-200 bg-red-50" : "border-[#d6f5e2] bg-[#eafbf0]"
       }`}
     >
       <svg
@@ -288,9 +288,7 @@ function SeatPill({
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
       </svg>
-      <span
-        className={`text-xs ${isFull ? "text-red-600" : "text-[#178459]"}`}
-      >
+      <span className={`text-xs ${isFull ? "text-red-600" : "text-[#178459]"}`}>
         {filled} / {capacity}
       </span>
     </div>

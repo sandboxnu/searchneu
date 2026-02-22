@@ -79,7 +79,7 @@ export const MiniCalendar = memo(function MiniCalendar({
       className={`w-full cursor-pointer rounded-lg border p-2 text-left transition-colors ${
         isSelected
           ? "border-neu4 bg-white"
-          : "border-neu25 bg-white hover:border-neu3"
+          : "border-neu25 hover:border-neu3 bg-white"
       }`}
     >
       {/* Day headers */}
@@ -137,7 +137,7 @@ export const MiniCalendar = memo(function MiniCalendar({
                 return (
                   <div
                     key={`${sectionIdx}-${meetingIdx}`}
-                    className="absolute inset-x-[1px] rounded-[2px]"
+                    className="absolute inset-x-px rounded-[2px]"
                     style={{
                       ...position,
                       backgroundColor: sectionColor?.stroke,

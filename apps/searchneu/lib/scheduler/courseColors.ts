@@ -8,15 +8,51 @@ export interface CourseColor {
 
 // Course color palette - hardcoded to match Figma design
 export const COURSE_COLORS: CourseColor[] = [
-  { fill: "var(--scheduler-course-yellow-fill)", stroke: "var(--scheduler-course-yellow-stroke)" },
-  { fill: "var(--scheduler-course-red-fill)", stroke: "var(--scheduler-course-red-stroke)" },
-  { fill: "var(--scheduler-course-blue-fill)", stroke: "var(--scheduler-course-blue-stroke)" },
-  { fill: "var(--scheduler-course-purple-fill)", stroke: "var(--scheduler-course-purple-stroke)" },
-  { fill: "var(--scheduler-course-green-fill)", stroke: "var(--scheduler-course-green-stroke)" },
-  { fill: "var(--scheduler-course-orange-fill)", stroke: "var(--scheduler-course-orange-stroke)" },
-  { fill: "var(--scheduler-course-pink-fill)", stroke: "var(--scheduler-course-pink-stroke)" },
-  { fill: "var(--scheduler-course-gray-fill)", stroke: "var(--scheduler-course-gray-stroke)" },
-  { fill: "var(--scheduler-course-brown-fill)", stroke: "var(--scheduler-course-brown-stroke)" },
+  {
+    fill: "rgba(255,228,224,0.2)",
+    stroke: "var(--scheduler-course-red-stroke)",
+    accent: "#f08890",
+  },
+  {
+    fill: "rgba(255,241,228,0.4)",
+    stroke: "var(--scheduler-course-orange-stroke)",
+    accent: "#ffb067",
+  },
+  {
+    fill: "rgba(219,244,251,0.4)",
+    stroke: "var(--scheduler-course-blue-stroke)",
+    accent: "#98e1f5",
+  },
+  {
+    fill: "rgba(255,249,216,0.4)",
+    stroke: "var(--scheduler-course-yellow-stroke)",
+    accent: "#fae98f",
+  },
+  {
+    fill: "rgba(219,246,229,0.3)",
+    stroke: "var(--scheduler-course-green-stroke)",
+    accent: "#89ecae",
+  },
+  {
+    fill: "rgba(226,224,248,0.3)",
+    stroke: "var(--scheduler-course-purple-stroke)",
+    accent: "#c8c3fe",
+  },
+  {
+    fill: "rgba(255,228,240,0.3)",
+    stroke: "var(--scheduler-course-pink-stroke)",
+    accent: "#f0a0c0",
+  },
+  {
+    fill: "rgba(234,234,234,0.3)",
+    stroke: "var(--scheduler-course-gray-stroke)",
+    accent: "#b0b0b0",
+  },
+  {
+    fill: "rgba(233,224,217,0.3)",
+    stroke: "var(--scheduler-course-brown-stroke)",
+    accent: "#c4a882",
+  },
 ];
 
 // Creates a consistent course key from a section

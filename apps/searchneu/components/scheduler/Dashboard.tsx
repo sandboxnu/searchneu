@@ -11,7 +11,7 @@ import AddCoursesModal from "./AddCoursesModal";
 import { PlanCard } from "./PlanCard";
 
 // Add type for plan
-type SavedPlan = {
+export type SavedPlan = {
   id: number;
   userId: string;
   term: string;
@@ -211,7 +211,9 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
       </div>
 
       {/* CHANGED: Replace empty state with conditional rendering */}
-      <div className="bg-neu1 h-full min-h-0 w-full place-content-center space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+      <div
+        className={`bg-neu1 flex h-full min-h-0 w-full flex-col space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1 ${plans.length > 0 ? "place-content-start" : "place-content-center"}`}
+      >
         {!selectedTerm ? (
           <div className="flex flex-col items-center gap-1 text-center">
             <Searchskie className="w-72 pb-8" />

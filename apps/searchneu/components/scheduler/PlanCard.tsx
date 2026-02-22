@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { SavedPlan } from "./Dashboard";
 import { Pencil, Trash2, MapPin, Clock, Lock, Star } from "lucide-react";
-import { COURSE_COLORS, type CourseColor } from "@/lib/scheduler/courseColors";
+import { COURSE_COLORS, type CourseColor, getCourseColorMap } from "@/lib/scheduler/courseColors";
+import { MiniCalendar } from "./MiniCalendar";
+import type { SectionWithCourse } from "@/lib/scheduler/filters";
 
 interface PlanCardProps {
   plan: SavedPlan;
@@ -12,8 +14,64 @@ interface PlanCardProps {
 }
 
 export function PlanCard({ plan, onDelete }: PlanCardProps) {
+  const router = useRouter();
+
   const handleEdit = () => {
-    console.log("Edit plan:", plan.id);
+    const params = new URLSearchParams();
+    params.set("term", plan.term);
+
+    const lockedCourseIds: number[] = [];
+    const optionalCourseIds: number[] = [];
+    const hiddenSections: string[] = [];
+
+    plan.courses.forEach((course) => {
+      if (course.isLocked) {
+        lockedCourseIds.push(course.courseId);
+      } else {
+        optionalCourseIds.push(course.courseId);
+      }
+      course.sections.forEach((section) => {
+        if (section.isHidden) {
+          hiddenSections.push(section.sectionId.toString());
+        }
+      });
+    });
+
+    if (lockedCourseIds.length > 0) {
+      params.set("lockedCourseIds", lockedCourseIds.join(","));
+    }
+    if (optionalCourseIds.length > 0) {
+      params.set("optionalCourseIds", optionalCourseIds.join(","));
+    }
+    if (plan.startTime !== null) {
+      params.set("startTime", plan.startTime.toString());
+    }
+    if (plan.endTime !== null) {
+      params.set("endTime", plan.endTime.toString());
+    }
+    if (plan.freeDays.length > 0) {
+      params.set("freeDays", plan.freeDays.join(","));
+    }
+    if (plan.nupaths.length > 0) {
+      params.set("nupaths", plan.nupaths.join(","));
+    }
+    if (!plan.includeRemoteSections) {
+      params.set("remote", "false");
+    }
+    if (!plan.includeHonorsSections) {
+      params.set("honors", "false");
+    }
+    if (plan.hideFilledSections) {
+      params.set("minSeats", "1");
+    }
+    if (plan.campuses !== null) {
+      params.set("desiredCampuses", plan.campuses.toString());
+    }
+    if (hiddenSections.length > 0) {
+      params.set("hiddenSections", hiddenSections.join(","));
+    }
+
+    router.push(`/scheduler/generator?${params.toString()}`);
   };
 
   const handleDelete = () => {
@@ -219,8 +277,35 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
           <p className="text-sm text-gray-500">No favorited schedules</p>
         ) : (
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {plan.favoritedSchedules.map((schedule) => {
-              // Get unique courses from schedule sections
+            {plan.favoritedSchedules.map((schedule, scheduleIdx) => {
+              // Transform favorited schedule sections to SectionWithCourse format
+              const scheduleSections: SectionWithCourse[] = schedule.sections.map((s) => ({
+                id: s.sectionId,
+                crn: "", // Not available in favorited schedule data
+                faculty: "",
+                campus: "",
+                honors: false,
+                classType: "",
+                seatRemaining: 0,
+                seatCapacity: 0,
+                waitlistCapacity: 0,
+                waitlistRemaining: 0,
+                meetingTimes: s.meetingTimes.map((mt) => ({
+                  days: mt.days,
+                  startTime: mt.startTime,
+                  endTime: mt.endTime,
+                  final: false,
+                })),
+                courseId: 0, // Not available
+                courseName: "",
+                courseSubject: s.courseSubject,
+                courseNumber: s.courseNumber,
+              }));
+
+              // Create color map for this schedule
+              const scheduleColorMap = getCourseColorMap([scheduleSections]);
+
+              // Get unique courses for tags
               const courses = Array.from(
                 new Set(
                   schedule.sections.map(
@@ -235,16 +320,32 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
                   className="border-neu3 relative flex min-w-[200px] shrink-0 flex-col rounded-lg border bg-white p-3 shadow-sm"
                 >
                   {/* Star icon */}
-                  <Star className="absolute right-2 top-2 h-4 w-4 fill-red text-red" />
+                  <Star className="absolute right-2 top-2 h-4 w-4 fill-red text-red z-10" />
                   
-                  {/* Calendar placeholder - simplified for now */}
-                  <div className="mb-2 h-16 w-full rounded bg-neu2"></div>
+                  {/* Mini Calendar */}
+                  <div className="mb-2">
+                    <MiniCalendar
+                      schedule={scheduleSections}
+                      colorMap={scheduleColorMap}
+                      isSelected={false}
+                      isFavorited={true}
+                      scheduleIndex={scheduleIdx}
+                      onClick={() => {
+                        // Handle click - maybe navigate to view schedule?
+                        console.log("Clicked schedule:", schedule.id);
+                      }}
+                      onToggleFavorite={() => {
+                        // Handle unfavorite - delete favorited schedule
+                        console.log("Toggle favorite:", schedule.id);
+                      }}
+                    />
+                  </div>
                   
                   {/* Schedule title */}
                   <div className="mb-2 text-sm font-semibold">
                     {schedule.name}
                   </div>
-                  
+
                   {/* Course tags with proper colors */}
                   <div className="flex flex-wrap gap-1">
                     {courses.slice(0, 4).map((courseKey) => {

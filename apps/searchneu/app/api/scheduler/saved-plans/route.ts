@@ -1,10 +1,10 @@
+import { verifyUser } from "@/lib/dal/audits";
 import {
   db,
   savedPlansT,
   savedPlanCoursesT,
   savedPlanSectionsT,
 } from "@/lib/db";
-import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 

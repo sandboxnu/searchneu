@@ -1,4 +1,23 @@
 import { Requisite } from "@sneu/scraper/types";
+import type { auditPlansT } from "../db";
+export type AuditPlanRow = typeof auditPlansT.$inferSelect;
+
+export interface HydratedAuditPlan {
+  id: number;
+  name: string;
+  userId: string;
+  schedule: Audit;
+  majors: Major[];
+  minors: Minor[];
+  concentration: string | null;
+  catalogYear: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type AuditPlanSummary = Pick<AuditPlanRow, "id" | "name">;
+
+export const DEFAULT_CATALOG_YEAR = 2026;
 
 /**
  * Describes the term SearchNEU uses for each of Northeastern's NUPath academic
@@ -67,7 +86,7 @@ export interface IAuditCourse {
  * @param numCreditsMax The maximum number of credits this course gives
  * @param id            Unique id used as a book keeping field for dnd.
  */
-export interface AuditCourse<T> {
+export interface AuditCourse {
   name: string;
   classId: string;
   subject: string;
@@ -76,7 +95,7 @@ export interface AuditCourse<T> {
   nupaths?: NUPathEnum[];
   numCreditsMin: number;
   numCreditsMax: number;
-  id: T;
+  id: string | null;
   generic?: boolean;
 }
 
@@ -91,11 +110,11 @@ export interface AuditCourse<T> {
  * @param classes A list of the classes of this term.
  * @param id      Unique id used as a book keeping field for dnd.
  */
-export interface AuditTerm<T> {
+export interface AuditTerm {
   season: SeasonEnum;
   status: StatusEnum;
-  classes: AuditCourse<T>[];
-  id: T;
+  classes: AuditCourse[];
+  id: string | null;
 }
 
 /**
@@ -114,12 +133,12 @@ export interface AuditTerm<T> {
  * @param summer2      The summer 2 term
  * @param isSummerFull True if the summer1 should hold the classes for summer full.
  */
-export interface AuditYear<T> {
+export interface AuditYear {
   year: number;
-  fall: AuditTerm<T>;
-  spring: AuditTerm<T>;
-  summer1: AuditTerm<T>;
-  summer2: AuditTerm<T>;
+  fall: AuditTerm;
+  spring: AuditTerm;
+  summer1: AuditTerm;
+  summer2: AuditTerm;
   isSummerFull: boolean;
 }
 
@@ -129,8 +148,8 @@ export interface AuditYear<T> {
  *
  * @param years A list of the years of this object
  */
-export interface Audit<T> {
-  years: AuditYear<T>[];
+export interface Audit {
+  years: AuditYear[];
 }
 
 export interface ParsedCourse {
@@ -430,4 +449,12 @@ export interface Template {
       };
     };
   };
+}
+
+// SidebarValidationStatus is used to determine the validation status of a section in the sidebar
+export enum SidebarValidationStatus {
+  Loading = "Loading",
+  Error = "Error",
+  Complete = "Complete",
+  InProgress = "InProgress",
 }

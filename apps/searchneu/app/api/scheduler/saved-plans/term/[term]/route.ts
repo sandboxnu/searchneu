@@ -10,7 +10,6 @@ import {
   subjectsT,
   meetingTimesT,
 } from "@/lib/db";
-import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq, and, desc } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/auth";

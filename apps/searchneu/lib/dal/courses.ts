@@ -1,6 +1,6 @@
 import "server-only";
 import { db, coursesT, courseNupathJoinT, nupathsT, subjectsT } from "@/lib/db";
-import { sql, and, eq, desc } from "drizzle-orm";
+import { sql, and, eq, desc, or } from "drizzle-orm";
 import { cache } from "react";
 import type { Course } from "@/lib/catalog/types";
 
@@ -114,3 +114,39 @@ export const getLatestCourseByRegister = cache(
     return result[0];
   },
 );
+
+/**
+ * Batch-fetches the latest course name for each (subjectCode, courseNumber) pair
+ * in a single query. Returns a map of "SUBJECT-COURSENUMBER" → course name.
+ */
+export async function getCourseNamesBatch(
+  keys: Set<string>,
+): Promise<Record<string, string>> {
+  if (keys.size === 0) return {};
+
+  const pairs = [...keys].map((k) => {
+    const [subject, classId] = k.split("-");
+    return { subject, classId };
+  });
+
+  const conditions = pairs.map((p) =>
+    and(eq(subjectsT.code, p.subject), eq(coursesT.courseNumber, p.classId)),
+  );
+
+  const rows = await db
+    .selectDistinctOn([subjectsT.code, coursesT.courseNumber], {
+      name: coursesT.name,
+      subjectCode: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+    })
+    .from(coursesT)
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .where(or(...conditions))
+    .orderBy(subjectsT.code, coursesT.courseNumber, desc(coursesT.term));
+
+  const nameMap: Record<string, string> = {};
+  for (const row of rows) {
+    nameMap[`${row.subjectCode}-${row.courseNumber}`] = row.name;
+  }
+  return nameMap;
+}

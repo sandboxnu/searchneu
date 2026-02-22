@@ -149,8 +149,8 @@ function ValidationClient() {
       )}
 
       {validationState.status === "success" && (
-        <div className="rounded-md border border-green-500 bg-green-500/10 p-4">
-          <p className="font-medium text-green-700">Validation Successful</p>
+        <div className="border-green bg-green/10 rounded-md border p-4">
+          <p className="text-green font-medium">Validation Successful</p>
           <pre className="mt-2 overflow-auto text-xs">
             {JSON.stringify(validationState.result, null, 2)}
           </pre>

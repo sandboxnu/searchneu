@@ -1,13 +1,14 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
-import { useState } from "react";
 import {
   AuditCourse,
   AuditTerm,
   SeasonEnum,
-} from "../../../lib/graduate/types"; // ADJUST THIS PATH
-import { DraggableScheduleCourse, INEUReqError, TermError } from "./AuditCourse";
+  INEUReqError,
+  TermError,
+} from "@/lib/graduate/types"; // ADJUST THIS PATH
+import { DraggableScheduleCourse } from "./AuditCourse";
 
 // ── Season Display ───────────────────────────────────────────────────────────
 
@@ -18,7 +19,10 @@ const SEASON_DISPLAY: Record<string, string> = {
   [SeasonEnum.S2]: "Summer II",
 };
 
-function courseToString(c: { subject: string; classId: string | number }): string {
+function courseToString(c: {
+  subject: string;
+  classId: string | number;
+}): string {
   return `${c.subject}${c.classId}`;
 }
 
@@ -39,14 +43,14 @@ interface ScheduleTermProps {
   addClassesToTermInCurrPlan: (
     classes: AuditCourse<null>[],
     termYear: number,
-    termSeason: SeasonEnum
+    termSeason: SeasonEnum,
   ) => void;
 
   removeCourseFromTermInCurrPlan: (
     course: AuditCourse<unknown>,
     courseIndex: number,
     termYear: number,
-    termSeason: SeasonEnum
+    termSeason: SeasonEnum,
   ) => void;
 
   onErrorClick?: (course: AuditCourse<unknown>, err: INEUReqError) => void;
@@ -57,31 +61,29 @@ interface ScheduleTermProps {
 
 export const ScheduleTerm: React.FC<ScheduleTermProps> = ({
   scheduleTerm,
-  catalogYear,
   yearNum,
   termCoReqErr,
   termPreReqErr,
   setIsRemove,
-  addClassesToTermInCurrPlan,
   removeCourseFromTermInCurrPlan,
   onErrorClick,
   renderAddCourse,
 }) => {
   const { isOver, setNodeRef } = useDroppable({ id: scheduleTerm.id });
   const credits = totalCreditsInTerm(scheduleTerm);
-  const seasonDisplay = SEASON_DISPLAY[scheduleTerm.season] ?? scheduleTerm.season;
+  const seasonDisplay =
+    SEASON_DISPLAY[scheduleTerm.season] ?? scheduleTerm.season;
 
   return (
     <div
       ref={setNodeRef}
-      className={`
-        flex flex-col px-3 pt-3 pb-6 select-none transition-colors duration-100
-        ${isOver ? "bg-gray-200" : "bg-gray-100"}
-      `}
+      className={`flex flex-col px-3 pt-3 pb-6 transition-colors duration-100 select-none ${isOver ? "bg-gray-200" : "bg-gray-100"} `}
     >
       {/* Header */}
       <div className="flex items-start gap-2 pb-2">
-        <span className="text-xs font-bold uppercase tracking-wide">{seasonDisplay}</span>
+        <span className="text-xs font-bold tracking-wide uppercase">
+          {seasonDisplay}
+        </span>
         <span className="text-xs font-medium text-blue-500">
           {credits} {credits === 1 ? "Credit" : "Credits"}
         </span>
@@ -98,23 +100,25 @@ export const ScheduleTerm: React.FC<ScheduleTermProps> = ({
           isEditable
           setIsRemove={setIsRemove}
           removeCourse={(c: AuditCourse<unknown>) =>
-            removeCourseFromTermInCurrPlan(c, courseIndex, yearNum, scheduleTerm.season)
+            removeCourseFromTermInCurrPlan(
+              c,
+              courseIndex,
+              yearNum,
+              scheduleTerm.season,
+            )
           }
           onErrorClick={onErrorClick}
         />
       ))}
 
       {/* Add course slot */}
-      {renderAddCourse
-        ? renderAddCourse(scheduleTerm.season, yearNum)
-        : (
-          <button
-            className="mt-1 w-full py-1.5 text-xs text-gray-400 border border-dashed border-gray-300 rounded hover:border-blue-400 hover:text-blue-500 transition-colors"
-          >
-            + Add Course
-          </button>
-        )
-      }
+      {renderAddCourse ? (
+        renderAddCourse(scheduleTerm.season, yearNum)
+      ) : (
+        <button className="mt-1 w-full rounded border border-dashed border-gray-300 py-1.5 text-xs text-gray-400 transition-colors hover:border-blue-400 hover:text-blue-500">
+          + Add Course
+        </button>
+      )}
     </div>
   );
 };

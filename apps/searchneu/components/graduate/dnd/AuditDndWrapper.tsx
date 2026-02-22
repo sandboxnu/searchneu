@@ -10,11 +10,7 @@ import {
   rectIntersection,
   useDroppable,
 } from "@dnd-kit/core";
-import {
-  Audit,
-  AuditCourse,
-  SeasonEnum,
-} from "../../../lib/graduate/types"; // ADJUST THIS PATH
+import { Audit, AuditCourse } from "../../../lib/graduate/types"; // ADJUST THIS PATH
 import { PropsWithChildren, useState } from "react";
 import {
   updatePlanOnDragEnd,
@@ -28,7 +24,9 @@ import { AuditPlan, CoReqWarnings, PreReqWarnings } from "./AuditPlan";
 
 const courseDndCollisionAlgorithm: CollisionDetection = (args) => {
   const pointerCollisions = pointerWithin(args);
-  return pointerCollisions.length > 0 ? pointerCollisions : rectIntersection(args);
+  return pointerCollisions.length > 0
+    ? pointerCollisions
+    : rectIntersection(args);
 };
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -57,7 +55,7 @@ interface PlanDndWrapperProps {
 const DeleteDropZone: React.FC<PropsWithChildren> = ({ children }) => {
   const { setNodeRef } = useDroppable({ id: DELETE_COURSE_AREA_DND_ID });
   return (
-    <div ref={setNodeRef} className="flex flex-col h-full overflow-hidden">
+    <div ref={setNodeRef} className="flex h-full flex-col overflow-hidden">
       {children}
     </div>
   );
@@ -75,12 +73,17 @@ export const PlanDndWrapper: React.FC<PlanDndWrapperProps> = ({
   onWarningsRecompute,
   sidebar,
 }) => {
-  const [activeCourse, setActiveCourse] = useState<AuditCourse<string> | null>(null);
+  const [activeCourse, setActiveCourse] = useState<AuditCourse<string> | null>(
+    null,
+  );
   const [isRemove, setIsRemove] = useState(false);
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    setActiveCourse({ ...active.data.current?.course, id: active.id as string });
+    setActiveCourse({
+      ...active.data.current?.course,
+      id: active.id as string,
+    });
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -129,7 +132,10 @@ export const PlanDndWrapper: React.FC<PlanDndWrapperProps> = ({
 
       <DragOverlay dropAnimation={null}>
         {activeCourse ? (
-          <DraggedScheduleCourse activeCourse={activeCourse} isRemove={isRemove} />
+          <DraggedScheduleCourse
+            activeCourse={activeCourse}
+            isRemove={isRemove}
+          />
         ) : null}
       </DragOverlay>
     </DndContext>

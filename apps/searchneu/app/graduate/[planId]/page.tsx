@@ -1,6 +1,5 @@
 import { PlanClient } from "@/components/graduate/PlanClient";
 import { auth } from "@/lib/auth";
-import { Audit } from "@/lib/graduate/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -35,7 +34,8 @@ export default async function PlanPage({
     return (
       <h1>
         {" "}
-        no schedule found: {planId} {JSON.stringify(session.user)} DENNIS=  {JSON.stringify(data)}
+        no schedule found: {planId} {JSON.stringify(session.user)} DENNIS={" "}
+        {JSON.stringify(data)}
       </h1>
     );
   } else {
@@ -44,6 +44,7 @@ export default async function PlanPage({
         catalogYear={2023}
         initialPlan={data.schedule}
         planId={planId}
+        majorName="Computer Science, BSCS"
       />
     );
   }

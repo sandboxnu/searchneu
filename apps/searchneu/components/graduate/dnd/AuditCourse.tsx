@@ -5,9 +5,9 @@ import { forwardRef, useEffect, useState } from "react";
 import {
   AuditCourse,
   AuditTerm,
-  SeasonEnum,
+  INEUReqError,
 } from "../../../lib/graduate/types"; // ADJUST THIS PATH
-import { SyntheticListenerMap  } from "@dnd-kit/core/dist/hooks/utilities";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
 import {
   DELETE_COURSE_AREA_DND_ID,
@@ -15,15 +15,6 @@ import {
 } from "./planDndUtils"; // ADJUST THIS PATH
 
 // ── Types ────────────────────────────────────────────────────────────────────
-
-export interface INEUReqError {
-  type: string;
-  [key: string]: unknown;
-}
-
-export interface TermError {
-  [key: string]: INEUReqError | undefined;
-}
 
 interface DraggableScheduleCourseProps {
   scheduleCourse: AuditCourse<string>;
@@ -44,22 +35,29 @@ interface DraggedScheduleCourseProps {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function isSidebarCourse(id: string): boolean {
+export function isSidebarCourse(id: string): boolean {
   return id.startsWith(SIDEBAR_DND_ID_PREFIX);
 }
 
-function courseToString(c: { subject: string; classId: string | number }): string {
+function courseToString(c: {
+  subject: string;
+  classId: string | number;
+}): string {
   return `${c.subject}${c.classId}`;
 }
 
-function getTransformStyle(transform: { x: number; y: number } | null): string | undefined {
+function getTransformStyle(
+  transform: { x: number; y: number } | null,
+): string | undefined {
   if (!transform) return undefined;
   return `translate3d(${transform.x}px, ${transform.y}px, 0)`;
 }
 
 // ── Draggable Course (static on page, can be picked up) ─────────────────────
 
-export const DraggableScheduleCourse: React.FC<DraggableScheduleCourseProps> = ({
+export const DraggableScheduleCourse: React.FC<
+  DraggableScheduleCourseProps
+> = ({
   scheduleCourse,
   scheduleTerm,
   removeCourse,
@@ -140,7 +138,6 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
   (
     {
       scheduleCourse,
-      scheduleTerm,
       removeCourse,
       preReqErr,
       coReqErr,
@@ -155,7 +152,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
       isDraggable = false,
       onErrorClick,
     },
-    ref
+    ref,
   ) => {
     const [hovered, setHovered] = useState(false);
     const isValidRemove = isRemove && !isFromSidebar;
@@ -164,15 +161,10 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
     return (
       <div
         ref={ref}
-        className={`
-          relative flex items-stretch justify-between rounded-lg text-sm mb-1.5
-          transition-transform duration-150 ease-out w-full
-          ${isOverlay ? "bg-gray-200" : "bg-white"}
-          ${isDragging && !isFromSidebar ? "invisible" : ""}
-          ${isValidRemove ? "opacity-50" : "opacity-100"}
-        `}
+        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-gray-200" : "bg-white"} ${isDragging && !isFromSidebar ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
         style={{
-          transform: hovered && isDraggable ? "scale(1.04)" : transform ?? "scale(1)",
+          transform:
+            hovered && isDraggable ? "scale(1.04)" : (transform ?? "scale(1)"),
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -180,15 +172,15 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
       >
         {/* Drag handle + course info */}
         <div
-          className={`
-            flex-grow flex items-center
-            ${isDraggable ? "px-2 py-2 cursor-grab" : "px-3 py-2 cursor-default"}
-            ${isOverlay ? "cursor-grabbing" : ""}
-          `}
+          className={`flex flex-grow items-center ${isDraggable ? "cursor-grab px-2 py-2" : "cursor-default px-3 py-2"} ${isOverlay ? "cursor-grabbing" : ""} `}
           {...listeners}
         >
           {isDraggable && (
-            <svg className="w-3 h-3 mr-1.5 text-gray-400 flex-shrink-0" viewBox="0 0 10 16" fill="currentColor">
+            <svg
+              className="mr-1.5 h-3 w-3 flex-shrink-0 text-gray-400"
+              viewBox="0 0 10 16"
+              fill="currentColor"
+            >
               <circle cx="3" cy="2" r="1.5" />
               <circle cx="7" cy="2" r="1.5" />
               <circle cx="3" cy="8" r="1.5" />
@@ -198,7 +190,9 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
             </svg>
           )}
           <p className="leading-tight">
-            <span className="font-bold mr-1">{courseToString(scheduleCourse)}</span>
+            <span className="mr-1 font-bold">
+              {courseToString(scheduleCourse)}
+            </span>
             <span>{scheduleCourse.name}</span>
           </p>
         </div>
@@ -214,36 +208,66 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
               }}
               title="Prerequisite or corequisite warning"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </button>
           )}
           {isEditable && hovered && removeCourse && (
             <button
-              className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+              className="p-1 text-gray-400 transition-colors hover:text-red-500"
               onClick={() => removeCourse(scheduleCourse)}
               title="Remove course"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
               </svg>
             </button>
           )}
-          {isEditable && !hovered && <div className="w-8 h-8 flex-shrink-0" />}
+          {isEditable && !hovered && <div className="h-8 w-8 flex-shrink-0" />}
         </div>
 
         {/* Delete overlay icon */}
         {isValidRemove && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <svg
+              className="h-5 w-5 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </div>
         )}
       </div>
     );
-  }
+  },
 );
 
 ScheduleCourse.displayName = "ScheduleCourse";

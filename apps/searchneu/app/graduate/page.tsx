@@ -1,102 +1,81 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSupportedMajors } from "@/lib/graduate/useGraduateApi";
 import NewPlanModal from "@/components/graduate/modal/NewPlanModal";
-import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
+import { useMemo } from "react";
+import { Sidebar } from "../../components/graduate/sidebar/Sidebar";
+import { PlanDndWrapper } from "../../components/graduate/dnd/AuditDndWrapper";
+import type { Audit } from "../../lib/graduate/types";
 
-type PlanInfo = {
-  id: number;
-  name: string;
-  majors?: string[];
-  minors?: string[];
-  catalogYear?: number;
-  concentration?: string;
-};
 
 export default function Page() {
+  //const [selectedMajorName, setSelectedMajorName] = useState<string | null>(null);
+  // TODO: replace null with a real plan once plan creation is wired up
+  const plan: Audit<string> | null = null;
   const { data, error } = useSupportedMajors();
-  const [isNewModalOpen, setIsNewModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<
     number | undefined | null
   >();
-  const [planToEdit, setPlanToEdit] = useState<PlanInfo | undefined>();
-  const [plans, setPlans] = useState<PlanInfo[]>([]);
+const DEFAULT_CATALOG_YEAR = 2024;
 
-  const fetchPlan = async (id: number) => {
-    try {
-      const res = await fetch(`/api/audit/plan/${id}`, {
-        credentials: "include",
-      });
-      if (res.ok) {
-        const plan = await res.json();
-        // update the plan in the list if it exists, otherwise add it
-        setPlans((prev) => {
-          const exists = prev.some((p) => p.id === plan.id);
-          return exists
-            ? prev.map((p) => (p.id === plan.id ? plan : p))
-            : [...prev, plan];
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching plan:", error);
-    }
-  };
+  const { catalogYear, majorNames } = useMemo(() => {
+    const supported = data?.supportedMajors ?? {};
+    const yearKey = Object.keys(supported)[0] ?? String(DEFAULT_CATALOG_YEAR);
+    const majorsForYear = supported[yearKey] ?? {};
+    return {
+      catalogYear: parseInt(yearKey, 10) || DEFAULT_CATALOG_YEAR,
+      majorNames: Object.keys(majorsForYear),
+    };
+  }, [data]);
 
-  useEffect(() => {
-    if (selectedPlanId) fetchPlan(selectedPlanId);
-  }, [selectedPlanId]);
+  const effectiveMajorName = majorNames[0] ?? "NO EFFECTIVE MAJOR";
 
-  if (error) return <div>Error: {error.message}</div>;
-  if (!data) return <div>No data available</div>;
+  if (error)
+    return <div className="p-4 text-red-500">Error: {error.message}</div>;
+  if (!data) return <div className="p-4">Loading...</div>;
+
+  const sidebar = (
+    <Sidebar
+      catalogYear={catalogYear}
+      majorName={effectiveMajorName}
+      selectedPlan={{ id: "1", concentration: "Undecided" }}
+      courseData={true}
+    />
+  );
 
   return (
-    <div>
+      <main className="flex flex-1 flex-col overflow-hidden bg-neutral-100">
+      {/* Sidebar always rendered */}
+      <aside className="h-full w-80 shrink-0 border-r border-neutral-200">
       <button
-        onClick={() => setIsNewModalOpen(true)}
+        onClick={() => setIsModalOpen(true)}
         className="rounded-2xl bg-red-800 p-10"
       >
-        New Plan
+        click me
       </button>
-
-      {/* list all plans with edit button */}
-      {plans.map((plan) => (
-        <div key={plan.id} className="mt-4 flex items-center gap-2">
-          <p>{plan.name}</p>
-          <button
-            onClick={() => {
-              setPlanToEdit(plan);
-              setIsEditModalOpen(true);
-            }}
-            className="rounded-2xl bg-blue-800 p-2"
-          >
-            Edit
-          </button>
-        </div>
-      ))}
-
       <NewPlanModal
-        isOpen={isNewModalOpen}
-        onClose={() => setIsNewModalOpen(false)}
-        setSelectedPlanId={(id) => {
-          setSelectedPlanId(id);
-          if (id) fetchPlan(id);
-        }}
-      />
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        setSelectedPlanId={setSelectedPlanId}
+      ></NewPlanModal>
+        {sidebar}
+      </aside>
 
-      {planToEdit && (
-        <EditPlanModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onPlanUpdated={() => {
-            if (planToEdit) fetchPlan(planToEdit.id);
-          }}
-          plan={planToEdit}
-        />
-      )}
-
-      <p>plan id = {selectedPlanId}</p>
-    </div>
+      {/* Main content */}
+        {plan ? (
+          <PlanDndWrapper
+            plan={plan}
+            catalogYear={catalogYear}
+            onPlanUpdate={() => {}}
+          />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
+            <p className="text-lg font-medium">No plan yet</p>
+            <p className="text-sm">Create a plan to get started</p>
+          </div>
+        )}
+      </main>
   );
 }

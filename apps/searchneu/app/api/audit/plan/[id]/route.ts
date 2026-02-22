@@ -157,7 +157,7 @@ export async function GET(
     const { id } = await params;
     const auditPlanId = parseInt(id, 10);
 
-    const planResult = await getAuditPlan(auditPlanId, user.id)
+    const planResult = await getAuditPlan(auditPlanId, user.id);
     return Response.json(planResult);
   } catch (error) {
     const message =

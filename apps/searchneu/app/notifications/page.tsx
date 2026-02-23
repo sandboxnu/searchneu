@@ -61,26 +61,24 @@ export default async function Page() {
     ),
   });
 
-  const trackerIds = trackers.map((t) => t.id);
-  const notifications =
-    trackerIds.length > 0
-      ? await db
-          .select({
-            id: notificationsT.id,
-            crn: sectionsT.crn,
-            courseName: coursesT.name,
-            courseSubject: subjectsT.code,
-            courseNumber: coursesT.courseNumber,
-            sentAt: notificationsT.sentAt,
-          })
-          .from(notificationsT)
-          .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
-          .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
-          .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
-          .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-          .where(inArray(notificationsT.trackerId, trackerIds))
-          .orderBy(desc(notificationsT.sentAt))
-      : [];
+  const notifications = currentUser
+    ? await db
+        .select({
+          id: notificationsT.id,
+          crn: sectionsT.crn,
+          courseName: coursesT.name,
+          courseSubject: subjectsT.code,
+          courseNumber: coursesT.courseNumber,
+          sentAt: notificationsT.sentAt,
+        })
+        .from(notificationsT)
+        .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
+        .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
+        .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+        .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+        .where(eq(notificationsT.userId, currentUser.id))
+        .orderBy(desc(notificationsT.sentAt))
+    : [];
 
   const trackedSectionIds = trackers.map((t) => t.sectionId);
   const trackerMap = new Map(

@@ -81,17 +81,6 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      {faqFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/faq"
-            data-active={pathname === "/faq"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
-          >
-            <CircleQuestionMark className="text-red size-5" />
-          </Link>
-        </LinkWrapper>
-      )}
       {notificationsFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
@@ -101,6 +90,17 @@ export function NavBar({
           >
             <Bell className="size-4" />
             <span>Notifications</span>
+          </Link>
+        </LinkWrapper>
+      )}
+      {faqFlag && (
+        <LinkWrapper mobileNav={closeable}>
+          <Link
+            href="/faq"
+            data-active={pathname === "/faq"}
+            className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+          >
+            <CircleQuestionMark className="text-red size-5" />
           </Link>
         </LinkWrapper>
       )}

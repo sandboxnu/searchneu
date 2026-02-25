@@ -3,7 +3,7 @@ import {
   GetSupportedMajorsResponse,
   GetSupportedMinorsResponse,
 } from "./api-response-types";
-import { Major, Minor, Template } from "./types";
+import {Major, Minor, ParsedCourse, Template} from "./types";
 
 class GraduateAPIClient {
   private baseURL: string;
@@ -45,6 +45,38 @@ class GraduateAPIClient {
 
     return response.json() as Promise<T>;
   }
+
+    private async reqFile<T>(
+        method: string,
+        url: string,
+        body: FormData,
+    ): Promise<T> {
+        const base =
+            typeof window !== "undefined"
+                ? window.location.origin
+                : "http://localhost:3000";
+        const fullUrl = new URL(`${this.baseURL}${url}`, base);
+
+        const response = await fetch(fullUrl.toString(), {
+            method,
+            credentials: "include",
+            body,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json() as Promise<T>;
+    }
+
+    utils = {
+        parsePdfCourses: async (file: File): Promise<ParsedCourse[]> => {
+            const formData = new FormData();
+            formData.append("pdf", file);
+            return this.reqFile("POST", "/utils/parse-pdf-courses", formData);
+        },
+    };
 
   meta = {
     getInfo: (): Promise<GetMetaInfoResponse> => this.req("GET", "/meta/info"),

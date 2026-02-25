@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
   Button,
   FormField,
@@ -28,14 +28,15 @@ import {
   MultiSelectValue,
 } from "@/components/ui/multi-select";
 import {
-  Audit,
-  AuditCourse,
-  AuditYear,
-  SeasonEnum,
-  StatusEnum,
-  Template,
+    Audit,
+    AuditCourse,
+    AuditYear, ParsedCourse,
+    SeasonEnum,
+    StatusEnum,
+    Template,
 } from "@/lib/graduate/types";
 import { useTemplate } from "@/lib/graduate/useGraduateApi";
+import {FileUp} from "lucide-react";
 
 interface NewPlanModalProps {
   isOpen: boolean;
@@ -98,6 +99,27 @@ export default function NewPlanModal({
     useRecommendedTemplate ? majors : null,
     useRecommendedTemplate ? catalogYear : null,
   );
+
+    const [uploadedCourses, setUploadedCourses] = useState<ParsedCourse[]>([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handlePdfUpload = async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = event.target.files?.[0];
+        if (!file || file.type !== "application/pdf") {
+            console.error("Please select a PDF file");
+            return;
+        }
+
+        try {
+            const courses = await GraduateAPI.utils.parsePdfCourses(file);
+
+            setUploadedCourses(courses);
+        } catch (error) {
+            console.error("Error parsing PDF:", error);
+        }
+    };
 
   //helper function - close modal
   const handleClose = () => {
@@ -464,14 +486,26 @@ export default function NewPlanModal({
   return (
     <>
       <Modal isOpen={isOpen} onClose={handleClose} title="New Plan">
-        {/* import from UAchieve
-        TODO: add import functionality + autofill fields from PDF
-        <div className="flex justify-center mb-6">
-            <button className="flex items-center gap-2 border-r1 bg-r1/30 rounded-4xl border text-[#E63946] font-bold p-2 pl-5 pr-5">
-                Import from UAchieve
-                <FileUp />
-            </button>
-        </div> */}
+        <div className="flex flex-col items-center mb-6">
+            <div className="relative">
+                <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={handlePdfUpload}
+                    ref={fileInputRef}
+                    className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                />
+                <button className="flex items-center gap-2 border-r1 bg-r1/30 rounded-4xl border text-[#E63946] font-bold p-2 pl-5 pr-5">
+                    <FileUp />
+                    Import from UAchieve
+                </button>
+            </div>
+            {uploadedCourses.length > 0 && (
+                <span className="text-sm text-green-500">
+              ✓ {uploadedCourses.length} courses
+            </span>
+            )}
+        </div>
 
         {/*title*/}
         <div className="mb-6">

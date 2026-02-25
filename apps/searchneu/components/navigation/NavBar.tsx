@@ -1,6 +1,6 @@
 "use client";
 import {
-  Bookmark,
+  BookMarked,
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
@@ -49,10 +49,10 @@ export function NavBar({
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/catalog"
-          data-active={pathname.startsWith("/catalog")}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
+          data-active={pathname === "/catalog"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
         >
-          <Bookmark className="size-4" />
+          <BookMarked className="size-4" />
           <span>Catalog</span>
         </Link>
       </LinkWrapper>
@@ -61,7 +61,7 @@ export function NavBar({
           <Link
             href="/scheduler"
             data-active={pathname === "/scheduler"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center rounded-full border-1 p-2 text-sm"
+            className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center rounded-full border-1 p-2 px-4 text-sm"
           >
             Scheduler
           </Link>

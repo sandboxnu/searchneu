@@ -20,6 +20,7 @@ export function createMockSection(
     seatCapacity: 30,
     waitlistCapacity: 0,
     waitlistRemaining: 0,
+    courseId: id,
     courseName: "Test Course",
     courseSubject: "TEST",
     courseNumber: "1000",

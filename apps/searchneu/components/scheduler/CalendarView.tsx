@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import {
   type CourseColor,
   getSectionColor,
 } from "@/lib/scheduler/courseColors";
+import { CourseInfoPopup } from "./CourseInfoPopup";
 
 interface CalendarViewProps {
   schedule: SectionWithCourse[];
-  scheduleNumber: number;
   colorMap: Map<string, CourseColor>;
 }
 
 // Height per hour in pixels - increase this to make rows taller
-const HOUR_HEIGHT = 100;
+const HOUR_HEIGHT = 75;
 
 // Helper to convert time format (e.g., 1330 -> "1:30 PM")
 function formatTime(time: number): string {
@@ -26,34 +26,25 @@ function formatTime(time: number): string {
 }
 
 // Convert military time to minutes from midnight for positioning
-function timeToMinutes(time: number): number {
+export function timeToMinutes(time: number): number {
   const hours = Math.floor(time / 100);
   const minutes = time % 100;
   return hours * 60 + minutes;
 }
 
-export function CalendarView({
-  schedule,
-  scheduleNumber,
-  colorMap,
-}: CalendarViewProps) {
-  const calendarRef = useRef<HTMLDivElement>(null);
-
-  // Define time range (6 AM to midnight)
-  const startHour = 6;
+export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
+  // Define time range (7 AM to midnight)
+  const startHour = 7;
   const endHour = 24;
   const totalHours = endHour - startHour;
 
   // Calculate minimum height based on hour height
   const minCalendarHeight = totalHours * HOUR_HEIGHT;
 
-  // Separate async/remote courses from scheduled courses
-  const asyncCourses = schedule.filter(
-    (section) =>
-      !section.meetingTimes ||
-      section.meetingTimes.length === 0 ||
-      section.meetingTimes.every((mt) => !mt.days || mt.days.length === 0),
-  );
+  const [popupState, setPopupState] = useState<{
+    section: SectionWithCourse;
+    rect: DOMRect;
+  } | null>(null);
 
   const scheduledCourses = schedule.filter(
     (section) =>
@@ -61,15 +52,6 @@ export function CalendarView({
       section.meetingTimes.length > 0 &&
       section.meetingTimes.some((mt) => mt.days && mt.days.length > 0),
   );
-
-  // Auto-scroll to 7 AM on mount or when schedule changes
-  useEffect(() => {
-    if (calendarRef.current) {
-      const asyncHeaderHeight = asyncCourses.length > 0 ? 80 : 0;
-      const scrollPosition = 1 * HOUR_HEIGHT + 48 + asyncHeaderHeight + 8; // 7 AM is now 1 hour from start (6 AM)
-      calendarRef.current.scrollTop = scrollPosition;
-    }
-  }, [scheduleNumber, asyncCourses.length]);
 
   // Define days
   const days = [
@@ -104,77 +86,16 @@ export function CalendarView({
   };
 
   return (
-    <div
-      ref={calendarRef}
-      className="h-full w-full overflow-auto rounded-lg border border-gray-300 bg-white [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    >
+    <div className="border-neu25 mb-4 w-full overflow-clip rounded-b-lg border-x border-b bg-white">
       {/* Calendar Grid */}
       <div className="relative">
-        {/* Sticky Header Row - spans all columns */}
-        <div className="sticky top-0 z-30 grid grid-cols-[65px_repeat(7,1fr)] bg-white">
-          {/* Time Column Header */}
-          <div className="bg-white">
-            {!asyncCourses.length && (
-              <div className="text-neu4 flex h-12 items-center justify-end pr-2 pb-1 text-sm font-semibold">
-                GMT-5
-              </div>
-            )}
-          </div>
-
-          {/* Day Headers */}
-          {days.map((day) => (
-            <div
-              key={day.index}
-              className="flex h-12 items-center justify-center bg-white pb-1"
-            >
-              <div className="text-neu6 text-sm font-semibold">{day.full}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Async/Remote Courses Section - spans all day columns */}
-        {asyncCourses.length > 0 && (
-          <div className="sticky top-12 z-30 grid grid-cols-[65px_1fr] border-b border-gray-200 bg-white">
-            <div className="flex items-start justify-end bg-white py-2 pr-2">
-              <div className="text-neu4 flex h-[39px] items-center text-sm font-semibold">
-                GMT-5
-              </div>
-            </div>
-            <div className="space-y-2 px-1 py-2">
-              {asyncCourses.map((section, index) => {
-                const sectionColor = getSectionColor(section, colorMap);
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 rounded-md border p-2 px-3"
-                    style={{
-                      backgroundColor: sectionColor?.fill,
-                      borderColor: sectionColor?.stroke,
-                    }}
-                  >
-                    <div className="text-neu8 truncate text-base font-bold">
-                      {section.courseSubject} {section.courseNumber}
-                    </div>
-                    <div className="text-neu6 truncate text-base">
-                      CRN {section.crn}
-                    </div>
-                    <div className="text-neu6 truncate text-base italic">
-                      Asynchronous
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         <div
-          className="grid grid-cols-[65px_repeat(7,1fr)]"
-          style={{ minHeight: `${minCalendarHeight}px` }}
+          className="grid grid-cols-[65px_repeat(7,1fr)] pt-3"
+          style={{ height: `${minCalendarHeight + 12}px` }}
         >
           {/* Time Column */}
           <div className="bg-white">
-            <div className="relative mt-2 h-[calc(100%-3rem)]">
+            <div className="relative h-full">
               {timeSlots.map((time, index) => {
                 return (
                   <div
@@ -196,8 +117,8 @@ export function CalendarView({
           {days.map((day) => (
             <div key={day.index} className="relative bg-white">
               {/* Time Grid Lines */}
-              <div className="relative mt-2 h-[calc(100%-3rem)]">
-                {/* Top border for 12 AM */}
+              <div className="relative h-full">
+                {/* Top border */}
                 <div
                   className="absolute w-full border-t border-gray-200"
                   style={{ top: "0%" }}
@@ -231,31 +152,62 @@ export function CalendarView({
                     return (
                       <div
                         key={`${sectionIndex}-${meetingIndex}`}
-                        className="absolute mx-1 w-[calc(100%-8px)] overflow-hidden rounded-md border p-2"
+                        className="absolute mx-1 flex w-[calc(100%-8px)] cursor-pointer items-stretch overflow-hidden rounded-lg p-2 transition-[filter] hover:brightness-95"
                         style={{
                           ...position,
                           backgroundColor: sectionColor?.fill,
-                          borderColor: sectionColor?.stroke,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPopupState({
+                            section,
+                            rect: e.currentTarget.getBoundingClientRect(),
+                          });
                         }}
                       >
-                        <div className="text-neu8 truncate text-base font-bold">
-                          {section.courseSubject} {section.courseNumber}
-                        </div>
-                        <div className="text-neu6 truncate text-base">
-                          {section.courseName}
-                        </div>
-                        {section.faculty && (
-                          <div className="text-neu6 truncate text-base">
-                            {section.faculty}
-                          </div>
-                        )}
-                        <div className="text-neu6 truncate text-base">
-                          CRN {section.crn}
-                        </div>
-                        <div className="text-neu6 mt-1 text-base">
-                          {formatTime(meeting.startTime)} -{" "}
-                          {formatTime(meeting.endTime)}
-                        </div>
+                        {/* Left accent bar */}
+                        <div
+                          className="w-1 shrink-0 rounded-full"
+                          style={{
+                            backgroundColor: sectionColor?.stroke,
+                          }}
+                        />
+                        {/* Content */}
+                        {(() => {
+                          const durationMinutes =
+                            timeToMinutes(meeting.endTime) -
+                            timeToMinutes(meeting.startTime);
+                          const blockHeight =
+                            (durationMinutes / (totalHours * 60)) *
+                            minCalendarHeight;
+                          const showAll = blockHeight >= 90;
+                          return (
+                            <div className="flex min-w-0 flex-col gap-0.5 py-0.5 pl-1.5">
+                              <div className="text-neu8 truncate text-sm font-bold">
+                                {section.courseSubject} {section.courseNumber}
+                              </div>
+                              {showAll && (
+                                <div className="text-neu6 truncate text-sm">
+                                  {section.courseName}
+                                </div>
+                              )}
+                              {showAll && (
+                                <div className="text-neu6 truncate text-sm">
+                                  #{section.crn}
+                                </div>
+                              )}
+                              <div className="text-neu6 truncate text-sm">
+                                {formatTime(meeting.startTime)} –{" "}
+                                {formatTime(meeting.endTime)}
+                              </div>
+                              {section.faculty && (
+                                <div className="text-neu6 truncate text-sm">
+                                  {section.faculty}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     );
                   });
@@ -265,6 +217,14 @@ export function CalendarView({
           ))}
         </div>
       </div>
+      {popupState && (
+        <CourseInfoPopup
+          section={popupState.section}
+          color={getSectionColor(popupState.section, colorMap)}
+          anchorRect={popupState.rect}
+          onClose={() => setPopupState(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { ClientAuditPlan } from "./PlanClient";
 
 export function HeaderClient({ plans }: { plans: ClientAuditPlan[] }) {
@@ -12,7 +13,11 @@ export function HeaderClient({ plans }: { plans: ClientAuditPlan[] }) {
       {/* TICKET WORK : MAKE DROPDOWN COMPONENT FOR PLAN SELECTION */}
       <ul>
         {plans.map((plan) => {
-          return <li key={plan.id}>{plan.name}</li>;
+          return (
+            <li key={plan.id}>
+              <Link href={`/graduate/${plan.id}`}>{plan.name}</Link>
+            </li>
+          );
         })}
       </ul>
     </div>

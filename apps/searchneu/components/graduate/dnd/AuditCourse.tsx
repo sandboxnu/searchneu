@@ -1,7 +1,7 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState , useMemo} from "react";
 import {
   AuditCourse,
   AuditTerm,
@@ -13,6 +13,7 @@ import {
   DELETE_COURSE_AREA_DND_ID,
   SIDEBAR_DND_ID_PREFIX,
 } from "./planDndUtils"; // ADJUST THIS PATH
+import { useSearchCourse } from "@/lib/graduate/useSearchApi";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -157,6 +158,11 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
     const [hovered, setHovered] = useState(false);
     const isValidRemove = isRemove && !isFromSidebar;
     const hasError = coReqErr !== undefined || preReqErr !== undefined;
+    //const [courseName, setCourseName] = useState("no course name found")
+    const result = useSearchCourse("202630", scheduleCourse.subject, parseInt(scheduleCourse.classId)).data;
+    const courseName = useMemo(() => result?.name ?? "no course name found", [result?.name]);
+
+
 
     return (
       <div
@@ -193,7 +199,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
             <span className="mr-1 font-bold">
               {courseToString(scheduleCourse)}
             </span>
-            <span>{scheduleCourse.name}</span>
+            <span>{courseName}</span>
           </p>
         </div>
 

@@ -27,8 +27,6 @@ export default function Page() {
     };
   }, [data]);
 
-  const effectiveMajorName = majorNames[0] ?? "NO EFFECTIVE MAJOR";
-
   if (error)
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
   if (!data) return <div className="p-4">Loading...</div>;
@@ -36,15 +34,14 @@ export default function Page() {
   const sidebar = (
     <Sidebar
       catalogYear={catalogYear}
-      majorName={effectiveMajorName}
+      majorName={null}
       selectedPlan={{ id: "-1", concentration: "NO SELECTED PLAN" }}
       courseData={true}
     />
   );
 
   return (
-    <main className="flex flex-1 flex-col overflow-hidden bg-neutral-100">
-      {/* Sidebar always rendered */}
+    <main className="flex h-screen flex-1 overflow-hidden bg-neutral-100">
       <aside className="h-full w-80 shrink-0 border-r border-neutral-200">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -59,7 +56,6 @@ export default function Page() {
         {sidebar}
       </aside>
 
-      {/* Main content */}
       {plan ? (
         <PlanDndWrapper
           plan={plan}
@@ -67,7 +63,7 @@ export default function Page() {
           onPlanUpdate={() => {}}
         />
       ) : (
-        <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
+        <div className="flex h-full flex-1 flex-col items-center justify-center gap-3 text-neutral-400">
           <p className="text-lg font-medium">No plan yet</p>
           <p className="text-sm">Create a plan to get started</p>
         </div>

@@ -79,20 +79,27 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
     );
   }
 
-  // LOADING GUARD
-  if (!currentMajor || !selectedPlan || isMajorLoading) {
+  // Error state
+  if (majorError) {
+    return <div className="flex h-full items-center justify-center">Error</div>;
+  }
+
+  // No major selected
+  if ((!useHook && !currentMajorProp) || !currentMajor) {
+    return <NoMajorSidebar selectedPlan={selectedPlan} />;
+  }
+
+  // Loading
+  if (isMajorLoading || (useHook && !majorFromHook && !majorErrorFromHook)) {
     return (
-      <SidebarContainer title="Loading...">
-        <div className="flex min-h-full w-full items-center justify-center p-8 text-center">
-          <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-300 border-t-blue-600" />
-            <span className="text-sm font-medium text-neutral-500">
-              Loading requirement data...
-            </span>
-          </div>
-        </div>
-      </SidebarContainer>
+      <div className="flex h-full items-center justify-center">
+        Loading requirement data...
+      </div>
     );
+  }
+
+  if (!selectedPlan) {
+    return <NoPlanSidebar />;
   }
 
   const subtitle =

@@ -189,7 +189,7 @@ export async function updateAuditPlan(
 
   /** Wipe Minor => Remove existing minor from the plan. */
   const isWipeMinorUpdate =
-    (!newMinors || newMinors.length === 0) &&
+    (newMinors === null || newMinors === undefined || newMinors.length === 0) &&
     currentAuditPlan.minors &&
     currentAuditPlan.minors.length > 0;
 
@@ -269,14 +269,18 @@ export async function updateAuditPlan(
 
   let name = currentAuditPlan.name;
   let schedule = currentAuditPlan.schedule;
-  let majors = isWipeMajorUpdate ? undefined : currentAuditPlan.majors;
-  let minors = isWipeMinorUpdate ? undefined : currentAuditPlan.minors;
-  let catalogYear = isWipeMajorUpdate
-    ? undefined
+  let majors: string[] | null | undefined = isWipeMajorUpdate
+    ? null
+    : currentAuditPlan.majors;
+  let catalogYear: number | null | undefined = isWipeMajorUpdate
+    ? null
     : currentAuditPlan.catalogYear;
-  let concentration = isWipeMajorUpdate
-    ? undefined
+  let concentration: string | null | undefined = isWipeMajorUpdate
+    ? null
     : currentAuditPlan.concentration;
+  let minors: string[] | null | undefined = isWipeMinorUpdate
+    ? null
+    : currentAuditPlan.minors;
 
   if (newSchedule) {
     schedule = newSchedule;

@@ -1,15 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FormField } from "./Modal";
-import {
-  Audit,
-  AuditCourse,
-  AuditYear,
-  SeasonEnum,
-  StatusEnum,
-  Template,
-} from "@/lib/graduate/types";
+import { useEffect, useMemo, useState } from "react";
+import { Audit } from "@/lib/graduate/types";
 import {
   useSupportedMajors,
   useSupportedMinors,
@@ -45,24 +37,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CircleQuestionMark } from "lucide-react";
+import {
+  createEmptySchedule,
+  createScheduleFromTemplate,
+  generateDefaultPlanTitle,
+} from "@/lib/graduate/auditPlanUtils";
+import { toast } from "sonner";
 
-interface NewPlanModalProps {
-  onClose: () => void;
-  setSelectedPlanId: (id: number | null) => void;
-}
-
-export default function NewPlanModal({
-  onClose,
-  setSelectedPlanId,
-}: NewPlanModalProps) {
-  const catalogYearOptions = [
-    { label: "2021", value: 2021 },
-    { label: "2022", value: 2022 },
-    { label: "2023", value: 2023 },
-    { label: "2024", value: 2024 },
-    { label: "2025", value: 2025 },
-  ];
-
+export default function NewPlanModal() {
+  const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
@@ -71,6 +54,14 @@ export default function NewPlanModal({
   //majors
   const { data: supportedMajorsData, error: majorsError } =
     useSupportedMajors();
+
+  const catalogYearOptions = useMemo(() => {
+    if (!supportedMajorsData) return [];
+    return Object.keys(supportedMajorsData.supportedMajors)
+      .map(Number)
+      .sort()
+      .map((year) => ({ label: String(year), value: year }));
+  }, [supportedMajorsData]);
   const isLoadingMajors = !supportedMajorsData && !majorsError;
   const [majorOptions, setMajorOptions] = useState<{ majorName: string }[]>([]);
   const [majors, setMajors] = useState<string[]>([]);
@@ -106,7 +97,7 @@ export default function NewPlanModal({
 
   //helper function - close modal
   const handleClose = () => {
-    onClose();
+    setIsOpen(false);
     setMessage("");
     setIsNoMajorSelected(false);
     setIsNoMinorSelected(false);
@@ -117,168 +108,14 @@ export default function NewPlanModal({
     setUseRecommendedTemplate(false);
   };
 
-  //helper function -  generate default plan title using formatted date and time
-  const generateDefaultPlanTitle = () => {
-    const now = new Date();
-    return `Plan ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-  };
-
-  //helper function - create empty schedule with 4 academic years and no classes
-  const createEmptySchedule = (): Audit<null> => {
-    const years: AuditYear<null>[] = [];
-
-    for (let year = 1; year <= 4; year++) {
-      years.push(createEmptyYear(year));
-    }
-
-    return {
-      years,
-    };
-  };
-
-  //helper function - create empty year w terms initialized
-  const createEmptyYear = (year: number): AuditYear<null> => {
-    return {
-      year,
-      fall: {
-        season: SeasonEnum.FL,
-        status: StatusEnum.CLASSES,
-        classes: [],
-        id: null,
-      },
-      spring: {
-        season: SeasonEnum.SP,
-        status: StatusEnum.CLASSES,
-        classes: [],
-        id: null,
-      },
-      summer1: {
-        season: SeasonEnum.S1,
-        status: StatusEnum.INACTIVE,
-        classes: [],
-        id: null,
-      },
-      summer2: {
-        season: SeasonEnum.S2,
-        status: StatusEnum.INACTIVE,
-        classes: [],
-        id: null,
-      },
-      isSummerFull: false,
-    };
-  };
-
-  const createScheduleFromTemplate = (template: Template): Audit<null> => {
-    const schedule = createEmptySchedule();
-
-    try {
-      // Check if we have the template data
-      if (!template.templateData || !template.name) {
-        console.error("Missing template data or name");
-        return schedule;
-      }
-
-      // Get the plan data from the template
-      const planData = template.templateData[template.name];
-      if (!planData) {
-        console.error("No plan data found in template");
-        return schedule;
-      }
-
-      // Process each year in the template
-      Object.keys(planData).forEach((yearKey) => {
-        // Extract the year number from the year key (e.g., "Year 1" -> 1)
-        const yearMatch = yearKey.match(/Year (\d+)/i);
-        if (!yearMatch) return;
-
-        const yearNum = parseInt(yearMatch[1], 10);
-        if (isNaN(yearNum) || yearNum < 1 || yearNum > schedule.years.length)
-          return;
-
-        // Get the year object from the schedule (0-indexed)
-        const yearObj = schedule.years[yearNum - 1];
-
-        // Set all terms to inactive by default
-        yearObj.fall.status = StatusEnum.INACTIVE;
-        yearObj.spring.status = StatusEnum.INACTIVE;
-        yearObj.summer1.status = StatusEnum.INACTIVE;
-        yearObj.summer2.status = StatusEnum.INACTIVE;
-
-        const yearData = planData[yearKey];
-
-        // Process each term in the year
-        Object.keys(yearData).forEach((termKey) => {
-          const courses = yearData[termKey];
-          if (!Array.isArray(courses)) return;
-
-          // Map the term key to the schedule term
-          let termObj: {
-            status: StatusEnum;
-            classes: AuditCourse<null>[];
-          };
-
-          switch (termKey.toLowerCase()) {
-            case "fall":
-              termObj = yearObj.fall;
-              break;
-            case "spring":
-              termObj = yearObj.spring;
-              break;
-            case "summer 1":
-              termObj = yearObj.summer1;
-              break;
-            case "summer 2":
-              termObj = yearObj.summer2;
-              break;
-            default:
-              return; // Skip unknown terms
-          }
-
-          // If there are courses, set status to CLASSES
-          if (courses.length > 0) {
-            termObj.status = StatusEnum.CLASSES;
-            termObj.classes = []; // Clear any existing classes
-
-            // Process each course
-            courses.forEach((courseStr) => {
-              // Parse course string format
-              const courseParts = courseStr.match(/([A-Z]+)\s+(\d+[A-Z]*)(.*)/);
-              if (!courseParts) {
-                console.warn("Couldn't parse course:", courseStr);
-                return;
-              }
-
-              const subject = courseParts[1];
-              const classId = courseParts[2];
-
-              // Create a course object
-              const course: AuditCourse<null> = {
-                name: courseStr,
-                subject,
-                classId,
-                numCreditsMin: 4, // Default credits
-                numCreditsMax: 4,
-                id: null,
-              };
-
-              // Log the final course object for validation
-              console.log(
-                `Added course: ${course.subject} ${course.classId}, credits: ${course.numCreditsMin}-${course.numCreditsMax} to year ${yearNum}`,
-              );
-
-              // Add course to the term
-              termObj.classes.push(course);
-            });
-          }
-        });
-      });
-
-      console.log("Final schedule:", schedule);
-      return schedule;
-    } catch (error) {
-      console.error("Error creating schedule from template:", error);
-      return createEmptySchedule();
-    }
+  const handleNoMajor = () => {
+    setMessage("");
+    setIsNoMajorSelected(true);
+    setIsNoMinorSelected(true);
+    setMajors([]);
+    setMinors([]);
+    setConcentration("");
+    setUseRecommendedTemplate(false);
   };
 
   //change supported majors based on catalog year
@@ -385,10 +222,12 @@ export default function NewPlanModal({
       }
       if (useRecommendedTemplate && template && majors[0]) {
         try {
-          console.log("creating schedule from template");
           schedule = createScheduleFromTemplate(template);
         } catch (error) {
           console.error("error creating schedule from template:", error);
+          toast(
+            "Failed to create schedule with template, creating empty plan.",
+          );
           schedule = createEmptySchedule();
         }
       } else {
@@ -406,8 +245,6 @@ export default function NewPlanModal({
           : concentration || undefined,
       };
 
-      console.log("Creating plan:", newPlan);
-
       const response = await fetch("/api/audit/plan", {
         method: "POST",
         headers: {
@@ -419,16 +256,20 @@ export default function NewPlanModal({
 
       if (!response.ok) {
         const errorData = await response.json();
+        toast(
+          `Invalid response from server: ${errorData.error || "No error data received"}`,
+        );
         throw new Error(errorData.error || "Failed to create plan");
       }
 
       const createdPlan = await response.json();
 
-      setSelectedPlanId(createdPlan.id);
-
+      //setSelectedPlanId(createdPlan.id);
+      toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
+      //DENNIS TODO: redirect!!!!!!!!!
       handleClose();
-      console.log("Plan created successfully:", createdPlan);
     } catch (error) {
+      toast(`Plan creation failed, ${error}`);
       console.error("Error creating plan:", error);
     } finally {
       setIsSubmitting(false);
@@ -438,212 +279,126 @@ export default function NewPlanModal({
 
   return (
     <>
-      <Dialog open={true}>
-        <DialogTrigger asChild>
-          <button className="hidden" />
-        </DialogTrigger>
-        <DialogContent
-          className="max-w-2xl"
-          aria-label="New Plan Modal content"
-        >
-          <DialogHeader>
-            <DialogTitle className="flex justify-center">New Plan</DialogTitle>
-          </DialogHeader>
-          {/* outer div */}
-          <div className="flex h-full w-full flex-col justify-between gap-4">
-            {/* title */}
-            <div className="">
-              <FormField label="TITLE">
+      <Button
+        className="bg-accent hover:bg-accent/80 w-full"
+        onClick={() => setIsOpen(true)}
+      >
+        open sesame{" "}
+      </Button>
+      {isOpen && (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <button className="hidden" />
+          </DialogTrigger>
+          <DialogContent
+            className="max-w-2xl"
+            aria-label="New Plan Modal content"
+          >
+            <DialogHeader>
+              <DialogTitle className="flex justify-center">
+                New Plan
+              </DialogTitle>
+            </DialogHeader>
+            {/* outer div */}
+            <div className="flex h-full w-full flex-col justify-between gap-4">
+              {/* title */}
+              <div>
+                <Label htmlFor="title" className="text-neu6 text-xs font-bold">
+                  TITLE
+                </Label>
                 <Input
                   placeholder={generateDefaultPlanTitle()}
                   value={message}
+                  id="title"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setMessage(e.target.value)
                   }
                 />
-              </FormField>
-            </div>
-
-            {/* catalog year */}
-            {!isNoMajorSelected && (
-              <div className="">
-                <Label
-                  htmlFor="catalog-year-select"
-                  className="text-neu6 text-xs font-bold"
-                >
-                  CATALOG YEAR
-                </Label>
-                <Select
-                  value={catalogYear.toString()}
-                  onValueChange={(newYear) => setCatalogYear(Number(newYear))}
-                >
-                  <SelectTrigger className="border-neu3 w-full rounded-4xl border bg-transparent">
-                    <SelectValue placeholder="Select catalog year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {catalogYearOptions.map((t) => (
-                      <SelectItem key={t.label} value={String(t.value)}>
-                        {t.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
-            )}
 
-            {/* majors */}
-            {!isNoMajorSelected && (
-              <div className="">
-                <Label className="text-neu6 text-xs font-bold">MAJOR(S)</Label>
-                <MultiSelect
-                  values={majors}
-                  onValuesChange={setMajors}
-                  disabled={catalogYear == -1}
-                >
-                  <MultiSelectTrigger className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed">
-                    <MultiSelectValue
-                      placeholder={
-                        isLoadingMajors ? "Loading majors..." : "Select a major"
-                      }
-                      displayTagsUnderneath={true}
-                    />
-                  </MultiSelectTrigger>
-                  <MultiSelectContent>
-                    {majorOptions
-                      .sort((a, b) => a.majorName.length - b.majorName.length)
-                      .map((major) => (
-                        <MultiSelectItem
-                          key={major.majorName}
-                          value={major.majorName}
-                        >
-                          {major.majorName}
-                        </MultiSelectItem>
-                      ))}
-                  </MultiSelectContent>
-                </MultiSelect>
-
-                {/* selected major tags */}
-                {majors.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-3">
-                    {majors.map((major) => (
-                      <div
-                        key={major}
-                        className="bg-neu2 text-neu6 flex items-center gap-1 rounded-full px-3 py-1 text-sm"
-                      >
-                        <span>{major}</span>
-                        <button
-                          onClick={() =>
-                            setMajors(majors.filter((m) => m !== major))
-                          }
-                          className="ml-1 cursor-pointer hover:opacity-70"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/*  major checkbox */}
-            <div className="display: inline-flex gap-2">
-              <input
-                type="checkbox"
-                checked={isNoMajorSelected}
-                onChange={() => setIsNoMajorSelected(!isNoMajorSelected)}
-                className="border-input h-4 w-4 rounded accent-red-500"
-              />
-              <Label className="text-neu6 text-sm">{`Can't find my major?`}</Label>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2">
-                    <CircleQuestionMark size="18" color="#858585" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{noMajorHelperLabel}</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            {/* Concentration */}
-            {concentrationOptions.length > 0 && !isNoMajorSelected && (
-              <div className="">
-                <Label
-                  htmlFor="catalog-year-select"
-                  className="text-neu6 mb-2 text-xs font-bold"
-                >
-                  CONCENTRATION
-                </Label>
-                <Select value={concentration} onValueChange={setConcentration}>
-                  <SelectTrigger className="border-neu3 w-full rounded-4xl border bg-transparent">
-                    <SelectValue
-                      placeholder={
-                        isLoadingConcentration
-                          ? "Concentrations loadin..."
-                          : "Select a Concentration"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {concentrationOptions
-                      .sort((a, b) => a.label.length - b.label.length)
-                      .map((t) => (
-                        <SelectItem key={t.label} value={t.value}>
+              {/* catalog year */}
+              {
+                <div className="">
+                  <Label
+                    htmlFor="year-select"
+                    className="text-neu6 text-xs font-bold"
+                  >
+                    CATALOG YEAR
+                  </Label>
+                  <Select
+                    value={catalogYear.toString()}
+                    onValueChange={(newYear) => setCatalogYear(Number(newYear))}
+                  >
+                    <SelectTrigger
+                      className="border-neu3 w-full rounded-4xl border bg-transparent"
+                      id="year-select"
+                    >
+                      <SelectValue placeholder="Select catalog year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {catalogYearOptions.map((t) => (
+                        <SelectItem key={t.label} value={String(t.value)}>
                           {t.label}
                         </SelectItem>
                       ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+                    </SelectContent>
+                  </Select>
+                </div>
+              }
 
-            {/* minors */}
-            {!isNoMajorSelected && (
-              <div className="">
-                <Label className="text-neu6 text-xs font-bold">MINOR(S)</Label>
-                <MultiSelect
-                  values={minors}
-                  onValuesChange={setMinors}
-                  disabled={catalogYear == -1}
-                >
-                  <MultiSelectTrigger className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed">
-                    <MultiSelectValue
-                      placeholder={
-                        isLoadingMinors ? "Loading minors..." : "Select a minor"
-                      }
-                      displayTagsUnderneath={true}
-                    />
-                  </MultiSelectTrigger>
-                  <MultiSelectContent>
-                    {minorOptions
-                      .sort((a, b) => a.minorName.length - b.minorName.length)
-                      .map((minor) => (
-                        <MultiSelectItem
-                          key={minor.minorName}
-                          value={minor.minorName}
-                        >
-                          {minor.minorName}
-                        </MultiSelectItem>
-                      ))}
-                  </MultiSelectContent>
-                </MultiSelect>
+              {/* majors */}
+              {!isNoMajorSelected && (
+                <div>
+                  <Label
+                    className="text-neu6 text-xs font-bold"
+                    htmlFor="majors-select"
+                  >
+                    MAJOR(S)
+                  </Label>
+                  <MultiSelect
+                    values={majors}
+                    onValuesChange={setMajors}
+                    disabled={catalogYear == -1}
+                  >
+                    <MultiSelectTrigger
+                      className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed"
+                      id="majors-select"
+                    >
+                      <MultiSelectValue
+                        placeholder={
+                          isLoadingMajors
+                            ? "Loading majors..."
+                            : "Select a major"
+                        }
+                        displayTagsUnderneath={true}
+                      />
+                    </MultiSelectTrigger>
+                    <MultiSelectContent>
+                      {majorOptions
+                        .sort((a, b) => a.majorName.length - b.majorName.length)
+                        .map((major) => (
+                          <MultiSelectItem
+                            key={major.majorName}
+                            value={major.majorName}
+                          >
+                            {major.majorName}
+                          </MultiSelectItem>
+                        ))}
+                    </MultiSelectContent>
+                  </MultiSelect>
 
-                {/* selected minor tags */}
-                {minors.length > 0 &&
-                  !isNoMajorSelected &&
-                  majors.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {minors.map((minor) => (
+                  {/* selected major tags */}
+                  {majors.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-3">
+                      {majors.map((major) => (
                         <div
-                          key={minor}
+                          key={major}
                           className="bg-neu2 text-neu6 flex items-center gap-1 rounded-full px-3 py-1 text-sm"
                         >
-                          <span>{minor.split(",")[0].trim()}</span>
+                          <span>{major}</span>
                           <button
                             onClick={() =>
-                              setMinors(minors.filter((m) => m !== minor))
+                              setMajors(majors.filter((m) => m !== major))
                             }
                             className="ml-1 cursor-pointer hover:opacity-70"
                           >
@@ -653,58 +408,205 @@ export default function NewPlanModal({
                       ))}
                     </div>
                   )}
-              </div>
-            )}
-
-            {/* modal footer */}
-            <div className="flex w-full flex-col justify-center gap-4 border-t border-gray-200 p-4">
-              {hasTemplate && (
-                <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
-                  <div className="display: mb-2 inline-flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={useRecommendedTemplate}
-                      onChange={() =>
-                        setUseRecommendedTemplate(!useRecommendedTemplate)
-                      }
-                      className="border-input h-4 w-4 rounded accent-red-500"
-                      disabled={
-                        majors.length === 0 && !catalogYear && isNoMajorSelected
-                      }
-                    />
-                    <Label className="text-neu6 font-bold">
-                      Use recommended template
-                    </Label>
-                  </div>
-
-                  <p className="text-neu6 text-sm">
-                    {recommendedTemplateLabel}
-                  </p>
                 </div>
               )}
-              <div className="mt-2 flex justify-center gap-4">
-                <Button
-                  className=""
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleClose}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className=""
-                  variant="default"
-                  size="sm"
-                  onClick={handleCreatePlan}
-                  disabled={isSubmitting}
-                >
-                  Create Plan
-                </Button>
+
+              {/*  major checkbox */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={isNoMajorSelected}
+                  onChange={
+                    isNoMajorSelected
+                      ? () => setIsNoMajorSelected(!isNoMajorSelected)
+                      : handleNoMajor
+                  }
+                  className="border-input h-3 w-3 scale-150 rounded accent-red-500"
+                  id="no-major-check"
+                />
+                <Label
+                  className="text-neu6 text-sm font-bold"
+                  htmlFor="no-major-check"
+                >{`Can't find my major?`}</Label>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2">
+                      <CircleQuestionMark size="18" color="#858585" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{noMajorHelperLabel}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              {/* Concentration */}
+              {concentrationOptions.length > 0 && !isNoMajorSelected && (
+                <div className="">
+                  <Label
+                    htmlFor="concentration-select"
+                    className="text-neu6 mb-2 text-xs font-bold"
+                  >
+                    CONCENTRATION
+                  </Label>
+                  <Select
+                    value={concentration}
+                    onValueChange={setConcentration}
+                  >
+                    <SelectTrigger
+                      className="border-neu3 w-full rounded-4xl border bg-transparent"
+                      id="concentration-select"
+                    >
+                      <SelectValue
+                        placeholder={
+                          isLoadingConcentration
+                            ? "Concentrations loadin..."
+                            : "Select a Concentration"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {concentrationOptions
+                        .sort((a, b) => a.label.length - b.label.length)
+                        .map((t) => (
+                          <SelectItem key={t.label} value={t.value}>
+                            {t.label}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* minors */}
+              {!isNoMajorSelected && majors.length > 0 && (
+                <div>
+                  <Label
+                    htmlFor="minor-select"
+                    className="text-neu6 text-xs font-bold"
+                  >
+                    MINOR(S)
+                  </Label>
+                  <MultiSelect
+                    values={minors}
+                    onValuesChange={setMinors}
+                    disabled={catalogYear == -1}
+                  >
+                    <MultiSelectTrigger
+                      className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed"
+                      id="minor-select"
+                    >
+                      <MultiSelectValue
+                        placeholder={
+                          isLoadingMinors
+                            ? "Loading minors..."
+                            : "Select a minor"
+                        }
+                        displayTagsUnderneath={true}
+                      />
+                    </MultiSelectTrigger>
+                    <MultiSelectContent>
+                      {minorOptions
+                        .sort((a, b) => a.minorName.length - b.minorName.length)
+                        .map((minor) => (
+                          <MultiSelectItem
+                            key={minor.minorName}
+                            value={minor.minorName}
+                          >
+                            {minor.minorName}
+                          </MultiSelectItem>
+                        ))}
+                    </MultiSelectContent>
+                  </MultiSelect>
+
+                  {/* selected minor tags */}
+                  {minors.length > 0 &&
+                    !isNoMajorSelected &&
+                    majors.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {minors.map((minor) => (
+                          <div
+                            key={minor}
+                            className="bg-neu2 text-neu6 flex items-center gap-1 rounded-full px-3 py-1 text-sm"
+                          >
+                            <span>{minor.split(",")[0].trim()}</span>
+                            <button
+                              onClick={() =>
+                                setMinors(minors.filter((m) => m !== minor))
+                              }
+                              className="ml-1 cursor-pointer hover:opacity-70"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              )}
+
+              {/* modal footer */}
+              <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
+                {hasTemplate && !isNoMajorSelected && majors.length > 0 && (
+                  <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
+                    <div className="display: mb-2 inline-flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={useRecommendedTemplate}
+                        id="use-template"
+                        onChange={() =>
+                          setUseRecommendedTemplate(!useRecommendedTemplate)
+                        }
+                        className="h-3 w-3 scale-150 rounded accent-red-500"
+                        disabled={
+                          majors.length === 0 &&
+                          !catalogYear &&
+                          isNoMajorSelected
+                        }
+                      />
+                      <Label
+                        className="text-neu7 font-bold"
+                        htmlFor="use-template"
+                      >
+                        Use recommended template
+                      </Label>
+                    </div>
+
+                    <p className="text-neu6 ml-5 text-sm">
+                      {recommendedTemplateLabel}
+                    </p>
+                  </div>
+                )}
+                <div className="mt-2 flex justify-center gap-4">
+                  <Button
+                    className=""
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleClose}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className=""
+                    variant="default"
+                    size="sm"
+                    onClick={handleCreatePlan}
+                    disabled={
+                      isSubmitting ||
+                      (!isNoMajorSelected && majors.length == 0) ||
+                      catalogYear <= 2000 ||
+                      (concentrationOptions.length > 0 &&
+                        concentration.length == 0)
+                    }
+                  >
+                    Create Plan
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }

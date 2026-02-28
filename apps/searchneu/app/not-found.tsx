@@ -63,7 +63,7 @@ export default function NotFound() {
           </div>
         </Link>
         <Link
-          href="/"
+          href="/notifications"
           className="group hover:border-r1 relative h-[178px] min-w-72 flex-1 overflow-clip rounded-[12px] border border-transparent"
         >
           <Image

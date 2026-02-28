@@ -9,7 +9,7 @@ import { deleteAllTrackersAction } from "@/lib/auth/tracking-actions";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-type Notification = {
+export type Notification = {
   id: number;
   crn: string;
   courseName: string;

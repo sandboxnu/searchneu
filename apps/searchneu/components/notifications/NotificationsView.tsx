@@ -41,6 +41,7 @@ export function NotificationsView({
     );
   };
 
+  // TODO: When no courses present
   if (courses.length === 0) {
     return (
       <div className="flex h-full items-center justify-center">

@@ -3,11 +3,16 @@
 import { TrackerCourse } from "@/app/notifications/page";
 import {
   NotificationsSidebar,
-  NotificationsSidebarProps,
+  Notification,
+  NotificationTerm,
 } from "./NotificationsSidebar";
 import { NotificationsView } from "./NotificationsView";
 
-export type NotificationsProps = NotificationsSidebarProps & {
+export type NotificationsProps = {
+  subscribedCount: number;
+  totalLimit: number;
+  terms: NotificationTerm[];
+  notifications: Notification[];
   courses: TrackerCourse[];
 };
 

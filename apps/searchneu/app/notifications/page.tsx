@@ -48,8 +48,9 @@ export type TrackerCourse = {
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
-    redirect("/");
+    redirect("/"); // TODO: update design when not signed in
   }
+
   const currentUser = await db.query.user.findFirst({
     where: eq(user.id, session.user.id),
   });
@@ -102,6 +103,7 @@ export default async function Page() {
     .innerJoin(termsT, eq(sectionsT.term, termsT.term))
     .where(inArray(sectionsT.id, trackedSectionIds));
 
+  // Group all sections by course
   const courseMap = new Map<number, TrackerCourse>();
 
   for (const section of sections) {
@@ -118,23 +120,53 @@ export default async function Page() {
     courseMap.get(section.courseId)!.sections.push(section);
   }
 
+  // Get unsubscribed sections available per course
+  const trackedCourseIds = [...new Set(sections.map((s) => s.courseId))];
+
+  const allSectionsForTrackedCourses =
+    trackedCourseIds.length > 0
+      ? await db.query.sectionsT.findMany({
+          where: inArray(sectionsT.courseId, trackedCourseIds),
+          columns: {
+            id: true,
+            courseId: true,
+            seatRemaining: true,
+          },
+        })
+      : [];
+
+  const subscribedByCourse = new Map<number, Set<number>>();
+  for (const s of sections) {
+    if (!subscribedByCourse.has(s.courseId))
+      subscribedByCourse.set(s.courseId, new Set());
+    subscribedByCourse.get(s.courseId)!.add(s.id);
+  }
+
+  const unsubCountsByCourse = new Map<
+    number,
+    { unsub: number; unsubSeats: number }
+  >();
+  for (const section of allSectionsForTrackedCourses) {
+    const subscribed =
+      subscribedByCourse.get(section.courseId)?.has(section.id) ?? false;
+    if (subscribed) continue;
+
+    const currCourse = unsubCountsByCourse.get(section.courseId) ?? {
+      unsub: 0,
+      unsubSeats: 0,
+    };
+    currCourse.unsub += 1;
+    if (section.seatRemaining > 0) currCourse.unsubSeats += 1;
+    unsubCountsByCourse.set(section.courseId, currCourse);
+  }
+
   for (const course of courseMap.values()) {
-    const allSections = await db.query.sectionsT.findMany({
-      where: eq(sectionsT.courseId, course.courseId),
-    });
-
-    const subscribedSectionIds = new Set(course.sections.map((s) => s.id));
-
-    const allUnsubscribedSections = allSections.filter(
-      (section) => !subscribedSectionIds.has(section.id),
-    );
-
-    const unsubscribedSectionsWithSeats = allUnsubscribedSections.filter(
-      (section) => section.seatRemaining > 0,
-    );
-
-    course.unsubscribedCount = allUnsubscribedSections.length;
-    course.unsubscribedWithSeatsCount = unsubscribedSectionsWithSeats.length;
+    const c = unsubCountsByCourse.get(course.courseId) ?? {
+      unsub: 0,
+      unsubSeats: 0,
+    };
+    course.unsubscribedCount = c.unsub;
+    course.unsubscribedWithSeatsCount = c.unsubSeats;
   }
 
   const courses = Array.from(courseMap.values());

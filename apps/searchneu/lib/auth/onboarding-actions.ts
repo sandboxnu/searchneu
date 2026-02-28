@@ -2,9 +2,9 @@
 
 import { db, user as usersT } from "@/lib/db";
 import { eq } from "drizzle-orm";
-import { twilio } from "../twilio";
+import { twilio } from "../trackers/twilio";
 import { logger } from "../logger";
-import { auth } from "../auth";
+import { auth } from "./auth";
 import { headers } from "next/headers";
 
 export async function grantConsentAction() {

@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 import { GoogleLogo } from "./icons/Google";
 import Link from "next/link";
 import { Magoskie } from "./icons/Magoskie";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function SignIn({ closeFn }: { closeFn: () => void }) {
   const [isPending, setIsPending] = useState(false);

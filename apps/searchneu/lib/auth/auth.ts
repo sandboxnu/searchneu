@@ -2,7 +2,7 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { oAuthProxy } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "./db";
+import { db } from "../db";
 import { schema } from "@sneu/db/neon";
 import { nextCookies } from "better-auth/next-js";
 

@@ -4,7 +4,6 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { VercelToolbar } from "@vercel/toolbar/next";
-import Script from "next/script";
 import { ClientLayout } from "@/components/ClientLayout";
 
 const geistMono = Geist_Mono({
@@ -34,14 +33,11 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {process.env.NODE_ENV === "development" && <VercelToolbar />}
-        {/* eslint-disable-next-line turbo/no-undeclared-env-vars */}
-        {process.env.REACT_SCAN && (
-          <Script
-            src="//unpkg.com/react-scan/dist/auto.global.js"
-            crossOrigin="anonymous"
-            strategy="beforeInteractive"
-          />
-        )}
+        {/* <Script */}
+        {/*   src="//unpkg.com/react-scan/dist/auto.global.js" */}
+        {/*   crossOrigin="anonymous" */}
+        {/*   strategy="beforeInteractive" */}
+        {/* /> */}
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

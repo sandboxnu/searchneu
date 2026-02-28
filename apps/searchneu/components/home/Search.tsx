@@ -1,4 +1,4 @@
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { Suspense } from "react";
 import { HomeSearchInterface } from "./HomeSearchInterface";
 

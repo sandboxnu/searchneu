@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { db, trackersT } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
-import { auth } from "../auth";
+import { auth } from "../auth/auth";
 
 export async function createTrackerAction(id: number) {
   const session = await auth.api.getSession({

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { City } from "@/components/icons/city";
 import { OnboardingFlow } from "@/components/auth/OnboardingFlow";
 import type { Metadata } from "next";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 
 export function generateMetadata(): Metadata {
   return {

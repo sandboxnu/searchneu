@@ -2,22 +2,18 @@
 
 import { ResultCard } from "./ResultCard";
 import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, use, useDeferredValue, useRef } from "react";
+import { Suspense, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
 import Link from "next/link";
+import useSWR from "swr";
+import type { SearchResult } from "@/lib/catalog/types";
 
-interface searchResult {
-  name: string;
-  courseNumber: string;
-  subject: string;
-  minCredits: string;
-  maxCredits: string;
-  sectionsWithSeats: number;
-  totalSections: number;
-  nupaths: string[];
-}
+// NOTE: in general prefer named exports. however, since the `SearchResults` component
+// needs to be imported dynamically to avoid SSR, it has to be default exported
 
+/**
+ */
 export default function SearchResults() {
   const params = useSearchParams();
   const { term, course } = useParams();
@@ -42,40 +38,21 @@ export default function SearchResults() {
   );
 }
 
-// this acts as a single value cache for the data fetcher - the fetch promise has to be stored outside
-// the react tree since otherwise they would be recreated on every rerender
-let cacheKey = "!";
-let cachePromise: Promise<unknown> = new Promise((r) => r([]));
-
-function fetcher<T>(key: string, p: () => string) {
-  if (!Object.is(cacheKey, key)) {
-    cacheKey = key;
-    // if window is undefined, then we are ssr and thus cannot do a relative fetch
-    if (typeof window !== "undefined") {
-      // PERF: next caching on the fetch
-      cachePromise = fetch(p()).then((r) => r.json());
-    }
-  }
-
-  return cachePromise as Promise<T>;
-}
-
-// this is explicitly memoized b/c the parent component
-// rerenders too frequently with the searchParams and the
-// memo shields the extra fetch requests
 function ResultsList(props: { params: string; term: string; course: string }) {
   "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
 
-  const results = use(
-    fetcher<searchResult[] | { error: string }>(
-      props.params + props.term,
-      () => {
-        const searchP = new URLSearchParams(props.params);
-        searchP.set("term", props.term);
-        return `/api/search?${searchP.toString()}`;
-      },
-    ),
+  const searchP = new URLSearchParams(props.params);
+  searchP.set("term", props.term);
+
+  const { data: results } = useSWR<SearchResult[]>(
+    `/api/catalog/search?${searchP.toString()}`,
+    (u: string) => fetch(u).then((r) => r.json()),
+    { suspense: true },
   );
+
+  if (!results) {
+    throw Error("failed searching");
+  }
 
   const parentRef = useRef(null);
 
@@ -83,89 +60,61 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   const virtual = useVirtualizer({
     count: Array.isArray(results) ? results.length : 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 106.5,
+    estimateSize: () => 103,
     scrollPaddingStart: 0,
-    overscan: 5,
+    overscan: 0,
   });
 
   const items = virtual.getVirtualItems();
 
-  if (!Array.isArray(results)) {
-    if (results.error === "insufficient query length") {
-      return (
-        <>
-          <p className="text-neu6 w-full py-1 text-center text-sm">
-            Type more to search
-          </p>
-          <div
-            ref={parentRef}
-            className="h-full w-full overflow-y-auto pt-2 md:pr-3"
-          ></div>
-        </>
-      );
-    }
-
-    throw new Error("");
-  }
-
   if (results.length === 0) {
     return (
-      <>
-        <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
-        <div
-          ref={parentRef}
-          className="h-full w-full overflow-y-auto pt-2 md:pr-3"
-        ></div>
-      </>
+      <p className="text-neu6 w-full py-1 text-center text-sm">No Results</p>
     );
   }
 
   return (
-    <>
-      {/* <p className="text-neu6 w-full py-1 text-center text-sm"> */}
-      {/*   {results.length} Result{results.length > 1 && "s"} */}
-      {/* </p> */}
-      <div ref={parentRef} className="h-full w-full overflow-y-auto md:pr-3">
-        <div className={`relative`} style={{ height: virtual.getTotalSize() }}>
-          <ul
-            className="absolute top-0 left-0 w-full"
+    <div ref={parentRef} className="h-full w-full overflow-y-auto md:pr-3">
+      <ul
+        className="relative w-full"
+        style={{ height: `${virtual.getTotalSize()}px` }}
+      >
+        {items.map((v) => (
+          <li
+            key={v.index}
+            data-index={v.index}
+            ref={virtual.measureElement}
+            className="absolute top-0 left-0 mb-2 w-full"
             style={{
-              transform: `translateY(${items[0]?.start ?? 0 - virtual.options.scrollMargin - 16}px)`,
+              transform: `translateY(${v.start}px)`,
+              height: `${v.size}px`,
             }}
           >
-            {items.map((v) => (
-              <li
-                className={`mb-1`}
-                key={v.index}
-                data-index={v.index}
-                ref={virtual.measureElement}
-              >
-                <Link
-                  href={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
-                  data-active={
-                    decodeURIComponent(props.course) ===
-                    results[v.index].subject +
-                      " " +
-                      results[v.index].courseNumber
-                  }
-                  className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
-                >
-                  <ResultCard result={results[v.index]} />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </>
+            <Link
+              href={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+              data-active={
+                decodeURIComponent(props.course) ===
+                results[v.index].subject + " " + results[v.index].courseNumber
+              }
+              className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
+            >
+              <ResultCard result={results[v.index]} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
 function ResultsListSkeleton() {
   return (
-    <ul className="h-[calc(100vh-128px)] space-y-1 overflow-y-clip p-2">
+    <ul className="h-full space-y-2 overflow-y-clip md:pr-3">
       {Array.from({ length: 10 }).map((_, i) => (
-        <li key={i} className="bg-neu3 h-20 w-full animate-pulse rounded"></li>
+        <li
+          key={i}
+          className="bg-neu3 h-[95px] w-full animate-pulse rounded-lg"
+        />
       ))}
     </ul>
   );

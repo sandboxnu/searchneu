@@ -1,6 +1,6 @@
 import { TermSelect } from "@/components/rooms/TermSelect";
 import { db, buildingsT, roomsT } from "@/lib/db";
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";

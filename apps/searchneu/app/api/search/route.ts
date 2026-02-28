@@ -1,4 +1,4 @@
-import { getSearch } from "@/lib/controllers/getSearch";
+import { searchCourses } from "@/lib/dal/search";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -49,17 +49,17 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const searchResults = await getSearch(
+  const searchResults = await searchCourses({
     term,
-    query ?? "",
+    query: query ?? "",
     subjects,
-    parsedMinId,
-    parsedMaxId,
+    minCourseLevel: parsedMinId,
+    maxCourseLevel: parsedMaxId,
     nupaths,
-    campusFilter,
-    classTypeFilter,
-    Boolean(honorsFilter),
-  );
+    campuses: campusFilter,
+    classTypes: classTypeFilter,
+    honors: Boolean(honorsFilter),
+  });
 
   return Response.json(searchResults);
 }

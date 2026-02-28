@@ -1,5 +1,7 @@
-import { db, termsT, trackersT } from "@/lib/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { getTerm } from "@/lib/dal/terms";
+import { getCourseByRegister } from "@/lib/dal/courses";
+import { getSectionsByCourseId } from "@/lib/dal/sections";
+import { getTrackedSectionIds } from "@/lib/dal/trackers";
 import { ExpandableDescription } from "@/components/catalog/ExpandableDescription";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Globe, GlobeLock } from "lucide-react";
@@ -14,11 +16,10 @@ import {
 } from "@/components/catalog/SectionTable";
 import { type Metadata } from "next";
 import { RequisiteBlock } from "@/components/catalog/Requisites";
-import { getCourse, getCourseSections } from "@/lib/controllers/getCourse";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-const cachedCourse = unstable_cache(getCourse, ["banner.course"], {
+const cachedCourse = unstable_cache(getCourseByRegister, ["banner.course"], {
   revalidate: 3600,
   tags: ["banner.course"],
 });
@@ -29,14 +30,7 @@ async function getTrackedSections() {
   });
   if (!session) return [];
 
-  const trackedSections = await db.query.trackersT.findMany({
-    where: and(
-      eq(trackersT.userId, session.user.id),
-      isNull(trackersT.deletedAt),
-    ),
-  });
-
-  return trackedSections.map((t) => t.sectionId);
+  return getTrackedSectionIds(session.user.id);
 }
 
 export async function generateMetadata(props: {
@@ -55,26 +49,22 @@ export default async function Page(props: {
   const subject = courseName.split(" ")[0];
   const courseNumber = courseName.split(" ")[1];
 
-  const term = await db.query.termsT.findFirst({
-    where: eq(termsT.term, termId),
-  });
+  const term = await getTerm(termId);
 
   if (!term) {
-    return <p>term {term} not found</p>;
+    return <p>term {termId} not found</p>;
   }
 
   const now = new Date();
   const isTermActive = term.activeUntil > now;
 
-  const courseResp = await cachedCourse(termId, subject, courseNumber);
+  const course = await cachedCourse(termId, subject, courseNumber);
 
-  if (!courseResp || courseResp.length === 0) {
+  if (!course) {
     notFound();
   }
 
-  const course = courseResp[0];
-
-  const sections = getCourseSections(course.id);
+  const sections = getSectionsByCourseId(course.id);
   const trackedSections = getTrackedSections();
 
   return (

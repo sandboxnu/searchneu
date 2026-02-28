@@ -1,4 +1,4 @@
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { redirect } from "next/navigation";
 
 export default async function Page() {

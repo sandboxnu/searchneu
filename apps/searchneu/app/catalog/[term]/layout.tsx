@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { MobileWrapper } from "@/components/catalog/MobileWrapper";
 import { db, sectionsT, nupathsT, campusesT } from "@/lib/db";
 import { eq } from "drizzle-orm";

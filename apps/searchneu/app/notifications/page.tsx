@@ -1,5 +1,4 @@
 import { SectionTableMeetingTime } from "@/components/catalog/SectionTable";
-import { NotificationsWrapper } from "@/components/notifications/NotificationsWrapper";
 import {
   db,
   trackersT,
@@ -7,7 +6,6 @@ import {
   sectionsT,
   subjectsT,
   termsT,
-  user,
 } from "@/lib/db";
 import { notificationsT } from "@sneu/db/schema";
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
@@ -15,6 +13,15 @@ import { getSectionInfo } from "@/lib/controllers/getTrackers";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  NotificationCountCard,
+  NotificationTermCard,
+  NotificationTermCardSkeleton,
+  PreviousNotificationsCard,
+  PreviousNotificationsCardSkeleton,
+} from "@/components/notifications/NotificationsSidebar";
+import { NotificationsView } from "@/components/notifications/NotificationsView";
+import { Suspense } from "react";
 
 export interface TrackerSection {
   id: number;
@@ -46,14 +53,12 @@ export type TrackerCourse = {
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   if (!session) {
     redirect("/"); // TODO: update design when not signed in
   }
-
-  const currentUser = await db.query.user.findFirst({
-    where: eq(user.id, session.user.id),
-  });
 
   const trackers = await db.query.trackersT.findMany({
     where: and(
@@ -62,24 +67,24 @@ export default async function Page() {
     ),
   });
 
-  const notifications = currentUser
-    ? await db
-        .select({
-          id: notificationsT.id,
-          crn: sectionsT.crn,
-          courseName: coursesT.name,
-          courseSubject: subjectsT.code,
-          courseNumber: coursesT.courseNumber,
-          sentAt: notificationsT.sentAt,
-        })
-        .from(notificationsT)
-        .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
-        .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
-        .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
-        .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-        .where(eq(notificationsT.userId, currentUser.id))
-        .orderBy(desc(notificationsT.sentAt))
-    : [];
+  // const a = await new Promise(() => setTimeout((r) => r(), 5000));
+
+  const notifications = db
+    .select({
+      id: notificationsT.id,
+      crn: sectionsT.crn,
+      courseName: coursesT.name,
+      courseSubject: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+      sentAt: notificationsT.sentAt,
+    })
+    .from(notificationsT)
+    .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
+    .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
+    .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .where(eq(notificationsT.userId, session.user.id))
+    .orderBy(desc(notificationsT.sentAt));
 
   const trackedSectionIds = trackers.map((t) => t.sectionId);
   const trackerMap = new Map(
@@ -93,7 +98,7 @@ export default async function Page() {
       ? await getSectionInfo(trackedSectionIds, trackerMap)
       : [];
 
-  const terms = await db
+  const terms = db
     .selectDistinct({
       name: termsT.name,
       term: termsT.term,
@@ -173,13 +178,29 @@ export default async function Page() {
 
   return (
     <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
-      <NotificationsWrapper
-        subscribedCount={trackers.length}
-        totalLimit={currentUser?.trackingLimit ?? 12}
-        terms={terms}
-        notifications={notifications}
-        courses={courses}
-      />
+      <div className="grid h-full min-h-0 w-full grid-cols-6">
+        <div className="col-span-1 min-h-0">
+          <div className="flex h-full min-h-0 flex-col gap-2 pb-4">
+            <Suspense fallback={<NotificationTermCardSkeleton />}>
+              <NotificationTermCard termsPromise={terms} />
+            </Suspense>
+
+            <NotificationCountCard
+              subscribedCount={trackers.length}
+              totalLimit={session.user.trackingLimit}
+            />
+
+            <Suspense fallback={<PreviousNotificationsCardSkeleton />}>
+              <PreviousNotificationsCard notificationsPromise={notifications} />
+            </Suspense>
+          </div>
+        </div>
+        <div className="col-span-5 min-h-0 pl-6">
+          <Suspense fallback={<div>loading...</div>}>
+            <NotificationsView courses={courses} termsPromise={terms} />
+          </Suspense>
+        </div>
+      </div>
     </div>
   );
 }

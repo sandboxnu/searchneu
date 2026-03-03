@@ -3,19 +3,26 @@
 import NotificationsCourseCard from "./NotificationsCourseCard";
 import { TrackerCourse } from "@/app/notifications/page";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { use, useTransition } from "react";
 import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
-import { NotificationTerm } from "./NotificationsSidebar";
+
+export interface NotificationTerm {
+  name: string;
+  term: string;
+  activeUntil: Date;
+}
 
 export function NotificationsView({
   courses,
-  terms,
+  termsPromise,
 }: {
   courses: TrackerCourse[];
-  terms: NotificationTerm[];
+  termsPromise: Promise<NotificationTerm[]>;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  const terms = use(termsPromise);
 
   const handleUnsubscribeCourse = (courseId: number) => {
     startTransition(async () => {

@@ -1,20 +1,18 @@
 import { TooltipTrigger, Tooltip, TooltipContent } from "../ui/tooltip";
 
-type PastNotificationCardProps = {
-  crn: string;
-  course: string;
-  dateLabel: string;
-  time: string;
-  isToday?: boolean;
-};
-
 export function PastNotificationCard({
   crn,
   course,
   dateLabel,
   time,
   isToday = false,
-}: PastNotificationCardProps) {
+}: {
+  crn: string;
+  course: string;
+  dateLabel: string;
+  time: string;
+  isToday?: boolean;
+}) {
   return (
     <div className="bg-neu2 border-neu2 flex w-full flex-col gap-2 rounded-lg border p-3 text-sm shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
       <div className="grid grid-cols-[auto_1fr] items-center gap-2">

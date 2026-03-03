@@ -8,7 +8,7 @@ import {
 import { TrackingSwitch } from "@/components/auth/TrackingSwitch";
 import { MeetingBlocks } from "@/components/catalog/SectionTableBlocks";
 import { TrackerSection } from "@/app/notifications/page";
-import { NotificationTerm } from "./NotificationsSidebar";
+import { NotificationTerm } from "./NotificationsView";
 
 export default function NotificationsSectionCard({
   section,

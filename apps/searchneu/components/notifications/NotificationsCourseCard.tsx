@@ -2,7 +2,7 @@
 import { TrackerCourse } from "@/app/notifications/page";
 import NotificationsSectionCard from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
-import { NotificationTerm } from "./NotificationsSidebar";
+import { NotificationTerm } from "./NotificationsView";
 interface NotificationsCourseCardProps {
   term?: NotificationTerm;
   course: TrackerCourse;

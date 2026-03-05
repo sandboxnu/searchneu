@@ -349,3 +349,15 @@ export async function deleteAuditPlan(id: number, userId: string) {
 
   return deleteResult[0];
 }
+
+/**
+ * Gets plans
+ * @param userId the user ID to get the plan from
+ * @returns the users plans
+ */
+export async function getAuditPlans(userId: string) {
+  const auditPlans = await db.query.auditPlansT.findMany({
+    where: eq(auditPlansT.userId, userId),
+  });
+  return auditPlans;
+}

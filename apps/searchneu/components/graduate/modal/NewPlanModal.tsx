@@ -36,6 +36,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import { CircleQuestionMark } from "lucide-react";
 import {
@@ -429,16 +430,18 @@ export default function NewPlanModal() {
                   className="text-neu6 text-sm font-bold"
                   htmlFor="no-major-check"
                 >{`Can't find my major?`}</Label>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2">
-                      <CircleQuestionMark size="18" color="#858585" />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{noMajorHelperLabel}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2">
+                        <CircleQuestionMark size="18" color="#858585" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{noMajorHelperLabel}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Concentration */}

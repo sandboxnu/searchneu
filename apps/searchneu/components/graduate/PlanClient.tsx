@@ -2,32 +2,33 @@
 
 import { useState } from "react";
 import { PlanDndWrapper } from "@/components/graduate/dnd/AuditDndWrapper";
-import { preparePlanForDnd, cleanDndIdsFromPlan } from "./dnd/planDndUtils";
-import { Audit } from "@/lib/graduate/types";
+import { prepareAuditForDnd, cleanDndIdsFromPlan } from "./dnd/planDndUtils";
+import { Audit, Major, Minor } from "@/lib/graduate/types";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/graduate/sidebar/Sidebar";
 
-interface Props {
-  initialPlan: Audit<null>;
-  planId: number;
+export interface ClientAuditPlan {
+  name: string;
   catalogYear: number;
-  majorName?: string | null;
+  concentration: string;
+  id: number;
+  updatedAt: Date;
+  createdAt: Date;
+  userId: string;
+  schedule: Audit<null>;
+  majors: Major[] | null;
+  minors: Minor[] | null;
 }
 
-export function PlanClient({
-  initialPlan,
-  planId,
-  catalogYear,
-  majorName,
-}: Props) {
-  const [plan, setPlan] = useState(() => preparePlanForDnd(initialPlan));
-
+export function PlanClient({ plan }: { plan: ClientAuditPlan }) {
+  const [scheduleState, setScheduleState] = useState(() =>
+    prepareAuditForDnd(plan.schedule),
+  );
   const handlePlanUpdate = async (updatedPlan: Audit<string>) => {
     const cleaned = cleanDndIdsFromPlan(updatedPlan);
-    const prepared = preparePlanForDnd(cleaned);
-    setPlan(prepared);
-
-    const res = await fetch(`/api/audit/plan/${planId}`, {
+    const prepared = prepareAuditForDnd(cleaned);
+    setScheduleState(prepared);
+    const res = await fetch(`/api/audit/plan/${plan.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -39,19 +40,12 @@ export function PlanClient({
     }
   };
 
-  const sidebarNode = (
-    <Sidebar
-      catalogYear={catalogYear}
-      majorName={majorName}
-      selectedPlan={{ id: String(planId), concentration: "Undecided" }}
-      courseData={true}
-    />
-  );
+  const sidebarNode = <Sidebar auditPlan={plan} />;
 
   return (
     <PlanDndWrapper
-      plan={plan}
-      catalogYear={catalogYear}
+      plan={scheduleState}
+      catalogYear={plan.catalogYear}
       onPlanUpdate={handlePlanUpdate}
       onError={(msg) => toast.error(msg)}
       sidebar={sidebarNode}

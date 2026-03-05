@@ -1,86 +1,64 @@
 import React, { useState } from "react";
-import {
-  Major,
-  Minor,
-  Section,
-  SidebarValidationStatus,
-} from "../../../lib/graduate/types";
-import { useGraduateMajor } from "../../../lib/graduate/useGraduateApi";
+import { Section, SidebarValidationStatus } from "@/lib/graduate/types";
 import SidebarContainer from "./SidebarContainer";
 import SidebarSection from "./SidebarSection";
+import { ClientAuditPlan } from "../PlanClient";
+import { creditsInAudit } from "@/lib/graduate/auditUtils";
 
 export { SidebarValidationStatus };
 
 const UNDECIDED_CONCENTRATION = "Concentration Undecided";
 
 interface SidebarProps {
-  catalogYear?: number;
-  majorName?: string | null;
-  currentMajor?: Major;
-  selectedPlan?: { id: string; concentration: string };
-  courseData?: boolean;
-  creditsTaken?: number;
-  isSharedPlan?: boolean;
-  isCoursesLoading?: boolean;
-  isMajorLoading?: boolean;
-  majorError?: Error | null;
-  coursesTaken?: unknown[];
-  currentMinor?: Minor;
-  majors?: Major[];
-  currentMajorIndex?: number;
-  handlePrevMajor?: () => void;
-  handleNextMajor?: () => void;
-  minors?: Minor[];
-  currentMinorIndex?: number;
-  handlePrevMinor?: () => void;
-  handleNextMinor?: () => void;
-  validationStatus?: unknown;
-  getSectionErrorByType?: unknown;
-  getSidebarValidationStatus?: unknown;
-  concentration?: unknown;
-  concentrationValidationStatus?: unknown;
+  //catalogYear?: number;
+  //majorName?: string | null;
+  //currentMajor?: Major;
+  //selectedPlan?: { id: string; concentration: string };
+  //courseData?: boolean;
+  //creditsTaken?: number;
+  //isSharedPlan?: boolean;
+  //isCoursesLoading?: boolean;
+  //isMajorLoading?: boolean;
+  //majorError?: Error | null;
+  //coursesTaken?: AuditCourse<null>[];
+  //currentMinor?: Minor;
+  //majors: Major[] | null;
+  //currentMajorIndex?: number;
+  //handlePrevMajor?: () => void;
+  //handleNextMajor?: () => void;
+  //minors: Minor[] | null;
+  //currentMinorIndex?: number;
+  //handlePrevMinor?: () => void;
+  //handleNextMinor?: () => void;
+  //validationStatus?: unknown;
+  //getSectionErrorByType?: unknown;
+  //getSidebarValidationStatus?: unknown;
+  //concentration?: unknown;
+  //concentrationValidationStatus?: unknown;
+  auditPlan: ClientAuditPlan;
 }
 
 export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
-  const {
-    catalogYear,
-    majorName,
-    currentMajor: currentMajorProp,
-    selectedPlan,
-    courseData,
-    currentMinor,
-    isMajorLoading,
-    majorError: majorErrorProp,
-  } = props;
+  const { schedule, majors, minors, concentration } = props.auditPlan;
+  const currentMajor = majors == null ? null : majors[0];
+  const currentMinor = minors == null ? null : minors[0];
+  console.log("DENNIS");
 
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
 
-  const useHook =
-    catalogYear != null && majorName != null && majorName.length > 0;
-  const { majorData: majorFromHook, error: majorErrorFromHook } =
-    useGraduateMajor(
-      useHook && catalogYear != null ? String(catalogYear) : null,
-      useHook ? majorName : null,
-    );
-
-  const currentMajor = useHook
-    ? (majorFromHook ?? undefined)
-    : currentMajorProp;
-  const majorError = useHook ? majorErrorFromHook : majorErrorProp;
-
   // ERROR STATE
-  if (majorError) {
+  if (schedule == null) {
     return (
       <SidebarContainer title="Failed to load major">
         <div className="px-4 py-8 text-center">
-          <span className="text-xs text-neutral-500">{majorError.message}</span>
+          <span className="text-xs text-neutral-500">schedule is null 😭</span>
         </div>
       </SidebarContainer>
     );
   }
 
   // LOADING GUARD
-  if (!currentMajor || !selectedPlan || isMajorLoading) {
+  if (!schedule) {
     return (
       <SidebarContainer title="Loading...">
         <div className="flex min-h-full w-full items-center justify-center p-8 text-center">
@@ -96,28 +74,26 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
   }
 
   const subtitle =
-    selectedPlan.concentration === "Undecided"
+    concentration === "Undecided" || concentration == null
       ? UNDECIDED_CONCENTRATION
-      : selectedPlan.concentration;
-  const creditsToTake = currentMajor.totalCreditsRequired ?? 128;
-  const creditsTaken = props.creditsTaken ?? 0;
-  const renderBetaMajorBlock = currentMajor.metadata?.verified !== true;
+      : concentration;
+  const creditsToTake = currentMajor?.totalCreditsRequired ?? 6767;
+  const creditsTaken = creditsInAudit(schedule) ?? 0;
 
   const sections =
     activeTab === "major"
-      ? currentMajor.requirementSections
+      ? currentMajor?.requirementSections
       : (currentMinor?.requirementSections ?? []);
 
   return (
     <SidebarContainer
-      title={currentMajor.name}
+      title={currentMajor ? currentMajor.name : "No major"}
       subtitle={subtitle}
       creditsTaken={creditsTaken}
       creditsToTake={creditsToTake}
-      renderBetaMajorBlock={renderBetaMajorBlock}
     >
       <div className="flex flex-1 flex-col overflow-y-auto">
-        {courseData && (
+        {
           <>
             {/* Tabs - enclosed, blue.800 selected, neutral.50 bg (matches graduatenu) */}
             <div className="bg-neutral-50 pt-3">
@@ -154,7 +130,9 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
                   <div className="flex-1" />
                   <h2 className="flex-1 text-center text-base font-semibold text-blue-900">
                     {activeTab === "major"
-                      ? currentMajor.name
+                      ? currentMajor
+                        ? currentMajor.name
+                        : "No Major"
                       : (currentMinor?.name ?? "Minor")}
                   </h2>
                   <div className="flex-1" />
@@ -166,7 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
                   </h3>
                 )}
 
-                {sections.map((section: Section, index: number) => (
+                {sections?.map((section: Section, index: number) => (
                   <SidebarSection
                     key={index}
                     section={section}
@@ -176,7 +154,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
                   />
                 ))}
 
-                {!sections.length && (
+                {!sections && (
                   <p className="px-4 py-3 text-sm text-neutral-500 italic">
                     No requirement sections
                   </p>
@@ -184,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
               </div>
             </div>
           </>
-        )}
+        }
       </div>
     </SidebarContainer>
   );

@@ -127,7 +127,7 @@ const prepareYearForDnd = (
   };
 };
 
-export const preparePlanForDnd = (plan: Audit<null>): Audit<string> => {
+export const prepareAuditForDnd = (plan: Audit<null>): Audit<string> => {
   let courseCount = 0;
   const dndYears: AuditYear<string>[] = [];
   if (!plan.years) {

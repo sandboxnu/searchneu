@@ -34,15 +34,20 @@ export async function PATCH(
     const { id } = await params;
     const auditPlanId = parseInt(id, 10);
     const body = await req.json();
+
+    console.log("Request body:", JSON.stringify(body));
+    
     const updateReq = UpdateAuditPlanDto.safeParse(body);
 
+    // DEBUG - remove after fixing
+    console.log("Parse success:", updateReq.success);
+
     if (!updateReq.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid update audit plan request" }),
-        {
-          status: 400,
-        },
-      );
+     console.log("Parse errors:", JSON.stringify(updateReq.error.issues));
+  return new Response(
+    JSON.stringify({ error: "Invalid update audit plan request" }),
+    { status: 400 },
+  );
     }
 
     const updateResult = await updateAuditPlan(

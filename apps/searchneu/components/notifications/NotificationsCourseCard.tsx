@@ -3,29 +3,47 @@ import { TrackerCourse } from "@/app/notifications/page";
 import NotificationsSectionCard from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
 import { NotificationTerm } from "./NotificationsView";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
+
 interface NotificationsCourseCardProps {
   term?: NotificationTerm;
   course: TrackerCourse;
-  onViewAllSections: () => void;
-  onUnsubscribeAll: () => void;
-  isPending: boolean;
 }
 
 export default function NotificationsCourseCard({
   term,
   course,
-  onViewAllSections,
-  onUnsubscribeAll,
-  isPending,
 }: NotificationsCourseCardProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const sections = course.sections;
+
+  function handleUnsubscribeCourse() {
+    startTransition(async () => {
+      const sectionIds = sections.map((s) => s.id);
+
+      if (!sectionIds) return;
+
+      await deleteAllTrackersForCourseAction(sectionIds);
+      router.refresh();
+    });
+  }
+
+  function handleViewAllSections() {
+    router.push(
+      `/catalog/${course.term}/${course.courseRegister.slice(0, 4)}%20${course.courseRegister.slice(4, 8)}`,
+    );
+  }
 
   return (
     <div className="border-neu2 flex flex-col gap-3 rounded-lg border bg-white p-4">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-neu8 text-xl leading-[120%] font-bold">
-            {course.courseName}
+            {course.courseRegister}
           </h3>
           <p className="text-neu8 text-base font-normal">
             {course.courseTitle}
@@ -34,14 +52,14 @@ export default function NotificationsCourseCard({
         <div className="flex items-center gap-2">
           <button
             className="border-neu2 bg-neu2 hover:bg-neu3 text-neu7 flex h-9 items-center gap-[10px] rounded-[24px] border px-4 py-2 text-[14px] leading-[16.8px] font-semibold transition"
-            onClick={onViewAllSections}
+            onClick={handleViewAllSections}
             disabled={isPending}
           >
             View all sections
           </button>
           <button
             className="border-neu2 bg-neu2 hover:bg-neu3 flex h-9 w-9 items-center justify-center rounded-[24px] border transition"
-            onClick={onUnsubscribeAll}
+            onClick={handleUnsubscribeCourse}
             disabled={isPending}
           >
             <Trash2 className="text-neu6 h-4 w-4 shrink-0" />
@@ -57,7 +75,7 @@ export default function NotificationsCourseCard({
       <p className="text-neu5 text-sm italic">
         {course.unsubscribedCount > 0
           ? `${course.unsubscribedWithSeatsCount}/${course.unsubscribedCount} unsubscribed sections available`
-          : "No unsubscribed section"}
+          : "No unsubscribed sections"}
       </p>
     </div>
   );

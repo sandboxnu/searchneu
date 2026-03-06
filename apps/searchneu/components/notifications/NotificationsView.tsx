@@ -2,9 +2,7 @@
 
 import NotificationsCourseCard from "./NotificationsCourseCard";
 import { TrackerCourse } from "@/app/notifications/page";
-import { useRouter } from "next/navigation";
-import { use, useTransition } from "react";
-import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
+import { use } from "react";
 
 export interface NotificationTerm {
   name: string;
@@ -13,40 +11,14 @@ export interface NotificationTerm {
 }
 
 export function NotificationsView({
-  courses,
+  coursesPromise,
   termsPromise,
 }: {
-  courses: TrackerCourse[];
+  coursesPromise: Promise<TrackerCourse[]>;
   termsPromise: Promise<NotificationTerm[]>;
 }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-
   const terms = use(termsPromise);
-
-  const handleUnsubscribeCourse = (courseId: number) => {
-    startTransition(async () => {
-      const sectionIds = courses
-        .find((course) => course.courseId === courseId)
-        ?.sections.map((s) => s.id);
-
-      if (!sectionIds) return;
-
-      await deleteAllTrackersForCourseAction(sectionIds);
-      router.refresh();
-    });
-  };
-
-  const handleViewAllSections = (courseId: number) => {
-    const section = courses.find((course) => course.courseId === courseId)
-      ?.sections[0];
-
-    if (!section) return;
-
-    router.push(
-      `/catalog/${terms[0].term}/${section.courseSubject}%20${section.courseNumber}`,
-    );
-  };
+  const courses = use(coursesPromise);
 
   // TODO: When no courses present
   if (courses.length === 0) {
@@ -62,15 +34,20 @@ export function NotificationsView({
       <div className="flex flex-col gap-6 pb-6">
         {courses.map((course) => (
           <NotificationsCourseCard
-            key={course.courseName}
+            key={course.courseRegister}
             course={course}
-            term={terms.find((term) => term.name === course.sections[0].term)}
-            onViewAllSections={() => handleViewAllSections(course.courseId)}
-            onUnsubscribeAll={() => handleUnsubscribeCourse(course.courseId)}
-            isPending={isPending}
+            term={terms.find((term) => term.name === course.term)}
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+export function NotificationsViewSkeleton() {
+  return (
+    <div className="h-full min-h-0 overflow-y-auto">
+      <div className="flex flex-col gap-6 pb-6"></div>
     </div>
   );
 }

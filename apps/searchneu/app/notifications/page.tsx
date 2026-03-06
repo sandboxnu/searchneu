@@ -43,50 +43,20 @@ export interface TrackerSection {
   waitlistRemaining: number;
 }
 
-export type TrackerCourse = {
+export interface TrackerCourse {
+  term: string;
   courseId: number;
-  courseName: string;
+  courseRegister: string;
   courseTitle: string;
   sections: TrackerSection[];
   unsubscribedCount: number;
   unsubscribedWithSeatsCount: number;
-};
+}
 
-export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    redirect("/"); // TODO: update design when not signed in
-  }
-
-  const trackers = await db.query.trackersT.findMany({
-    where: and(
-      eq(trackersT.userId, session.user.id),
-      isNull(trackersT.deletedAt),
-    ),
-  });
-
-  // const a = await new Promise(() => setTimeout((r) => r(), 5000));
-
-  const notifications = db
-    .select({
-      id: notificationsT.id,
-      crn: sectionsT.crn,
-      courseName: coursesT.name,
-      courseSubject: subjectsT.code,
-      courseNumber: coursesT.courseNumber,
-      sentAt: notificationsT.sentAt,
-    })
-    .from(notificationsT)
-    .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
-    .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
-    .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
-    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-    .where(eq(notificationsT.userId, session.user.id))
-    .orderBy(desc(notificationsT.sentAt));
-
-  const trackedSectionIds = trackers.map((t) => t.sectionId);
+async function getFullTrackerSectionStuffYeahFunction(
+  trackers: (typeof trackersT.$inferSelect)[],
+  trackedSectionIds: number[],
+) {
   const trackerMap = new Map(
     trackers.map((t) => [
       t.sectionId,
@@ -98,24 +68,15 @@ export default async function Page() {
       ? await getSectionInfo(trackedSectionIds, trackerMap)
       : [];
 
-  const terms = db
-    .selectDistinct({
-      name: termsT.name,
-      term: termsT.term,
-      activeUntil: termsT.activeUntil,
-    })
-    .from(sectionsT)
-    .innerJoin(termsT, eq(sectionsT.term, termsT.term))
-    .where(inArray(sectionsT.id, trackedSectionIds));
-
   // Group all sections by course
   const courseMap = new Map<number, TrackerCourse>();
 
   for (const section of sections) {
     if (!courseMap.has(section.courseId)) {
       courseMap.set(section.courseId, {
+        term: section.term,
         courseId: section.courseId,
-        courseName: section.courseRegister,
+        courseRegister: section.courseRegister,
         courseTitle: section.courseName,
         unsubscribedCount: 0,
         unsubscribedWithSeatsCount: 0,
@@ -174,7 +135,57 @@ export default async function Page() {
     course.unsubscribedWithSeatsCount = c.unsubSeats;
   }
 
-  const courses = Array.from(courseMap.values());
+  return Array.from(courseMap.values());
+}
+
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/"); // TODO: update design when not signed in
+  }
+
+  const trackers = await db.query.trackersT.findMany({
+    where: and(
+      eq(trackersT.userId, session.user.id),
+      isNull(trackersT.deletedAt),
+    ),
+  });
+
+  const trackedSectionIds = trackers.map((t) => t.sectionId);
+
+  const notifications = db
+    .select({
+      id: notificationsT.id,
+      crn: sectionsT.crn,
+      courseName: coursesT.name,
+      courseSubject: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+      sentAt: notificationsT.sentAt,
+    })
+    .from(notificationsT)
+    .innerJoin(trackersT, eq(notificationsT.trackerId, trackersT.id))
+    .innerJoin(sectionsT, eq(trackersT.sectionId, sectionsT.id))
+    .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .where(eq(notificationsT.userId, session.user.id))
+    .orderBy(desc(notificationsT.sentAt));
+
+  const terms = db
+    .selectDistinct({
+      name: termsT.name,
+      term: termsT.term,
+      activeUntil: termsT.activeUntil,
+    })
+    .from(sectionsT)
+    .innerJoin(termsT, eq(sectionsT.term, termsT.term))
+    .where(inArray(sectionsT.id, trackedSectionIds));
+
+  const courses = getFullTrackerSectionStuffYeahFunction(
+    trackers,
+    trackedSectionIds,
+  );
 
   return (
     <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
@@ -197,7 +208,7 @@ export default async function Page() {
         </div>
         <div className="col-span-5 min-h-0 pl-6">
           <Suspense fallback={<div>loading...</div>}>
-            <NotificationsView courses={courses} termsPromise={terms} />
+            <NotificationsView coursesPromise={courses} termsPromise={terms} />
           </Suspense>
         </div>
       </div>

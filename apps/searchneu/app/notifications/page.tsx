@@ -12,15 +12,19 @@ import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getSectionInfo } from "@/lib/controllers/getTrackers";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import {
   NotificationCountCard,
   NotificationTermCard,
   NotificationTermCardSkeleton,
-  PreviousNotificationsCard,
-  PreviousNotificationsCardSkeleton,
+  PastNotificationsSection,
+  PastNotificationsSectionEmpty,
+  PastNotificationsSectionSkeleton,
 } from "@/components/notifications/NotificationsSidebar";
-import { NotificationsView } from "@/components/notifications/NotificationsView";
+import {
+  NotificationsView,
+  NotificationsViewSkeleton,
+  NotificationViewEmpty,
+} from "@/components/notifications/NotificationsView";
 import { Suspense } from "react";
 
 export interface TrackerSection {
@@ -53,7 +57,7 @@ export interface TrackerCourse {
   unsubscribedWithSeatsCount: number;
 }
 
-async function getFullTrackerSectionStuffYeahFunction(
+async function getTrackedCourses(
   trackers: (typeof trackersT.$inferSelect)[],
   trackedSectionIds: number[],
 ) {
@@ -143,7 +147,22 @@ export default async function Page() {
     headers: await headers(),
   });
   if (!session) {
-    redirect("/"); // TODO: update design when not signed in
+    return (
+      <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
+        <div className="grid h-full min-h-0 w-full grid-cols-6">
+          <div className="col-span-1 min-h-0">
+            <div className="flex h-full min-h-0 flex-col gap-2 pb-4">
+              <NotificationTermCard />
+              <NotificationCountCard subscribedCount={0} totalLimit={12} />
+              <PastNotificationsSectionEmpty />
+            </div>
+          </div>
+          <div className="col-span-5 min-h-0 pl-6">
+            <NotificationViewEmpty />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const trackers = await db.query.trackersT.findMany({
@@ -182,10 +201,7 @@ export default async function Page() {
     .innerJoin(termsT, eq(sectionsT.term, termsT.term))
     .where(inArray(sectionsT.id, trackedSectionIds));
 
-  const courses = getFullTrackerSectionStuffYeahFunction(
-    trackers,
-    trackedSectionIds,
-  );
+  const courses = getTrackedCourses(trackers, trackedSectionIds);
 
   return (
     <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
@@ -201,13 +217,13 @@ export default async function Page() {
               totalLimit={session.user.trackingLimit}
             />
 
-            <Suspense fallback={<PreviousNotificationsCardSkeleton />}>
-              <PreviousNotificationsCard notificationsPromise={notifications} />
+            <Suspense fallback={<PastNotificationsSectionSkeleton />}>
+              <PastNotificationsSection notificationsPromise={notifications} />
             </Suspense>
           </div>
         </div>
         <div className="col-span-5 min-h-0 pl-6">
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<NotificationsViewSkeleton />}>
             <NotificationsView coursesPromise={courses} termsPromise={terms} />
           </Suspense>
         </div>

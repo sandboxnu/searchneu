@@ -1,8 +1,13 @@
 "use client";
 
-import NotificationsCourseCard from "./NotificationsCourseCard";
+import NotificationsCourseCard, {
+  NotificationCourseCardEmpty,
+  NotificationCourseCardSkeleton,
+} from "./NotificationsCourseCard";
 import { TrackerCourse } from "@/app/notifications/page";
 import { use } from "react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export interface NotificationTerm {
   name: string;
@@ -20,25 +25,23 @@ export function NotificationsView({
   const terms = use(termsPromise);
   const courses = use(coursesPromise);
 
-  // TODO: When no courses present
-  if (courses.length === 0) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-neu5 text-sm">No subscribed sections yet.</p>
-      </div>
-    );
-  }
-
+  const isEmpty = courses.length == 0;
   return (
-    <div className="h-full min-h-0 overflow-y-auto">
+    <div
+      className={`h-full min-h-0 ${isEmpty ? "overflow-hidden" : "overflow-y-auto"}`}
+    >
       <div className="flex flex-col gap-6 pb-6">
-        {courses.map((course) => (
-          <NotificationsCourseCard
-            key={course.courseRegister}
-            course={course}
-            term={terms.find((term) => term.name === course.term)}
-          />
-        ))}
+        {isEmpty ? (
+          <NotificationViewEmpty />
+        ) : (
+          courses.map((course) => (
+            <NotificationsCourseCard
+              key={course.courseRegister}
+              course={course}
+              term={terms.find((term) => term.name === course.term)}
+            />
+          ))
+        )}
       </div>
     </div>
   );
@@ -46,8 +49,37 @@ export function NotificationsView({
 
 export function NotificationsViewSkeleton() {
   return (
-    <div className="h-full min-h-0 overflow-y-auto">
-      <div className="flex flex-col gap-6 pb-6"></div>
+    <div className="flex flex-col gap-5">
+      <NotificationCourseCardSkeleton />
+      <NotificationCourseCardSkeleton />
+      <NotificationCourseCardSkeleton />
+    </div>
+  );
+}
+
+export function NotificationViewEmpty() {
+  return (
+    <div className="flex flex-col gap-5">
+      <NotificationCourseCardEmpty className="opacity-[0.85] blur-[2px]" />
+      <div className="relative">
+        <NotificationCourseCardEmpty className="opacity-[0.7] blur-[3px]" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+          <span className="text-neu8 text-lg font-medium">
+            No notification trackers yet
+          </span>
+          <span className="text-neu5 w-60 text-center text-sm font-medium">
+            Start by toggling on notifications of sections through the catalog.
+          </span>
+          <Link
+            href="/catalog"
+            className="bg-neu1 text-neu6 flex items-center gap-2 rounded-3xl border px-18 py-2 text-sm"
+          >
+            Go to catalog
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </div>
+      <NotificationCourseCardEmpty className="opacity-[0.55] blur-[4px]" />
     </div>
   );
 }

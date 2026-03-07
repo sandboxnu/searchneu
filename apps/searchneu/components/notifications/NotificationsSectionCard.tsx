@@ -9,6 +9,7 @@ import { TrackingSwitch } from "@/components/auth/TrackingSwitch";
 import { MeetingBlocks } from "@/components/catalog/SectionTableBlocks";
 import { TrackerSection } from "@/app/notifications/page";
 import { NotificationTerm } from "./NotificationsView";
+import { Skeleton } from "../ui/skeleton";
 
 export default function NotificationsSectionCard({
   section,
@@ -181,4 +182,44 @@ function SeatCounter({
       )}
     </div>
   );
+}
+
+export function NotificationSectionCardSkeleton() {
+  return (
+    <div className="border-neu25 bg-neu2 flex min-h-[229.538px] max-w-[450px] min-w-[328px] flex-col gap-2 rounded-lg border p-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-5 w-20 rounded-none" />
+          <Skeleton className="h-4 w-15 rounded-none" />
+        </div>
+        <Skeleton className="h-6 w-10 rounded-none" />
+      </div>
+      <div className="bg-neu25 h-0.5 w-full" />
+      <div className="grid grid-cols-2 gap-7">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-4 w-25 rounded-none" />
+          <div className="flex gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-4 w-4 rounded-none" />
+            ))}
+          </div>
+          <Skeleton className="mb-2 h-4 w-40 rounded-none" />
+          <Skeleton className="h-4 w-25 rounded-none" />
+          <Skeleton className="mb-2 h-4 w-40 rounded-none" />
+          <Skeleton className="h-10 w-47 rounded-none" />
+        </div>
+        <div className="flex flex-col gap-2 justify-self-center">
+          <Skeleton className="h-4 w-25 rounded-none" />
+          <Skeleton className="mb-8 h-4 w-40 rounded-none" />
+          <Skeleton className="h-4 w-25 rounded-none" />
+          <Skeleton className="mb-2 h-4 w-40 rounded-none" />
+          <Skeleton className="h-10 w-47 rounded-none" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NotificationSectionCardEmpty() {
+  return <div className="bg-neu2 h-60 w-105 rounded-md" />;
 }

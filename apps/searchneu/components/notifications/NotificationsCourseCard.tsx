@@ -1,11 +1,16 @@
 "use client";
 import { TrackerCourse } from "@/app/notifications/page";
-import NotificationsSectionCard from "./NotificationsSectionCard";
+import NotificationsSectionCard, {
+  NotificationSectionCardEmpty,
+  NotificationSectionCardSkeleton,
+} from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
 import { NotificationTerm } from "./NotificationsView";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
+import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/cn";
 
 interface NotificationsCourseCardProps {
   term?: NotificationTerm;
@@ -77,6 +82,65 @@ export default function NotificationsCourseCard({
           ? `${course.unsubscribedWithSeatsCount}/${course.unsubscribedCount} unsubscribed sections available`
           : "No unsubscribed sections"}
       </p>
+    </div>
+  );
+}
+
+export function NotificationCourseCardSkeleton() {
+  return (
+    <div className="bg-neu1 border-neu25 shadow-neu-card flex flex-col gap-3 rounded-lg border p-4">
+      <div className="flex items-center items-start justify-between">
+        <div>
+          <Skeleton className="h-6 w-50 rounded-none" />
+          <Skeleton className="mt-2 h-4 w-60 rounded-none" />
+        </div>
+
+        <div className="flex gap-2">
+          <Skeleton className="h-9 w-35 rounded-[24px]" />
+          <Skeleton className="h-9 w-9 rounded-[24px]" />
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <NotificationSectionCardSkeleton />
+        <NotificationSectionCardSkeleton />
+        <NotificationSectionCardSkeleton />
+      </div>
+      <Skeleton className="h-4 w-60 rounded-none" />
+    </div>
+  );
+}
+
+export function NotificationCourseCardEmpty({
+  className,
+}: {
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-neu1 border-neu25 shadow-neu-card flex flex-col gap-3 rounded-lg border p-4",
+        className,
+      )}
+    >
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="bg-neu2 h-6 w-50 rounded-none" />
+          <div className="bg-neu2 mt-2 h-4 w-60 rounded-none" />
+        </div>
+
+        <div className="flex gap-2">
+          <div className="bg-neu2 h-9 w-35 rounded-[24px]" />
+          <div className="bg-neu2 h-9 w-9 rounded-[24px]" />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <NotificationSectionCardEmpty />
+        <NotificationSectionCardEmpty />
+        <NotificationSectionCardEmpty />
+      </div>
+
+      <div className="bg-neu2 h-4 w-60 rounded-none" />
     </div>
   );
 }

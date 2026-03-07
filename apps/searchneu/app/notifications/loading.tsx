@@ -1,8 +1,9 @@
 import {
   NotificationCountCardSkeleton,
   NotificationTermCardSkeleton,
-  PreviousNotificationsCardSkeleton,
+  PastNotificationsSectionSkeleton,
 } from "@/components/notifications/NotificationsSidebar";
+import { NotificationsViewSkeleton } from "@/components/notifications/NotificationsView";
 
 export default function Loading() {
   return (
@@ -12,13 +13,11 @@ export default function Loading() {
           <div className="flex h-full min-h-0 flex-col gap-2 pb-4">
             <NotificationTermCardSkeleton />
             <NotificationCountCardSkeleton />
-            <PreviousNotificationsCardSkeleton />
+            <PastNotificationsSectionSkeleton />
           </div>
         </div>
         <div className="col-span-5 min-h-0 pl-6">
-          {/* <Suspense fallback={<div>loading...</div>}> */}
-          {/*   <NotificationsView courses={courses} termsPromise={terms} /> */}
-          {/* </Suspense> */}
+          <NotificationsViewSkeleton />
         </div>
       </div>
     </div>

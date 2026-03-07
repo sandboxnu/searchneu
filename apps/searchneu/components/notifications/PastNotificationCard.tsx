@@ -1,3 +1,4 @@
+import { Skeleton } from "../ui/skeleton";
 import { TooltipTrigger, Tooltip, TooltipContent } from "../ui/tooltip";
 
 export function PastNotificationCard({
@@ -34,4 +35,32 @@ export function PastNotificationCard({
       </div>
     </div>
   );
+}
+
+export function PastNotificationCardSkeleton() {
+  return (
+    <div className="bg-neu2 flex flex-col gap-2 rounded-md p-3">
+      <div className="flex justify-between">
+        <Skeleton className="h-5 w-22 rounded-none" />
+        <Skeleton className="h-5 w-30 rounded-none" />
+      </div>
+      <div className="flex justify-between">
+        <Skeleton className="h-3 w-17 rounded-none" />
+        <Skeleton className="h-3 w-10 rounded-none" />
+      </div>
+    </div>
+  );
+}
+
+export function PastNotificationCardEmpty({ index }: { index: number }) {
+  const opacities = [
+    "opacity-100",
+    "opacity-90",
+    "opacity-80",
+    "opacity-70",
+    "opacity-60",
+    "opacity-50",
+    "opacity-40",
+  ];
+  return <div className={`bg-neu2 h-17 w-60 rounded-md ${opacities[index]}`} />;
 }

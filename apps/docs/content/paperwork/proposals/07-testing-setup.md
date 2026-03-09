@@ -1,5 +1,5 @@
 ---
-title: 07 - testing setup
+title: 07 - Testing Setup
 ---
 
 Create standardized testing framework codebase wide.

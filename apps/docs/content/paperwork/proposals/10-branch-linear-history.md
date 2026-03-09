@@ -1,5 +1,5 @@
 ---
-title: 10 - branch linear history
+title: 10 - Branch Linear History
 ---
 
 Add a CI check to require linear history on development branches.

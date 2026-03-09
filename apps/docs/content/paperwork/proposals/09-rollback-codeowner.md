@@ -1,5 +1,5 @@
 ---
-title: 09 - rollback codeowner
+title: 09 - Rollback Codeowner
 ---
 
 Rollback `Codeowner` file with default project Alex PR inclusion.

@@ -1,5 +1,5 @@
 ---
-title: 06 - repository tooling
+title: 06 - Repository Tooling
 ---
 
 Add tooling to ensure consistent styling, linting, and checks for standardized

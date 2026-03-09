@@ -1,5 +1,5 @@
 ---
-title: 08 - better auth
+title: 08 - Better Auth
 ---
 
 Replace hand-rolled authentication system with Better Auth.

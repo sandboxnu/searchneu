@@ -3,7 +3,7 @@ import {
   GetSupportedMajorsResponse,
   GetSupportedMinorsResponse,
 } from "./api-response-types";
-import { Major, Minor } from "./types";
+import { Major, Minor, Template } from "./types";
 
 class GraduateAPIClient {
   private baseURL: string;
@@ -73,7 +73,7 @@ class GraduateAPIClient {
     getForMajor: (
       catalogYear: number,
       majorName: string,
-    ): Promise<Major | null> =>
+    ): Promise<Template | null> =>
       this.req("GET", `/templates/${catalogYear}/${majorName}`),
 
     getAll: (): Promise<Record<string, Record<string, Major>>> =>

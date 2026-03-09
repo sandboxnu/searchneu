@@ -139,8 +139,9 @@ export default function EditPlanModal({
   //change concentrations based on major
   useEffect(() => {
     setIsLoadingConcentration(true);
-    if (!majors || !catalogYear || !supportedMajorsData) {
+    if (!majors.length || !catalogYear || !supportedMajorsData) {
       setConcentrationOptions([]);
+      setConcentration(""); // clear concentration when majors are cleared
       return;
     }
     const majorData = supportedMajorsData.supportedMajors[catalogYear]?.[majors[0]];
@@ -158,7 +159,6 @@ export default function EditPlanModal({
   }, [majors, catalogYear, supportedMajorsData]);
 
   const handleClose = () => {
-    // reset to original plan values on cancel
     setMessage(plan.name);
     setCatalogYear(plan.catalogYear ?? -1);
     setMajors(plan.majors ?? []);
@@ -179,7 +179,20 @@ export default function EditPlanModal({
   const handleEditPlan = async () => {
     setIsSubmitting(true);
     try {
-    // calling the patch endpoint 
+      // only send concentration if it's valid for the current major
+      const majorData = supportedMajorsData?.supportedMajors[catalogYear]?.[majors[0]];
+      const validConcentrations = majorData?.concentrations ?? [];
+      const finalConcentration = validConcentrations.includes(concentration) 
+        ? concentration 
+        : undefined;
+  
+        console.log("DEBUG:", {
+            majors,
+            catalogYear,
+            concentration,
+            validConcentrations,
+            finalConcentration,
+          });
       const response = await fetch(`/api/audit/plan/${plan.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -189,7 +202,7 @@ export default function EditPlanModal({
           majors: isNoMajorSelected ? null : majors,
           minors: !minors?.length ? null : minors,
           catalogYear: isNoMajorSelected ? null : catalogYear,
-          concentration: isNoMajorSelected ? undefined : concentration || undefined,
+          concentration: isNoMajorSelected ? undefined : finalConcentration,
         }),
       });
 
@@ -243,11 +256,13 @@ export default function EditPlanModal({
               <div>
                 <Label htmlFor="year-select" className="text-neu6 text-xs font-bold">CATALOG YEAR</Label>
                 <Select
-                  value={catalogYear.toString()}
+                  value={catalogYear === -1 ? "" : catalogYear.toString()}
                   onValueChange={(v) => {
                     setCatalogYear(Number(v));
                     setMajors([]);
+                    setMinors([]);
                     setConcentration("");
+                    setIsNoMajorSelected(false);
                   }}
                 >
                   <SelectTrigger className="border-neu3 w-full rounded-4xl border bg-transparent" id="year-select">
@@ -265,7 +280,12 @@ export default function EditPlanModal({
               {!isNoMajorSelected && (
                 <div>
                   <Label className="text-neu6 text-xs font-bold" htmlFor="majors-select">MAJOR(S)</Label>
-                  <MultiSelect values={majors} onValuesChange={setMajors} disabled={catalogYear == -1}>
+                  <MultiSelect values={majors} 
+                  onValuesChange={(newMajors) => {
+                    setMajors(newMajors);
+                    setConcentration("");
+                  }} 
+                  disabled={catalogYear == -1}>
                     <MultiSelectTrigger
                       className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed"
                       id="majors-select"
@@ -309,14 +329,14 @@ export default function EditPlanModal({
                 />
                 <Label className="text-neu6 text-sm font-bold" htmlFor="no-major-check">{`Can't find my major?`}</Label>
                 <TooltipProvider>
-                <Tooltip delayDuration={0}>
+                  <Tooltip delayDuration={0}>
                     <TooltipTrigger asChild>
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
                         <CircleQuestionMark size="18" color="#858585" />
-                        </div>
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent><p>{noMajorHelperLabel}</p></TooltipContent>
-                    </Tooltip>
+                  </Tooltip>
                 </TooltipProvider>
               </div>
 

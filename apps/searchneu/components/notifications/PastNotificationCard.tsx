@@ -52,7 +52,7 @@ export function PastNotificationCardSkeleton() {
   );
 }
 
-export function PastNotificationCardEmpty({ index }: { index: number }) {
+export function PastNotificationCardsEmpty() {
   const opacities = [
     "opacity-100",
     "opacity-90",
@@ -62,5 +62,12 @@ export function PastNotificationCardEmpty({ index }: { index: number }) {
     "opacity-50",
     "opacity-40",
   ];
-  return <div className={`bg-neu2 h-17 w-60 rounded-md ${opacities[index]}`} />;
+  return Array.from({ length: 7 }).map((_, i) => {
+    return (
+      <div
+        key={i}
+        className={`bg-neu2 h-17 w-full rounded-md ${opacities[i]}`}
+      />
+    );
+  });
 }

@@ -6,7 +6,7 @@ import { SectionPills } from "./SectionPills";
 import { TooltipTrigger, TooltipContent, Tooltip } from "../ui/tooltip";
 import {
   PastNotificationCard,
-  PastNotificationCardEmpty,
+  PastNotificationCardsEmpty,
   PastNotificationCardSkeleton,
 } from "./PastNotificationCard";
 import { deleteAllTrackersAction } from "@/lib/auth/tracking-actions";
@@ -195,9 +195,7 @@ export function PastNotificationsSection({
             <span className="text-neu5 my-3 text-center italic">
               Previously sent notifications will show up here.
             </span>
-            {Array.from({ length: 7 }).map((_, i) => {
-              return <PastNotificationCardEmpty key={i} index={i} />;
-            })}
+            <PastNotificationCardsEmpty />
           </div>
         )}
       </div>
@@ -232,9 +230,7 @@ export function PastNotificationsSectionEmpty() {
         />
       </div>
       <div className="flex flex-col gap-2">
-        {Array.from({ length: 7 }).map((_, i) => {
-          return <PastNotificationCardEmpty index={i} key={i} />;
-        })}
+        <PastNotificationCardsEmpty />;
       </div>
     </div>
   );

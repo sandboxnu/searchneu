@@ -32,7 +32,7 @@ export function NotificationsView({
     >
       <div className="flex flex-col gap-6 pb-6">
         {isEmpty ? (
-          <NotificationViewEmpty />
+          <NotificationViewEmpty signedIn />
         ) : (
           courses.map((course) => (
             <NotificationsCourseCard
@@ -57,18 +57,20 @@ export function NotificationsViewSkeleton() {
   );
 }
 
-export function NotificationViewEmpty() {
+export function NotificationViewEmpty({ signedIn }: { signedIn?: boolean }) {
   return (
     <div className="flex flex-col gap-5">
-      <NotificationCourseCardEmpty className="opacity-[0.85] blur-[2px]" />
+      <NotificationCourseCardEmpty className="opacity-[0.7] blur-[2px]" />
       <div className="relative">
-        <NotificationCourseCardEmpty className="opacity-[0.7] blur-[3px]" />
+        <NotificationCourseCardEmpty className="opacity-[0.55] blur-[3px]" />
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span className="text-neu8 text-lg font-medium">
             No notification trackers yet
           </span>
           <span className="text-neu5 w-60 text-center text-sm font-medium">
-            Start by toggling on notifications of sections through the catalog.
+            {signedIn
+              ? "Start by toggling on notifications of sections through the catalog."
+              : "Start by signing in and toggling notifications."}
           </span>
           <Link
             href="/catalog"
@@ -79,7 +81,7 @@ export function NotificationViewEmpty() {
           </Link>
         </div>
       </div>
-      <NotificationCourseCardEmpty className="opacity-[0.55] blur-[4px]" />
+      <NotificationCourseCardEmpty className="opacity-[0.4] blur-[4px]" />
     </div>
   );
 }

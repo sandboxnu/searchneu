@@ -3,6 +3,7 @@ import {
   updateAuditPlan,
   deleteAuditPlan,
   verifyUser,
+  getAuditPlan,
 } from "@/lib/controllers/auditPlans";
 import { UpdateAuditPlanDto } from "@/lib/graduate/api-dtos";
 
@@ -34,16 +35,9 @@ export async function PATCH(
     const { id } = await params;
     const auditPlanId = parseInt(id, 10);
     const body = await req.json();
-
-    console.log("Request body:", JSON.stringify(body));
-    
     const updateReq = UpdateAuditPlanDto.safeParse(body);
 
-    // DEBUG - remove after fixing
-    console.log("Parse success:", updateReq.success);
-
     if (!updateReq.success) {
-     console.log("Parse errors:", JSON.stringify(updateReq.error.issues));
   return new Response(
     JSON.stringify({ error: "Invalid update audit plan request" }),
     { status: 400 },
@@ -130,6 +124,50 @@ export async function DELETE(
 
     return new Response(
       JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+      { status: 400 },
+    );
+  }
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const user = await verifyUser();
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+      });
+    }
+
+    const { id } = await params;
+    const auditPlanId = parseInt(id, 10);
+
+    if (isNaN(auditPlanId)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid plan ID" }),
+        { status: 400 },
+      );
+    }
+
+    const plan = await getAuditPlan(auditPlanId, user.id);
+
+    if (!plan) {
+      return new Response(
+        JSON.stringify({ error: "Plan not found" }),
+        { status: 404 },
+      );
+    }
+
+    return Response.json(plan);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : JSON.stringify(error);
+
+    return new Response(
+      JSON.stringify({ error: `Failed to fetch audit plan: ${message}` }),
       { status: 400 },
     );
   }

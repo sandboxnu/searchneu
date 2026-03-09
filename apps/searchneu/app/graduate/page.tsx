@@ -14,34 +14,34 @@ type PlanInfo = {
 };
 
 export default function Page() {
-  const [plans, setPlans] = useState<PlanInfo[]>([]);
+  const [planToEdit, setPlanToEdit] = useState<PlanInfo | undefined>();
 
-  const fetchPlans = async () => {
+  const fetchPlanById = async (id: number) => {
     try {
-      const res = await fetch("/api/audit/plan", { credentials: "include" });
+      const res = await fetch(`/api/audit/plan/${id}`, {
+        credentials: "include",
+      });
       if (res.ok) {
-        const data = await res.json();
-        setPlans(data);
+        const plan: PlanInfo = await res.json();
+        setPlanToEdit(plan);
       }
     } catch (error) {
-      console.error("Error fetching plans:", error);
+      console.error("Error fetching plan:", error);
     }
   };
 
-  useEffect(() => {
-    fetchPlans();
-  }, []);
-
   return (
     <div className="flex flex-col gap-4 p-4">
-      <NewPlanModal />
-      {plans.map((plan) => (
+      <NewPlanModal
+        onPlanCreated={(plan) => fetchPlanById(plan.id)}
+      />
+
+      {planToEdit && (
         <EditPlanModal
-          key={plan.id}
-          plan={plan}
-          onPlanUpdated={fetchPlans}
+          plan={planToEdit}
+          onPlanUpdated={() => fetchPlanById(planToEdit.id)}
         />
-      ))}
+      )}
     </div>
   );
 }

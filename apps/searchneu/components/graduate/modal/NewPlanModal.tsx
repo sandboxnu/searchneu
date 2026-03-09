@@ -46,7 +46,20 @@ import {
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
 
-export default function NewPlanModal() {
+type PlanInfo = {
+  id: number;
+  name: string;
+  majors?: string[] | null;
+  minors?: string[] | null;
+  catalogYear?: number | null;
+  concentration?: string | null;
+};
+
+interface NewPlanModalProps {
+  onPlanCreated?: (plan: PlanInfo) => void;
+}
+
+export default function NewPlanModal({ onPlanCreated }: NewPlanModalProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -269,6 +282,7 @@ export default function NewPlanModal() {
       //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
       //DENNIS TODO: redirect!!!!!!!!!
+      onPlanCreated?.(createdPlan);
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);

@@ -1,10 +1,11 @@
 "use client";
 
-import NotificationsCourseCard, {
+import {
+  NotificationsCourseCard,
   NotificationCourseCardEmpty,
   NotificationCourseCardSkeleton,
 } from "./NotificationsCourseCard";
-import { TrackerCourse } from "@/app/notifications/page";
+import { type TrackerCourse } from "@/app/notifications/page";
 import { use } from "react";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -38,7 +39,7 @@ export function NotificationsView({
             <NotificationsCourseCard
               key={course.courseRegister}
               course={course}
-              term={terms.find((term) => term.name === course.term)}
+              term={terms.find((term) => term.term === course.term)}
             />
           ))
         )}

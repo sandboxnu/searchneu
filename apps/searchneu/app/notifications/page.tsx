@@ -191,15 +191,18 @@ export default async function Page() {
     .where(eq(notificationsT.userId, session.user.id))
     .orderBy(desc(notificationsT.sentAt));
 
-  const terms = db
-    .selectDistinct({
-      name: termsT.name,
-      term: termsT.term,
-      activeUntil: termsT.activeUntil,
-    })
-    .from(sectionsT)
-    .innerJoin(termsT, eq(sectionsT.term, termsT.term))
-    .where(inArray(sectionsT.id, trackedSectionIds));
+  const terms =
+    trackedSectionIds.length === 0
+      ? Promise.resolve([])
+      : db
+          .selectDistinct({
+            name: termsT.name,
+            term: termsT.term,
+            activeUntil: termsT.activeUntil,
+          })
+          .from(sectionsT)
+          .innerJoin(termsT, eq(sectionsT.term, termsT.term))
+          .where(inArray(sectionsT.id, trackedSectionIds));
 
   const courses = getTrackedCourses(trackers, trackedSectionIds);
 

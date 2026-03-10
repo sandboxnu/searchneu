@@ -1,11 +1,11 @@
 "use client";
-import { TrackerCourse } from "@/app/notifications/page";
+import { type TrackerCourse } from "@/app/notifications/page";
 import NotificationsSectionCard, {
   NotificationSectionCardEmpty,
   NotificationSectionCardSkeleton,
 } from "./NotificationsSectionCard";
 import { Trash2 } from "lucide-react";
-import { NotificationTerm } from "./NotificationsView";
+import { type NotificationTerm } from "./NotificationsView";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deleteAllTrackersForCourseAction } from "@/lib/auth/tracking-actions";
@@ -17,7 +17,7 @@ interface NotificationsCourseCardProps {
   course: TrackerCourse;
 }
 
-export default function NotificationsCourseCard({
+export function NotificationsCourseCard({
   term,
   course,
 }: NotificationsCourseCardProps) {
@@ -29,8 +29,6 @@ export default function NotificationsCourseCard({
   function handleUnsubscribeCourse() {
     startTransition(async () => {
       const sectionIds = sections.map((s) => s.id);
-
-      if (!sectionIds) return;
 
       await deleteAllTrackersForCourseAction(sectionIds);
       router.refresh();
@@ -72,8 +70,12 @@ export default function NotificationsCourseCard({
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {sections.map((section, index) => (
-          <NotificationsSectionCard key={index} section={section} term={term} />
+        {sections.map((section) => (
+          <NotificationsSectionCard
+            key={section.id}
+            section={section}
+            term={term}
+          />
         ))}
       </div>
 

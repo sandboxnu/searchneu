@@ -10,7 +10,7 @@ import {
   coursesT,
   subjectsT,
 } from "../db";
-import { TrackerSection } from "@/app/notifications/page";
+import { type TrackerSection } from "@/app/notifications/page";
 
 export const getSectionInfo = async (
   sectionIds: number[],

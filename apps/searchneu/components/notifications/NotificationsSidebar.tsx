@@ -59,7 +59,11 @@ function InfoTooltip({ text }: { text: string }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button type="button" className="text-neu6 hover:text-neu9 transition">
+        <button
+          type="button"
+          className="text-neu6 hover:text-neu9 transition"
+          aria-label={text}
+        >
           <Info className="size-4" />
         </button>
       </TooltipTrigger>
@@ -92,7 +96,9 @@ export function NotificationCountCard({
     <div className="bg-neu1 border-neu25 shadow-neu-card flex flex-col gap-2 rounded-lg border px-4 py-4">
       <div className="flex items-center justify-between">
         <h3 className="text-neu6 text-xs font-bold">SUBSCRIBED SECTIONS</h3>
-        <InfoTooltip text="You can track up to 12 sections at once. If full, turn off notifications for a section to free up a slot for another." />
+        <InfoTooltip
+          text={`You can track up to ${totalLimit} sections at once. If full, turn off notifications for a section to free up a slot for another.`}
+        />
       </div>
 
       <h3 className="text-neu9 text-2xl font-bold">
@@ -167,10 +173,7 @@ export function PastNotificationsSection({
     <div className="bg-neu1 border-neu25 shadow-neu-card flex min-h-0 flex-1 flex-col gap-2 rounded-lg border px-4 py-4">
       <div className="flex items-center justify-between">
         <h3 className="text-neu6 text-xs font-bold">PAST NOTIFICATIONS</h3>
-        <InfoTooltip
-          text="All your past notifications in one place. Sections are shown by CRN,
-          and each entry matches a text sent to your phone."
-        />
+        <InfoTooltip text="All your past notifications in one place. Sections are shown by CRN, and each entry matches a text sent to your phone." />
       </div>
 
       <div className="scrollbar-track-transparent flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
@@ -183,7 +186,8 @@ export function PastNotificationsSection({
               <PastNotificationCard
                 key={notif.id}
                 crn={notif.crn}
-                course={`${notif.courseSubject} ${notif.courseName}`}
+                course={`${notif.courseSubject} ${notif.courseNumber}`}
+                name={notif.courseName}
                 dateLabel={dateLabel}
                 time={time}
                 isToday={isToday}
@@ -230,7 +234,7 @@ export function PastNotificationsSectionEmpty() {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <PastNotificationCardsEmpty />;
+        <PastNotificationCardsEmpty />
       </div>
     </div>
   );

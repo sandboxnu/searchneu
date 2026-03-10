@@ -4,12 +4,14 @@ import { TooltipTrigger, Tooltip, TooltipContent } from "../ui/tooltip";
 export function PastNotificationCard({
   crn,
   course,
+  name,
   dateLabel,
   time,
   isToday = false,
 }: {
   crn: string;
   course: string;
+  name: string;
   dateLabel: string;
   time: string;
   isToday?: boolean;
@@ -25,7 +27,7 @@ export function PastNotificationCard({
             </span>
           </TooltipTrigger>
           <TooltipContent side="top" className="max-w-xs">
-            {course}
+            {name}
           </TooltipContent>
         </Tooltip>
       </div>

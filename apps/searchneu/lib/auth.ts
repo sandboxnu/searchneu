@@ -28,7 +28,7 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       hd: "husky.neu.edu",
-      redirectURI: `https://searchneu.com/api/auth/callback/google`,
+      redirectURI: `${process.env.BETTER_AUTH_URL ?? "https://searchneu.com"}/api/auth/callback/google`,
     },
   },
   database: drizzleAdapter(db, {
@@ -61,7 +61,7 @@ export const auth = betterAuth({
   },
   plugins: [
     oAuthProxy({
-      productionURL: "https://searchneu.com",
+      productionURL: process.env.BETTER_AUTH_URL ?? "https://searchneu.com",
     }),
     nextCookies(), // must be last plugin
   ],

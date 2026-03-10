@@ -91,6 +91,10 @@ export async function deleteAllTrackersForCourseAction(sectionIds: number[]) {
   });
   if (!session) return { ok: false, msg: "no valid session" };
 
+  if (sectionIds.length === 0) {
+    return { ok: true };
+  }
+
   await db
     .update(trackersT)
     .set({ deletedAt: new Date() })

@@ -6,7 +6,7 @@ import {
   GraduationCapIcon,
   Bell,
 } from "lucide-react";
-import { ReactNode, use } from "react";
+import { type ReactNode, use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";

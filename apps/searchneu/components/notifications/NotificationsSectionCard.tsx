@@ -1,5 +1,4 @@
 "use client";
-import { BellIcon } from "@/components/icons/BellIcon";
 import {
   Tooltip,
   TooltipContent,
@@ -7,9 +6,11 @@ import {
 } from "@/components/ui/tooltip";
 import { TrackingSwitch } from "@/components/auth/TrackingSwitch";
 import { MeetingBlocks } from "@/components/catalog/SectionTableBlocks";
-import { TrackerSection } from "@/app/notifications/page";
-import { NotificationTerm } from "./NotificationsView";
+import { type TrackerSection } from "@/app/notifications/page";
+import { type NotificationTerm } from "./NotificationsView";
 import { Skeleton } from "../ui/skeleton";
+import { Bell } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 export default function NotificationsSectionCard({
   section,
@@ -21,7 +22,7 @@ export default function NotificationsSectionCard({
   const now = new Date();
 
   return (
-    <div className="bg-neu2 border-neu2 flex min-h-[229.538px] max-w-[450px] min-w-[328px] flex-1 flex-col items-start justify-center gap-[10px] rounded-lg border p-3">
+    <div className="bg-neu2 border-neu2 flex min-h-[229.538px] max-w-[450px] min-w-82 flex-1 flex-col items-start justify-center gap-2.5 rounded-lg border p-3">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-neu7 text-sm leading-[130%] font-bold whitespace-nowrap">
@@ -89,17 +90,17 @@ function NotificationBells({
   messageLimit: number;
   isSubscribed: boolean;
 }) {
-  const filledBells = messageLimit - messagesSent;
+  const filledBells = Math.max(messageLimit - messagesSent, 0);
   const emptySlots = messagesSent;
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-[4px]">
+        <div className="flex items-center gap-1">
           {Array.from({ length: emptySlots }).map((_, i) => (
             <div
               key={`diamond-${i}`}
-              className="flex h-[10px] w-[10px] items-center justify-center rounded-sm"
+              className="flex size-2.5 items-center justify-center rounded-sm"
             >
               <svg width="10" height="10" viewBox="0 0 10 10">
                 <path d="M5 0L10 5L5 10L0 5L5 0Z" className="fill-r1" />
@@ -108,10 +109,12 @@ function NotificationBells({
           ))}
 
           {Array.from({ length: filledBells }).map((_, i) => (
-            <BellIcon
-              key={`bell-${i}`}
-              className="text-r4"
-              opacity={isSubscribed ? 1 : 0.4}
+            <Bell
+              key={i}
+              className={cn(
+                "text-r4 size-3 fill-current stroke-0",
+                isSubscribed ? "opacity-100" : "opacity-40",
+              )}
             />
           ))}
         </div>

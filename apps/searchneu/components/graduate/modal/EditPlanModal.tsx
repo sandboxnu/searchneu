@@ -408,7 +408,7 @@ export default function EditPlanModal({
                       isSubmitting ||
                       (!isNoMajorSelected && majors.length == 0) ||
                       (!isNoMajorSelected && catalogYear <= 0) ||
-                      (concentration_options.length > 0 && concentration.length == 0)
+                      (!isNoMajorSelected && concentration_options.length > 0 && concentration.length == 0)
                     }
                   >
                     Save Changes

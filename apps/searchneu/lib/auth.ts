@@ -7,10 +7,17 @@ import { schema } from "@sneu/db/neon";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: process.env.BETTER_AUTH_URL ?? `https://${process.env.VERCEL_URL}`,
+  trustedOrigins: [
+    `https://${process.env.VERCEL_URL!}`,
+    `https://${process.env.VERCEL_BRANCH_URL!}`,
+  ],
   experimental: { joins: true },
   advanced: {
     cookiePrefix: "sneu",
+  },
+  logger: {
+    level: process.env.NODE_ENV === "production" ? "info" : "debug",
   },
   session: {
     expiresIn: 60 * 60 * 24 * 90, // 90 days
@@ -21,7 +28,7 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       hd: "husky.neu.edu",
-      redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
+      redirectURI: `${process.env.BETTER_AUTH_URL ?? "https://searchneu.com"}/api/auth/callback/google`,
     },
   },
   database: drizzleAdapter(db, {
@@ -53,7 +60,9 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    oAuthProxy(),
+    oAuthProxy({
+      productionURL: process.env.BETTER_AUTH_URL ?? "https://searchneu.com",
+    }),
     nextCookies(), // must be last plugin
   ],
 });

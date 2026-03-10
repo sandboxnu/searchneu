@@ -23,6 +23,7 @@ export function SignIn({ closeFn }: { closeFn: () => void }) {
     setIsPending(true);
     await authClient.signIn.social({
       provider: "google",
+      callbackURL: window.location.pathname ?? "",
       newUserCallbackURL: "/me/link",
     });
   }

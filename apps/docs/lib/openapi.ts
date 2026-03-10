@@ -7,5 +7,9 @@ export const bannerOpenapi = createOpenAPI({
 });
 
 export const searchneuOpenapi = createOpenAPI({
-  input: ["./content/searchneu/searchneu-api.yaml"],
+  input: ["./content/searchneu/searchneu-openapi.yaml"],
+});
+
+export const authOpenapi = createOpenAPI({
+  input: ["http://localhost:3000/api/auth/open-api/generate-schema"],
 });

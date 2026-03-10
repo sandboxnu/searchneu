@@ -11,11 +11,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "fumadocs-core": "16.5.0",
-    "fumadocs-mdx": "14.2.6",
-    "fumadocs-openapi": "^10.3.1",
-    "fumadocs-twoslash": "^3.1.12",
-    "fumadocs-ui": "16.5.0",
+    "fumadocs-core": "16.6.14",
+    "fumadocs-mdx": "14.2.9",
+    "fumadocs-openapi": "^10.3.17",
+    "fumadocs-twoslash": "^3.1.14",
+    "fumadocs-ui": "16.6.14",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "react": "^19.2.4",

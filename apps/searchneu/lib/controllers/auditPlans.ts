@@ -273,14 +273,10 @@ export async function updateAuditPlan(
 
   let name = currentAuditPlan.name;
   let schedule = currentAuditPlan.schedule;
-  let majors = isWipeMajorUpdate ? undefined : currentAuditPlan.majors;
+  let majors: string[] | null | undefined = isWipeMajorUpdate ? null : currentAuditPlan.majors;
   let minors: string[] | null | undefined = isWipeMinorUpdate ? null : currentAuditPlan.minors;
-  let catalogYear = isWipeMajorUpdate
-    ? undefined
-    : currentAuditPlan.catalogYear;
-  let concentration = isWipeMajorUpdate
-    ? undefined
-    : currentAuditPlan.concentration;
+  let catalogYear: number | null | undefined = isWipeMajorUpdate ? null : currentAuditPlan.catalogYear;
+  let concentration: string | null | undefined = isWipeMajorUpdate ? null : currentAuditPlan.concentration;
 
   if (newSchedule) {
     schedule = newSchedule;

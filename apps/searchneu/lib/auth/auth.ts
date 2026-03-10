@@ -1,6 +1,6 @@
 import "server-only";
 import { betterAuth } from "better-auth";
-import { oAuthProxy } from "better-auth/plugins";
+import { oAuthProxy, openAPI } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import { schema } from "@sneu/db/neon";
@@ -62,6 +62,9 @@ export const auth = betterAuth({
   plugins: [
     oAuthProxy({
       productionURL: process.env.BETTER_AUTH_URL ?? "https://searchneu.com",
+    }),
+    openAPI({
+      disableDefaultReference: true,
     }),
     nextCookies(), // must be last plugin
   ],

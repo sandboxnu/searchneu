@@ -1,0 +1,8 @@
+{
+  "title": "Auth API",
+  "description": "SearchNEU authentication API",
+  "icon": "Lock",
+  "root": true,
+  "defaultOpen": false,
+  "pages": ["index", "---Endpoints---", "..."]
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchPanel } from "./search/FilterBar";
-import { GroupedTerms, Subject } from "@/lib/types";
+import type { GroupedTerms, Nupath, Subject } from "@/lib/catalog/types";
 import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./search/SearchBar";
@@ -17,11 +17,6 @@ import {
 import { ListFilter } from "lucide-react";
 import { Button } from "../ui/button";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
 // BUG: ssr on the results list w/ query params causes hydration error
 // https://nextjs.org/docs/messages/react-hydration-error
 const SearchResults = dynamic(() => import("./search/SearchResults"), {
@@ -33,7 +28,7 @@ export function MobileWrapper(props: {
   subjects: Promise<Subject[]>;
   campuses: Promise<{ name: string | null; group: string | null }[]>;
   classTypes: Promise<string[]>;
-  nupaths: Promise<Option[]>;
+  nupaths: Promise<Nupath[]>;
   coursePage: ReactNode;
 }) {
   const { course } = useParams();

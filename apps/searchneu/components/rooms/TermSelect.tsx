@@ -1,6 +1,6 @@
 "use client";
 
-import { type GroupedTerms } from "@/lib/types";
+import type { GroupedTerms } from "@/lib/catalog/types";
 import type { ComponentProps } from "react";
 import {
   Select,

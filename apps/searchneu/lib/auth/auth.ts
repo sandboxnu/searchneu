@@ -1,7 +1,8 @@
 import "server-only";
 import { betterAuth } from "better-auth";
+import { oAuthProxy } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "./db";
+import { db } from "../db";
 import { schema } from "@sneu/db/neon";
 import { nextCookies } from "better-auth/next-js";
 
@@ -20,6 +21,7 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       hd: "husky.neu.edu",
+      redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
     },
   },
   database: drizzleAdapter(db, {
@@ -51,6 +53,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    oAuthProxy(),
     nextCookies(), // must be last plugin
   ],
 });

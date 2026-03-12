@@ -1,6 +1,6 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
 
 ignoredBuiltDependencies:
   - sharp
@@ -9,4 +9,5 @@ onlyBuiltDependencies:
   - "@tailwindcss/oxide"
   - "@vercel/speed-insights"
   - esbuild
+  - prisma
   - unrs-resolver

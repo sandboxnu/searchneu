@@ -5,8 +5,8 @@ const MAX_YEAR = 3000;
 
 export const CreateAuditPlanDtoWithoutSchedule = z.strictObject({
   name: z.string(),
-  major: z.string().optional(),
-  minor: z.string().optional(),
+  majors: z.string().array().optional(),
+  minors: z.string().array().optional(),
   concentration: z.string().optional(),
   catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).optional(),
   agreeToBetaMajor: z.boolean().optional(),
@@ -19,8 +19,8 @@ export const CreateAuditPlanDto = CreateAuditPlanDtoWithoutSchedule.extend({
 export const UpdateAuditPlanDto = z.strictObject({
   name: z.string().optional(),
   schedule: z.any().optional(),
-  major: z.string().optional(),
-  minor: z.string().nullable().optional(),
+  majors: z.string().array().optional(),
+  minors: z.string().array().nullable().optional(),
   concentration: z.string().optional(),
   catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).optional(),
 });

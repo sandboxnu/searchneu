@@ -3,17 +3,13 @@ import {
   GetSupportedMajorsResponse,
   GetSupportedMinorsResponse,
 } from "./api-response-types";
-import { Major, Minor } from "./types";
+import { Major, Minor, Template } from "./types";
 
 class GraduateAPIClient {
   private baseURL: string;
 
-  constructor(baseURL?: string) {
-    this.baseURL =
-      baseURL ??
-      (process.env.NODE_ENV === "development"
-        ? "/api/graduate"
-        : "https://api.graduatenu.com/api");
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
   }
 
   private async req<T>(
@@ -22,7 +18,10 @@ class GraduateAPIClient {
     body?: unknown,
     params?: Record<string, string | number>,
   ): Promise<T> {
-    const base = typeof window !== "undefined" ? window.location.origin : "";
+    const base =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "http://localhost:3000";
     const fullUrl = new URL(`${this.baseURL}${url}`, base);
 
     if (params) {
@@ -74,7 +73,7 @@ class GraduateAPIClient {
     getForMajor: (
       catalogYear: number,
       majorName: string,
-    ): Promise<Major | null> =>
+    ): Promise<Template | null> =>
       this.req("GET", `/templates/${catalogYear}/${majorName}`),
 
     getAll: (): Promise<Record<string, Record<string, Major>>> =>
@@ -82,4 +81,6 @@ class GraduateAPIClient {
   };
 }
 
-export const GraduateAPI = new GraduateAPIClient();
+export const GraduateAPI = new GraduateAPIClient(
+  process.env.NEXT_PUBLIC_GRADUATE_API_URL ?? "/api/graduate",
+);

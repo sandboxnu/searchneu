@@ -185,7 +185,7 @@ export function convertToSection(r: any): Section {
         requirements: [convertToRequirement(r.requirements)],
       };
     default:
-      return assertUnreachable(r as never);
+      return assertUnreachable();
   }
 }
 
@@ -225,6 +225,6 @@ export function convertToRequirement(r: any): Requirement {
         courses: r.courses.map(convertToRequirement),
       };
     default:
-      return assertUnreachable(r as never);
+      return assertUnreachable();
   }
 }

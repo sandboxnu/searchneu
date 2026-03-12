@@ -68,7 +68,9 @@ export async function $fetch(
         error.name === "AbortError" &&
         !options?.signal?.aborted
       ) {
-        throw new Error(`Request timeout after ${timeout}ms`);
+        throw new Error(`Request timeout after ${timeout}ms`, {
+          cause: error,
+        });
       }
 
       if (attempt < maxRetries) {

@@ -14,10 +14,11 @@ import { eq, and, desc } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { getTerm } from "@/lib/dal/terms";
 
 // GET all saved plans for a user in a specific term
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ term: string }> },
 ) {
   const session = await auth.api.getSession({
@@ -30,6 +31,11 @@ export async function GET(
   const { term } = await params;
 
   try {
+    const termDetails = await getTerm(term);
+    if (!termDetails) {
+      return Response.json({ error: "term not found" }, { status: 400 });
+    }
+
     // Get all saved plans for this user and term, ordered by updatedAt DESC
     const plans = await db
       .select()
@@ -37,7 +43,7 @@ export async function GET(
       .where(
         and(
           eq(savedPlansT.userId, session.user.id),
-          eq(savedPlansT.term, term),
+          eq(savedPlansT.termId, termDetails.id),
         ),
       )
       .orderBy(desc(savedPlansT.updatedAt));

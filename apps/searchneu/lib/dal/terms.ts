@@ -1,16 +1,22 @@
 import "server-only";
 import { db, termsT } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 import type { GroupedTerms, TermDetail } from "@/lib/catalog/types";
 
 /**
  * returns all known terms, grouped by college, sorted most-recent-first
- * within each group
+ * within each group. only returns the "main" entry per term code
+ * (partOfTerm = "1"), so split terms appear as a single item
  */
 export const getTerms = cache(async (): Promise<GroupedTerms> => {
   const terms = await db
-    .select({ term: termsT.term, name: termsT.name })
+    .select({
+      id: termsT.id,
+      term: termsT.term,
+      part: termsT.partOfTerm,
+      name: termsT.name,
+    })
     .from(termsT);
 
   const groupedTerms = terms.reduce(
@@ -46,11 +52,24 @@ export const getTerms = cache(async (): Promise<GroupedTerms> => {
  * @param termId - 6-character Banner term code, e.g. `"202510"`
  */
 export const getTerm = cache(
-  async (termId: string): Promise<TermDetail | undefined> => {
+  async (term: string): Promise<TermDetail | undefined> => {
     const result = await db
-      .select()
+      .select({
+        id: termsT.id,
+        term: termsT.term,
+        part: termsT.partOfTerm,
+        name: termsT.name,
+        activeUntil: termsT.activeUntil,
+        createdAt: termsT.createdAt,
+        updatedAt: termsT.updatedAt,
+      })
       .from(termsT)
-      .where(eq(termsT.term, termId));
+      .where(
+        and(
+          eq(termsT.term, term.substring(0, 6)),
+          eq(termsT.partOfTerm, term.substring(6)),
+        ),
+      );
     return result[0];
   },
 );

@@ -35,7 +35,7 @@ export interface TrackerSection {
   faculty: string;
   meetingTimes: SectionTableMeetingTime[];
   campus: string;
-  term: string;
+  termId: number;
   courseId: number;
   courseName: string;
   courseRegister: string;
@@ -48,7 +48,7 @@ export interface TrackerSection {
 }
 
 export interface TrackerCourse {
-  term: string;
+  termId: number;
   courseId: number;
   courseRegister: string;
   courseTitle: string;
@@ -78,7 +78,7 @@ async function getTrackedCourses(
   for (const section of sections) {
     if (!courseMap.has(section.courseId)) {
       courseMap.set(section.courseId, {
-        term: section.term,
+        termId: section.termId,
         courseId: section.courseId,
         courseRegister: section.courseRegister,
         courseTitle: section.courseName,
@@ -196,12 +196,14 @@ export default async function Page() {
       ? Promise.resolve([])
       : db
           .selectDistinct({
+            id: termsT.id,
             name: termsT.name,
             term: termsT.term,
+            part: termsT.partOfTerm,
             activeUntil: termsT.activeUntil,
           })
           .from(sectionsT)
-          .innerJoin(termsT, eq(sectionsT.term, termsT.term))
+          .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
           .where(inArray(sectionsT.id, trackedSectionIds));
 
   const courses = getTrackedCourses(trackers, trackedSectionIds);

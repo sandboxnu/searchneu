@@ -37,7 +37,7 @@ export function NotificationsCourseCard({
 
   function handleViewAllSections() {
     router.push(
-      `/catalog/${course.term}/${course.courseRegister.slice(0, 4)}%20${course.courseRegister.slice(4, 8)}`,
+      `/catalog/${term?.term}${term?.part}/${course.courseRegister.slice(0, 4)}%20${course.courseRegister.slice(4, 8)}`,
     );
   }
 

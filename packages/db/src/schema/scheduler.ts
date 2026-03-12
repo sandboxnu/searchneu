@@ -7,7 +7,6 @@ import {
   text,
   timestamp,
   uniqueIndex,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { user as usersT } from "./auth";
@@ -20,11 +19,9 @@ export const generatedSchedulesT = pgTable(
     userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term, { onDelete: "cascade" }),
-
-    name: text().notNull().default("Schedule"),
+      .references(() => termsT.id, { onDelete: "cascade" }),
 
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
@@ -35,7 +32,7 @@ export const generatedSchedulesT = pgTable(
   },
   (table) => [
     index("gs_user_idx").on(table.userId),
-    index("gs_term_idx").on(table.term),
+    index("gs_term_idx").on(table.termId),
   ],
 );
 
@@ -62,9 +59,9 @@ export const savedPlansT = pgTable(
     userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term, { onDelete: "cascade" }),
+      .references(() => termsT.id, { onDelete: "cascade" }),
     name: text().notNull(),
     numCourses: integer().default(4),
     startTime: integer(),
@@ -84,7 +81,7 @@ export const savedPlansT = pgTable(
   },
   (table) => [
     index("sp_user_idx").on(table.userId),
-    index("sp_term_idx").on(table.term),
+    index("sp_term_idx").on(table.termId),
   ],
 );
 

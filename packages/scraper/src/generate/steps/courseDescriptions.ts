@@ -1,8 +1,8 @@
 import { FetchEngine } from "../fetch";
 import { courseDescriptionEndpoint } from "../endpoints";
-import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionDescription } from "../../schemas/banner/sectionDescription";
+import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -16,6 +16,7 @@ export async function scrapeCourseDescriptions(
   fe: FetchEngine,
   term: string,
   items: ({ crn: string; description: string } & { [key: string]: unknown })[],
+  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const courseDescriptionRequests: (() => Promise<void>)[] = [];
@@ -27,10 +28,9 @@ export async function scrapeCourseDescriptions(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            // retries are part of the process, just log it if debugging
-            consola.debug("retrying description for course", {
-              // course: c.subject + c.courseNumber,
+            emitter?.emit("fetch:retry", {
               crn: c.crn,
+              step: "description",
               attempt,
             });
           },
@@ -39,10 +39,10 @@ export async function scrapeCourseDescriptions(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          consola.error("error scraping description", {
-            error: e,
+          emitter?.emit("fetch:error", {
             crn: c.crn,
-            // course: c.subject + c.courseNumber,
+            step: "description",
+            message: String(e),
           });
           return;
         });
@@ -55,10 +55,10 @@ export async function scrapeCourseDescriptions(
       if (!sectionDescriptionResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        consola.error("error scraping description", {
-          error: sectionDescriptionResult.error,
+        emitter?.emit("fetch:error", {
           crn: c.crn,
-          // course: c.subject + c.courseNumber,
+          step: "description",
+          message: String(sectionDescriptionResult.error),
         });
         return;
       }

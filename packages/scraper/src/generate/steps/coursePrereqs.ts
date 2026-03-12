@@ -1,10 +1,10 @@
 import type { Requisite, Subject } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionPrereqsEndpoint } from "../endpoints";
-import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionPrereqs } from "../../schemas/banner/sectionPrereqs";
 import { parsePrereqs } from "./reqs";
+import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -20,6 +20,7 @@ export async function scrapeCoursePrereqs(
   term: string,
   items: ({ crn: string; prereqs: Requisite } & { [key: string]: unknown })[],
   subjects: Subject[],
+  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const prereqRequests: (() => Promise<void>)[] = [];
@@ -31,10 +32,9 @@ export async function scrapeCoursePrereqs(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            // retries are part of the process, just log it if debugging
-            consola.debug("retrying prereqs for course", {
-              // course: c.subject + c.courseNumber,
+            emitter?.emit("fetch:retry", {
               crn: c.crn,
+              step: "prereqs",
               attempt,
             });
           },
@@ -43,10 +43,10 @@ export async function scrapeCoursePrereqs(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          consola.error("error scraping prereqs", {
-            error: e,
+          emitter?.emit("fetch:error", {
             crn: c.crn,
-            // course: c.subject + c.courseNumber,
+            step: "prereqs",
+            message: String(e),
           });
           return;
         });
@@ -58,10 +58,10 @@ export async function scrapeCoursePrereqs(
       if (!prereqsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        consola.error("error scraping prereqs", {
-          error: prereqsResult.error,
+        emitter?.emit("fetch:error", {
           crn: c.crn,
-          // course: c.subject + c.courseNumber,
+          step: "prereqs",
+          message: String(prereqsResult.error),
         });
         return;
       }

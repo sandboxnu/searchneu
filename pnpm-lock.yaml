@@ -94,6 +94,46 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  apps/scraper-cli:
+    dependencies:
+      '@sneu/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@sneu/scraper':
+        specifier: workspace:*
+        version: link:../../packages/scraper
+      citty:
+        specifier: ^0.2.0
+        version: 0.2.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      yaml:
+        specifier: ^2.8.2
+        version: 2.8.2
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@sneu/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@sneu/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.5.0
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2(jiti@2.6.1)
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   apps/searchneu:
     dependencies:
       '@mdx-js/loader':
@@ -284,12 +324,6 @@ importers:
 
   packages/scraper:
     dependencies:
-      citty:
-        specifier: ^0.2.0
-        version: 0.2.1
-      consola:
-        specifier: ^3.4.2
-        version: 3.4.2
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@electric-sql/pglite@0.3.15)(@neondatabase/serverless@1.0.2)(@opentelemetry/api@1.9.0)(@prisma/client@7.4.2(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.15.3)(pg@8.20.0)(postgres@3.4.7)(prisma@7.4.2(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))
@@ -299,9 +333,6 @@ importers:
       node-html-parser:
         specifier: ^7.1.0
         version: 7.1.0
-      yaml:
-        specifier: ^2.8.2
-        version: 2.8.2
       zod:
         specifier: ^4.3.6
         version: 4.3.6

@@ -1,9 +1,8 @@
 "use client";
 
-import { GroupedTerms } from "@/lib/types";
+import { GroupedTerms, Course } from "@/lib/catalog/types";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -14,13 +13,19 @@ import { Button } from "../ui/button";
 import { useState, useEffect, useCallback } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
-import { Course } from "@sneu/scraper/types";
 import { useSearchParams } from "next/navigation";
-import { getCourse, getCourseById } from "@/lib/controllers/getCourse";
+import { getCourseByRegister, getCourseById } from "@/lib/dal/courses";
 
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
 });
+
+function stupidLittleHelper(c: Course) {
+  return {
+    subject: c.subjectCode,
+    courseNumber: c.courseNumber,
+  };
+}
 
 interface SelectedCourseGroupData {
   parent: Course;
@@ -34,14 +39,6 @@ interface CourseReq {
   items?: CourseReq[];
 }
 
-const mapToCourse = (raw: Course): Course => ({
-  ...raw,
-  minCredits: Number(raw.minCredits),
-  maxCredits: Number(raw.maxCredits),
-  specialTopics: false,
-  attributes: raw.attributes || [],
-});
-
 const isCourseMatch = (
   c1: { subject: string; courseNumber: string },
   c2: { subject: string; courseNumber: string },
@@ -53,8 +50,8 @@ const isAlreadySelected = (
 ) =>
   groups.some(
     (g) =>
-      isCourseMatch(g.parent, course) ||
-      g.coreqs.some((c) => isCourseMatch(c, course)),
+      isCourseMatch(stupidLittleHelper(g.parent), course) ||
+      g.coreqs.some((c) => isCourseMatch(stupidLittleHelper(c), course)),
   );
 
 const extractCoreqReqs = (
@@ -118,17 +115,14 @@ export default function AddCoursesModal(props: {
 
       const results = await Promise.all(
         neededReqs.map(async (req) => {
-          const rows = await getCourse(
+          // TODO: replace w/ api call
+          const course = await getCourseByRegister(
             activeTerm,
             req.subject,
             req.courseNumber,
           );
-          return rows[0]
-            ? mapToCourse({
-                ...(rows[0] as unknown as Course),
-                subject: req.subject,
-              })
-            : null;
+          if (!course) return null;
+          return course;
         }),
       );
       return results.filter((c): c is Course => c !== null);
@@ -155,14 +149,16 @@ export default function AddCoursesModal(props: {
 
   const handleSelectCourse = async (course: Course) => {
     if (
-      isAlreadySelected(selectedCourseGroups, course) ||
+      isAlreadySelected(selectedCourseGroups, stupidLittleHelper(course)) ||
       selectedCourseGroups.length >= 10
     )
       return;
 
     const parentGroupIndex = selectedCourseGroups.findIndex((g) => {
       const parentCoreqReqs = extractCoreqReqs(g.parent.coreqs as CourseReq);
-      return parentCoreqReqs.some((req) => isCourseMatch(req, course));
+      return parentCoreqReqs.some((req) =>
+        isCourseMatch(req, stupidLittleHelper(course)),
+      );
     });
 
     if (parentGroupIndex !== -1) {
@@ -194,14 +190,21 @@ export default function AddCoursesModal(props: {
 
     const syncFromUrl = async () => {
       const rawResults = await Promise.all(
+        // TODO: replace w/ api call
         allCourseIds.map((id) => getCourseById(id)),
       );
-      const fetchedCourses = rawResults.map((res) => res[0]).filter(Boolean);
+      const fetchedCourses = rawResults.filter((r) => r !== undefined);
 
       const newGroups: SelectedCourseGroupData[] = [];
       for (const raw of fetchedCourses) {
-        const course = mapToCourse(raw as unknown as Course);
-        if (isAlreadySelected(newGroups, course) || newGroups.length >= 10)
+        const course = raw;
+        if (
+          isAlreadySelected(newGroups, {
+            subject: course.subjectCode,
+            courseNumber: course.courseNumber,
+          }) ||
+          newGroups.length >= 10
+        )
           continue;
         const coreqs = await fetchCoreqs(course, newGroups);
         newGroups.push({ parent: course, coreqs });
@@ -217,9 +220,21 @@ export default function AddCoursesModal(props: {
       isCoreq
         ? prev.map((g) => ({
             ...g,
-            coreqs: g.coreqs.filter((c) => !isCourseMatch(c, course)),
+            coreqs: g.coreqs.filter(
+              (c) =>
+                !isCourseMatch(
+                  stupidLittleHelper(c),
+                  stupidLittleHelper(course),
+                ),
+            ),
           }))
-        : prev.filter((g) => !isCourseMatch(g.parent, course)),
+        : prev.filter(
+            (g) =>
+              !isCourseMatch(
+                stupidLittleHelper(g.parent),
+                stupidLittleHelper(course),
+              ),
+          ),
     );
   };
 

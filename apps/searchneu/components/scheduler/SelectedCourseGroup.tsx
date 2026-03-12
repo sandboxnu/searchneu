@@ -1,4 +1,4 @@
-import { Course } from "@sneu/scraper/types";
+import { Course } from "@/lib/catalog/types";
 import { DeleteIcon } from "../icons/Delete";
 
 interface SelectedCourse {
@@ -53,7 +53,7 @@ const SelectedCourseGroup = ({
       {/* parent */}
       <SelectedCourseItem
         course={{
-          subject: parent.subject,
+          subject: parent.subjectCode,
           courseNumber: parent.courseNumber,
           title: parent.name,
           handleDelete: () => onDeleteCourse(parent, false),
@@ -66,7 +66,7 @@ const SelectedCourseGroup = ({
         <div key={idx} className="border-neu3 border-t">
           <SelectedCourseItem
             course={{
-              subject: coreq.subject,
+              subject: coreq.subjectCode,
               courseNumber: coreq.courseNumber,
               title: coreq.name ?? "Corequisite",
               handleDelete: () => onDeleteCourse(coreq, true),

@@ -1,4 +1,4 @@
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { DashboardClient } from "@/components/scheduler/Dashboard";
 
 export default async function Dashboard() {

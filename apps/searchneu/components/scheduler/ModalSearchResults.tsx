@@ -3,7 +3,7 @@
 import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
-import { Course } from "@sneu/scraper/types";
+import { Course } from "@/lib/catalog/types";
 
 const ResultCard = ({
   result,

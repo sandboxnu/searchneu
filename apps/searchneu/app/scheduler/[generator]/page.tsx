@@ -1,7 +1,7 @@
 import { db, nupathsT } from "@/lib/db";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 
 export default async function Page({
   searchParams,

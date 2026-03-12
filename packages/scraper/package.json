@@ -30,7 +30,7 @@
     "consola": "^3.4.2",
     "drizzle-orm": "^0.45.1",
     "html-entities": "^2.6.0",
-    "node-html-parser": "^7.0.2",
+    "node-html-parser": "^7.1.0",
     "yaml": "^2.8.2",
     "zod": "^4.3.6"
   },
@@ -39,9 +39,9 @@
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.2.1",
+    "@types/node": "^25.5.0",
     "eslint": "^9.39.2",
-    "nock": "^14.0.10",
+    "nock": "^14.0.11",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

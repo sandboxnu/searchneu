@@ -11,7 +11,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Iconskie } from "../icons/Iconskie";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function UserIcon() {
   const [showSI, setShowSI] = useState(false);

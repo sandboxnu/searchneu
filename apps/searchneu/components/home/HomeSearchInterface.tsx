@@ -1,6 +1,6 @@
 "use client";
 
-import { GroupedTerms } from "@/lib/types";
+import type { GroupedTerms } from "@/lib/catalog/types";
 import { use, useState, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

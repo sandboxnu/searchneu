@@ -1,25 +1,22 @@
 import { type ReactNode } from "react";
-import { getTerms } from "@/lib/controllers/getTerms";
+import { getTerms } from "@/lib/dal/terms";
 import { MobileWrapper } from "@/components/catalog/MobileWrapper";
-import { db, sectionsT, nupathsT, campusesT } from "@/lib/db";
+import { db, sectionsT } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { getSubjects } from "@/lib/dal/subjects";
+import { getCampuses } from "@/lib/dal/campuses";
+import { getNupaths } from "@/lib/dal/nupaths";
 
-const cachedSubjects = unstable_cache(
-  async () =>
-    db.query.subjectsT
-      .findMany({})
-      .then((subjs) => subjs.map((s) => ({ label: s.name, value: s.code }))),
-  [],
-  { revalidate: 3600, tags: ["banner.subjects"] },
-);
+const cachedSubjects = unstable_cache(async () => getSubjects(), [], {
+  revalidate: 3600,
+  tags: ["banner.subjects"],
+});
 
-const cachedCampuses = unstable_cache(
-  async () =>
-    db.select({ name: campusesT.name, group: campusesT.group }).from(campusesT),
-  [],
-  { revalidate: 3600, tags: ["banner.campuses"] },
-);
+const cachedCampuses = unstable_cache(async () => getCampuses(), [], {
+  revalidate: 3600,
+  tags: ["banner.campuses"],
+});
 
 const cachedClassTypes = unstable_cache(
   async (term: string) =>
@@ -32,15 +29,10 @@ const cachedClassTypes = unstable_cache(
   { revalidate: 3600, tags: ["banner.classTypes"] },
 );
 
-const cachedNupaths = unstable_cache(
-  async () =>
-    db
-      .selectDistinct({ short: nupathsT.short, name: nupathsT.name })
-      .from(nupathsT)
-      .then((c) => c.map((e) => ({ label: e.name, value: e.short }))),
-  [],
-  { revalidate: 3600, tags: ["banner.nupaths"] },
-);
+const cachedNupaths = unstable_cache(async () => getNupaths(), [], {
+  revalidate: 3600,
+  tags: ["banner.nupaths"],
+});
 
 export default async function Layout(props: {
   params: Promise<{ term: string; course?: string }>;

@@ -2,7 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, ComponentProps } from "react";
-import type { GroupedTerms, Subject } from "@/lib/types";
+import type { GroupedTerms, Nupath, Subject } from "@/lib/catalog/types";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -22,7 +22,7 @@ export function SearchPanel(props: {
   subjects: Promise<Subject[]>;
   campuses: Promise<{ name: string | null; group: string | null }[]>;
   classTypes: Promise<string[]>;
-  nupaths: Promise<Option[]>;
+  nupaths: Promise<Nupath[]>;
 }) {
   return (
     <div className="bg-neu1 h-full min-h-0 w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
@@ -63,7 +63,9 @@ export function SearchPanel(props: {
             opts={props.subjects}
             spCode="subj"
             placeholder="Select subjects"
-            transform={(opts) => opts as Option[]}
+            transform={(opts) =>
+              opts.map((o) => ({ label: o.name, value: o.code })) as Option[]
+            }
           />
         </Suspense>
       </div>
@@ -75,7 +77,9 @@ export function SearchPanel(props: {
             opts={props.nupaths}
             spCode="nupath"
             placeholder="Select NUPaths"
-            transform={(opts) => opts as Option[]}
+            transform={(opts) =>
+              opts.map((o) => ({ label: o.name, value: o.short })) as Option[]
+            }
           />
         </Suspense>
       </div>

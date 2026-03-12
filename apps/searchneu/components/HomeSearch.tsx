@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type Dispatch, type SetStateAction, use, useState } from "react";
-import type { GroupedTerms } from "@/lib/types";
+import type { GroupedTerms } from "@/lib/catalog/types";
 
 export function HomeSearch(props: { terms: Promise<GroupedTerms> }) {
   const terms = use(props.terms);

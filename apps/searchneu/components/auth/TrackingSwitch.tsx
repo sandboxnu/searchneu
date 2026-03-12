@@ -3,7 +3,7 @@
 import {
   createTrackerAction,
   deleteTrackerAction,
-} from "@/lib/auth/tracking-actions";
+} from "@/lib/trackers/actions";
 import { Switch } from "../ui/switch";
 import { TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -23,7 +23,7 @@ import { Skeleton } from "../ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function TrackingSwitch({
   sectionId,

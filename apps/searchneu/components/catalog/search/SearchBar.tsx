@@ -13,7 +13,7 @@ export function SearchBar() {
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
   const [popped, setPopped] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(query);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,20 +1,23 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "../generate/main";
 import { infer as zinfer } from "zod";
-import { Config } from "../config";
+import { Config } from "@sneu/scraper/config";
+import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import { ScraperEventEmitter } from "@sneu/scraper/events";
+import { uploadCatalogTerm } from "@sneu/scraper/upload";
+import { getDb } from "@sneu/db/pg";
 import { consola } from "consola";
-import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import { attachLogger } from "./logger";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
 const CACHE_VERSION = 3;
 
 const main = defineCommand({
   meta: {
-    name: "scrape:gen",
-    description: "runs the scraper to generate the banner cache files",
+    name: "scrape:up",
+    description: "uploads the banner cache files to the database",
   },
   args: {
     terms: {
@@ -36,12 +39,6 @@ const main = defineCommand({
       description: "",
       required: false,
     },
-    overwrite: {
-      alias: "f",
-      type: "boolean",
-      description: "overwrites existing caches rather than skipping",
-      required: false,
-    },
     verbose: {
       alias: "v",
       type: "boolean",
@@ -56,10 +53,12 @@ const main = defineCommand({
     },
   },
   async run({ args }) {
-    if (args.verbose) consola.level = 4;
-    if (args.veryverbose) consola.level = 999;
-
-    const interactive = args.interactive ?? false;
+    const emitter = new ScraperEventEmitter();
+    attachLogger(emitter, {
+      interactive: args.interactive,
+      verbose: args.verbose,
+      veryVerbose: args.veryverbose,
+    });
 
     const configStream = readFileSync(
       path.resolve(args.cachePath, "manifest.yaml"),
@@ -76,58 +75,66 @@ const main = defineCommand({
 
     const config = configResponse.data;
 
-    const termsToScrape = filterTerms(config, args.terms);
-    consola.info(`scraping ${termsToScrape.length} terms`);
+    const db = getDb(process.env.DATABASE_URL!, true);
 
-    if (termsToScrape.length === 0) {
-      consola.log("no active / configured terms to scrape");
+    const termsToUpload = filterTerms(config, args.terms);
+    consola.info(`uploading ${termsToUpload.length} terms`);
+
+    if (termsToUpload.length === 0) {
+      consola.log("no active / configured terms to upload");
       return;
     }
 
-    for (const termConfig of termsToScrape) {
-      consola.start(`scraping term ${termConfig.term}`);
+    const missingCaches = termsToUpload.filter(
+      (term) =>
+        !existsSync(
+          path.resolve(args.cachePath, CACHE_FORMAT(String(term.term))),
+        ),
+    );
 
+    if (missingCaches.length > 0) {
+      consola.error(
+        "missing cache files for terms " +
+          missingCaches.map((t) => t.term).join(", "),
+      );
+    }
+
+    const presentCaches = termsToUpload.filter((term) =>
+      existsSync(path.resolve(args.cachePath, CACHE_FORMAT(String(term.term)))),
+    );
+
+    for (const termConfig of presentCaches) {
       const cachename = path.resolve(
         args.cachePath,
         CACHE_FORMAT(termConfig.term.toString()),
       );
-      const existingCache = existsSync(cachename);
-      if (args.overwrite && existingCache) {
-        consola.info("existing cache found, overwriting with new scrape");
-      } else if (!args.overwrite && existingCache) {
-        consola.success("existing cache found, skipping term");
-        continue;
+
+      const cacheContent = readFileSync(cachename, { encoding: "utf8" });
+      const safeTermData = ScraperBannerCache.safeParse(
+        JSON.parse(cacheContent),
+      );
+      if (!safeTermData.success) {
+        consola.error(safeTermData.error);
+        return;
       }
+      const termData = safeTermData.data;
 
       try {
-        const out = await scrapeCatalogTerm(
-          termConfig.term.toString(),
-          termConfig,
-          interactive,
-        );
-
-        if (!out) {
-          consola.error(`error scraping term ${termConfig.term}`);
-          // return;
-          continue;
+        if (termData.version !== CACHE_VERSION) {
+          throw Error(
+            `invalid cache version (got ${termData.version}, expected ${CACHE_VERSION})`,
+          );
         }
 
-        const cachedData: zinfer<typeof ScraperBannerCache> = {
-          version: CACHE_VERSION,
-          timestamp: new Date().toISOString(),
-          ...out,
-        };
-
-        writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
-        consola.success(`scraped term ${termConfig.term}`);
+        await uploadCatalogTerm(termData, db, termConfig, emitter);
       } catch (e) {
-        consola.error(`failed to scrape term ${termConfig.term}`, e);
+        consola.error(`failed to upload term ${termConfig.term} - `, e);
         continue;
       }
     }
 
     consola.success(
-      `successfully scraped ${termsToScrape.length} term${termsToScrape.length > 1 ? "s" : ""}`,
+      `successfully processed ${termsToUpload.length} term${termsToUpload.length > 1 ? "s" : ""}`,
     );
   },
 });

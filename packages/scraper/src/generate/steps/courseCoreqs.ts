@@ -1,10 +1,10 @@
 import type { Requisite, Subject } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionCoreqsEndpoint } from "../endpoints";
-import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionCoreqs } from "../../schemas/banner/sectionCoreqs";
 import { parseCoreqs } from "./reqs";
+import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -20,6 +20,7 @@ export async function scrapeCourseCoreqs(
   term: string,
   items: ({ crn: string; prereqs: Requisite } & { [key: string]: unknown })[],
   subjects: Subject[],
+  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const coreqRequests: (() => Promise<void>)[] = [];
@@ -31,10 +32,9 @@ export async function scrapeCourseCoreqs(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            // retries are part of the process, just log it if debugging
-            consola.debug("retrying coreqs for course", {
-              // course: c.subject + c.courseNumber,
+            emitter?.emit("fetch:retry", {
               crn: c.crn,
+              step: "coreqs",
               attempt,
             });
           },
@@ -43,10 +43,10 @@ export async function scrapeCourseCoreqs(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          consola.error("error scraping coreqs", {
-            error: e,
+          emitter?.emit("fetch:error", {
             crn: c.crn,
-            // course: c.subject + c.courseNumber,
+            step: "coreqs",
+            message: String(e),
           });
           return;
         });
@@ -58,10 +58,10 @@ export async function scrapeCourseCoreqs(
       if (!coreqsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        consola.error("error scraping coreqs", {
-          error: coreqsResult.error,
+        emitter?.emit("fetch:error", {
           crn: c.crn,
-          // course: c.subject + c.courseNumber,
+          step: "coreqs",
+          message: String(coreqsResult.error),
         });
         return;
       }

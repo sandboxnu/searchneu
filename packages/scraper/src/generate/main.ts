@@ -2,7 +2,6 @@
  * the main scraper flow
  */
 
-import { consola } from "consola";
 import { scrapeSections } from "./steps/sections";
 import { subjectsEndpoint } from "./endpoints";
 import { decode } from "html-entities";
@@ -18,25 +17,29 @@ import { scrapeCourseCoreqs } from "./steps/courseCoreqs";
 import { arrangeCourses } from "./marshall";
 import { scrapeTermDefinition } from "./steps/terms";
 import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import type { ScraperEventEmitter } from "../events";
 
 /**
  * scrapeCatalogTerm is the main scraping logic
  *
  * @param term the banner catalog term to scrape
  * @param config scraper configuration
+ * @param emitter event emitter for reporting progress
  * @returns term scrape object
  */
 export async function scrapeCatalogTerm(
   term: string,
   config: z.infer<typeof TermConfig>,
-  interactive: boolean,
+  emitter?: ScraperEventEmitter,
 ): Promise<
   Omit<z.infer<typeof ScraperBannerCache>, "timestamp" | "version"> | undefined
 > {
+  emitter?.emit("scrape:start", { term });
+
   // get sections
-  const rawSections = await scrapeSections(term);
+  const rawSections = await scrapeSections(term, emitter);
   if (!rawSections) {
-    consola.error("failed to scrape sections");
+    emitter?.emit("error", { message: "failed to scrape sections" });
     return;
   }
 
@@ -49,11 +52,11 @@ export async function scrapeCatalogTerm(
     campuses,
     buildings,
     rooms,
-  } = arrangeCourses(rawSections);
+  } = arrangeCourses(rawSections, emitter);
   const sectionList = Object.values(sections).flat();
 
   // get and validate subjects
-  consola.debug("scraping subjects");
+  emitter?.emit("scrape:subjects:start");
   const bannerSubjects = await $fetch(subjectsEndpoint(term)).then(
     (r) => r.json() as Promise<{ code: string; description: string }[]>,
   );
@@ -63,18 +66,29 @@ export async function scrapeCatalogTerm(
   }));
 
   if (subjectCodes.length !== subjects.length) {
-    consola.warn(
-      `subject count mismatch, banner: ${subjects.length} extracted: ${subjectCodes.length} diff: ${subjects.filter((s) => !subjectCodes.includes(s.code)).map((s) => s.code)}`,
-    );
+    emitter?.emit("scrape:subjects:mismatch", {
+      bannerCount: subjects.length,
+      extractedCount: subjectCodes.length,
+      diff: subjects
+        .filter((s) => !subjectCodes.includes(s.code))
+        .map((s) => s.code),
+    });
   }
+  emitter?.emit("scrape:subjects:done", { count: subjects.length });
 
   // getTermInfo gets the name for the term being scraped from banner
-  consola.debug("scraping term definition");
-  const termDef = await scrapeTermDefinition(term);
+  emitter?.emit("scrape:term-definition:start");
+  const termDef = await scrapeTermDefinition(term, emitter);
   if (!termDef) {
-    consola.error("error getting term definition from Banner");
+    emitter?.emit("error", {
+      message: "error getting term definition from Banner",
+    });
     return;
   }
+  emitter?.emit("scrape:term-definition:done", {
+    code: termDef.code,
+    description: termDef.description,
+  });
 
   const fe = new FetchEngine({
     maxRetries: 5,
@@ -84,10 +98,15 @@ export async function scrapeCatalogTerm(
     retryOn: (response) => response.status === 429 || response.status >= 500,
   });
 
-  consola.debug("generating scraping promises");
+  emitter?.emit("debug", { message: "generating scraping promises" });
 
   // scrape faculty
-  const failedFacultySections = scrapeMeetingsFaculty(fe, term, sectionList);
+  const failedFacultySections = scrapeMeetingsFaculty(
+    fe,
+    term,
+    sectionList,
+    emitter,
+  );
 
   const taggedCourses = courses.map((c) =>
     Object.assign(c, { crn: sections[c.subject + c.courseNumber][0].crn }),
@@ -100,6 +119,7 @@ export async function scrapeCatalogTerm(
     fe,
     term,
     taggedCourses,
+    emitter,
   );
 
   // ===== scrape information for "ordinary" (ie non special topics) courses =====
@@ -114,6 +134,7 @@ export async function scrapeCatalogTerm(
     fe,
     term,
     ordinaryCourses,
+    emitter,
   );
 
   // prereqs
@@ -122,6 +143,7 @@ export async function scrapeCatalogTerm(
     term,
     ordinaryCourses,
     subjects,
+    emitter,
   );
 
   // coreqs
@@ -130,6 +152,7 @@ export async function scrapeCatalogTerm(
     term,
     ordinaryCourses,
     subjects,
+    emitter,
   );
 
   // ===== scrape information for special topics courses =====
@@ -142,6 +165,7 @@ export async function scrapeCatalogTerm(
     fe,
     term,
     specialTopicSections,
+    emitter,
   );
 
   // prereqs
@@ -150,6 +174,7 @@ export async function scrapeCatalogTerm(
     term,
     specialTopicSections,
     subjects,
+    emitter,
   );
 
   // coreqs
@@ -158,35 +183,33 @@ export async function scrapeCatalogTerm(
     term,
     specialTopicSections,
     subjects,
+    emitter,
   );
 
-  if (interactive)
-    consola.box(
-      `==scraping stats==
-total:
-  courses: ${courses.length}
-  sections: ${Object.values(sections).flat().length}
-standard:
-  courses: ${ordinaryCourses.length}
-  sections: ${Object.values(sections).flat().length - specialTopicSections.length}
-special topics:
-  courses: ${stc.length}
-  sections: ${specialTopicSections.length}
-requests:
-  total: ${fe.getStatus().queueLength}
-  etr: ${Math.floor(fe.getStatus().queueLength / 20 / 60)}mins`,
-    );
+  emitter?.emit("scrape:stats", {
+    totalCourses: courses.length,
+    totalSections: Object.values(sections).flat().length,
+    ordinaryCourses: ordinaryCourses.length,
+    ordinarySections:
+      Object.values(sections).flat().length - specialTopicSections.length,
+    specialTopicsCourses: stc.length,
+    specialTopicsSections: specialTopicSections.length,
+    totalRequests: fe.getStatus().queueLength,
+    estimatedMinutes: Math.floor(fe.getStatus().queueLength / 20 / 60),
+  });
 
-  consola.start("scraping supporting information");
+  emitter?.emit("scrape:detail:start");
   const initialQueueLength = fe.getStatus().queueLength;
   const intervalCleanup = setInterval(() => {
-    if (interactive) {
-      consola.info(
-        `${fe.getStatus().queueLength} remaining \
-(${Math.floor(((initialQueueLength - fe.getStatus().queueLength) / initialQueueLength) * 100)}%) \
-(${fe.getStatus().activeRequests} active)`,
-      );
-    }
+    const status = fe.getStatus();
+    emitter?.emit("scrape:detail:progress", {
+      remaining: status.queueLength,
+      total: initialQueueLength,
+      percent: Math.floor(
+        ((initialQueueLength - status.queueLength) / initialQueueLength) * 100,
+      ),
+      active: status.activeRequests,
+    });
   }, 5000);
 
   // wait for all the requests
@@ -202,6 +225,7 @@ requests:
   ]);
 
   clearTimeout(intervalCleanup);
+  emitter?.emit("scrape:detail:done");
 
   // postreqs
   populatePostReqs(courses);
@@ -233,6 +257,8 @@ requests:
       }));
     })
     .flat();
+
+  emitter?.emit("scrape:done", { term });
 
   return {
     term: termDef,

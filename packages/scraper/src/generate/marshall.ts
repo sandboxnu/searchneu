@@ -1,10 +1,10 @@
+import { consola } from "consola";
 import * as z from "zod";
 import { BannerSection } from "../schemas/banner/section";
 import {
   ScraperBannerCacheCourse,
   ScraperBannerCacheSection,
 } from "../schemas/scraper/banner-cache";
-import type { ScraperEventEmitter } from "../events";
 
 /* arrangeCourses takes the raw sections scraped from banner and
  *
@@ -13,9 +13,8 @@ import type { ScraperEventEmitter } from "../events";
  */
 export function arrangeCourses(
   bannerSections: z.infer<typeof BannerSection>[],
-  emitter?: ScraperEventEmitter,
 ) {
-  emitter?.emit("scrape:courses:stubbed", { count: 0 }); // will emit real count at end
+  consola.start("stubbing courses");
 
   const courses: { [key: string]: z.infer<typeof ScraperBannerCacheCourse> } =
     {};
@@ -121,6 +120,14 @@ export function arrangeCourses(
 
     if (!subjectCodes.includes(s.subject)) subjectCodes.push(s.subject);
 
+    // if (mtCampuses.length === 0 && meetingTimes.length > 0) {
+    //   consola.warn("no campuses across meeting times", {
+    //     crn: s.courseReferenceNumber,
+    //     sectionCampus: s.campusDescription,
+    //     mt: mtCampuses,
+    //   });
+    // }
+
     if (mtCampuses.length > 0) {
       campuses.set(mtCampuses[0].description, {
         code: mtCampuses[0].code,
@@ -135,9 +142,8 @@ export function arrangeCourses(
 
     mtBuildings.forEach((v, k) => {
       if (mtCampuses.length === 0) {
-        emitter?.emit("warn", {
-          message: "no campus specified for a set building",
-          data: { crn: s.courseReferenceNumber },
+        consola.warn("no campus specified for a set building", {
+          crn: s.courseReferenceNumber,
         });
         return;
       }
@@ -160,6 +166,11 @@ export function arrangeCourses(
       }
     });
   }
+
+  // consola.box("campuses", campuses);
+  // consola.box("attributes", attributes);
+  // consola.box("buildings", buildings);
+  // consola.box("rooms", rooms);
 
   return {
     courses: Object.values(courses),

@@ -1,9 +1,9 @@
 import type { Course } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionCatalogDetailsEndpoint } from "../endpoints";
+import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionCatalogDetails } from "../../schemas/banner/sectionCatalogDetails";
-import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -12,7 +12,6 @@ export async function scrapeCatalogDetails(
   fe: FetchEngine,
   term: string,
   courses: (Course & { crn: string })[],
-  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const catalogDetailsRequests: (() => Promise<void>)[] = [];
@@ -24,9 +23,9 @@ export async function scrapeCatalogDetails(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            emitter?.emit("fetch:retry", {
-              crn: c.crn,
-              step: "catalog-details",
+            // retries are part of the process, just log it if debugging
+            consola.debug("retrying course name for course", {
+              course: c.subject + c.courseNumber,
               attempt,
             });
           },
@@ -35,10 +34,10 @@ export async function scrapeCatalogDetails(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          emitter?.emit("fetch:error", {
+          consola.error("error scraping course name", {
+            error: e,
             crn: c.crn,
-            step: "catalog-details",
-            message: String(e),
+            course: c.subject + c.courseNumber,
           });
           return;
         });
@@ -51,10 +50,10 @@ export async function scrapeCatalogDetails(
       if (!catalogDetailsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        emitter?.emit("fetch:error", {
+        consola.error("error scraping course name", {
+          error: catalogDetailsResult.error,
           crn: c.crn,
-          step: "catalog-details",
-          message: String(catalogDetailsResult.error),
+          course: c.subject + c.courseNumber,
         });
         return;
       }

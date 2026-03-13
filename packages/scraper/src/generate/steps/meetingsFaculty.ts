@@ -1,10 +1,10 @@
 import type { Faculty, Section } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionFacultyEndpoint } from "../endpoints";
+import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionMeetingsFacultyResponse } from "../../schemas/banner/meetingsFaculty";
 import z from "zod";
-import type { ScraperEventEmitter } from "../../events";
 
 /**
  * scrapeMeetingsFaculty scrapes the faculty. the endpoint returns nearly identical information as the
@@ -25,7 +25,6 @@ export async function scrapeMeetingsFaculty(
   fe: FetchEngine,
   term: string,
   sections: Section[],
-  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const facultyRequests: (() => Promise<void>)[] = [];
@@ -37,9 +36,9 @@ export async function scrapeMeetingsFaculty(
       const resp = await fe
         .fetch(url, {
           onRetry(attempt) {
-            emitter?.emit("fetch:retry", {
+            // retries are part of the process, just log it if debugging
+            consola.debug("retrying faculty for section", {
               crn: s.crn,
-              step: "faculty",
               attempt,
             });
           },
@@ -48,11 +47,7 @@ export async function scrapeMeetingsFaculty(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the section
           failedRequests.push(s.crn);
-          emitter?.emit("fetch:error", {
-            crn: s.crn,
-            step: "faculty",
-            message: String(e),
-          });
+          consola.error("error scraping faculty", { error: e, crn: s.crn });
           return;
         });
 
@@ -64,10 +59,9 @@ export async function scrapeMeetingsFaculty(
       if (!meetingsFacultyResult.success) {
         // if the parse fails: note the crn, log the error, and skip the section
         failedRequests.push(s.crn);
-        emitter?.emit("fetch:error", {
+        consola.error("error parsing faculty", {
+          error: meetingsFacultyResult.error,
           crn: s.crn,
-          step: "faculty",
-          message: String(meetingsFacultyResult.error),
         });
         return;
       }

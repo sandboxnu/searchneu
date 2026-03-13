@@ -1,8 +1,8 @@
 import { FetchEngine } from "../fetch";
 import { courseDescriptionEndpoint } from "../endpoints";
+import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionDescription } from "../../schemas/banner/sectionDescription";
-import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -16,7 +16,6 @@ export async function scrapeCourseDescriptions(
   fe: FetchEngine,
   term: string,
   items: ({ crn: string; description: string } & { [key: string]: unknown })[],
-  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const courseDescriptionRequests: (() => Promise<void>)[] = [];
@@ -28,9 +27,10 @@ export async function scrapeCourseDescriptions(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            emitter?.emit("fetch:retry", {
+            // retries are part of the process, just log it if debugging
+            consola.debug("retrying description for course", {
+              // course: c.subject + c.courseNumber,
               crn: c.crn,
-              step: "description",
               attempt,
             });
           },
@@ -39,10 +39,10 @@ export async function scrapeCourseDescriptions(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          emitter?.emit("fetch:error", {
+          consola.error("error scraping description", {
+            error: e,
             crn: c.crn,
-            step: "description",
-            message: String(e),
+            // course: c.subject + c.courseNumber,
           });
           return;
         });
@@ -55,10 +55,10 @@ export async function scrapeCourseDescriptions(
       if (!sectionDescriptionResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        emitter?.emit("fetch:error", {
+        consola.error("error scraping description", {
+          error: sectionDescriptionResult.error,
           crn: c.crn,
-          step: "description",
-          message: String(sectionDescriptionResult.error),
+          // course: c.subject + c.courseNumber,
         });
         return;
       }

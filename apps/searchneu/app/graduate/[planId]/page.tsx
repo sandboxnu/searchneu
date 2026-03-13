@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { Major, Minor } from "@/lib/graduate/types";
 import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
 import { AuditClient } from "@/components/graduate/AuditClient";
+import { getAuditPlan } from "@/lib/controllers/auditPlans";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -92,15 +93,33 @@ export default async function PlanPage({
     redirect("/");
   }
 
-  const planId = parseInt((await params).planId);
-  const plan = await getPlan(planId);
+  const planId = (await params).planId;
+  const plan = await getAuditPlan(parseInt(session.user.id),planId);
+
+
+    // get major data
+    if (plan.majors) {
+      planJson.majors = await getMajors(
+        planJson.majors,
+        parseInt(planJson.catalogYear),
+      );
+    }
+    //get minor data
+    if (planJson.minors) {
+      planJson.minors = await getMinors(
+        planJson.minors,
+        parseInt(planJson.catalogYear),
+      );
+    }
+
+
   const userPlans = await getPlans();
   //const data = await res.json();
 
   if (!session.user.id) {
     return <h1> please sign in!</h1>;
   }
-  if (!plan.schedule) {
+  if (!plan) {
     return (
       <h1>
         {" "}

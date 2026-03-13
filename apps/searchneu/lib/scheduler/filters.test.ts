@@ -64,19 +64,19 @@ describe("filters", () => {
       });
 
       assert.strictEqual(
-        sectionPassesFilters(onlineSection, { includesOnline: true }),
+        sectionPassesFilters(onlineSection, { includesRemote: true }),
         true,
       );
       assert.strictEqual(
-        sectionPassesFilters(inPersonSection, { includesOnline: true }),
+        sectionPassesFilters(inPersonSection, { includesRemote: true }),
         true,
       );
       assert.strictEqual(
-        sectionPassesFilters(onlineSection, { includesOnline: false }),
+        sectionPassesFilters(onlineSection, { includesRemote: false }),
         false,
       );
       assert.strictEqual(
-        sectionPassesFilters(inPersonSection, { includesOnline: false }),
+        sectionPassesFilters(inPersonSection, { includesRemote: false }),
         true,
       );
     });
@@ -342,25 +342,25 @@ describe("filters", () => {
 
       // Schedule has an online course, filter allows online courses
       assert.strictEqual(
-        schedulePassesFilters(scheduleWithOnline, { includesOnline: true }),
+        schedulePassesFilters(scheduleWithOnline, { includesRemote: true }),
         true,
       );
 
       // Schedule has an online course, filter excludes online courses
       assert.strictEqual(
-        schedulePassesFilters(scheduleWithOnline, { includesOnline: false }),
+        schedulePassesFilters(scheduleWithOnline, { includesRemote: false }),
         false,
       );
 
       // Schedule has no online courses, filter excludes online courses
       assert.strictEqual(
-        schedulePassesFilters(scheduleWithoutOnline, { includesOnline: false }),
+        schedulePassesFilters(scheduleWithoutOnline, { includesRemote: false }),
         true,
       );
 
       // Schedule has no online courses, filter allows online courses
       assert.strictEqual(
-        schedulePassesFilters(scheduleWithoutOnline, { includesOnline: true }),
+        schedulePassesFilters(scheduleWithoutOnline, { includesRemote: true }),
         true,
       );
     });

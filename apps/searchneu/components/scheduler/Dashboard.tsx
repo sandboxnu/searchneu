@@ -88,7 +88,7 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
         const response = await fetch(
           `/api/scheduler/saved-plans/term/${selectedTerm}`,
         );
-        
+
         if (response.ok) {
           const data = await response.json();
           setPlans(data);
@@ -217,7 +217,9 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
         {!selectedTerm ? (
           <div className="flex flex-col items-center gap-1 text-center">
             <Searchskie className="w-72 pb-8" />
-            <h1 className="text-xl font-semibold">Select a term to view plans</h1>
+            <h1 className="text-xl font-semibold">
+              Select a term to view plans
+            </h1>
           </div>
         ) : isLoadingPlans ? (
           <div className="flex flex-col items-center gap-1 text-center">
@@ -232,11 +234,7 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
         ) : (
           <div className="space-y-4 py-4">
             {plans.map((plan) => (
-              <PlanCard
-                key={plan.id}
-                plan={plan}
-                onDelete={handleDeletePlan}
-              />
+              <PlanCard key={plan.id} plan={plan} onDelete={handleDeletePlan} />
             ))}
           </div>
         )}

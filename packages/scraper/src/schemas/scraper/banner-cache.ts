@@ -47,7 +47,6 @@ export const ScraperBannerMeetingTime = z.strictObject({
 });
 
 export const ScraperBannerCacheCourse = z.strictObject({
-  id: z.number(),
   /** course subject code (ex `CS`) */
   subject: z.string(),
   /** course subject number (ex `2500`) */

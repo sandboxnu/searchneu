@@ -49,7 +49,6 @@ export function arrangeCourses(
       courseAttributes.forEach((n) => attributes.set(n.code, n.description));
 
       courses[s.subjectCourse] = {
-        id: s.id,
         // special topic courses are when course information is section scoped
         specialTopics: specialTopics,
         // the section title is the course title for non-special topic courses

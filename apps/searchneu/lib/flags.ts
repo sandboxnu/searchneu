@@ -1,5 +1,4 @@
 import { flag } from "flags/next";
-import { TrustProductsEvaluationsInstance } from "twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEvaluations";
 
 export const faqFlag = flag({
   key: "faq-page",
@@ -21,7 +20,7 @@ export const schedulerFlag = flag({
   key: "scheduler",
   description: "Enable scheduler page",
   decide() {
-    return true;
+    return false;
   },
 });
 

@@ -12,7 +12,7 @@ import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { SchedulerView } from "./SchedulerView";
 import { ScheduleSidebar } from "./ScheduleSidebar";
 import { FilterPanel } from "./FilterPanel";
-import { GroupedTerms } from "@/lib/types";
+import { GroupedTerms } from "@/lib/catalog/types";
 import {
   parseFiltersFromParams,
   syncToUrl,

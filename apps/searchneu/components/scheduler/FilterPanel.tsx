@@ -9,7 +9,7 @@ import {
 import { CoursesTab } from "./CoursesTab";
 import { FiltersTab } from "./FiltersTab";
 import AddCoursesModal from "./AddCoursesModal";
-import { GroupedTerms } from "@/lib/types";
+import { GroupedTerms } from "@/lib/catalog/types";
 
 interface FilterPanelProps {
   filters: ScheduleFilters;

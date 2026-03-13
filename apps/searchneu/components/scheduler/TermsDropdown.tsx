@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ComponentProps } from "react";
-import type { GroupedTerms } from "@/lib/types";
+import type { GroupedTerms } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
 
 export function TermsDropdown({

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { GroupedTerms } from "@/lib/types";
+import { GroupedTerms } from "@/lib/catalog/types";
 import { CollegeDropdown } from "@/components/scheduler/CollegeDropdown";
 import { TermsDropdown } from "./TermsDropdown";
 import { useRouter, useSearchParams } from "next/navigation";

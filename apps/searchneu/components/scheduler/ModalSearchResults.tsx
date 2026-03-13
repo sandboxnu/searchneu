@@ -86,7 +86,7 @@ function ResultsList({
   const searchParams = new URLSearchParams();
   searchParams.set("q", query);
   searchParams.set("term", term);
-  const url = `/api/search?${searchParams.toString()}`;
+  const url = `/api/catalog/search?${searchParams.toString()}`;
   const cacheKey = `${query}-${term}`;
 
   const results = use(fetcher<Course[] | { error: string }>(cacheKey, url));

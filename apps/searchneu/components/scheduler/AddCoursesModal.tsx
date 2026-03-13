@@ -1,6 +1,6 @@
 "use client";
 
-import { GroupedTerms, Course } from "@/lib/catalog/types";
+import { Course, GroupedTerms } from "@/lib/catalog/types";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +10,10 @@ import {
 } from "../ui/dialog";
 import dynamic from "next/dynamic";
 import { Button } from "../ui/button";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
 import { useSearchParams } from "next/navigation";
-import { getCourseByRegister, getCourseById } from "@/lib/dal/courses";
 
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
@@ -25,6 +24,18 @@ function stupidLittleHelper(c: Course) {
     subject: c.subjectCode,
     courseNumber: c.courseNumber,
   };
+}
+
+async function fetchCourseById(id: number): Promise<Course | null> {
+  const res = await fetch(`/api/catalog/courses/${id}`);
+
+  if (res.status === 404) return null;
+
+  if (!res.ok) {
+    throw new Error(`failed to fetch course ${id}: ${res.status}`);
+  }
+
+  return (await res.json()) as Course;
 }
 
 interface SelectedCourseGroupData {
@@ -115,14 +126,16 @@ export default function AddCoursesModal(props: {
 
       const results = await Promise.all(
         neededReqs.map(async (req) => {
-          // TODO: replace w/ api call
-          const course = await getCourseByRegister(
-            activeTerm,
-            req.subject,
-            req.courseNumber,
-          );
-          if (!course) return null;
-          return course;
+          const params = new URLSearchParams({
+            term: activeTerm,
+            subject: req.subject,
+            courseNumber: req.courseNumber,
+          });
+
+          const res = await fetch(`/api/catalog/courses?${params.toString()}`);
+          if (!res.ok) return null;
+
+          return (await res.json()) as Course;
         }),
       );
       return results.filter((c): c is Course => c !== null);
@@ -189,11 +202,8 @@ export default function AddCoursesModal(props: {
     if (allCourseIds.length === 0) return;
 
     const syncFromUrl = async () => {
-      const rawResults = await Promise.all(
-        // TODO: replace w/ api call
-        allCourseIds.map((id) => getCourseById(id)),
-      );
-      const fetchedCourses = rawResults.filter((r) => r !== undefined);
+      const rawResults = await Promise.all(allCourseIds.map(fetchCourseById));
+      const fetchedCourses = rawResults.filter((r): r is Course => r !== null);
 
       const newGroups: SelectedCourseGroupData[] = [];
       for (const raw of fetchedCourses) {

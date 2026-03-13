@@ -12,6 +12,35 @@ export function attachLogger(
   if (opts.verbose) consola.level = 4;
   if (opts.veryVerbose) consola.level = 999;
 
+  // config lifecycle
+  emitter.on("config:start", () => {
+    consola.start("generating static config");
+  });
+
+  emitter.on("config:load-caches", ({ count }) => {
+    consola.info(`loaded ${count} cache file${count !== 1 ? "s" : ""}`);
+  });
+
+  emitter.on("config:merge:campuses", ({ added, total }) => {
+    consola.debug(`campuses: ${total} total (+${added} new)`);
+  });
+
+  emitter.on("config:merge:buildings", ({ added, total }) => {
+    consola.debug(`buildings: ${total} total (+${added} new)`);
+  });
+
+  emitter.on("config:merge:subjects", ({ added, total }) => {
+    consola.debug(`subjects: ${total} total (+${added} new)`);
+  });
+
+  emitter.on("config:merge:terms", ({ added, total }) => {
+    consola.debug(`terms: ${total} total (+${added} new)`);
+  });
+
+  emitter.on("config:done", () => {
+    consola.success("config generation complete");
+  });
+
   // scrape lifecycle
   emitter.on("scrape:start", ({ term }) => {
     consola.start(`scraping term ${term}`);

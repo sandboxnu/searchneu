@@ -6,24 +6,9 @@ export const TermConfig = z.strictObject({
   activeUntil: z.string(),
 });
 
-export const AttributeConfig = z.strictObject({
-  campus: z.array(
-    z.strictObject({
-      code: z.string(),
-      name: z.string().optional(),
-      group: z.string(),
-    }),
-  ),
-  nupath: z.array(
-    z.strictObject({
-      code: z.string(),
-      short: z.string(),
-      name: z.string(),
-    }),
-  ),
+export const ManifestConfig = z.strictObject({
+  terms: z.array(TermConfig),
 });
 
-export const Config = z.strictObject({
-  terms: z.array(TermConfig),
-  attributes: AttributeConfig,
-});
+/** @deprecated Use ManifestConfig instead */
+export const Config = ManifestConfig;

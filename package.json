@@ -12,7 +12,8 @@
     "db:push": "turbo run db:push --filter=@sneu/db",
     "db:studio": "turbo run db:studio --filter=@sneu/db",
     "scrape:gen": "turbo run scrape:gen --filter=@sneu/scraper-cli",
-    "scrape:up": "turbo run scrape:up --filter=@sneu/scraper-cli"
+    "scrape:up": "turbo run scrape:up --filter=@sneu/scraper-cli",
+    "scrape:config": "turbo run scrape:config --filter=@sneu/scraper-cli"
   },
   "devDependencies": {
     "prettier": "^3.8.1",

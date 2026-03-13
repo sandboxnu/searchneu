@@ -32,6 +32,12 @@ const main = defineCommand({
       description: "",
       required: false,
     },
+    configPath: {
+      type: "string",
+      default: "config/",
+      description: "path to config directory containing manifest.yaml",
+      required: false,
+    },
     interactive: {
       alias: "i",
       type: "boolean",
@@ -68,7 +74,7 @@ const main = defineCommand({
     });
 
     const configStream = readFileSync(
-      path.resolve(args.cachePath, "manifest.yaml"),
+      path.resolve(args.configPath, "manifest.yaml"),
       {
         encoding: "utf8",
       },

@@ -5,6 +5,13 @@ import { defineCommand, runMain } from "citty";
 import { infer as zinfer } from "zod";
 import { Config } from "@sneu/scraper/config";
 import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import {
+  StaticCampusesConfig,
+  StaticBuildingsConfig,
+  StaticSubjectsConfig,
+  StaticNupathsConfig,
+} from "@sneu/scraper/static-config";
+import type { StaticConfig } from "@sneu/scraper/static-config";
 import { ScraperEventEmitter } from "@sneu/scraper/events";
 import { uploadCatalogTerm } from "@sneu/scraper/upload";
 import { getDb } from "@sneu/db/pg";
@@ -31,6 +38,12 @@ const main = defineCommand({
       type: "string",
       default: "cache/",
       description: "",
+      required: false,
+    },
+    configPath: {
+      type: "string",
+      default: "config/",
+      description: "path to config directory containing static config files",
       required: false,
     },
     interactive: {
@@ -61,7 +74,7 @@ const main = defineCommand({
     });
 
     const configStream = readFileSync(
-      path.resolve(args.cachePath, "manifest.yaml"),
+      path.resolve(args.configPath, "manifest.yaml"),
       {
         encoding: "utf8",
       },
@@ -74,6 +87,46 @@ const main = defineCommand({
     }
 
     const config = configResponse.data;
+
+    // Load static config files
+    const configDir = path.resolve(args.configPath);
+    let staticConfig: StaticConfig | undefined;
+    const campusesPath = path.join(configDir, "campuses.yaml");
+    const buildingsPath = path.join(configDir, "buildings.yaml");
+    const subjectsPath = path.join(configDir, "subjects.yaml");
+    const nupathsPath = path.join(configDir, "nupaths.yaml");
+
+    if (
+      existsSync(campusesPath) &&
+      existsSync(buildingsPath) &&
+      existsSync(subjectsPath) &&
+      existsSync(nupathsPath)
+    ) {
+      const campusesData = StaticCampusesConfig.parse(
+        parse(readFileSync(campusesPath, "utf8")),
+      );
+      const buildingsData = StaticBuildingsConfig.parse(
+        parse(readFileSync(buildingsPath, "utf8")),
+      );
+      const subjectsData = StaticSubjectsConfig.parse(
+        parse(readFileSync(subjectsPath, "utf8")),
+      );
+      const nupathsData = StaticNupathsConfig.parse(
+        parse(readFileSync(nupathsPath, "utf8")),
+      );
+
+      staticConfig = {
+        campuses: campusesData.campuses,
+        buildings: buildingsData.buildings,
+        subjects: subjectsData.subjects,
+        nupaths: nupathsData.nupaths,
+      };
+      consola.info("loaded static config files");
+    } else {
+      consola.warn(
+        "static config files not found, falling back to cache-only mode",
+      );
+    }
 
     const db = getDb(process.env.DATABASE_URL!, true);
 
@@ -126,7 +179,7 @@ const main = defineCommand({
           );
         }
 
-        await uploadCatalogTerm(termData, db, termConfig, emitter);
+        await uploadCatalogTerm(termData, db, termConfig, emitter, staticConfig);
       } catch (e) {
         consola.error(`failed to upload term ${termConfig.term} - `, e);
         continue;

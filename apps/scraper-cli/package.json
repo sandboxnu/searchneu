@@ -8,7 +8,8 @@
     "dev": "tsc --watch",
     "lint": "eslint .",
     "scrape:gen": "node --import tsx ./src/generate.ts",
-    "scrape:up": "node --env-file .env --import tsx ./src/upload.ts"
+    "scrape:up": "node --env-file .env --import tsx ./src/upload.ts",
+    "scrape:config": "node --import tsx ./src/config-update.ts"
   },
   "dependencies": {
     "@sneu/scraper": "workspace:*",

@@ -42,6 +42,15 @@ export type ScraperEventMap = {
   "scrape:detail:done": undefined;
   "scrape:done": { term: string };
 
+  // config lifecycle
+  "config:start": undefined;
+  "config:load-caches": { count: number };
+  "config:merge:campuses": { added: number; total: number };
+  "config:merge:buildings": { added: number; total: number };
+  "config:merge:subjects": { added: number; total: number };
+  "config:merge:terms": { added: number; total: number };
+  "config:done": undefined;
+
   // upload lifecycle
   "upload:start": { term: string };
   "upload:progress": { step: string };

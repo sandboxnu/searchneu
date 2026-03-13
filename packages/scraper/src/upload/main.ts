@@ -8,6 +8,7 @@ import {
   ScraperBannerCache,
   ScraperBannerMeetingTime,
 } from "../schemas/scraper/banner-cache";
+import type { StaticConfig } from "../schemas/scraper/static-config";
 import { type createDbClient } from "@sneu/db/pg";
 import {
   buildingsT,
@@ -35,23 +36,24 @@ export async function uploadCatalogTerm(
   db: ReturnType<typeof createDbClient>,
   config: z.infer<typeof TermConfig>,
   emitter?: ScraperEventEmitter,
+  staticConfig?: StaticConfig,
 ): Promise<void> {
   emitter?.emit("upload:start", { term: scrape.term.code });
 
   await db.transaction(async (tx) => {
     // ===== fixed values =====
     // campuses
-    // TODO: group config / support
-    const campusValues = scrape.campuses.map((c) => {
-      const code =
-        c.code === "?" ? c.name.substring(0, 3).toUpperCase() : c.code;
-
-      return {
-        name: c.name,
-        code: code,
-        group: "",
-      };
-    });
+    const campusValues = staticConfig
+      ? staticConfig.campuses.map((c) => ({
+          name: c.name,
+          code: c.code,
+          group: c.group,
+        }))
+      : scrape.campuses.map((c) => {
+          const code =
+            c.code === "?" ? c.name.substring(0, 3).toUpperCase() : c.code;
+          return { name: c.name, code: code, group: "" };
+        });
     await tx
       .insert(campusesT)
       .values(campusValues)
@@ -82,7 +84,8 @@ export async function uploadCatalogTerm(
     emitter?.emit("upload:progress", { step: "campuses" });
 
     // buildings
-    const buildingsValues = scrape.buildings.map((b) => {
+    const buildingSource = staticConfig ? staticConfig.buildings : scrape.buildings;
+    const buildingsValues = buildingSource.map((b) => {
       const campusId = campusCodeMap.get(b.campus);
       if (!campusCodeMap.has(b.campus) || !campusId) {
         throw Error(`campus ${b.campus} not found`);
@@ -139,21 +142,23 @@ export async function uploadCatalogTerm(
     emitter?.emit("upload:progress", { step: "rooms" });
 
     // nupaths
-    const nupaths = [
-      { code: "NCND", short: "ND", name: "Natural/Designed World" },
-      { code: "NCEI", short: "EI", name: "Creative Express/Innov" },
-      { code: "NCIC", short: "IC", name: "Interpreting Culture" },
-      { code: "NCFQ", short: "FQ", name: "Formal/Quant Reasoning" },
-      { code: "NCSI", short: "SI", name: "Societies/Institutions" },
-      { code: "NCAD", short: "AD", name: "Analyzing/Using Data" },
-      { code: "NCDD", short: "DD", name: "Difference/Diversity" },
-      { code: "NCER", short: "ER", name: "Ethical Reasoning" },
-      { code: "NCW1", short: "WF", name: "First Year Writing" },
-      { code: "NCWI", short: "WI", name: "Writing Intensive" },
-      { code: "NCW2", short: "WD", name: "Advanced Writing" },
-      { code: "NCEX", short: "EX", name: "Integration Experience" },
-      { code: "NCCE", short: "CE", name: "Capstone Experience" },
-    ];
+    const nupaths = staticConfig
+      ? staticConfig.nupaths
+      : [
+          { code: "NCND", short: "ND", name: "Natural/Designed World" },
+          { code: "NCEI", short: "EI", name: "Creative Express/Innov" },
+          { code: "NCIC", short: "IC", name: "Interpreting Culture" },
+          { code: "NCFQ", short: "FQ", name: "Formal/Quant Reasoning" },
+          { code: "NCSI", short: "SI", name: "Societies/Institutions" },
+          { code: "NCAD", short: "AD", name: "Analyzing/Using Data" },
+          { code: "NCDD", short: "DD", name: "Difference/Diversity" },
+          { code: "NCER", short: "ER", name: "Ethical Reasoning" },
+          { code: "NCW1", short: "WF", name: "First Year Writing" },
+          { code: "NCWI", short: "WI", name: "Writing Intensive" },
+          { code: "NCW2", short: "WD", name: "Advanced Writing" },
+          { code: "NCEX", short: "EX", name: "Integration Experience" },
+          { code: "NCCE", short: "CE", name: "Capstone Experience" },
+        ];
     await tx
       .insert(nupathsT)
       .values(nupaths)
@@ -171,9 +176,8 @@ export async function uploadCatalogTerm(
     }, new Map<string, number>());
 
     // subjects
-    // NOTE: there prob should be a subjects -> term mapping to be able to pull just
-    // the subjects in a particular term
-    const subjectInserts = scrape.subjects.map((s) => ({
+    const subjectSource = staticConfig ? staticConfig.subjects : scrape.subjects;
+    const subjectInserts = subjectSource.map((s) => ({
       code: s.code,
       name: s.description,
     }));

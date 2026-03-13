@@ -41,6 +41,14 @@
     "./schemas/banner-cache": {
       "types": "./dist/schemas/scraper/banner-cache.d.ts",
       "default": "./dist/schemas/scraper/banner-cache.js"
+    },
+    "./static-config": {
+      "types": "./dist/schemas/scraper/static-config.d.ts",
+      "default": "./dist/schemas/scraper/static-config.js"
+    },
+    "./config-update": {
+      "types": "./dist/config-update/main.d.ts",
+      "default": "./dist/config-update/main.js"
     }
   },
   "dependencies": {

@@ -33,11 +33,14 @@ export function attachLogger(
     consola.debug(`scraped ${count} subjects`);
   });
 
-  emitter.on("scrape:subjects:mismatch", ({ bannerCount, extractedCount, diff }) => {
-    consola.warn(
-      `subject count mismatch, banner: ${bannerCount} extracted: ${extractedCount} diff: ${diff}`,
-    );
-  });
+  emitter.on(
+    "scrape:subjects:mismatch",
+    ({ bannerCount, extractedCount, diff }) => {
+      consola.warn(
+        `subject count mismatch, banner: ${bannerCount} extracted: ${extractedCount} diff: ${diff}`,
+      );
+    },
+  );
 
   emitter.on("scrape:term-definition:start", () => {
     consola.debug("scraping term definition");
@@ -73,9 +76,7 @@ requests:
 
   emitter.on("scrape:detail:progress", ({ remaining, percent, active }) => {
     if (opts.interactive) {
-      consola.info(
-        `${remaining} remaining (${percent}%) (${active} active)`,
-      );
+      consola.info(`${remaining} remaining (${percent}%) (${active} active)`);
     }
   });
 

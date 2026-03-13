@@ -27,6 +27,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       waitlistCapacity: sectionsT.waitlistCapacity,
       waitlistRemaining: sectionsT.waitlistRemaining,
       // Course data
+      courseId: coursesT.id,
       courseName: coursesT.name,
       courseSubject: subjectsT.code,
       courseNumber: coursesT.courseNumber,
@@ -59,6 +60,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
       sectionsT.seatCapacity,
       sectionsT.waitlistCapacity,
       sectionsT.waitlistRemaining,
+      coursesT.id,
       coursesT.name,
       coursesT.subject,
       subjectsT.code,
@@ -85,6 +87,7 @@ const getSectionsAndMeetingTimes = (courseId: number) => {
             seatCapacity: row.seatCapacity,
             waitlistCapacity: row.waitlistCapacity,
             waitlistRemaining: row.waitlistRemaining,
+            courseId: row.courseId,
             courseName: row.courseName,
             courseSubject: row.courseSubject,
             courseNumber: row.courseNumber,
@@ -211,35 +214,54 @@ const generateCombinationsOptimized = (
 const addOptionalCourses = (
   baseSchedule: SectionWithCourse[],
   optionalSectionsByCourse: SectionWithCourse[][],
+  numCourses?: number,
 ): SectionWithCourse[][] => {
   const results: SectionWithCourse[][] = [];
-
-  // Pre-compute masks for base schedule
   const baseMasks = baseSchedule.map(meetingTimesToBinaryMask);
 
   const generateOptionalCombinations = (
     currentSchedule: SectionWithCourse[],
-    currentMasks: bigint[], // masks for the sections in the current schedule
+    currentMasks: bigint[],
     courseIndex: number,
   ) => {
-    // ending condition to break recursion
+    // Condition: If we hit the end of the available courses
     if (courseIndex === optionalSectionsByCourse.length) {
-      results.push([...currentSchedule]);
+      // If numCourses is defined, only push if length matches exactly
+      // Otherwise, push everything
+      if (numCourses === undefined || currentSchedule.length === numCourses) {
+        results.push([...currentSchedule]);
+      }
       return;
     }
 
-    // Try not adding this optional course
+    // Optimization: If it's impossible to reach numCourses even if we took
+    // every remaining course, stop this branch
+    if (numCourses !== undefined) {
+      const remainingSlots = optionalSectionsByCourse.length - courseIndex;
+      if (currentSchedule.length + remainingSlots < numCourses) return;
+
+      // Optimization: If we already have enough courses, don't try to add more
+      // Just jump to the end of the recursion to validate the current length
+      if (currentSchedule.length === numCourses) {
+        generateOptionalCombinations(
+          currentSchedule,
+          currentMasks,
+          optionalSectionsByCourse.length,
+        );
+        return;
+      }
+    }
+
+    // Choice A: Try not adding this optional course
     generateOptionalCombinations(
       currentSchedule,
       currentMasks,
       courseIndex + 1,
     );
 
-    // Try adding each section of this optional course if it doesn't conflict
+    // Choice B: Try adding each section of this optional course
     for (const section of optionalSectionsByCourse[courseIndex]) {
       const sectionMask = meetingTimesToBinaryMask(section);
-
-      // Early termination: check if this section conflicts with current schedule
       let hasConflict = false;
       for (const mask of currentMasks) {
         if (masksConflict(mask, sectionMask)) {
@@ -268,53 +290,42 @@ const addOptionalCourses = (
 export const generateSchedules = async (
   lockedCourseIds: number[],
   optionalCourseIds: number[],
+  numCourses?: number,
 ): Promise<SectionWithCourse[][]> => {
-  // assume that all courseIds are from the same term, add logic to check this later
-
-  // Remove duplicates from both lists
-  lockedCourseIds = Array.from(new Set(lockedCourseIds));
-  optionalCourseIds = Array.from(new Set(optionalCourseIds));
-
-  // Remove any IDs from optional that appear in locked
-  const lockedSet = new Set(lockedCourseIds);
-  optionalCourseIds = optionalCourseIds.filter((id) => !lockedSet.has(id));
-
-  // Get sections for locked and optional courses
   const lockedSectionsByCourse = await Promise.all(
     lockedCourseIds.map(getSectionsAndMeetingTimes),
   );
   const optionalSectionsByCourse = await Promise.all(
     optionalCourseIds.map(getSectionsAndMeetingTimes),
   );
-
-  // sort courses by section count
   optionalSectionsByCourse.sort((a, b) => a.length - b.length);
 
-  // Generate all valid locked schedules using optimized algorithm
   const validLockedSchedules = generateCombinationsOptimized(
     lockedSectionsByCourse,
   );
 
-  // Edge case: no locked courses but have optional courses
+  // Edge case: No locked courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    const schedulesWithOptional = addOptionalCourses(
-      [],
-      optionalSectionsByCourse,
-    );
-    return schedulesWithOptional.filter((schedule) => schedule.length > 0);
+    return addOptionalCourses([], optionalSectionsByCourse, numCourses);
   }
 
-  // If no optional courses, return the locked schedules
+  // If no optional courses, filter the locked schedules by the required count
   if (optionalCourseIds.length === 0) {
-    return validLockedSchedules;
+    return numCourses !== undefined
+      ? validLockedSchedules.filter((s) => s.length === numCourses)
+      : validLockedSchedules;
   }
 
-  // For each valid locked schedule, try adding optional courses
   const allSchedules: SectionWithCourse[][] = [];
   for (const lockedSchedule of validLockedSchedules) {
+    // If a locked schedule is already too big, it can't be valid
+    if (numCourses !== undefined && lockedSchedule.length > numCourses)
+      continue;
+
     const schedulesWithOptional = addOptionalCourses(
       lockedSchedule,
       optionalSectionsByCourse,
+      numCourses, // Pass target down
     );
     allSchedules.push(...schedulesWithOptional);
   }

@@ -63,14 +63,18 @@ export function FilterMultiSelect({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Label className="text-muted-foreground text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-neu7 cursor-pointer text-xs font-bold"
+        >
           {label}
-        </Label>
+        </button>
         <div className="flex items-center gap-2">
           {selected.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-xs text-blue-600 hover:text-blue-600/80"
+              className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
               Clear all
             </button>
@@ -80,7 +84,7 @@ export function FilterMultiSelect({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
               >
                 <PlusIcon
                   className={cn(
@@ -120,15 +124,6 @@ export function FilterMultiSelect({
                           selected.includes(opt.value) && "font-semibold",
                         )}
                       >
-                        {opt.value !== opt.label && (
-                          <div
-                            className={cn("text-muted-foreground font-bold", {
-                              "text-foreground": selected.includes(opt.value),
-                            })}
-                          >
-                            {opt.value}
-                          </div>
-                        )}
                         <div
                           className={cn("text-muted-foreground", {
                             "text-foreground font-semibold": selected.includes(
@@ -148,13 +143,13 @@ export function FilterMultiSelect({
         </div>
       </div>
       {selectedOptions.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-3">
+        <div className="flex flex-wrap gap-2">
           {selectedOptions.slice(0, 3).map((opt) => (
             <span
               key={opt.value}
               className="bg-secondary inline-flex w-fit items-center rounded-full border px-3 py-1 text-xs"
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 {opt.value !== opt.label && (
                   <span className="text-foreground font-bold">{opt.value}</span>
                 )}
@@ -171,14 +166,14 @@ export function FilterMultiSelect({
               <button
                 onClick={() => removeOption(opt.value)}
                 aria-label={`Remove ${opt.label}`}
-                className="text-muted-foreground hover:text-foreground ml-2 rounded-full py-0.5 text-lg leading-none"
+                className="text-muted-foreground hover:text-foreground ml-2 cursor-pointer rounded-full py-0.5 text-lg leading-none"
               >
                 ×
               </button>
             </span>
           ))}
           {selectedOptions.length > 3 && (
-            <span className="rounded-full border px-3 py-1 text-xs">
+            <span className="flex items-center justify-center rounded-full border px-3 py-0 text-xs">
               +{selectedOptions.length - 3}
             </span>
           )}

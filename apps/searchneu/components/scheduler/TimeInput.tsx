@@ -76,8 +76,8 @@ export function TimeInput({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="text-muted-foreground hover:text-foreground/80 flex w-20 items-center gap-2 bg-transparent font-medium focus:outline-none">
-          <span className="inline-block w-14 text-left text-sm">
+        <button className="text-muted-foreground hover:text-foreground/80 flex w-24 cursor-pointer items-center gap-2 bg-transparent font-medium focus:outline-none">
+          <span className="inline-block w-[4.5rem] text-left text-sm whitespace-nowrap">
             {displayValue}
           </span>
           <ChevronDown className="h-4 w-4 opacity-50" />

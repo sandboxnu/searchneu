@@ -1,6 +1,7 @@
 import type { SectionTableSection } from "@/components/catalog/SectionTable";
 
 export type SectionWithCourse = SectionTableSection & {
+  courseId: number;
   courseName: string;
   courseSubject: string;
   courseNumber: string;
@@ -15,7 +16,10 @@ export type ScheduleFilters = {
   minSeatsLeft?: number;
   includeHonors?: boolean;
   nupaths?: string[];
-  includesOnline?: boolean;
+  includesRemote?: boolean;
+  lockedCourseIds?: number[]; // courses that must be present in the schedule
+  hiddenSections?: Set<string>; // sections that should NOT be present in the schedule
+  desiredCampuses?: string[];
 };
 
 // Helper function to check if a section conflicts with time constraints
@@ -53,11 +57,31 @@ const sectionHasClassesOnDays = (
   return false;
 };
 
+// Helper function to check if a section belongs to specific campuses
+const sectiondesiredCampuses = (
+  section: SectionWithCourse,
+  campuses: string[],
+): boolean => {
+  for (const campus of campuses) {
+    if (section.campus === campus) {
+      return true;
+    }
+  }
+  return false;
+};
+
 // Check if a single section passes all filters
 export const sectionPassesFilters = (
   section: SectionWithCourse,
   filters: ScheduleFilters,
 ): boolean => {
+  // Check campuses (only if provided)
+  if (filters.desiredCampuses && filters.desiredCampuses.length > 0) {
+    if (!sectiondesiredCampuses(section, filters.desiredCampuses)) {
+      return false;
+    }
+  }
+
   // Check time constraints (only if provided)
   if (filters.startTime !== undefined || filters.endTime !== undefined) {
     if (
@@ -83,7 +107,7 @@ export const sectionPassesFilters = (
   }
 
   // The only time we care is if we want to exclude online courses
-  if (filters.includesOnline == false) {
+  if (filters.includesRemote == false) {
     if (section.campus == "Online") {
       return false;
     }
@@ -158,6 +182,25 @@ export const schedulePassesFilters = (
     if (!scheduleHasRequiredNupaths(schedule, filters.nupaths)) {
       return false;
     }
+  }
+
+  // Check that all locked courses are present in the schedule
+  if (filters.lockedCourseIds && filters.lockedCourseIds.length > 0) {
+    const scheduleCourseIds = new Set(schedule.map((s) => s.courseId));
+    const allLockedPresent = filters.lockedCourseIds.every((id) =>
+      scheduleCourseIds.has(id),
+    );
+    if (!allLockedPresent) {
+      return false;
+    }
+  }
+
+  // Check that all hidden courses are not present in the schedule
+  if (filters.hiddenSections && filters.hiddenSections.size > 0) {
+    const hasHiddenSection = schedule.some((s) =>
+      filters.hiddenSections!.has(s.crn),
+    );
+    if (hasHiddenSection) return false;
   }
 
   return true;

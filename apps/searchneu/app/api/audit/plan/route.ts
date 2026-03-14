@@ -4,7 +4,7 @@ import {
   createAuditPlan,
   getAuditPlans,
   verifyUser,
-} from "@/lib/controllers/auditPlans";
+} from "@/lib/dal/audits";
 
 /**
  * Creates a new audit plan for the authenticated user

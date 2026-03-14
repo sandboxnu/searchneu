@@ -1,8 +1,8 @@
 "use client";
+import { AuditPlanSummary } from "@/lib/graduate/types";
 import Link from "next/link";
-import { ClientAuditPlan } from "./PlanClient";
 
-export function HeaderClient({ plans }: { plans: ClientAuditPlan[] }) {
+export function HeaderClient({ plans }: { plans: AuditPlanSummary[] }) {
   // get map of plan name -> plan id
   //const userPlans = use(getPlans(parseInt(plan.userId,10)))
   console.log("DENNIS PLANS", plans);

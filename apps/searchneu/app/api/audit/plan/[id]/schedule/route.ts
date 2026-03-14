@@ -1,4 +1,4 @@
-import { updateAuditPlan, verifyUser } from "@/lib/controllers/auditPlans";
+import { updateAuditPlan, verifyUser } from "@/lib/dal/audits";
 import { UpdateAuditPlanDto } from "@/lib/graduate/api-dtos";
 import { NextRequest } from "next/server";
 

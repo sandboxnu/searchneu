@@ -1,4 +1,21 @@
 import { Requisite } from "@sneu/scraper/types";
+import { auditPlansT } from "../db";
+export type AuditPlanRow = typeof auditPlansT.$inferSelect
+
+export interface HydratedAuditPlan<T> {
+  id: number;
+  name: string;
+  userId: string;
+  schedule: Audit<T>;
+  majors: Major[];          
+  minors: Minor[];          
+  concentration: string | null;
+  catalogYear: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type AuditPlanSummary = Pick<AuditPlanRow, "id" |"name">;
 
 /**
  * Describes the term SearchNEU uses for each of Northeastern's NUPath academic

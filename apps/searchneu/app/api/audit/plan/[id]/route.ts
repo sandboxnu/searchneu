@@ -4,8 +4,9 @@ import {
   deleteAuditPlan,
   verifyUser,
   getAuditPlan,
-} from "@/lib/controllers/auditPlans";
+} from "@/lib/dal/audits";
 import { UpdateAuditPlanDto } from "@/lib/graduate/api-dtos";
+import { withAuth } from "@/lib/api/withAuth";
 
 /**
  * Updates an audit plan for the authenticated user
@@ -19,59 +20,68 @@ import { UpdateAuditPlanDto } from "@/lib/graduate/api-dtos";
  * @returns 401 if user is not authenticated
  * @returns 400 if request body is invalid or plan update fails
  */
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  try {
-    const user = await verifyUser();
 
-    if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
+export const PATCH = withAuth<{ id: string }>(async (req, user, { id }) => {
+  const body = UpdateAuditPlanDto.safeParse(await req.json());
+  if (!body.success) return Response.json({ error: "Invalid request" }, { status: 400 });
+  const result = await updateAuditPlan(body.data, parseInt(id, 10), user.id);
+  if (!result) return Response.json({ error: "Failed to update" }, { status: 400 });
+  return Response.json(result);
+});
 
-    const { id } = await params;
-    const auditPlanId = parseInt(id, 10);
-    const body = await req.json();
-    const updateReq = UpdateAuditPlanDto.safeParse(body);
+// export async function PATCH(
+//   req: NextRequest,
+//   { params }: { params: Promise<{ id: string }> },
+// ) {
+//   try {
+//     const user = await verifyUser();
 
-    if (!updateReq.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid update audit plan request" }),
-        {
-          status: 400,
-        },
-      );
-    }
+//     if (!user) {
+//       return new Response(JSON.stringify({ error: "Unauthorized" }), {
+//         status: 401,
+//       });
+//     }
 
-    const updateResult = await updateAuditPlan(
-      updateReq.data,
-      auditPlanId,
-      user.id,
-    );
+//     const { id } = await params;
+//     const auditPlanId = parseInt(id, 10);
+//     const body = await req.json();
+//     const updateReq = UpdateAuditPlanDto.safeParse(body);
 
-    if (!updateResult) {
-      return new Response(
-        JSON.stringify({ error: "Failed to update audit plan" }),
-        {
-          status: 400,
-        },
-      );
-    }
+//     if (!updateReq.success) {
+//       return new Response(
+//         JSON.stringify({ error: "Invalid update audit plan request" }),
+//         {
+//           status: 400,
+//         },
+//       );
+//     }
 
-    return Response.json(updateResult);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : JSON.stringify(error);
+//     const updateResult = await updateAuditPlan(
+//       updateReq.data,
+//       auditPlanId,
+//       user.id,
+//     );
 
-    return new Response(
-      JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
-      { status: 400 },
-    );
-  }
-}
+//     if (!updateResult) {
+//       return new Response(
+//         JSON.stringify({ error: "Failed to update audit plan" }),
+//         {
+//           status: 400,
+//         },
+//       );
+//     }
+
+//     return Response.json(updateResult);
+//   } catch (error) {
+//     const message =
+//       error instanceof Error ? error.message : JSON.stringify(error);
+
+//     return new Response(
+//       JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+//       { status: 400 },
+//     );
+//   }
+// }
 
 /**
  * Deletes an audit plan for the authenticated user

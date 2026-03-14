@@ -9,7 +9,7 @@ import {
   getByMinorAndYear,
   isMajorInYear,
   isValidConcentrationForMajor,
-} from "./majors";
+} from "../controllers/majors";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 

@@ -3,24 +3,11 @@
 import { useState } from "react";
 import { PlanDndWrapper } from "@/components/graduate/dnd/AuditDndWrapper";
 import { prepareAuditForDnd, cleanDndIdsFromPlan } from "./dnd/planDndUtils";
-import { Audit, Major, Minor } from "@/lib/graduate/types";
+import { Audit, HydratedAuditPlan, } from "@/lib/graduate/types";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/graduate/sidebar/Sidebar";
 
-export interface ClientAuditPlan {
-  name: string;
-  catalogYear: number;
-  concentration: string;
-  id: number;
-  updatedAt: Date;
-  createdAt: Date;
-  userId: string;
-  schedule: Audit<null>;
-  majors: Major[] | null;
-  minors: Minor[] | null;
-}
-
-export function PlanClient({ plan }: { plan: ClientAuditPlan }) {
+export function PlanClient({ plan }: { plan: HydratedAuditPlan<null> }) {
   const [scheduleState, setScheduleState] = useState(() =>
     prepareAuditForDnd(plan.schedule),
   );
@@ -39,6 +26,7 @@ export function PlanClient({ plan }: { plan: ClientAuditPlan }) {
       throw new Error(err.error || "failed to update plan");
     }
   };
+
 
   const sidebarNode = <Sidebar auditPlan={plan} />;
 

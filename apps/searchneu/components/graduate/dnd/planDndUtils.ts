@@ -131,8 +131,6 @@ export const prepareAuditForDnd = (plan: Audit<null>): Audit<string> => {
   let courseCount = 0;
   const dndYears: AuditYear<string>[] = [];
   if (!plan.years) {
-    console.log("DENNIS NO PLAN YEARS", plan);
-  }
 
   plan.years.forEach((year) => {
     const { updatedCount, updatedYear } = prepareYearForDnd(year, courseCount);

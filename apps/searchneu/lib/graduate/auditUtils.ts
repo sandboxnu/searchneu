@@ -8,6 +8,18 @@ export function creditsInAudit<T>(audit: Audit<T>): number {
       // do we add min or max lol??
       sum += course.numCreditsMin;
     }
+    for (const course of year.spring.classes) {
+      // do we add min or max lol??
+      sum += course.numCreditsMin;
+    }
+    for (const course of year.summer1.classes) {
+      // do we add min or max lol??
+      sum += course.numCreditsMin;
+    }
+    for (const course of year.summer2.classes) {
+      // do we add min or max lol??
+      sum += course.numCreditsMin;
+    }
   }
 
   return sum;

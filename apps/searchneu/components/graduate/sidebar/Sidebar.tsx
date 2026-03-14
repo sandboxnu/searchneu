@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Section, SidebarValidationStatus } from "@/lib/graduate/types";
+import { Audit, HydratedAuditPlan, Section, SidebarValidationStatus } from "@/lib/graduate/types";
 import SidebarContainer from "./SidebarContainer";
 import SidebarSection from "./SidebarSection";
-import { ClientAuditPlan } from "../PlanClient";
 import { creditsInAudit } from "@/lib/graduate/auditUtils";
 
 export { SidebarValidationStatus };
@@ -35,7 +34,7 @@ interface SidebarProps {
   //getSidebarValidationStatus?: unknown;
   //concentration?: unknown;
   //concentrationValidationStatus?: unknown;
-  auditPlan: ClientAuditPlan;
+  auditPlan: HydratedAuditPlan<null>;
 }
 
 export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
@@ -78,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
       ? UNDECIDED_CONCENTRATION
       : concentration;
   const creditsToTake = currentMajor?.totalCreditsRequired ?? 6767;
-  const creditsTaken = creditsInAudit(schedule) ?? 0;
+  const creditsTaken = creditsInAudit<null>(schedule ?? []) ?? 0;
 
   const sections =
     activeTab === "major"

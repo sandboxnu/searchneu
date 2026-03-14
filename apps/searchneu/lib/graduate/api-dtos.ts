@@ -18,7 +18,9 @@ export const CreateAuditPlanDto = CreateAuditPlanDtoWithoutSchedule.extend({
 
 export const UpdateAuditPlanDto = z.strictObject({
   name: z.string().optional(),
-  schedule: z.any().optional(),
+  schedule: z.object({
+    
+  }).optional(),
   majors: z.string().array().optional(),
   minors: z.string().array().nullable().optional(),
   concentration: z.string().optional(),

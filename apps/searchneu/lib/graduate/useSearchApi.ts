@@ -11,8 +11,8 @@ export function useSearchCourse(
     name: string;
     courseNumber: string;
     subject: string;
-    minCredits: string;
-    maxCredits: string;
+    numCreditsMin: string;
+    numCreditsMax: string;
     sectionsWithSeats: number;
     totalSections: number;
     nupaths: string[];
@@ -20,21 +20,21 @@ export function useSearchCourse(
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const fetchMajors = async () => {
+    const fetchCourse = async () => {
       try {
         const res = await fetch(
-          `/api/search?term=${term}&subj=${subject}&q=${courseNumber}`,
+          `/api/catalog/courses?term=${term}&subject=${subject}&courseNumber=${courseNumber}`,
         );
         const json = await res.json();
-        setData(json[0]);
+        setData(json);
       } catch (err) {
         setError(
-          err instanceof Error ? err : new Error("Failed to fetch majors"),
+          err instanceof Error ? err : new Error(`Failed to fetch course, ${subject+courseNumber} in term ${term}`),
         );
       }
     };
 
-    fetchMajors();
+    fetchCourse();
   }, [term, subject, courseNumber]);
 
   return { data, error };

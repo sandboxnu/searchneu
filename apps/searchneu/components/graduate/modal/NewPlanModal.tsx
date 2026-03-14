@@ -44,6 +44,9 @@ import {
   generateDefaultPlanTitle,
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
+import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
+import { authClient } from "@/lib/auth/auth-client";
+import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 
 export default function NewPlanModal() {
   const [isOpen, setIsOpen] = useState(true);
@@ -51,6 +54,7 @@ export default function NewPlanModal() {
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState(-1);
+  const { data: session } = authClient.useSession();
 
   //majors
   const { data: supportedMajorsData, error: majorsError } =
@@ -81,6 +85,12 @@ export default function NewPlanModal() {
     { value: string; label: string }[]
   >([]);
   const [isLoadingConcentration, setIsLoadingConcentration] = useState(false);
+
+  // guest plan
+  const [, setGuestPlan] = useLocalStorage<CreateAuditPlanInput | null>(
+    "guest-plan",
+    null,
+  );
 
   //templates
   const recommendedTemplateLabel = `This will pre-populate your plan with the recommended course sequence`;
@@ -245,6 +255,12 @@ export default function NewPlanModal() {
           : concentration || undefined,
       };
 
+      if (!session?.user) {
+        setGuestPlan(newPlan);
+        toast(`Plan ${newPlan.name} created locally! Redirecting...`);
+        return;
+      }
+
       const response = await fetch("/api/audit/plan", {
         method: "POST",
         headers: {
@@ -267,7 +283,6 @@ export default function NewPlanModal() {
       //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
       //DENNIS TODO: redirect!!!!!!!!!
-      handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);
       console.error("Error creating plan:", error);

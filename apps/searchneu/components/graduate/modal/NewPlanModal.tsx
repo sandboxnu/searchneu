@@ -44,8 +44,10 @@ import {
   generateDefaultPlanTitle,
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function NewPlanModal() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -266,7 +268,8 @@ export default function NewPlanModal() {
 
       //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
-      //DENNIS TODO: redirect!!!!!!!!!
+      router.push(`/graduate/${createdPlan.id}`);
+
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);

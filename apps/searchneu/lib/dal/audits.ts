@@ -9,7 +9,7 @@ import {
   getByMinorAndYear,
   isMajorInYear,
   isValidConcentrationForMajor,
-} from "./majors";
+} from "../controllers/majors";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
@@ -61,6 +61,20 @@ export async function getAuditPlan(id: number, userId: string) {
   });
 
   return auditPlan;
+}
+
+/**
+ * Retrieves all audit plans for a user
+ *
+ * @param userId the ID of the user requesting the audit plan
+ *
+ * @returns the audit plans if found and belongs to the user, null otherwise
+ */
+export async function getAuditPlans(userId: string) {
+  const auditPlans = await db.query.auditPlansT.findMany({
+    where: eq(auditPlansT.userId, userId),
+  });
+  return auditPlans;
 }
 
 /**

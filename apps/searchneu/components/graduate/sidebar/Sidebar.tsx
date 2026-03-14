@@ -41,7 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
   const { schedule, majors, minors, concentration } = props.auditPlan;
   const currentMajor = majors == null ? null : majors[0];
   const currentMinor = minors == null ? null : minors[0];
-  console.log("DENNIS");
 
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
 

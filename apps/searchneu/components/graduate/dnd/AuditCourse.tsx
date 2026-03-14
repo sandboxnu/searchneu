@@ -92,7 +92,7 @@ export const DraggableScheduleCourse: React.FC<
       isDragging={isDragging}
       listeners={listeners}
       attributes={attributes}
-      transform={getTransformStyle(transform)}
+      transform={undefined}
       isFromSidebar={isSidebarCourse(scheduleCourse.id)}
       isDraggable
       onErrorClick={onErrorClick}
@@ -173,7 +173,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
     return (
       <div
         ref={ref}
-        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-gray-200" : "bg-white"} ${isDragging && !isFromSidebar ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
+        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-gray-200" : "bg-white"} ${isDragging ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
         style={{
           transform:
             hovered && isDraggable ? "scale(1.04)" : (transform ?? "scale(1)"),

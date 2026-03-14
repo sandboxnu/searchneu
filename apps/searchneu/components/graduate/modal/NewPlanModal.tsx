@@ -54,7 +54,6 @@ export default function NewPlanModal() {
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState(-1);
 
-
   //majors
   const { data: supportedMajorsData, error: majorsError } =
     useSupportedMajors();
@@ -269,8 +268,8 @@ export default function NewPlanModal() {
 
       //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
-      router.push(`/graduate/${createdPlan.id}`)
-      
+      router.push(`/graduate/${createdPlan.id}`);
+
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);

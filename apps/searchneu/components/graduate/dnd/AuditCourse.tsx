@@ -2,17 +2,13 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import { forwardRef, useEffect, useState, useMemo } from "react";
-import {
-  AuditCourse,
-  AuditTerm,
-  INEUReqError,
-} from "../../../lib/graduate/types"; // ADJUST THIS PATH
+import { AuditCourse, AuditTerm, INEUReqError } from "@/lib/graduate/types";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
 import {
   DELETE_COURSE_AREA_DND_ID,
   SIDEBAR_DND_ID_PREFIX,
-} from "./planDndUtils"; // ADJUST THIS PATH
+} from "./planDndUtils";
 import { useSearchCourse } from "@/lib/graduate/useSearchApi";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -45,13 +41,6 @@ function courseToString(c: {
   classId: string | number;
 }): string {
   return `${c.subject}${c.classId}`;
-}
-
-function getTransformStyle(
-  transform: { x: number; y: number } | null,
-): string | undefined {
-  if (!transform) return undefined;
-  return `translate3d(${transform.x}px, ${transform.y}px, 0)`;
 }
 
 // ── Draggable Course (static on page, can be picked up) ─────────────────────

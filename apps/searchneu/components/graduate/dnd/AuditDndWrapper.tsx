@@ -10,19 +10,21 @@ import {
   rectIntersection,
   useDroppable,
 } from "@dnd-kit/core";
-import { Audit, AuditCourse } from "../../../lib/graduate/types"; // ADJUST THIS PATH
+import { Audit, AuditCourse } from "@/lib/graduate/types";
 import { PropsWithChildren, useState } from "react";
 import {
   updatePlanOnDragEnd,
   DuplicateCourseError,
   DELETE_COURSE_AREA_DND_ID,
-} from "./planDndUtils"; // ADJUST THIS PATH
+} from "./planDndUtils";
 import { DraggedScheduleCourse } from "./AuditCourse";
 import { AuditPlan, CoReqWarnings, PreReqWarnings } from "./AuditPlan";
 
 // ── Collision Algorithm ──────────────────────────────────────────────────────
 
-const courseDndCollisionAlgorithm: CollisionDetection = (args) => {
+const courseDndCollisionAlgorithm: CollisionDetection = (
+  args: Parameters<CollisionDetection>[0],
+) => {
   const pointerCollisions = pointerWithin(args);
   return pointerCollisions.length > 0
     ? pointerCollisions

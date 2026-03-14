@@ -1,6 +1,7 @@
+"use client";
 import React, { useState } from "react";
-import type { Section } from "../../../lib/graduate/types";
-import { SidebarValidationStatus } from "../../../lib/graduate/types";
+import type { Section } from "@/lib/graduate/types";
+import { SidebarValidationStatus } from "@/lib/graduate/types";
 import SectionRequirement from "./SectionRequirement";
 
 export interface SidebarSectionProps {

@@ -8,11 +8,12 @@ import {
   AuditTerm,
   StatusEnum,
   INEUReqError,
+  YearError,
 } from "@/lib/graduate/types"; // ADJUST THIS PATH
 import { createContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { produce } from "immer";
-import { ScheduleYear, YearError } from "./AuditYear";
+import { ScheduleYear } from "./AuditYear";
 
 // ── Warning types ────────────────────────────────────────────────────────────
 
@@ -37,7 +38,7 @@ function addClassesToTerm(
   termSeason: SeasonEnum,
   plan: Audit<string>,
 ): Audit<string> {
-  return produce(plan, (draft) => {
+  return produce(plan, (draft: Audit<string>) => {
     const year = draft.years.find((y) => y.year === termYear);
     if (!year) return;
 
@@ -86,7 +87,7 @@ function removeCourseFromTerm(
   termSeason: SeasonEnum,
   plan: Audit<string>,
 ): Audit<string> {
-  return produce(plan, (draft) => {
+  return produce(plan, (draft: Audit<string>) => {
     const year = draft.years.find((y) => y.year === termYear);
     if (!year) return;
 
@@ -120,7 +121,7 @@ function removeYearFromPlan(
   plan: Audit<string>,
   yearNum: number,
 ): Audit<string> {
-  return produce(plan, (draft) => {
+  return produce(plan, (draft: Audit<string>) => {
     const idx = yearNum - 1;
     if (idx >= draft.years.length) return;
     draft.years.splice(idx, 1);
@@ -252,7 +253,7 @@ export const AuditPlan: React.FC<AuditPlanProps> = ({
                 summer2: emptyTerm(SeasonEnum.S2),
                 isSummerFull: false,
               };
-              const updatedPlan = produce(plan, (draft) => {
+              const updatedPlan = produce(plan, (draft: Audit<string>) => {
                 draft.years.push(newYear);
               });
               mutatePlanWithUpdate(updatedPlan);

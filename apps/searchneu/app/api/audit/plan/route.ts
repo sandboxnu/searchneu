@@ -1,10 +1,6 @@
-import { NextRequest } from "next/server";
 import { CreateAuditPlanDto } from "@/lib/graduate/api-dtos";
-import {
-  createAuditPlan,
-  getAuditPlans,
-  verifyUser,
-} from "@/lib/dal/audits";
+import { createAuditPlan, getAuditPlans } from "@/lib/dal/audits";
+import { withAuth } from "@/lib/api/withAuth";
 
 /**
  * Creates a new audit plan for the authenticated user
@@ -16,49 +12,21 @@ import {
  * @returns 401 if user is not authenticated
  * @returns 400 if request body is invalid or plan creation fails
  */
-export async function POST(req: NextRequest) {
-  try {
-    const user = await verifyUser();
-
-    if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
-    const body = await req.json();
-    const postReq = CreateAuditPlanDto.safeParse(body);
-
-    if (!postReq.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid create audit plan request" }),
-        {
-          status: 400,
-        },
-      );
-    }
-
-    const plan = await createAuditPlan(postReq.data, user.id);
-
-    if (!plan) {
-      return new Response(
-        JSON.stringify({ error: "Failed to create audit plan" }),
-        {
-          status: 400,
-        },
-      );
-    }
-
-    return Response.json(plan);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : JSON.stringify(error);
-
-    return new Response(
-      JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
+export const POST = withAuth(async (req, user) => {
+  const body = CreateAuditPlanDto.safeParse(await req.json());
+  if (!body.success)
+    return Response.json(
+      { error: "Invalid create audit plan request" },
       { status: 400 },
     );
-  }
-}
+  const plan = await createAuditPlan(body.data, user.id);
+  if (!plan)
+    return Response.json(
+      { error: "Failed to create audit plan" },
+      { status: 400 },
+    );
+  return Response.json(plan);
+});
 
 /**
  * Gets all plans belonging to the authenticated user
@@ -69,25 +37,7 @@ export async function POST(req: NextRequest) {
  * @returns 200 with the fetched plans
  * @returns 401 if user is not authenticated
  */
-export async function GET() {
-  try {
-    const user = await verifyUser();
-
-    if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 403,
-      });
-    }
-
-    const planResult = await getAuditPlans(user.id);
-    return Response.json(planResult);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : JSON.stringify(error);
-
-    return new Response(
-      JSON.stringify({ error: `Failed to fetch audit plan: ${message}` }),
-      { status: 400 },
-    );
-  }
-}
+export const GET = withAuth(async (_req, user) => {
+  const plans = await getAuditPlans(user.id);
+  return Response.json(plans);
+});

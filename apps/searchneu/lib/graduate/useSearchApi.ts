@@ -29,7 +29,11 @@ export function useSearchCourse(
         setData(json);
       } catch (err) {
         setError(
-          err instanceof Error ? err : new Error(`Failed to fetch course, ${subject+courseNumber} in term ${term}`),
+          err instanceof Error
+            ? err
+            : new Error(
+                `Failed to fetch course, ${subject + courseNumber} in term ${term}`,
+              ),
         );
       }
     };

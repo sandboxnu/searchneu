@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from "react";
-import { Audit, HydratedAuditPlan, Section, SidebarValidationStatus } from "@/lib/graduate/types";
+import { Section, SidebarValidationStatus } from "@/lib/graduate/types";
 import SidebarContainer from "./SidebarContainer";
 import SidebarSection from "./SidebarSection";
 import { creditsInAudit } from "@/lib/graduate/auditUtils";
@@ -75,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
     concentration === "Undecided" || concentration == null
       ? UNDECIDED_CONCENTRATION
       : concentration;
-  const creditsToTake = currentMajor?.totalCreditsRequired ?? 6767;
+  const creditsToTake = currentMajor?.totalCreditsRequired ?? 0;
   const creditsTaken = creditsInAudit<null>(schedule ?? []) ?? 0;
 
   const sections =

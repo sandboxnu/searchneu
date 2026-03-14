@@ -5,19 +5,10 @@ import {
   AuditYear,
   SeasonEnum,
   INEUReqError,
-} from "@/lib/graduate/types"; // ADJUST THIS PATH
+  YearError,
+} from "@/lib/graduate/types";
 import { useMemo } from "react";
 import { ScheduleTerm } from "./AuditTerm";
-
-// ── Warning types ────────────────────────────────────────────────────────────
-
-export interface YearError {
-  year: number;
-  fall: Record<string, INEUReqError | undefined>;
-  spring: Record<string, INEUReqError | undefined>;
-  summer1: Record<string, INEUReqError | undefined>;
-  summer2: Record<string, INEUReqError | undefined>;
-}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

@@ -1,3 +1,4 @@
+"use client";
 import React, { type PropsWithChildren } from "react";
 
 const UNDECIDED_CONCENTRATION = "Concentration Undecided";

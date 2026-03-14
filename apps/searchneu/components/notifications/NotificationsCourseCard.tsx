@@ -124,10 +124,10 @@ export function NotificationCourseCardEmpty({
         className,
       )}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-center justify-between">
         <div>
           <div className="bg-neu2 h-6 w-50 rounded-none" />
-          <div className="bg-neu2 mt-2 h-4 w-60 rounded-none" />
+          <div className="bg-neu2 mt-3 h-4 w-60 rounded-none" />
         </div>
 
         <div className="flex gap-2">
@@ -136,7 +136,7 @@ export function NotificationCourseCardEmpty({
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-4">
         <NotificationSectionCardEmpty />
         <NotificationSectionCardEmpty />
         <NotificationSectionCardEmpty />

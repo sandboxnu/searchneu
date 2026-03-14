@@ -41,7 +41,7 @@ export function PastNotificationCard({
 
 export function PastNotificationCardSkeleton() {
   return (
-    <div className="bg-neu2 flex flex-col gap-2 rounded-md p-3">
+    <div className="bg-neu2 border-neu2 flex flex-col gap-2 rounded-md border p-3">
       <div className="flex justify-between">
         <Skeleton className="h-5 w-22 rounded-none" />
         <Skeleton className="h-5 w-30 rounded-none" />
@@ -68,7 +68,7 @@ export function PastNotificationCardsEmpty() {
     return (
       <div
         key={i}
-        className={`bg-neu2 h-17 w-full rounded-md ${opacities[i]}`}
+        className={`bg-neu2 border-neu2 h-17 w-full rounded-md border ${opacities[i]}`}
       />
     );
   });

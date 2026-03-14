@@ -61,9 +61,9 @@ export function NotificationsViewSkeleton() {
 export function NotificationViewEmpty({ signedIn }: { signedIn?: boolean }) {
   return (
     <div className="flex flex-col gap-5">
-      <NotificationCourseCardEmpty className="opacity-[0.7] blur-[2px]" />
+      <NotificationCourseCardEmpty className="opacity-[0.9] blur-[1px]" />
       <div className="relative">
-        <NotificationCourseCardEmpty className="opacity-[0.55] blur-[3px]" />
+        <NotificationCourseCardEmpty className="opacity-[0.7] blur-[2px]" />
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span className="text-neu8 text-lg font-medium">
             No notification trackers yet
@@ -82,7 +82,7 @@ export function NotificationViewEmpty({ signedIn }: { signedIn?: boolean }) {
           </Link>
         </div>
       </div>
-      <NotificationCourseCardEmpty className="opacity-[0.4] blur-[4px]" />
+      <NotificationCourseCardEmpty className="opacity-[0.5] blur-[3px]" />
     </div>
   );
 }

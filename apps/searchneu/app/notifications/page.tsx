@@ -225,7 +225,7 @@ export default async function Page() {
             </Suspense>
           </div>
         </div>
-        <div className="col-span-5 min-h-0 pl-6">
+        <div className="col-span-5 min-h-0 pl-3">
           <Suspense fallback={<NotificationsViewSkeleton />}>
             <NotificationsView coursesPromise={courses} termsPromise={terms} />
           </Suspense>

@@ -224,5 +224,5 @@ export function NotificationSectionCardSkeleton() {
 }
 
 export function NotificationSectionCardEmpty() {
-  return <div className="bg-neu2 h-60 w-105 rounded-md" />;
+  return <div className="bg-neu2 border-neu2 h-65 w-110 rounded-md border" />;
 }

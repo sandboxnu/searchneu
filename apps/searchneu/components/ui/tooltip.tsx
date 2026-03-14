@@ -8,7 +8,13 @@ import { cn } from "@/lib/cn";
 function TooltipProvider({
   ...props
 }: ComponentProps<typeof TooltipPrimitive.Provider>) {
-  return <TooltipPrimitive.Provider data-slot="tooltip-provider" {...props} />;
+  return (
+    <TooltipPrimitive.Provider
+      data-slot="tooltip-provider"
+      delayDuration={0}
+      {...props}
+    />
+  );
 }
 
 function Tooltip({

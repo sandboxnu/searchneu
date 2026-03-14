@@ -1,8 +1,8 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { Button } from "../ui/button";
 import { Info, Trash2 } from "lucide-react";
-import { SectionPills } from "./SectionPills";
 import { TooltipTrigger, TooltipContent, Tooltip } from "../ui/tooltip";
 import {
   PastNotificationCard,
@@ -76,6 +76,41 @@ function InfoTooltip({ text }: { text: string }) {
     </Tooltip>
   );
 }
+
+export function SectionPills({
+  filled,
+  total,
+}: {
+  filled: number;
+  total: number;
+}) {
+  const safeTotal = Math.max(1, total);
+  const safeFilled = Math.max(0, Math.min(filled, safeTotal));
+
+  return (
+    <div className="flex w-full items-center gap-1">
+      {Array.from({ length: safeTotal }).map((_, i) => {
+        const isFilled = i < safeFilled;
+        const isFirst = i === 0;
+        const isLast = i === safeTotal - 1;
+
+        return (
+          <div
+            key={i}
+            className={cn(
+              "h-2 min-w-[6px] flex-1",
+              "rounded-[2px]",
+              isFirst && "rounded-l-md rounded-r",
+              isLast && "rounded-l rounded-r-md",
+              isFilled ? "bg-neu7 opacity-95" : "bg-neu3 opacity-85",
+            )}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export function NotificationCountCard({
   subscribedCount,
   totalLimit,

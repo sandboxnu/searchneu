@@ -146,7 +146,7 @@ export interface AuditPlanProps {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export function AuditPlan ({
+export function AuditPlan({
   plan,
   mutatePlanWithUpdate,
   preReqErr,
@@ -236,7 +236,7 @@ export function AuditPlan ({
 
           {/* Add Year button */}
           <button
-            className="rounded-lg border border-dashed border-blue/50 px-4 py-2 text-sm font-medium text-blue transition-colors hover:bg-blue/10"
+            className="border-blue/50 text-blue hover:bg-blue/10 rounded-lg border border-dashed px-4 py-2 text-sm font-medium transition-colors"
             onClick={() => {
               const nextYear = totalYears + 1;
               const emptyTerm = (season: SeasonEnum): AuditTerm<string> => ({
@@ -266,4 +266,4 @@ export function AuditPlan ({
       </PlanContext.Provider>
     </TotalYearsContext.Provider>
   );
-};
+}

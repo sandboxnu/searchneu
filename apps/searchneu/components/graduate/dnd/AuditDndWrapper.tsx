@@ -74,7 +74,7 @@ export function PlanDndWrapper({
   onError,
   onWarningsRecompute,
   sidebar,
-}: PlanDndWrapperProps){
+}: PlanDndWrapperProps) {
   const [activeCourse, setActiveCourse] = useState<AuditCourse<string> | null>(
     null,
   );
@@ -114,7 +114,7 @@ export function PlanDndWrapper({
       <DeleteDropZone>
         <div className="flex h-full overflow-hidden">
           {sidebar && (
-            <div className="w-[360px] flex-shrink-0 overflow-y-auto bg-neu25">
+            <div className="bg-neu25 w-[360px] flex-shrink-0 overflow-y-auto">
               {sidebar}
             </div>
           )}

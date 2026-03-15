@@ -288,4 +288,4 @@ export function updatePlanOnDragEnd(
       id: "moving-course-temp",
     });
   });
-};
+}

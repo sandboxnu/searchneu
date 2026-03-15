@@ -56,12 +56,11 @@ export function DraggableScheduleCourse({
   setIsRemove,
   onErrorClick,
 }: DraggableScheduleCourseProps) {
-  const { setNodeRef, transform, listeners, attributes, isDragging, over } =
-    useDraggable({
-      id: scheduleCourse.id,
-      data: { course: scheduleCourse },
-      disabled: isDisabled,
-    });
+  const { setNodeRef, listeners, attributes, isDragging, over } = useDraggable({
+    id: scheduleCourse.id,
+    data: { course: scheduleCourse },
+    disabled: isDisabled,
+  });
 
   useEffect(() => {
     if (setIsRemove) setIsRemove(over?.id === DELETE_COURSE_AREA_DND_ID);
@@ -140,7 +139,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
       isDraggable = false,
       onErrorClick,
     },
-    ref // Note: ref is the second argument!
+    ref, // Note: ref is the second argument!
   ) {
     const [hovered, setHovered] = useState(false);
     const isValidRemove = isRemove && !isFromSidebar;
@@ -176,7 +175,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         >
           {isDraggable && (
             <svg
-              className="mr-1.5 h-3 w-3 flex-shrink-0 text-neu5"
+              className="text-neu5 mr-1.5 h-3 w-3 flex-shrink-0"
               viewBox="0 0 10 16"
               fill="currentColor"
             >
@@ -200,7 +199,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         <div className="flex items-center">
           {hasError && (
             <button
-              className="p-1 text-red hover:text-red/80"
+              className="text-red hover:text-red/80 p-1"
               onClick={() => {
                 const err = preReqErr ?? coReqErr;
                 if (onErrorClick && err) onErrorClick(scheduleCourse, err);
@@ -224,7 +223,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
           )}
           {isEditable && hovered && removeCourse && (
             <button
-              className="p-1 text-neu5 transition-colors hover:text-red"
+              className="text-neu5 hover:text-red p-1 transition-colors"
               onClick={() => removeCourse(scheduleCourse)}
               title="Remove course"
             >
@@ -250,7 +249,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         {isValidRemove && (
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <svg
-              className="h-5 w-5 text-red"
+              className="text-red h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -31,17 +31,17 @@ function SidebarSection({
 
   return (
     <div
-      className="cursor-pointer border-t border-neu25 transition-[background-color] duration-[0.25s] ease-out select-none"
+      className="border-neu25 cursor-pointer border-t transition-[background-color] duration-[0.25s] ease-out select-none"
       onClick={() => setOpened(!opened)}
     >
       <div
-        className="sticky top-0 z-10 m-0 flex flex-row items-start justify-between bg-neu2 px-4 py-4 font-bold transition-[background-color,border-color,color] duration-[0.25s] ease-out hover:bg-neu25 active:bg-neu3"
+        className="bg-neu2 hover:bg-neu25 active:bg-neu3 sticky top-0 z-10 m-0 flex flex-row items-start justify-between px-4 py-4 font-bold transition-[background-color,border-color,color] duration-[0.25s] ease-out"
         style={{ transitionDelay: "0.1s" }}
       >
         <div className="flex h-full flex-row gap-2">
           {/* Status circle - matches graduatenu SidebarSection */}
           <div
-            className={`mt-0.5 flex h-[18px] min-h-[18px] w-[18px] min-w-[18px] items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-[0.25s] ease-out ${isComplete ? "border-green bg-green text-white" : ""} ${isError ? "border-neu5 bg-neu5 text-white" : ""} ${isInProgress ? "border-yellow bg-yellow text-white" : ""} ${isLoading ? "border-neu5 bg-transparent text-neu5" : ""} `}
+            className={`mt-0.5 flex h-[18px] min-h-[18px] w-[18px] min-w-[18px] items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-[0.25s] ease-out ${isComplete ? "border-green bg-green text-white" : ""} ${isError ? "border-neu5 bg-neu5 text-white" : ""} ${isInProgress ? "border-yellow bg-yellow text-white" : ""} ${isLoading ? "border-neu5 text-neu5 bg-transparent" : ""} `}
           >
             {isComplete && (
               <svg
@@ -67,13 +67,13 @@ function SidebarSection({
               </svg>
             )}
             {isLoading && (
-              <div className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-neu5 border-t-transparent" />
+              <div className="border-neu5 h-2.5 w-2.5 animate-spin rounded-full border-2 border-t-transparent" />
             )}
             {isInProgress && (
               <span className="text-[10px] text-white">...</span>
             )}
           </div>
-          <span className="mt-0 text-sm text-navy">{section.title}</span>
+          <span className="text-navy mt-0 text-sm">{section.title}</span>
         </div>
         <div className="ml-1 flex items-center">
           {opened ? (
@@ -82,7 +82,7 @@ function SidebarSection({
               height="25"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="shrink-0 text-navy"
+              className="text-navy shrink-0"
               aria-hidden
             >
               <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
@@ -93,7 +93,7 @@ function SidebarSection({
               height="25"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="shrink-0 text-navy"
+              className="text-navy shrink-0"
               aria-hidden
             >
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
@@ -104,12 +104,12 @@ function SidebarSection({
 
       {opened && (
         <div
-          className="cursor-default border-t border-neu25 bg-neu25 pt-2.5 pr-5 pb-4 pl-2.5"
+          className="border-neu25 bg-neu25 cursor-default border-t pt-2.5 pr-5 pb-4 pl-2.5"
           style={{ borderTopWidth: "0.5px" }}
           onClick={(e) => e.stopPropagation()}
         >
           {section.minRequirementCount < section.requirements.length && (
-            <p className="text-sm text-neu7 italic">
+            <p className="text-neu7 text-sm italic">
               Complete {section.minRequirementCount} of the following:
             </p>
           )}

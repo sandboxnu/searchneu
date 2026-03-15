@@ -18,21 +18,21 @@ export function SidebarContainer({
   creditsToTake,
   renderBetaMajorBlock,
   children,
-}: PropsWithChildren<SidebarContainerProps>){
+}: PropsWithChildren<SidebarContainerProps>) {
   const isUndecided = subtitle === UNDECIDED_CONCENTRATION;
 
   return (
-    <div className="flex h-full flex-col overflow-hidden border-r border-neu25">
+    <div className="border-neu25 flex h-full flex-col overflow-hidden border-r">
       <div className="shrink-0 px-4 pt-8 pb-4">
         {renderBetaMajorBlock && (
           <div className="flex items-center pb-2">
-            <span className="rounded-md border border-red px-2 py-0.5 text-sm font-bold text-red">
+            <span className="border-red text-red rounded-md border px-2 py-0.5 text-sm font-bold">
               BETA MAJOR
             </span>
           </div>
         )}
         <div className="pb-2">
-          <h1 className="text-2xl font-bold text-navy">{title}</h1>
+          <h1 className="text-navy text-2xl font-bold">{title}</h1>
           {subtitle && (
             <p
               className={`text-sm ${isUndecided ? "text-red italic" : "text-navy"}`}
@@ -43,7 +43,7 @@ export function SidebarContainer({
         </div>
         {creditsTaken !== undefined && (
           <div className="mb-2 flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-navy">
+            <span className="text-navy text-2xl font-bold">
               {creditsTaken}
               {creditsToTake !== undefined ? `/${creditsToTake}` : ""}
             </span>
@@ -53,11 +53,11 @@ export function SidebarContainer({
       </div>
 
       {/* Scrollable content area */}
-      <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neu4 [&::-webkit-scrollbar-track]:bg-transparent">
+      <div className="[&::-webkit-scrollbar-thumb]:bg-neu4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
         {children}
       </div>
     </div>
   );
-};
+}
 
 export default SidebarContainer;

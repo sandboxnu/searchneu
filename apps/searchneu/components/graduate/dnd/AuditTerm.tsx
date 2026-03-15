@@ -68,7 +68,7 @@ export function ScheduleTerm({
   removeCourseFromTermInCurrPlan,
   onErrorClick,
   renderAddCourse,
-} : ScheduleTermProps) {
+}: ScheduleTermProps) {
   const { isOver, setNodeRef } = useDroppable({ id: scheduleTerm.id });
   const credits = totalCreditsInTerm(scheduleTerm);
   const seasonDisplay =
@@ -84,7 +84,7 @@ export function ScheduleTerm({
         <span className="text-xs font-bold tracking-wide uppercase">
           {seasonDisplay}
         </span>
-        <span className="text-xs font-medium text-blue">
+        <span className="text-blue text-xs font-medium">
           {credits} {credits === 1 ? "Credit" : "Credits"}
         </span>
       </div>
@@ -115,10 +115,10 @@ export function ScheduleTerm({
       {renderAddCourse ? (
         renderAddCourse(scheduleTerm.season, yearNum)
       ) : (
-        <button className="mt-1 w-full rounded border border-dashed border-neu4 py-1.5 text-xs text-neu5 transition-colors hover:border-blue/70 hover:text-blue">
+        <button className="border-neu4 text-neu5 hover:border-blue/70 hover:text-blue mt-1 w-full rounded border border-dashed py-1.5 text-xs transition-colors">
           + Add Course
         </button>
       )}
     </div>
   );
-};
+}

@@ -64,7 +64,7 @@ export function ScheduleYear({
   setIsRemove,
   onErrorClick,
   renderAddCourse,
-} : ScheduleYearProps) {
+}: ScheduleYearProps) {
   const credits = totalCreditsInYear(scheduleYear);
 
   const hasReqErrors = useMemo(() => {
@@ -138,7 +138,7 @@ export function ScheduleYear({
             </span>
           )}
           <button
-            className="p-1 text-white/70 transition-colors hover:text-red/60"
+            className="hover:text-red/60 p-1 text-white/70 transition-colors"
             title={`Delete Year ${scheduleYear.year}`}
             onClick={(e) => {
               e.stopPropagation();
@@ -190,4 +190,4 @@ export function ScheduleYear({
       )}
     </div>
   );
-};
+}

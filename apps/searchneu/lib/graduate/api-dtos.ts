@@ -34,5 +34,10 @@ export const UpdateAuditPlanDto = z.strictObject({
     .optional(),
 });
 
+export const PatchStudentDto = z.object({
+  transferCourses: z.array(z.any()),
+});
+
 export type CreateAuditPlanInput = z.infer<typeof CreateAuditPlanDto>;
 export type UpdateAuditPlanInput = z.infer<typeof UpdateAuditPlanDto>;
+export type PatchStudentInput = z.infer<typeof PatchStudentDto>;

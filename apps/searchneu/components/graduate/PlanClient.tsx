@@ -25,6 +25,7 @@ import {
 import { CourseNameContext } from "./CourseNameContext";
 import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
+import { TransferCourseRow, TRANSFER_ZONE_ID } from "./dnd/TransferCourseRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
 import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
 
@@ -102,9 +103,14 @@ const collisionAlgorithm: CollisionDetection = (args) => {
 interface PlanClientProps {
   plan: HydratedAuditPlan & { courseNames: Record<string, string> };
   courseNames: Record<string, string>;
+  transferCourses: AuditCourse[];
 }
 
-export function PlanClient({ plan, courseNames }: PlanClientProps) {
+export function PlanClient({
+  plan,
+  courseNames,
+  transferCourses: initialTransferCourses,
+}: PlanClientProps) {
   const [schedule, setSchedule] = useState<Audit>(() =>
     assignDndIds(plan.schedule),
   );
@@ -141,6 +147,29 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
       pruned[section] = { ...entry, courses: filtered };
     }
     return changed ? pruned : null;
+  }
+  const [isTransferCoursesExpanded, setIsTransferCoursesExpanded] =
+    useState(false);
+  const [transferCourses, setTransferCourses] = useState<AuditCourse[]>(
+    () => initialTransferCourses,
+  );
+
+  async function persistTransferCourses(updated: AuditCourse[]) {
+    setTransferCourses(updated);
+    try {
+      const res = await fetch("/api/audit/student", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ transferCourses: updated }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.error || "Failed to save");
+      }
+    } catch {
+      toast.error("Failed to save plan");
+    }
   }
 
   async function persist(updated: Audit) {
@@ -208,6 +237,39 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
 
     const course: AuditCourse | undefined = active.data.current?.course;
     if (!course) return;
+
+    // Handle drop onto transfer courses zone
+    if (over.id === TRANSFER_ZONE_ID) {
+      if (
+        !course.generic &&
+        transferCourses.some(
+          (c) => c.classId === course.classId && c.subject === course.subject,
+        )
+      ) {
+        toast.error(
+          `${course.subject}${course.classId} already exists in transfer courses.`,
+        );
+        return;
+      }
+      if (!isSidebarCourse(active.id as string)) {
+        const updatedSchedule = produce(schedule, (draft) => {
+          const sourceTerm = flatTerms(draft).find((t) =>
+            t.classes.some((c) => c.id === active.id),
+          );
+          if (sourceTerm) {
+            sourceTerm.classes = sourceTerm.classes.filter(
+              (c) => c.id !== active.id,
+            );
+          }
+        });
+        if (updatedSchedule !== schedule) persist(updatedSchedule);
+      }
+      persistTransferCourses([
+        ...transferCourses,
+        { ...course, id: `transfer-${++_idCounter}` },
+      ]);
+      return;
+    }
 
     const updated = produce(schedule, (draft) => {
       const terms = flatTerms(draft);
@@ -310,6 +372,11 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
     persist(updated);
   }
 
+  function handleRemoveTransferCourse(courseIndex: number) {
+    const updated = transferCourses.filter((_, i) => i !== courseIndex);
+    persistTransferCourses(updated);
+  }
+
   function handleAddYear() {
     const nextYear = schedule.years.length + 1;
     const emptyTerm = (season: SeasonEnum): AuditTerm => ({
@@ -406,6 +473,15 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
               >
                 + Add Year
               </button>
+
+              <TransferCourseRow
+                courses={transferCourses}
+                expanded={isTransferCoursesExpanded}
+                onToggle={() =>
+                  setIsTransferCoursesExpanded(!isTransferCoursesExpanded)
+                }
+                onRemoveCourse={handleRemoveTransferCourse}
+              />
             </div>
           </div>
         </DeleteDropZone>

@@ -1,14 +1,15 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAuditPlan, getAuditPlans } from "@/lib/dal/audits";
+import { getAuditMetadata } from "@/lib/dal/auditMetadata";
 import { getCourseNamesBatch } from "@/lib/dal/courses";
 import { auth } from "@/lib/auth/auth";
 import NotFound from "@/app/not-found";
 import {
   Audit,
+  AuditCourse,
   AuditTerm,
   AuditPlanRow,
-  AuditPlanSummary,
   HydratedAuditPlan,
   Major,
   Minor,
@@ -144,19 +145,28 @@ export default async function PlanPage({
   }
 
   const planId = (await params).planId;
-  const plan = await getAuditPlan(parseInt(planId, 10), session.user.id);
-  const userPlans: AuditPlanSummary[] = await getAuditPlans(session.user.id);
+  const [plan, userPlans, auditMetadata] = await Promise.all([
+    getAuditPlan(parseInt(planId, 10), session.user.id),
+    getAuditPlans(session.user.id),
+    getAuditMetadata(session.user.id),
+  ]);
 
   if (!plan) {
     return <NotFound />;
   }
 
   const hydrated = await hydratePlan(plan);
+  const transferCourses = (auditMetadata?.coursesTransferred ??
+    []) as AuditCourse[];
 
   return (
     <div className="mx-auto flex flex-col gap-4 px-6">
       <HeaderClient plans={userPlans} currentPlan={hydrated} isGuest={false} />
-      <PlanClient plan={hydrated} courseNames={hydrated.courseNames} />
+      <PlanClient
+        plan={hydrated}
+        courseNames={hydrated.courseNames}
+        transferCourses={transferCourses}
+      />
     </div>
   );
 }

@@ -12,23 +12,23 @@ export default async function Page() {
       <div className="p-8 px-40">
         {showHowTo && (
           <>
-        <h2 className="text-neu7 pl-4 text-2xl text-[28px] font-bold">
-          How-to Guides
-        </h2>
-        <ScrollArea className="mb-4 w-full whitespace-nowrap">
-          <div className="flex w-max space-x-4 p-4 pt-3">
-            {howToData.howtos.map((howto) => (
-              <HowToCard
-                key={howto.id}
-                img={howto.img}
-                title={howto.title}
-                description={howto.description}
-              />
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        </>
+            <h2 className="text-neu7 pl-4 text-2xl text-[28px] font-bold">
+              How-to Guides
+            </h2>
+            <ScrollArea className="mb-4 w-full whitespace-nowrap">
+              <div className="flex w-max space-x-4 p-4 pt-3">
+                {howToData.howtos.map((howto) => (
+                  <HowToCard
+                    key={howto.id}
+                    img={howto.img}
+                    title={howto.title}
+                    description={howto.description}
+                  />
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </>
         )}
         <h2 className="text-neu7 mb-4 pl-4 text-2xl text-[28px] font-bold">
           FAQs

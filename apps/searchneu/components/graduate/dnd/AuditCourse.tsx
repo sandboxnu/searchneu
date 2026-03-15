@@ -160,7 +160,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
     return (
       <div
         ref={ref}
-        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-gray-200" : "bg-white"} ${isDragging ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
+        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-neu3" : "bg-neu1"} ${isDragging ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
         style={{
           transform:
             hovered && isDraggable ? "scale(1.04)" : (transform ?? "scale(1)"),
@@ -176,7 +176,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         >
           {isDraggable && (
             <svg
-              className="mr-1.5 h-3 w-3 flex-shrink-0 text-gray-400"
+              className="mr-1.5 h-3 w-3 flex-shrink-0 text-neu5"
               viewBox="0 0 10 16"
               fill="currentColor"
             >
@@ -200,7 +200,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         <div className="flex items-center">
           {hasError && (
             <button
-              className="p-1 text-red-500 hover:text-red-700"
+              className="p-1 text-red hover:text-red/80"
               onClick={() => {
                 const err = preReqErr ?? coReqErr;
                 if (onErrorClick && err) onErrorClick(scheduleCourse, err);
@@ -224,7 +224,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
           )}
           {isEditable && hovered && removeCourse && (
             <button
-              className="p-1 text-gray-400 transition-colors hover:text-red-500"
+              className="p-1 text-neu5 transition-colors hover:text-red"
               onClick={() => removeCourse(scheduleCourse)}
               title="Remove course"
             >
@@ -250,7 +250,7 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
         {isValidRemove && (
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <svg
-              className="h-5 w-5 text-red-500"
+              className="h-5 w-5 text-red"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

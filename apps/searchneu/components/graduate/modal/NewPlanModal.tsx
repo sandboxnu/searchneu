@@ -424,7 +424,7 @@ export default function NewPlanModal() {
                       ? () => setIsNoMajorSelected(!isNoMajorSelected)
                       : handleNoMajor
                   }
-                  className="border-input h-3 w-3 scale-150 rounded accent-red-500"
+                  className="border-input h-3 w-3 scale-150 rounded accent-red"
                   id="no-major-check"
                 />
                 <Label
@@ -549,13 +549,13 @@ export default function NewPlanModal() {
               )}
 
               {/* modal footer */}
-              <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
+              <div className="flex flex-col justify-center gap-4 border-t border-neu25 py-4">
                 {isTemplateLoading && <p>fetching template...</p>}
                 {hasTemplate &&
                   !isNoMajorSelected &&
                   majors.length > 0 &&
                   !isTemplateLoading && (
-                    <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
+                    <div className="mt-2 gap-8 rounded-xl border bg-neu2 p-4">
                       <div className="display: mb-2 inline-flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -564,7 +564,7 @@ export default function NewPlanModal() {
                           onChange={() =>
                             setUseRecommendedTemplate(!useRecommendedTemplate)
                           }
-                          className="h-3 w-3 scale-150 rounded accent-red-500"
+                          className="h-3 w-3 scale-150 rounded accent-red"
                           disabled={
                             majors.length === 0 &&
                             !catalogYear &&

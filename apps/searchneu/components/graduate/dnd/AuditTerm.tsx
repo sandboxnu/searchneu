@@ -77,14 +77,14 @@ export function ScheduleTerm({
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col px-3 pt-3 pb-6 transition-colors duration-100 select-none ${isOver ? "bg-gray-200" : "bg-gray-100"} `}
+      className={`flex flex-col px-3 pt-3 pb-6 transition-colors duration-100 select-none ${isOver ? "bg-neu3" : "bg-neu25"} `}
     >
       {/* Header */}
       <div className="flex items-start gap-2 pb-2">
         <span className="text-xs font-bold tracking-wide uppercase">
           {seasonDisplay}
         </span>
-        <span className="text-xs font-medium text-blue-500">
+        <span className="text-xs font-medium text-blue">
           {credits} {credits === 1 ? "Credit" : "Credits"}
         </span>
       </div>
@@ -115,7 +115,7 @@ export function ScheduleTerm({
       {renderAddCourse ? (
         renderAddCourse(scheduleTerm.season, yearNum)
       ) : (
-        <button className="mt-1 w-full rounded border border-dashed border-gray-300 py-1.5 text-xs text-gray-400 transition-colors hover:border-blue-400 hover:text-blue-500">
+        <button className="mt-1 w-full rounded border border-dashed border-neu4 py-1.5 text-xs text-neu5 transition-colors hover:border-blue/70 hover:text-blue">
           + Add Course
         </button>
       )}

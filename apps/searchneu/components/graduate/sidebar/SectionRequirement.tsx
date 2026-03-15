@@ -57,7 +57,7 @@ export function SectionRequirement({
     const r = requirement as IAndCourse;
     return (
       <div className={wrapperClass}>
-        <p className="text-sm text-neutral-700 italic">
+        <p className="text-sm text-neu7 italic">
           Complete all of the following:
         </p>
         {r.courses.map((c, i) => (
@@ -75,7 +75,7 @@ export function SectionRequirement({
     const r = requirement as IOrCourse;
     return (
       <div className={wrapperClass}>
-        <p className="text-sm text-neutral-700 italic">
+        <p className="text-sm text-neu7 italic">
           Complete 1 of the following:
         </p>
         {r.courses.map((c, i) => (
@@ -93,7 +93,7 @@ export function SectionRequirement({
     const r = requirement as IXofManyCourse;
     return (
       <div className={wrapperClass}>
-        <p className="text-sm text-neutral-700 italic">
+        <p className="text-sm text-neu7 italic">
           Complete {r.numCreditsMin} credits from the following:
         </p>
         {r.courses.map((c, i) => (
@@ -111,7 +111,7 @@ export function SectionRequirement({
     const r = requirement as ICourseRange;
     return (
       <div className={wrapperClass}>
-        <p className="text-sm text-neutral-700 italic">
+        <p className="text-sm text-neu7 italic">
           Complete any course in range {r.subject}
           {r.idRangeStart} to {r.subject}
           {r.idRangeEnd}

@@ -31,17 +31,17 @@ function SidebarSection({
 
   return (
     <div
-      className="cursor-pointer border-t border-neutral-200 transition-[background-color] duration-[0.25s] ease-out select-none"
+      className="cursor-pointer border-t border-neu25 transition-[background-color] duration-[0.25s] ease-out select-none"
       onClick={() => setOpened(!opened)}
     >
       <div
-        className="sticky top-0 z-10 m-0 flex flex-row items-start justify-between bg-neutral-50 px-4 py-4 font-bold transition-[background-color,border-color,color] duration-[0.25s] ease-out hover:bg-neutral-100 active:bg-neutral-200"
+        className="sticky top-0 z-10 m-0 flex flex-row items-start justify-between bg-neu2 px-4 py-4 font-bold transition-[background-color,border-color,color] duration-[0.25s] ease-out hover:bg-neu25 active:bg-neu3"
         style={{ transitionDelay: "0.1s" }}
       >
         <div className="flex h-full flex-row gap-2">
           {/* Status circle - matches graduatenu SidebarSection */}
           <div
-            className={`mt-0.5 flex h-[18px] min-h-[18px] w-[18px] min-w-[18px] items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-[0.25s] ease-out ${isComplete ? "border-emerald-600 bg-emerald-600 text-white" : ""} ${isError ? "border-neutral-400 bg-neutral-400 text-white" : ""} ${isInProgress ? "border-orange-500 bg-orange-500 text-white" : ""} ${isLoading ? "border-neutral-400 bg-transparent text-neutral-400" : ""} `}
+            className={`mt-0.5 flex h-[18px] min-h-[18px] w-[18px] min-w-[18px] items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-[0.25s] ease-out ${isComplete ? "border-green bg-green text-white" : ""} ${isError ? "border-neu5 bg-neu5 text-white" : ""} ${isInProgress ? "border-yellow bg-yellow text-white" : ""} ${isLoading ? "border-neu5 bg-transparent text-neu5" : ""} `}
           >
             {isComplete && (
               <svg
@@ -67,13 +67,13 @@ function SidebarSection({
               </svg>
             )}
             {isLoading && (
-              <div className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-neutral-400 border-t-transparent" />
+              <div className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-neu5 border-t-transparent" />
             )}
             {isInProgress && (
               <span className="text-[10px] text-white">...</span>
             )}
           </div>
-          <span className="mt-0 text-sm text-blue-900">{section.title}</span>
+          <span className="mt-0 text-sm text-navy">{section.title}</span>
         </div>
         <div className="ml-1 flex items-center">
           {opened ? (
@@ -82,7 +82,7 @@ function SidebarSection({
               height="25"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="shrink-0 text-blue-900"
+              className="shrink-0 text-navy"
               aria-hidden
             >
               <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
@@ -93,7 +93,7 @@ function SidebarSection({
               height="25"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="shrink-0 text-blue-900"
+              className="shrink-0 text-navy"
               aria-hidden
             >
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
@@ -104,12 +104,12 @@ function SidebarSection({
 
       {opened && (
         <div
-          className="cursor-default border-t border-neutral-200 bg-neutral-100 pt-2.5 pr-5 pb-4 pl-2.5"
+          className="cursor-default border-t border-neu25 bg-neu25 pt-2.5 pr-5 pb-4 pl-2.5"
           style={{ borderTopWidth: "0.5px" }}
           onClick={(e) => e.stopPropagation()}
         >
           {section.minRequirementCount < section.requirements.length && (
-            <p className="text-sm text-neutral-700 italic">
+            <p className="text-sm text-neu7 italic">
               Complete {section.minRequirementCount} of the following:
             </p>
           )}

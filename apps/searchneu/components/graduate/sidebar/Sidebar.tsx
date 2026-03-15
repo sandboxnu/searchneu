@@ -30,7 +30,7 @@ export function Sidebar({
     return (
       <SidebarContainer title="Failed to load major">
         <div className="px-4 py-8 text-center">
-          <span className="text-xs text-neutral-500">schedule is null 😭</span>
+          <span className="text-xs text-neu6">schedule is null 😭</span>
         </div>
       </SidebarContainer>
     );
@@ -42,8 +42,8 @@ export function Sidebar({
       <SidebarContainer title="Loading...">
         <div className="flex min-h-full w-full items-center justify-center p-8 text-center">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-300 border-t-blue-600" />
-            <span className="text-sm font-medium text-neutral-500">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-neu4 border-t-blue" />
+            <span className="text-sm font-medium text-neu6">
               Loading requirement data...
             </span>
           </div>
@@ -75,15 +75,15 @@ export function Sidebar({
         {
           <>
             {/* Tabs - enclosed, blue.800 selected, neutral.50 bg (matches graduatenu) */}
-            <div className="bg-neutral-50 pt-3">
-              <div className="flex gap-2 border-b-2 border-neutral-200 px-4">
+            <div className="bg-neu2 pt-3">
+              <div className="flex gap-2 border-b-2 border-neu25 px-4">
                 <button
                   type="button"
                   onClick={() => setActiveTab("major")}
                   className={`flex-[0.4] rounded-t-lg px-1 py-1 text-xs font-bold uppercase transition-all ${
                     activeTab === "major"
-                      ? "bg-blue-800 text-white shadow-md"
-                      : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
+                      ? "bg-navy text-white shadow-md"
+                      : "bg-neu3 text-neu6 hover:bg-neu4"
                   }`}
                 >
                   MAJOR
@@ -94,8 +94,8 @@ export function Sidebar({
                     onClick={() => setActiveTab("minor")}
                     className={`flex-[0.4] rounded-t-lg px-1 py-1 text-xs font-bold uppercase transition-all ${
                       activeTab === "minor"
-                        ? "bg-blue-800 text-white shadow-md"
-                        : "bg-neutral-200 text-neutral-600 hover:bg-neutral-300"
+                        ? "bg-navy text-white shadow-md"
+                        : "bg-neu3 text-neu6 hover:bg-neu4"
                     }`}
                   >
                     MINOR
@@ -105,9 +105,9 @@ export function Sidebar({
 
               {/* Tab panel - RequirementTabPanel style: blue.50 strip, then SidebarSections */}
               <div className="m-0 w-full p-0">
-                <div className="flex items-center justify-between border-b border-neutral-200 bg-blue-50 px-4 py-3">
+                <div className="flex items-center justify-between border-b border-neu25 bg-blue/10 px-4 py-3">
                   <div className="flex-1" />
-                  <h2 className="flex-1 text-center text-base font-semibold text-blue-900">
+                  <h2 className="flex-1 text-center text-base font-semibold text-navy">
                     {activeTab === "major"
                       ? currentMajor
                         ? currentMajor.name
@@ -118,7 +118,7 @@ export function Sidebar({
                 </div>
 
                 {activeTab === "minor" && currentMinor && (
-                  <h3 className="px-4 py-4 text-base font-semibold text-blue-900">
+                  <h3 className="px-4 py-4 text-base font-semibold text-navy">
                     Minor Requirements
                   </h3>
                 )}
@@ -134,7 +134,7 @@ export function Sidebar({
                 ))}
 
                 {!sections && (
-                  <p className="px-4 py-3 text-sm text-neutral-500 italic">
+                  <p className="px-4 py-3 text-sm text-neu6 italic">
                     No requirement sections
                   </p>
                 )}
@@ -159,7 +159,7 @@ export function NoMajorSidebar({
   return (
     <SidebarContainer title="No Major">
       <div className="space-y-4 px-4 pb-4">
-        <p className="text-sm leading-relaxed text-neutral-700">
+        <p className="text-sm leading-relaxed text-neu7">
           A major has not been selected for this plan. Please select one if you
           would like to see major requirements. If we do not support your major,
           you can{" "}
@@ -167,13 +167,13 @@ export function NoMajorSidebar({
             href="https://forms.gle/o5AHSuFSwDJREEPp7"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold text-blue-700 underline hover:text-blue-900"
+            className="font-bold text-blue underline hover:text-navy"
           >
             request it here
           </a>
           .
         </p>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-neu6">
           Use the &ldquo;Add Course&rdquo; button in the schedule to add a
           course to a semester.
         </p>

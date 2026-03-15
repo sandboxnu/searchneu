@@ -236,7 +236,7 @@ export function AuditPlan ({
 
           {/* Add Year button */}
           <button
-            className="rounded-lg border border-dashed border-blue-300 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
+            className="rounded-lg border border-dashed border-blue/50 px-4 py-2 text-sm font-medium text-blue transition-colors hover:bg-blue/10"
             onClick={() => {
               const nextYear = totalYears + 1;
               const emptyTerm = (season: SeasonEnum): AuditTerm<string> => ({

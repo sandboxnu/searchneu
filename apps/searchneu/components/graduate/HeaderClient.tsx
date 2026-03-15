@@ -8,7 +8,7 @@ export function HeaderClient({ plans }: { plans: AuditPlanSummary[] }) {
   console.log("DENNIS PLANS", plans);
 
   return (
-    <div className="max-auto flex h-24 gap-2 overflow-scroll bg-white">
+    <div className="max-auto flex h-24 gap-2 overflow-scroll bg-neu1">
       <div>hahah so many plans</div>
       {/* TICKET WORK : MAKE DROPDOWN COMPONENT FOR PLAN SELECTION */}
       <ul>

@@ -108,7 +108,7 @@ export function ScheduleYear({
     <div className="flex flex-col">
       {/* Year Header */}
       <div
-        className={`flex cursor-pointer items-center justify-between px-4 py-3 transition-colors duration-150 select-none ${isExpanded ? "bg-blue-700 hover:bg-blue-600" : "bg-blue-500 hover:bg-blue-600"} `}
+        className={`flex cursor-pointer items-center justify-between px-4 py-3 transition-colors duration-150 select-none ${isExpanded ? "bg-navy hover:bg-navy/80" : "bg-blue hover:bg-blue/90"} `}
         onClick={toggleExpanded}
       >
         <div className="flex flex-col">
@@ -121,7 +121,7 @@ export function ScheduleYear({
         </div>
         <div className="flex items-center gap-1">
           {hasReqErrors && (
-            <span className="text-red-300" title="Prereq/coreq errors exist">
+            <span className="text-red/60" title="Prereq/coreq errors exist">
               <svg
                 className="h-5 w-5"
                 fill="none"
@@ -138,7 +138,7 @@ export function ScheduleYear({
             </span>
           )}
           <button
-            className="p-1 text-white/70 transition-colors hover:text-red-300"
+            className="p-1 text-white/70 transition-colors hover:text-red/60"
             title={`Delete Year ${scheduleYear.year}`}
             onClick={(e) => {
               e.stopPropagation();

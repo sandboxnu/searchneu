@@ -8,6 +8,14 @@ export const faqFlag = flag({
   },
 });
 
+export const faqHowToFlag = flag({
+  key: "faq-how-to",
+  description: "Enable FAQ how-to section",
+  decide() {
+    return false;
+  },
+});
+
 export const roomsFlag = flag({
   key: "rooms",
   description: "Enable experimental rooms page",

@@ -27,7 +27,7 @@ export function PlanClient({ plan }: { plan: HydratedAuditPlan<null> }) {
     }
   };
 
-  const sidebarNode = <Sidebar auditPlan={plan} />;
+  const sidebarNode = <Sidebar {...plan} />;
 
   return (
     <PlanDndWrapper

@@ -51,7 +51,7 @@ interface ScheduleYearProps {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export const ScheduleYear: React.FC<ScheduleYearProps> = ({
+export function ScheduleYear({
   scheduleYear,
   catalogYear,
   yearCoReqError,
@@ -64,7 +64,7 @@ export const ScheduleYear: React.FC<ScheduleYearProps> = ({
   setIsRemove,
   onErrorClick,
   renderAddCourse,
-}) => {
+} : ScheduleYearProps) {
   const credits = totalCreditsInYear(scheduleYear);
 
   const hasReqErrors = useMemo(() => {

@@ -65,7 +65,7 @@ const DeleteDropZone: React.FC<PropsWithChildren> = ({ children }) => {
 
 // ── Main Wrapper ─────────────────────────────────────────────────────────────
 
-export const PlanDndWrapper: React.FC<PlanDndWrapperProps> = ({
+export function PlanDndWrapper({
   plan,
   catalogYear,
   preReqWarnings,
@@ -74,7 +74,7 @@ export const PlanDndWrapper: React.FC<PlanDndWrapperProps> = ({
   onError,
   onWarningsRecompute,
   sidebar,
-}) => {
+}: PlanDndWrapperProps){
   const [activeCourse, setActiveCourse] = useState<AuditCourse<string> | null>(
     null,
   );
@@ -142,4 +142,4 @@ export const PlanDndWrapper: React.FC<PlanDndWrapperProps> = ({
       </DragOverlay>
     </DndContext>
   );
-};
+}

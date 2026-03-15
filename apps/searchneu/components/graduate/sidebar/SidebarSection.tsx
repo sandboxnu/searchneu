@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import type { Section } from "@/lib/graduate/types";
 import { SidebarValidationStatus } from "@/lib/graduate/types";
-import SectionRequirement from "./SectionRequirement";
+import { SectionRequirement } from "./SectionRequirement";
 
 export interface SidebarSectionProps {
   section: Section;
@@ -16,12 +16,12 @@ export interface SidebarSectionProps {
  * Collapsible section row matching graduatenu SidebarSection: border, sticky header
  * with status circle and title, expandable content with requirement list.
  */
-const SidebarSection: React.FC<SidebarSectionProps> = ({
+function SidebarSection({
   section,
   validationStatus = SidebarValidationStatus.Complete,
   defaultOpen = false,
   dndIdPrefix,
-}) => {
+}: SidebarSectionProps) {
   const [opened, setOpened] = useState(defaultOpen);
 
   const isComplete = validationStatus === SidebarValidationStatus.Complete;
@@ -124,6 +124,6 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
       )}
     </div>
   );
-};
+}
 
 export default SidebarSection;

@@ -1,6 +1,10 @@
 "use client";
-import React, { useState } from "react";
-import { Section, SidebarValidationStatus } from "@/lib/graduate/types";
+import { useState } from "react";
+import {
+  HydratedAuditPlan,
+  Section,
+  SidebarValidationStatus,
+} from "@/lib/graduate/types";
 import SidebarContainer from "./SidebarContainer";
 import SidebarSection from "./SidebarSection";
 import { creditsInAudit } from "@/lib/graduate/auditUtils";
@@ -9,37 +13,13 @@ export { SidebarValidationStatus };
 
 const UNDECIDED_CONCENTRATION = "Concentration Undecided";
 
-interface SidebarProps {
-  //catalogYear?: number;
-  //majorName?: string | null;
-  //currentMajor?: Major;
-  //selectedPlan?: { id: string; concentration: string };
-  //courseData?: boolean;
-  //creditsTaken?: number;
-  //isSharedPlan?: boolean;
-  //isCoursesLoading?: boolean;
-  //isMajorLoading?: boolean;
-  //majorError?: Error | null;
-  //coursesTaken?: AuditCourse<null>[];
-  //currentMinor?: Minor;
-  //majors: Major[] | null;
-  //currentMajorIndex?: number;
-  //handlePrevMajor?: () => void;
-  //handleNextMajor?: () => void;
-  //minors: Minor[] | null;
-  //currentMinorIndex?: number;
-  //handlePrevMinor?: () => void;
-  //handleNextMinor?: () => void;
-  //validationStatus?: unknown;
-  //getSectionErrorByType?: unknown;
-  //getSidebarValidationStatus?: unknown;
-  //concentration?: unknown;
-  //concentrationValidationStatus?: unknown;
-  auditPlan: HydratedAuditPlan<null>;
-}
-
-export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
-  const { schedule, majors, minors, concentration } = props.auditPlan;
+export function Sidebar({
+  schedule,
+  majors,
+  minors,
+  concentration,
+}: HydratedAuditPlan<null>) {
+  //const { schedule, majors, minors, concentration } = props.auditPlan;
   const currentMajor = majors == null ? null : majors[0];
   const currentMinor = minors == null ? null : minors[0];
 
@@ -165,14 +145,17 @@ export const Sidebar: React.FC<SidebarProps> = React.memo((props) => {
       </div>
     </SidebarContainer>
   );
-});
+}
 
 interface NoMajorSidebarProps {
   selectedPlan?: { id: string; concentration: string };
   transferCourses?: unknown;
 }
 
-export const NoMajorSidebar: React.FC<NoMajorSidebarProps> = () => {
+export function NoMajorSidebar({
+  selectedPlan,
+  transferCourses,
+}: NoMajorSidebarProps) {
   return (
     <SidebarContainer title="No Major">
       <div className="space-y-4 px-4 pb-4">
@@ -197,7 +180,7 @@ export const NoMajorSidebar: React.FC<NoMajorSidebarProps> = () => {
       </div>
     </SidebarContainer>
   );
-};
+}
 
 export const NoPlanSidebar: React.FC = () => {
   return <SidebarContainer title="No Plan Selected" />;

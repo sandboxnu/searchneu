@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import type {
   Requirement,
   IAndCourse,
@@ -26,10 +25,10 @@ export interface SectionRequirementProps {
  * Renders a single requirement (COURSE, AND, OR, XOM, RANGE, or nested SECTION).
  * When dndIdPrefix is provided, COURSE requirements are draggable into the plan.
  */
-const SectionRequirement: React.FC<SectionRequirementProps> = ({
+export function SectionRequirement({
   requirement,
   dndIdPrefix,
-}) => {
+}: SectionRequirementProps) {
   const wrapperClass = "pl-1 pt-1";
 
   if (requirement.type === "COURSE") {
@@ -138,6 +137,5 @@ const SectionRequirement: React.FC<SectionRequirementProps> = ({
   }
 
   return null;
-};
+}
 
-export default SectionRequirement;

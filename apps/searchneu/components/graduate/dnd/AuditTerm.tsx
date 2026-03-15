@@ -59,7 +59,7 @@ interface ScheduleTermProps {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export const ScheduleTerm: React.FC<ScheduleTermProps> = ({
+export function ScheduleTerm({
   scheduleTerm,
   yearNum,
   termCoReqErr,
@@ -68,7 +68,7 @@ export const ScheduleTerm: React.FC<ScheduleTermProps> = ({
   removeCourseFromTermInCurrPlan,
   onErrorClick,
   renderAddCourse,
-}) => {
+} : ScheduleTermProps) {
   const { isOver, setNodeRef } = useDroppable({ id: scheduleTerm.id });
   const credits = totalCreditsInTerm(scheduleTerm);
   const seasonDisplay =

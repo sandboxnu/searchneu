@@ -146,7 +146,7 @@ export interface AuditPlanProps {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export const AuditPlan: React.FC<AuditPlanProps> = ({
+export function AuditPlan ({
   plan,
   mutatePlanWithUpdate,
   preReqErr,
@@ -155,7 +155,7 @@ export const AuditPlan: React.FC<AuditPlanProps> = ({
   setIsRemove,
   onErrorClick,
   renderAddCourse,
-}) => {
+}: AuditPlanProps) {
   const [expandedYears, setExpandedYears] = useState<Set<number>>(
     () => new Set(),
   );

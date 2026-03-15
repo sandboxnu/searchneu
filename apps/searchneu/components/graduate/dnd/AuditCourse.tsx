@@ -45,9 +45,7 @@ function courseToString(c: {
 
 // ── Draggable Course (static on page, can be picked up) ─────────────────────
 
-export const DraggableScheduleCourse: React.FC<
-  DraggableScheduleCourseProps
-> = ({
+export function DraggableScheduleCourse({
   scheduleCourse,
   scheduleTerm,
   removeCourse,
@@ -57,7 +55,7 @@ export const DraggableScheduleCourse: React.FC<
   isDisabled = false,
   setIsRemove,
   onErrorClick,
-}) => {
+}: DraggableScheduleCourseProps) {
   const { setNodeRef, transform, listeners, attributes, isDragging, over } =
     useDraggable({
       id: scheduleCourse.id,
@@ -87,7 +85,7 @@ export const DraggableScheduleCourse: React.FC<
       onErrorClick={onErrorClick}
     />
   );
-};
+}
 
 // ── Drag Overlay (follows cursor while dragging) ────────────────────────────
 
@@ -125,7 +123,7 @@ interface ScheduleCourseProps {
 }
 
 const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
-  (
+  function ScheduleCourse(
     {
       scheduleCourse,
       removeCourse,
@@ -142,8 +140,8 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
       isDraggable = false,
       onErrorClick,
     },
-    ref,
-  ) => {
+    ref // Note: ref is the second argument!
+  ) {
     const [hovered, setHovered] = useState(false);
     const isValidRemove = isRemove && !isFromSidebar;
     const hasError = coReqErr !== undefined || preReqErr !== undefined;

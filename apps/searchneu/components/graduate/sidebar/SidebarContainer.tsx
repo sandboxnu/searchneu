@@ -1,5 +1,5 @@
 "use client";
-import React, { type PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 const UNDECIDED_CONCENTRATION = "Concentration Undecided";
 
@@ -11,14 +11,14 @@ export interface SidebarContainerProps {
   renderBetaMajorBlock?: boolean;
 }
 
-const SidebarContainer: React.FC<PropsWithChildren<SidebarContainerProps>> = ({
+export function SidebarContainer({
   title,
   subtitle,
   creditsTaken,
   creditsToTake,
   renderBetaMajorBlock,
   children,
-}) => {
+}: PropsWithChildren<SidebarContainerProps>){
   const isUndecided = subtitle === UNDECIDED_CONCENTRATION;
 
   return (

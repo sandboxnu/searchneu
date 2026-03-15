@@ -64,11 +64,11 @@ export const flattenScheduleToTerms = <T>(
 
 // ── Prepare Plan for DnD ─────────────────────────────────────────────────────
 
-export const prepareClassesForDnd = (
+export function prepareClassesForDnd(
   classes: AuditCourse<null>[],
   courseCount: number,
   dndIdPrefix?: string,
-): { dndClasses: AuditCourse<string>[]; updatedCount: number } => {
+): { dndClasses: AuditCourse<string>[]; updatedCount: number } {
   let updatedCount = courseCount;
   const dndClasses = classes.map((course) => {
     updatedCount++;
@@ -77,7 +77,7 @@ export const prepareClassesForDnd = (
     return { ...course, id: dndId };
   });
   return { dndClasses, updatedCount };
-};
+}
 
 const prepareTermForDnd = (
   term: AuditTerm<null>,
@@ -127,7 +127,7 @@ const prepareYearForDnd = (
   };
 };
 
-export const prepareAuditForDnd = (plan: Audit<null>): Audit<string> => {
+export function prepareAuditForDnd(plan: Audit<null>): Audit<string> {
   let courseCount = 0;
   const dndYears: AuditYear<string>[] = [];
   if (!plan.years) {
@@ -141,9 +141,9 @@ export const prepareAuditForDnd = (plan: Audit<null>): Audit<string> => {
   });
 
   return { years: dndYears };
-};
+}
 
-export const getCourseCount = (plan: Audit<unknown>): number => {
+export function getCourseCount(plan: Audit<unknown>): number {
   return plan.years.reduce(
     (count, year) =>
       count +
@@ -153,7 +153,7 @@ export const getCourseCount = (plan: Audit<unknown>): number => {
       year.summer2.classes.length,
     0,
   );
-};
+}
 
 export function requiredCourseToAuditCourse(
   c: IRequiredCourse,
@@ -177,16 +177,18 @@ const cleanDndIdsFromTerm = (term: AuditTerm<string>): AuditTerm<null> => ({
   classes: term.classes.map((course) => ({ ...course, id: null })),
 });
 
-export const cleanDndIdsFromPlan = (plan: Audit<string>): Audit<null> => ({
-  ...plan,
-  years: plan.years.map((year) => ({
-    ...year,
-    fall: cleanDndIdsFromTerm(year.fall),
-    spring: cleanDndIdsFromTerm(year.spring),
-    summer1: cleanDndIdsFromTerm(year.summer1),
-    summer2: cleanDndIdsFromTerm(year.summer2),
-  })),
-});
+export function cleanDndIdsFromPlan(plan: Audit<string>): Audit<null> {
+  return {
+    ...plan,
+    years: plan.years.map((year) => ({
+      ...year,
+      fall: cleanDndIdsFromTerm(year.fall),
+      spring: cleanDndIdsFromTerm(year.spring),
+      summer1: cleanDndIdsFromTerm(year.summer1),
+      summer2: cleanDndIdsFromTerm(year.summer2),
+    })),
+  };
+}
 
 // ── Drop Handler ─────────────────────────────────────────────────────────────
 
@@ -200,11 +202,11 @@ export const cleanDndIdsFromPlan = (plan: Audit<string>): Audit<null> => ({
  * target term -- the caller should catch this and display the message.
  * Throws a plain Error for no-op drags (same term, invalid target, etc.).
  */
-export const updatePlanOnDragEnd = (
+export function updatePlanOnDragEnd(
   plan: Audit<string>,
   draggedCourse: Active,
   draggedOverTerm: Over | null = null,
-): Audit<string> => {
+): Audit<string> {
   return produce(plan, (draftPlan: Audit<string>) => {
     const scheduleTerms = flattenScheduleToTerms<string>(draftPlan);
 

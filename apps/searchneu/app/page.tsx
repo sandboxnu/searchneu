@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Search } from "@/components/home/Search";
 import { Footer } from "@/components/navigation/Footer";
 import ClickSpark from "@/components/ui/click-spark";
+import { SearchBar } from "@/components/catalog/search/SearchBar";
 
 export const metadata: Metadata = {
   title: "SearchNEU",

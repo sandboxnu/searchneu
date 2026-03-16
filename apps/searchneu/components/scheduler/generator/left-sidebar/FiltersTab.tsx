@@ -1,7 +1,7 @@
 "use client";
 
 import { type ScheduleFilters } from "@/lib/scheduler/filters";
-import { Switch } from "../ui/switch";
+import { Switch } from "../../../ui/switch";
 import { TimeInput } from "./TimeInput";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 import { cn } from "@/lib/cn";

@@ -1,6 +1,6 @@
 import { db, nupathsT } from "@/lib/db";
 import { generateSchedules } from "@/lib/scheduler/generateSchedules";
-import { SchedulerWrapper } from "@/components/scheduler/SchedulerWrapper";
+import { SchedulerWrapper } from "@/components/scheduler/generator/SchedulerWrapper";
 import { getTerms } from "@/lib/dal/terms";
 
 export default async function Page({

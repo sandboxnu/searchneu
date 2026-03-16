@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { GroupedTerms } from "@/lib/catalog/types";
-import { CollegeDropdown } from "@/components/scheduler/CollegeDropdown";
+import { CollegeDropdown } from "./CollegeDropdown";
 import { TermsDropdown } from "./TermsDropdown";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Searchskie } from "../icons/Searchskie";
-import AddCoursesModal from "./AddCoursesModal";
-import { PlanCard } from "./PlanCard";
+import { Searchskie } from "../../icons/Searchskie";
+import AddCoursesModal from "../shared/modal/AddCoursesModal";
+import { PlanCard } from "./PlanCard/PlanCard";
+import { authClient } from "@/lib/auth/auth-client";
 
 // Add type for plan
 export type SavedPlan = {
@@ -60,6 +61,7 @@ export type SavedPlan = {
 export function DashboardClient(props: { terms: GroupedTerms }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, isPending } = authClient.useSession();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -78,7 +80,7 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
   // NEW: Fetch plans when term changes
   useEffect(() => {
     const fetchPlans = async () => {
-      if (!selectedTerm) {
+      if (!selectedTerm || !session || isPending) {
         setPlans([]);
         return;
       }
@@ -105,7 +107,7 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
     };
 
     fetchPlans();
-  }, [selectedTerm]);
+  }, [selectedTerm, isPending, session]);
 
   // NEW: Delete plan handler with confirmation
   const handleDeletePlan = async (planId: number) => {

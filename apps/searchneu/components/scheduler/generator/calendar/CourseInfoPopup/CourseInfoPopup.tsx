@@ -5,20 +5,15 @@ import { createPortal } from "react-dom";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
 import Link from "next/link";
+import { formatTime } from "../../../shared/utils";
+import { InfoRow } from "./InfoRow";
+import { SeatPill } from "./SeatPill";
 
 interface CourseInfoPopupProps {
   section: SectionWithCourse;
   color: CourseColor | undefined;
   anchorRect: DOMRect;
   onClose: () => void;
-}
-
-function formatTime(time: number): string {
-  const hours = Math.floor(time / 100);
-  const minutes = time % 100;
-  const period = hours >= 12 ? "PM" : "AM";
-  const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
-  return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
 }
 
 const DAY_ABBREVS = ["S", "M", "T", "W", "R", "F", "S"];
@@ -133,7 +128,7 @@ export function CourseInfoPopup({
           <div className="flex items-stretch">
             <div
               className="w-1 rounded-full"
-              style={{ backgroundColor: color?.stroke }}
+              style={{ backgroundColor: color?.accent }}
             />
           </div>
 
@@ -249,48 +244,4 @@ export function CourseInfoPopup({
 
   if (typeof document === "undefined") return null;
   return createPortal(popup, document.body);
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center gap-2 pr-6">
-      <div className="w-22.5 shrink-0 py-1">
-        <span className="text-neu4 text-[10px] font-bold">{label}</span>
-      </div>
-      <span className="text-neu8 text-xs">{value}</span>
-    </div>
-  );
-}
-
-function SeatPill({
-  filled,
-  capacity,
-  isFull,
-}: {
-  filled: number;
-  capacity: number;
-  isFull: boolean;
-}) {
-  return (
-    <div
-      className={`flex items-center gap-1 rounded-full border px-2 py-1 ${
-        isFull ? "border-red-200 bg-red-50" : "border-[#d6f5e2] bg-[#eafbf0]"
-      }`}
-    >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={isFull ? "#dc2626" : "#178459"}
-        strokeWidth="2"
-      >
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-      <span className={`text-xs ${isFull ? "text-red-600" : "text-[#178459]"}`}>
-        {filled} / {capacity}
-      </span>
-    </div>
-  );
 }

@@ -6,7 +6,7 @@ import {
   type CourseColor,
   getSectionColor,
 } from "@/lib/scheduler/courseColors";
-import { timeToMinutes } from "./CalendarView";
+import { timeToMinutes } from "./utils";
 
 interface MiniCalendarProps {
   schedule: SectionWithCourse[];
@@ -111,7 +111,9 @@ export const MiniCalendar = memo(function MiniCalendar({
                 key={idx}
                 className="h-2 rounded-[2px]"
                 style={{
-                  backgroundColor: sectionColor?.stroke,
+                  backgroundColor: isSelected
+                    ? sectionColor?.accent
+                    : sectionColor?.stroke,
                 }}
               />
             );
@@ -140,7 +142,9 @@ export const MiniCalendar = memo(function MiniCalendar({
                     className="absolute inset-x-px rounded-[2px]"
                     style={{
                       ...position,
-                      backgroundColor: sectionColor?.stroke,
+                      backgroundColor: isSelected
+                        ? sectionColor?.accent
+                        : sectionColor?.stroke,
                     }}
                   />
                 );

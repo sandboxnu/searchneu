@@ -83,9 +83,9 @@ export function TimeInput({
           <ChevronDown className="h-4 w-4 opacity-50" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="end">
+      <PopoverContent className="w-[200px] p-0" align="end" alignOffset={-8}>
         <Command>
-          <CommandInput placeholder="-- : --" />
+          <CommandInput placeholder="-- : --" className="pl-6" />
           <CommandList>
             <CommandEmpty>No time found.</CommandEmpty>
             <CommandGroup>

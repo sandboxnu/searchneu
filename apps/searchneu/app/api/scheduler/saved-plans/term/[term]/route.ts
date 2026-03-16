@@ -13,14 +13,18 @@ import {
 import { verifyUser } from "@/lib/controllers/auditPlans";
 import { eq, and, desc } from "drizzle-orm";
 import { NextRequest } from "next/server";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 // GET all saved plans for a user in a specific term
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ term: string }> },
 ) {
-  const user = await verifyUser();
-  if (!user) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -31,7 +35,12 @@ export async function GET(
     const plans = await db
       .select()
       .from(savedPlansT)
-      .where(and(eq(savedPlansT.userId, user.id), eq(savedPlansT.term, term)))
+      .where(
+        and(
+          eq(savedPlansT.userId, session.user.id),
+          eq(savedPlansT.term, term),
+        ),
+      )
       .orderBy(desc(savedPlansT.updatedAt));
 
     // For each plan, get courses, sections, and favorited schedules

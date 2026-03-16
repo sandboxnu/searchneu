@@ -8,7 +8,7 @@ import {
 } from "@/lib/scheduler/filters";
 import { CoursesTab } from "./CoursesTab";
 import { FiltersTab } from "./FiltersTab";
-import AddCoursesModal from "./AddCoursesModal";
+import AddCoursesModal from "../../shared/modal/AddCoursesModal";
 import { GroupedTerms } from "@/lib/catalog/types";
 
 interface FilterPanelProps {

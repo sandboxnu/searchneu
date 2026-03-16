@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
-import { CourseBox } from "@/components/scheduler/CourseBox";
+import { CourseBox } from "./CourseBox";
 import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
 
 interface CoursesTabProps {

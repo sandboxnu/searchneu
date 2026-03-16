@@ -5,7 +5,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
-import { MiniCalendar } from "./MiniCalendar";
+import { MiniCalendar } from "../../shared/MiniCalendar";
 
 type SidebarTab = "favorites" | "filters" | "all";
 

@@ -1,5 +1,5 @@
 import { Course } from "@/lib/catalog/types";
-import { DeleteIcon } from "../icons/Delete";
+import { DeleteIcon } from "../../../icons/Delete";
 
 interface SelectedCourse {
   subject: string;

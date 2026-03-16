@@ -8,7 +8,7 @@ import {
 } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { CalendarView } from "./CalendarView";
-import { CourseInfoPopup } from "./CourseInfoPopup";
+import { CourseInfoPopup } from "./CourseInfoPopup/CourseInfoPopup";
 
 interface SchedulerViewProps {
   schedules: SectionWithCourse[][];
@@ -111,18 +111,10 @@ export function SchedulerView({
                 EST
               </div>
             </div>
-            {[
-              "SUNDAY",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-            ].map((day) => (
+            {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
               <div
                 key={day}
-                className={`flex h-12 items-center justify-center bg-white ${day === "SATURDAY" ? "rounded-tr-lg" : ""}`}
+                className={`flex h-12 items-center justify-center bg-white ${day === "SAT" ? "rounded-tr-lg" : ""}`}
               >
                 <div className="text-neu6 text-sm font-semibold">{day}</div>
               </div>
@@ -149,7 +141,7 @@ export function SchedulerView({
                     >
                       <div
                         className="w-1 shrink-0 rounded-full"
-                        style={{ backgroundColor: sectionColor?.stroke }}
+                        style={{ backgroundColor: sectionColor?.accent }}
                       />
                       <div className="flex items-center gap-3 pl-2">
                         <div className="text-neu8 truncate text-sm font-bold">

@@ -7,9 +7,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "../../../ui/dialog";
 import dynamic from "next/dynamic";
-import { Button } from "../ui/button";
+import { Button } from "../../../ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
@@ -92,8 +92,8 @@ export default function AddCoursesModal(props: {
 }) {
   const searchParams = useSearchParams();
 
-  const parsedNum = parseInt(searchParams.get("numCourses") ?? "1");
-  const numCoursesValue = isNaN(parsedNum) ? 1 : parsedNum;
+  const parsedNum = parseInt(searchParams.get("numCourses") ?? "4");
+  const numCoursesValue = isNaN(parsedNum) ? 4 : parsedNum;
 
   const [numCourses, setNumCourses] = useState<number>(numCoursesValue);
   const [searchQuery, setSearchQuery] = useState("");

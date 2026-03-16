@@ -6,7 +6,8 @@ import {
   type CourseColor,
   getSectionColor,
 } from "@/lib/scheduler/courseColors";
-import { CourseInfoPopup } from "./CourseInfoPopup";
+import { CourseInfoPopup } from "./CourseInfoPopup/CourseInfoPopup";
+import { formatTime, timeToMinutes } from "../../shared/utils";
 
 interface CalendarViewProps {
   schedule: SectionWithCourse[];
@@ -15,22 +16,6 @@ interface CalendarViewProps {
 
 // Height per hour in pixels - increase this to make rows taller
 const HOUR_HEIGHT = 75;
-
-// Helper to convert time format (e.g., 1330 -> "1:30 PM")
-function formatTime(time: number): string {
-  const hours = Math.floor(time / 100);
-  const minutes = time % 100;
-  const period = hours >= 12 ? "PM" : "AM";
-  const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
-  return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-}
-
-// Convert military time to minutes from midnight for positioning
-export function timeToMinutes(time: number): number {
-  const hours = Math.floor(time / 100);
-  const minutes = time % 100;
-  return hours * 60 + minutes;
-}
 
 export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
   // Define time range (7 AM to midnight)
@@ -169,7 +154,7 @@ export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
                         <div
                           className="w-1 shrink-0 rounded-full"
                           style={{
-                            backgroundColor: sectionColor?.stroke,
+                            backgroundColor: sectionColor?.accent,
                           }}
                         />
                         {/* Content */}

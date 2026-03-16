@@ -9,9 +9,9 @@ import {
 } from "@/lib/scheduler/filters";
 import { getCourseColorMap } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
-import { SchedulerView } from "./SchedulerView";
-import { ScheduleSidebar } from "./ScheduleSidebar";
-import { FilterPanel } from "./FilterPanel";
+import { SchedulerView } from "./calendar/SchedulerView";
+import { ScheduleSidebar } from "./right-sidebar/ScheduleSidebar";
+import { FilterPanel } from "./left-sidebar/FilterPanel";
 import { GroupedTerms } from "@/lib/catalog/types";
 import {
   parseFiltersFromParams,
@@ -113,9 +113,38 @@ export function SchedulerWrapper({
     ? favoritedKeys.has(currentScheduleKey)
     : false;
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      // Don't intercept when user is focused on an input/select/textarea
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+
+      e.preventDefault();
+      if (filteredSchedules.length === 0) return;
+
+      const keys = filteredSchedules.map(getScheduleKey);
+      const currentIndex = currentScheduleKey
+        ? keys.indexOf(currentScheduleKey)
+        : -1;
+
+      let nextIndex: number;
+      if (e.key === "ArrowDown") {
+        nextIndex = currentIndex < keys.length - 1 ? currentIndex + 1 : 0;
+      } else {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : keys.length - 1;
+      }
+
+      setSelectedScheduleKey(keys[nextIndex]);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [filteredSchedules, currentScheduleKey]);
+
   return (
-    <div className="grid h-[calc(100vh-72px)] w-full grid-cols-6 overflow-hidden">
-      <div className="col-span-1 w-full overflow-hidden">
+    <div className="flex h-[calc(100vh-72px)] w-full overflow-hidden">
+      <div className="w-fit shrink-0 overflow-hidden">
         <FilterPanel
           filters={filters}
           onFiltersChange={setFilters}
@@ -129,7 +158,7 @@ export function SchedulerWrapper({
           onLockedCourseIdsChange={handleLockedCourseIdsChange}
         />
       </div>
-      <div className="col-span-5 flex min-h-0 overflow-hidden pl-6">
+      <div className="flex min-w-0 flex-1 overflow-hidden pl-6">
         <div className="min-w-0 flex-1">
           <SchedulerView
             schedules={filteredSchedules}

@@ -18,7 +18,7 @@ const ResultCard = ({
       className="group text-neu6 hover:bg-neu2 bg-neu1 h-10 w-full cursor-pointer px-4 py-3 text-[14px] transition-colors"
     >
       <p className="flex min-w-0 items-center gap-1">
-        <span className="group-hover:text-neu8 shrink-0 font-bold transition-all">
+        <span className="text-neu8 shrink-0 font-bold">
           {result.subject} {result.courseNumber}
         </span>
         <span className="truncate">{result.name}</span>

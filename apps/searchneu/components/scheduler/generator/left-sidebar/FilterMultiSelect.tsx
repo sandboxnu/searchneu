@@ -107,8 +107,8 @@ export function FilterMultiSelect({
                 }}
               >
                 <CommandInput
-                  placeholder={`Search ${label.toLowerCase()}...`}
-                  className="text-xs"
+                  placeholder={`Search ${label === "NUPATHS" ? "NUpaths" : label.toLowerCase()}...`}
+                  className="text-sm"
                 />
                 <CommandList className="max-h-[300px]">
                   <CommandEmpty>No results found</CommandEmpty>

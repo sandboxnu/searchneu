@@ -1,11 +1,11 @@
 "use client";
 import {
-  BookMarked,
   CalendarDays,
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
   Bell,
+  BookMarked,
 } from "lucide-react";
 import { type ReactNode, use } from "react";
 import Link from "next/link";
@@ -21,10 +21,8 @@ export function NavBar({
   closeable?: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
-  const faqFlag = use(flags["faq"]);
   const schedulerFlag = use(flags["scheduler"]);
   const graduateFlag = use(flags["graduate"]);
-  const notificationsFlag = use(flags["notifications"]);
 
   const pathname = usePathname();
 
@@ -32,7 +30,6 @@ export function NavBar({
     <nav className="flex gap-2 font-semibold">
       <FlagValues
         values={{
-          faqs: faqFlag,
           rooms: roomsFlag,
           scheduler: schedulerFlag,
         }}
@@ -49,16 +46,6 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      <LinkWrapper mobileNav={closeable}>
-        <Link
-          href="/catalog"
-          data-active={pathname === "/catalog"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
-        >
-          <BookMarked className="size-4" />
-          <span>Catalog</span>
-        </Link>
-      </LinkWrapper>
       {schedulerFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
@@ -83,29 +70,35 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      {notificationsFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/notifications"
-            data-active={pathname === "/notifications"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
-          >
-            <Bell className="size-4" />
-            <span>Notifications</span>
-          </Link>
-        </LinkWrapper>
-      )}
-      {faqFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/faq"
-            data-active={pathname === "/faq"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
-          >
-            <CircleQuestionMark className="text-red size-5" />
-          </Link>
-        </LinkWrapper>
-      )}
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/notifications"
+          data-active={pathname === "/notifications"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
+        >
+          <Bell className="size-4" />
+          <span>Notifications</span>
+        </Link>
+      </LinkWrapper>
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/catalog"
+          data-active={pathname === "/catalog"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+        >
+          <BookMarked className="size-4" />
+          <span>Catalog</span>
+        </Link>
+      </LinkWrapper>
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/faq"
+          data-active={pathname === "/faq"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+        >
+          <CircleQuestionMark className="text-red size-5" />
+        </Link>
+      </LinkWrapper>
     </nav>
   );
 }

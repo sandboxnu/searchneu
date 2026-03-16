@@ -7,8 +7,9 @@ import { faqHowToFlag } from "@/lib/flags";
 
 export default async function Page() {
   const showHowTo = await faqHowToFlag();
+
   return (
-    <div className="min-h-screen bg-[#f9f9f9] pt-4 pb-6">
+    <div className="bg-neu2 pt-4 pb-6">
       <div className="p-8 px-40">
         {showHowTo && (
           <>
@@ -30,9 +31,7 @@ export default async function Page() {
             </ScrollArea>
           </>
         )}
-        <h2 className="text-neu7 mb-4 pl-4 text-2xl text-[28px] font-bold">
-          FAQs
-        </h2>
+        <h2 className="text-neu7 mb-4 pl-4 text-2xl font-bold">FAQs</h2>
         <div className="pl-4">
           {faqData.faqs.map((faq) => (
             <FAQDropDown

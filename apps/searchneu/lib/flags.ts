@@ -1,13 +1,5 @@
 import { flag } from "flags/next";
 
-export const faqFlag = flag({
-  key: "faq-page",
-  description: "Enable FAQ page",
-  decide() {
-    return false;
-  },
-});
-
 export const faqHowToFlag = flag({
   key: "faq-how-to",
   description: "Enable FAQ how-to section",
@@ -35,14 +27,6 @@ export const schedulerFlag = flag({
 export const graduateFlag = flag({
   key: "graduate",
   description: "Enable graduate page",
-  decide() {
-    return false;
-  },
-});
-
-export const notificationsFlag = flag({
-  key: "notifications",
-  description: "Enable notifications page",
   decide() {
     return false;
   },

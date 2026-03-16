@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { CreateAuditPlanDto } from "@/lib/graduate/api-dtos";
-import { createAuditPlan, verifyUser } from "@/lib/controllers/auditPlans";
+import { createAuditPlan, getAuditPlans, verifyUser } from "@/lib/controllers/auditPlans";
 
 /**
  * Creates a new audit plan for the authenticated user
@@ -53,5 +53,24 @@ export async function POST(req: NextRequest) {
       JSON.stringify({ error: `Failed to create audit plan: ${message}` }),
       { status: 400 },
     );
+  }
+}
+
+/**
+ * 
+ * @param req 
+ * @returns 
+ */
+export async function GET(req: NextRequest) {
+  try {
+    const user = await verifyUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
+    const plans = await getAuditPlans(user.id);
+    return Response.json(plans);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : JSON.stringify(error);
+    return new Response(JSON.stringify({ error: `Failed to fetch audit plans: ${message}` }), { status: 400 });
   }
 }

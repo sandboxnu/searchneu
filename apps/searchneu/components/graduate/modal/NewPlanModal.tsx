@@ -36,6 +36,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import { CircleQuestionMark } from "lucide-react";
 import {
@@ -45,7 +46,20 @@ import {
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
 
-export default function NewPlanModal() {
+type PlanInfo = {
+  id: number;
+  name: string;
+  majors?: string[] | null;
+  minors?: string[] | null;
+  catalogYear?: number | null;
+  concentration?: string | null;
+};
+
+interface NewPlanModalProps {
+  onPlanCreated?: (plan: PlanInfo) => void;
+}
+
+export default function NewPlanModal({ onPlanCreated }: NewPlanModalProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -63,6 +77,7 @@ export default function NewPlanModal() {
       .sort()
       .map((year) => ({ label: String(year), value: year }));
   }, [supportedMajorsData]);
+
   const isLoadingMajors = !supportedMajorsData && !majorsError;
   const [majorOptions, setMajorOptions] = useState<{ majorName: string }[]>([]);
   const [majors, setMajors] = useState<string[]>([]);
@@ -267,6 +282,7 @@ export default function NewPlanModal() {
       //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
       //DENNIS TODO: redirect!!!!!!!!!
+      onPlanCreated?.(createdPlan);
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);
@@ -428,16 +444,18 @@ export default function NewPlanModal() {
                   className="text-neu6 text-sm font-bold"
                   htmlFor="no-major-check"
                 >{`Can't find my major?`}</Label>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2">
-                      <CircleQuestionMark size="18" color="#858585" />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{noMajorHelperLabel}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2">
+                        <CircleQuestionMark size="18" color="#858585" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{noMajorHelperLabel}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Concentration */}

@@ -1,7 +1,6 @@
 "use client";
 import { type PropsWithChildren } from "react";
-
-const UNDECIDED_CONCENTRATION = "Concentration Undecided";
+import { UNDECIDED_CONCENTRATION } from "@/lib/graduate/auditUtils";
 
 export interface SidebarContainerProps {
   title: string;

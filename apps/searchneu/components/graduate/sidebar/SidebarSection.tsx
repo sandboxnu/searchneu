@@ -34,10 +34,7 @@ function SidebarSection({
       className="border-neu25 cursor-pointer border-t transition-[background-color] duration-[0.25s] ease-out select-none"
       onClick={() => setOpened(!opened)}
     >
-      <div
-        className="bg-neu2 hover:bg-neu25 active:bg-neu3 sticky top-0 z-10 m-0 flex flex-row items-start justify-between px-4 py-4 font-bold transition-[background-color,border-color,color] duration-[0.25s] ease-out"
-        style={{ transitionDelay: "0.1s" }}
-      >
+      <div className="bg-neu2 hover:bg-neu25 active:bg-neu3 sticky top-0 z-10 m-0 flex flex-row items-start justify-between px-4 py-4 font-bold transition-[background-color,border-color,color] delay-100 duration-[0.25s] ease-out">
         <div className="flex h-full flex-row gap-2">
           {/* Status circle - matches graduatenu SidebarSection */}
           <div
@@ -105,7 +102,6 @@ function SidebarSection({
       {opened && (
         <div
           className="border-neu25 bg-neu25 cursor-default border-t pt-2.5 pr-5 pb-4 pl-2.5"
-          style={{ borderTopWidth: "0.5px" }}
           onClick={(e) => e.stopPropagation()}
         >
           {section.minRequirementCount < section.requirements.length && (

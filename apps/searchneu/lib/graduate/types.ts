@@ -17,6 +17,8 @@ export interface HydratedAuditPlan<T> {
 
 export type AuditPlanSummary = Pick<AuditPlanRow, "id" | "name">;
 
+export const DEFAULT_CATALOG_YEAR = 2026;
+
 /**
  * Describes the term SearchNEU uses for each of Northeastern's NUPath academic
  * breadth requirements.

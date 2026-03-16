@@ -7,11 +7,10 @@ import {
 } from "@/lib/graduate/types";
 import SidebarContainer from "./SidebarContainer";
 import SidebarSection from "./SidebarSection";
-import { creditsInAudit } from "@/lib/graduate/auditUtils";
-
-export { SidebarValidationStatus };
-
-const UNDECIDED_CONCENTRATION = "Concentration Undecided";
+import {
+  creditsInAudit,
+  UNDECIDED_CONCENTRATION,
+} from "@/lib/graduate/auditUtils";
 
 export function Sidebar({
   schedule,
@@ -25,28 +24,13 @@ export function Sidebar({
 
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
 
-  // ERROR STATE
   if (schedule == null) {
     return (
       <SidebarContainer title="Failed to load major">
         <div className="px-4 py-8 text-center">
-          <span className="text-neu6 text-xs">schedule is null 😭</span>
-        </div>
-      </SidebarContainer>
-    );
-  }
-
-  // LOADING GUARD
-  if (!schedule) {
-    return (
-      <SidebarContainer title="Loading...">
-        <div className="flex min-h-full w-full items-center justify-center p-8 text-center">
-          <div className="flex flex-col items-center gap-2">
-            <div className="border-neu4 border-t-blue h-8 w-8 animate-spin rounded-full border-4" />
-            <span className="text-neu6 text-sm font-medium">
-              Loading requirement data...
-            </span>
-          </div>
+          <span className="text-neu6 text-xs">
+            Schedule data is unavailable
+          </span>
         </div>
       </SidebarContainer>
     );
@@ -57,7 +41,7 @@ export function Sidebar({
       ? UNDECIDED_CONCENTRATION
       : concentration;
   const creditsToTake = currentMajor?.totalCreditsRequired ?? 0;
-  const creditsTaken = creditsInAudit<null>(schedule ?? []) ?? 0;
+  const creditsTaken = creditsInAudit(schedule);
 
   const sections =
     activeTab === "major"
@@ -146,11 +130,6 @@ export function Sidebar({
     </SidebarContainer>
   );
 }
-
-//interface NoMajorSidebarProps {
-//selectedPlan?: { id: string; concentration: string };
-//transferCourses?: unknown;
-//}
 
 export function NoMajorSidebar() {
   return (

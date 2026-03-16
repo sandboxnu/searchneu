@@ -266,7 +266,6 @@ export default function NewPlanModal() {
 
       const createdPlan = await response.json();
 
-      //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
       router.push(`/graduate/${createdPlan.id}`);
 

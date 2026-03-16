@@ -1,7 +1,7 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { forwardRef, useEffect, useState, useMemo } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { AuditCourse, AuditTerm, INEUReqError } from "@/lib/graduate/types";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
@@ -9,7 +9,8 @@ import {
   DELETE_COURSE_AREA_DND_ID,
   SIDEBAR_DND_ID_PREFIX,
 } from "./planDndUtils";
-import { useSearchCourse } from "@/lib/graduate/useSearchApi";
+import { courseToString } from "@/lib/graduate/auditUtils";
+import { useCourseName } from "@/components/graduate/CourseNameContext";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,13 +35,6 @@ interface DraggedScheduleCourseProps {
 
 export function isSidebarCourse(id: string): boolean {
   return id.startsWith(SIDEBAR_DND_ID_PREFIX);
-}
-
-function courseToString(c: {
-  subject: string;
-  classId: string | number;
-}): string {
-  return `${c.subject}${c.classId}`;
 }
 
 // ── Draggable Course (static on page, can be picked up) ─────────────────────
@@ -78,7 +72,6 @@ export function DraggableScheduleCourse({
       isDragging={isDragging}
       listeners={listeners}
       attributes={attributes}
-      transform={undefined}
       isFromSidebar={isSidebarCourse(scheduleCourse.id)}
       isDraggable
       onErrorClick={onErrorClick}
@@ -113,7 +106,6 @@ interface ScheduleCourseProps {
   isDragging?: boolean;
   listeners?: SyntheticListenerMap | undefined;
   attributes?: DraggableAttributes;
-  transform?: string;
   isOverlay?: boolean;
   isRemove?: boolean;
   isFromSidebar?: boolean;
@@ -132,7 +124,6 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
       isDragging = false,
       listeners,
       attributes,
-      transform,
       isOverlay = false,
       isRemove = false,
       isFromSidebar = false,
@@ -144,26 +135,15 @@ const ScheduleCourse = forwardRef<HTMLDivElement, ScheduleCourseProps>(
     const [hovered, setHovered] = useState(false);
     const isValidRemove = isRemove && !isFromSidebar;
     const hasError = coReqErr !== undefined || preReqErr !== undefined;
-    //const [courseName, setCourseName] = useState("no course name found")
-    const result = useSearchCourse(
-      // dennis todo: what term to search for?
-      "202630",
+    const courseName = useCourseName(
       scheduleCourse.subject,
-      parseInt(scheduleCourse.classId),
-    ).data;
-    const courseName = useMemo(
-      () => result?.name ?? "no course name found",
-      [result?.name],
+      scheduleCourse.classId,
     );
 
     return (
       <div
         ref={ref}
-        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-neu3" : "bg-neu1"} ${isDragging ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} `}
-        style={{
-          transform:
-            hovered && isDraggable ? "scale(1.04)" : (transform ?? "scale(1)"),
-        }}
+        className={`relative mb-1.5 flex w-full items-stretch justify-between rounded-lg text-sm transition-transform duration-150 ease-out ${isOverlay ? "bg-neu3" : "bg-neu1"} ${isDragging ? "invisible" : ""} ${isValidRemove ? "opacity-50" : "opacity-100"} ${hovered && isDraggable ? "scale-[1.04]" : ""} `}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         {...attributes}

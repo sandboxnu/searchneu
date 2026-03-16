@@ -33,7 +33,7 @@ const courseDndCollisionAlgorithm: CollisionDetection = (
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-interface PlanDndWrapperProps {
+interface AuditDndWrapperProps {
   plan: Audit<string>;
   catalogYear: number;
   preReqWarnings?: PreReqWarnings;
@@ -65,7 +65,7 @@ const DeleteDropZone: React.FC<PropsWithChildren> = ({ children }) => {
 
 // ── Main Wrapper ─────────────────────────────────────────────────────────────
 
-export function PlanDndWrapper({
+export function AuditDndWrapper({
   plan,
   catalogYear,
   preReqWarnings,
@@ -74,7 +74,7 @@ export function PlanDndWrapper({
   onError,
   onWarningsRecompute,
   sidebar,
-}: PlanDndWrapperProps) {
+}: AuditDndWrapperProps) {
   const [activeCourse, setActiveCourse] = useState<AuditCourse<string> | null>(
     null,
   );

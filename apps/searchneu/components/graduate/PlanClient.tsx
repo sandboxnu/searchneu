@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { PlanDndWrapper } from "@/components/graduate/dnd/AuditDndWrapper";
+import { AuditDndWrapper } from "@/components/graduate/dnd/AuditDndWrapper";
 import { prepareAuditForDnd, cleanDndIdsFromPlan } from "./dnd/planDndUtils";
 import { Audit, HydratedAuditPlan } from "@/lib/graduate/types";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/graduate/sidebar/Sidebar";
+import { CourseNameContext } from "./CourseNameContext";
 
-export function PlanClient({ plan }: { plan: HydratedAuditPlan<null> }) {
+interface PlanClientProps {
+  plan: HydratedAuditPlan<null>;
+  courseNames: Record<string, string>;
+}
+
+export function PlanClient({ plan, courseNames }: PlanClientProps) {
   const [scheduleState, setScheduleState] = useState(() =>
     prepareAuditForDnd(plan.schedule),
   );
@@ -30,12 +36,14 @@ export function PlanClient({ plan }: { plan: HydratedAuditPlan<null> }) {
   const sidebarNode = <Sidebar {...plan} />;
 
   return (
-    <PlanDndWrapper
-      plan={scheduleState}
-      catalogYear={plan.catalogYear}
-      onPlanUpdate={handlePlanUpdate}
-      onError={(msg) => toast.error(msg)}
-      sidebar={sidebarNode}
-    />
+    <CourseNameContext.Provider value={courseNames}>
+      <AuditDndWrapper
+        plan={scheduleState}
+        catalogYear={plan.catalogYear}
+        onPlanUpdate={handlePlanUpdate}
+        onError={(msg) => toast.error(msg)}
+        sidebar={sidebarNode}
+      />
+    </CourseNameContext.Provider>
   );
 }

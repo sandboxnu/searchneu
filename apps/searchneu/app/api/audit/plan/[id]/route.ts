@@ -19,10 +19,13 @@ import { withAuth } from "@/lib/api/withAuth";
  * @returns 400 if request body is invalid or plan update fails
  */
 export const PATCH = withAuth<{ id: string }>(async (req, user, { id }) => {
+  const auditPlanId = parseInt(id, 10);
+  if (isNaN(auditPlanId))
+    return Response.json({ error: "Invalid plan ID" }, { status: 400 });
   const body = UpdateAuditPlanDto.safeParse(await req.json());
   if (!body.success)
     return Response.json({ error: "Invalid request" }, { status: 400 });
-  const result = await updateAuditPlan(body.data, parseInt(id, 10), user.id);
+  const result = await updateAuditPlan(body.data, auditPlanId, user.id);
   if (!result)
     return Response.json({ error: "Failed to update" }, { status: 400 });
   return Response.json(result);
@@ -62,6 +65,9 @@ export const DELETE = withAuth<{ id: string }>(async (_req, user, { id }) => {
  * @returns 400 if db fetch fails
  */
 export const GET = withAuth<{ id: string }>(async (_req, user, { id }) => {
-  const plan = await getAuditPlan(parseInt(id, 10), user.id);
+  const auditPlanId = parseInt(id, 10);
+  if (isNaN(auditPlanId))
+    return Response.json({ error: "Invalid plan ID" }, { status: 400 });
+  const plan = await getAuditPlan(auditPlanId, user.id);
   return Response.json(plan);
 });

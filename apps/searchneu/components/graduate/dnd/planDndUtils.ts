@@ -6,22 +6,16 @@ import {
   AuditYear,
   IRequiredCourse,
   SeasonEnum,
-} from "../../../lib/graduate/types";
+} from "@/lib/graduate/types";
 import { produce } from "immer";
 import { isSidebarCourse } from "./AuditCourse";
+import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
 export const SIDEBAR_DND_ID_PREFIX = "sidebar";
 export const SIDEBAR_COURSE_DND_PREFIX = "sidebar-";
 export const DELETE_COURSE_AREA_DND_ID = "delete-course-area";
-
-const SEASON_DISPLAY: Record<string, string> = {
-  [SeasonEnum.FL]: "Fall",
-  [SeasonEnum.SP]: "Spring",
-  [SeasonEnum.S1]: "Summer I",
-  [SeasonEnum.S2]: "Summer II",
-};
 
 // ── Custom Error ─────────────────────────────────────────────────────────────
 

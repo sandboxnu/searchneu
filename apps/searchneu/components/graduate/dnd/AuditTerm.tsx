@@ -7,24 +7,11 @@ import {
   SeasonEnum,
   INEUReqError,
   TermError,
-} from "@/lib/graduate/types"; // ADJUST THIS PATH
+} from "@/lib/graduate/types";
 import { DraggableScheduleCourse } from "./AuditCourse";
+import { SEASON_DISPLAY, courseToString } from "@/lib/graduate/auditUtils";
 
-// ── Season Display ───────────────────────────────────────────────────────────
-
-const SEASON_DISPLAY: Record<string, string> = {
-  [SeasonEnum.FL]: "Fall",
-  [SeasonEnum.SP]: "Spring",
-  [SeasonEnum.S1]: "Summer I",
-  [SeasonEnum.S2]: "Summer II",
-};
-
-function courseToString(c: {
-  subject: string;
-  classId: string | number;
-}): string {
-  return `${c.subject}${c.classId}`;
-}
+// ── Helpers ─────────────────────────────────────────────────────────────────
 
 function totalCreditsInTerm(term: AuditTerm<unknown>): number {
   return term.classes.reduce((sum, c) => sum + c.numCreditsMin, 0);

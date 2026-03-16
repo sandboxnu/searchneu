@@ -9,11 +9,12 @@ import {
   StatusEnum,
   INEUReqError,
   YearError,
-} from "@/lib/graduate/types"; // ADJUST THIS PATH
+} from "@/lib/graduate/types";
 import { createContext, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { produce } from "immer";
 import { ScheduleYear } from "./AuditYear";
+import { getTermFromYear } from "@/lib/graduate/auditUtils";
 
 // ── Warning types ────────────────────────────────────────────────────────────
 
@@ -42,23 +43,8 @@ function addClassesToTerm(
     const year = draft.years.find((y) => y.year === termYear);
     if (!year) return;
 
-    let term;
-    switch (termSeason) {
-      case SeasonEnum.FL:
-        term = year.fall;
-        break;
-      case SeasonEnum.SP:
-        term = year.spring;
-        break;
-      case SeasonEnum.S1:
-        term = year.summer1;
-        break;
-      case SeasonEnum.S2:
-        term = year.summer2;
-        break;
-      default:
-        return;
-    }
+    const term = getTermFromYear(year, termSeason);
+    if (!term) return;
 
     const totalCourses = draft.years.reduce(
       (n, y) =>
@@ -91,23 +77,8 @@ function removeCourseFromTerm(
     const year = draft.years.find((y) => y.year === termYear);
     if (!year) return;
 
-    let term;
-    switch (termSeason) {
-      case SeasonEnum.FL:
-        term = year.fall;
-        break;
-      case SeasonEnum.SP:
-        term = year.spring;
-        break;
-      case SeasonEnum.S1:
-        term = year.summer1;
-        break;
-      case SeasonEnum.S2:
-        term = year.summer2;
-        break;
-      default:
-        return;
-    }
+    const term = getTermFromYear(year, termSeason);
+    if (!term) return;
 
     term.classes = term.classes.filter(
       (c, idx) =>

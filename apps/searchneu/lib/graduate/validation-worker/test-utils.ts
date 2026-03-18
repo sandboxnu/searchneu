@@ -28,7 +28,7 @@ export const course = (
 });
 
 // Converts a TestCourse to a AuditCourse
-export function convert(c: TestCourse): AuditCourse<unknown> {
+export function convert(c: TestCourse): AuditCourse {
   return {
     ...c,
     classId: String(c.classId),

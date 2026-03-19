@@ -34,8 +34,8 @@ export function SignIn({ closeFn }: { closeFn: () => void }) {
         <DialogHeader className="flex w-full items-center">
           <DialogTitle>Sign In</DialogTitle>
           <DialogDescription className="text-center">
-            Sign in to be the first to know when seats open up! We currently
-            only support valid <span className="font-bold">husky.neu.edu</span>{" "}
+            Sign in to access all SearchNEU features! We currently only support
+            valid <span className="font-bold">husky.neu.edu</span>{" "}
             accounts.{" "}
           </DialogDescription>
         </DialogHeader>

@@ -13,6 +13,12 @@ import { SchedulerView } from "./calendar/SchedulerView";
 import { ScheduleSidebar } from "./right-sidebar/ScheduleSidebar";
 import { FilterPanel } from "./left-sidebar/FilterPanel";
 import { GroupedTerms, Campus, Nupath } from "@/lib/catalog/types";
+import {
+  PlanData,
+  PlanCourse,
+  PlanSection,
+  PlanUpdateData,
+} from "@/lib/scheduler/types";
 
 interface SchedulerWrapperProps {
   nupathOptions: { label: string; value: string }[];
@@ -128,7 +134,7 @@ export function SchedulerWrapper({
           return;
         }
 
-        const planData = await response.json();
+        const planData = (await response.json()) as PlanData;
         setPlanId(planIdNum);
         setPlanName(planData.name);
 
@@ -138,13 +144,13 @@ export function SchedulerWrapper({
         const allCourseIds: number[] = [];
 
         if (planData.courses && Array.isArray(planData.courses)) {
-          planData.courses.forEach((course: any) => {
+          planData.courses.forEach((course: PlanCourse) => {
             allCourseIds.push(course.courseId);
             if (course.isLocked) {
               lockedCourseIds.add(course.courseId);
             }
             if (course.sections && Array.isArray(course.sections)) {
-              course.sections.forEach((section: any) => {
+              course.sections.forEach((section: PlanSection) => {
                 if (section.isHidden) {
                   hiddenSectionIds.add(section.sectionId);
                 }
@@ -158,7 +164,7 @@ export function SchedulerWrapper({
           ...filters,
           startTime: planData.startTime,
           endTime: planData.endTime,
-          specificDaysFree: planData.freeDays,
+          specificDaysFree: planData.freeDays?.map(Number),
           includeHonors: planData.includeHonorsSections,
           includesRemote: planData.includeRemoteSections,
           minSeatsLeft: planData.hideFilledSections ? 1 : undefined,
@@ -326,14 +332,14 @@ export function SchedulerWrapper({
         const lockedChanged = !setsEqual(currentLocked, prevLocked);
         const hiddenChanged = !setsEqual(currentHidden, prevHidden);
 
-        const updateData: any = {
+        const updateData: PlanUpdateData = {
           startTime: filters.startTime ?? null,
           endTime: filters.endTime ?? null,
           freeDays: filters.specificDaysFree ?? [],
           includeHonorsSections: filters.includeHonors ?? false,
           includeRemoteSections: filters.includesRemote ?? true,
           hideFilledSections: (filters.minSeatsLeft ?? 0) > 0,
-          nupaths: filters.nupaths ?? [],
+          nupaths: [],
           numCourses: filters.numCourses,
         };
 

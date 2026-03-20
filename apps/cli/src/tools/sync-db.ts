@@ -275,14 +275,12 @@ export default defineCommand({
         `buildings: ${prunable.buildings.map((e) => e.code).join(", ")}`,
       );
       if (!args.dryRun) {
-        await db
-          .delete(buildingsT)
-          .where(
-            inArray(
-              buildingsT.id,
-              prunable.buildings.map((e) => e.id),
-            ),
-          );
+        await db.delete(buildingsT).where(
+          inArray(
+            buildingsT.id,
+            prunable.buildings.map((e) => e.id),
+          ),
+        );
       }
     }
 
@@ -291,14 +289,12 @@ export default defineCommand({
         `subjects: ${prunable.subjects.map((e) => e.code).join(", ")}`,
       );
       if (!args.dryRun) {
-        await db
-          .delete(subjectsT)
-          .where(
-            inArray(
-              subjectsT.id,
-              prunable.subjects.map((e) => e.id),
-            ),
-          );
+        await db.delete(subjectsT).where(
+          inArray(
+            subjectsT.id,
+            prunable.subjects.map((e) => e.id),
+          ),
+        );
       }
     }
 
@@ -307,14 +303,12 @@ export default defineCommand({
         `campuses: ${prunable.campuses.map((e) => e.code).join(", ")}`,
       );
       if (!args.dryRun) {
-        await db
-          .delete(campusesT)
-          .where(
-            inArray(
-              campusesT.id,
-              prunable.campuses.map((e) => e.id),
-            ),
-          );
+        await db.delete(campusesT).where(
+          inArray(
+            campusesT.id,
+            prunable.campuses.map((e) => e.id),
+          ),
+        );
       }
     }
 
@@ -361,9 +355,7 @@ function formatDriftLines(
   if (isVerbose()) {
     for (const e of entries) {
       const status =
-        e.refCount > 0
-          ? pc.red(`${e.refCount} refs`)
-          : pc.green("prunable");
+        e.refCount > 0 ? pc.red(`${e.refCount} refs`) : pc.green("prunable");
       lines.push(`  ${pc.dim(e.code)} (${status})`);
     }
   }

@@ -1,26 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import FeedbackModal from "@/components/feedback/FeedbackModal";
-import { X } from "lucide-react";
-import { SadHusky } from "./icons/SadHusky";
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    if (!sessionStorage.getItem("summer-delay-shown")) {
-      toast("Summer course catalog delayed :(", {
-        description: "We are working to get them to you soon.",
-        position: "bottom-left",
-        icon: <SadHusky />,
-        cancel: {
-          label: <X size={20} color="#F15B50" className="h-[16px] w-[16px]" />,
-          onClick: () => {},
-        },
-      });
-      sessionStorage.setItem("summer-delay-shown", "true");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!sessionStorage.getItem("summer-delay-shown")) {
+  //     toast("Summer course catalog delayed :(", {
+  //       description: "We are working to get them to you soon.",
+  //       position: "bottom-left",
+  //       icon: <SadHusky />,
+  //       cancel: {
+  //         label: <X size={20} color="#F15B50" className="h-[16px] w-[16px]" />,
+  //         onClick: () => {},
+  //       },
+  //     });
+  //     sessionStorage.setItem("summer-delay-shown", "true");
+  //   }
+  // }, []);
 
   return (
     <div>

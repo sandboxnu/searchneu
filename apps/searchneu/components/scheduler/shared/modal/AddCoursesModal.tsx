@@ -139,10 +139,12 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
   }, [props.planId, props.open]);
 
   const activeTerm = props.selectedTerm ?? props.terms.neu[0];
-  const activeTermLabel =
-    Object.values(props.terms)
-      .flat()
-      .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
+  console.log("activeTerm:", activeTerm);
+  console.log("activeTerm.term:", activeTerm?.term);
+  console.log("activeTerm.part:", activeTerm?.part);
+  const activeTermLabel = Object.values(props.terms)
+    .flat()
+    .find((t) => t.term === activeTerm.term)?.name;
 
   // helpers
 
@@ -232,6 +234,8 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         let latestPlanData: ExistingPlanData | null = null;
         if (props.planId) {
           try {
+            console.log("activeTerm:", activeTerm);
+            console.log("term being sent:", activeTerm.term);
             const res = await fetch(
               `/api/scheduler/saved-plans/${props.planId}`,
               {
@@ -314,7 +318,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              term: activeTerm.id,
+              term: activeTerm.term + activeTerm.part,
               courses,
               numCourses: numCoursesValue,
             }),

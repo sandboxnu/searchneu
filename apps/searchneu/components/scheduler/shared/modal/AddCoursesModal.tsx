@@ -139,6 +139,9 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
   }, [props.planId, props.open]);
 
   const activeTerm = props.selectedTerm ?? props.terms.neu[0];
+  console.log("activeTerm:", activeTerm);
+  console.log("activeTerm.term:", activeTerm?.term);
+  console.log("activeTerm.part:", activeTerm?.part);
   const activeTermLabel = Object.values(props.terms)
     .flat()
     .find((t) => t.term === activeTerm.term)?.name;

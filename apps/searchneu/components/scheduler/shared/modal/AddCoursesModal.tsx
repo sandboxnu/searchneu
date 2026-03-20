@@ -139,10 +139,9 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
   }, [props.planId, props.open]);
 
   const activeTerm = props.selectedTerm ?? props.terms.neu[0];
-  const activeTermLabel =
-    Object.values(props.terms)
-      .flat()
-      .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
+  const activeTermLabel = Object.values(props.terms)
+    .flat()
+    .find((t) => t.term === activeTerm.term)?.name;
 
   // helpers
 
@@ -316,7 +315,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              term: activeTerm.part,
+              term: activeTerm.term + activeTerm.part,
               courses,
               numCourses: numCoursesValue,
             }),

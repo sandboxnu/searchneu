@@ -26,9 +26,7 @@ export const termsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    unique("term_part_of_term").on(table.term, table.partOfTerm),
-  ],
+  (table) => [unique("term_part_of_term").on(table.term, table.partOfTerm)],
 );
 
 export const coursesT = pgTable(

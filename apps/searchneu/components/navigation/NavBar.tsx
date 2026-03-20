@@ -22,7 +22,6 @@ export function NavBar({
   closeable?: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
-  const schedulerFlag = use(flags["scheduler"]);
   const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
@@ -32,7 +31,6 @@ export function NavBar({
       <FlagValues
         values={{
           rooms: roomsFlag,
-          scheduler: schedulerFlag,
         }}
       />
       {roomsFlag && (
@@ -69,11 +67,9 @@ export function NavBar({
           <span>Catalog</span>
         </Link>
       </LinkWrapper>
-      {schedulerFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <SchedulerButton pathname={pathname} />
-        </LinkWrapper>
-      )}
+      <LinkWrapper mobileNav={closeable}>
+        <SchedulerButton pathname={pathname} />
+      </LinkWrapper>
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/notifications"

@@ -316,7 +316,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              term: activeTerm.term,
+              term: activeTerm.part,
               courses,
               numCourses: numCoursesValue,
             }),

@@ -53,7 +53,7 @@ const SelectedCourseGroup = ({
       {/* parent */}
       <SelectedCourseItem
         course={{
-          subject: parent.subjectCode,
+          subject: (parent as any).subjectCode || parent.subject,
           courseNumber: parent.courseNumber,
           title: parent.name,
           handleDelete: () => onDeleteCourse(parent, false),
@@ -66,7 +66,7 @@ const SelectedCourseGroup = ({
         <div key={idx} className="border-neu3 border-t">
           <SelectedCourseItem
             course={{
-              subject: coreq.subjectCode,
+              subject: (coreq as any).subjectCode || (coreq as any).subject,
               courseNumber: coreq.courseNumber,
               title: coreq.name ?? "Corequisite",
               handleDelete: () => onDeleteCourse(coreq, true),

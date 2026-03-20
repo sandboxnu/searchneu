@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
 import { SheetClose } from "../ui/sheet";
+import { SchedulerButton } from "./SchedulerButton";
 
 export function NavBar({
   flags,
@@ -46,18 +47,6 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      {schedulerFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/scheduler"
-            data-active={pathname === "/scheduler"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
-          >
-            <CalendarDays className="size-4" />
-            Scheduler
-          </Link>
-        </LinkWrapper>
-      )}
       {graduateFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
@@ -80,6 +69,11 @@ export function NavBar({
           <span>Catalog</span>
         </Link>
       </LinkWrapper>
+      {schedulerFlag && (
+        <LinkWrapper mobileNav={closeable}>
+          <SchedulerButton pathname={pathname} />
+        </LinkWrapper>
+      )}
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/notifications"

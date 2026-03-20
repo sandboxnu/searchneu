@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, use } from "react";
 import { Button } from "@/components/ui/button";
 import { GroupedTerms } from "@/lib/catalog/types";
 import { CollegeDropdown } from "./CollegeDropdown";
 import { TermsDropdown } from "./TermsDropdown";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Searchskie } from "../../icons/Searchskie";
 import AddCoursesModal from "../shared/modal/AddCoursesModal";
 import { PlanCard } from "./PlanCard/PlanCard";
-import { authClient } from "@/lib/auth/auth-client";
+import type { Campus, Nupath } from "@/lib/catalog/types";
+import useSWR from "swr";
+import { cn } from "@/lib/cn";
 
 // Add type for plan
 export type SavedPlan = {
@@ -23,7 +24,7 @@ export type SavedPlan = {
   includeHonorsSections: boolean;
   includeRemoteSections: boolean;
   hideFilledSections: boolean;
-  campuses: number | null;
+  campus: number | null;
   nupaths: number[];
   createdAt: Date;
   updatedAt: Date;
@@ -58,146 +59,81 @@ export type SavedPlan = {
   }>;
 };
 
-export function DashboardClient(props: { terms: GroupedTerms }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: session, isPending } = authClient.useSession();
-
+export function DashboardClient({
+  termsPromise,
+  campusesPromise,
+  nupathsPromise,
+}: {
+  termsPromise: Promise<GroupedTerms>;
+  campusesPromise: Promise<Campus[]>;
+  nupathsPromise: Promise<Nupath[]>;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedCollege, setSelectedCollege] = useState<string>(
-    searchParams.get("college") ?? "neu",
+  const [selectedCollege, setSelectedCollege] = useState<string>("neu");
+
+  const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
+
+  const terms = use(termsPromise);
+  const campuses = use(campusesPromise);
+  const nupaths = use(nupathsPromise);
+
+  const {
+    data: plans,
+    isLoading,
+    mutate,
+  } = useSWR<SavedPlan[]>(
+    `/api/scheduler/saved-plans/term/${selectedTerm}`,
+    (u: string) => fetch(u).then((r) => r.json()),
+    { fallbackData: [], suspense: true },
   );
 
-  const [selectedTerm, setSelectedTerm] = useState<string | null>(
-    searchParams.get("term") ?? null,
-  );
+  // this case should never happen as data is always defined (despite the type)
+  if (!plans) throw Error("fallback data not correctly set");
 
-  // NEW: Add state for plans and loading
-  const [plans, setPlans] = useState<SavedPlan[]>([]);
-  const [isLoadingPlans, setIsLoadingPlans] = useState(false);
-
-  // NEW: Fetch plans when term changes
-  useEffect(() => {
-    const fetchPlans = async () => {
-      if (!selectedTerm || !session || isPending) {
-        setPlans([]);
-        return;
-      }
-
-      setIsLoadingPlans(true);
-      try {
-        const response = await fetch(
-          `/api/scheduler/saved-plans/term/${selectedTerm}`,
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setPlans(data);
-        } else {
-          console.error("Failed to fetch plans:", response.statusText);
-          setPlans([]);
-        }
-      } catch (error) {
-        console.error("Error fetching plans:", error);
-        setPlans([]);
-      } finally {
-        setIsLoadingPlans(false);
-      }
-    };
-
-    fetchPlans();
-  }, [selectedTerm, isPending, session]);
-
-  // NEW: Delete plan handler with confirmation
   const handleDeletePlan = async (planId: number) => {
     if (!confirm("Are you sure you want to delete this plan?")) {
       return;
     }
 
-    try {
-      const response = await fetch(`/api/scheduler/saved-plans/${planId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        // Refresh the plans list
-        if (selectedTerm) {
-          const refreshResponse = await fetch(
-            `/api/scheduler/saved-plans/term/${selectedTerm}`,
-          );
-          if (refreshResponse.ok) {
-            const data = await refreshResponse.json();
-            setPlans(data);
-          }
-        }
-      } else {
-        console.error("Failed to delete plan");
-      }
-    } catch (error) {
-      console.error("Error deleting plan:", error);
-    }
+    mutate(
+      async (p) => {
+        if (!p) return;
+        await fetch(`/api/scheduler/saved-plans/${planId}`, {
+          method: "DELETE",
+        });
+        return p.filter((p) => p.id !== planId);
+      },
+      {
+        revalidate: false,
+        rollbackOnError: true,
+        optimisticData: plans.filter((p) => p.id !== planId),
+      },
+    );
   };
-
-  const handleGenerateSchedules = (
-    lockedCourseIds: number[],
-    optionalCourseIds: number[],
-    numCourses?: number,
-  ) => {
-    const params = new URLSearchParams();
-    if (lockedCourseIds.length > 0) {
-      params.set("lockedCourseIds", lockedCourseIds.join(","));
-    }
-    if (optionalCourseIds.length > 0) {
-      params.set("optionalCourseIds", optionalCourseIds.join(","));
-    }
-    if (numCourses !== undefined) {
-      params.set("numCourses", numCourses.toString());
-    }
-    router.push(`/scheduler/generator?${params.toString()}`);
-  };
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (selectedCollege) {
-      params.set("college", selectedCollege);
-    }
-
-    if (selectedTerm) {
-      params.set("term", selectedTerm);
-    } else {
-      params.delete("term");
-    }
-
-    router.replace(`/scheduler?${params.toString()}`, { scroll: false });
-  }, [selectedCollege, selectedTerm, router]);
 
   return (
     <div className="bg-neu2 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
       <AddCoursesModal
         open={isModalOpen}
-        terms={props.terms}
+        terms={terms}
         selectedTerm={selectedTerm}
-        onGenerateSchedules={handleGenerateSchedules}
         closeFn={() => {
           setIsModalOpen(false);
         }}
       />
       <div className="bg-neu1 h-full min-h-0 w-full max-w-[280px] space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
         <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
-
         <CollegeDropdown
-          terms={props.terms}
+          terms={terms}
           selectedCollege={selectedCollege}
           onCollegeChange={setSelectedCollege}
           onTermChange={setSelectedTerm}
         />
 
         <h3 className="text-neu7 text-xs font-bold">SEMESTER</h3>
-
         <TermsDropdown
-          terms={props.terms}
+          terms={terms}
           id="course-term-select"
           selectedCollege={selectedCollege}
           selectedTerm={selectedTerm}
@@ -212,31 +148,36 @@ export function DashboardClient(props: { terms: GroupedTerms }) {
         </Button>
       </div>
 
-      {/* CHANGED: Replace empty state with conditional rendering */}
       <div
-        className={`bg-neu1 flex h-full min-h-0 w-full flex-col space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1 ${plans.length > 0 ? "place-content-start" : "place-content-center"}`}
+        className={cn(
+          `bg-neu1 flex h-full min-h-0 w-full flex-col place-content-center space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1`,
+          {
+            "place-content-start": plans?.length > 0,
+          },
+        )}
       >
-        {!selectedTerm ? (
-          <div className="flex flex-col items-center gap-1 text-center">
-            <Searchskie className="w-72 pb-8" />
-            <h1 className="text-xl font-semibold">
-              Select a term to view plans
-            </h1>
-          </div>
-        ) : isLoadingPlans ? (
+        {isLoading && (
           <div className="flex flex-col items-center gap-1 text-center">
             <p className="text-xl font-semibold">Loading plans...</p>
           </div>
-        ) : plans.length === 0 ? (
+        )}
+        {!isLoading && plans.length === 0 && (
           <div className="flex flex-col items-center gap-1 text-center">
             <Searchskie className="w-72 pb-8" />
             <h1 className="text-xl font-semibold">No plans found</h1>
             <p className="">Generate a new schedule first</p>
           </div>
-        ) : (
+        )}
+        {!isLoading && plans.length > 0 && (
           <div className="space-y-4 py-4">
             {plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} onDelete={handleDeletePlan} />
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                onDelete={handleDeletePlan}
+                campuses={campuses}
+                nupaths={nupaths}
+              />
             ))}
           </div>
         )}

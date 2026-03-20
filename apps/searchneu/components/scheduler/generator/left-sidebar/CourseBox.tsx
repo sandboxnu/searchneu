@@ -10,8 +10,8 @@ interface CourseBoxProps {
   color?: CourseColor;
   open: boolean;
   onToggle: () => void;
-  hiddenSections: Set<string>;
-  onToggleHiddenSection: (crn: string) => void;
+  hiddenSectionIds: Set<number>;
+  onToggleHiddenSection: (sectionId: number) => void;
   locked: boolean;
   onToggleLock: () => void;
 }
@@ -21,7 +21,7 @@ export function CourseBox({
   color,
   open,
   onToggle,
-  hiddenSections,
+  hiddenSectionIds,
   onToggleHiddenSection,
   locked,
   onToggleLock,
@@ -83,8 +83,8 @@ export function CourseBox({
               <SectionRow
                 key={s.crn}
                 section={s}
-                hidden={hiddenSections.has(s.crn)}
-                onToggleHidden={() => onToggleHiddenSection(s.crn)}
+                hidden={hiddenSectionIds.has(s.id)}
+                onToggleHidden={() => onToggleHiddenSection(s.id)}
               />
             ))}
           </div>

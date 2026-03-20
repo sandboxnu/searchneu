@@ -4,6 +4,13 @@ import { type ScheduleFilters } from "@/lib/scheduler/filters";
 import { Switch } from "../../../ui/switch";
 import { TimeInput } from "./TimeInput";
 import { FilterMultiSelect } from "./FilterMultiSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../ui/select";
 import { cn } from "@/lib/cn";
 
 // Convert time string (e.g., "09:00") to military format (e.g., 900)
@@ -80,20 +87,26 @@ export function FiltersTab({
 
   return (
     <div className="flex h-full flex-col gap-6 overflow-y-auto pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {/* CAMPUSES */}
+      {/* CAMPUS */}
       <div className="flex flex-col gap-3">
-        <FilterMultiSelect
-          label="CAMPUSES"
-          options={CAMPUS_OPTIONS}
-          selected={filters.desiredCampuses ?? []}
-          onSelectedChange={(values) => {
-            updateFilter(
-              "desiredCampuses",
-              values.length > 0 ? values : undefined,
-            );
-          }}
-          placeholder="Search campuses..."
-        />
+        <span className="text-xs leading-[14px] font-bold text-[#5f5f5f] uppercase">
+          Campus
+        </span>
+        <Select
+          value={filters.desiredCampus ?? ""}
+          onValueChange={(value) => updateFilter("desiredCampus", value)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CAMPUS_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* INCLUDE REMOTE SECTIONS*/}

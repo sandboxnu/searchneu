@@ -77,9 +77,6 @@ export function SchedulerView({
       {/* Schedule Heading */}
       {hasSchedules && (
         <div className="mb-2">
-          <p className="text-neu4 mb-1 text-sm font-bold uppercase">
-            Plan {currentScheduleIndex + 1}
-          </p>
           <div className="flex items-center gap-2">
             <h1 className="text-neu8 text-2xl font-bold">
               Schedule {currentScheduleIndex + 1}

@@ -15,17 +15,14 @@ interface FilterPanelProps {
   filters: ScheduleFilters;
   onFiltersChange: (filters: ScheduleFilters) => void;
   nupathOptions: { label: string; value: string }[];
-  allSchedules: SectionWithCourse[][];
-  hiddenSections: Set<string>;
-  onToggleHiddenSection: (crn: string) => void;
+  courseToSections: Map<number, SectionWithCourse[]>;
+  hiddenSectionIds: Set<number>;
+  onToggleHiddenSection: (sectionId: number) => void;
   terms: GroupedTerms;
-  onGenerateSchedules: (
-    lockedCourseIds: number[],
-    optionalCourseIds: number[],
-    numCourses?: number,
-  ) => void;
-  lockedCourseIds: number[];
-  onLockedCourseIdsChange: (ids: number[]) => void;
+  lockedCourseIds: Set<number>;
+  onLockedCourseIdsChange: (ids: Set<number>) => void;
+  planId?: number;
+  onSchedulesGenerated?: () => void;
 }
 
 type Tab = "courses" | "filters";
@@ -34,13 +31,14 @@ export function FilterPanel({
   filters,
   onFiltersChange,
   nupathOptions,
-  allSchedules,
-  hiddenSections,
+  courseToSections,
+  hiddenSectionIds,
   onToggleHiddenSection,
-  onGenerateSchedules,
   terms,
   lockedCourseIds,
   onLockedCourseIdsChange,
+  planId,
+  onSchedulesGenerated,
 }: FilterPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>("courses");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +51,8 @@ export function FilterPanel({
         closeFn={() => setIsModalOpen(false)}
         terms={terms}
         selectedTerm={null}
-        onGenerateSchedules={onGenerateSchedules}
+        planId={planId}
+        callback={onSchedulesGenerated}
       />
       {/* Tabs */}
       <div className="flex w-fit gap-4 border-b border-[#e0e0e0]">
@@ -83,8 +82,8 @@ export function FilterPanel({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {activeTab === "courses" ? (
           <CoursesTab
-            filteredSchedules={allSchedules}
-            hiddenSections={hiddenSections}
+            courseToSections={courseToSections}
+            hiddenSectionIds={hiddenSectionIds}
             onToggleHiddenSection={onToggleHiddenSection}
             lockedCourseIds={lockedCourseIds}
             onLockedCourseIdsChange={onLockedCourseIdsChange}

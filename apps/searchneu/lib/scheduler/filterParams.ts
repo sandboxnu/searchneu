@@ -35,31 +35,39 @@ export function parseFiltersFromParams(params: Params): ScheduleFilters {
     if (values.length > 0) filters.nupaths = values;
   }
 
-  const minSeats = params.get("minSeats");
-  if (minSeats) {
-    const v = parseInt(minSeats);
-    if (!isNaN(v)) filters.minSeatsLeft = v;
-  }
-
   const lockedCourseIds = params.get("lockedCourseIds");
   if (lockedCourseIds) {
     const ids = lockedCourseIds
       .split(",")
       .map(Number)
       .filter((n) => !isNaN(n));
-    if (ids.length > 0) filters.lockedCourseIds = ids;
+    if (ids.length > 0) filters.lockedCourseIds = new Set(ids);
   }
 
-  const desiredCampuses = params.get("campuses");
-  if (desiredCampuses) {
-    const values = desiredCampuses.split(",").filter(Boolean);
-    if (values.length > 0) filters.desiredCampuses = values;
+  const desiredCampus = params.get("campuses");
+  if (desiredCampus) {
+    filters.desiredCampus = desiredCampus;
   }
 
-  const hidden = params.get("hiddenSections");
-  if (hidden) {
-    const crns = new Set(hidden.split(",").filter(Boolean));
-    if (crns.size > 0) filters.hiddenSections = crns;
+  const hiddenSectionIds = params.get("hiddenSectionIds");
+  if (hiddenSectionIds) {
+    const ids = hiddenSectionIds
+      .split(",")
+      .map(Number)
+      .filter((n) => !isNaN(n));
+    if (ids.length > 0) filters.hiddenSectionIds = new Set(ids);
+  }
+
+  const numCourses = params.get("numCourses");
+  if (numCourses) {
+    const v = parseInt(numCourses);
+    if (!isNaN(v)) filters.numCourses = v;
+  }
+
+  const minSeats = params.get("minSeats");
+  if (minSeats) {
+    const v = parseInt(minSeats);
+    if (!isNaN(v) && v > 0) filters.minSeatsLeft = v;
   }
 
   return filters;
@@ -76,9 +84,10 @@ export function syncToUrl(filters: ScheduleFilters) {
     "honors",
     "remote",
     "minSeats",
-    "hiddenSections",
+    "hiddenSectionIds",
     "lockedCourseIds",
     "campuses",
+    "numCourses",
   ];
   filterKeys.forEach((k) => params.delete(k));
 
@@ -90,14 +99,21 @@ export function syncToUrl(filters: ScheduleFilters) {
   if (filters.nupaths?.length) params.set("nupaths", filters.nupaths.join(","));
   if (filters.includeHonors === false) params.set("honors", "false");
   if (filters.includesRemote === false) params.set("remote", "false");
-  if (filters.minSeatsLeft != null)
+  if (filters.hiddenSectionIds?.size)
+    params.set(
+      "hiddenSectionIds",
+      Array.from(filters.hiddenSectionIds).join(","),
+    );
+  if (filters.lockedCourseIds?.size)
+    params.set(
+      "lockedCourseIds",
+      Array.from(filters.lockedCourseIds).join(","),
+    );
+  if (filters.desiredCampus) params.set("campuses", filters.desiredCampus);
+  if (filters.minSeatsLeft != null && filters.minSeatsLeft > 0)
     params.set("minSeats", String(filters.minSeatsLeft));
-  if (filters.hiddenSections?.size)
-    params.set("hiddenSections", Array.from(filters.hiddenSections).join(","));
-  if (filters.lockedCourseIds?.length)
-    params.set("lockedCourseIds", filters.lockedCourseIds.join(","));
-  if (filters.desiredCampuses?.length)
-    params.set("campuses", filters.desiredCampuses.join(","));
+  if (filters.numCourses != null)
+    params.set("numCourses", String(filters.numCourses));
 
   const search = params.toString();
   const url = search

@@ -6,6 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
@@ -65,13 +66,14 @@ export const savedPlansT = pgTable(
       .notNull()
       .references(() => termsT.term, { onDelete: "cascade" }),
     name: text().notNull(),
+    numCourses: integer().default(4),
     startTime: integer(),
     endTime: integer(),
     freeDays: text().array().notNull().default([]),
-    includeHonorsSections: boolean().notNull().default(false),
+    includeHonorsSections: boolean().notNull().default(true),
     includeRemoteSections: boolean().notNull().default(true),
     hideFilledSections: boolean().notNull().default(false),
-    campuses: integer(),
+    campus: integer().notNull().default(1),
     nupaths: integer().array().notNull().default([]),
 
     createdAt: timestamp().notNull().defaultNow(),
@@ -102,7 +104,10 @@ export const savedPlanCoursesT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("spc_plan_idx").on(table.planId)],
+  (table) => [
+    index("spc_plan_idx").on(table.planId),
+    uniqueIndex("spc_plan_course_unique").on(table.planId, table.courseId),
+  ],
 );
 
 export const savedPlanSectionsT = pgTable(
@@ -123,7 +128,13 @@ export const savedPlanSectionsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("sps_saved_plan_course_idx").on(table.savedPlanCourseId)],
+  (table) => [
+    index("sps_saved_plan_course_idx").on(table.savedPlanCourseId),
+    uniqueIndex("sps_course_section_unique").on(
+      table.savedPlanCourseId,
+      table.sectionId,
+    ),
+  ],
 );
 
 export const favoritedSchedulesT = pgTable(

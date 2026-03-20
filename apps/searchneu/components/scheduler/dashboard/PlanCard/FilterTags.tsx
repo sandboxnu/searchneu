@@ -1,12 +1,13 @@
 import { type ReactNode } from "react";
 import { MapPin, Clock } from "lucide-react";
 import { type SavedPlan } from "../Dashboard";
+import type { Nupath, Campus } from "@/lib/catalog/types";
 
-// Helper to format time (minutes since midnight to HH:MM AM/PM)
-function formatTime(minutes: number | null): string {
-  if (minutes === null) return "";
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
+// Helper to format time (e.g. 600 = 6:00 AM, 1230 = 12:30 PM)
+function formatTime(time: number | null): string {
+  if (time === null) return "";
+  const hours = Math.floor(time / 100);
+  const mins = time % 100;
   const period = hours >= 12 ? "PM" : "AM";
   const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
   return `${displayHours}:${mins.toString().padStart(2, "0")} ${period}`;
@@ -28,35 +29,41 @@ function formatFreeDays(days: string[]): string {
   return `Free ${formatted}`;
 }
 
-// Get campus display text
-function getCampusText(includeRemoteSections: boolean): string {
-  const parts: string[] = [];
-  if (includeRemoteSections) {
-    parts.push("Remote");
-  }
-  return parts.length > 0 ? parts.join(", ") : "";
-}
-
 interface FilterTagsProps {
   plan: SavedPlan;
+  campuses: Campus[];
+  nupaths: Nupath[];
 }
 
-export function FilterTags({ plan }: FilterTagsProps) {
+export function FilterTags({ plan, campuses, nupaths }: FilterTagsProps) {
   const filterTags: ReactNode[] = [];
 
+  // Create lookup maps for efficient access
+  const campusIdToNameMap = new Map<number, string>();
+  campuses.forEach((c) => {
+    campusIdToNameMap.set(c.id, c.name);
+  });
+
+  const nupathIdToShortMap = new Map<number, string>();
+  nupaths.forEach((n) => {
+    nupathIdToShortMap.set(n.id, n.short);
+  });
+
   // Location/Campus tag
-  const campusText = getCampusText(plan.includeRemoteSections);
-  if (campusText) {
-    filterTags.push(
-      <div
-        key="location"
-        className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
-      >
-        <MapPin className="h-3 w-3" />
-        {campusText}
-      </div>,
-    );
-  }
+  const campusName =
+    plan.campus !== null
+      ? campusIdToNameMap.get(plan.campus) || "Unknown"
+      : "Unknown";
+  const remote = plan.includeRemoteSections ? ", Remote" : "";
+  filterTags.push(
+    <div
+      key="location"
+      className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+    >
+      <MapPin className="h-3 w-3" />
+      {`${campusName}${remote}`}
+    </div>,
+  );
 
   // Time tag
   if (plan.startTime !== null || plan.endTime !== null) {
@@ -95,14 +102,20 @@ export function FilterTags({ plan }: FilterTagsProps) {
 
   // NUPaths tag
   if (plan.nupaths.length > 0) {
-    filterTags.push(
-      <div
-        key="nupaths"
-        className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
-      >
-        NU Paths {plan.nupaths.join(", ")}
-      </div>,
-    );
+    const nupathDisplays = plan.nupaths
+      .map((id) => nupathIdToShortMap.get(id) || "Unknown")
+      .filter((name) => name !== "Unknown");
+    if (nupathDisplays.length > 0) {
+      filterTags.push(
+        <div
+          key="nupaths"
+          className="bg-neu2 text-neu8 gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+        >
+          <span className="text-neu7 mb-3 text-xs font-bold">NU Paths </span>{" "}
+          {nupathDisplays.join(", ")}
+        </div>,
+      );
+    }
   }
 
   if (filterTags.length === 0) {

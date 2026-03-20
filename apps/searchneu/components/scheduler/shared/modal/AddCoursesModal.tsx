@@ -1,6 +1,6 @@
 "use client";
 
-import { Course, GroupedTerms } from "@/lib/catalog/types";
+import { Course, GroupedTerms, Section } from "@/lib/catalog/types";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import { Button } from "../../../ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { ModalSearchBar } from "./ModalSearchBar";
 import SelectedCourseGroup from "./SelectedCourseGroup";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
   ssr: false,
@@ -79,41 +79,70 @@ const extractCoreqReqs = (
   return acc;
 };
 
-export default function AddCoursesModal(props: {
+interface ExistingPlanData {
+  courses: Array<{
+    courseId: number;
+    isLocked: boolean;
+    sections: Array<{
+      sectionId: number;
+      isHidden: boolean;
+    }>;
+  }>;
+  numCourses?: number;
+}
+
+interface AddCoursesModalProps {
   open: boolean;
   closeFn: () => void;
   terms: GroupedTerms;
   selectedTerm: string | null;
-  onGenerateSchedules: (
-    locked: number[],
-    optional: number[],
-    num?: number,
-  ) => void;
-}) {
-  const searchParams = useSearchParams();
+  planId?: number;
+  callback?: () => void;
+}
 
-  const parsedNum = parseInt(searchParams.get("numCourses") ?? "4");
-  const numCoursesValue = isNaN(parsedNum) ? 4 : parsedNum;
+export default function AddCoursesModal(props: AddCoursesModalProps) {
+  const router = useRouter();
 
-  const [numCourses, setNumCourses] = useState<number>(numCoursesValue);
+  const [numCourses, setNumCourses] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroupData[]
   >([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [initialExistingPlan, setInitialExistingPlan] =
+    useState<ExistingPlanData | null>(null);
+
+  // Fetch existing plan data if planId is provided (for updating)
+  // Refetch whenever the modal is opened to ensure we have the latest plan data
+  useEffect(() => {
+    if (!props.planId || !props.open) return;
+
+    const fetchExistingPlan = async () => {
+      try {
+        const res = await fetch(`/api/scheduler/saved-plans/${props.planId}`, {
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const planData = await res.json();
+          setInitialExistingPlan(planData);
+          // Set numCourses from existing plan
+          if (planData.numCourses !== undefined) {
+            setNumCourses(planData.numCourses);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching existing plan:", error);
+      }
+    };
+
+    fetchExistingPlan();
+  }, [props.planId, props.open]);
 
   const activeTerm = props.selectedTerm ?? props.terms.neu[0]?.term ?? "";
   const activeTermLabel =
     Object.values(props.terms)
       .flat()
       .find((t) => t.term === activeTerm)?.name ?? "Selected Term";
-
-  const allCourseIds = [
-    ...searchParams.getAll("lockedCourseIds"),
-    ...searchParams.getAll("optionalCourseIds"),
-  ]
-    .flatMap((val) => val.split(","))
-    .map(Number)
-    .filter((id) => !isNaN(id) && id > 0);
 
   // helpers
 
@@ -160,6 +189,191 @@ export default function AddCoursesModal(props: {
     });
   };
 
+  // Fetch all sections for the selected courses
+  const fetchSectionsForCourses = useCallback(
+    async (courseIds: number[]): Promise<Map<number, Section[]>> => {
+      const sectionsByCoursId = new Map<number, Section[]>();
+
+      const results = await Promise.all(
+        courseIds.map(async (courseId) => {
+          try {
+            const res = await fetch(
+              `/api/catalog/courses/${courseId}/sections`,
+            );
+            if (res.ok) {
+              const sections = (await res.json()) as Section[];
+              return { courseId, sections };
+            }
+          } catch (error) {
+            console.error(
+              `Failed to fetch sections for course ${courseId}:`,
+              error,
+            );
+          }
+          return { courseId, sections: [] };
+        }),
+      );
+
+      for (const { courseId, sections } of results) {
+        sectionsByCoursId.set(courseId, sections);
+      }
+
+      return sectionsByCoursId;
+    },
+    [],
+  );
+
+  // Create plan or update existing plan
+  const handleGenerateSchedules = useCallback(
+    async (courseIds: number[], numCoursesValue: number) => {
+      setIsGenerating(true);
+      try {
+        // Fetch latest plan data in case filters were updated while modal was open
+        let latestPlanData: ExistingPlanData | null = null;
+        if (props.planId) {
+          try {
+            const res = await fetch(
+              `/api/scheduler/saved-plans/${props.planId}`,
+              {
+                cache: "no-store",
+              },
+            );
+            if (res.ok) {
+              latestPlanData = await res.json();
+            }
+          } catch (error) {
+            console.error("Error fetching latest plan data:", error);
+          }
+        }
+
+        const sectionsByCourseId = await fetchSectionsForCourses(courseIds);
+
+        // Build courses array, preserving lock/hidden status from the latest plan data
+        const existingPlanForUpdate = latestPlanData || initialExistingPlan;
+        const courses = courseIds.map((courseId) => {
+          const sections = sectionsByCourseId.get(courseId) ?? [];
+
+          // Check if this course exists in the latest plan data
+          const existingCourse = existingPlanForUpdate?.courses.find(
+            (c) => c.courseId === courseId,
+          );
+
+          if (existingCourse) {
+            // Preserve lock status and section hidden status from existing plan
+            return {
+              courseId,
+              isLocked: existingCourse.isLocked,
+              sections: sections.map((s) => {
+                const existingSection = existingCourse.sections.find(
+                  (es) => es.sectionId === s.id,
+                );
+                return {
+                  sectionId: s.id,
+                  isHidden: existingSection?.isHidden ?? false,
+                };
+              }),
+            };
+          } else {
+            // New course, use defaults
+            return {
+              courseId,
+              sections: sections.map((s) => ({
+                sectionId: s.id,
+              })),
+            };
+          }
+        });
+
+        if (props.planId && (latestPlanData || initialExistingPlan)) {
+          // Update existing plan
+          const response = await fetch(
+            `/api/scheduler/saved-plans/${props.planId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                courses,
+                numCourses: numCoursesValue,
+              }),
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to update plan: ${response.statusText}`);
+          }
+
+          props.callback?.();
+          props.closeFn();
+        } else {
+          // Create new plan
+          const response = await fetch("/api/scheduler/saved-plans", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              term: activeTerm,
+              courses,
+              numCourses: numCoursesValue,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to create plan: ${response.statusText}`);
+          }
+
+          const plan = await response.json();
+
+          router.push(`/scheduler/generator?planId=${plan.id}`);
+          props.closeFn();
+        }
+      } catch (error) {
+        console.error("Error saving plan:", error);
+        alert("Failed to save plan. Please try again.");
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [activeTerm, fetchSectionsForCourses, router, props],
+  );
+
+  // Initialize modal with existing plan courses if updating
+  // Only use initialExistingPlan to avoid reinitializing course selection during handleGenerateSchedules
+  useEffect(() => {
+    const courseIdsToLoad = initialExistingPlan
+      ? initialExistingPlan.courses.map((c) => c.courseId)
+      : [];
+
+    if (!courseIdsToLoad.length) return;
+
+    const syncInitialCourses = async () => {
+      const rawResults = await Promise.all(
+        courseIdsToLoad.map(fetchCourseById),
+      );
+      const fetchedCourses = rawResults.filter((r): r is Course => r !== null);
+
+      const newGroups: SelectedCourseGroupData[] = [];
+      for (const raw of fetchedCourses) {
+        const course = raw;
+        if (
+          isAlreadySelected(newGroups, {
+            subject: course.subjectCode,
+            courseNumber: course.courseNumber,
+          }) ||
+          newGroups.length >= 10
+        )
+          continue;
+        const coreqs = await fetchCoreqs(course, newGroups);
+        newGroups.push({ parent: course, coreqs });
+      }
+      setSelectedCourseGroups(newGroups);
+    };
+
+    syncInitialCourses();
+  }, [activeTerm, initialExistingPlan]);
+
   const handleSelectCourse = async (course: Course) => {
     if (
       isAlreadySelected(selectedCourseGroups, stupidLittleHelper(course)) ||
@@ -197,33 +411,6 @@ export default function AddCoursesModal(props: {
       sortGroups([...prev, { parent: course, coreqs: validCoreqs }]),
     );
   };
-
-  useEffect(() => {
-    if (allCourseIds.length === 0) return;
-
-    const syncFromUrl = async () => {
-      const rawResults = await Promise.all(allCourseIds.map(fetchCourseById));
-      const fetchedCourses = rawResults.filter((r): r is Course => r !== null);
-
-      const newGroups: SelectedCourseGroupData[] = [];
-      for (const raw of fetchedCourses) {
-        const course = raw;
-        if (
-          isAlreadySelected(newGroups, {
-            subject: course.subjectCode,
-            courseNumber: course.courseNumber,
-          }) ||
-          newGroups.length >= 10
-        )
-          continue;
-        const coreqs = await fetchCoreqs(course, newGroups);
-        newGroups.push({ parent: course, coreqs });
-      }
-      setSelectedCourseGroups(newGroups);
-    };
-
-    syncFromUrl();
-  }, [activeTerm]);
 
   const handleDelete = (course: Course, isCoreq: boolean) => {
     setSelectedCourseGroups((prev) =>
@@ -339,25 +526,20 @@ export default function AddCoursesModal(props: {
             <Button
               className="cursor-pointer"
               disabled={
+                isGenerating ||
                 selectedCourseGroups.length +
                   selectedCourseGroups.flatMap((g) => g.coreqs).length <
-                numCourses
+                  numCourses
               }
               onClick={() => {
-                props.onGenerateSchedules(
-                  // ASK: do we want to reset all the locks whenever editing a schedule?
-                  // the user would have to manually lock them again after generation
-                  [],
-                  selectedCourseGroups.flatMap((g) => [
-                    g.parent.id,
-                    ...g.coreqs.map((c) => c.id),
-                  ]),
-                  numCourses,
-                );
-                props.closeFn();
+                const allCourseIds = selectedCourseGroups.flatMap((g) => [
+                  g.parent.id,
+                  ...g.coreqs.map((c) => c.id),
+                ]);
+                handleGenerateSchedules(allCourseIds, numCourses);
               }}
             >
-              Generate Schedules
+              {isGenerating ? "Generating Schedules..." : "Generate Schedules"}
             </Button>
           </div>
         </div>

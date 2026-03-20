@@ -3,76 +3,73 @@
 import { useMemo, useState } from "react";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { CourseBox } from "./CourseBox";
-import { getCourseColorMap, getCourseKey } from "@/lib/scheduler/courseColors";
+import { COURSE_COLORS, getCourseKey } from "@/lib/scheduler/courseColors";
 
 interface CoursesTabProps {
-  filteredSchedules: SectionWithCourse[][];
-  hiddenSections: Set<string>;
-  onToggleHiddenSection: (crn: string) => void;
-  lockedCourseIds: number[];
-  onLockedCourseIdsChange: (ids: number[]) => void;
+  courseToSections: Map<number, SectionWithCourse[]>;
+  hiddenSectionIds: Set<number>;
+  onToggleHiddenSection: (sectionId: number) => void;
+  lockedCourseIds: Set<number>;
+  onLockedCourseIdsChange: (ids: Set<number>) => void;
 }
 
 export function CoursesTab({
-  filteredSchedules,
-  hiddenSections,
+  courseToSections,
+  hiddenSectionIds,
   onToggleHiddenSection,
   lockedCourseIds,
   onLockedCourseIdsChange,
 }: CoursesTabProps) {
-  const colorMap = useMemo(
-    () => getCourseColorMap(filteredSchedules),
-    [filteredSchedules],
-  );
-
+  // Build sorted course entries with colors from the Map
   const courseEntries = useMemo(() => {
-    if (!filteredSchedules || filteredSchedules.length === 0) return [];
-    const courseMap = new Map<string, Map<string, SectionWithCourse>>();
-    for (const schedule of filteredSchedules) {
-      for (const section of schedule) {
-        const courseKey = getCourseKey(section);
-        if (!courseMap.has(courseKey)) courseMap.set(courseKey, new Map());
-        const inner = courseMap.get(courseKey)!;
-        if (!inner.has(section.crn)) inner.set(section.crn, section);
-      }
-    }
-    return Array.from(courseMap.entries()).sort((a, b) =>
-      a[0].localeCompare(b[0]),
+    const entries = Array.from(courseToSections.entries())
+      .map(([courseId, sections]) => {
+        const courseKey = sections[0]
+          ? getCourseKey(sections[0])
+          : String(courseId);
+        return { courseId, courseKey, sections };
+      })
+      .sort((a, b) => a.courseKey.localeCompare(b.courseKey));
+
+    const colorMap = new Map(
+      entries.map((e, i) => [
+        e.courseKey,
+        COURSE_COLORS[i % COURSE_COLORS.length],
+      ]),
     );
-  }, [filteredSchedules]);
+
+    return { entries, colorMap };
+  }, [courseToSections]);
 
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-1 overflow-y-auto">
-      {courseEntries.map(([courseKey, sectionsMap]) => {
-        const sections = Array.from(sectionsMap.values());
-        const courseId = sections[0]?.courseId;
-        const isLocked = courseId ? lockedCourseIds.includes(courseId) : false;
+      {courseEntries.entries.map(({ courseId, courseKey, sections }) => {
+        const isLocked = lockedCourseIds.has(courseId);
 
         return (
           <CourseBox
             key={courseKey}
             sections={sections}
-            color={colorMap.get(courseKey)}
+            color={courseEntries.colorMap.get(courseKey)}
             open={expandedCourse === courseKey}
             onToggle={() =>
               setExpandedCourse((prev) =>
                 prev === courseKey ? null : courseKey,
               )
             }
-            hiddenSections={hiddenSections}
+            hiddenSectionIds={hiddenSectionIds}
             onToggleHiddenSection={onToggleHiddenSection}
             locked={isLocked}
             onToggleLock={() => {
-              if (!courseId) return;
+              const newLockedCourseIds = new Set(lockedCourseIds);
               if (isLocked) {
-                onLockedCourseIdsChange(
-                  lockedCourseIds.filter((id) => id !== courseId),
-                );
+                newLockedCourseIds.delete(courseId);
               } else {
-                onLockedCourseIdsChange([...lockedCourseIds, courseId]);
+                newLockedCourseIds.add(courseId);
               }
+              onLockedCourseIdsChange(newLockedCourseIds);
             }}
           />
         );

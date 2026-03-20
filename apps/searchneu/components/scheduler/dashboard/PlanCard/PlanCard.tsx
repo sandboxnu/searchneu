@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SavedPlan } from "../Dashboard";
-import { Pencil, Trash2, Lock, Star } from "lucide-react";
+import { Pencil, Trash2, Lock } from "lucide-react";
 import {
   COURSE_COLORS,
   type CourseColor,
@@ -12,70 +12,21 @@ import {
 import { MiniCalendar } from "../../shared/MiniCalendar";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { FilterTags } from "./FilterTags";
+import type { Nupath, Campus } from "@/lib/catalog/types";
 
 interface PlanCardProps {
   plan: SavedPlan;
   onDelete: (planId: number) => void;
+  campuses: Campus[];
+  nupaths: Nupath[];
 }
 
-export function PlanCard({ plan, onDelete }: PlanCardProps) {
+export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
   const router = useRouter();
 
   const handleEdit = () => {
     const params = new URLSearchParams();
-    params.set("term", plan.term);
-
-    const lockedCourseIds: number[] = [];
-    const optionalCourseIds: number[] = [];
-    const hiddenSections: string[] = [];
-
-    plan.courses.forEach((course) => {
-      if (course.isLocked) {
-        lockedCourseIds.push(course.courseId);
-      } else {
-        optionalCourseIds.push(course.courseId);
-      }
-      course.sections.forEach((section) => {
-        if (section.isHidden) {
-          hiddenSections.push(section.sectionId.toString());
-        }
-      });
-    });
-
-    if (lockedCourseIds.length > 0) {
-      params.set("lockedCourseIds", lockedCourseIds.join(","));
-    }
-    if (optionalCourseIds.length > 0) {
-      params.set("optionalCourseIds", optionalCourseIds.join(","));
-    }
-    if (plan.startTime !== null) {
-      params.set("startTime", plan.startTime.toString());
-    }
-    if (plan.endTime !== null) {
-      params.set("endTime", plan.endTime.toString());
-    }
-    if (plan.freeDays.length > 0) {
-      params.set("freeDays", plan.freeDays.join(","));
-    }
-    if (plan.nupaths.length > 0) {
-      params.set("nupaths", plan.nupaths.join(","));
-    }
-    if (!plan.includeRemoteSections) {
-      params.set("remote", "false");
-    }
-    if (!plan.includeHonorsSections) {
-      params.set("honors", "false");
-    }
-    if (plan.hideFilledSections) {
-      params.set("minSeats", "1");
-    }
-    if (plan.campuses !== null) {
-      params.set("desiredCampuses", plan.campuses.toString());
-    }
-    if (hiddenSections.length > 0) {
-      params.set("hiddenSections", hiddenSections.join(","));
-    }
-
+    params.set("planId", plan.id.toString());
     router.push(`/scheduler/generator?${params.toString()}`);
   };
 
@@ -111,14 +62,14 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={handleEdit}
-            className="text-neu8 hover:text-neu9 flex items-center gap-1.5 text-sm font-medium transition-colors"
+            className="border-neu3 text-neu8 hover:bg-neu1 hover:text-neu9 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Pencil className="h-4 w-4" />
             Edit Plan
           </button>
           <button
             onClick={handleDelete}
-            className="text-neu6 hover:text-red flex items-center transition-colors"
+            className="border-neu3 text-neu8 hover:border-red hover:bg-red/5 hover:text-red flex items-center rounded-full border px-3 py-1.5 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -130,7 +81,7 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
         <h3 className="text-neu7 mb-3 text-xs font-bold uppercase">
           Applied Filters
         </h3>
-        <FilterTags plan={plan} />
+        <FilterTags plan={plan} campuses={campuses} nupaths={nupaths} />
       </div>
 
       {/* Included Courses Section */}
@@ -225,9 +176,6 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
                   key={schedule.id}
                   className="border-neu3 relative flex min-w-50 shrink-0 flex-col rounded-lg border bg-white p-3 shadow-sm"
                 >
-                  {/* Star icon */}
-                  <Star className="fill-red text-red absolute top-2 right-2 z-10 h-4 w-4" />
-
                   {/* Mini Calendar */}
                   <div className="mb-2">
                     <MiniCalendar
@@ -236,14 +184,8 @@ export function PlanCard({ plan, onDelete }: PlanCardProps) {
                       isSelected={false}
                       isFavorited={true}
                       scheduleIndex={scheduleIdx}
-                      onClick={() => {
-                        // Handle click - maybe navigate to view schedule?
-                        console.log("Clicked schedule:", schedule.id);
-                      }}
-                      onToggleFavorite={() => {
-                        // Handle unfavorite - delete favorited schedule
-                        console.log("Toggle favorite:", schedule.id);
-                      }}
+                      onClick={() => {}}
+                      onToggleFavorite={() => {}}
                     />
                   </div>
 

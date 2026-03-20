@@ -12,7 +12,7 @@ type SidebarTab = "favorites" | "filters" | "all";
 interface ScheduleSidebarProps {
   allSchedules: SectionWithCourse[][];
   filteredSchedules: SectionWithCourse[][];
-  favoritedKeys: Set<string>;
+  favoritedKeys: Map<string, number>;
   selectedScheduleKey: string | null;
   colorMap: Map<string, CourseColor>;
   onSelectSchedule: (scheduleKey: string) => void;

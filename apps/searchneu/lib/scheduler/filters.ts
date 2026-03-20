@@ -12,30 +12,36 @@ export type ScheduleFilters = {
   startTime?: number; // in military time format (e.g., 900 for 9:00 AM, 1330 for 1:30 PM)
   endTime?: number; // in military time format (e.g., 900 for 9:00 AM, 1330 for 1:30 PM)
   specificDaysFree?: number[]; // array of day numbers (0=Sunday, 1=Monday, 2=Tuesday, ..., 6=Saturday)
-  minDaysFree?: number;
-  minSeatsLeft?: number;
   includeHonors?: boolean;
   nupaths?: string[];
   includesRemote?: boolean;
-  lockedCourseIds?: number[]; // courses that must be present in the schedule
-  hiddenSections?: Set<string>; // sections that should NOT be present in the schedule
-  desiredCampuses?: string[];
+  lockedCourseIds?: Set<number>; // courses that must be present in the schedule
+  hiddenSectionIds?: Set<number>; // section IDs that should NOT be present in the schedule
+  desiredCampus?: string;
+  minSeatsLeft?: number; // minimum number of available seats for a section
+  numCourses?: number;
 };
 
 // Helper function to check if a section conflicts with time constraints
 const sectionMeetsTimeConstraints = (
   section: SectionWithCourse,
-  startTime?: number,
-  endTime?: number,
+  startTime?: number | null,
+  endTime?: number | null,
 ): boolean => {
-  if (startTime === undefined && endTime === undefined) return true;
-
   for (const meetingTime of section.meetingTimes) {
     // If any meeting is outside the allowed time range, reject
-    if (startTime !== undefined && meetingTime.startTime < startTime) {
+    if (
+      startTime !== undefined &&
+      startTime !== null &&
+      meetingTime.startTime < startTime
+    ) {
       return false;
     }
-    if (endTime !== undefined && meetingTime.endTime > endTime) {
+    if (
+      endTime !== undefined &&
+      endTime !== null &&
+      meetingTime.endTime > endTime
+    ) {
       return false;
     }
   }
@@ -57,33 +63,26 @@ const sectionHasClassesOnDays = (
   return false;
 };
 
-// Helper function to check if a section belongs to specific campuses
-const sectiondesiredCampuses = (
-  section: SectionWithCourse,
-  campuses: string[],
-): boolean => {
-  for (const campus of campuses) {
-    if (section.campus === campus) {
-      return true;
-    }
-  }
-  return false;
-};
-
 // Check if a single section passes all filters
 export const sectionPassesFilters = (
   section: SectionWithCourse,
   filters: ScheduleFilters,
 ): boolean => {
-  // Check campuses (only if provided)
-  if (filters.desiredCampuses && filters.desiredCampuses.length > 0) {
-    if (!sectiondesiredCampuses(section, filters.desiredCampuses)) {
+  // Check campus - section passes if it matches desired campus or if it's remote
+  if (filters.desiredCampus) {
+    if (
+      section.campus !== "Online" &&
+      section.campus !== filters.desiredCampus
+    ) {
       return false;
     }
   }
 
   // Check time constraints (only if provided)
-  if (filters.startTime !== undefined || filters.endTime !== undefined) {
+  if (
+    (filters.startTime !== undefined && filters.startTime !== null) ||
+    (filters.endTime !== undefined && filters.endTime !== null)
+  ) {
     if (
       !sectionMeetsTimeConstraints(section, filters.startTime, filters.endTime)
     ) {
@@ -98,12 +97,11 @@ export const sectionPassesFilters = (
     }
   }
 
-  // Check minimum seats left (only if provided)
-  if (
-    filters.minSeatsLeft !== undefined &&
-    section.seatRemaining < filters.minSeatsLeft
-  ) {
-    return false;
+  // Check minimum available seats (only if provided)
+  if (filters.minSeatsLeft !== undefined && filters.minSeatsLeft > 0) {
+    if (section.seatRemaining < filters.minSeatsLeft) {
+      return false;
+    }
   }
 
   // The only time we care is if we want to exclude online courses
@@ -114,19 +112,6 @@ export const sectionPassesFilters = (
   }
 
   return true;
-};
-
-// Get all days that a schedule occupies
-const getOccupiedDays = (schedule: SectionWithCourse[]): Set<number> => {
-  const occupiedDays = new Set<number>();
-  for (const section of schedule) {
-    for (const meetingTime of section.meetingTimes) {
-      for (const day of meetingTime.days) {
-        occupiedDays.add(day);
-      }
-    }
-  }
-  return occupiedDays;
 };
 
 // Check if a schedule fulfills all required NUPaths
@@ -158,13 +143,13 @@ export const schedulePassesFilters = (
     return false;
   }
 
-  // Check minimum days free (only if provided)
-  if (filters.minDaysFree !== undefined) {
-    const occupiedDays = getOccupiedDays(schedule);
-    const totalDays = 7; // Monday through Sunday
-    const daysFree = totalDays - occupiedDays.size;
-
-    if (daysFree < filters.minDaysFree) {
+  // Check that all non-remote sections are on the desired campus
+  if (filters.desiredCampus) {
+    const nonRemoteSections = schedule.filter((s) => s.campus !== "Online");
+    const allOnDesiredCampus = nonRemoteSections.every(
+      (section) => section.campus === filters.desiredCampus,
+    );
+    if (!allOnDesiredCampus) {
       return false;
     }
   }
@@ -185,9 +170,9 @@ export const schedulePassesFilters = (
   }
 
   // Check that all locked courses are present in the schedule
-  if (filters.lockedCourseIds && filters.lockedCourseIds.length > 0) {
+  if (filters.lockedCourseIds && filters.lockedCourseIds.size > 0) {
     const scheduleCourseIds = new Set(schedule.map((s) => s.courseId));
-    const allLockedPresent = filters.lockedCourseIds.every((id) =>
+    const allLockedPresent = Array.from(filters.lockedCourseIds).every((id) =>
       scheduleCourseIds.has(id),
     );
     if (!allLockedPresent) {
@@ -195,12 +180,14 @@ export const schedulePassesFilters = (
     }
   }
 
-  // Check that all hidden courses are not present in the schedule
-  if (filters.hiddenSections && filters.hiddenSections.size > 0) {
+  // Check that all hidden sections are not present in the schedule
+  if (filters.hiddenSectionIds && filters.hiddenSectionIds.size > 0) {
     const hasHiddenSection = schedule.some((s) =>
-      filters.hiddenSections!.has(s.crn),
+      filters.hiddenSectionIds!.has(s.id),
     );
-    if (hasHiddenSection) return false;
+    if (hasHiddenSection) {
+      return false;
+    }
   }
 
   return true;

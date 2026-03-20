@@ -16,15 +16,22 @@ import Link from "next/link";
 import { Magoskie } from "./icons/Magoskie";
 import { authClient } from "@/lib/auth/auth-client";
 
-export function SignIn({ closeFn }: { closeFn: () => void }) {
+export function SignIn({
+  closeFn,
+  redirectUrl = "/",
+}: {
+  closeFn: () => void;
+  redirectUrl?: string;
+}) {
   const [isPending, setIsPending] = useState(false);
 
   async function doSignIn() {
     setIsPending(true);
+    const onboardingUrl = `/me/link?redirect_uri=${encodeURIComponent(redirectUrl)}`;
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: window.location.pathname ?? "",
-      newUserCallbackURL: "/me/link",
+      newUserCallbackURL: onboardingUrl,
+      callbackURL: redirectUrl,
     });
   }
 

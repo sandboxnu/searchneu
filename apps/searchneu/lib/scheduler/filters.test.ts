@@ -245,46 +245,6 @@ describe("filters", () => {
       assert.strictEqual(schedulePassesFilters(schedule, filters), true);
     });
 
-    test("should filter by minDaysFree", () => {
-      const schedule = [
-        createMockSection({
-          meetingTimes: [
-            {
-              days: [1, 3], // Monday, Wednesday
-              startTime: 900,
-              endTime: 1030,
-              final: false,
-            },
-          ],
-        }),
-        createMockSection({
-          id: 2,
-          crn: "20001",
-          meetingTimes: [
-            {
-              days: [2, 4], // Tuesday, Thursday
-              startTime: 1100,
-              endTime: 1230,
-              final: false,
-            },
-          ],
-        }),
-      ];
-
-      // Schedule uses Mon, Tue, Wed, Thu (4 days)
-      // Filter requires at least 3 free days (7 - 4 = 3 free)
-      assert.strictEqual(
-        schedulePassesFilters(schedule, { minDaysFree: 3 }),
-        true,
-      );
-
-      // Filter requires at least 4 free days (7 - 4 = 3 free, fails)
-      assert.strictEqual(
-        schedulePassesFilters(schedule, { minDaysFree: 4 }),
-        false,
-      );
-    });
-
     test("should filter by including honors", () => {
       const schedule = [
         createMockSection({ honors: true }),

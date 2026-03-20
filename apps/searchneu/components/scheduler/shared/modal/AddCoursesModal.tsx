@@ -1,6 +1,6 @@
 "use client";
 
-import { Course, GroupedTerms, Section } from "@/lib/catalog/types";
+import { Course, GroupedTerms, Section, Term } from "@/lib/catalog/types";
 import {
   Dialog,
   DialogContent,
@@ -95,7 +95,7 @@ interface AddCoursesModalProps {
   open: boolean;
   closeFn: () => void;
   terms: GroupedTerms;
-  selectedTerm: string | null;
+  selectedTerm: Term | null;
   planId?: number;
   callback?: () => void;
 }
@@ -138,7 +138,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
     fetchExistingPlan();
   }, [props.planId, props.open]);
 
-  const activeTerm = props.selectedTerm ?? props.terms.neu[0]?.term ?? "";
+  const activeTerm = props.selectedTerm ?? props.terms.neu[0];
   const activeTermLabel =
     Object.values(props.terms)
       .flat()
@@ -156,7 +156,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
       const results = await Promise.all(
         neededReqs.map(async (req) => {
           const params = new URLSearchParams({
-            term: activeTerm,
+            term: activeTerm.term + activeTerm.part,
             subject: req.subject,
             courseNumber: req.courseNumber,
           });
@@ -314,7 +314,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              term: activeTerm,
+              term: activeTerm.id,
               courses,
               numCourses: numCoursesValue,
             }),

@@ -3,7 +3,7 @@
 import { Suspense, use, useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
-import { Course } from "@/lib/catalog/types";
+import { Course, Term } from "@/lib/catalog/types";
 
 const ResultCard = ({
   result,
@@ -33,7 +33,7 @@ export default function ModalSearchResults({
   onSelectCourse,
 }: {
   searchQuery: string;
-  term: string;
+  term: Term;
   onSelectCourse: (course: Course) => void;
 }) {
   const deferredQuery = useDeferredValue(searchQuery);
@@ -78,14 +78,14 @@ function ResultsList({
   onSelectCourse,
 }: {
   query: string;
-  term: string;
+  term: Term;
   onSelectCourse: (course: Course) => void;
 }) {
   "use no memo";
 
   const searchParams = new URLSearchParams();
   searchParams.set("q", query);
-  searchParams.set("term", term);
+  searchParams.set("term", term.term + term.part);
   const url = `/api/catalog/search?${searchParams.toString()}`;
   const cacheKey = `${query}-${term}`;
 

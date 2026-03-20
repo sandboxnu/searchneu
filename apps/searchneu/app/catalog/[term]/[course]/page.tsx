@@ -180,7 +180,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.prereqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={true}
             />
           </div>
@@ -190,7 +190,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.coreqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={false}
             />
           </div>
@@ -200,7 +200,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.postreqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={false}
             />
           </div>

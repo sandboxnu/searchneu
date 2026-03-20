@@ -7,6 +7,7 @@ import {
 } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { NextRequest } from "next/server";
+import { getTerm } from "@/lib/dal/terms";
 
 interface SavePlanSection {
   sectionId: number;
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Validate required fields
-  if (!body.term) {
+  if (!body.term || Number.isNaN(parseInt(body.term, 10))) {
     return Response.json({ error: "term is required" }, { status: 400 });
   }
 
@@ -61,9 +62,17 @@ export async function POST(req: NextRequest) {
         .select()
         .from(savedPlansT)
         .where(
-          and(eq(savedPlansT.userId, user.id), eq(savedPlansT.term, body.term)),
+          and(
+            eq(savedPlansT.userId, user.id),
+            eq(savedPlansT.termId, parseInt(body.term, 10)),
+          ),
         );
       planName = `Plan ${existingPlans.length + 1}`;
+    }
+
+    const term = await getTerm(body.term);
+    if (!term) {
+      return Response.json({ error: "term not found" }, { status: 400 });
     }
 
     // Create the saved plan
@@ -71,7 +80,7 @@ export async function POST(req: NextRequest) {
       .insert(savedPlansT)
       .values({
         userId: user.id,
-        term: body.term,
+        termId: term.id,
         name: planName,
         startTime: body.startTime,
         endTime: body.endTime,

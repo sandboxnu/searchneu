@@ -1,19 +1,21 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
-import { defineCommand, runMain } from "citty";
-import { scrapeCatalogTerm } from "../generate/main";
+import { defineCommand } from "citty";
+import { scrapeCatalogTerm } from "@sneu/scraper/generate";
 import { infer as zinfer } from "zod";
-import { Config } from "../config";
-import { consola } from "consola";
-import { ScraperBannerCache } from "../schemas/scraper/banner-cache";
+import { Config } from "@sneu/scraper/config";
+import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import { ScraperEventEmitter } from "@sneu/scraper/events";
+import { brandIntro, p, pc, setVerbosity } from "../ui";
+import { attachLogger } from "../logger";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 5;
 
-const main = defineCommand({
+export default defineCommand({
   meta: {
-    name: "scrape:gen",
+    name: "generate",
     description: "runs the scraper to generate the banner cache files",
   },
   args: {
@@ -26,8 +28,15 @@ const main = defineCommand({
     },
     cachePath: {
       type: "string",
-      default: "cache/",
-      description: "",
+      default: process.env.SCRAPER_CACHE_PATH ?? "cache/",
+      description: "path to cache directory (env: SCRAPER_CACHE_PATH)",
+      required: false,
+    },
+    configPath: {
+      type: "string",
+      default: process.env.SCRAPER_CONFIG_PATH ?? "config/",
+      description:
+        "path to config directory containing manifest.yaml (env: SCRAPER_CONFIG_PATH)",
       required: false,
     },
     interactive: {
@@ -56,59 +65,64 @@ const main = defineCommand({
     },
   },
   async run({ args }) {
-    if (args.verbose) consola.level = 4;
-    if (args.veryverbose) consola.level = 999;
+    // const interactive = args.interactive ?? false;
+    // setVerbosity({ verbose: args.verbose, veryVerbose: args.veryverbose });
+    setVerbosity({ verbose: true, veryVerbose: false });
+    // updateSettings({ withGuide: false });
+    brandIntro("generate");
 
-    const interactive = args.interactive ?? false;
+    const emitter = new ScraperEventEmitter();
+    attachLogger(emitter, { interactive: true });
 
     const configStream = readFileSync(
-      path.resolve(args.cachePath, "manifest.yaml"),
-      {
-        encoding: "utf8",
-      },
+      path.resolve(args.configPath, "manifest.yaml"),
+      { encoding: "utf8" },
     );
     const configRaw = parse(configStream);
     const configResponse = Config.safeParse(configRaw);
     if (!configResponse.success) {
-      consola.error(configResponse.error);
+      p.log.error(pc.red(String(configResponse.error)));
+      p.cancel("Invalid config");
       return;
     }
 
     const config = configResponse.data;
-
     const termsToScrape = filterTerms(config, args.terms);
-    consola.info(`scraping ${termsToScrape.length} terms`);
+
+    p.log.info(
+      `Scraping ${pc.bold(String(termsToScrape.length))} term${termsToScrape.length !== 1 ? "s" : ""}`,
+    );
 
     if (termsToScrape.length === 0) {
-      consola.log("no active / configured terms to scrape");
+      p.outro("No active terms to scrape");
       return;
     }
 
     for (const termConfig of termsToScrape) {
-      consola.start(`scraping term ${termConfig.term}`);
-
       const cachename = path.resolve(
         args.cachePath,
         CACHE_FORMAT(termConfig.term.toString()),
       );
       const existingCache = existsSync(cachename);
       if (args.overwrite && existingCache) {
-        consola.info("existing cache found, overwriting with new scrape");
+        p.log.info(
+          `Existing cache for ${pc.cyan(String(termConfig.term))}, overwriting`,
+        );
       } else if (!args.overwrite && existingCache) {
-        consola.success("existing cache found, skipping term");
+        p.log.success(
+          `Cache exists for ${pc.cyan(String(termConfig.term))}, skipping`,
+        );
         continue;
       }
 
       try {
         const out = await scrapeCatalogTerm(
           termConfig.term.toString(),
-          termConfig,
-          interactive,
+          emitter,
         );
 
         if (!out) {
-          consola.error(`error scraping term ${termConfig.term}`);
-          // return;
+          p.log.error(pc.red(`Failed to scrape term ${termConfig.term}`));
           continue;
         }
 
@@ -119,23 +133,18 @@ const main = defineCommand({
         };
 
         writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
-        consola.success(`scraped term ${termConfig.term}`);
       } catch (e) {
-        consola.error(`failed to scrape term ${termConfig.term}`, e);
+        p.log.error(pc.red(`Failed to scrape term ${termConfig.term}: ${e}`));
         continue;
       }
     }
 
-    consola.success(
-      `successfully scraped ${termsToScrape.length} term${termsToScrape.length > 1 ? "s" : ""}`,
+    p.outro(
+      `Scraped ${pc.bold(String(termsToScrape.length))} term${termsToScrape.length > 1 ? "s" : ""} — cache is fresh`,
     );
   },
 });
 
-void runMain(main);
-
-/**
- */
 function filterTerms(config: zinfer<typeof Config>, termArg: string) {
   if (termArg === "all") {
     return config.terms;
@@ -151,7 +160,9 @@ function filterTerms(config: zinfer<typeof Config>, termArg: string) {
     splitTerms.includes(t.term.toString()),
   );
   if (filteredTerms.length === 0) {
-    consola.error(`no matching terms found for: ${splitTerms.join(", ")}`);
+    p.log.error(
+      pc.red(`No matching terms found for: ${splitTerms.join(", ")}`),
+    );
     process.exit(1);
   }
   return filteredTerms;

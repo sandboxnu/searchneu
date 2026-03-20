@@ -8,14 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
-import type { GroupedTerms } from "@/lib/catalog/types";
+import type { GroupedTerms, Term } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
 
 export function CollegeDropdown(props: {
   terms: GroupedTerms;
-  selectedCollege: string;
-  onCollegeChange: (college: string) => void;
-  onTermChange: (term: string) => void;
+  selectedCollege: keyof GroupedTerms;
+  onCollegeChange: (college: keyof GroupedTerms) => void;
+  onTermChange: (term: Term) => void;
 }) {
   const collegeOptions = [
     { value: "neu", label: "Northeastern University" },
@@ -29,7 +29,7 @@ export function CollegeDropdown(props: {
   // Auto-select first term when college changes or on initial load
   useEffect(() => {
     if (availableTerms.length > 0) {
-      props.onTermChange(availableTerms[0].term);
+      props.onTermChange(availableTerms[0]);
     }
   }, [props.selectedCollege]);
 
@@ -38,7 +38,7 @@ export function CollegeDropdown(props: {
       <Select
         onValueChange={(val) => {
           if (val === "") return;
-          props.onCollegeChange(val);
+          props.onCollegeChange(val as keyof GroupedTerms);
         }}
         value={props.selectedCollege}
       >

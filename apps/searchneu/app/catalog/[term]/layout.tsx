@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { getTerms } from "@/lib/dal/terms";
 import { MobileWrapper } from "@/components/catalog/MobileWrapper";
-import { db, sectionsT } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { db, sectionsT, termsT } from "@/lib/db";
+import { and, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { getSubjects } from "@/lib/dal/subjects";
 import { getCampuses } from "@/lib/dal/campuses";
@@ -23,7 +23,13 @@ const cachedClassTypes = unstable_cache(
     db
       .selectDistinct({ classType: sectionsT.classType })
       .from(sectionsT)
-      .where(eq(sectionsT.term, term))
+      .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
+      .where(
+        and(
+          eq(termsT.term, term.substring(0, 6)),
+          eq(termsT.partOfTerm, term.substring(6)),
+        ),
+      )
       .then((c) => c.map((e) => e.classType)),
   [],
   { revalidate: 3600, tags: ["banner.classTypes"] },

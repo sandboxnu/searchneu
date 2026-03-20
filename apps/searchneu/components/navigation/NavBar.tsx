@@ -1,6 +1,5 @@
 "use client";
 import {
-  CalendarDays,
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
@@ -13,6 +12,7 @@ import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
 import { SheetClose } from "../ui/sheet";
 import { SchedulerButton } from "./SchedulerButton";
+import { cn } from "@/lib/cn";
 
 export function NavBar({
   flags,
@@ -28,7 +28,7 @@ export function NavBar({
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-2 font-semibold">
+    <nav className={cn("flex gap-2 font-semibold", { "flex-col": closeable })}>
       <FlagValues
         values={{
           rooms: roomsFlag,

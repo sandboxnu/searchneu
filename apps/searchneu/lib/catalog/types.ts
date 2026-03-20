@@ -18,7 +18,9 @@
  * only includes the fields needed when listing all available terms.
  */
 export interface Term {
+  id: number;
   term: string;
+  part: string;
   name: string;
 }
 
@@ -46,9 +48,7 @@ export interface GroupedTerms {
  * used when a caller needs to determine whether a term is currently
  * active (`activeUntil`) or when Banner data was last refreshed (`updatedAt`)
  */
-export interface TermDetail {
-  term: string;
-  name: string;
+export interface TermDetail extends Term {
   activeUntil: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -201,7 +201,7 @@ export interface Campus {
  * use `-1` to indicate no bound
  */
 export interface SearchFilters {
-  /** 6-character Banner term code, e.g. `"202510"`. required */
+  /** 6-character (+ up to 3 char part) Banner term code, e.g. `"202510"`. required */
   term: string;
   /** free-text query matched against course name and register string. empty string means no text filter */
   query: string;

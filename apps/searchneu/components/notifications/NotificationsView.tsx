@@ -11,8 +11,10 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export interface NotificationTerm {
+  id: number;
   name: string;
   term: string;
+  part: string;
   activeUntil: Date;
 }
 
@@ -39,7 +41,7 @@ export function NotificationsView({
             <NotificationsCourseCard
               key={course.courseRegister}
               course={course}
-              term={terms.find((term) => term.term === course.term)}
+              term={terms.find((term) => term.id === course.termId)}
             />
           ))
         )}

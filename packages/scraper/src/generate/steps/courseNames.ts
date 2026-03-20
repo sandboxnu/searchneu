@@ -1,9 +1,9 @@
 import type { Course } from "../../types";
 import { FetchEngine } from "../fetch";
 import { sectionCatalogDetailsEndpoint } from "../endpoints";
-import { consola } from "consola";
 import { decode } from "html-entities";
 import { BannerSectionCatalogDetails } from "../../schemas/banner/sectionCatalogDetails";
+import type { ScraperEventEmitter } from "../../events";
 
 /**
  *
@@ -12,6 +12,7 @@ export async function scrapeCatalogDetails(
   fe: FetchEngine,
   term: string,
   courses: (Course & { crn: string })[],
+  emitter?: ScraperEventEmitter,
 ) {
   const failedRequests: string[] = [];
   const catalogDetailsRequests: (() => Promise<void>)[] = [];
@@ -23,9 +24,9 @@ export async function scrapeCatalogDetails(
         .fetch(url, {
           ...body,
           onRetry(attempt) {
-            // retries are part of the process, just log it if debugging
-            consola.debug("retrying course name for course", {
-              course: c.subject + c.courseNumber,
+            emitter?.emit("fetch:retry", {
+              crn: c.crn,
+              step: "catalog-details",
               attempt,
             });
           },
@@ -34,10 +35,10 @@ export async function scrapeCatalogDetails(
         .catch((e) => {
           // if the request fails for some reason: note the crn, log the error, and skip the course
           failedRequests.push(c.crn);
-          consola.error("error scraping course name", {
-            error: e,
+          emitter?.emit("fetch:error", {
             crn: c.crn,
-            course: c.subject + c.courseNumber,
+            step: "catalog-details",
+            message: String(e),
           });
           return;
         });
@@ -50,10 +51,10 @@ export async function scrapeCatalogDetails(
       if (!catalogDetailsResult.success) {
         // if the parse fails: note the crn, log the error, and skip the course
         failedRequests.push(c.crn);
-        consola.error("error scraping course name", {
-          error: catalogDetailsResult.error,
+        emitter?.emit("fetch:error", {
           crn: c.crn,
-          course: c.subject + c.courseNumber,
+          step: "catalog-details",
+          message: String(catalogDetailsResult.error),
         });
         return;
       }

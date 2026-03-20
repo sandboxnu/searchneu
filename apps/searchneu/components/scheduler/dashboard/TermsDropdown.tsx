@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ComponentProps } from "react";
-import type { GroupedTerms } from "@/lib/catalog/types";
+import type { GroupedTerms, Term } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
 
 export function TermsDropdown({
@@ -19,9 +19,9 @@ export function TermsDropdown({
   ...selectTriggerProps
 }: {
   terms: GroupedTerms;
-  selectedCollege: string;
-  selectedTerm: string | null;
-  onTermChange: (term: string) => void;
+  selectedCollege: keyof GroupedTerms;
+  selectedTerm: Term | null;
+  onTermChange: (term: Term) => void;
 } & ComponentProps<typeof SelectTrigger>) {
   // Group terms by year and sort them
   const groupedByYear = terms[selectedCollege as keyof GroupedTerms].reduce(
@@ -62,9 +62,17 @@ export function TermsDropdown({
     (a, b) => Number(b) - Number(a),
   );
 
+  const updateTerm = (v: string) => {
+    const tas = terms[selectedCollege].find((t) => String(t.id) === v);
+    return tas;
+  };
+
   return (
     <div className="text-neu8 space-y-2 pt-3 font-[700]">
-      <Select onValueChange={onTermChange} value={selectedTerm ?? undefined}>
+      <Select
+        onValueChange={updateTerm}
+        value={selectedTerm ? String(selectedTerm.id) : undefined}
+      >
         <SelectTrigger
           className="bg-secondary border-neu25 w-full cursor-pointer border border-solid"
           {...selectTriggerProps}
@@ -83,11 +91,11 @@ export function TermsDropdown({
               </SelectItem>
               {groupedByYear[year].map((t) => (
                 <SelectItem
-                  key={t.term}
-                  value={t.term}
+                  key={t.id}
+                  value={String(t.id)}
                   className={cn(
                     "cursor-pointer pl-4",
-                    t.term === selectedTerm
+                    t.id === selectedTerm?.id
                       ? "text-neu8 font-[600]"
                       : "text-neu6 font-[400]",
                   )}

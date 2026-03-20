@@ -8,7 +8,7 @@ import { TermsDropdown } from "./TermsDropdown";
 import { Searchskie } from "../../icons/Searchskie";
 import AddCoursesModal from "../shared/modal/AddCoursesModal";
 import { PlanCard } from "./PlanCard/PlanCard";
-import type { Campus, Nupath } from "@/lib/catalog/types";
+import type { Campus, Nupath, Term } from "@/lib/catalog/types";
 import useSWR from "swr";
 import { cn } from "@/lib/cn";
 
@@ -70,9 +70,10 @@ export function DashboardClient({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedCollege, setSelectedCollege] = useState<string>("neu");
+  const [selectedCollege, setSelectedCollege] =
+    useState<keyof GroupedTerms>("neu");
 
-  const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
+  const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
 
   const terms = use(termsPromise);
   const campuses = use(campusesPromise);

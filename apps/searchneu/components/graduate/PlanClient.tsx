@@ -283,7 +283,7 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
               <Sidebar {...plan} />
             </div>
 
-            <div className="flex-grow overflow-auto p-4">
+            <div className="flex-grow overflow-auto pl-2">
               <div className="flex flex-col gap-0.5">
                 {schedule.years.map((year) => (
                   <AuditYearRow

@@ -137,8 +137,8 @@ export default async function PlanPage({
   const hydrated = await hydratePlan(plan);
 
   return (
-    <div>
-      <HeaderClient plans={userPlans} />
+    <div className="mx-auto flex flex-col gap-4 px-6">
+      <HeaderClient plans={userPlans} currentPlan={hydrated} />
       <PlanClient plan={hydrated} courseNames={hydrated.courseNames} />
     </div>
   );

@@ -13,7 +13,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,9 +45,22 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function NewPlanModal() {
+interface NewPlanModalProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function NewPlanModal({
+  open: controlledOpen,
+  onOpenChange,
+}: NewPlanModalProps = {}) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(true);
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+  const setIsOpen = isControlled
+    ? (v: boolean) => onOpenChange?.(v)
+    : setUncontrolledOpen;
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
@@ -281,17 +293,16 @@ export default function NewPlanModal() {
 
   return (
     <>
-      <Button
-        className="bg-accent hover:bg-accent/80 w-full"
-        onClick={() => setIsOpen(true)}
-      >
-        open sesame{" "}
-      </Button>
+      {!isControlled && (
+        <Button
+          className="bg-accent hover:bg-accent/80 w-full"
+          onClick={() => setIsOpen(true)}
+        >
+          open sesame{" "}
+        </Button>
+      )}
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <button className="hidden" />
-          </DialogTrigger>
           <DialogContent
             className="max-w-2xl"
             aria-label="New Plan Modal content"

@@ -232,6 +232,8 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         let latestPlanData: ExistingPlanData | null = null;
         if (props.planId) {
           try {
+            console.log("activeTerm:", activeTerm);
+            console.log("term being sent:", activeTerm.term);
             const res = await fetch(
               `/api/scheduler/saved-plans/${props.planId}`,
               {

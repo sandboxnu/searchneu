@@ -70,7 +70,7 @@ export const getSectionsByCourseId = cache(
  * @param term - the term number for the room's schedule
  * @param roomId - the primary key for each room in the database
  */
-export const getScheduleByTermRoomId = cache(
+export const getSectionsByTermRoomId = cache(
   async (term : string, roomId: number): Promise<Section[]> => {
     const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));
 

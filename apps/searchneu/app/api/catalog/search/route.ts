@@ -19,7 +19,7 @@ const CourseSearchQuerySchema = z.object({
  *
  * searches courses
  *
- * see the catalog `SearchFilters` type for more paramteter details
+ * see the catalog `SearchFilters` type for more parameter details
  *
  * @param term         - 6-character Banner term code, e.g. `"202510"`
  * @param q            - search query to use (optional)
@@ -36,7 +36,7 @@ const CourseSearchQuerySchema = z.object({
  * @param honors       - boolean to only include courses with at least one honors section
  *                       (optional)
  *
- * @returns 200 `SearchResult[]`
+ * @returns 200 `CourseSearchResult[]`
  * @returns 400 if `term` not included or any part invalid
  */
 export async function GET(req: NextRequest) {

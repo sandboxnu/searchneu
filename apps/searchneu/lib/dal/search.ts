@@ -9,13 +9,11 @@ import {
   campusesT,
   roomsT,
   buildingsT,
-  meetingTimesT,
-  termsT
+  meetingTimesT
 } from "@/lib/db";
 import { type SQL, sql, eq, and, countDistinct, inArray } from "drizzle-orm";
 import { cache } from "react";
-import type { CourseSearchFilters, CourseSearchResult, BuildingSearchFilters, BuildingSearchResult } from "@/lib/catalog/types";
-import { getTerms } from "./terms";
+import type { CourseSearchFilters, CourseSearchResult, RoomSearchFilters, RoomSearchResult } from "@/lib/catalog/types";
 
 // > It's data access - complex data access, but data access. - Copilot
 
@@ -161,118 +159,76 @@ export const getSearchCourses = cache(
   },
 );
 
-// Essentially getSearchCourses, but for buildings
-export const getSearchBuildings = cache(
-  async (filters: BuildingSearchFilters): Promise<BuildingSearchResult[]> => {
+// Essentially getSearchCourses, but for rooms
+// These changes SHOULD NOT be used just yet: Requires BM25 to include room codes and building names... this may not be possible, and might require a standard WHERE clause
+// If not, just add filters in row.filter
+export const getSearchRooms = cache(
+  async (filters: RoomSearchFilters): Promise<RoomSearchResult[]> => {
     const {
-      query, //text query
-      campuses, //wtv campuses normally is; should be number I think
-      minTime,
-      maxTime, // Should be 0800, 0900, 1000, etc. 
-      days, //days should be "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"
-      minCap,
-      maxCap,
+      term,
+      query,
+      buildings,
+      campuses,
+      minCapacity,
+      maxCapacity
     } = filters;
 
-    const DAYS_OF_WEEK = {
-      "Mo" : 0,
-      "Tu" : 1,
-      "We" : 2,
-      "Th" : 3,
-      "Fr" : 4,
-      "Sa" : 5,
-      "Su" : 6
-    } as Record<string, number>
-
-    const dayNums = days.map(day => DAYS_OF_WEEK[day])
-
-    // build BM25 WHERE clause for text search and courseLevel filtering
-    const sqlChunks: SQL[] = [];
+    // build BM25 WHERE clause incrementally; the first chunk is always the
+    // term filter, which acts as the primary partition of the index
+    const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
 
     if (query) {
       // boost exact building/room matches (e.g. "Richards Hall 159") 6x over name matches
+      sqlChunks.push(sql`and`);
       sqlChunks.push(
-        sql`${buildingsT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('name', ${query}, distance => 0)])`,
+        sql`${roomsT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('code', ${query}, distance => 0), paradedb.boost(6.0, paradedb.match('buildingName', ${query}))])`,
       );
     }
-    const buildings = await db
+
+    // build HAVING clause incrementally for capacity filters
+    const havingChunks: SQL[] = [];
+
+    if (minCapacity !== -1) {
+      havingChunks.push(sql`max(${sectionsT.seatCapacity}) >= ${minCapacity}`);
+    }
+
+    if (maxCapacity !== -1) {
+      if (havingChunks.length > 0) {
+        havingChunks.push(sql`and`);
+      }
+      havingChunks.push(sql`max(${sectionsT.seatCapacity}) <= ${maxCapacity}`);
+    }
+
+    const rows = await db
       .select({
+        id: roomsT.id,
+        code: roomsT.code,
         buildingId: buildingsT.id,
         buildingName: buildingsT.name,
         campus: campusesT.name,
+        capacity: sql<number>`max(${sectionsT.seatCapacity})`,
+        courseName: coursesT.name,
+        courseRegister: coursesT.register,
         score: sql<number>`paradedb.score(${roomsT.id})`,
       })
-      .from(buildingsT)
-      .innerJoin(campusesT, eq(campusesT.id, buildingsT.campus))
-      .where(sql.join(sqlChunks, sql.raw(" AND ")))
+      .from(sectionsT)
+      .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
+      .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+      .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+      .innerJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
+      .innerJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
+      .where(sql.join(sqlChunks, sql.raw(" ")))
+      .having(havingChunks.length > 0 ? sql.join(havingChunks, sql.raw(" ")) : undefined)
+      .groupBy(
+        roomsT.id
+      )
       .orderBy(sql`paradedb.score(${roomsT.id}) desc`);
-    
-    const filteredBuildings = buildings.filter(
+
+    // post-filter: apply the dimensions that are not covered by the BM25 index.
+    return rows.filter(
       (r) =>
-        (campuses.length === 0 || campuses.includes(r.campus))
+        (campuses.length === 0 || campuses.includes(r.campus)) &&
+        (buildings.length === 0 || buildings.includes(r.buildingName))
     );
-
-    const buildingIds = buildings.map((b) => b.buildingId)
-
-    const roomsData = await db
-      .select({
-        roomId: roomsT.id,
-        buildingId: roomsT.buildingId,
-        approxCap: sql<number>`max(${sectionsT.seatCapacity})`,
-      })
-      .from(roomsT)
-      .innerJoin(meetingTimesT, eq(meetingTimesT.roomId, roomsT.id))
-      .innerJoin(sectionsT, eq(meetingTimesT.sectionId, sectionsT.id))
-      .where(inArray(roomsT.buildingId, buildingIds))
-      .groupBy(roomsT.id);
-
-    const terms = await getTerms()
-    const termId = terms.neu[0].id
-
-
-    const roomIds = roomsData.map(r => r.roomId);
-    const meetings = await db
-      .select({
-        roomId: meetingTimesT.roomId,
-        days: meetingTimesT.days,
-        startTime: meetingTimesT.startTime,
-        endTime: meetingTimesT.endTime,
-      })
-      .from(meetingTimesT)
-      .innerJoin(termsT, eq(meetingTimesT.termId, termsT.id))
-      .where(and(
-        inArray(meetingTimesT.roomId, roomIds),
-        eq(termsT.id, termId)
-      ));
-
-    const res = []
-    for (const building of filteredBuildings) {
-
-      const assocRooms = roomsData.filter((r) => (r.buildingId == building.buildingId))
-      
-      for (const room of assocRooms) {
-
-        if (room.approxCap < minCap || room.approxCap > maxCap) {
-          continue;
-        }
-        const assocMeetings = meetings.filter((m) => (m.roomId == room.roomId))
-
-        const meetingsWithHours = assocMeetings.map((meeting) => ({
-          ...meeting,
-          startHour:
-            Math.floor(meeting.startTime / 100),
-          endHour:
-            Math.floor(meeting.endTime / 100),
-        }));
-
-        // Group meetings by day
-        const conflicts = meetingsWithHours.filter((m) => ((m.startHour < maxTime && m.endHour > minTime) || !dayNums.some(day => m.days.includes(day))))
-        if (!conflicts) {
-          res.push(building)
-        }
-      }
-    }
-
-    return res
   }
 )

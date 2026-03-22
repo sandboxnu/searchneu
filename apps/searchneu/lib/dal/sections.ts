@@ -12,6 +12,8 @@ import { eq, and } from "drizzle-orm";
 import { cache } from "react";
 import type { Room, Section } from "@/lib/catalog/types";
 
+type queryType = Awaited<typeof initQuery>
+
 const initQuery = db
       .select({
         // section fields
@@ -44,8 +46,6 @@ const initQuery = db
       .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
       .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
 
-type queryType = Awaited<typeof initQuery>
-
 /**
  * returns all sections for a given course, with each section's meeting times
  * pre-grouped into a nested array
@@ -64,18 +64,9 @@ export const getSectionsByCourseId = cache(
   },
 );
 
-
-/**
- * returns all sections for a given roomId in a given term, with each section's meeting times
- * pre-grouped into a nested array
- *
- * @param term - the term number for the room's schedule
- * @param roomId - the primary key for each room in the database
- */
-export const getSectionsByTermRoomId = cache(
-  async (term: string, roomId: number): Promise<Section[]> => {
-
-    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(termsT.term, term)));
+export const getScheduleByTermRoomId = cache(
+  async (term : string, roomId: number): Promise<Section[]> => {
+    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));
 
     // collapse the flat join result into one Section per section ID
     return cleanRows(res);
@@ -84,7 +75,7 @@ export const getSectionsByTermRoomId = cache(
 
 
 
-function cleanRows(rows: queryType) {
+function cleanRows(rows : queryType) {
   const sectionMap = new Map<number, Section>();
 
   for (const row of rows) {

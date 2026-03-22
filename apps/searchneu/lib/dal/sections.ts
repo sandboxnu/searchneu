@@ -7,22 +7,13 @@ import {
   buildingsT,
   campusesT,
 } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { cache } from "react";
 import type { Room, Section } from "@/lib/catalog/types";
 
-/**
- * returns all sections for a given course, with each section's meeting times
- * pre-grouped into a nested array
- *
- * sections with no assigned room (e.g. online sections) will have `room: undefined`
- * on their meeting time entries.
- *
- * @param courseId - the numeric primary key of the parent course
- */
-export const getSectionsByCourseId = cache(
-  async (courseId: number): Promise<Section[]> => {
-    const rows = await db
+type queryType = Awaited<typeof initQuery>
+
+const initQuery = db
       .select({
         // section fields
         id: sectionsT.id,
@@ -52,60 +43,84 @@ export const getSectionsByCourseId = cache(
       .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
       .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
       .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
-      .where(eq(sectionsT.courseId, courseId));
+
+/**
+ * returns all sections for a given course, with each section's meeting times
+ * pre-grouped into a nested array
+ *
+ * sections with no assigned room (e.g. online sections) will have `room: undefined`
+ * on their meeting time entries.
+ *
+ * @param courseId - the numeric primary key of the parent course
+ */
+export const getSectionsByCourseId = cache(
+  async (courseId: number): Promise<Section[]> => {
+    const res = await initQuery.where(eq(sectionsT.courseId, courseId));
 
     // collapse the flat join result into one Section per section ID
-    const sectionMap = new Map<number, Section>();
-
-    for (const row of rows) {
-      if (!sectionMap.has(row.id)) {
-        sectionMap.set(row.id, {
-          id: row.id,
-          crn: row.crn,
-          faculty: row.faculty,
-          campus: row.campus,
-          honors: row.honors,
-          classType: row.classType,
-          seatRemaining: row.seatRemaining,
-          seatCapacity: row.seatCapacity,
-          waitlistCapacity: row.waitlistCapacity,
-          waitlistRemaining: row.waitlistRemaining,
-          meetingTimes: [],
-        });
-      }
-
-      // only attach a meeting time if all required fields are present -
-      // a section with no meeting times at all will produce one null row from
-      // the left join (skipped here)
-      if (
-        row.meetingTimeId !== null &&
-        row.days &&
-        row.startTime &&
-        row.endTime
-      ) {
-        const section = sectionMap.get(row.id)!;
-
-        const room: Room | undefined =
-          row.roomId !== null && row.roomNumber
-            ? {
-                id: row.roomId,
-                number: row.roomNumber,
-                building:
-                  row.buildingId !== null && row.buildingName
-                    ? { id: row.buildingId, name: row.buildingName }
-                    : undefined,
-              }
-            : undefined;
-
-        section.meetingTimes.push({
-          days: row.days,
-          startTime: row.startTime,
-          endTime: row.endTime,
-          room,
-        });
-      }
-    }
-
-    return Array.from(sectionMap.values());
+    return cleanRows(res);
   },
 );
+
+export const getScheduleByTermRoomId = cache(
+  async (term : string, roomId: number): Promise<Section[]> => {
+    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));
+
+    // collapse the flat join result into one Section per section ID
+    return cleanRows(res);
+  },
+);
+
+
+
+function cleanRows(rows : queryType) {
+  const sectionMap = new Map<number, Section>();
+
+  for (const row of rows) {
+    if (!sectionMap.has(row.id)) {
+      sectionMap.set(row.id, {
+        id: row.id,
+        crn: row.crn,
+        faculty: row.faculty,
+        campus: row.campus,
+        honors: row.honors,
+        classType: row.classType,
+        seatRemaining: row.seatRemaining,
+        seatCapacity: row.seatCapacity,
+        waitlistCapacity: row.waitlistCapacity,
+        waitlistRemaining: row.waitlistRemaining,
+        meetingTimes: [],
+      });
+    }
+
+    // only attach a meeting time if all required fields are present -
+    // a section with no meeting times at all will produce one null row from
+    // the left join (skipped here)
+    if (row.meetingTimeId !== null &&
+      row.days &&
+      row.startTime &&
+      row.endTime) {
+      const section = sectionMap.get(row.id)!;
+
+      const room: Room | undefined = row.roomId !== null && row.roomNumber
+        ? {
+          id: row.roomId,
+          number: row.roomNumber,
+          building: row.buildingId !== null && row.buildingName
+            ? { id: row.buildingId, name: row.buildingName }
+            : undefined,
+        }
+        : undefined;
+
+      section.meetingTimes.push({
+        days: row.days,
+        startTime: row.startTime,
+        endTime: row.endTime,
+        room,
+      });
+    }
+  }
+
+  return Array.from(sectionMap.values());
+}
+

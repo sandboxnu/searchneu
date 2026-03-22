@@ -7,10 +7,13 @@ import {
   nupathsT,
   subjectsT,
   campusesT,
+  roomsT,
+  buildingsT,
+  meetingTimesT
 } from "@/lib/db";
 import { type SQL, sql, eq, countDistinct } from "drizzle-orm";
 import { cache } from "react";
-import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
+import type { CourseSearchFilters, CourseSearchResult, RoomSearchFilters, RoomSearchResult } from "@/lib/catalog/types";
 
 // > It's data access - complex data access, but data access. - Copilot
 
@@ -43,7 +46,7 @@ import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
  * @returns filtered, scored course rows with aggregated section data
  */
 export const getSearchCourses = cache(
-  async (filters: SearchFilters): Promise<SearchResult[]> => {
+  async (filters: CourseSearchFilters): Promise<CourseSearchResult[]> => {
     const {
       term,
       query,
@@ -144,3 +147,77 @@ export const getSearchCourses = cache(
     );
   },
 );
+
+// Essentially getSearchCourses, but for rooms
+// These changes SHOULD NOT be used just yet: Requires BM25 to include room codes and building names... this may not be possible, and might require a standard WHERE clause
+// If not, just add filters in row.filter
+export const getSearchRooms = cache(
+  async (filters: RoomSearchFilters): Promise<RoomSearchResult[]> => {
+    const {
+      term,
+      query,
+      buildings,
+      campuses,
+      minCapacity,
+      maxCapacity
+    } = filters;
+
+    // build BM25 WHERE clause incrementally; the first chunk is always the
+    // term filter, which acts as the primary partition of the index
+    const sqlChunks: SQL[] = [sql`${coursesT.term} @@@ ${term}`];
+
+    if (query) {
+      // boost exact building/room matches (e.g. "Richards Hall 159") 6x over name matches
+      sqlChunks.push(sql`and`);
+      sqlChunks.push(
+        sql`${roomsT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('code', ${query}, distance => 0), paradedb.boost(6.0, paradedb.match('buildingName', ${query}))])`,
+      );
+    }
+
+    // build HAVING clause incrementally for capacity filters
+    const havingChunks: SQL[] = [];
+
+    if (minCapacity !== -1) {
+      havingChunks.push(sql`max(${sectionsT.seatCapacity}) >= ${minCapacity}`);
+    }
+
+    if (maxCapacity !== -1) {
+      if (havingChunks.length > 0) {
+        havingChunks.push(sql`and`);
+      }
+      havingChunks.push(sql`max(${sectionsT.seatCapacity}) <= ${maxCapacity}`);
+    }
+
+    const rows = await db
+      .select({
+        id: roomsT.id,
+        code: roomsT.code,
+        buildingId: buildingsT.id,
+        buildingName: buildingsT.name,
+        campus: campusesT.name,
+        capacity: sql<number>`max(${sectionsT.seatCapacity})`,
+        courseName: coursesT.name,
+        courseRegister: coursesT.register,
+        score: sql<number>`paradedb.score(${roomsT.id})`,
+      })
+      .from(sectionsT)
+      .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
+      .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
+      .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+      .innerJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
+      .innerJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
+      .where(sql.join(sqlChunks, sql.raw(" ")))
+      .having(havingChunks.length > 0 ? sql.join(havingChunks, sql.raw(" ")) : undefined)
+      .groupBy(
+        roomsT.id
+      )
+      .orderBy(sql`paradedb.score(${roomsT.id}) desc`);
+
+    // post-filter: apply the dimensions that are not covered by the BM25 index.
+    return rows.filter(
+      (r) =>
+        (campuses.length === 0 || campuses.includes(r.campus)) &&
+        (buildings.length === 0 || buildings.includes(r.buildingName))
+    );
+  }
+)

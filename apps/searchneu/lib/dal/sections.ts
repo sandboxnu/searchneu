@@ -64,6 +64,14 @@ export const getSectionsByCourseId = cache(
   },
 );
 
+
+/**
+ * returns all sections for a given roomId in a given term, with each section's meeting times
+ * pre-grouped into a nested array
+ *
+ * @param term - the term number for the room's schedule
+ * @param roomId - the primary key for each room in the database
+ */
 export const getScheduleByTermRoomId = cache(
   async (term : string, roomId: number): Promise<Section[]> => {
     const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));

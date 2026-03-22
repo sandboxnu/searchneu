@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import * as z from "zod";
-import { getScheduleByTermRoomId } from "@/lib/dal/sections";
+import { getSectionsByTermRoomId } from "@/lib/dal/sections";
 
 const RoomScheduleByTermId = z.object({
   term: z
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { term, id } = parsed.data;
-  const schedule = await getScheduleByTermRoomId(term, id);
+  const schedule = await getSectionsByTermRoomId(term, id);
 
   if (!schedule) {
     return Response.json(

@@ -200,8 +200,8 @@ export interface Campus {
  * course number - e.g. `1` filters to 1000–1999, `4` to 4000–4999.
  * use `-1` to indicate no bound
  */
-export interface SearchFilters {
-  /** 6-character (+ up to 3 char part) Banner term code, e.g. `"202510"`. required */
+export interface CourseSearchFilters {
+  /** 6-character Banner term code, e.g. `"202510"`. required */
   term: string;
   /** free-text query matched against course name and register string. empty string means no text filter */
   query: string;
@@ -226,7 +226,7 @@ export interface SearchFilters {
  * aggregates section-level data (seat counts, campus list, class types) so the
  * search UI can display availability without a second query per course
  */
-export interface SearchResult {
+export interface CourseSearchResult {
   id: number;
   name: string;
   courseNumber: string;
@@ -251,4 +251,36 @@ export interface SearchResult {
   honors: boolean;
   /** ParadeDB BM25 relevance score. Higher is more relevant */
   score: number;
+}
+
+/**
+ * input filters for the rooms search query. all array fields are treated as
+ * OR within the field and AND across fields. an empty array means "no filter"
+ * for that dimension
+ *
+ * `minCapacity` and `maxCapacity` are filtered via the maximum section capacity.
+ */
+export interface RoomSearchFilters {
+  term: string;
+  query: string;
+  buildings: string[];
+  campuses: string[];
+  minCapacity: number;
+  maxCapacity: number;
+}
+
+/**
+ * A single row in the room search results. Note that a secondary query
+ * is required to determine room schedule, time ranges, and days of the week.
+ */
+export interface RoomSearchResult {
+  id: number;
+  code: string;
+  buildingId: number;
+  buildingName: string;
+  campus: string;
+  capacity: number;
+  courseName: string,
+  courseRegister: string,
+  score: number
 }

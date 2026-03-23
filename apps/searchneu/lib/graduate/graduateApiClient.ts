@@ -18,11 +18,12 @@ class GraduateAPIClient {
     body?: unknown,
     params?: Record<string, string | number>,
   ): Promise<T> {
-    const base =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "http://localhost:3000";
-    const fullUrl = new URL(`${this.baseURL}${url}`, base);
+    const isServer = typeof window === "undefined";
+    // Server-side: call api.graduatenu.com directly to bypass Vercel preview auth.
+    // Client-side: use the Next.js rewrite via /api/graduate.
+    const fullUrl = isServer
+      ? new URL(`/api${url}`, "https://api.graduatenu.com")
+      : new URL(`${this.baseURL}${url}`, window.location.origin);
 
     if (params) {
       Object.keys(params).forEach((key) =>

@@ -35,7 +35,7 @@ type Loaded = { type: WorkerMessageType.Loaded };
 export interface WorkerPostInfo {
   major: Major;
   minor?: Minor;
-  taken: AuditCourse<unknown>[];
+  taken: AuditCourse[];
   concentration?: string;
   requestNumber: number;
 }

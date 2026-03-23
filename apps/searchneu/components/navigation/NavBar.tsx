@@ -1,15 +1,18 @@
 "use client";
 import {
-  BookMarked,
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
+  Bell,
+  BookMarked,
 } from "lucide-react";
 import { type ReactNode, use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
 import { SheetClose } from "../ui/sheet";
+import { SchedulerButton } from "./SchedulerButton";
+import { cn } from "@/lib/cn";
 
 export function NavBar({
   flags,
@@ -19,17 +22,15 @@ export function NavBar({
   closeable?: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
-  const faqFlag = use(flags["faq"]);
   const schedulerFlag = use(flags["scheduler"]);
   const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-2 font-semibold">
+    <nav className={cn("flex gap-2 font-semibold", { "flex-col": closeable })}>
       <FlagValues
         values={{
-          faqs: faqFlag,
           rooms: roomsFlag,
           scheduler: schedulerFlag,
         }}
@@ -46,27 +47,6 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      <LinkWrapper mobileNav={closeable}>
-        <Link
-          href="/catalog"
-          data-active={pathname === "/catalog"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
-        >
-          <BookMarked className="size-4" />
-          <span>Catalog</span>
-        </Link>
-      </LinkWrapper>
-      {schedulerFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/scheduler"
-            data-active={pathname === "/scheduler"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center rounded-full border-1 p-2 px-4 text-sm"
-          >
-            Scheduler
-          </Link>
-        </LinkWrapper>
-      )}
       {graduateFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
@@ -79,17 +59,40 @@ export function NavBar({
           </Link>
         </LinkWrapper>
       )}
-      {faqFlag && (
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/catalog"
+          data-active={pathname === "/catalog"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+        >
+          <BookMarked className="size-4" />
+          <span>Catalog</span>
+        </Link>
+      </LinkWrapper>
+      {schedulerFlag && (
         <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/faq"
-            data-active={pathname === "/faq"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
-          >
-            <CircleQuestionMark className="text-red size-5" />
-          </Link>
+          <SchedulerButton pathname={pathname} />
         </LinkWrapper>
       )}
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/notifications"
+          data-active={pathname === "/notifications"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+        >
+          <Bell className="size-4" />
+          <span>Notifications</span>
+        </Link>
+      </LinkWrapper>
+      <LinkWrapper mobileNav={closeable}>
+        <Link
+          href="/faq"
+          data-active={pathname === "/faq"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+        >
+          <CircleQuestionMark className="text-red size-5" />
+        </Link>
+      </LinkWrapper>
     </nav>
   );
 }

@@ -1,8 +1,8 @@
 import { flag } from "flags/next";
 
-export const faqFlag = flag({
-  key: "faq-page",
-  description: "Enable FAQ page",
+export const faqHowToFlag = flag({
+  key: "faq-how-to",
+  description: "Enable FAQ how-to section",
   decide() {
     return false;
   },

@@ -6,52 +6,53 @@ export interface CourseColor {
   accent: string;
 }
 
-// Course color palette - hardcoded to match Figma design
+// Course color palette - matches Figma design
+// Each color has: accent (100%), stroke (30%), fill (15%)
 export const COURSE_COLORS: CourseColor[] = [
   {
-    fill: "rgba(255,228,224,0.2)",
-    stroke: "var(--scheduler-course-red-stroke)",
-    accent: "#f08890",
+    fill: "#FFECF3",
+    stroke: "#FFD9E7",
+    accent: "#FFC1DC",
   },
   {
-    fill: "rgba(255,241,228,0.4)",
-    stroke: "var(--scheduler-course-orange-stroke)",
-    accent: "#ffb067",
+    fill: "#FDECED",
+    stroke: "#F9C8CB",
+    accent: "#F08890",
   },
   {
-    fill: "rgba(219,244,251,0.4)",
-    stroke: "var(--scheduler-course-blue-stroke)",
-    accent: "#98e1f5",
+    fill: "#FFF2E4",
+    stroke: "#FFE1C1",
+    accent: "#FFC577",
   },
   {
-    fill: "rgba(255,249,216,0.4)",
-    stroke: "var(--scheduler-course-yellow-stroke)",
-    accent: "#fae98f",
+    fill: "#FEFBE8",
+    stroke: "#FDF5C5",
+    accent: "#FAE98F",
   },
   {
-    fill: "rgba(219,246,229,0.3)",
-    stroke: "var(--scheduler-course-green-stroke)",
-    accent: "#89ecae",
+    fill: "#E6FBF0",
+    stroke: "#C9F6DD",
+    accent: "#72E69D",
   },
   {
-    fill: "rgba(226,224,248,0.3)",
-    stroke: "var(--scheduler-course-purple-stroke)",
-    accent: "#c8c3fe",
+    fill: "#E9F9FE",
+    stroke: "#D0F2FD",
+    accent: "#8FE4FB",
   },
   {
-    fill: "rgba(255,228,240,0.3)",
-    stroke: "var(--scheduler-course-pink-stroke)",
-    accent: "#f0a0c0",
+    fill: "#EEEDFE",
+    stroke: "#DDDAFF",
+    accent: "#C8C3FE",
   },
   {
-    fill: "rgba(234,234,234,0.3)",
-    stroke: "var(--scheduler-course-gray-stroke)",
-    accent: "#b0b0b0",
+    fill: "#F5F5F5",
+    stroke: "#E8E8E8",
+    accent: "#D9D9D9",
   },
   {
-    fill: "rgba(233,224,217,0.3)",
-    stroke: "var(--scheduler-course-brown-stroke)",
-    accent: "#c4a882",
+    fill: "#F2EEEA",
+    stroke: "#E0D7CE",
+    accent: "#C3AC98",
   },
 ];
 

@@ -12,7 +12,7 @@ import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 import { meetingTimesToBinaryMask, masksConflict } from "./binaryMeetingTime";
 
-const getSectionsAndMeetingTimes = (courseId: number) => {
+export const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
   const sections = db
     .select({

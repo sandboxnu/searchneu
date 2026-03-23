@@ -106,5 +106,5 @@ function formatTimeRange(startTime: number, endTime: number) {
   const formattedStart = `${start12Hour}:${startMinutes.toString().padStart(2, "0")}`;
   const formattedEnd = `${end12Hour}:${endMinutes.toString().padStart(2, "0")}`;
 
-  return `${formattedStart}${startIsPM ? "pm" : "am"} — ${formattedEnd}${endIsPM ? "pm" : "am"}`;
+  return `${formattedStart}${startIsPM ? "PM" : "AM"} — ${formattedEnd}${endIsPM ? "PM" : "AM"}`;
 }

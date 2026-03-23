@@ -16,14 +16,22 @@ import Link from "next/link";
 import { Magoskie } from "./icons/Magoskie";
 import { authClient } from "@/lib/auth/auth-client";
 
-export function SignIn({ closeFn }: { closeFn: () => void }) {
+export function SignIn({
+  closeFn,
+  redirectUrl = "/",
+}: {
+  closeFn: () => void;
+  redirectUrl?: string;
+}) {
   const [isPending, setIsPending] = useState(false);
 
   async function doSignIn() {
     setIsPending(true);
+    const onboardingUrl = `/me/link?redirect_uri=${encodeURIComponent(redirectUrl)}`;
     await authClient.signIn.social({
       provider: "google",
-      newUserCallbackURL: "/me/link",
+      newUserCallbackURL: onboardingUrl,
+      callbackURL: redirectUrl,
     });
   }
 
@@ -33,8 +41,8 @@ export function SignIn({ closeFn }: { closeFn: () => void }) {
         <DialogHeader className="flex w-full items-center">
           <DialogTitle>Sign In</DialogTitle>
           <DialogDescription className="text-center">
-            Sign in to be the first to know when seats open up! We currently
-            only support valid <span className="font-bold">husky.neu.edu</span>{" "}
+            Sign in to access all SearchNEU features! We currently only support
+            valid <span className="font-bold">husky.neu.edu</span>{" "}
             accounts.{" "}
           </DialogDescription>
         </DialogHeader>

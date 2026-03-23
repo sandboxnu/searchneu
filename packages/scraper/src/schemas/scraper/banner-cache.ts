@@ -38,7 +38,10 @@ export const ScraperBannerFaculty = z.strictObject({
 
 export const ScraperBannerMeetingTime = z.strictObject({
   building: z.string().nullable(),
+  buildingDescription: z.string().nullable(),
   room: z.string().nullable(),
+  campus: z.string().nullable(),
+  campusDescription: z.string().nullable(),
   days: z.array(z.int()).max(7),
   startTime: z.number(),
   endTime: z.number(),
@@ -70,6 +73,8 @@ export const ScraperBannerCacheSection = z.strictObject({
   name: z.string(),
   description: z.string(),
   sectionNumber: z.string(),
+  /** Banner part-of-term code (e.g. "1" for full term, "A" for first half) */
+  partOfTerm: z.string(),
   seatCapacity: z.number(),
   seatRemaining: z.number(),
   waitlistCapacity: z.number(),
@@ -88,7 +93,7 @@ export const ScraperBannerCacheSection = z.strictObject({
 
 export const ScraperBannerCache = z.strictObject({
   /** cache file version */
-  version: z.literal(3),
+  version: z.literal(5),
   /** timestamp when the cache file has been generated */
   timestamp: z.iso.datetime(),
   term: z.strictObject({
@@ -114,26 +119,14 @@ export const ScraperBannerCache = z.strictObject({
       description: z.string(),
     }),
   ),
-  /** all campuses used in the term */
+
+  /** all campuses in the term (that Banner defines, so basically arbitrary) */
   campuses: z.array(
     z.strictObject({
+      /** id code for the campus (ex `BOS`) */
       code: z.string(),
       /** full name for the campus (ex `Boston`) */
-      name: z.string(),
-    }),
-  ),
-  buildings: z.array(
-    z.strictObject({
-      code: z.string(),
-      name: z.string(),
-      campus: z.string(),
-    }),
-  ),
-  rooms: z.array(
-    z.strictObject({
-      code: z.string(),
-      building: z.string(),
-      campus: z.string(),
+      description: z.string(),
     }),
   ),
 });

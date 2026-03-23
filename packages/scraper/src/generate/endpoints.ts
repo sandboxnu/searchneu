@@ -1,4 +1,4 @@
-const baseUrl = "https://nubanner.neu.edu";
+export const baseUrl = "https://nubanner.neu.edu";
 
 export const sectionSearchEndpoint = (
   term: string,

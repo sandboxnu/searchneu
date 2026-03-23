@@ -93,8 +93,8 @@ export function TermSelect(
               </SelectItem>
               {groupedByYear[year].map((t) => (
                 <SelectItem
-                  key={t.term}
-                  value={t.term}
+                  key={t.id}
+                  value={t.term + t.part}
                   className={cn(
                     "pl-4",
                     t.term === term?.toString()

@@ -44,8 +44,10 @@ import {
   generateDefaultPlanTitle,
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function NewPlanModal() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -257,7 +259,7 @@ export default function NewPlanModal() {
 
     setIsSubmitting(true);
     try {
-      let schedule: Audit<null>;
+      let schedule: Audit;
       // NOTE: for now, template plans are based on the first selected major */
       if (useRecommendedTemplate && template && majors[0]) {
         try {
@@ -303,9 +305,9 @@ export default function NewPlanModal() {
 
       const createdPlan = await response.json();
 
-      //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
-      //DENNIS TODO: redirect!!!!!!!!!
+      router.push(`/graduate/${createdPlan.id}`);
+
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);
@@ -482,7 +484,7 @@ export default function NewPlanModal() {
                       ? () => setIsNoMajorSelected(!isNoMajorSelected)
                       : handleNoMajor
                   }
-                  className="border-input h-3 w-3 scale-150 rounded accent-red-500"
+                  className="border-input accent-red h-3 w-3 scale-150 rounded"
                   id="no-major-check"
                 />
                 <Label
@@ -607,13 +609,13 @@ export default function NewPlanModal() {
               )}
 
               {/* modal footer */}
-              <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
+              <div className="border-neu25 flex flex-col justify-center gap-4 border-t py-4">
                 {isTemplateLoading && <p>fetching template...</p>}
                 {hasTemplate &&
                   !isNoMajorSelected &&
                   majors.length > 0 &&
                   !isTemplateLoading && (
-                    <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
+                    <div className="bg-neu2 mt-2 gap-8 rounded-xl border p-4">
                       <div className="display: mb-2 inline-flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -622,7 +624,7 @@ export default function NewPlanModal() {
                           onChange={() =>
                             setUseRecommendedTemplate(!useRecommendedTemplate)
                           }
-                          className="h-3 w-3 scale-150 rounded accent-red-500"
+                          className="accent-red h-3 w-3 scale-150 rounded"
                           disabled={
                             majors.length === 0 &&
                             !catalogYear &&

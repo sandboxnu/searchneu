@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { graduateFlag, roomsFlag, schedulerFlag } from "@/lib/flags";
+import { graduateFlag, roomsFlag } from "@/lib/flags";
 import { Suspense } from "react";
 import { NavBar } from "./NavBar";
 
 export function Header() {
   const enableRoomsPage = roomsFlag();
-  const enableSchedulerPage = schedulerFlag();
   const enableGraduatePage = graduateFlag();
 
   const flags = {
     rooms: enableRoomsPage,
-    scheduler: enableSchedulerPage,
     graduate: enableGraduatePage,
   };
 

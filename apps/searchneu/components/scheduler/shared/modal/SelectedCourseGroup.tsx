@@ -53,7 +53,7 @@ const SelectedCourseGroup = ({
       {/* parent */}
       <SelectedCourseItem
         course={{
-          subject: (parent as any).subjectCode || parent.subject,
+          subject: parent.subject as unknown as string, // TODO: fix casting after correctly typing SearchResult and Course from modal
           courseNumber: parent.courseNumber,
           title: parent.name,
           handleDelete: () => onDeleteCourse(parent, false),
@@ -66,7 +66,7 @@ const SelectedCourseGroup = ({
         <div key={idx} className="border-neu3 border-t">
           <SelectedCourseItem
             course={{
-              subject: (coreq as any).subjectCode || (coreq as any).subject,
+              subject: coreq.subject as unknown as string, // TODO: fix casting after correctly typing SearchResult and Course from modal
               courseNumber: coreq.courseNumber,
               title: coreq.name ?? "Corequisite",
               handleDelete: () => onDeleteCourse(coreq, true),

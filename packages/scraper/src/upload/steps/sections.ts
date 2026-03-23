@@ -70,9 +70,7 @@ export async function upsertSections(
         set: {
           faculty: sql.raw(`excluded."${sectionsT.faculty.name}"`),
           seatCapacity: sql.raw(`excluded."${sectionsT.seatCapacity.name}"`),
-          seatRemaining: sql.raw(
-            `excluded."${sectionsT.seatRemaining.name}"`,
-          ),
+          seatRemaining: sql.raw(`excluded."${sectionsT.seatRemaining.name}"`),
           waitlistCapacity: sql.raw(
             `excluded."${sectionsT.waitlistCapacity.name}"`,
           ),

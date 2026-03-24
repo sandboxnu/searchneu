@@ -1,5 +1,5 @@
-import { parsePdfCourses, verifyUser } from "@/lib/controllers/auditPlans";
-import { NextRequest } from "next/server";
+import { parsePdfCourses } from "@/lib/dal/audits";
+import { withAuth } from "@/lib/api/withAuth";
 
 /**
  * Parses an uploaded PDF and extracts course information.
@@ -10,38 +10,28 @@ import { NextRequest } from "next/server";
  * @returns 401 if user is not authenticated
  * @returns 400 if no file or parsing fails
  */
-export async function POST(req: NextRequest) {
-    try {
-        const user = await verifyUser();
+export const POST = withAuth(async (req) => {
+    const formData = await req.formData();
+    const value = formData.get("pdf");
 
-        if (!user) {
-            return new Response(JSON.stringify({ error: "Unauthorized" }), {
-                status: 401,
-            });
-        }
-
-        const formData = await req.formData();
-        const file = formData.get("pdf") as File;
-
-        if (!file) {
-            return new Response(JSON.stringify({ error: "No PDF Given" }), {
-                status: 400,
-            });
-        }
-        
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        const courses = await parsePdfCourses(buffer);
-
-        return Response.json(courses);
-    } catch (error) {
-        const message =
-            error instanceof Error ? error.message : JSON.stringify(error);
-            
-        return new Response(
-            JSON.stringify({ error: `Failed to parse PDF courses: ${message}` }),
-            { status: 400 },
-        );
+    if (!(value instanceof File)) {
+        return Response.json({ error: "No PDF Given" }, { status: 400 });
     }
-}
+
+    if (value.type !== "application/pdf") {
+        return Response.json({ error: "Invalid file type" }, { status: 400 });
+    }
+
+    const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+    if (typeof value.size === "number" && value.size > MAX_PDF_SIZE_BYTES) {
+        return Response.json({ error: "PDF too large" }, { status: 413 });
+    }
+
+    const arrayBuffer = await value.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const courses = await parsePdfCourses(buffer);
+
+    return Response.json(courses);
+});

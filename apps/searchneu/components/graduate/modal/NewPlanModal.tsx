@@ -108,7 +108,11 @@ export default function NewPlanModal() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (!file || file.type !== "application/pdf") {
+    if (
+       !file ||
+       (file.type !== "application/pdf" &&
+         !file.name.toLowerCase().endsWith(".pdf"))
+     ) {
       toast("Please upload a PDF file.");
       return;
     }
@@ -125,17 +129,34 @@ export default function NewPlanModal() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        toast(
-          `${errorData.error || "Failed to parse PDF: No error data received"}`,
-        );
-        throw new Error(errorData.error || "Failed to parse PDF");
+        const errorText = await response.text();
+         let errorMessage = "Failed to parse PDF";
+         if (errorText) {
+           try {
+             const parsed = JSON.parse(errorText);
+             if (parsed && typeof parsed === "object" && "error" in parsed) {
+               errorMessage =
+                 (parsed as { error?: string }).error || errorMessage;
+             } else {
+               errorMessage = errorText;
+             }
+           } catch {
+             errorMessage = errorText;
+           }
+         }
+         toast(errorMessage);
+         throw new Error(errorMessage);
       }
 
       const courses: ParsedCourse[] = await response.json();
       setUploadedCourses(courses);
     } catch (error) {
       console.error("Error parsing PDF:", error);
+      const message =
+         error instanceof Error && error.message
+           ? error.message
+           : "An unexpected error occurred while parsing the PDF.";
+       toast(message);
     }
   };
 

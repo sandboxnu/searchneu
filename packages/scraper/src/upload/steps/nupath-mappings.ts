@@ -18,9 +18,7 @@ export async function upsertNupathMappings(
 
       const courseId = courseMap.get(c.subject + c.courseNumber);
       if (!courseId) {
-        throw Error(
-          `cannot find course id for ${c.subject}${c.courseNumber}`,
-        );
+        throw Error(`cannot find course id for ${c.subject}${c.courseNumber}`);
       }
       const nupathId = nupathsMap.get(a);
       if (!nupathId) {

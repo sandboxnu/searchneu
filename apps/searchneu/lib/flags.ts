@@ -16,14 +16,6 @@ export const roomsFlag = flag({
   },
 });
 
-export const schedulerFlag = flag({
-  key: "scheduler",
-  description: "Enable scheduler page",
-  decide() {
-    return false;
-  },
-});
-
 export const graduateFlag = flag({
   key: "graduate",
   description: "Enable graduate page",

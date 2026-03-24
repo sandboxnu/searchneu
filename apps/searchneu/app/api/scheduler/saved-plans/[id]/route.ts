@@ -225,13 +225,13 @@ export async function PATCH(
       ...(body.startTime && { startTime: body.startTime }),
       ...(body.endTime && { endTime: body.endTime }),
       ...(body.freeDays && { freeDays: body.freeDays }),
-      ...(body.includeHonorsSections && {
+      ...(body.includeHonorsSections !== undefined && {
         includeHonorsSections: body.includeHonorsSections,
       }),
-      ...(body.includeRemoteSections && {
+      ...(body.includeRemoteSections !== undefined && {
         includeRemoteSections: body.includeRemoteSections,
       }),
-      ...(body.hideFilledSections && {
+      ...(body.hideFilledSections !== undefined && {
         hideFilledSections: body.hideFilledSections,
       }),
       ...(body.campus && { campus: body.campus }),

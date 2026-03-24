@@ -56,10 +56,7 @@ export async function upsertRooms(
   for (const b of buildings) {
     const buildingRooms = rooms
       .filter((r) => r.buildingId === b.id)
-      .reduce(
-        (agg, r) => agg.set(r.code, r.id),
-        new Map<string, number>(),
-      );
+      .reduce((agg, r) => agg.set(r.code, r.id), new Map<string, number>());
     map.set(b.code, { id: b.id, rooms: buildingRooms });
   }
 

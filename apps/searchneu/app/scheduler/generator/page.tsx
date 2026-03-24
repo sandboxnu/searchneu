@@ -3,10 +3,10 @@ import { getTerms } from "@/lib/dal/terms";
 import { getCampuses } from "@/lib/dal/campuses";
 import { getNupaths } from "@/lib/dal/nupaths";
 
-import { db, nupathsT, savedPlansT, savedPlanCoursesT } from "@/lib/db";
+import { db, nupathsT, savedPlansT } from "@/lib/db";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { eq, and } from "drizzle-orm";
 
 export default async function Page({
@@ -40,12 +40,13 @@ export default async function Page({
         eq(savedPlansT.userId, session.user.id),
       ),
     });
-    if (!plan) {
-      return <div>Plan not found</div>;
-    }
   } catch (error) {
     console.error("Error loading plan:", error);
-    return <div>Error loading plan</div>;
+    return notFound();
+  }
+
+  if (!plan) {
+    return notFound();
   }
 
   // Fetch available NUPath options

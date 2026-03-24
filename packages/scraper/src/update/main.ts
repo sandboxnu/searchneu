@@ -9,6 +9,7 @@ import { scrapeSections } from "../generate/steps/sections";
 import { parseMeetingTimes } from "../generate/marshall";
 import type { BannerSection } from "../schemas/banner/section";
 import * as z from "zod";
+import { ScraperEventEmitter } from "../events";
 
 export interface UpdateTermResult {
   sectionsWithNewSeats: z.infer<typeof BannerSection>[];
@@ -52,11 +53,12 @@ export async function updateTerm(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     warn?: (msg: any, msg2?: string) => void;
   },
+  emitter?: ScraperEventEmitter,
 ): Promise<UpdateTermResult> {
   const log = logger ?? { info: console.log, warn: console.warn };
   log.info({ term }, "updating term");
 
-  const scrapedSections = await scrapeSections(term);
+  const scrapedSections = await scrapeSections(term, emitter);
   if (!scrapedSections) {
     throw new Error("Failed to scrape sections");
   }

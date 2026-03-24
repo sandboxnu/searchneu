@@ -11,7 +11,6 @@ import { eq, gt } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
-import { ScraperEventEmitter } from "@sneu/scraper/events";
 import { sendNotifications } from "@/lib/updater/notifs";
 
 export async function GET(req: NextRequest) {
@@ -37,11 +36,6 @@ export async function GET(req: NextRequest) {
 
   // for each term perform an update
   for (const term of terms) {
-    const emitter = new ScraperEventEmitter();
-    emitter.on("debug", ({ message }) => console.log(message));
-    emitter.on("warn", ({ message }) => console.warn(message));
-    emitter.on("error", ({ message }) => console.error(message));
-
     const {
       sectionsWithNewSeats: newSeats,
       sectionsWithUpdatedSeats: updatedSeats,
@@ -50,7 +44,7 @@ export async function GET(req: NextRequest) {
       sectionsWithUpdatedSeatCapacity: updatedSeatsCapacity,
       sectionsWithUpdatedWaitlistSeatCapacity: updatedWaitlistCapacity,
       newSections,
-    } = await updateTerm(term, db, console, emitter);
+    } = await updateTerm(term, db, console);
 
     // get seat trackers & send notifs
     const trackers = await db

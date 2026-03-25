@@ -1,17 +1,17 @@
-import "server-only";
+import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
 import {
-  db,
-  coursesT,
-  sectionsT,
-  courseNupathJoinT,
-  nupathsT,
-  subjectsT,
   campusesT,
+  courseNupathJoinT,
+  coursesT,
+  db,
+  nupathsT,
+  sectionsT,
+  subjectsT,
   termsT,
 } from "@/lib/db";
-import { type SQL, sql, eq, countDistinct, and } from "drizzle-orm";
+import { and, countDistinct, eq, type SQL, sql } from "drizzle-orm";
 import { cache } from "react";
-import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
+import "server-only";
 
 // > It's data access - complex data access, but data access. - Copilot
 
@@ -112,7 +112,7 @@ export const getSearchCourses = cache(
         id: coursesT.id,
         name: coursesT.name,
         courseNumber: coursesT.courseNumber,
-        subject: subjectsT.code,
+        subjectCode: subjectsT.code,
         maxCredits: coursesT.maxCredits,
         minCredits: coursesT.minCredits,
         nupaths: sql<
@@ -159,7 +159,7 @@ export const getSearchCourses = cache(
     // to support subject code filtering directly
     return rows.filter(
       (r) =>
-        (subjects.length === 0 || subjects.includes(r.subject)) &&
+        (subjects.length === 0 || subjects.includes(r.subjectCode)) &&
         (nupaths.length === 0 || nupaths.every((n) => r.nupaths.includes(n))) &&
         (campuses.length === 0 || r.campus.some((c) => campuses.includes(c))) &&
         (classTypes.length === 0 ||

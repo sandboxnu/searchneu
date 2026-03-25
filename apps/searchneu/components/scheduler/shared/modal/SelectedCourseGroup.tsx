@@ -1,4 +1,4 @@
-import { Course } from "@/lib/catalog/types";
+import { ModalCourse } from "@/lib/scheduler/types";
 import { DeleteIcon } from "../../../icons/Delete";
 
 interface SelectedCourse {
@@ -9,13 +9,7 @@ interface SelectedCourse {
   isGrouped?: boolean;
 }
 
-const SelectedCourseItem = ({
-  course,
-  isCorequisite = false,
-}: {
-  course: SelectedCourse;
-  isCorequisite?: boolean;
-}) => {
+const SelectedCourseItem = ({ course }: { course: SelectedCourse }) => {
   const containerClass = [
     "group text-neu6 hover:bg-neu2 bg-neu1 flex h-[50px] w-full flex-row items-center justify-between px-[16px] text-[12px] transition-colors",
     course.isGrouped ? "rounded-none" : "rounded-lg",
@@ -44,16 +38,16 @@ const SelectedCourseGroup = ({
   coreqs,
   onDeleteCourse,
 }: {
-  parent: Course;
-  coreqs: Course[];
-  onDeleteCourse: (course: Course, isCoreq: boolean) => void;
+  parent: ModalCourse;
+  coreqs: ModalCourse[];
+  onDeleteCourse: (course: ModalCourse, isCoreq: boolean) => void;
 }) => {
   return (
     <div className="border-neu3 flex min-h-fit flex-col overflow-hidden rounded-lg border">
       {/* parent */}
       <SelectedCourseItem
         course={{
-          subject: parent.subject as unknown as string, // TODO: fix casting after correctly typing SearchResult and Course from modal
+          subject: parent.subjectCode,
           courseNumber: parent.courseNumber,
           title: parent.name,
           handleDelete: () => onDeleteCourse(parent, false),
@@ -66,14 +60,12 @@ const SelectedCourseGroup = ({
         <div key={idx} className="border-neu3 border-t">
           <SelectedCourseItem
             course={{
-              subject: coreq.subject as unknown as string, // TODO: fix casting after correctly typing SearchResult and Course from modal
+              subject: coreq.subjectCode,
               courseNumber: coreq.courseNumber,
               title: coreq.name ?? "Corequisite",
               handleDelete: () => onDeleteCourse(coreq, true),
               isGrouped: true,
-              // coreqs dont have individual lock state
             }}
-            isCorequisite={true}
           />
         </div>
       ))}

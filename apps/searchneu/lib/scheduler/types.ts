@@ -1,5 +1,7 @@
 // WIP; TODO: further types to be added to this file in a future ticket
 
+import { Course } from "../catalog/types";
+
 export interface PlanCourse {
   courseId: number;
   isLocked: boolean;
@@ -46,4 +48,35 @@ export interface PlanUpdateData {
     isLocked: boolean;
     sections: { sectionId: number; isHidden: boolean }[];
   }[];
+}
+
+export type CourseIdentifier = Pick<Course, "subjectCode" | "courseNumber">;
+
+export type ModalCourse = Pick<
+  Course,
+  "id" | "subjectCode" | "courseNumber" | "name" | "coreqs"
+>;
+
+export type SelectedCourseGroupData = {
+  parent: ModalCourse;
+  coreqs: ModalCourse[];
+};
+
+export type CourseReq = {
+  subject?: string;
+  courseNumber?: string;
+  type?: string;
+  items?: CourseReq[];
+};
+
+export interface ExistingPlanData {
+  courses: Array<{
+    courseId: number;
+    isLocked: boolean;
+    sections: Array<{
+      sectionId: number;
+      isHidden: boolean;
+    }>;
+  }>;
+  numCourses?: number;
 }

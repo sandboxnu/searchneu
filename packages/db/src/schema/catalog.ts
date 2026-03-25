@@ -26,9 +26,7 @@ export const termsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    unique("term_part_of_term").on(table.term, table.partOfTerm),
-  ],
+  (table) => [unique("term_part_of_term").on(table.term, table.partOfTerm)],
 );
 
 export const coursesT = pgTable(
@@ -65,7 +63,8 @@ export const coursesT = pgTable(
         text_fields: `'{
           "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
           "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
-          "courseNumber": {"fast": true}
+          "courseNumber": {"fast": true},
+          "termId": {"fast": true}
         }'`,
       }),
   ],
@@ -149,23 +148,19 @@ export const courseNupathJoinT = pgTable(
   ],
 );
 
-export const buildingsT = pgTable(
-  "buildings",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().notNull().unique(),
-    code: text().notNull().unique(),
-    campus: integer()
-      .notNull()
-      .references(() => campusesT.id),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [unique("buildings_campus").on(table.campus, table.name)],
-);
+export const buildingsT = pgTable("buildings", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull().unique(),
+  code: text().notNull().unique(),
+  campus: integer()
+    .notNull()
+    .references(() => campusesT.id),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
 
 export const roomsT = pgTable(
   "rooms",
@@ -181,10 +176,7 @@ export const roomsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    unique("building_room").on(table.buildingId, table.code),
-    index("building_idx").on(table.buildingId),
-  ],
+  (table) => [index("building_idx").on(table.buildingId)],
 );
 
 export const meetingTimesT = pgTable(

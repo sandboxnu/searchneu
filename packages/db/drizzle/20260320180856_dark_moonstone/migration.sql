@@ -59,8 +59,7 @@ CREATE TABLE "buildings" (
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "buildings_name_unique" UNIQUE("name"),
-	CONSTRAINT "buildings_code_unique" UNIQUE("code"),
-	CONSTRAINT "buildings_campus" UNIQUE("campus","name")
+	CONSTRAINT "buildings_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
 CREATE TABLE "campuses" (
@@ -124,8 +123,7 @@ CREATE TABLE "rooms" (
 	"code" varchar(10) NOT NULL,
 	"buildingId" integer NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
-	"updatedAt" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "building_room" UNIQUE("buildingId","code")
+	"updatedAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "sections" (

@@ -12,18 +12,18 @@
     "@clack/prompts": "^1.1.0",
     "@sneu/db": "workspace:*",
     "@sneu/scraper": "workspace:*",
-    "citty": "^0.2.0",
-    "drizzle-orm": "^0.45.1",
+    "citty": "^0.2.1",
+    "drizzle-orm": "1.0.0-beta.18-7eb39f0",
     "picocolors": "^1.1.1",
-    "yaml": "^2.8.2",
+    "yaml": "^2.8.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
-    "@types/node": "^25.5.0",
-    "eslint": "^9.39.2",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }

@@ -56,7 +56,7 @@
     }
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
+    "drizzle-orm": "1.0.0-beta.18-7eb39f0",
     "html-entities": "^2.6.0",
     "node-html-parser": "^7.1.0",
     "zod": "^4.3.6"
@@ -66,10 +66,10 @@
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.5.0",
-    "eslint": "^9.39.2",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
     "nock": "^14.0.11",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }

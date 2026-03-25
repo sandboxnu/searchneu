@@ -8,7 +8,6 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
 import { user as usersT } from "./auth";
 import { termsT, sectionsT } from "./catalog";
 
@@ -172,30 +171,4 @@ export const favoritedScheduleSectionsT = pgTable(
   (table) => [
     index("fss_favorited_schedule_idx").on(table.favoritedScheduleId),
   ],
-);
-
-// Relations
-export const savedPlansRelations = relations(savedPlansT, ({ many }) => ({
-  courses: many(savedPlanCoursesT),
-}));
-
-export const savedPlanCoursesRelations = relations(
-  savedPlanCoursesT,
-  ({ one, many }) => ({
-    plan: one(savedPlansT, {
-      fields: [savedPlanCoursesT.planId],
-      references: [savedPlansT.id],
-    }),
-    sections: many(savedPlanSectionsT),
-  }),
-);
-
-export const savedPlanSectionsRelations = relations(
-  savedPlanSectionsT,
-  ({ one }) => ({
-    course: one(savedPlanCoursesT, {
-      fields: [savedPlanSectionsT.savedPlanCourseId],
-      references: [savedPlanCoursesT.id],
-    }),
-  }),
 );

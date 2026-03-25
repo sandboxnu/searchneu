@@ -44,6 +44,7 @@
         "VERCEL_URL",
         "VERCEL_BRANCH_URL"
       ],
+      "dependsOn": ["@sneu/db#db:migrate"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "persistent": true,
       "cache": false

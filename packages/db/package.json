@@ -27,16 +27,16 @@
     }
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
-    "drizzle-orm": "^0.45.1",
+    "@neondatabase/serverless": "catalog:",
+    "drizzle-orm": "catalog:",
     "pg": "^8.20.0"
   },
   "devDependencies": {
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
-    "@types/node": "^25.5.0",
-    "drizzle-kit": "^0.31.10",
-    "eslint": "^9.39.2",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "drizzle-kit": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:"
   }
 }

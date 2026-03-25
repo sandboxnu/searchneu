@@ -1,6 +1,7 @@
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
-import { neon, neonConfig } from "@neondatabase/serverless";
+import { neonConfig } from "@neondatabase/serverless";
 import * as schema from "./schema";
+import { relations } from "./relations";
 
 /**
  * createDb creates a new database connection
@@ -17,13 +18,15 @@ function createDb(connectionString: string, stripPooler: boolean) {
   };
 
   if (stripPooler) {
-    return drizzleNeon(neon(connectionString.replace("-pooler", "")), {
+    return drizzleNeon(connectionString.replace("-pooler", ""), {
       schema: schema,
+      relations: relations,
     });
   }
 
-  return drizzleNeon(neon(connectionString), {
+  return drizzleNeon(connectionString, {
     schema: schema,
+    relations: relations,
   });
 }
 

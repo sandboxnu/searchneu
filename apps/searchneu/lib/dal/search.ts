@@ -72,39 +72,26 @@ export const getSearchCourses = cache(
     if (termRow.length === 0) return [];
     const termId = termRow[0].id;
 
-    // build BM25 WHERE clause for text search and courseLevel filtering
-    const bm25Chunks: SQL[] = [];
+    const chunks: SQL[] = [];
+    chunks.push(sql`${coursesT.termId} @@@ ${termId}`);
 
     if (query) {
       // boost exact register matches (e.g. "CS 3500") 6x over name matches
-      bm25Chunks.push(
+      chunks.push(
         sql`${coursesT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('name', ${query}, distance => 0), paradedb.boost(6.0, paradedb.match('register', ${query}))])`,
       );
     }
 
     if (minCourseLevel !== -1) {
-      bm25Chunks.push(
+      chunks.push(
         sql`${coursesT.courseNumber} @@@ ${">= " + String(minCourseLevel * 1000)}`,
       );
     }
 
     if (maxCourseLevel !== -1) {
-      bm25Chunks.push(
+      chunks.push(
         sql`${coursesT.courseNumber} @@@ ${"<= " + String(maxCourseLevel * 1000 + 999)}`,
       );
-    }
-
-    // Combine term filter with BM25 and other predicates
-    const hasBm25 = bm25Chunks.length > 0;
-    const conditions: SQL[] = [sql`${coursesT.termId} = ${termId}`];
-
-    if (hasBm25) {
-      conditions.push(sql.join(bm25Chunks, sql.raw(" and ")));
-    }
-
-    // NOTE: honors is applied as a WHERE predicate because sectionsT is joined.
-    if (honors) {
-      conditions.push(sql`${sectionsT.honors} = true`);
     }
 
     const rows = await db
@@ -129,9 +116,7 @@ export const getSearchCourses = cache(
         campus: sql<string[]>`array_agg(distinct ${campusesT.name})`,
         classType: sql<string[]>`array_agg(distinct ${sectionsT.classType})`,
         honors: sql<boolean>`bool_or(${sectionsT.honors})`,
-        score: hasBm25
-          ? sql<number>`paradedb.score(${coursesT.id})`
-          : sql<number>`0`,
+        score: sql<number>`paradedb.score(${coursesT.id})`,
       })
       .from(coursesT)
       .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
@@ -139,7 +124,7 @@ export const getSearchCourses = cache(
       .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
-      .where(sql.join(conditions, sql.raw(" AND ")))
+      .where(sql.join(chunks, sql.raw(" and ")))
       .groupBy(
         coursesT.id,
         coursesT.name,
@@ -148,11 +133,9 @@ export const getSearchCourses = cache(
         coursesT.minCredits,
         subjectsT.code,
       )
-      .orderBy(
-        hasBm25
-          ? sql`paradedb.score(${coursesT.id}) desc`
-          : sql`${coursesT.name} asc`,
-      );
+      .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
+
+    console.log(rows.slice(0, 10));
 
     // post-filter: apply the dimensions that are not covered by the BM25 index.
     // HACK: subject filtering is also post-filter until the BM25 index is updated

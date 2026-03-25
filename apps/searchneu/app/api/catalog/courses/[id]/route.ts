@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
 import { getCourseById } from "@/lib/dal/courses";
+import { NextRequest } from "next/server";
 import * as z from "zod";
 
 const CourseIdParamSchema = z.object({

@@ -1,11 +1,11 @@
-import { cn } from "@/lib/cn";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/cn";
 
 export function ResultCard(props: {
   result: {
     name: string;
     courseNumber: string;
-    subject: string;
+    subjectCode: string;
     minCredits: string;
     maxCredits: string;
     sectionsWithSeats: number;

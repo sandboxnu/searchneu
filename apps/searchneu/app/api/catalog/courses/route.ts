@@ -5,7 +5,7 @@ import * as z from "zod";
 const CourseByRegisterQuerySchema = z.object({
   term: z
     .string()
-    .length(6, "term must be a 6-character Banner term code (e.g. 202510)"),
+    .min(6, "term must be a 6-character Banner term code (e.g. 202510)"),
   subject: z
     .string()
     .min(1, "subject is required")

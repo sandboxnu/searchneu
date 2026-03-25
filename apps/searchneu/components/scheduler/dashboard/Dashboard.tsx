@@ -84,8 +84,8 @@ export function DashboardClient({
     isLoading,
     mutate,
   } = useSWR<SavedPlan[]>(
-    // selectedTerm will always
-    `/api/scheduler/saved-plans/term/${selectedTerm?.term}${selectedTerm?.part}`,
+    // selectedTerm will always be defined
+    `/api/scheduler/saved-plans/term/${selectedTerm.term}${selectedTerm.part}`,
     (u: string) => fetch(u).then((r) => r.json()),
     { fallbackData: [], suspense: true },
   );

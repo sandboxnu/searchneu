@@ -90,8 +90,6 @@ export function DashboardClient({
     { fallbackData: [], suspense: true },
   );
 
-  console.log("plan data", plans);
-
   // this case should never happen as data is always defined (despite the type)
   if (!plans) throw Error("fallback data not correctly set");
 

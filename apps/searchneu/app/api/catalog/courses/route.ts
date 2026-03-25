@@ -3,7 +3,9 @@ import { NextRequest } from "next/server";
 import * as z from "zod";
 
 const CourseByRegisterQuerySchema = z.object({
-  term: z.string().min(6).max(8),
+  term: z
+    .string()
+    .length(6, "term must be a 6-character Banner term code (e.g. 202510)"),
   subject: z
     .string()
     .min(1, "subject is required")

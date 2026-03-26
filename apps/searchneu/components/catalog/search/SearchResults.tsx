@@ -91,10 +91,12 @@ function ResultsList(props: { params: string; term: string; course: string }) {
             }}
           >
             <Link
-              href={`/catalog/${props.term}/${results[v.index].subject}%20${results[v.index].courseNumber}?${props.params}`}
+              href={`/catalog/${props.term}/${results[v.index].subjectCode}%20${results[v.index].courseNumber}?${props.params}`}
               data-active={
                 decodeURIComponent(props.course) ===
-                results[v.index].subject + " " + results[v.index].courseNumber
+                results[v.index].subjectCode +
+                  " " +
+                  results[v.index].courseNumber
               }
               className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
             >

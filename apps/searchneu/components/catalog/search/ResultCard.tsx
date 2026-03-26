@@ -1,11 +1,11 @@
-import { cn } from "@/lib/cn";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/cn";
 
 export function ResultCard(props: {
   result: {
     name: string;
     courseNumber: string;
-    subject: string;
+    subjectCode: string;
     minCredits: string;
     maxCredits: string;
     sectionsWithSeats: number;
@@ -33,7 +33,7 @@ export function ResultCard(props: {
     <>
       <div className="flex items-center justify-between pb-1">
         <h1 className="text-base leading-tight font-bold">
-          {props.result.subject + " " + props.result.courseNumber}
+          {props.result.subjectCode + " " + props.result.courseNumber}
         </h1>
         <span className="text-neu6 text-sm">
           {creditRange} {creditLabel}

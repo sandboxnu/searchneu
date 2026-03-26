@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, use } from "react";
 import { Button } from "@/components/ui/button";
+import type { Campus, Nupath, Term } from "@/lib/catalog/types";
 import { GroupedTerms } from "@/lib/catalog/types";
-import { CollegeDropdown } from "./CollegeDropdown";
-import { TermsDropdown } from "./TermsDropdown";
+import { cn } from "@/lib/cn";
+import { use, useState } from "react";
+import useSWR from "swr";
 import { Searchskie } from "../../icons/Searchskie";
 import AddCoursesModal from "../shared/modal/AddCoursesModal";
+import { CollegeDropdown } from "./CollegeDropdown";
 import { PlanCard } from "./PlanCard/PlanCard";
-import type { Campus, Nupath, Term } from "@/lib/catalog/types";
-import useSWR from "swr";
-import { cn } from "@/lib/cn";
+import { TermsDropdown } from "./TermsDropdown";
 
 // Add type for plan
 export type SavedPlan = {
@@ -73,18 +73,19 @@ export function DashboardClient({
   const [selectedCollege, setSelectedCollege] =
     useState<keyof GroupedTerms>("neu");
 
-  const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
-
   const terms = use(termsPromise);
   const campuses = use(campusesPromise);
   const nupaths = use(nupathsPromise);
+
+  const [selectedTerm, setSelectedTerm] = useState<Term>(terms.neu[0]);
 
   const {
     data: plans,
     isLoading,
     mutate,
   } = useSWR<SavedPlan[]>(
-    `/api/scheduler/saved-plans/term/${selectedTerm}`,
+    // selectedTerm will always be defined
+    `/api/scheduler/saved-plans/term/${selectedTerm.term}${selectedTerm.part}`,
     (u: string) => fetch(u).then((r) => r.json()),
     { fallbackData: [], suspense: true },
   );

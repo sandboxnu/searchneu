@@ -23,7 +23,7 @@ function HowToCard({
     <>
       <div
         onClick={() => setOpen(true)}
-        className="group relative z-10 flex h-78 w-108.5 min-w-xs flex-col items-start gap-6 overflow-hidden rounded-lg border bg-[#FFF] p-2 pb-6 hover:border-none hover:shadow-[0px_4px_8px_2px_#a6a6a61f] cursor-pointer"
+        className="group relative z-10 flex h-78 w-108.5 min-w-xs cursor-pointer flex-col items-start gap-6 overflow-hidden rounded-lg border bg-[#FFF] p-2 pb-6 hover:border-none hover:shadow-[0px_4px_8px_2px_#a6a6a61f]"
       >
         <div className="group-hover:bg-r1 absolute top-0 h-109 w-109 -translate-y-1/3 rounded-full blur-[80px] group-hover:opacity-60" />
         <Image

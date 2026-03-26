@@ -7,7 +7,11 @@ import { faqHowToFlag } from "@/lib/flags";
 
 export default async function Page() {
   const showHowTo = await faqHowToFlag();
-
+  const carouselItems = howToData.howtos.map(({ carouselImg, title, description }) => ({
+    carouselImg,
+    title,
+    description,
+  }));
   return (
     <div className="bg-neu2 pt-4 pb-6">
       <div className="p-8 px-40">
@@ -18,12 +22,14 @@ export default async function Page() {
             </h2>
             <ScrollArea className="mb-4 w-full whitespace-nowrap">
               <div className="flex w-max space-x-4 p-4 pt-3">
-                {howToData.howtos.map((howto) => (
+                {howToData.howtos.map((howto, i) => (
                   <HowToCard
                     key={howto.id}
                     img={howto.img}
                     title={howto.title}
                     description={howto.description}
+                    carouselItems={carouselItems}
+                    carouselIndex={i}
                   />
                 ))}
               </div>

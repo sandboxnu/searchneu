@@ -1,0 +1,34 @@
+{
+  "name": "@sneu/notifications",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint .",
+    "test": "node --test --import tsx ./**/*.test.ts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./providers/sms": {
+      "types": "./dist/providers/sms.d.ts",
+      "default": "./dist/providers/sms.js"
+    }
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "@sneu/db": "workspace:*",
+    "@sneu/eslint-config": "workspace:*",
+    "@sneu/tsconfig": "workspace:*",
+    "@types/node": "^25.5.0",
+    "eslint": "^9.39.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

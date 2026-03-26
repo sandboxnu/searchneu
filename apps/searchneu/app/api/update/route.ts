@@ -7,11 +7,12 @@ import {
   user as usersT,
   subjectsT,
 } from "@/lib/db";
-import { eq, gt } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { and, eq, gt, isNull, sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
-import { sendNotifications } from "@/lib/updater/notifs";
+import { sendNotifications, type TypedNotif } from "@sneu/notifications";
+import { TwilioSMSProvider } from "@sneu/notifications/providers/sms";
+import { twilio } from "@/lib/trackers/twilio";
 
 export async function GET(req: NextRequest) {
   // check auth to ensure that only the vercel cron service can trigger an update
@@ -34,10 +35,17 @@ export async function GET(req: NextRequest) {
   const terms = [...new Set(dbterms.map((t) => t.term))];
   console.log({ terms }, "terms to update");
 
+  const provider = new TwilioSMSProvider({
+    client: twilio,
+    fromNumber: process.env.TWILIO_PHONE_NUMBER!,
+  });
+
   // for each term perform an update
   for (const term of terms) {
     const {
       sectionsWithNewSeats: newSeats,
+      sectionsWithTwoSeatsRemaining: twoRemaining,
+      sectionsWithOneSeatRemaining: oneRemaining,
       sectionsWithUpdatedSeats: updatedSeats,
       sectionsWithNewWaitlistSeats: waitlistSeats,
       sectionsWithUpdatedWaitlistSeats: updatedWaitlistSeats,
@@ -67,19 +75,32 @@ export async function GET(req: NextRequest) {
       .innerJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(usersT, eq(usersT.id, trackersT.userId))
-      .where(eq(termsT.term, term));
+      .where(and(eq(termsT.term, term), isNull(trackersT.deletedAt)));
 
-    const seatCrns = newSeats.map((s) => s.courseReferenceNumber);
-    const seatNotifs = trackers.filter((t) => seatCrns.includes(t.sectionCrn));
-
-    const waitlistCrns = waitlistSeats
-      .filter((s) => !seatCrns.includes(s.courseReferenceNumber))
-      .map((s) => s.courseReferenceNumber);
-    const waitlistNotifs = trackers.filter((t) =>
-      waitlistCrns.includes(t.sectionCrn),
+    const typed: TypedNotif[] = [];
+    const seatCrns = new Set(newSeats.map((s) => s.courseReferenceNumber));
+    const twoCrns = new Set(twoRemaining.map((s) => s.courseReferenceNumber));
+    const oneCrns = new Set(oneRemaining.map((s) => s.courseReferenceNumber));
+    const waitCrns = new Set(
+      waitlistSeats
+        .filter((s) => !seatCrns.has(s.courseReferenceNumber))
+        .map((s) => s.courseReferenceNumber),
     );
 
-    await sendNotifications(seatNotifs, waitlistNotifs);
+    for (const t of trackers) {
+      if (seatCrns.has(t.sectionCrn)) {
+        typed.push({ notif: t, type: "seats_opened" });
+      } else if (oneCrns.has(t.sectionCrn)) {
+        typed.push({ notif: t, type: "seats_one_remaining" });
+      } else if (twoCrns.has(t.sectionCrn)) {
+        typed.push({ notif: t, type: "seats_two_remaining" });
+      }
+      if (waitCrns.has(t.sectionCrn)) {
+        typed.push({ notif: t, type: "waitlist_opened" });
+      }
+    }
+
+    await sendNotifications(typed, db, provider, console);
 
     // update the seat counts in the database
     const newSeatValues = [...newSeats, ...updatedSeats]

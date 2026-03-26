@@ -34,10 +34,6 @@
       "types": "./dist/update/main.d.ts",
       "default": "./dist/update/main.js"
     },
-    "./notifs": {
-      "types": "./dist/update/notifs.d.ts",
-      "default": "./dist/update/notifs.js"
-    },
     "./generate/sections": {
       "types": "./dist/generate/steps/sections.d.ts",
       "default": "./dist/generate/steps/sections.js"

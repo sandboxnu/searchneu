@@ -12,6 +12,8 @@ import * as z from "zod";
 
 export interface UpdateTermResult {
   sectionsWithNewSeats: z.infer<typeof BannerSection>[];
+  sectionsWithTwoSeatsRemaining: z.infer<typeof BannerSection>[];
+  sectionsWithOneSeatRemaining: z.infer<typeof BannerSection>[];
   sectionsWithUpdatedSeats: z.infer<typeof BannerSection>[];
   sectionsWithNewWaitlistSeats: z.infer<typeof BannerSection>[];
   sectionsWithUpdatedWaitlistSeats: z.infer<typeof BannerSection>[];
@@ -79,6 +81,8 @@ export async function updateTerm(
     .where(eq(termsT.term, term));
 
   const sectionsWithNewSeats: z.infer<typeof BannerSection>[] = [];
+  const sectionsWithTwoSeatsRemaining: z.infer<typeof BannerSection>[] = [];
+  const sectionsWithOneSeatRemaining: z.infer<typeof BannerSection>[] = [];
   const sectionsWithUpdatedSeats: z.infer<typeof BannerSection>[] = [];
   const sectionsWithNewWaitlistSeats: z.infer<typeof BannerSection>[] = [];
   const sectionsWithUpdatedWaitlistSeats: z.infer<typeof BannerSection>[] = [];
@@ -100,6 +104,14 @@ export async function updateTerm(
 
     if (scrape.seatsAvailable > 0 && stale.seatRemaining === 0) {
       sectionsWithNewSeats.push(scrape);
+    }
+
+    if (scrape.seatsAvailable === 2 && stale.seatRemaining > 2) {
+      sectionsWithTwoSeatsRemaining.push(scrape);
+    }
+
+    if (scrape.seatsAvailable === 1 && stale.seatRemaining > 1) {
+      sectionsWithOneSeatRemaining.push(scrape);
     }
 
     if (scrape.waitAvailable > 0 && stale.waitRemaining === 0) {
@@ -183,6 +195,22 @@ export async function updateTerm(
   );
   log.info(
     {
+      sections: sectionsWithTwoSeatsRemaining.map(
+        (s) => s.courseReferenceNumber,
+      ),
+    },
+    "Sections with 2 seats remaining",
+  );
+  log.info(
+    {
+      sections: sectionsWithOneSeatRemaining.map(
+        (s) => s.courseReferenceNumber,
+      ),
+    },
+    "Sections with 1 seat remaining",
+  );
+  log.info(
+    {
       sections: sectionsWithNewWaitlistSeats.map(
         (s) => s.courseReferenceNumber,
       ),
@@ -193,6 +221,8 @@ export async function updateTerm(
 
   return {
     sectionsWithNewSeats,
+    sectionsWithTwoSeatsRemaining,
+    sectionsWithOneSeatRemaining,
     sectionsWithUpdatedSeats,
     sectionsWithNewWaitlistSeats,
     sectionsWithUpdatedWaitlistSeats,

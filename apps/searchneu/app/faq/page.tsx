@@ -7,11 +7,13 @@ import { faqHowToFlag } from "@/lib/flags";
 
 export default async function Page() {
   const showHowTo = await faqHowToFlag();
-  const carouselItems = howToData.howtos.map(({ carouselImg, title, description }) => ({
-    carouselImg,
-    title,
-    description,
-  }));
+  const carouselItems = howToData.howtos.map(
+    ({ carouselImg, title, description }) => ({
+      carouselImg,
+      title,
+      description,
+    }),
+  );
   return (
     <div className="bg-neu2 pt-4 pb-6">
       <div className="p-8 px-40">

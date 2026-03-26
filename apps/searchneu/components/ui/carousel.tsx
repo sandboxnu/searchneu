@@ -2,7 +2,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogClose,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type CarouselItem = {
   carouselImg: string;
@@ -36,8 +42,11 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={false} className="w-[712px] sm:max-w-[712px] h-[632px] rounded-[12px] bg-carousel gap-0">
-        <DialogClose className="absolute -right-9 h-[28px] w-[28px] rounded-full bg-carousel-gray text-neu8 shadow flex items-center justify-center outline-none ring-0 cursor-pointer">
+      <DialogContent
+        showCloseButton={false}
+        className="bg-carousel h-[632px] w-[712px] gap-0 rounded-[12px] sm:max-w-[712px]"
+      >
+        <DialogClose className="bg-carousel-gray text-neu8 absolute -right-9 flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
         <Image
@@ -45,15 +54,17 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
           width={664}
           height={400}
           alt={current.title}
-          className="w-full rounded-[8px] object-cover bg-neu3"
+          className="bg-neu3 w-full rounded-[8px] object-cover"
         />
         <div className="flex flex-col gap-3">
-        <DialogTitle className="text-r5 text-[28px] font-semibold leading-6">
-          {firstWord} <span className="text-neu8">{restOfTitle}</span>
-        </DialogTitle>
+          <DialogTitle className="text-r5 text-[28px] leading-6 font-semibold">
+            {firstWord} <span className="text-neu8">{restOfTitle}</span>
+          </DialogTitle>
 
-          <DialogDescription className="text-neu7 text-[17px] leading-tight">{current.description}</DialogDescription>
-          <div className="mt-5 relative flex items-center justify-center">
+          <DialogDescription className="text-neu7 text-[17px] leading-tight">
+            {current.description}
+          </DialogDescription>
+          <div className="relative mt-5 flex items-center justify-center">
             <div className="flex gap-1.5">
               {items.map((_, i) => (
                 <span
@@ -65,14 +76,16 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
             {step > 0 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="absolute left-0 flex items-center gap-1.5 rounded-[20px] border-[1px] border-carousel-gray bg-carousel-back-background px-4 py-2 text-carousel-dark-gray text-sm font-bold cursor-pointer"
+                className="border-carousel-gray bg-carousel-back-background text-carousel-dark-gray absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
               >
                 Back
               </button>
             )}
             <button
-              onClick={() => isLast ? onOpenChange(false) : setStep((s) => s + 1)}
-              className="absolute right-0 flex items-center gap-1.5 rounded-[20px] bg-carousel-forward-background/30 px-4 py-2 text-sm font-bold text-carousel-red border-[1px] border-carousel-forward-background cursor-pointer"
+              onClick={() =>
+                isLast ? onOpenChange(false) : setStep((s) => s + 1)
+              }
+              className="bg-carousel-forward-background/30 text-carousel-red border-carousel-forward-background absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
             >
               {isLast ? "Finish" : "Next"} <ArrowRight className="size-4" />
             </button>

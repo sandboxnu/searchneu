@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   const { term, id } = parsed.data;
   const schedule = await getSectionsByTermRoomId(term, id);
 
-  if (!schedule) {
+  if (schedule.length == 0) {
     return Response.json(
       {
         error: `Room ID "${id}" not found in term ${term}`,

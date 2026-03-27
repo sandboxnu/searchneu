@@ -220,7 +220,13 @@ export const getSearchRooms = cache(
       .where(sql.join(sqlChunks, sql.raw(" ")))
       .having(havingChunks.length > 0 ? sql.join(havingChunks, sql.raw(" ")) : undefined)
       .groupBy(
-        roomsT.id
+        roomsT.id,
+        roomsT.code,
+        buildingsT.id,
+        buildingsT.name,
+        campusesT.name,
+        coursesT.name,
+        coursesT.register
       )
       .orderBy(sql`paradedb.score(${roomsT.id}) desc`);
 

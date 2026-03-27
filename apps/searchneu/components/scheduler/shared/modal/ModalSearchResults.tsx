@@ -1,16 +1,16 @@
 "use client";
 
-import { Suspense, use, useDeferredValue, useRef } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { SearchResult, Term } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
-import { Course, Term } from "@/lib/catalog/types";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { Suspense, use, useDeferredValue, useRef } from "react";
 
 const ResultCard = ({
   result,
   onSelect,
 }: {
-  result: Course;
-  onSelect: (course: Course) => void;
+  result: SearchResult;
+  onSelect: (course: SearchResult) => void;
 }) => {
   return (
     <div
@@ -19,7 +19,7 @@ const ResultCard = ({
     >
       <p className="flex min-w-0 items-center gap-1">
         <span className="text-neu8 shrink-0 font-bold">
-          {result.subject} {result.courseNumber}
+          {result.subjectCode} {result.courseNumber}
         </span>
         <span className="truncate">{result.name}</span>
       </p>
@@ -30,11 +30,11 @@ const ResultCard = ({
 export default function ModalSearchResults({
   searchQuery,
   term,
-  onSelectCourse,
+  onSelectSearchResult,
 }: {
   searchQuery: string;
   term: Term;
-  onSelectCourse: (course: Course) => void;
+  onSelectSearchResult: (course: SearchResult) => void;
 }) {
   const deferredQuery = useDeferredValue(searchQuery);
   const deferredTerm = useDeferredValue(term);
@@ -51,7 +51,7 @@ export default function ModalSearchResults({
         <ResultsList
           query={deferredQuery}
           term={deferredTerm}
-          onSelectCourse={onSelectCourse}
+          onSelectSearchResult={onSelectSearchResult}
         />
       </Suspense>
     </div>
@@ -75,11 +75,11 @@ function fetcher<T>(key: string, url: string): Promise<T> {
 function ResultsList({
   query,
   term,
-  onSelectCourse,
+  onSelectSearchResult,
 }: {
   query: string;
   term: Term;
-  onSelectCourse: (course: Course) => void;
+  onSelectSearchResult: (course: SearchResult) => void;
 }) {
   "use no memo";
 
@@ -89,7 +89,9 @@ function ResultsList({
   const url = `/api/catalog/search?${searchParams.toString()}`;
   const cacheKey = `${query}-${term}`;
 
-  const results = use(fetcher<Course[] | { error: string }>(cacheKey, url));
+  const results = use(
+    fetcher<SearchResult[] | { error: string }>(cacheKey, url),
+  );
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -135,7 +137,10 @@ function ResultsList({
         >
           {items.map((v) => (
             <li key={v.index} data-index={v.index} ref={virtual.measureElement}>
-              <ResultCard result={results[v.index]} onSelect={onSelectCourse} />
+              <ResultCard
+                result={results[v.index]}
+                onSelect={onSelectSearchResult}
+              />
             </li>
           ))}
         </ul>

@@ -56,7 +56,14 @@ export const coursesT = pgTable(
   (table) => [
     unique("term_course").on(table.termId, table.subject, table.courseNumber),
     index("courses_search_idx")
-      .using("bm25", table.id, table.name, table.register, table.courseNumber)
+      .using(
+        "bm25",
+        table.id,
+        table.name,
+        table.register,
+        table.courseNumber,
+        table.termId,
+      )
       .with({
         key_field: "id",
         // NOTE: this template literal is interpreted as raw SQL and therefore must be escaped properly
@@ -147,23 +154,19 @@ export const courseNupathJoinT = pgTable(
   ],
 );
 
-export const buildingsT = pgTable(
-  "buildings",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().notNull().unique(),
-    code: text().notNull().unique(),
-    campus: integer()
-      .notNull()
-      .references(() => campusesT.id),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [unique("buildings_campus").on(table.campus, table.name)],
-);
+export const buildingsT = pgTable("buildings", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull().unique(),
+  code: text().notNull().unique(),
+  campus: integer()
+    .notNull()
+    .references(() => campusesT.id),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
 
 export const roomsT = pgTable(
   "rooms",
@@ -179,10 +182,7 @@ export const roomsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    unique("building_room").on(table.buildingId, table.code),
-    index("building_idx").on(table.buildingId),
-  ],
+  (table) => [index("building_idx").on(table.buildingId)],
 );
 
 export const meetingTimesT = pgTable(

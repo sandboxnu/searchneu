@@ -70,7 +70,7 @@ export const savedPlansT = pgTable(
     includeHonorsSections: boolean().notNull().default(true),
     includeRemoteSections: boolean().notNull().default(true),
     hideFilledSections: boolean().notNull().default(false),
-    campus: integer().notNull().default(1),
+    campus: integer().notNull().default(3),
     nupaths: integer().array().notNull().default([]),
 
     createdAt: timestamp().notNull().defaultNow(),

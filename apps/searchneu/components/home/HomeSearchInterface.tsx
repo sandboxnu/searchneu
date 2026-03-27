@@ -37,11 +37,14 @@ export function HomeSearchInterface({
   function onSubmit(query: string) {
     let term = "";
     if (selectedCollege === "neu") {
-      term = termsObject.neu[0].term;
+      const neuTerm = termsObject.neu[0];
+      term = neuTerm.term + neuTerm.part;
     } else if (selectedCollege === "cps") {
-      term = termsObject.cps[0].term;
+      const cpsTerm = termsObject.cps[0];
+      term = cpsTerm.term + cpsTerm.part;
     } else if (selectedCollege === "law") {
-      term = termsObject.law[0].term;
+      const lawTerm = termsObject.law[0];
+      term = lawTerm.term + lawTerm.part;
     }
 
     router.push(`/catalog/${term}?q=${query}`);

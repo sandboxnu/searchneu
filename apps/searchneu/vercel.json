@@ -1,6 +1,6 @@
 {
   "functions": {
-    "src/app/(app)/api/update/route.ts": {
+    "app/api/update/route.ts": {
       "maxDuration": 800
     }
   },

@@ -11,15 +11,14 @@
     "db:migrate": "turbo run db:migrate --filter=@sneu/db",
     "db:push": "turbo run db:push --filter=@sneu/db",
     "db:studio": "turbo run db:studio --filter=@sneu/db",
-    "scrape:gen": "turbo run scrape:gen --filter=@sneu/scraper",
-    "scrape:up": "turbo run scrape:up --filter=@sneu/scraper"
+    "cli": "turbo run cli --filter=@sneu/scraper-cli"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "turbo": "^2.8.16"
+    "turbo": "^2.8.20"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.32.1",
   "engine": {
     "node": "24.x"
   }

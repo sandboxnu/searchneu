@@ -1,5 +1,5 @@
 {
-  "name": "searchneu",
+  "name": "@sneu/searchneu",
   "version": "0.2.0",
   "private": true,
   "scripts": {
@@ -10,12 +10,13 @@
     "test": "node --test --import tsx ./**/*.test.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
     "@mdx-js/loader": "^3.1.0",
-    "@next/mdx": "^16.1.6",
+    "@next/mdx": "^16.2.0",
     "@opentelemetry/api": "^1.9.0",
     "@sneu/db": "workspace:*",
     "@sneu/scraper": "workspace:*",
-    "@tanstack/react-virtual": "^3.13.21",
+    "@tanstack/react-virtual": "^3.13.23",
     "@vercel/analytics": "^2.0.1",
     "@vercel/otel": "^2.1.1",
     "@vercel/speed-insights": "^2.0.0",
@@ -25,10 +26,11 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "drizzle-orm": "^0.45.1",
-    "flags": "^4.0.4",
+    "immer": "^11.1.4",
+    "flags": "^4.0.5",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.577.0",
-    "next": "16.1.6",
+    "next": "16.2.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -42,9 +44,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@next/env": "^16.1.6",
+    "@next/env": "^16.2.0",
     "@sneu/eslint-config": "workspace:*",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
@@ -52,7 +54,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.2",
     "server-only": "^0.0.1",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

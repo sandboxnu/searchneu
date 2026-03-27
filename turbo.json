@@ -17,7 +17,9 @@
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
         "FLAGS_SECRET",
-        "SLACK_WEBHOOK_URL"
+        "SLACK_WEBHOOK_URL",
+        "VERCEL_URL",
+        "VERCEL_BRANCH_URL"
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
@@ -38,7 +40,9 @@
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
         "FLAGS_SECRET",
-        "SLACK_WEBHOOK_URL"
+        "SLACK_WEBHOOK_URL",
+        "VERCEL_URL",
+        "VERCEL_BRANCH_URL"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "persistent": true,
@@ -58,7 +62,9 @@
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
         "FLAGS_SECRET",
-        "SLACK_WEBHOOK_URL"
+        "SLACK_WEBHOOK_URL",
+        "VERCEL_URL",
+        "VERCEL_BRANCH_URL"
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]

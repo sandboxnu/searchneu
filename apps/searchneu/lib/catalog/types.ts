@@ -18,7 +18,9 @@
  * only includes the fields needed when listing all available terms.
  */
 export interface Term {
+  id: number;
   term: string;
+  part: string;
   name: string;
 }
 
@@ -46,9 +48,7 @@ export interface GroupedTerms {
  * used when a caller needs to determine whether a term is currently
  * active (`activeUntil`) or when Banner data was last refreshed (`updatedAt`)
  */
-export interface TermDetail {
-  term: string;
-  name: string;
+export interface TermDetail extends Term {
   activeUntil: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -225,15 +225,13 @@ export interface CourseSearchFilters {
  * a single row in the course search results. unlike `Course`, this type
  * aggregates section-level data (seat counts, campus list, class types) so the
  * search UI can display availability without a second query per course
- *
- * `subject` here is the code string (e.g. `"CS"`), not the integer FK
  */
 export interface CourseSearchResult {
   id: number;
   name: string;
   courseNumber: string;
-  /** subject code string, e.g. `"CS"` */
-  subject: string;
+  /** Human-readable subject code, e.g. `"CS"` */
+  subjectCode: string;
   maxCredits: string;
   minCredits: string;
   nupaths: string[];

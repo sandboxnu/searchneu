@@ -6,6 +6,7 @@ import {
   meetingTimesT,
   sectionsT,
   coursesT,
+  termsT,
 } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 
@@ -63,7 +64,8 @@ export default async function RoomDetailPage({
     .from(meetingTimesT)
     .innerJoin(sectionsT, eq(meetingTimesT.sectionId, sectionsT.id))
     .innerJoin(coursesT, eq(sectionsT.courseId, coursesT.id))
-    .where(and(eq(meetingTimesT.roomId, roomId), eq(meetingTimesT.term, term)));
+    .innerJoin(termsT, eq(meetingTimesT.termId, termsT.id))
+    .where(and(eq(meetingTimesT.roomId, roomId), eq(termsT.term, term)));
 
   const meetingsWithMinutes = meetings.map((meeting) => ({
     ...meeting,

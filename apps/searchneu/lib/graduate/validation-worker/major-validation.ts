@@ -196,7 +196,7 @@ export class MajorValidationInputError extends Error {
 // Validates the input parameters for validateMajor
 function validateInputs(
   major: Major | null | undefined,
-  taken: AuditCourse<unknown>[] | null | undefined,
+  taken: AuditCourse[] | null | undefined,
 ): asserts major is Major {
   if (major === null || major === undefined) {
     throw new MajorValidationInputError(
@@ -337,17 +337,13 @@ function validateMinorInput(minor: Minor | undefined): void {
 interface CourseValidationTracker {
   // retrieve a given schedule course if it exists
   // validation algorithm shouldn't care about the id so we use unknown instead of any/null
-  get(input: IAuditCourse): AuditCourse<unknown> | null;
+  get(input: IAuditCourse): AuditCourse | null;
 
   // retrieves the number of times a course has been taken
   getCount(input: IAuditCourse): number;
 
   // retrieves all matching courses (subject, and within start/end inclusive)
-  getAll(
-    subject: string,
-    start: number,
-    end: number,
-  ): Array<AuditCourse<unknown>>;
+  getAll(subject: string, start: number, end: number): Array<AuditCourse>;
 
   // do we have enough courses to take all classes in both solutions?
   hasEnoughCoursesForBoth(s1: Solution, s2: Solution): boolean;
@@ -360,12 +356,12 @@ interface CourseValidationTracker {
 // exported for testing
 export class MajorValidationTracker implements CourseValidationTracker {
   // maps courseString => [course instance, # of times taken]
-  private currentCourses: Map<string, [AuditCourse<unknown>, number]>;
+  private currentCourses: Map<string, [AuditCourse, number]>;
 
   //list of degree-required courses that we should not consider in the range validator
   private necessaryCourses: Set<string> = new Set();
 
-  constructor(courses: AuditCourse<unknown>[]) {
+  constructor(courses: AuditCourse[]) {
     this.currentCourses = new Map();
     for (const c of courses) {
       const cs = courseToString(c);
@@ -455,7 +451,7 @@ export type MajorValidationResult = Result<
 
 export function validateMajor(
   major: Major,
-  taken: AuditCourse<unknown>[],
+  taken: AuditCourse[],
   minor?: Minor,
   concentrations?: SelectedConcentrationsType,
 ): MajorValidationResult {
@@ -682,7 +678,7 @@ export const validateRequirement = (
 
 function validateTotalCreditsRequired(
   requiredCredits: number,
-  coursesTaken: AuditCourse<unknown>[],
+  coursesTaken: AuditCourse[],
 ): Result<null, TotalCreditsRequirementError> {
   const takenCredits = coursesTaken.reduce(
     (total, course) => total + course.numCreditsMin,

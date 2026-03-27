@@ -1,0 +1,10 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "cli": {
+      "env": ["DATABASE_URL", "SCRAPER_CACHE_PATH", "SCRAPER_CONFIG_PATH"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

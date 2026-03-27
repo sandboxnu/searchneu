@@ -33,11 +33,11 @@ const isEmpty = (requisite: Requisite): requisite is Record<string, never> => {
 
 export function RequisiteBlock({
   req,
-  termId,
+  term,
   prereqMode,
 }: {
   req: Requisite;
-  termId: string;
+  term: string;
   prereqMode: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -65,7 +65,7 @@ export function RequisiteBlock({
 
   const tree = RequisiteItemComponent({
     item: req as RequisiteItem,
-    term: termId,
+    term: term,
     depth: 0,
     prereqMode: prereqMode,
     searchParam: searchParams.toString(),

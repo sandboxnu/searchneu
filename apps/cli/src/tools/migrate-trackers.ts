@@ -425,22 +425,20 @@ const detach = defineCommand({
     }));
 
     // generated_schedule_sections → sections → terms
-    const generatedScheduleSections: SavedGenScheduleSection[] = (
-      await db
-        .select({
-          scheduleId: generatedScheduleSectionsT.scheduleId,
-          sectionId: generatedScheduleSectionsT.sectionId,
-          term: termsT.term,
-          partOfTerm: termsT.partOfTerm,
-          crn: sectionsT.crn,
-        })
-        .from(generatedScheduleSectionsT)
-        .innerJoin(
-          sectionsT,
-          eq(generatedScheduleSectionsT.sectionId, sectionsT.id),
-        )
-        .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
-    );
+    const generatedScheduleSections: SavedGenScheduleSection[] = await db
+      .select({
+        scheduleId: generatedScheduleSectionsT.scheduleId,
+        sectionId: generatedScheduleSectionsT.sectionId,
+        term: termsT.term,
+        partOfTerm: termsT.partOfTerm,
+        crn: sectionsT.crn,
+      })
+      .from(generatedScheduleSectionsT)
+      .innerJoin(
+        sectionsT,
+        eq(generatedScheduleSectionsT.sectionId, sectionsT.id),
+      )
+      .innerJoin(termsT, eq(sectionsT.termId, termsT.id));
 
     // ── Save mapping file ───────────────────────────────────
 
@@ -483,9 +481,7 @@ const detach = defineCommand({
       p.note(
         [
           `Would delete all rows from affected tables`,
-          ...CATALOG_CONSTRAINTS.map(
-            (c) => `Would drop FK ${pc.bold(c.name)}`,
-          ),
+          ...CATALOG_CONSTRAINTS.map((c) => `Would drop FK ${pc.bold(c.name)}`),
         ].join("\n"),
         "Dry Run",
       );
@@ -513,7 +509,10 @@ const detach = defineCommand({
     const existing = await db.execute(sql`
       SELECT constraint_name FROM information_schema.table_constraints
       WHERE constraint_type = 'FOREIGN KEY'
-        AND constraint_name = ANY(${sql`ARRAY[${sql.join(CATALOG_CONSTRAINTS.map((c) => sql`${c.name}`), sql`, `)}]`})
+        AND constraint_name = ANY(${sql`ARRAY[${sql.join(
+          CATALOG_CONSTRAINTS.map((c) => sql`${c.name}`),
+          sql`, `,
+        )}]`})
     `);
     const existingNames = new Set(
       existing.rows.map(
@@ -595,7 +594,11 @@ const reattach = defineCommand({
 
     const termLookup = new Map<string, number>();
     for (const t of await db
-      .select({ id: termsT.id, term: termsT.term, partOfTerm: termsT.partOfTerm })
+      .select({
+        id: termsT.id,
+        term: termsT.term,
+        partOfTerm: termsT.partOfTerm,
+      })
       .from(termsT)) {
       termLookup.set(`${t.term}/${t.partOfTerm}`, t.id);
     }
@@ -791,8 +794,7 @@ const reattach = defineCommand({
     const reportLines: string[] = [];
     for (const [table, s] of Object.entries(stats)) {
       const parts = [`${pc.green(String(s.resolved))} resolved`];
-      if (s.orphaned > 0)
-        parts.push(`${pc.red(String(s.orphaned))} orphaned`);
+      if (s.orphaned > 0) parts.push(`${pc.red(String(s.orphaned))} orphaned`);
       reportLines.push(`${table}: ${parts.join(", ")}`);
     }
     p.note(reportLines.join("\n"), "Resolution Summary");
@@ -925,7 +927,10 @@ const reattach = defineCommand({
       const existingFks = await tx.execute(sql`
         SELECT constraint_name FROM information_schema.table_constraints
         WHERE constraint_type = 'FOREIGN KEY'
-          AND constraint_name = ANY(${sql`ARRAY[${sql.join(CATALOG_CONSTRAINTS.map((c) => sql`${c.name}`), sql`, `)}]`})
+          AND constraint_name = ANY(${sql`ARRAY[${sql.join(
+            CATALOG_CONSTRAINTS.map((c) => sql`${c.name}`),
+            sql`, `,
+          )}]`})
       `);
       const existingNames = new Set(
         existingFks.rows.map(

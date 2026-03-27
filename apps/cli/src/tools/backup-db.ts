@@ -11,12 +11,7 @@ import path from "node:path";
 import { defineCommand } from "citty";
 import { brandIntro, p, pc, setVerbosity } from "../ui";
 import { getDb } from "@sneu/db/pg";
-import {
-  termsT,
-  sectionsT,
-  trackersT,
-  notificationsT,
-} from "@sneu/db/schema";
+import { termsT, sectionsT, trackersT, notificationsT } from "@sneu/db/schema";
 import {
   savedPlansT,
   savedPlanCoursesT,

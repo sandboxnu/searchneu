@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Audit } from "@/lib/graduate/types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Audit, ParsedCourse } from "@/lib/graduate/types";
 import {
   useHasTemplate,
   useSupportedMajors,
@@ -37,7 +37,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CircleQuestionMark } from "lucide-react";
+import { CircleQuestionMark, FileUp } from "lucide-react";
 import {
   createEmptySchedule,
   createScheduleFromTemplate,
@@ -53,6 +53,8 @@ export default function NewPlanModal() {
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
   const [catalogYear, setCatalogYear] = useState(-1);
+  const [uploadedCourses, setUploadedCourses] = useState<ParsedCourse[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   //majors
   const { data: supportedMajorsData, error: majorsError } =
@@ -101,6 +103,62 @@ export default function NewPlanModal() {
     useRecommendedTemplate ? catalogYear : null,
   );
 
+  // handler for PDF upload
+  const handlePdfUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (
+      !file ||
+      (file.type !== "application/pdf" &&
+        !file.name.toLowerCase().endsWith(".pdf"))
+    ) {
+      toast("Please upload a PDF file.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("pdf", file);
+
+      const response = await fetch("/api/audit/utils/parse-pdf", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = "Failed to parse PDF";
+        if (errorText) {
+          try {
+            const parsed = JSON.parse(errorText);
+            if (parsed && typeof parsed === "object" && "error" in parsed) {
+              errorMessage =
+                (parsed as { error?: string }).error || errorMessage;
+            } else {
+              errorMessage = errorText;
+            }
+          } catch {
+            errorMessage = errorText;
+          }
+        }
+        toast(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const courses: ParsedCourse[] = await response.json();
+      setUploadedCourses(courses);
+    } catch (error) {
+      console.error("Error parsing PDF:", error);
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "An unexpected error occurred while parsing the PDF.";
+      toast(message);
+    }
+  };
+
   //helper function - close modal
   const handleClose = () => {
     setIsOpen(false);
@@ -112,6 +170,7 @@ export default function NewPlanModal() {
     setMinors([]);
     setConcentration("");
     setUseRecommendedTemplate(false);
+    setUploadedCourses([]);
   };
 
   const handleNoMajor = () => {
@@ -301,6 +360,28 @@ export default function NewPlanModal() {
                 New Plan
               </DialogTitle>
             </DialogHeader>
+
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handlePdfUpload}
+                  ref={fileInputRef}
+                  className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                />
+                <Button className="border-r1 bg-r1/30 flex items-center gap-2 rounded-4xl border p-2 pr-5 pl-5 font-bold text-[#E63946]">
+                  <FileUp />
+                  Import from UAchieve
+                </Button>
+              </div>
+              {uploadedCourses.length > 0 && (
+                <span className="text-sm text-green-500">
+                  ✓ {uploadedCourses.length} courses
+                </span>
+              )}
+            </div>
+
             {/* outer div */}
             <div className="flex h-full w-full flex-col justify-between gap-4">
               {/* title */}

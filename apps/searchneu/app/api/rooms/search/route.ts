@@ -5,7 +5,7 @@ import * as z from "zod";
 const CourseSearchQuerySchema = z.object({
   term: z.string().length(6),
   query: z.string(),
-  buildings: z.string().toUpperCase().array(),
+  buildings: z.string().array(),
   campuses: z.string().array(),
   minCapacity: z.coerce.number().gte(-1).lt(1000),
   maxCapacity: z.coerce.number().gte(-1).lt(1000)
@@ -14,13 +14,13 @@ const CourseSearchQuerySchema = z.object({
 /**
  * GET /api/rooms/search?term=&q=&build=[]&camp=[]&nci=&xci=
  *
- * searches courses
+ * searches rooms
  *
  * see the catalog `RoomSearchFilters` type for more parameter details
  *
  * @param term         - 6-character Banner term code, e.g. `"202510"`
  * @param q            - search query to use (optional)
- * @param building     - bulding name array
+ * @param building     - building name array
  * @param camp         - campus code array, e.g. `"Boston"` (optional)
  * @param nci          - minimum room capacity. -1 indicates no lower bound
  *                       (optional)
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   const parsed = CourseSearchQuerySchema.safeParse({
     term: req.nextUrl.searchParams.get("term"),
     query: req.nextUrl.searchParams.get("q") ?? "",
-    buildings: req.nextUrl.searchParams.get("build") ?? [],
+    buildings: req.nextUrl.searchParams.getAll("build") ?? [],
     campuses: req.nextUrl.searchParams.getAll("camp") ?? [],
     minCapacity: req.nextUrl.searchParams.get("nci") ?? -1,
     maxCapacity: req.nextUrl.searchParams.get("xci") ?? -1,

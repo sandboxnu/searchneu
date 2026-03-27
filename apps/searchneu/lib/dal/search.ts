@@ -42,7 +42,7 @@ import type { CourseSearchFilters, CourseSearchResult, RoomSearchFilters, RoomSe
  * results are ordered by ParadeDB relevance score descending. When `query` is
  * empty, all courses score equally and ordering is effectively arbitrary
  *
- * @param filters - structured search filters. See `SearchFilters` for field docs
+ * @param filters - structured search filters. See `CourseSearchFilters` for field docs
  * @returns filtered, scored course rows with aggregated section data
  */
 export const getSearchCourses = cache(
@@ -209,7 +209,13 @@ export const getSearchRooms = cache(
       .where(sql.join(sqlChunks, sql.raw(" ")))
       .having(havingChunks.length > 0 ? sql.join(havingChunks, sql.raw(" ")) : undefined)
       .groupBy(
-        roomsT.id
+        roomsT.id,
+        roomsT.code,
+        buildingsT.id,
+        buildingsT.name,
+        campusesT.name,
+        coursesT.name,
+        coursesT.register
       )
       .orderBy(sql`paradedb.score(${roomsT.id}) desc`);
 

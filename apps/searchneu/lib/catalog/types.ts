@@ -282,7 +282,7 @@ export interface RoomSearchResult {
   buildingName: string;
   campus: string;
   capacity: number;
-  courseName: string,
-  courseRegister: string,
-  score: number
+  courseName: string;
+  courseRegister: string;
+  score: number;
 }

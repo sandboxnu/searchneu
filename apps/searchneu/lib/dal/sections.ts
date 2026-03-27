@@ -71,7 +71,7 @@ export const getSectionsByCourseId = cache(
  * @param roomId - the primary key for each room in the database
  */
 export const getSectionsByTermRoomId = cache(
-  async (term : string, roomId: number): Promise<Section[]> => {
+  async (term: string, roomId: number): Promise<Section[]> => {
     const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));
 
     // collapse the flat join result into one Section per section ID

@@ -1,10 +1,10 @@
 # docs
 
-Documentation site for SearchNEU
+documentation site for SearchNEU
 
 ## structure
 
-The majority of this application is auto-generated and should not require changes
+the majority of this application is auto-generated and should not require changes
 except for on-going maintenance.
 
 ```txt
@@ -20,18 +20,18 @@ docs/
 └─ README.md
 ```
 
-The `content/` directory contains the markdown files which are generated into
+the `content/` directory contains the markdown files which are generated into
 the documentation site.
 
 ## quickstart
 
-The easiest way to run the documentation site is through `turbo`:
+the easiest way to run the documentation site is through `turbo`:
 
 ```bash
 turbo run dev --filter=docs
 ```
 
-The `dev` script can be invoked directly as well (not preferred):
+the `dev` script can be invoked directly as well (not preferred):
 
 ```bash
 pnpm dev
@@ -39,7 +39,7 @@ pnpm dev
 
 ## resources
 
-To learn more about Next.js and Fumadocs, take a look at the following
+to learn more about Next.js and Fumadocs, take a look at the following
 resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js

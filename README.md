@@ -12,40 +12,24 @@
 
 SearchNEU is the premier course information platform for Northeastern University.
 
-## project structure
-
-The SearchNEU codebase is organized in a monorepo structure
-
-```txt
-searchneu/
-├─ apps/
-│  ├─ searchneu/    the main application
-│  └─ docs/         documentation site
-├─ packages/
-│  ├─ db/           database schema
-│  ├─ scraper/      scraper scripts and logic
-│  ├─ tsconfig/     combined typescript configuration
-│  └─ notifs/       centralized notifier
-├─ compose.yaml     docker compose spec
-├─ package.json
-├─ turbo.json
-├─ pnpm-lock.yaml
-├─ pnpm-workspace.yaml
-├─ LICENSE
-└─ README.md
-```
-
-The [Turborepo](https://turborepo.com/) build system is used in order to manage
-packages and applications across the monorepo with the [pnpm](https://pnpm.io/)
-package management system.
-
 ## technology
 
-TODO
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=ts,react,nextjs,tailwind,nodejs,pnpm,postgres,docker,vercel" />
+  </a>
+</p>
+
+SearchNEU is broken into packages supporting a main application (`apps/searchneu`).
+the `pnpm` package manager with `turborepo` backs the monorepo structure, with the
+common packages in `packages/` and applications (end consumers of packages) in `apps/`.
+more information about the individual technology choices can be found in the docs.
 
 ## quickstart
 
-View the README files in the desired application for quickstart instructions.
+once the local development environment is setup, run `turbo dev` in the root directory
+to run SearchNEU locally. docs on how to setup local environment can be found
+[on the docs site](https://docs.searchneu.com/).
 
 ## BEATS
 

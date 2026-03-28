@@ -15,6 +15,13 @@
       "when": 1774572468077,
       "tag": "0001_minor_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774660127844,
+      "tag": "0002_cheerful_echo",
+      "breakpoints": true
     }
   ]
 }

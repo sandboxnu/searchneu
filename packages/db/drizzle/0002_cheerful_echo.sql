@@ -1,0 +1,1 @@
+ALTER TABLE "saved_plans" ALTER COLUMN "campus" SET DEFAULT 3;

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, X } from "lucide-react";
 import {
@@ -11,24 +11,19 @@ import {
 } from "@/components/ui/dialog";
 
 type CarouselItem = {
-  carouselImg: string;
+  img: string;
   title: string;
   description: string;
 };
 
 type CarouselProps = {
   items: CarouselItem[];
-  initialIndex: number;
   open: boolean;
   onOpenChange: (val: boolean) => void;
 };
 
-function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
-  const [step, setStep] = useState(initialIndex);
-
-  useEffect(() => {
-    if (!open) setStep(initialIndex);
-  }, [open, initialIndex]);
+function Carousel({ items, open, onOpenChange }: CarouselProps) {
+  const [step, setStep] = useState(0);
 
   const current = items[step];
   const firstWord = current.title.split(" ")[0];
@@ -36,7 +31,9 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
   const isLast = step === items.length - 1;
 
   function handleOpenChange(val: boolean) {
-    if (val) setStep(initialIndex);
+    if (!val) {
+      setTimeout(() => setStep(0), 200);
+    }
     onOpenChange(val);
   }
 
@@ -44,13 +41,13 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="bg-carousel h-[632px] w-[712px] gap-0 rounded-[12px] sm:max-w-[712px]"
+        className="bg-neu1 h-[632px] w-[712px] gap-0 rounded-[12px] sm:max-w-[712px]"
       >
-        <DialogClose className="bg-carousel-gray text-neu8 absolute -right-9 flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
+        <DialogClose className="bg-neu3 text-neu8 absolute -right-9 flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
         <Image
-          src={current.carouselImg}
+          src={current.img}
           width={664}
           height={400}
           alt={current.title}
@@ -60,7 +57,6 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
           <DialogTitle className="text-r5 text-[28px] leading-6 font-semibold">
             {firstWord} <span className="text-neu8">{restOfTitle}</span>
           </DialogTitle>
-
           <DialogDescription className="text-neu7 text-[17px] leading-tight">
             {current.description}
           </DialogDescription>
@@ -76,16 +72,16 @@ function Carousel({ items, initialIndex, open, onOpenChange }: CarouselProps) {
             {step > 0 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="border-carousel-gray bg-carousel-back-background text-carousel-dark-gray absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
+                className="border-neu3 bg-neu2 text-neu6 absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
               >
                 Back
               </button>
             )}
             <button
               onClick={() =>
-                isLast ? onOpenChange(false) : setStep((s) => s + 1)
+                isLast ? handleOpenChange(false) : setStep((s) => s + 1)
               }
-              className="bg-carousel-forward-background/30 text-carousel-red border-carousel-forward-background absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
+              className="bg-r1/30 text-red border-r1 absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
             >
               {isLast ? "Finish" : "Next"} <ArrowRight className="size-4" />
             </button>

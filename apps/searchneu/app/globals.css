@@ -95,12 +95,6 @@
   --scheduler-course-brown-fill: #e9e0d9;
   --scheduler-course-brown-stroke: #e0d3c9;
 
-  --carousel: #f0f0f0;
-  --carousel-forward-background: #fad7da;
-  --carousel-back-background: #f1f2f2;
-  --carousel-red: #e63946;
-  --carousel-gray: #e0e0e0;
-  --carousel-dark-gray: #858585;
   --font-lato: "Lato", sans-serif;
 }
 
@@ -174,13 +168,6 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
-  --color-carousel: var(--carousel);
-  --color-carousel-forward-background: var(--carousel-forward-background);
-  --color-carousel-back-background: var(--carousel-back-background);
-  --color-carousel-red: var(--carousel-red);
-  --color-carousel-gray: var(--carousel-gray);
-  --color-carousel-dark-gray: var(--carousel-dark-gray);
 }
 
 @layer base {

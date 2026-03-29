@@ -3,22 +3,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { Carousel, CarouselItem } from "@/components/ui/carousel";
 
-function HowToCard({
-  img,
-  title,
-  description,
-  carouselItems,
-  carouselIndex,
-}: {
+type HowTo = {
+  id: number;
   img: string;
   title: string;
   description: string;
   carouselItems: CarouselItem[];
-  carouselIndex: number;
-}) {
+};
+
+function HowToCard({ howto }: { howto: HowTo }) {
   const [open, setOpen] = useState(false);
-  const firstWord = title.split(" ")[0];
-  const restOfTitle = title.split(" ").slice(1).join(" ");
+  const firstWord = howto.title.split(" ")[0];
+  const restOfTitle = howto.title.split(" ").slice(1).join(" ");
+
   return (
     <>
       <div
@@ -27,7 +24,7 @@ function HowToCard({
       >
         <div className="group-hover:bg-r1 absolute top-0 h-109 w-109 -translate-y-1/3 rounded-full blur-[80px] group-hover:opacity-60" />
         <Image
-          src={img}
+          src={howto.img}
           width={700}
           height={700}
           alt="how to image"
@@ -38,13 +35,12 @@ function HowToCard({
             {firstWord} <span className="text-neu8">{restOfTitle}</span>
           </h4>
           <p className="card-description text-neu7 pr-3 pl-1 text-sm leading-[16.8px] whitespace-normal">
-            {description}
+            {howto.description}
           </p>
         </div>
       </div>
       <Carousel
-        items={carouselItems}
-        initialIndex={carouselIndex}
+        items={howto.carouselItems}
         open={open}
         onOpenChange={setOpen}
       />
@@ -53,3 +49,4 @@ function HowToCard({
 }
 
 export { HowToCard };
+export type { HowTo };

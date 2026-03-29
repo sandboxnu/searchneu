@@ -5,9 +5,9 @@ import { HowToCard } from "@/components/ui/how-to-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { faqHowToFlag } from "@/lib/flags";
 
-const showHowTo = await faqHowToFlag();
+export default async function Page() {
+  const showHowTo = await faqHowToFlag();
 
-export default function Page() {
   return (
     <div className="bg-neu2 pt-4 pb-6">
       <div className="p-8 px-40">

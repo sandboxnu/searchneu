@@ -138,12 +138,11 @@ export function SchedulerWrapper({
         const planData = (await response.json()) as PlanData;
         setPlanId(planIdNum);
         setPlanName(planData.name);
-        
+
         // Find and set the current term by termId
         if (planData.termId) {
           // Search through the already-loaded terms prop to find matching term
-          const foundTerm = Object.values(terms)
-            .flat() as Term[];
+          const foundTerm = Object.values(terms).flat() as Term[];
           const matchingTerm = foundTerm.find((t) => t.id === planData.termId);
           if (matchingTerm) {
             setCurrentTerm(matchingTerm);

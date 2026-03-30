@@ -9,7 +9,7 @@ import {
 import { CoursesTab } from "./CoursesTab";
 import { FiltersTab } from "./FiltersTab";
 import AddCoursesModal from "../../shared/modal/AddCoursesModal";
-import { GroupedTerms } from "@/lib/catalog/types";
+import { GroupedTerms, Term } from "@/lib/catalog/types";
 
 interface FilterPanelProps {
   filters: ScheduleFilters;
@@ -22,6 +22,7 @@ interface FilterPanelProps {
   lockedCourseIds: Set<number>;
   onLockedCourseIdsChange: (ids: Set<number>) => void;
   planId?: number;
+  currentTerm?: Term | null;
   onSchedulesGenerated?: () => void;
 }
 
@@ -38,6 +39,7 @@ export function FilterPanel({
   lockedCourseIds,
   onLockedCourseIdsChange,
   planId,
+  currentTerm,
   onSchedulesGenerated,
 }: FilterPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>("courses");
@@ -50,7 +52,7 @@ export function FilterPanel({
         open={isModalOpen}
         closeFn={() => setIsModalOpen(false)}
         terms={terms}
-        selectedTerm={null}
+        selectedTerm={currentTerm || null}
         planId={planId}
         callback={onSchedulesGenerated}
       />

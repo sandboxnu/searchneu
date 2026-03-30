@@ -12,7 +12,7 @@ import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { SchedulerView } from "./calendar/SchedulerView";
 import { ScheduleSidebar } from "./right-sidebar/ScheduleSidebar";
 import { FilterPanel } from "./left-sidebar/FilterPanel";
-import { GroupedTerms, Campus, Nupath } from "@/lib/catalog/types";
+import { GroupedTerms, Campus, Nupath, Term } from "@/lib/catalog/types";
 import {
   PlanData,
   PlanCourse,
@@ -44,6 +44,7 @@ export function SchedulerWrapper({
   // Store the plan ID from when we save the plan initially
   const [planId, setPlanId] = useState<number | null>(null);
   const [planName, setPlanName] = useState<string>("Plan");
+  const [currentTerm, setCurrentTerm] = useState<Term>(terms.neu[0]);
   const searchParams = useSearchParams();
   const planIdFromUrl = searchParams.get("planId");
 
@@ -137,6 +138,17 @@ export function SchedulerWrapper({
         const planData = (await response.json()) as PlanData;
         setPlanId(planIdNum);
         setPlanName(planData.name);
+        
+        // Find and set the current term by termId
+        if (planData.termId) {
+          // Search through the already-loaded terms prop to find matching term
+          const foundTerm = Object.values(terms)
+            .flat() as Term[];
+          const matchingTerm = foundTerm.find((t) => t.id === planData.termId);
+          if (matchingTerm) {
+            setCurrentTerm(matchingTerm);
+          }
+        }
 
         // Extract locked courses and hidden sections from saved plan
         const lockedCourseIds: Set<number> = new Set();
@@ -623,6 +635,7 @@ export function SchedulerWrapper({
           lockedCourseIds={filters.lockedCourseIds ?? new Set()}
           onLockedCourseIdsChange={handleLockedCourseIdsChange}
           planId={planIdFromUrl ? parseInt(planIdFromUrl) : undefined}
+          currentTerm={currentTerm}
           onSchedulesGenerated={onSchedulesGenerated}
         />
       </div>

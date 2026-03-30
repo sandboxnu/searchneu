@@ -55,6 +55,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const term = await getTerm(body.term);
+    if (!term) {
+      return Response.json({ error: "term not found" }, { status: 400 });
+    }
+
     // Auto-generate name if not provided
     let planName = body.name;
     if (!planName) {
@@ -64,15 +69,10 @@ export async function POST(req: NextRequest) {
         .where(
           and(
             eq(savedPlansT.userId, user.id),
-            eq(savedPlansT.termId, parseInt(body.term, 10)),
+            eq(savedPlansT.termId, term.id),
           ),
         );
       planName = `Plan ${existingPlans.length + 1}`;
-    }
-
-    const term = await getTerm(body.term);
-    if (!term) {
-      return Response.json({ error: "term not found" }, { status: 400 });
     }
 
     // Create the saved plan

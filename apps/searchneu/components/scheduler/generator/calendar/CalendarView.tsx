@@ -29,6 +29,7 @@ export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
   const [popupState, setPopupState] = useState<{
     section: SectionWithCourse;
     rect: DOMRect;
+    openedAt: number;
   } | null>(null);
 
   const scheduledCourses = schedule.filter(
@@ -75,7 +76,7 @@ export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
       {/* Calendar Grid */}
       <div className="relative">
         <div
-          className="grid grid-cols-[65px_repeat(7,1fr)] pt-3"
+          className="grid grid-cols-[65px_repeat(7,1fr)] pt-3 pr-2"
           style={{ height: `${minCalendarHeight + 12}px` }}
         >
           {/* Time Column */}
@@ -147,6 +148,7 @@ export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
                           setPopupState({
                             section,
                             rect: e.currentTarget.getBoundingClientRect(),
+                            openedAt: Date.now(),
                           });
                         }}
                       >
@@ -204,6 +206,7 @@ export function CalendarView({ schedule, colorMap }: CalendarViewProps) {
       </div>
       {popupState && (
         <CourseInfoPopup
+          key={popupState.openedAt}
           section={popupState.section}
           color={getSectionColor(popupState.section, colorMap)}
           anchorRect={popupState.rect}

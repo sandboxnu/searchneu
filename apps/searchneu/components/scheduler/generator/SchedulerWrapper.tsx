@@ -648,7 +648,7 @@ export function SchedulerWrapper({
           allSchedules={schedules}
           filteredSchedules={filteredSchedules}
           favoritedKeys={favoritedSchedules}
-          selectedScheduleKey={selectedScheduleKey}
+          selectedScheduleKey={currentScheduleKey}
           colorMap={colorMap}
           onSelectSchedule={setSelectedScheduleKey}
           onToggleFavorite={handleToggleFavorite}

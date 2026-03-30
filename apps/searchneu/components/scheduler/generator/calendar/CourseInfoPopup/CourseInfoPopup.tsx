@@ -14,6 +14,7 @@ interface CourseInfoPopupProps {
   color: CourseColor | undefined;
   anchorRect: DOMRect;
   onClose: () => void;
+  positionBelow?: boolean;
 }
 
 const DAY_ABBREVS = ["S", "M", "T", "W", "R", "F", "S"];
@@ -25,14 +26,23 @@ export function CourseInfoPopup({
   color,
   anchorRect,
   onClose,
+  positionBelow = false,
 }: CourseInfoPopupProps) {
   const popupNodeRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isClosing, setIsClosing] = useState(false);
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
-    setTimeout(() => onClose(), ANIM_DURATION);
+    closeTimerRef.current = setTimeout(() => onClose(), ANIM_DURATION);
   }, [onClose]);
+
+  // Cancel pending close timeout on unmount so it doesn't clear a new popup
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   // Ref callback: position the popup once it mounts, using its measured height
   const popupRef = useCallback(
@@ -42,23 +52,36 @@ export function CourseInfoPopup({
 
       const popupRect = node.getBoundingClientRect();
 
-      let left = anchorRect.right + 8;
-      if (left + POPUP_WIDTH > window.innerWidth - 16) {
-        left = anchorRect.left - POPUP_WIDTH - 8;
+      let left: number;
+      let top: number;
+
+      if (positionBelow) {
+        left = anchorRect.left;
+        top = anchorRect.bottom + 8;
+        if (left + POPUP_WIDTH > window.innerWidth - 16) {
+          left = window.innerWidth - POPUP_WIDTH - 16;
+        }
+        if (top + popupRect.height > window.innerHeight - 16) {
+          top = anchorRect.top - popupRect.height - 8;
+        }
+      } else {
+        left = anchorRect.right + 8;
+        if (left + POPUP_WIDTH > window.innerWidth - 16) {
+          left = anchorRect.left - POPUP_WIDTH - 8;
+        }
+        top = anchorRect.top;
+        if (top + popupRect.height > window.innerHeight - 16) {
+          top = window.innerHeight - popupRect.height - 16;
+        }
       }
       if (left < 8) left = 8;
-
-      let top = anchorRect.top;
-      if (top + popupRect.height > window.innerHeight - 16) {
-        top = window.innerHeight - popupRect.height - 16;
-      }
       if (top < 8) top = 8;
 
       node.style.left = `${left}px`;
       node.style.top = `${top}px`;
       node.style.visibility = "visible";
     },
-    [anchorRect],
+    [anchorRect, positionBelow],
   );
 
   // Close on click outside or Escape

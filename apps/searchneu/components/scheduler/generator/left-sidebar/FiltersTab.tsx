@@ -138,7 +138,7 @@ export function FiltersTab({
               }}
               className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
-              Clear all
+              Clear
             </button>
           )}
         </div>
@@ -215,7 +215,7 @@ export function FiltersTab({
               onClick={() => updateFilter("specificDaysFree", undefined)}
               className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
-              Clear all
+              Clear
             </button>
           )}
         </div>

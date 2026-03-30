@@ -47,7 +47,7 @@ interface AddCoursesModalProps {
 export default function AddCoursesModal(props: AddCoursesModalProps) {
   const router = useRouter();
 
-  const [numCourses, setNumCourses] = useState<number>(1);
+  const [numCourses, setNumCourses] = useState<number>(4);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroupData[]

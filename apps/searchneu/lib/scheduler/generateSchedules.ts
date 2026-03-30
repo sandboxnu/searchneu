@@ -232,8 +232,14 @@ const addOptionalCourseGroups = (
 
   // Get optional group indices in order
   const optionalGroupIndices = Array.from(
-    new Set(Array.from(optionalGroupsByCourse.keys()).map(cid => groupIndexByCourseId.get(cid)))
-  ).filter((id): id is number => id !== undefined).sort((a, b) => a - b);
+    new Set(
+      Array.from(optionalGroupsByCourse.keys()).map((cid) =>
+        groupIndexByCourseId.get(cid),
+      ),
+    ),
+  )
+    .filter((id): id is number => id !== undefined)
+    .sort((a, b) => a - b);
 
   // Helper to count how many groups are in a schedule
   const countGroupsInSchedule = (schedule: SectionWithCourse[]): number => {
@@ -286,12 +292,14 @@ const addOptionalCourseGroups = (
 
     // Choice B: Try adding all sections of all courses in this group (must all fit together)
     const groupSectionsBysCourse = coursesInGroup.map(
-      courseId => optionalGroupsByCourse.get(courseId) || []
+      (courseId) => optionalGroupsByCourse.get(courseId) || [],
     );
 
     // Generate combinations for this group
-    const groupCombinations = generateCombinationsOptimized(groupSectionsBysCourse);
-    
+    const groupCombinations = generateCombinationsOptimized(
+      groupSectionsBysCourse,
+    );
+
     for (const groupCombination of groupCombinations) {
       let hasConflict = false;
 
@@ -324,7 +332,7 @@ const addOptionalCourseGroups = (
 
 /**
  * Main schedule generator.
- * 
+ *
  * - Corequisite courses are automatically grouped together
  * - If one course in a group is selected, all must be selected
  * - Each group counts as 1 towards numCourses
@@ -359,11 +367,13 @@ export const generateSchedules = async (
   // For locked courses: they must all be present, so organize by group
   const lockedGroupsToUse: SectionWithCourse[][] = [];
   for (const group of coreqGroups) {
-    const lockedCoursesInGroup = group.filter(cid => lockedGroupsByCourse.has(cid));
+    const lockedCoursesInGroup = group.filter((cid) =>
+      lockedGroupsByCourse.has(cid),
+    );
     if (lockedCoursesInGroup.length > 0) {
       // All locked courses in this group must be satisfied
       lockedGroupsToUse.push(
-        ...lockedCoursesInGroup.map(cid => lockedGroupsByCourse.get(cid)!)
+        ...lockedCoursesInGroup.map((cid) => lockedGroupsByCourse.get(cid)!),
       );
     }
   }
@@ -372,7 +382,12 @@ export const generateSchedules = async (
 
   // Edge case: No locked courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    return addOptionalCourseGroups([], optionalGroupsByCourse, coreqGroups, numCourses);
+    return addOptionalCourseGroups(
+      [],
+      optionalGroupsByCourse,
+      coreqGroups,
+      numCourses,
+    );
   }
 
   // If no optional courses, filter by group count
@@ -383,12 +398,12 @@ export const generateSchedules = async (
     // Count groups in each schedule
     return validLockedSchedules.filter((schedule) => {
       const groupCount = new Set(
-        schedule.map(s => {
+        schedule.map((s) => {
           for (const group of coreqGroups) {
             if (group.includes(s.courseId)) return coreqGroups.indexOf(group);
           }
           return -1;
-        })
+        }),
       ).size;
       return groupCount === numCourses;
     });
@@ -398,12 +413,12 @@ export const generateSchedules = async (
   for (const lockedSchedule of validLockedSchedules) {
     // Count locked groups
     const lockedGroupCount = new Set(
-      lockedSchedule.map(s => {
+      lockedSchedule.map((s) => {
         for (const group of coreqGroups) {
           if (group.includes(s.courseId)) return coreqGroups.indexOf(group);
         }
         return -1;
-      })
+      }),
     ).size;
 
     // If already too many groups, skip

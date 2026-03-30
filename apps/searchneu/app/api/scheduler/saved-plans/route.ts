@@ -67,10 +67,7 @@ export async function POST(req: NextRequest) {
         .select()
         .from(savedPlansT)
         .where(
-          and(
-            eq(savedPlansT.userId, user.id),
-            eq(savedPlansT.termId, term.id),
-          ),
+          and(eq(savedPlansT.userId, user.id), eq(savedPlansT.termId, term.id)),
         );
       planName = `Plan ${existingPlans.length + 1}`;
     }

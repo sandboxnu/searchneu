@@ -9,14 +9,18 @@ const isCondition = (item: RequisiteItem): item is Condition => {
   return "type" in item && "items" in item;
 };
 
-const isCourse = (item: RequisiteItem): item is { subject: string; courseNumber: string } => {
+const isCourse = (
+  item: RequisiteItem,
+): item is { subject: string; courseNumber: string } => {
   return "subject" in item && "courseNumber" in item;
 };
 
 /**
  * Recursively extract all course references from a Requisite tree
  */
-function extractCoursesFromRequisite(requisite: Requisite): Array<{ subject: string; courseNumber: string }> {
+function extractCoursesFromRequisite(
+  requisite: Requisite,
+): Array<{ subject: string; courseNumber: string }> {
   const courses: Array<{ subject: string; courseNumber: string }> = [];
 
   if (Object.keys(requisite).length === 0) {
@@ -34,7 +38,7 @@ function extractCoursesFromRequisite(requisite: Requisite): Array<{ subject: str
 
   // Cast to RequisiteItem since we've already checked it's not empty
   const item = requisite as RequisiteItem;
-  
+
   if (isCondition(item)) {
     walk(item);
   } else if (isCourse(item)) {
@@ -87,9 +91,7 @@ async function resolveCourseReferences(
  * Get all corequisite course IDs for a given course
  * Returns an array of coreq course IDs in the same term
  */
-export async function getCoreqCourseIds(
-  courseId: number,
-): Promise<number[]> {
+export async function getCoreqCourseIds(courseId: number): Promise<number[]> {
   const course = await db
     .select({
       coreqs: coursesT.coreqs,
@@ -113,16 +115,16 @@ export async function getCoreqCourseIds(
 /**
  * Build corequisite groups from a list of course IDs
  * Only groups together coreqs that are BOTH in the input list.
- * 
+ *
  * Constraint logic:
  * - If only 1 out of 2 coreqs is passed in → that 1 can stand alone
  * - If 2 out of 2 coreqs are passed in → both must be in the schedule
  * - If all N coreqs are passed in → all N must be in the schedule
- * 
+ *
  * @example
  * If courseIds = [101, 102, 103] where 101 has coreqs [102], 102 has coreqs [101]
  * Returns [[101, 102], [103]]
- * 
+ *
  * If courseIds = [101, 104] where 101 has coreqs [102], 102 has coreqs [101]
  * Returns [[101], [104]] (102 wasn't passed in, so 101 stands alone)
  */
@@ -135,7 +137,7 @@ export async function buildCoreqGroups(
   for (const courseId of courseIds) {
     const allCoreqs = await getCoreqCourseIds(courseId);
     // Filter to only include coreqs that are also in the input list
-    const relevantCoreqs = allCoreqs.filter(c => courseIds.includes(c));
+    const relevantCoreqs = allCoreqs.filter((c) => courseIds.includes(c));
     coreqMap.set(courseId, new Set(relevantCoreqs));
   }
 

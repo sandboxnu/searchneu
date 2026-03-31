@@ -36,6 +36,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import { CircleQuestionMark } from "lucide-react";
 import {
@@ -44,10 +45,21 @@ import {
   generateDefaultPlanTitle,
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
-export default function NewPlanModal() {
-  const router = useRouter();
+type PlanInfo = {
+  id: number;
+  name: string;
+  majors?: string[] | null;
+  minors?: string[] | null;
+  catalogYear?: number | null;
+  concentration?: string | null;
+};
+
+interface NewPlanModalProps {
+  onPlanCreated?: (plan: PlanInfo) => void;
+}
+
+export default function NewPlanModal({ onPlanCreated }: NewPlanModalProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
@@ -65,6 +77,7 @@ export default function NewPlanModal() {
       .sort()
       .map((year) => ({ label: String(year), value: year }));
   }, [supportedMajorsData]);
+
   const isLoadingMajors = !supportedMajorsData && !majorsError;
   const [majorOptions, setMajorOptions] = useState<{ majorName: string }[]>([]);
   const [majors, setMajors] = useState<string[]>([]);
@@ -220,7 +233,7 @@ export default function NewPlanModal() {
 
     setIsSubmitting(true);
     try {
-      let schedule: Audit;
+      let schedule: Audit<null>;
       // NOTE: for now, template plans are based on the first selected major */
       if (useRecommendedTemplate && template && majors[0]) {
         try {
@@ -266,9 +279,10 @@ export default function NewPlanModal() {
 
       const createdPlan = await response.json();
 
+      //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
-      router.push(`/graduate/${createdPlan.id}`);
-
+      //DENNIS TODO: redirect!!!!!!!!!
+      onPlanCreated?.(createdPlan);
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);
@@ -423,23 +437,25 @@ export default function NewPlanModal() {
                       ? () => setIsNoMajorSelected(!isNoMajorSelected)
                       : handleNoMajor
                   }
-                  className="border-input accent-red h-3 w-3 scale-150 rounded"
+                  className="border-input h-3 w-3 scale-150 rounded accent-red-500"
                   id="no-major-check"
                 />
                 <Label
                   className="text-neu6 text-sm font-bold"
                   htmlFor="no-major-check"
                 >{`Can't find my major?`}</Label>
-                <Tooltip delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2">
-                      <CircleQuestionMark size="18" color="#858585" />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{noMajorHelperLabel}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2">
+                        <CircleQuestionMark size="18" color="#858585" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{noMajorHelperLabel}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Concentration */}
@@ -548,13 +564,13 @@ export default function NewPlanModal() {
               )}
 
               {/* modal footer */}
-              <div className="border-neu25 flex flex-col justify-center gap-4 border-t py-4">
+              <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
                 {isTemplateLoading && <p>fetching template...</p>}
                 {hasTemplate &&
                   !isNoMajorSelected &&
                   majors.length > 0 &&
                   !isTemplateLoading && (
-                    <div className="bg-neu2 mt-2 gap-8 rounded-xl border p-4">
+                    <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
                       <div className="display: mb-2 inline-flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -563,7 +579,7 @@ export default function NewPlanModal() {
                           onChange={() =>
                             setUseRecommendedTemplate(!useRecommendedTemplate)
                           }
-                          className="accent-red h-3 w-3 scale-150 rounded"
+                          className="h-3 w-3 scale-150 rounded accent-red-500"
                           disabled={
                             majors.length === 0 &&
                             !catalogYear &&

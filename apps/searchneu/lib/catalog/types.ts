@@ -260,27 +260,29 @@ export interface CourseSearchResult {
  *
  * `minCapacity` and `maxCapacity` are filtered via the maximum section capacity.
  */
-export interface RoomSearchFilters {
-  term: string;
+export interface BuildingSearchFilters {
   query: string;
-  buildings: string[];
   campuses: string[];
-  minCapacity: number;
-  maxCapacity: number;
+  minTime: number; // Change times type later
+  maxTime: number;
+  days: string[];
+  minCap: number;
+  maxCap: number;
 }
 
 /**
  * A single row in the room search results. Note that a secondary query
  * is required to determine room schedule, time ranges, and days of the week.
+ * NOTE: potentially return schedules here?
  */
-export interface RoomSearchResult {
-  id: number;
-  code: string;
+export interface BuildingSearchResult {
   buildingId: number;
   buildingName: string;
   campus: string;
-  capacity: number;
-  courseName: string;
-  courseRegister: string;
   score: number;
+}
+
+export interface AvailableRooms {
+  numAvail: number;
+  until: number;
 }

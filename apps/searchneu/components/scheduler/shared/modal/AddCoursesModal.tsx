@@ -1,6 +1,6 @@
 "use client";
 
-import { Course, GroupedTerms, SearchResult, Term } from "@/lib/catalog/types";
+import { Course, GroupedTerms, CourseSearchResult, Term } from "@/lib/catalog/types";
 import {
   extractCoreqReqs,
   fetchCoreqCourses,
@@ -217,7 +217,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
     syncInitialCourses();
   }, [activeTerm, initialExistingPlan]);
 
-  const handleSelectCourse = async (course: SearchResult) => {
+  const handleSelectCourse = async (course: CourseSearchResult) => {
     if (
       isAlreadySelected(selectedCourseGroups, course) ||
       selectedCourseGroups.length >= 10

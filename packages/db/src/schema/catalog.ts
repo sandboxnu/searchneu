@@ -166,7 +166,23 @@ export const buildingsT = pgTable("buildings", {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
-});
+},
+(table) => [
+    index("building_search_idx")
+      .using(
+        "bm25",
+        table.id,
+        table.name,
+        table.code,
+      )
+      .with({
+        key_field: "id",
+        text_fields: `'{
+          "name": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}},
+          "code": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}}
+        }'`,
+      }),
+  ],);
 
 export const roomsT = pgTable(
   "rooms",

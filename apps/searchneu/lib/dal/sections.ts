@@ -6,6 +6,7 @@ import {
   roomsT,
   buildingsT,
   campusesT,
+  termsT,
 } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { cache } from "react";
@@ -38,6 +39,7 @@ const initQuery = db
       })
       .from(sectionsT)
       .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
+      .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
       .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
       .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
       .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
@@ -72,7 +74,8 @@ export const getSectionsByCourseId = cache(
  */
 export const getSectionsByTermRoomId = cache(
   async (term: string, roomId: number): Promise<Section[]> => {
-    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(sectionsT.term, term)));
+
+    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(termsT.term, term)));
 
     // collapse the flat join result into one Section per section ID
     return cleanRows(res);

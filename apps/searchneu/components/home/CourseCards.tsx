@@ -5,7 +5,8 @@ import { getTerms } from "@/lib/dal/terms";
 
 export async function CourseCards() {
   const terms = await getTerms();
-  const term = terms.neu[0].term;
+  const term = terms.neu[0].term + terms.neu[0].part;
+
   const courses = await getSearchCourses({
     term,
     query: "",

@@ -366,7 +366,9 @@ export async function deleteAuditPlan(id: number, userId: string) {
 }
 
 // Reads the pdf and returns it as a string to be parsed for courses
-export async function parsePdfCourses(fileBuffer: Buffer): Promise<ParsedCourse[]> {
+export async function parsePdfCourses(
+  fileBuffer: Buffer,
+): Promise<ParsedCourse[]> {
   try {
     const parser = await pdf(fileBuffer);
 

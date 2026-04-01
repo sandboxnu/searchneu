@@ -225,15 +225,13 @@ export interface SearchFilters {
  * a single row in the course search results. unlike `Course`, this type
  * aggregates section-level data (seat counts, campus list, class types) so the
  * search UI can display availability without a second query per course
- *
- * `subject` here is the code string (e.g. `"CS"`), not the integer FK
  */
 export interface SearchResult {
   id: number;
   name: string;
   courseNumber: string;
-  /** subject code string, e.g. `"CS"` */
-  subject: string;
+  /** Human-readable subject code, e.g. `"CS"` */
+  subjectCode: string;
   maxCredits: string;
   minCredits: string;
   nupaths: string[];

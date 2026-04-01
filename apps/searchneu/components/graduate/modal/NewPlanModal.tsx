@@ -105,22 +105,21 @@ export default function NewPlanModal() {
 
   // handler for PDF upload
   const handlePdfUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (
-       !file ||
-       (file.type !== "application/pdf" &&
-         !file.name.toLowerCase().endsWith(".pdf"))
-     ) {
+      !file ||
+      (file.type !== "application/pdf" &&
+        !file.name.toLowerCase().endsWith(".pdf"))
+    ) {
       toast("Please upload a PDF file.");
       return;
     }
 
     try {
-
       const formData = new FormData();
-      formData.append("pdf", file); 
+      formData.append("pdf", file);
 
       const response = await fetch("/api/audit/utils/parse-pdf", {
         method: "POST",
@@ -130,22 +129,22 @@ export default function NewPlanModal() {
 
       if (!response.ok) {
         const errorText = await response.text();
-         let errorMessage = "Failed to parse PDF";
-         if (errorText) {
-           try {
-             const parsed = JSON.parse(errorText);
-             if (parsed && typeof parsed === "object" && "error" in parsed) {
-               errorMessage =
-                 (parsed as { error?: string }).error || errorMessage;
-             } else {
-               errorMessage = errorText;
-             }
-           } catch {
-             errorMessage = errorText;
-           }
-         }
-         toast(errorMessage);
-         throw new Error(errorMessage);
+        let errorMessage = "Failed to parse PDF";
+        if (errorText) {
+          try {
+            const parsed = JSON.parse(errorText);
+            if (parsed && typeof parsed === "object" && "error" in parsed) {
+              errorMessage =
+                (parsed as { error?: string }).error || errorMessage;
+            } else {
+              errorMessage = errorText;
+            }
+          } catch {
+            errorMessage = errorText;
+          }
+        }
+        toast(errorMessage);
+        throw new Error(errorMessage);
       }
 
       const courses: ParsedCourse[] = await response.json();
@@ -153,10 +152,10 @@ export default function NewPlanModal() {
     } catch (error) {
       console.error("Error parsing PDF:", error);
       const message =
-         error instanceof Error && error.message
-           ? error.message
-           : "An unexpected error occurred while parsing the PDF.";
-       toast(message);
+        error instanceof Error && error.message
+          ? error.message
+          : "An unexpected error occurred while parsing the PDF.";
+      toast(message);
     }
   };
 
@@ -371,7 +370,7 @@ export default function NewPlanModal() {
                   ref={fileInputRef}
                   className="absolute inset-0 z-10 cursor-pointer opacity-0"
                 />
-                <Button className="flex items-center gap-2 border-r1 bg-r1/30 rounded-4xl border text-[#E63946] font-bold p-2 pl-5 pr-5">
+                <Button className="border-r1 bg-r1/30 flex items-center gap-2 rounded-4xl border p-2 pr-5 pl-5 font-bold text-[#E63946]">
                   <FileUp />
                   Import from UAchieve
                 </Button>

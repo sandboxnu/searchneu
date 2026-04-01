@@ -7,9 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ComponentProps } from "react";
 import type { GroupedTerms, Term } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
+import { ComponentProps } from "react";
 
 export function TermsDropdown({
   terms,
@@ -64,7 +64,7 @@ export function TermsDropdown({
 
   const updateTerm = (v: string) => {
     const tas = terms[selectedCollege].find((t) => String(t.id) === v);
-    return tas;
+    if (tas) onTermChange(tas);
   };
 
   return (

@@ -20,6 +20,10 @@ const tools = defineCommand({
     "check-config": import("./tools/check-config").then((m) => m.default),
     "sync-db": import("./tools/sync-db").then((m) => m.default),
     "update-cache": import("./tools/update-cache").then((m) => m.default),
+    "backup-db": import("./tools/backup-db").then((m) => m.default),
+    "migrate-trackers": import("./tools/migrate-trackers").then(
+      (m) => m.default,
+    ),
   },
 });
 

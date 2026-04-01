@@ -1,17 +1,17 @@
-import "server-only";
+import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
 import {
-  db,
-  coursesT,
-  sectionsT,
-  courseNupathJoinT,
-  nupathsT,
-  subjectsT,
   campusesT,
+  courseNupathJoinT,
+  coursesT,
+  db,
+  nupathsT,
+  sectionsT,
+  subjectsT,
   termsT,
 } from "@/lib/db";
-import { type SQL, sql, eq, countDistinct, and } from "drizzle-orm";
+import { and, countDistinct, eq, type SQL, sql } from "drizzle-orm";
 import { cache } from "react";
-import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
+import "server-only";
 
 // > It's data access - complex data access, but data access. - Copilot
 
@@ -95,16 +95,11 @@ export const getSearchCourses = cache(
     }
 
     // Combine term filter with BM25 and other predicates
-    const hasBm25 = bm25Chunks.length > 0;
-    const conditions: SQL[] = [sql`${coursesT.termId} = ${termId}`];
-
-    if (hasBm25) {
-      conditions.push(sql.join(bm25Chunks, sql.raw(" and ")));
-    }
+    bm25Chunks.push(sql`${coursesT.termId} @@@ ${termId}`);
 
     // NOTE: honors is applied as a WHERE predicate because sectionsT is joined.
     if (honors) {
-      conditions.push(sql`${sectionsT.honors} = true`);
+      bm25Chunks.push(sql`${sectionsT.honors} = true`);
     }
 
     const rows = await db
@@ -112,7 +107,7 @@ export const getSearchCourses = cache(
         id: coursesT.id,
         name: coursesT.name,
         courseNumber: coursesT.courseNumber,
-        subject: subjectsT.code,
+        subjectCode: subjectsT.code,
         maxCredits: coursesT.maxCredits,
         minCredits: coursesT.minCredits,
         nupaths: sql<
@@ -129,9 +124,7 @@ export const getSearchCourses = cache(
         campus: sql<string[]>`array_agg(distinct ${campusesT.name})`,
         classType: sql<string[]>`array_agg(distinct ${sectionsT.classType})`,
         honors: sql<boolean>`bool_or(${sectionsT.honors})`,
-        score: hasBm25
-          ? sql<number>`paradedb.score(${coursesT.id})`
-          : sql<number>`0`,
+        score: sql<number>`paradedb.score(${coursesT.id})`,
       })
       .from(coursesT)
       .innerJoin(sectionsT, eq(coursesT.id, sectionsT.courseId))
@@ -139,7 +132,7 @@ export const getSearchCourses = cache(
       .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
-      .where(sql.join(conditions, sql.raw(" AND ")))
+      .where(sql.join(bm25Chunks, sql.raw(" AND ")))
       .groupBy(
         coursesT.id,
         coursesT.name,
@@ -148,23 +141,18 @@ export const getSearchCourses = cache(
         coursesT.minCredits,
         subjectsT.code,
       )
-      .orderBy(
-        hasBm25
-          ? sql`paradedb.score(${coursesT.id}) desc`
-          : sql`${coursesT.name} asc`,
-      );
+      .orderBy(sql`paradedb.score(${coursesT.id}) desc`);
 
     // post-filter: apply the dimensions that are not covered by the BM25 index.
     // HACK: subject filtering is also post-filter until the BM25 index is updated
     // to support subject code filtering directly
     return rows.filter(
       (r) =>
-        (subjects.length === 0 || subjects.includes(r.subject)) &&
+        (subjects.length === 0 || subjects.includes(r.subjectCode)) &&
         (nupaths.length === 0 || nupaths.every((n) => r.nupaths.includes(n))) &&
         (campuses.length === 0 || r.campus.some((c) => campuses.includes(c))) &&
         (classTypes.length === 0 ||
-          r.classType.some((t) => classTypes.includes(t))) &&
-        (!honors || r.honors),
+          r.classType.some((t) => classTypes.includes(t))),
     );
   },
 );

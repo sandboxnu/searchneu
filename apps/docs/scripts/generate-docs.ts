@@ -1,5 +1,5 @@
 import { generateFiles } from "fumadocs-openapi";
-import { bannerOpenapi, searchneuOpenapi } from "@/lib/openapi";
+import { authOpenapi, bannerOpenapi, searchneuOpenapi } from "@/lib/openapi";
 
 void generateFiles({
   input: bannerOpenapi,
@@ -17,10 +17,10 @@ void generateFiles({
   includeDescription: true,
 });
 
-// void generateFiles({
-//   input: authOpenapi,
-//   output: "./content/auth",
-//   per: "operation",
-//   groupBy: "none",
-//   includeDescription: true,
-// });
+void generateFiles({
+  input: authOpenapi,
+  output: "./content/auth",
+  per: "operation",
+  groupBy: "none",
+  includeDescription: true,
+});

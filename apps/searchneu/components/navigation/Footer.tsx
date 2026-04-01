@@ -121,7 +121,7 @@ export function Footer() {
           <LinkColumn
             name="Development"
             labels={[
-              ["Documentation", "/docs"],
+              ["Documentation", "https://docs.searchneu.com"],
               ["Github", "https://github.com/sandboxnu/searchneu"],
             ]}
           />

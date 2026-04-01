@@ -7,6 +7,7 @@
   "pages": [
     "---Introduction---",
     "index",
+    "initial-setup",
     "---Workflows---",
     "git",
     "---Codebase---",

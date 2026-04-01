@@ -11,5 +11,5 @@ export const searchneuOpenapi = createOpenAPI({
 });
 
 export const authOpenapi = createOpenAPI({
-  input: ["http://localhost:3000/api/auth/open-api/generate-schema"],
+  input: ["./content/auth/betterauth-openapi.yaml"],
 });

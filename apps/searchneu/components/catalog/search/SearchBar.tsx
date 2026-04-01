@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { track } from "@vercel/analytics";
 
-export function SearchBar({ placeholder }: {placeholder: string}) {
+export function SearchBar({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { course } = useParams();

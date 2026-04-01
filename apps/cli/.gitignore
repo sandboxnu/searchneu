@@ -1,0 +1,9 @@
+# Node
+dist
+node_modules
+.turbo
+*.tsbuildinfo
+
+# CLI specific
+cache/
+backups/

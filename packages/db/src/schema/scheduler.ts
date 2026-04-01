@@ -6,7 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
-  varchar,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { user as usersT } from "./auth";
@@ -19,11 +19,9 @@ export const generatedSchedulesT = pgTable(
     userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term, { onDelete: "cascade" }),
-
-    name: text().notNull().default("Schedule"),
+      .references(() => termsT.id, { onDelete: "cascade" }),
 
     createdAt: timestamp().notNull().defaultNow(),
     updatedAt: timestamp()
@@ -34,7 +32,7 @@ export const generatedSchedulesT = pgTable(
   },
   (table) => [
     index("gs_user_idx").on(table.userId),
-    index("gs_term_idx").on(table.term),
+    index("gs_term_idx").on(table.termId),
   ],
 );
 
@@ -61,17 +59,18 @@ export const savedPlansT = pgTable(
     userId: text()
       .notNull()
       .references(() => usersT.id, { onDelete: "cascade" }),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term, { onDelete: "cascade" }),
+      .references(() => termsT.id, { onDelete: "cascade" }),
     name: text().notNull(),
+    numCourses: integer().default(4),
     startTime: integer(),
     endTime: integer(),
     freeDays: text().array().notNull().default([]),
-    includeHonorsSections: boolean().notNull().default(false),
+    includeHonorsSections: boolean().notNull().default(true),
     includeRemoteSections: boolean().notNull().default(true),
     hideFilledSections: boolean().notNull().default(false),
-    campuses: integer(),
+    campus: integer().notNull().default(3),
     nupaths: integer().array().notNull().default([]),
 
     createdAt: timestamp().notNull().defaultNow(),
@@ -82,7 +81,7 @@ export const savedPlansT = pgTable(
   },
   (table) => [
     index("sp_user_idx").on(table.userId),
-    index("sp_term_idx").on(table.term),
+    index("sp_term_idx").on(table.termId),
   ],
 );
 
@@ -102,7 +101,10 @@ export const savedPlanCoursesT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("spc_plan_idx").on(table.planId)],
+  (table) => [
+    index("spc_plan_idx").on(table.planId),
+    uniqueIndex("spc_plan_course_unique").on(table.planId, table.courseId),
+  ],
 );
 
 export const savedPlanSectionsT = pgTable(
@@ -123,7 +125,13 @@ export const savedPlanSectionsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("sps_saved_plan_course_idx").on(table.savedPlanCourseId)],
+  (table) => [
+    index("sps_saved_plan_course_idx").on(table.savedPlanCourseId),
+    uniqueIndex("sps_course_section_unique").on(
+      table.savedPlanCourseId,
+      table.sectionId,
+    ),
+  ],
 );
 
 export const favoritedSchedulesT = pgTable(

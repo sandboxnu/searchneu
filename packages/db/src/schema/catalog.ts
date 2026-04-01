@@ -12,13 +12,30 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+export const termsT = pgTable(
+  "terms",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    term: varchar({ length: 6 }).notNull(),
+    partOfTerm: varchar({ length: 3 }).notNull().default("1"),
+    name: text().notNull(),
+    activeUntil: timestamp().notNull().defaultNow(),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique("term_part_of_term").on(table.term, table.partOfTerm)],
+);
+
 export const coursesT = pgTable(
   "courses",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term),
+      .references(() => termsT.id),
     name: text().notNull(),
     subject: integer()
       .notNull()
@@ -37,7 +54,7 @@ export const coursesT = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
-    unique("term_course").on(table.term, table.subject, table.courseNumber),
+    unique("term_course").on(table.termId, table.subject, table.courseNumber),
     index("courses_search_idx")
       .using(
         "bm25",
@@ -45,7 +62,7 @@ export const coursesT = pgTable(
         table.name,
         table.register,
         table.courseNumber,
-        table.term,
+        table.termId,
       )
       .with({
         key_field: "id",
@@ -53,8 +70,7 @@ export const coursesT = pgTable(
         text_fields: `'{
           "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
           "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
-          "courseNumber": {"fast": true},
-          "term": {"fast": true}
+          "courseNumber": {"fast": true}
         }'`,
       }),
   ],
@@ -64,9 +80,9 @@ export const sectionsT = pgTable(
   "sections",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term),
+      .references(() => termsT.id),
     courseId: integer()
       .notNull()
       .references(() => coursesT.id),
@@ -88,21 +104,10 @@ export const sectionsT = pgTable(
   },
   (table) => [
     index("crn_idx").on(table.crn),
-    index("term_idx").on(table.term),
-    unique("term_crn").on(table.term, table.crn),
+    index("term_idx").on(table.termId),
+    unique("term_crn").on(table.termId, table.crn),
   ],
 );
-
-export const termsT = pgTable("terms", {
-  term: varchar({ length: 6 }).primaryKey(),
-  name: text().notNull(),
-  activeUntil: timestamp().notNull().defaultNow(),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp()
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
 
 export const subjectsT = pgTable("subjects", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -149,23 +154,19 @@ export const courseNupathJoinT = pgTable(
   ],
 );
 
-export const buildingsT = pgTable(
-  "buildings",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().notNull().unique(),
-    code: text().notNull().unique(),
-    campus: integer()
-      .notNull()
-      .references(() => campusesT.id),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-  (table) => [unique("buildings_campus").on(table.campus, table.name)],
-);
+export const buildingsT = pgTable("buildings", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull().unique(),
+  code: text().notNull().unique(),
+  campus: integer()
+    .notNull()
+    .references(() => campusesT.id),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
 
 export const roomsT = pgTable(
   "rooms",
@@ -181,19 +182,16 @@ export const roomsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    unique("building_room").on(table.buildingId, table.code),
-    index("building_idx").on(table.buildingId),
-  ],
+  (table) => [index("building_idx").on(table.buildingId)],
 );
 
 export const meetingTimesT = pgTable(
   "meeting_times",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    term: varchar({ length: 6 })
+    termId: integer()
       .notNull()
-      .references(() => termsT.term),
+      .references(() => termsT.id),
     sectionId: integer()
       .notNull()
       .references(() => sectionsT.id, { onDelete: "cascade" }),
@@ -211,7 +209,7 @@ export const meetingTimesT = pgTable(
     index("section_meeting_idx").on(table.sectionId),
     index("room_meeting_idx").on(table.roomId),
     unique("meeting_time").on(
-      table.term,
+      table.termId,
       table.sectionId,
       table.days,
       table.startTime,

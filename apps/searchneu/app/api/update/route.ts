@@ -7,8 +7,7 @@ import {
   user as usersT,
   subjectsT,
 } from "@/lib/db";
-import { eq, gt } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { sql, and, eq, gt, isNull } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
@@ -30,7 +29,8 @@ export async function GET(req: NextRequest) {
     .from(termsT)
     .where(gt(termsT.activeUntil, new Date()));
 
-  const terms = dbterms.map((t) => t.term);
+  // deduplicate term codes (a term code may have multiple partOfTerm rows)
+  const terms = [...new Set(dbterms.map((t) => t.term))];
   console.log({ terms }, "terms to update");
 
   // for each term perform an update
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
       .select({
         id: trackersT.id,
         sectionCrn: sectionsT.crn,
-        term: sectionsT.term,
+        term: termsT.term,
         uid: trackersT.userId,
         method: trackersT.notificationMethod,
         count: trackersT.messageCount,
@@ -62,10 +62,11 @@ export async function GET(req: NextRequest) {
       })
       .from(trackersT)
       .innerJoin(sectionsT, eq(sectionsT.id, trackersT.sectionId))
+      .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
       .innerJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(usersT, eq(usersT.id, trackersT.userId))
-      .where(eq(sectionsT.term, term));
+      .where(and(eq(termsT.term, term), isNull(trackersT.deletedAt)));
 
     const seatCrns = newSeats.map((s) => s.courseReferenceNumber);
     const seatNotifs = trackers.filter((t) => seatCrns.includes(t.sectionCrn));
@@ -108,10 +109,13 @@ export async function GET(req: NextRequest) {
       )
       .join(", ");
 
+    // Subquery to resolve term code → termId(s) for raw SQL updates
+    const termIdSubquery = sql`(SELECT ${termsT.id} FROM ${termsT} WHERE ${termsT.term} = ${term})`;
+
     if (newSeatValues.length > 0) {
       await db.execute(sql`
         UPDATE ${sectionsT}
-        SET 
+        SET
           "seatRemaining" = v.seat_remaining
         FROM (VALUES ${sql.raw(newSeatValues)}) AS v(crn, seat_remaining)
         WHERE ${sectionsT.crn} = v.crn;
@@ -124,7 +128,7 @@ export async function GET(req: NextRequest) {
         SET
           "waitlistRemaining" = v.waitlist_remaining
         FROM (VALUES ${sql.raw(waitlistValues)}) AS v(crn, waitlist_remaining)
-        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.term} = ${term};
+        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.termId} IN ${termIdSubquery};
     `);
     }
 
@@ -135,7 +139,7 @@ export async function GET(req: NextRequest) {
         SET
           "seatCapacity" = v.seat_capacity
         FROM (VALUES ${sql.raw(newSeatsCapacity)}) AS v(crn, seat_capacity)
-        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.term} = ${term};
+        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.termId} IN ${termIdSubquery};
     `);
     }
 
@@ -145,77 +149,15 @@ export async function GET(req: NextRequest) {
         SET
           "waitlistCapacity" = v.waitlist_capacity
         FROM (VALUES ${sql.raw(newWaitlistCapacity)}) AS v(crn, waitlist_capacity)
-        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.term} = ${term};
+        WHERE ${sectionsT.crn} = v.crn AND ${sectionsT.termId} IN ${termIdSubquery};
     `);
     }
 
     if (newSections.length > 0) {
-      // const sections = await db
-      //   .insert(sectionsT)
-      //   .values(
-      //     newSections.map((s, i) => ({
-      //       term: term,
-      //       courseId: newSectionCourseKeys[i],
-      //       crn: s.crn,
-      //       faculty: s.faculty,
-      //       seatCapacity: s.seatCapacity,
-      //       seatRemaining: s.seatRemaining,
-      //       waitlistCapacity: s.waitlistCapacity,
-      //       waitlistRemaining: s.waitlistRemaining,
-      //       classType: s.classType,
-      //       honors: s.honors,
-      //       campus: s.campus,
-      //       meetingTimes: s.meetingTimes,
-      //     })),
-      //   )
-      //   .returning();
-      //
-      // const meetingTimesData = [];
-      //
-      // for (let i = 0; i < newSections.length; i++) {
-      //   const section = sections[i];
-      //   const meetingTimes = newSections[i].meetingTimes;
-      //   for (const mt of meetingTimes) {
-      //     let roomId = null;
-      //
-      //     if (mt.building && mt.room) {
-      //       const room = await db
-      //         .select({
-      //           roomId: roomsT.id,
-      //         })
-      //         .from(roomsT)
-      //         .innerJoin(buildingsT, eq(buildingsT.id, roomsT.buildingId))
-      //         .where(
-      //           and(
-      //             eq(roomsT.number, mt.room),
-      //             eq(buildingsT.name, mt.building),
-      //           ),
-      //         )
-      //         .limit(1);
-      //       roomId = room[0].roomId;
-      //     }
-      //     if (mt.startTime && mt.endTime) {
-      //       meetingTimesData.push({
-      //         term: term,
-      //         sectionId: section.id,
-      //         roomId: roomId,
-      //         days: mt.days,
-      //         startTime: mt.startTime,
-      //         endTime: mt.endTime,
-      //       });
-      //     }
-      //   }
-      // }
-      //
-      // if (meetingTimesData.length > 0) {
-      //   await db
-      //     .insert(meetingTimesT)
-      //     .values(meetingTimesData)
-      //     .onConflictDoNothing();
-      // }
+      // TODO: insert new sections discovered during update
     }
 
-    // set the term last updated
+    // set the term last updated (all partOfTerm entries for this code)
     await db
       .update(termsT)
       .set({ updatedAt: new Date() })

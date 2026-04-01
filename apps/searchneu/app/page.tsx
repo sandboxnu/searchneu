@@ -1,12 +1,11 @@
-import { Suspense } from "react";
-import { NeuSearchskiePattern } from "@/components/home/NeuSearchskiePattern";
-import { Header } from "@/components/navigation/Header";
 import { CourseCards } from "@/components/home/CourseCards";
-import type { Metadata } from "next";
+import { NeuSearchskiePattern } from "@/components/home/NeuSearchskiePattern";
 import { Search } from "@/components/home/Search";
 import { Footer } from "@/components/navigation/Footer";
+import { Header } from "@/components/navigation/Header";
 import ClickSpark from "@/components/ui/click-spark";
-import { SearchBar } from "@/components/catalog/search/SearchBar";
+import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "SearchNEU",

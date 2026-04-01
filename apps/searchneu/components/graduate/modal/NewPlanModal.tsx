@@ -13,7 +13,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,9 +43,24 @@ import {
   generateDefaultPlanTitle,
 } from "@/lib/graduate/auditPlanUtils";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-export default function NewPlanModal() {
-  const [isOpen, setIsOpen] = useState(true);
+interface NewPlanModalProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function NewPlanModal({
+  open: controlledOpen,
+  onOpenChange,
+}: NewPlanModalProps = {}) {
+  const router = useRouter();
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(true);
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+  const setIsOpen = isControlled
+    ? (v: boolean) => onOpenChange?.(v)
+    : setUncontrolledOpen;
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
@@ -218,7 +232,7 @@ export default function NewPlanModal() {
 
     setIsSubmitting(true);
     try {
-      let schedule: Audit<null>;
+      let schedule: Audit;
       // NOTE: for now, template plans are based on the first selected major */
       if (useRecommendedTemplate && template && majors[0]) {
         try {
@@ -264,9 +278,9 @@ export default function NewPlanModal() {
 
       const createdPlan = await response.json();
 
-      //setSelectedPlanId(createdPlan.id);
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
-      //DENNIS TODO: redirect!!!!!!!!!
+      router.push(`/graduate/${createdPlan.id}`);
+
       handleClose();
     } catch (error) {
       toast(`Plan creation failed, ${error}`);
@@ -279,17 +293,16 @@ export default function NewPlanModal() {
 
   return (
     <>
-      <Button
-        className="bg-accent hover:bg-accent/80 w-full"
-        onClick={() => setIsOpen(true)}
-      >
-        open sesame{" "}
-      </Button>
+      {!isControlled && (
+        <Button
+          className="bg-accent hover:bg-accent/80 w-full"
+          onClick={() => setIsOpen(true)}
+        >
+          open sesame{" "}
+        </Button>
+      )}
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <button className="hidden" />
-          </DialogTrigger>
           <DialogContent
             className="max-w-2xl"
             aria-label="New Plan Modal content"
@@ -421,7 +434,7 @@ export default function NewPlanModal() {
                       ? () => setIsNoMajorSelected(!isNoMajorSelected)
                       : handleNoMajor
                   }
-                  className="border-input h-3 w-3 scale-150 rounded accent-red-500"
+                  className="border-input accent-red h-3 w-3 scale-150 rounded"
                   id="no-major-check"
                 />
                 <Label
@@ -546,13 +559,13 @@ export default function NewPlanModal() {
               )}
 
               {/* modal footer */}
-              <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
+              <div className="border-neu25 flex flex-col justify-center gap-4 border-t py-4">
                 {isTemplateLoading && <p>fetching template...</p>}
                 {hasTemplate &&
                   !isNoMajorSelected &&
                   majors.length > 0 &&
                   !isTemplateLoading && (
-                    <div className="mt-2 gap-8 rounded-xl border bg-[#F8F9F9] p-4">
+                    <div className="bg-neu2 mt-2 gap-8 rounded-xl border p-4">
                       <div className="display: mb-2 inline-flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -561,7 +574,7 @@ export default function NewPlanModal() {
                           onChange={() =>
                             setUseRecommendedTemplate(!useRecommendedTemplate)
                           }
-                          className="h-3 w-3 scale-150 rounded accent-red-500"
+                          className="accent-red h-3 w-3 scale-150 rounded"
                           disabled={
                             majors.length === 0 &&
                             !catalogYear &&

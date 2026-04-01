@@ -24,7 +24,7 @@ const cachedCourse = unstable_cache(getCourseByRegister, ["banner.course"], {
   tags: ["banner.course"],
 });
 
-async function getTrackedSections() {
+export async function getTrackedSections() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -180,7 +180,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.prereqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={true}
             />
           </div>
@@ -190,7 +190,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.coreqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={false}
             />
           </div>
@@ -200,7 +200,7 @@ export default async function Page(props: {
             </h3>
             <RequisiteBlock
               req={course.postreqs as Requisite}
-              termId={termId}
+              term={termId}
               prereqMode={false}
             />
           </div>

@@ -1,11 +1,12 @@
-import { getSearchCourses } from "@/lib/dal/search";
-import { getTerms } from "@/lib/dal/terms";
 import { ResultCard } from "@/components/catalog/search/ResultCard";
 import LogoLoop from "@/components/ui/logo-loop";
+import { getSearchCourses } from "@/lib/dal/search";
+import { getTerms } from "@/lib/dal/terms";
 
 export async function CourseCards() {
   const terms = await getTerms();
-  const term = terms.neu[0].term;
+  const term = terms.neu[0].term + terms.neu[0].part;
+
   const courses = await getSearchCourses({
     term,
     query: "",
@@ -36,7 +37,7 @@ export async function CourseCards() {
       </div>
     ),
     alt: s.name,
-    href: `/catalog/${term}/${s.subject}%20${s.courseNumber}`,
+    href: `/catalog/${term}/${s.subjectCode}%20${s.courseNumber}`,
   }));
 
   const cardsB = courses.slice(cardBStarting, cardBStarting + 20).map((s) => ({
@@ -49,7 +50,7 @@ export async function CourseCards() {
       </div>
     ),
     alt: s.name,
-    href: `/catalog/${term}/${s.subject}%20${s.courseNumber}`,
+    href: `/catalog/${term}/${s.subjectCode}%20${s.courseNumber}`,
   }));
 
   return (

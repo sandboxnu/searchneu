@@ -1,13 +1,20 @@
 import "server-only";
-import { db, coursesT, courseNupathJoinT, nupathsT, subjectsT } from "@/lib/db";
-import { sql, and, eq, desc } from "drizzle-orm";
+import {
+  db,
+  coursesT,
+  courseNupathJoinT,
+  nupathsT,
+  subjectsT,
+  termsT,
+} from "@/lib/db";
+import { sql, and, or, eq, desc } from "drizzle-orm";
 import { cache } from "react";
 import type { Course } from "@/lib/catalog/types";
 
 /**
- * base query shared by all course lookups. joins subjects and nupath data to
- * populate these fields and allow filtering. always groups by all non-aggregate
- * columns
+ * base query shared by all course lookups. joins subjects, nupath data, and
+ * terms to populate these fields and allow filtering. always groups by all
+ * non-aggregate columns
  *
  * callers should append a `.where(...)` clause to narrow the result set
  */
@@ -34,6 +41,7 @@ const courseSelectQuery = db
     >`array_remove(array_agg(distinct ${nupathsT.name}), null)`,
   })
   .from(coursesT)
+  .innerJoin(termsT, eq(coursesT.termId, termsT.id))
   .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
   .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
   .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
@@ -69,7 +77,8 @@ export const getCourseByRegister = cache(
   ): Promise<Course | undefined> => {
     const result = await courseSelectQuery.where(
       and(
-        eq(coursesT.term, term),
+        eq(termsT.term, term.substring(0, 6)),
+        eq(termsT.partOfTerm, term.substring(6)),
         eq(subjectsT.code, subjectCode),
         eq(coursesT.courseNumber, courseNumber),
       ),
@@ -109,8 +118,44 @@ export const getLatestCourseByRegister = cache(
           eq(coursesT.courseNumber, courseNumber),
         ),
       )
-      .orderBy(desc(coursesT.term));
+      .orderBy(desc(termsT.term));
 
     return result[0];
   },
 );
+
+/**
+ * Batch-fetches the latest course name for each (subjectCode, courseNumber) pair
+ * in a single query. Returns a map of "SUBJECT-COURSENUMBER" → course name.
+ */
+export async function getCourseNamesBatch(
+  keys: Set<string>,
+): Promise<Record<string, string>> {
+  if (keys.size === 0) return {};
+
+  const pairs = [...keys].map((k) => {
+    const [subject, classId] = k.split("-");
+    return { subject, classId };
+  });
+
+  const conditions = pairs.map((p) =>
+    and(eq(subjectsT.code, p.subject), eq(coursesT.courseNumber, p.classId)),
+  );
+
+  const rows = await db
+    .selectDistinctOn([subjectsT.code, coursesT.courseNumber], {
+      name: coursesT.name,
+      subjectCode: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+    })
+    .from(coursesT)
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .where(or(...conditions))
+    .orderBy(subjectsT.code, coursesT.courseNumber, desc(coursesT.termId));
+
+  const nameMap: Record<string, string> = {};
+  for (const row of rows) {
+    nameMap[`${row.subjectCode}-${row.courseNumber}`] = row.name;
+  }
+  return nameMap;
+}

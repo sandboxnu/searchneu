@@ -1,12 +1,13 @@
+import { verifyUser } from "@/lib/dal/audits";
 import {
   db,
   savedPlansT,
   savedPlanCoursesT,
   savedPlanSectionsT,
 } from "@/lib/db";
-import { verifyUser } from "@/lib/controllers/auditPlans";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { NextRequest } from "next/server";
+import { getTerm } from "@/lib/dal/terms";
 
 interface SavePlanSection {
   sectionId: number;
@@ -22,13 +23,14 @@ interface SavePlanCourse {
 interface SavePlanRequest {
   term: string;
   name: string;
-  startTime?: number | null;
-  endTime?: number | null;
+  numCourses?: number;
+  startTime?: number | undefined;
+  endTime?: number | undefined;
   freeDays?: string[];
   includeHonorsSections?: boolean;
   includeRemoteSections?: boolean;
   hideFilledSections?: boolean;
-  campuses?: number | null;
+  campus?: number | undefined;
   nupaths?: number[];
   courses?: SavePlanCourse[];
 }
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Validate required fields
-  if (!body.term) {
+  if (!body.term || Number.isNaN(parseInt(body.term, 10))) {
     return Response.json({ error: "term is required" }, { status: 400 });
   }
 
@@ -59,8 +61,18 @@ export async function POST(req: NextRequest) {
       const existingPlans = await db
         .select()
         .from(savedPlansT)
-        .where(eq(savedPlansT.userId, user.id));
+        .where(
+          and(
+            eq(savedPlansT.userId, user.id),
+            eq(savedPlansT.termId, parseInt(body.term, 10)),
+          ),
+        );
       planName = `Plan ${existingPlans.length + 1}`;
+    }
+
+    const term = await getTerm(body.term);
+    if (!term) {
+      return Response.json({ error: "term not found" }, { status: 400 });
     }
 
     // Create the saved plan
@@ -68,16 +80,17 @@ export async function POST(req: NextRequest) {
       .insert(savedPlansT)
       .values({
         userId: user.id,
-        term: body.term,
+        termId: term.id,
         name: planName,
-        startTime: body.startTime ?? null,
-        endTime: body.endTime ?? null,
-        freeDays: body.freeDays ?? [],
-        includeHonorsSections: body.includeHonorsSections ?? false,
-        includeRemoteSections: body.includeRemoteSections ?? true,
-        hideFilledSections: body.hideFilledSections ?? false,
-        campuses: body.campuses ?? null,
-        nupaths: body.nupaths ?? [],
+        startTime: body.startTime,
+        endTime: body.endTime,
+        freeDays: body.freeDays,
+        includeHonorsSections: body.includeHonorsSections,
+        includeRemoteSections: body.includeRemoteSections,
+        hideFilledSections: body.hideFilledSections,
+        campus: body.campus,
+        nupaths: body.nupaths,
+        numCourses: body.numCourses,
       })
       .returning();
 
@@ -90,7 +103,7 @@ export async function POST(req: NextRequest) {
           .values({
             planId: savedPlan.id,
             courseId: course.courseId,
-            isLocked: course.isLocked ?? false,
+            isLocked: course.isLocked,
           })
           .returning();
 
@@ -100,7 +113,7 @@ export async function POST(req: NextRequest) {
             await db.insert(savedPlanSectionsT).values({
               savedPlanCourseId: savedPlanCourse.id,
               sectionId: section.sectionId,
-              isHidden: section.isHidden ?? false,
+              isHidden: section.isHidden,
             });
           }
         }

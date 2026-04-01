@@ -7,7 +7,7 @@ import {
   Template,
 } from "./types";
 
-export function createScheduleFromTemplate(template: Template): Audit<null> {
+export function createScheduleFromTemplate(template: Template): Audit {
   const schedule = createEmptySchedule();
 
   try {
@@ -53,7 +53,7 @@ export function createScheduleFromTemplate(template: Template): Audit<null> {
         // Map the term key to the schedule term
         let termObj: {
           status: StatusEnum;
-          classes: AuditCourse<null>[];
+          classes: AuditCourse[];
         };
 
         switch (termKey.toLowerCase()) {
@@ -91,7 +91,7 @@ export function createScheduleFromTemplate(template: Template): Audit<null> {
             const classId = courseParts[2];
 
             // Create a course object
-            const course: AuditCourse<null> = {
+            const course: AuditCourse = {
               name: courseStr,
               subject,
               classId,
@@ -121,8 +121,8 @@ export function createScheduleFromTemplate(template: Template): Audit<null> {
 }
 
 //helper function - create empty schedule with 4 academic years and no classes
-export function createEmptySchedule(): Audit<null> {
-  const years: AuditYear<null>[] = [];
+export function createEmptySchedule(): Audit {
+  const years: AuditYear[] = [];
 
   for (let year = 1; year <= 4; year++) {
     years.push(createEmptyYear(year));
@@ -134,7 +134,7 @@ export function createEmptySchedule(): Audit<null> {
 }
 
 //helper function - create empty year w terms initialized
-export function createEmptyYear(year: number): AuditYear<null> {
+export function createEmptyYear(year: number): AuditYear {
   return {
     year,
     fall: {

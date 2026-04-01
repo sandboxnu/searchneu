@@ -4,7 +4,7 @@
 
 import { eq } from "drizzle-orm";
 import type { createDbClient } from "@sneu/db/neon";
-import { coursesT, sectionsT, subjectsT } from "@sneu/db/schema";
+import { coursesT, sectionsT, subjectsT, termsT } from "@sneu/db/schema";
 import { scrapeSections } from "../generate/steps/sections";
 import { parseMeetingTimes } from "../generate/marshall";
 import type { BannerSection } from "../schemas/banner/section";
@@ -75,7 +75,8 @@ export async function updateTerm(
     .from(sectionsT)
     .leftJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
     .leftJoin(subjectsT, eq(subjectsT.id, coursesT.subject))
-    .where(eq(sectionsT.term, term));
+    .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
+    .where(eq(termsT.term, term));
 
   const sectionsWithNewSeats: z.infer<typeof BannerSection>[] = [];
   const sectionsWithUpdatedSeats: z.infer<typeof BannerSection>[] = [];

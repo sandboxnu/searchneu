@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import * as z from "zod";
 
 const CourseSearchQuerySchema = z.object({
-  term: z.string().length(6),
+  term: z.string().min(6).max(9),
   query: z.string(),
   subjects: z.string().toUpperCase().array(),
   minCourseLevel: z.coerce.number().gte(-1).lt(10),

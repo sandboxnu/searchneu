@@ -36,8 +36,9 @@ export function NotificationsCourseCard({
   }
 
   function handleViewAllSections() {
+    const [courseSubject, courseNumber] = course.courseRegister.split(/(\d+)/);
     router.push(
-      `/catalog/${term?.term}${term?.part}/${course.courseRegister.slice(0, 4)}%20${course.courseRegister.slice(4, 8)}`,
+      `/catalog/${term?.term}${term?.part}/${courseSubject}%20${courseNumber}`,
     );
   }
 

@@ -41,9 +41,9 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="bg-neu1 h-[632px] w-[712px] gap-0 rounded-[12px] sm:max-w-[712px]"
+        className="bg-neu1 h-158 gap-0 rounded-xl sm:max-w-178"
       >
-        <DialogClose className="bg-neu3 text-neu8 absolute -right-9 flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
+        <DialogClose className="bg-neu3 text-neu8 absolute -right-9 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
         <Image
@@ -51,13 +51,13 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
           width={664}
           height={400}
           alt={current.title}
-          className="bg-neu3 w-full rounded-[8px] object-cover"
+          className="bg-neu3 w-full rounded-lg object-cover"
         />
         <div className="flex flex-col gap-3">
-          <DialogTitle className="text-r5 text-[28px] leading-6 font-semibold">
+          <DialogTitle className="text-r5 text-3xl leading-6 font-semibold">
             {firstWord} <span className="text-neu8">{restOfTitle}</span>
           </DialogTitle>
-          <DialogDescription className="text-neu7 text-[17px] leading-tight">
+          <DialogDescription className="text-neu7 text-lg leading-tight">
             {current.description}
           </DialogDescription>
           <div className="relative mt-5 flex items-center justify-center">
@@ -72,7 +72,7 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
             {step > 0 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="border-neu3 bg-neu2 text-neu6 absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
+                className="border-neu3 bg-neu2 text-neu6 absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold"
               >
                 Back
               </button>
@@ -81,7 +81,7 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
               onClick={() =>
                 isLast ? handleOpenChange(false) : setStep((s) => s + 1)
               }
-              className="bg-r1/30 text-red border-r1 absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-[20px] border-[1px] px-4 py-2 text-sm font-bold"
+              className="bg-r1/30 text-red border-r1 absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold"
             >
               {isLast ? "Finish" : "Next"} <ArrowRight className="size-4" />
             </button>

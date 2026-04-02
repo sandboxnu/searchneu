@@ -2,6 +2,15 @@ import { Requisite } from "@sneu/scraper/types";
 import type { auditPlansT } from "../db";
 export type AuditPlanRow = typeof auditPlansT.$inferSelect;
 
+export type WhiteboardStatus = "not_started" | "in_progress" | "completed";
+
+export interface WhiteboardEntry {
+  courses: string[];
+  status: WhiteboardStatus;
+}
+
+export type Whiteboard = Record<string, WhiteboardEntry>;
+
 export interface HydratedAuditPlan {
   id: number;
   name: string;
@@ -11,6 +20,7 @@ export interface HydratedAuditPlan {
   minors: Minor[];
   concentration: string | null;
   catalogYear: number;
+  whiteboard: Whiteboard;
   createdAt: Date;
   updatedAt: Date;
 }

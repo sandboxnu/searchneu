@@ -76,7 +76,7 @@ export function FilterMultiSelect({
               onClick={clearAll}
               className="cursor-pointer text-xs text-[#2180E8] hover:text-[#2180E8]/80"
             >
-              Clear all
+              Clear
             </button>
           )}
 

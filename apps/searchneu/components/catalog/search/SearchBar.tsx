@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { track } from "@vercel/analytics";
 
-export function SearchBar() {
+export function SearchBar({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { course } = useParams();
@@ -92,7 +92,7 @@ export function SearchBar() {
       <Input
         ref={searchInputRef}
         className="bg-neu1 focus:border-neu3 visible border pl-10 md:hidden"
-        placeholder="Search by course or phrase..."
+        placeholder={placeholder}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
@@ -100,7 +100,7 @@ export function SearchBar() {
       <Input
         ref={searchInputRef}
         className="bg-neu1 focus:border-neu3 hidden border pl-10 md:block"
-        placeholder="Search by course or phrase..."
+        placeholder={placeholder}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);

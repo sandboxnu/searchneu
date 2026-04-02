@@ -23,6 +23,15 @@ export const UpdateAuditPlanDto = z.strictObject({
   minors: z.string().array().nullable().optional(),
   concentration: z.string().optional(),
   catalogYear: z.number().int().min(MIN_YEAR).max(MAX_YEAR).optional(),
+  whiteboard: z
+    .record(
+      z.string(),
+      z.object({
+        courses: z.string().array(),
+        status: z.enum(["not_started", "in_progress", "completed"]),
+      }),
+    )
+    .optional(),
 });
 
 export type CreateAuditPlanInput = z.infer<typeof CreateAuditPlanDto>;

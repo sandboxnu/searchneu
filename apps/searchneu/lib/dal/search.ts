@@ -9,7 +9,8 @@ import {
   campusesT,
   roomsT,
   buildingsT,
-  meetingTimesT
+  meetingTimesT,
+  termsT
 } from "@/lib/db";
 import { type SQL, sql, eq, and, countDistinct, inArray } from "drizzle-orm";
 import { cache } from "react";

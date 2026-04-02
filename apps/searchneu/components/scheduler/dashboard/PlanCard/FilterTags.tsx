@@ -58,7 +58,7 @@ export function FilterTags({ plan, campuses, nupaths }: FilterTagsProps) {
   filterTags.push(
     <div
       key="location"
-      className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+      className="border-neu3 text-neu8 inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1 text-xs font-medium"
     >
       <MapPin className="h-3 w-3" />
       {`${campusName}${remote}`}
@@ -78,7 +78,7 @@ export function FilterTags({ plan, campuses, nupaths }: FilterTagsProps) {
       filterTags.push(
         <div
           key="time"
-          className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+          className="border-neu3 text-neu8 inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1 text-xs font-medium"
         >
           <Clock className="h-3 w-3" />
           {timeParts.join(", ")}
@@ -93,7 +93,7 @@ export function FilterTags({ plan, campuses, nupaths }: FilterTagsProps) {
     filterTags.push(
       <div
         key="free-days"
-        className="bg-neu2 text-neu8 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+        className="border-neu3 text-neu8 inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1 text-xs font-medium"
       >
         {freeDaysText}
       </div>,
@@ -109,7 +109,7 @@ export function FilterTags({ plan, campuses, nupaths }: FilterTagsProps) {
       filterTags.push(
         <div
           key="nupaths"
-          className="bg-neu2 text-neu8 gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium"
+          className="border-neu3 text-neu8 gap-1.5 rounded-full border bg-white px-3 py-1 text-xs font-medium"
         >
           <span className="text-neu7 mb-3 text-xs font-bold">NU Paths </span>{" "}
           {nupathDisplays.join(", ")}

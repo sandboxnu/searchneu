@@ -156,7 +156,7 @@ export const MiniCalendar = memo(function MiniCalendar({
 
       {/* Footer with plan label and star */}
       <div className="mt-1.5 flex items-center justify-between">
-        <span className="text-neu7 text-xs font-semibold">
+        <span className="text-neu7 text-[14px] font-semibold">
           Schedule {scheduleIndex + 1}
         </span>
         <button
@@ -167,8 +167,8 @@ export const MiniCalendar = memo(function MiniCalendar({
           className="cursor-pointer p-0.5"
         >
           <svg
-            width="12"
-            height="12"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill={isFavorited ? "#E63946" : "none"}
             stroke={isFavorited ? "#E63946" : "#858585"}

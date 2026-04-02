@@ -7,8 +7,7 @@ import {
   user as usersT,
   subjectsT,
 } from "@/lib/db";
-import { eq, gt } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { sql, and, eq, gt, isNull } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { updateTerm } from "@sneu/scraper/update";
 import { sendNotifications } from "@/lib/updater/notifs";
@@ -67,7 +66,7 @@ export async function GET(req: NextRequest) {
       .innerJoin(coursesT, eq(coursesT.id, sectionsT.courseId))
       .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
       .innerJoin(usersT, eq(usersT.id, trackersT.userId))
-      .where(eq(termsT.term, term));
+      .where(and(eq(termsT.term, term), isNull(trackersT.deletedAt)));
 
     const seatCrns = newSeats.map((s) => s.courseReferenceNumber);
     const seatNotifs = trackers.filter((t) => seatCrns.includes(t.sectionCrn));

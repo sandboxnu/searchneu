@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil } from "lucide-react";
+import { ArrowUpRight, Pencil } from "lucide-react";
+import { useFeedback } from "@/components/feedback/FeedbackContext";
 import {
   type ScheduleFilters,
   type SectionWithCourse,
@@ -40,6 +41,7 @@ export function FilterPanel({
   planId,
   onSchedulesGenerated,
 }: FilterPanelProps) {
+  const { openFeedback } = useFeedback();
   const [activeTab, setActiveTab] = useState<Tab>("courses");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -108,6 +110,21 @@ export function FilterPanel({
             Edit Courses
           </span>
         </button>
+      )}
+
+      {/* Suggest a new filter - filters tab only */}
+      {activeTab === "filters" && (
+        <p className="shrink-0 text-[10px]">
+          <span className="text-neu5">Did we miss something?</span>{" "}
+          <button
+            type="button"
+            onClick={() => openFeedback()}
+            className="text-neu7 cursor-pointer font-bold hover:underline"
+          >
+            Suggest a new filter
+            <ArrowUpRight className="mb-0.5 inline h-3 w-3" />
+          </button>
+        </p>
       )}
     </div>
   );

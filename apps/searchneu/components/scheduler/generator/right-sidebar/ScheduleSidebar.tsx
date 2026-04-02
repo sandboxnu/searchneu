@@ -69,7 +69,7 @@ export function ScheduleSidebar({
     },
     {
       key: "filters",
-      label: "FILTERS",
+      label: "FILTERED",
       count: filteredSchedules.length,
     },
     {

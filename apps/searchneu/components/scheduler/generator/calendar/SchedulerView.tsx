@@ -65,6 +65,7 @@ export function SchedulerView({
   const [asyncPopupState, setAsyncPopupState] = useState<{
     section: SectionWithCourse;
     rect: DOMRect;
+    openedAt: number;
   } | null>(null);
 
   const hasSchedules = schedules.length > 0 && currentSchedule;
@@ -133,6 +134,7 @@ export function SchedulerView({
                         setAsyncPopupState({
                           section,
                           rect: e.currentTarget.getBoundingClientRect(),
+                          openedAt: Date.now(),
                         });
                       }}
                     >
@@ -172,10 +174,12 @@ export function SchedulerView({
       )}
       {asyncPopupState && (
         <CourseInfoPopup
+          key={asyncPopupState.openedAt}
           section={asyncPopupState.section}
           color={getSectionColor(asyncPopupState.section, colorMap)}
           anchorRect={asyncPopupState.rect}
           onClose={() => setAsyncPopupState(null)}
+          positionBelow
         />
       )}
     </div>

@@ -76,7 +76,7 @@ export default function NotFound() {
           <div className="bg-r1 absolute inset-0 opacity-0 group-hover:opacity-50" />
           <div className="bg-neu1 group-hover:bg-neu group-hover:text-neu1 absolute bottom-2 left-2 z-10 flex items-center gap-2 rounded-full px-4 py-2 text-[18px] font-semibold">
             <BellIcon className="size-4" />
-            Trackers
+            Notifications
           </div>
         </Link>
         <div className="flex min-w-72 flex-1 flex-col gap-2">

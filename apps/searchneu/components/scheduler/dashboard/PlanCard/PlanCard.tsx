@@ -62,14 +62,14 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={handleEdit}
-            className="border-neu3 text-neu8 hover:bg-neu1 hover:text-neu9 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-neu3 bg-neu25 text-neu8 hover:bg-neu3 hover:text-neu9 flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Pencil className="h-4 w-4" />
             Edit Plan
           </button>
           <button
             onClick={handleDelete}
-            className="border-neu3 text-neu8 hover:border-red hover:bg-red/5 hover:text-red flex items-center rounded-full border px-3 py-1.5 transition-colors"
+            className="border-neu3 bg-neu25 text-neu8 hover:bg-red/5 hover:text-red flex cursor-pointer items-center rounded-full border px-3 py-1.5 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -101,11 +101,11 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
               return (
                 <div
                   key={course.courseId}
-                  className="text-neu8 border-neu3 relative flex items-center gap-2 overflow-hidden rounded-lg border bg-white px-3 py-2.5 text-sm shadow-sm"
+                  className="text-neu8 relative flex items-center gap-2 overflow-hidden rounded-lg bg-[#F8F9F9] px-3 py-2.5 text-sm"
                 >
                   {/* Thin vertical color bar on left border */}
                   <div
-                    className="absolute top-0 left-0 h-full w-1"
+                    className="absolute top-0 left-0 h-full w-2"
                     style={{ backgroundColor: color.accent }}
                   />
                   <span className="text-base font-bold">
@@ -174,7 +174,8 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
               return (
                 <div
                   key={schedule.id}
-                  className="border-neu3 relative flex min-w-50 shrink-0 flex-col rounded-lg border bg-white p-3 shadow-sm"
+                  onClick={handleEdit}
+                  className="border-neu3 relative flex min-w-50 shrink-0 cursor-pointer flex-col rounded-xl border bg-[#F8F9F9] p-3 transition-colors hover:bg-[#F0F1F1]"
                 >
                   {/* Mini Calendar */}
                   <div className="mb-2">
@@ -202,13 +203,12 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
                       return (
                         <span
                           key={courseKey}
-                          className="bg-neu1 text-neu8 flex items-center overflow-hidden rounded px-1.5 py-0.5 text-xs font-medium"
+                          className="text-neu8 flex items-center overflow-hidden rounded border px-1.5 py-0.5 text-xs font-medium"
+                          style={{
+                            borderColor: color.accent,
+                            backgroundColor: color.fill,
+                          }}
                         >
-                          {/* Thin vertical color bar */}
-                          <div
-                            className="mr-1 h-full w-0.5 shrink-0"
-                            style={{ backgroundColor: color.accent }}
-                          />
                           {courseKey.replace(" ", "")}
                         </span>
                       );

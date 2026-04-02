@@ -9,11 +9,11 @@
     "cli": "node --env-file .env --import tsx ./src/cli.ts"
   },
   "dependencies": {
-    "@clack/prompts": "^1.1.0",
+    "@clack/prompts": "^1.2.0",
     "@sneu/db": "workspace:*",
     "@sneu/scraper": "workspace:*",
-    "citty": "^0.2.0",
-    "drizzle-orm": "^0.45.1",
+    "citty": "^0.2.2",
+    "drizzle-orm": "^0.45.2",
     "picocolors": "^1.1.1",
     "yaml": "^2.8.2",
     "zod": "^4.3.6"
@@ -24,6 +24,6 @@
     "@types/node": "^25.5.0",
     "eslint": "^9.39.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }

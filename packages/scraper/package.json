@@ -56,7 +56,7 @@
     }
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
+    "drizzle-orm": "^0.45.2",
     "html-entities": "^2.6.0",
     "node-html-parser": "^7.1.0",
     "zod": "^4.3.6"
@@ -70,6 +70,6 @@
     "eslint": "^9.39.2",
     "nock": "^14.0.11",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }

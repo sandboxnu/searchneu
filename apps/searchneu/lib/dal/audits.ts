@@ -78,7 +78,7 @@ export async function getAuditPlans(userId: string) {
 }
 
 /**
- * Creates a new audit plan for a user with validation of major, minor, and concentration
+ * Creates a new audit plan for a user with validation of major, minor, and concentration, makes an empty whiteboard
  *
  * @param createAuditPlanInput the audit plan data: name, schedule, major, minor, concentration, and catalog year
  * @param userId the ID of the user creating the plan
@@ -91,6 +91,7 @@ export async function createAuditPlan(
 ) {
   const { name, schedule, majors, minors, concentration, catalogYear } =
     createAuditPlanInput;
+  const whiteboard: Record<string, { courses: string[]; status: string }> = {};
 
   if (majors) {
     const majorName = await getByMajorAndYear(majors, catalogYear ?? 0);
@@ -100,6 +101,10 @@ export async function createAuditPlan(
         `Attempting to create a plan with an unsupported major: ${majorName}, ${catalogYear}`,
       );
       return null;
+    } else {
+      majorName.requirementSections.forEach((rs) => {
+        whiteboard[rs.title] = { courses: [], status: "not_started" };
+      });
     }
   }
 
@@ -151,6 +156,7 @@ export async function createAuditPlan(
       minors,
       concentration,
       catalogYear,
+      whiteboard,
     })
     .returning();
 
@@ -184,6 +190,7 @@ export async function updateAuditPlan(
     concentration: newConcentrationName,
     schedule: newSchedule,
     name: newName,
+    whiteboard: newWhiteboard,
   } = updateAuditPlanInput;
 
   const currentAuditPlan = await getAuditPlan(id, userId);
@@ -321,6 +328,7 @@ export async function updateAuditPlan(
     catalogYear,
     concentration,
     schedule,
+    whiteboard: newWhiteboard ?? currentAuditPlan.whiteboard,
   };
 
   const updatedAuditPlan = await db
@@ -332,6 +340,7 @@ export async function updateAuditPlan(
       minors: newPlan.minors,
       concentration: newPlan.concentration,
       catalogYear: newPlan.catalogYear,
+      whiteboard: newPlan.whiteboard,
     })
     .where(and(eq(auditPlansT.id, id), eq(auditPlansT.userId, userId)))
     .returning();

@@ -13,38 +13,38 @@ import { cache } from "react";
 import type { Room, Section } from "@/lib/catalog/types";
 
 const initQuery = db
-      .select({
-        // section fields
-        id: sectionsT.id,
-        crn: sectionsT.crn,
-        faculty: sectionsT.faculty,
-        campus: campusesT.name,
-        honors: sectionsT.honors,
-        classType: sectionsT.classType,
-        seatRemaining: sectionsT.seatRemaining,
-        seatCapacity: sectionsT.seatCapacity,
-        waitlistCapacity: sectionsT.waitlistCapacity,
-        waitlistRemaining: sectionsT.waitlistRemaining,
-        // meeting time fields
-        meetingTimeId: meetingTimesT.id,
-        days: meetingTimesT.days,
-        startTime: meetingTimesT.startTime,
-        endTime: meetingTimesT.endTime,
-        // room fields (nullable - not all sections have an assigned room)
-        roomId: roomsT.id,
-        roomNumber: roomsT.code,
-        // building fields (nullable - follows room nullability)
-        buildingId: buildingsT.id,
-        buildingName: buildingsT.name,
-      })
-      .from(sectionsT)
-      .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
-      .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
-      .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
-      .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
-      .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id))
+  .select({
+    // section fields
+    id: sectionsT.id,
+    crn: sectionsT.crn,
+    faculty: sectionsT.faculty,
+    campus: campusesT.name,
+    honors: sectionsT.honors,
+    classType: sectionsT.classType,
+    seatRemaining: sectionsT.seatRemaining,
+    seatCapacity: sectionsT.seatCapacity,
+    waitlistCapacity: sectionsT.waitlistCapacity,
+    waitlistRemaining: sectionsT.waitlistRemaining,
+    // meeting time fields
+    meetingTimeId: meetingTimesT.id,
+    days: meetingTimesT.days,
+    startTime: meetingTimesT.startTime,
+    endTime: meetingTimesT.endTime,
+    // room fields (nullable - not all sections have an assigned room)
+    roomId: roomsT.id,
+    roomNumber: roomsT.code,
+    // building fields (nullable - follows room nullability)
+    buildingId: buildingsT.id,
+    buildingName: buildingsT.name,
+  })
+  .from(sectionsT)
+  .innerJoin(campusesT, eq(sectionsT.campus, campusesT.id))
+  .innerJoin(termsT, eq(sectionsT.termId, termsT.id))
+  .leftJoin(meetingTimesT, eq(sectionsT.id, meetingTimesT.sectionId))
+  .leftJoin(roomsT, eq(meetingTimesT.roomId, roomsT.id))
+  .leftJoin(buildingsT, eq(roomsT.buildingId, buildingsT.id));
 
-type queryType = Awaited<typeof initQuery>
+type queryType = Awaited<typeof initQuery>;
 
 /**
  * returns all sections for a given course, with each section's meeting times
@@ -64,7 +64,6 @@ export const getSectionsByCourseId = cache(
   },
 );
 
-
 /**
  * returns all sections for a given roomId in a given term, with each section's meeting times
  * pre-grouped into a nested array
@@ -74,15 +73,14 @@ export const getSectionsByCourseId = cache(
  */
 export const getSectionsByTermRoomId = cache(
   async (term: string, roomId: number): Promise<Section[]> => {
-
-    const res = await initQuery.where(and(eq(roomsT.id, roomId), eq(termsT.term, term)));
+    const res = await initQuery.where(
+      and(eq(roomsT.id, roomId), eq(termsT.term, term)),
+    );
 
     // collapse the flat join result into one Section per section ID
     return cleanRows(res);
   },
 );
-
-
 
 function cleanRows(rows: queryType) {
   const sectionMap = new Map<number, Section>();
@@ -107,21 +105,25 @@ function cleanRows(rows: queryType) {
     // only attach a meeting time if all required fields are present -
     // a section with no meeting times at all will produce one null row from
     // the left join (skipped here)
-    if (row.meetingTimeId !== null &&
+    if (
+      row.meetingTimeId !== null &&
       row.days &&
       row.startTime &&
-      row.endTime) {
+      row.endTime
+    ) {
       const section = sectionMap.get(row.id)!;
 
-      const room: Room | undefined = row.roomId !== null && row.roomNumber
-        ? {
-          id: row.roomId,
-          number: row.roomNumber,
-          building: row.buildingId !== null && row.buildingName
-            ? { id: row.buildingId, name: row.buildingName }
-            : undefined,
-        }
-        : undefined;
+      const room: Room | undefined =
+        row.roomId !== null && row.roomNumber
+          ? {
+              id: row.roomId,
+              number: row.roomNumber,
+              building:
+                row.buildingId !== null && row.buildingName
+                  ? { id: row.buildingId, name: row.buildingName }
+                  : undefined,
+            }
+          : undefined;
 
       section.meetingTimes.push({
         days: row.days,
@@ -134,4 +136,3 @@ function cleanRows(rows: queryType) {
 
   return Array.from(sectionMap.values());
 }
-

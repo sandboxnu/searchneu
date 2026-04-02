@@ -1,6 +1,11 @@
 "use client";
 
-import { Course, GroupedTerms, CourseSearchResult, Term } from "@/lib/catalog/types";
+import {
+  Course,
+  GroupedTerms,
+  CourseSearchResult,
+  Term,
+} from "@/lib/catalog/types";
 import {
   extractCoreqReqs,
   fetchCoreqCourses,

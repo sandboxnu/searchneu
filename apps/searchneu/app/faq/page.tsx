@@ -19,12 +19,7 @@ export default async function Page() {
             <ScrollArea className="mb-4 w-full whitespace-nowrap">
               <div className="flex w-max space-x-4 p-4 pt-3">
                 {howToData.howtos.map((howto) => (
-                  <HowToCard
-                    key={howto.id}
-                    img={howto.img}
-                    title={howto.title}
-                    description={howto.description}
-                  />
+                  <HowToCard key={howto.id} howto={howto} />
                 ))}
               </div>
               <ScrollBar orientation="horizontal" />

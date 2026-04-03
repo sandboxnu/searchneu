@@ -7,7 +7,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
 import Link from "next/link";
 import useSWR from "swr";
-import type { SearchResult } from "@/lib/catalog/types";
+import type { CourseSearchResult } from "@/lib/catalog/types";
 
 // NOTE: in general prefer named exports. however, since the `SearchResults` component
 // needs to be imported dynamically to avoid SSR, it has to be default exported
@@ -44,7 +44,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   const searchP = new URLSearchParams(props.params);
   searchP.set("term", props.term);
 
-  const { data: results } = useSWR<SearchResult[]>(
+  const { data: results } = useSWR<CourseSearchResult[]>(
     `/api/catalog/search?${searchP.toString()}`,
     (u: string) => fetch(u).then((r) => r.json()),
     { suspense: true },

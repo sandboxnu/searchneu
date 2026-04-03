@@ -154,19 +154,33 @@ export const courseNupathJoinT = pgTable(
   ],
 );
 
-export const buildingsT = pgTable("buildings", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: text().notNull().unique(),
-  code: text().notNull().unique(),
-  campus: integer()
-    .notNull()
-    .references(() => campusesT.id),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp()
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+export const buildingsT = pgTable(
+  "buildings",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: text().notNull().unique(),
+    code: text().notNull().unique(),
+    campus: integer()
+      .notNull()
+      .references(() => campusesT.id),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp()
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("building_search_idx")
+      .using("bm25", table.id, table.name, table.code)
+      .with({
+        key_field: "id",
+        text_fields: `'{
+          "name": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}},
+          "code": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}}
+        }'`,
+      }),
+  ],
+);
 
 export const roomsT = pgTable(
   "rooms",

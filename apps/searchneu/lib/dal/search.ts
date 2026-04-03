@@ -1,17 +1,26 @@
-import type { SearchFilters, SearchResult } from "@/lib/catalog/types";
+import "server-only";
 import {
-  campusesT,
-  courseNupathJoinT,
-  coursesT,
   db,
-  nupathsT,
+  coursesT,
   sectionsT,
+  courseNupathJoinT,
+  nupathsT,
   subjectsT,
+  campusesT,
+  roomsT,
+  buildingsT,
+  meetingTimesT,
   termsT,
 } from "@/lib/db";
-import { and, countDistinct, eq, type SQL, sql } from "drizzle-orm";
+import { type SQL, sql, eq, and, countDistinct, inArray } from "drizzle-orm";
 import { cache } from "react";
-import "server-only";
+import type {
+  CourseSearchFilters,
+  CourseSearchResult,
+  BuildingSearchFilters,
+  BuildingSearchResult,
+} from "@/lib/catalog/types";
+import { getTerms } from "./terms";
 
 // > It's data access - complex data access, but data access. - Copilot
 
@@ -40,11 +49,11 @@ import "server-only";
  * results are ordered by ParadeDB relevance score descending when a text query
  * is present. When `query` is empty, ordering is by course name
  *
- * @param filters - structured search filters. See `SearchFilters` for field docs
+ * @param filters - structured search filters. See `CourseSearchFilters` for field docs
  * @returns filtered, scored course rows with aggregated section data
  */
 export const getSearchCourses = cache(
-  async (filters: SearchFilters): Promise<SearchResult[]> => {
+  async (filters: CourseSearchFilters): Promise<CourseSearchResult[]> => {
     const {
       term,
       query,
@@ -154,5 +163,120 @@ export const getSearchCourses = cache(
         (classTypes.length === 0 ||
           r.classType.some((t) => classTypes.includes(t))),
     );
+  },
+);
+
+// Essentially getSearchCourses, but for buildings
+export const getSearchBuildings = cache(
+  async (filters: BuildingSearchFilters): Promise<BuildingSearchResult[]> => {
+    const {
+      query, //text query
+      campuses, //wtv campuses normally is; should be number I think
+      minTime,
+      maxTime, // Should be 0800, 0900, 1000, etc.
+      days, //days should be "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"
+      minCap,
+      maxCap,
+    } = filters;
+
+    const DAYS_OF_WEEK = {
+      Mo: 0,
+      Tu: 1,
+      We: 2,
+      Th: 3,
+      Fr: 4,
+      Sa: 5,
+      Su: 6,
+    } as Record<string, number>;
+
+    const dayNums = days.map((day) => DAYS_OF_WEEK[day]);
+
+    // build BM25 WHERE clause for text search and courseLevel filtering
+    const sqlChunks: SQL[] = [];
+
+    if (query) {
+      // boost exact building/room matches (e.g. "Richards Hall 159") 6x over name matches
+      sqlChunks.push(
+        sql`${buildingsT.id} @@@ paradedb.boolean(should => ARRAY[paradedb.match('name', ${query}, distance => 0)])`,
+      );
+    }
+    const buildings = await db
+      .select({
+        buildingId: buildingsT.id,
+        buildingName: buildingsT.name,
+        campus: campusesT.name,
+        score: sql<number>`paradedb.score(${roomsT.id})`,
+      })
+      .from(buildingsT)
+      .innerJoin(campusesT, eq(campusesT.id, buildingsT.campus))
+      .where(sql.join(sqlChunks, sql.raw(" AND ")))
+      .orderBy(sql`paradedb.score(${roomsT.id}) desc`);
+
+    const filteredBuildings = buildings.filter(
+      (r) => campuses.length === 0 || campuses.includes(r.campus),
+    );
+
+    const buildingIds = buildings.map((b) => b.buildingId);
+
+    const roomsData = await db
+      .select({
+        roomId: roomsT.id,
+        buildingId: roomsT.buildingId,
+        approxCap: sql<number>`max(${sectionsT.seatCapacity})`,
+      })
+      .from(roomsT)
+      .innerJoin(meetingTimesT, eq(meetingTimesT.roomId, roomsT.id))
+      .innerJoin(sectionsT, eq(meetingTimesT.sectionId, sectionsT.id))
+      .where(inArray(roomsT.buildingId, buildingIds))
+      .groupBy(roomsT.id);
+
+    const terms = await getTerms();
+    const termId = terms.neu[0].id;
+
+    const roomIds = roomsData.map((r) => r.roomId);
+    const meetings = await db
+      .select({
+        roomId: meetingTimesT.roomId,
+        days: meetingTimesT.days,
+        startTime: meetingTimesT.startTime,
+        endTime: meetingTimesT.endTime,
+      })
+      .from(meetingTimesT)
+      .innerJoin(termsT, eq(meetingTimesT.termId, termsT.id))
+      .where(
+        and(inArray(meetingTimesT.roomId, roomIds), eq(termsT.id, termId)),
+      );
+
+    const res = [];
+    for (const building of filteredBuildings) {
+      const assocRooms = roomsData.filter(
+        (r) => r.buildingId == building.buildingId,
+      );
+
+      for (const room of assocRooms) {
+        if (room.approxCap < minCap || room.approxCap > maxCap) {
+          continue;
+        }
+        const assocMeetings = meetings.filter((m) => m.roomId == room.roomId);
+
+        const meetingsWithHours = assocMeetings.map((meeting) => ({
+          ...meeting,
+          startHour: Math.floor(meeting.startTime / 100),
+          endHour: Math.floor(meeting.endTime / 100),
+        }));
+
+        // Group meetings by day
+        const conflicts = meetingsWithHours.filter(
+          (m) =>
+            (m.startHour < maxTime && m.endHour > minTime) ||
+            !dayNums.some((day) => m.days.includes(day)),
+        );
+        if (!conflicts) {
+          res.push(building);
+        }
+      }
+    }
+
+    return res;
   },
 );

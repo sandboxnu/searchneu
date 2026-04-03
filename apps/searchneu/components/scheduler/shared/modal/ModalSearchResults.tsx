@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchResult, Term } from "@/lib/catalog/types";
+import { CourseSearchResult, Term } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Suspense, use, useDeferredValue, useRef } from "react";
@@ -9,8 +9,8 @@ const ResultCard = ({
   result,
   onSelect,
 }: {
-  result: SearchResult;
-  onSelect: (course: SearchResult) => void;
+  result: CourseSearchResult;
+  onSelect: (course: CourseSearchResult) => void;
 }) => {
   return (
     <div
@@ -34,7 +34,7 @@ export default function ModalSearchResults({
 }: {
   searchQuery: string;
   term: Term;
-  onSelectSearchResult: (course: SearchResult) => void;
+  onSelectSearchResult: (course: CourseSearchResult) => void;
 }) {
   const deferredQuery = useDeferredValue(searchQuery);
   const deferredTerm = useDeferredValue(term);
@@ -79,7 +79,7 @@ function ResultsList({
 }: {
   query: string;
   term: Term;
-  onSelectSearchResult: (course: SearchResult) => void;
+  onSelectSearchResult: (course: CourseSearchResult) => void;
 }) {
   "use no memo";
 
@@ -90,7 +90,7 @@ function ResultsList({
   const cacheKey = `${query}-${term}`;
 
   const results = use(
-    fetcher<SearchResult[] | { error: string }>(cacheKey, url),
+    fetcher<CourseSearchResult[] | { error: string }>(cacheKey, url),
   );
 
   const parentRef = useRef<HTMLDivElement>(null);

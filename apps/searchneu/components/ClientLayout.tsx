@@ -1,8 +1,12 @@
 "use client";
 
-import { Toaster } from "sonner";
 import FeedbackModal from "@/components/feedback/FeedbackModal";
 import { FeedbackProvider } from "@/components/feedback/FeedbackContext";
+import dynamic from "next/dynamic";
+
+const GivingDayModal = dynamic(() => import("./GivingDayModal"), {
+  ssr: false,
+});
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   // useEffect(() => {
@@ -25,17 +29,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       <div>
         <main className="min-h-[100dvh] w-screen grow">{children}</main>
         <FeedbackModal />
-        <Toaster
-          toastOptions={{
-            classNames: {
-              toast:
-                "!border-l-8 !border-l-[#F15B50] !text-[13px] !w-[322px] !h-[64px]",
-              cancelButton: "!bg-white !p-0",
-              icon: "!w-[35.77px] !h-[32.95px]",
-              description: "!text-[11px] !-mt-1",
-            },
-          }}
-        />
+        <GivingDayModal />
       </div>
     </FeedbackProvider>
   );

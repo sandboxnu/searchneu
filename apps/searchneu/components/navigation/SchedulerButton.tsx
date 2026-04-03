@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import Link from "next/link";
 import { SignIn } from "../SignIn";
@@ -9,8 +9,14 @@ import { Calendar } from "lucide-react";
 export function SchedulerButton({ pathname }: { pathname: string }) {
   const { data: session } = authClient.useSession();
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  if (!session) {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || !session) {
     return (
       <>
         <button

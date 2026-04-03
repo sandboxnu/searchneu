@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Neu } from "../icons/Neu";
 import { Logo } from "../icons/logo";
 import { Footskie } from "../icons/Footskie";
 
@@ -20,7 +19,7 @@ export function LinkColumn({
           key={index}
           href={href}
           className="text-neu8 hover:text-neu8/80 z-10 text-base"
-          target="_blank"
+          target={href.startsWith("http") ? "_blank" : undefined}
         >
           {label}
         </Link>
@@ -30,6 +29,8 @@ export function LinkColumn({
 }
 
 export function Footer() {
+  const isProd = process.env.NODE_ENV == "production" || false;
+
   return (
     <footer className="bg-neu1 relative flex flex-col justify-between gap-20 overflow-hidden pt-5 md:flex-row xl:h-[312px]">
       <div className="flex flex-col">
@@ -121,7 +122,10 @@ export function Footer() {
           <LinkColumn
             name="Development"
             labels={[
-              ["Documentation", "/docs"],
+              [
+                "Documentation",
+                isProd ? "https://docs.searchneu.com" : "http://localhost:3001",
+              ],
               ["Github", "https://github.com/sandboxnu/searchneu"],
             ]}
           />

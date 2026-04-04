@@ -101,21 +101,25 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
               return (
                 <div
                   key={course.courseId}
-                  className="text-neu8 relative flex items-center gap-2 overflow-hidden rounded-lg bg-[#F8F9F9] px-3 py-2.5 text-sm"
+                  className="relative flex min-w-0 items-center gap-1.5 overflow-hidden rounded-sm py-1 pr-3 pl-1 text-sm"
+                  style={{
+                    backgroundColor: color.fill,
+                  }}
                 >
-                  {/* Thin vertical color bar on left border */}
                   <div
-                    className="absolute top-0 left-0 h-full w-2"
+                    className="h-full w-1 shrink-0 rounded-full"
                     style={{ backgroundColor: color.accent }}
                   />
-                  <span className="text-base font-bold">
-                    {course.courseSubject} {course.courseNumber}
-                  </span>
-                  <span className="text-neu6 flex-1 truncate">
-                    {course.courseName}
-                  </span>
+                  <div className="flex items-center gap-1.5 pt-1 pl-1.5">
+                    <span className="shrink-0 text-sm font-bold text-[#333]">
+                      {course.courseSubject} {course.courseNumber}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-sm text-[#858585]">
+                      {course.courseName}
+                    </span>
+                  </div>
                   {course.isLocked && (
-                    <Lock className="text-red h-4 w-4 shrink-0" />
+                    <Lock className="h-3.5 w-3.5 shrink-0 text-red-500" />
                   )}
                 </div>
               );

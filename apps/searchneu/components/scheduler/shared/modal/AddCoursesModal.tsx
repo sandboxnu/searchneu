@@ -6,6 +6,7 @@ import {
   CourseSearchResult,
   Term,
 } from "@/lib/catalog/types";
+import { CircleAlert } from "lucide-react";
 import {
   extractCoreqReqs,
   fetchCoreqCourses,
@@ -292,9 +293,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
                   key={num}
                   onClick={() => setNumCourses(num)}
                   className={`flex h-5.5 w-10.5 cursor-pointer items-center justify-center rounded-[46px] text-xs font-semibold ${
-                    numCourses === num
-                      ? "bg-red-500 text-white"
-                      : "hover:bg-muted"
+                    numCourses === num ? "bg-neu text-white" : "hover:bg-muted"
                   }`}
                 >
                   {num}
@@ -354,6 +353,17 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
             >
               {isGenerating ? "Generating Schedules..." : "Generate Schedules"}
             </Button>
+            {props.planId && (
+              <div className="flex w-full flex-col">
+                <div className="border-yellow text-yellow flex items-start gap-1 rounded-sm border bg-[#FFF6EB] py-2 pl-2 text-xs">
+                  <CircleAlert className="h-4 w-4 shrink-0" />
+                  <p>
+                    Editing courses may remove favorited schedules that are no
+                    longer possible
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

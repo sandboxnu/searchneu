@@ -36,7 +36,7 @@
     "@sneu/tsconfig": "workspace:*",
     "@types/node": "^25.5.0",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.4",
     "typescript": "^6.0.2"
   }
 }

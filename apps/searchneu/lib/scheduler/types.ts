@@ -14,7 +14,9 @@ export interface PlanSection {
 }
 
 export interface PlanData {
+  id: number;
   name: string;
+  termId: number;
   startTime?: number;
   endTime?: number;
   freeDays?: string[];

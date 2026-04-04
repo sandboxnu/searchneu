@@ -11,7 +11,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "fumadocs-core": "16.7.9",
+    "fumadocs-core": "16.7.10",
     "fumadocs-mdx": "14.2.11",
     "fumadocs-openapi": "^10.6.3",
     "fumadocs-twoslash": "^3.1.15",

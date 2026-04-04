@@ -21,7 +21,7 @@
   "devDependencies": {
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "eslint": "^9.39.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"

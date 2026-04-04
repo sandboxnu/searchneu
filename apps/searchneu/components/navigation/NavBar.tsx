@@ -1,18 +1,18 @@
 "use client";
+import { cn } from "@/lib/cn";
+import { FlagValues } from "flags/react";
 import {
+  Bell,
+  BookMarked,
+  Calendar,
   CircleQuestionMark,
   DoorOpen,
   GraduationCapIcon,
-  Bell,
-  BookMarked,
 } from "lucide-react";
-import { type ReactNode, use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FlagValues } from "flags/react";
+import { type ReactNode, use } from "react";
 import { SheetClose } from "../ui/sheet";
-import { SchedulerButton } from "./SchedulerButton";
-import { cn } from "@/lib/cn";
 
 export function NavBar({
   flags,
@@ -70,7 +70,14 @@ export function NavBar({
         </Link>
       </LinkWrapper>
       <LinkWrapper mobileNav={closeable}>
-        <SchedulerButton pathname={pathname} />
+        <Link
+          href="/scheduler"
+          data-active={pathname === "/scheduler"}
+          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+        >
+          <Calendar className="size-4" />
+          Scheduler
+        </Link>
       </LinkWrapper>
       <LinkWrapper mobileNav={closeable}>
         <Link

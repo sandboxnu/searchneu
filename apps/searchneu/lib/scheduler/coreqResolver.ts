@@ -133,13 +133,16 @@ export async function buildCoreqGroups(
 ): Promise<number[][]> {
   const coreqMap = new Map<number, Set<number>>();
 
-  // Get all coreqs for each course, but only include those in the input list
-  for (const courseId of courseIds) {
-    const allCoreqs = await getCoreqCourseIds(courseId);
-    // Filter to only include coreqs that are also in the input list
-    const relevantCoreqs = allCoreqs.filter((c) => courseIds.includes(c));
+  // Get all coreqs for each course
+  const allCoreqsResults = await Promise.all(courseIds.map(getCoreqCourseIds));
+
+  // Filter to only include coreqs that are also in the input list
+  courseIds.forEach((courseId, idx) => {
+    const relevantCoreqs = allCoreqsResults[idx].filter((c) =>
+      courseIds.includes(c),
+    );
     coreqMap.set(courseId, new Set(relevantCoreqs));
-  }
+  });
 
   // Build groups: courses that are coreqs of each other (only considering passed-in courses)
   const visited = new Set<number>();

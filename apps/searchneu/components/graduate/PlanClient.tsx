@@ -20,11 +20,13 @@ import {
   HydratedAuditPlan,
   SeasonEnum,
   StatusEnum,
+  Whiteboard,
 } from "@/lib/graduate/types";
 import { CourseNameContext } from "./CourseNameContext";
 import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
+import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -106,20 +108,62 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
   const [schedule, setSchedule] = useState<Audit>(() =>
     assignDndIds(plan.schedule),
   );
+  const [whiteboard, setWhiteboard] = useState<Whiteboard>(
+    () => plan.whiteboard ?? {},
+  );
   const [activeCourse, setActiveCourse] = useState<AuditCourse | null>(null);
   const [expandedYears, setExpandedYears] = useState<Set<number>>(
     () => new Set(),
   );
+  const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
+    "whiteboard",
+  );
+
+  /** Collect all "SUBJECT CLASSID" keys present in a schedule. */
+  function scheduleCourseKeys(audit: Audit): Set<string> {
+    const keys = new Set<string>();
+    for (const y of audit.years) {
+      for (const t of [y.fall, y.spring, y.summer1, y.summer2]) {
+        for (const c of t.classes) keys.add(`${c.subject} ${c.classId}`);
+      }
+    }
+    return keys;
+  }
+
+  /** Remove whiteboard courses that no longer exist in the schedule. */
+  function pruneWhiteboard(audit: Audit, wb: Whiteboard): Whiteboard | null {
+    const valid = scheduleCourseKeys(audit);
+    let changed = false;
+    const pruned: Whiteboard = {};
+    for (const [section, entry] of Object.entries(wb)) {
+      const filtered = entry.courses.filter((k) => valid.has(k));
+      if (filtered.length !== entry.courses.length) changed = true;
+      pruned[section] = { ...entry, courses: filtered };
+    }
+    return changed ? pruned : null;
+  }
 
   async function persist(updated: Audit) {
     const withIds = assignDndIds(updated);
     setSchedule(withIds);
+
+    // Prune stale courses from whiteboard
+    const pruned = pruneWhiteboard(updated, whiteboard);
+    if (pruned) {
+      setWhiteboard(pruned);
+    }
+
     try {
+      const body: Record<string, unknown> = {
+        schedule: stripDndIds(updated),
+      };
+      if (pruned) body.whiteboard = pruned;
+
       const res = await fetch(`/api/audit/plan/${plan.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ schedule: stripDndIds(updated) }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) {
         const err = await res.json();
@@ -127,6 +171,24 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
       }
     } catch {
       toast.error("Failed to save plan");
+    }
+  }
+
+  async function persistWhiteboard(updated: Whiteboard) {
+    setWhiteboard(updated);
+    try {
+      const res = await fetch(`/api/audit/plan/${plan.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ whiteboard: updated }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.error || "Failed to save whiteboard");
+      }
+    } catch {
+      toast.error("Failed to save whiteboard");
     }
   }
 
@@ -280,7 +342,40 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
         <DeleteDropZone>
           <div className="flex h-full overflow-hidden">
             <div className="bg-neu25 w-[360px] flex-shrink-0 overflow-y-auto">
-              <Sidebar {...plan} />
+              <div className="flex justify-center gap-1 px-4 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSidebarMode("requirements")}
+                  className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
+                    sidebarMode === "requirements"
+                      ? "bg-navy text-white shadow-md"
+                      : "bg-neu3 text-neu6 hover:bg-neu4"
+                  }`}
+                >
+                  Requirements
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSidebarMode("whiteboard")}
+                  className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
+                    sidebarMode === "whiteboard"
+                      ? "bg-navy text-white shadow-md"
+                      : "bg-neu3 text-neu6 hover:bg-neu4"
+                  }`}
+                >
+                  Whiteboard
+                </button>
+              </div>
+              {sidebarMode === "whiteboard" ? (
+                <WhiteboardSidebar
+                  {...plan}
+                  schedule={schedule}
+                  whiteboard={whiteboard}
+                  onWhiteboardChange={persistWhiteboard}
+                />
+              ) : (
+                <Sidebar {...plan} />
+              )}
             </div>
 
             <div className="flex-grow overflow-auto pl-2">

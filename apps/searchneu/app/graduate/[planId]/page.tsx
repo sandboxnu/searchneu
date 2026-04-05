@@ -13,6 +13,8 @@ import {
   Major,
   Minor,
   Requirement,
+  Whiteboard,
+  WhiteboardEntry,
   DEFAULT_CATALOG_YEAR,
 } from "@/lib/graduate/types";
 import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
@@ -81,6 +83,20 @@ function applyNamesToSchedule(
   };
 }
 
+/** Handle old format (string[]) and new format (WhiteboardEntry). */
+function normalizeWhiteboard(raw: unknown): Whiteboard {
+  if (!raw || typeof raw !== "object") return {};
+  const out: Whiteboard = {};
+  for (const [key, val] of Object.entries(raw as Record<string, unknown>)) {
+    if (Array.isArray(val)) {
+      out[key] = { courses: val as string[], status: "not_started" };
+    } else if (val && typeof val === "object" && "courses" in val) {
+      out[key] = val as WhiteboardEntry;
+    }
+  }
+  return out;
+}
+
 async function hydratePlan(
   row: AuditPlanRow,
 ): Promise<HydratedAuditPlan & { courseNames: Record<string, string> }> {
@@ -110,6 +126,7 @@ async function hydratePlan(
     minors,
     concentration: row.concentration,
     catalogYear: row.catalogYear ?? DEFAULT_CATALOG_YEAR,
+    whiteboard: normalizeWhiteboard(row.whiteboard),
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     courseNames,

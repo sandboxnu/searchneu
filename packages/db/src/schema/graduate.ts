@@ -27,6 +27,7 @@ export const auditPlansT = pgTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
+    whiteboard: json(),
   },
   (table) => [index("audit_plans_user_id_idx").on(table.userId)],
 );

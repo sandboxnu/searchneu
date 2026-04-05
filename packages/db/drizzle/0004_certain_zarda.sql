@@ -1,0 +1,1 @@
+ALTER TABLE "audit_plans" ADD COLUMN "whiteboard" json;

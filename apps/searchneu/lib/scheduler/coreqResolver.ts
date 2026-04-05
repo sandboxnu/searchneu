@@ -1,5 +1,5 @@
 import { db, coursesT, subjectsT } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { eq, inArray, and } from "drizzle-orm";
 import type { Requisite, RequisiteItem, Condition } from "@sneu/scraper/types";
 
 /**
@@ -66,7 +66,15 @@ async function resolveCourseReferences(
     })
     .from(coursesT)
     .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
-    .where(eq(coursesT.termId, termId));
+    .where(
+      and(
+        eq(coursesT.termId, termId),
+        inArray(
+          coursesT.courseNumber,
+          courseRefs.map((r) => r.courseNumber),
+        ),
+      ),
+    );
 
   const courseMap = new Map<string, number>();
   for (const course of coreqCourses) {

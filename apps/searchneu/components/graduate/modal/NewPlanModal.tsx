@@ -326,7 +326,7 @@ export default function NewPlanModal({
           >
             <DialogHeader>
               <DialogTitle className="flex justify-center">
-                New Plan
+                New {isGuest ? "Guest " : ""}Plan
               </DialogTitle>
             </DialogHeader>
             {/* outer div */}

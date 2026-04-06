@@ -1,6 +1,12 @@
 import { withAuth } from "@/lib/api/withAuth";
 import { PatchStudentDto } from "@/lib/graduate/api-dtos";
-import { updateTransferCourses } from "@/lib/dal/auditMetadata";
+import { getAuditMetadata, updateTransferCourses } from "@/lib/dal/auditMetadata";
+
+export const GET = withAuth(async (req, user) => {
+  const metadata = await getAuditMetadata(user.id);
+  const transferCourses = (metadata?.coursesTransferred ?? []);
+  return Response.json({ transferCourses });
+});
 
 export const PATCH = withAuth(async (req, user) => {
   const body = PatchStudentDto.safeParse(await req.json());

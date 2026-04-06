@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Audit, ParsedCourse } from "@/lib/graduate/types";
+import { Audit, AuditCourse, ParsedCourse } from "@/lib/graduate/types";
 import {
   useHasTemplate,
   useSupportedMajors,
@@ -352,6 +352,46 @@ export default function NewPlanModal({
       }
 
       const createdPlan = await response.json();
+
+      if (uploadedCourses.length > 0) {
+        let existingTransferCourses: AuditCourse[] = [];
+        try {
+          const meta = await fetch("/api/audit/student", {
+            credentials: "include",
+          });
+          if (meta.ok) {
+            const metaData = await meta.json();
+            existingTransferCourses = metaData.transferCourses ?? [];
+          }
+        } catch {
+          // keep going with empty existing list
+        }
+
+        const existingKeys = new Set(
+          existingTransferCourses.map((course) => `${course.subject}-${course.classId}`),
+        );
+        const newCourses: AuditCourse[] = uploadedCourses
+          .filter((course) => !existingKeys.has(`${course.subject}-${course.classId}`))
+          .map(({subject, classId}) => ({
+            name: `${subject} ${classId}`,
+            subject: subject,
+            classId: classId,
+            numCreditsMin: 0,
+            numCreditsMax: 0,
+            id: null,
+
+          }));
+
+        if (newCourses.length > 0) {
+          const merged = [...existingTransferCourses, ...newCourses];
+          await fetch("/api/audit/student", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ transferCourses: merged }),
+          });
+        }
+      }
 
       toast(`Plan ${createdPlan.name} created successfully! Redirecting...`);
       router.push(`/graduate/${createdPlan.id}`);

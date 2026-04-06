@@ -4,19 +4,70 @@
       "id": 0,
       "img": "/images/faq/how_to1.png",
       "title": "Search for classes",
-      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+      "carouselItems": [
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Search for classes",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Filter your search",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Subscribe to section notifications",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        }
+      ]
     },
     {
       "id": 1,
       "img": "/images/faq/how_to1.png",
       "title": "Filter your search",
-      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+      "carouselItems": [
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Search for classes",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Filter your search",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Subscribe to section notifications",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        }
+      ]
     },
     {
       "id": 2,
       "img": "/images/faq/how_to1.png",
       "title": "Subscribe to section notifications",
-      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+      "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+      "carouselItems": [
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Search for classes",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Filter your search",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        },
+        {
+          "img": "/images/faq/how_to_carousel1.png",
+          "title": "Subscribe to section notifications",
+          "description": "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle."
+        }
+      ]
     }
   ]
 }

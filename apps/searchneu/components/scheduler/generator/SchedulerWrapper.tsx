@@ -525,6 +525,13 @@ export function SchedulerWrapper({
         // Unfavorite logic
         const favoritedId = favoritedSchedules.get(key);
         if (favoritedId) {
+          // optimistic update — remove immediately
+          setFavoritedSchedules((prev) => {
+            const next = new Map(prev);
+            next.delete(key);
+            return next;
+          });
+
           fetch(`/api/scheduler/favorited-schedules/${favoritedId}`, {
             method: "DELETE",
           }).catch((error) => {

@@ -194,8 +194,8 @@ import {
       currentAuditPlan.minors.length > 0;
   
     const isMinorInfoUpdate =
-      (newMinors && newMinors.length > 0) || 
-      (newCatalogYear && currentAuditPlan.minors && currentAuditPlan.minors.length > 0);
+      (newMinors && newMinors.length > 0) ||
+      (newCatalogYear && newMinors && newMinors.length > 0);
   
     const isScheduleUpdate = newSchedule && !isMajorInfoUpdate;
   

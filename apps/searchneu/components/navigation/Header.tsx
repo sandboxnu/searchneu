@@ -4,6 +4,7 @@ import { UserIcon } from "./UserMenu";
 import { graduateFlag, roomsFlag } from "@/lib/flags";
 import { Suspense } from "react";
 import { NavBar } from "./NavBar";
+import { MobileNav } from "./MobileNav";
 
 export function Header() {
   const enableRoomsPage = roomsFlag();
@@ -25,37 +26,7 @@ export function Header() {
         </Suspense>
         <UserIcon />
       </div>
-      {/* BUG: THIS HAS TO GET FIXED!!! */}
-      {/* <Sheet> */}
-      {/*   <SheetTrigger asChild> */}
-      {/*     <Button */}
-      {/*       variant="ghost" */}
-      {/*       size="icon" */}
-      {/*       className="bg-neu1 rounded-full border lg:hidden" */}
-      {/*     > */}
-      {/*       <MenuIcon className="text-neu8 size-5" /> */}
-      {/*     </Button> */}
-      {/*   </SheetTrigger> */}
-      {/*   <SheetContent */}
-      {/*     className="bg-neu2 flex w-[90%] flex-col justify-between px-6 pt-6 pb-4" */}
-      {/*     showCloseButton={true} */}
-      {/*   > */}
-      {/*     <SheetTitle className="hidden">Nav bar</SheetTitle> */}
-      {/*     <div className="flex flex-col gap-8"> */}
-      {/*       <Link href="/"> */}
-      {/*         <Logo className="h-6 w-40" /> */}
-      {/*       </Link> */}
-      {/*       <UserIcon /> */}
-      {/*       <Suspense> */}
-      {/*         <NavBar flags={flags} closeable /> */}
-      {/*       </Suspense> */}
-      {/*     </div> */}
-      {/*     {/* <SheetClose className="bg-neu1 absolute top-4 right-4 flex size-9 items-center justify-center rounded-full border disabled:pointer-events-none"> */}
-      {/*     {/*   <XIcon className="size-6" /> */}
-      {/*     {/*   <span className="sr-only">Close</span> */}
-      {/*     {/* </SheetClose> */}
-      {/*   </SheetContent> */}
-      {/* </Sheet> */}
+      <MobileNav flags={flags} />
     </header>
   );
 }

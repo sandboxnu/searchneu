@@ -7,7 +7,10 @@ import {
   generateCombinationsOptimized,
   MAX_RESULTS,
 } from "../generateCombinations";
-import { meetingTimesToBinaryMask, hasConflictInSchedule } from "../binaryMeetingTime";
+import {
+  meetingTimesToBinaryMask,
+  hasConflictInSchedule,
+} from "../binaryMeetingTime";
 import { createMockSection } from "./mocks";
 
 // ---------------------------------------------------------------------------
@@ -38,19 +41,35 @@ function toIdSets(schedules: SectionWithCourse[][]): Set<number>[] {
 // Fixtures — non-conflicting time slots
 // ---------------------------------------------------------------------------
 
-const S_MON_8    = createMockSection(1,  [{ days: [1],    startTime: 800,  endTime: 900  }]);
-const S_MON_10   = createMockSection(2,  [{ days: [1],    startTime: 1000, endTime: 1100 }]);
-const S_MON_12   = createMockSection(3,  [{ days: [1],    startTime: 1200, endTime: 1300 }]);
-const S_TUE_8    = createMockSection(4,  [{ days: [2],    startTime: 800,  endTime: 900  }]);
-const S_TUE_10   = createMockSection(5,  [{ days: [2],    startTime: 1000, endTime: 1100 }]);
-const S_WED_8    = createMockSection(6,  [{ days: [3],    startTime: 800,  endTime: 900  }]);
-const S_WED_10   = createMockSection(7,  [{ days: [3],    startTime: 1000, endTime: 1100 }]);
+const S_MON_8 = createMockSection(1, [
+  { days: [1], startTime: 800, endTime: 900 },
+]);
+const S_MON_10 = createMockSection(2, [
+  { days: [1], startTime: 1000, endTime: 1100 },
+]);
+const S_MON_12 = createMockSection(3, [
+  { days: [1], startTime: 1200, endTime: 1300 },
+]);
+const S_TUE_8 = createMockSection(4, [
+  { days: [2], startTime: 800, endTime: 900 },
+]);
+const S_TUE_10 = createMockSection(5, [
+  { days: [2], startTime: 1000, endTime: 1100 },
+]);
+const S_WED_8 = createMockSection(6, [
+  { days: [3], startTime: 800, endTime: 900 },
+]);
+const S_WED_10 = createMockSection(7, [
+  { days: [3], startTime: 1000, endTime: 1100 },
+]);
 // Conflicts with S_MON_8 (same day/time)
-const S_MON_8_B  = createMockSection(8,  [{ days: [1],    startTime: 800,  endTime: 900  }]);
+const S_MON_8_B = createMockSection(8, [
+  { days: [1], startTime: 800, endTime: 900 },
+]);
 // Multi-meeting: MWF lecture + TR lab
 const S_MWF_LECTURE_TR_LAB = createMockSection(9, [
-  { days: [1, 3, 5], startTime: 900,  endTime: 950  }, // MWF 9-9:50
-  { days: [2, 4],    startTime: 1100, endTime: 1150 }, // TR 11-11:50
+  { days: [1, 3, 5], startTime: 900, endTime: 950 }, // MWF 9-9:50
+  { days: [2, 4], startTime: 1100, endTime: 1150 }, // TR 11-11:50
 ]);
 // Conflicts with lecture block
 const S_MON_OVERLAP_LECTURE = createMockSection(10, [
@@ -90,7 +109,11 @@ describe("addOptionalCourses — basic correctness", () => {
     assert.equal(results.length, 2);
     const idSets = toIdSets(results);
     assert.ok(idSets.some((s) => s.size === 1 && s.has(S_MON_8.id)));
-    assert.ok(idSets.some((s) => s.size === 2 && s.has(S_MON_8.id) && s.has(S_TUE_10.id)));
+    assert.ok(
+      idSets.some(
+        (s) => s.size === 2 && s.has(S_MON_8.id) && s.has(S_TUE_10.id),
+      ),
+    );
   });
 
   test("one optional course, always conflicts → returns only base schedule", () => {
@@ -148,7 +171,10 @@ describe("addOptionalCourses — basic correctness", () => {
 
   test("no output schedules contain time conflicts", () => {
     const base = [S_MON_8, S_TUE_8];
-    const optionals = [[S_MON_10, S_MON_8_B], [S_WED_10, S_WED_8]];
+    const optionals = [
+      [S_MON_10, S_MON_8_B],
+      [S_WED_10, S_WED_8],
+    ];
     const results = addOptionalCourses(
       base,
       combinedMask(base),
@@ -211,7 +237,7 @@ describe("addOptionalCourses — multiple meeting times per section", () => {
     // S_MWF_LECTURE_TR_LAB occupies MWF@9 and TR@11. The optional below occupies MWF@9 too.
     const conflictingMulti = createMockSection(20, [
       { days: [1, 3, 5], startTime: 900, endTime: 950 }, // conflicts with lecture
-      { days: [6],        startTime: 800, endTime: 900 }, // Saturday — no conflict
+      { days: [6], startTime: 800, endTime: 900 }, // Saturday — no conflict
     ]);
     const optionals = [[conflictingMulti]];
     const results = addOptionalCourses(
@@ -243,7 +269,10 @@ describe("addOptionalCourses — numCourses filtering", () => {
       1, // numCourses = 1, base already has 1
     );
     assert.equal(results.length, 1);
-    assert.deepEqual(results[0].map((s) => s.id), [S_MON_8.id]);
+    assert.deepEqual(
+      results[0].map((s) => s.id),
+      [S_MON_8.id],
+    );
   });
 
   test("numCourses = base + 1 → only schedules with exactly one optional added", () => {
@@ -325,7 +354,14 @@ describe("addOptionalCourses — numCourses filtering", () => {
 describe("addOptionalCourses — maxResults cap", () => {
   test("respects maxResults = 1", () => {
     const optionals = [[S_MON_8], [S_TUE_8], [S_WED_8]];
-    const results = addOptionalCourses([], BigInt(0), optionals, buildMasks(optionals), undefined, 1);
+    const results = addOptionalCourses(
+      [],
+      BigInt(0),
+      optionals,
+      buildMasks(optionals),
+      undefined,
+      1,
+    );
     assert.equal(results.length, 1);
   });
 
@@ -337,14 +373,33 @@ describe("addOptionalCourses — maxResults cap", () => {
       [S_WED_8],
       [createMockSection(50, [{ days: [4], startTime: 800, endTime: 900 }])],
     ];
-    const results = addOptionalCourses([], BigInt(0), optionals, buildMasks(optionals), undefined, 5);
+    const results = addOptionalCourses(
+      [],
+      BigInt(0),
+      optionals,
+      buildMasks(optionals),
+      undefined,
+      5,
+    );
     assert.equal(results.length, 5);
   });
 
   test("maxResults larger than total results → returns all", () => {
     const optionals = [[S_MON_10], [S_WED_10]];
-    const uncapped = addOptionalCourses([], BigInt(0), optionals, buildMasks(optionals));
-    const capped   = addOptionalCourses([], BigInt(0), optionals, buildMasks(optionals), undefined, 100);
+    const uncapped = addOptionalCourses(
+      [],
+      BigInt(0),
+      optionals,
+      buildMasks(optionals),
+    );
+    const capped = addOptionalCourses(
+      [],
+      BigInt(0),
+      optionals,
+      buildMasks(optionals),
+      undefined,
+      100,
+    );
     assert.equal(capped.length, uncapped.length);
   });
 });
@@ -372,7 +427,12 @@ describe("addOptionalCourses — push/pop isolation", () => {
   test("base schedule array is not mutated by the call", () => {
     const base = [S_MON_8];
     const optionals = [[S_TUE_10]];
-    addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     assert.equal(base.length, 1);
   });
 });
@@ -385,12 +445,15 @@ describe("addOptionalCourses — push/pop isolation", () => {
 describe("locked + optional courses integration", () => {
   test("locked courses generate valid base schedules, each extended with optionals", () => {
     // Two locked courses, each with 2 sections
-    const lockedCourseA = [S_MON_8,  S_MON_10]; // A sections
-    const lockedCourseB = [S_TUE_8,  S_WED_8];  // B sections (all non-conflicting with A)
-    const lockedSchedules = generateCombinationsOptimized([lockedCourseA, lockedCourseB]);
+    const lockedCourseA = [S_MON_8, S_MON_10]; // A sections
+    const lockedCourseB = [S_TUE_8, S_WED_8]; // B sections (all non-conflicting with A)
+    const lockedSchedules = generateCombinationsOptimized([
+      lockedCourseA,
+      lockedCourseB,
+    ]);
 
     const optionals = [[S_WED_10, S_MON_12]];
-    const optMasks  = buildMasks(optionals);
+    const optMasks = buildMasks(optionals);
 
     const all: SectionWithCourse[][] = [];
     for (const { schedule, mask } of lockedSchedules) {
@@ -402,10 +465,13 @@ describe("locked + optional courses integration", () => {
     assert.ok(all.length > 0);
     assert.ok(all.every((s) => !hasConflictInSchedule(s)));
     // Every result must contain both locked sections
-    assert.ok(all.every((s) =>
-      lockedCourseA.some((a) => s.includes(a)) &&
-      lockedCourseB.some((b) => s.includes(b)),
-    ));
+    assert.ok(
+      all.every(
+        (s) =>
+          lockedCourseA.some((a) => s.includes(a)) &&
+          lockedCourseB.some((b) => s.includes(b)),
+      ),
+    );
   });
 
   test("MAX_RESULTS is respected across the combined locked+optional loop", () => {
@@ -415,13 +481,22 @@ describe("locked + optional courses integration", () => {
     ];
     const lockedSchedules = generateCombinationsOptimized(lockedCourses);
     const optionals = [[S_WED_8, S_WED_10]];
-    const optMasks  = buildMasks(optionals);
+    const optMasks = buildMasks(optionals);
 
     const all: SectionWithCourse[][] = [];
     for (const { schedule, mask } of lockedSchedules) {
       if (all.length >= MAX_RESULTS) break;
       const remaining = MAX_RESULTS - all.length;
-      all.push(...addOptionalCourses(schedule, mask, optionals, optMasks, undefined, remaining));
+      all.push(
+        ...addOptionalCourses(
+          schedule,
+          mask,
+          optionals,
+          optMasks,
+          undefined,
+          remaining,
+        ),
+      );
     }
 
     assert.ok(all.length <= MAX_RESULTS);
@@ -432,12 +507,14 @@ describe("locked + optional courses integration", () => {
     const lockedCourses = [[S_MON_8]];
     const lockedSchedules = generateCombinationsOptimized(lockedCourses);
     const optionals = [[S_TUE_8], [S_WED_8]];
-    const optMasks  = buildMasks(optionals);
+    const optMasks = buildMasks(optionals);
 
     // numCourses = 2 → only schedules with exactly 1 optional added
     const results: SectionWithCourse[][] = [];
     for (const { schedule, mask } of lockedSchedules) {
-      results.push(...addOptionalCourses(schedule, mask, optionals, optMasks, 2));
+      results.push(
+        ...addOptionalCourses(schedule, mask, optionals, optMasks, 2),
+      );
     }
 
     assert.ok(results.every((s) => s.length === 2));
@@ -452,7 +529,12 @@ describe("addOptionalCourses — optional course with no sections", () => {
   test("empty optional course is silently skipped (no crash)", () => {
     const base = [S_MON_8];
     const optionals: SectionWithCourse[][] = [[]]; // one optional course, zero sections
-    const results = addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    const results = addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     // The only choice for the empty course is skip → returns [base]
     assert.equal(results.length, 1);
     assert.deepEqual(results[0], base);
@@ -461,7 +543,12 @@ describe("addOptionalCourses — optional course with no sections", () => {
   test("empty optional among non-empty optionals", () => {
     const base = [S_MON_8];
     const optionals: SectionWithCourse[][] = [[], [S_TUE_10]];
-    const results = addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    const results = addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     // Empty course: skip only. TUE_10 course: skip or include → 2 results
     assert.equal(results.length, 2);
     assert.ok(results.every((s) => !hasConflictInSchedule(s)));
@@ -476,19 +563,33 @@ describe("addOptionalCourses — exact result IDs", () => {
   test("base + one optional: exact section IDs in each result", () => {
     const base = [S_MON_8];
     const optionals = [[S_TUE_10]];
-    const results = addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    const results = addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     const idSets = toIdSets(results);
     // Result 1: just base
     assert.ok(idSets.some((s) => s.size === 1 && s.has(S_MON_8.id)));
     // Result 2: base + TUE_10
-    assert.ok(idSets.some((s) => s.size === 2 && s.has(S_MON_8.id) && s.has(S_TUE_10.id)));
+    assert.ok(
+      idSets.some(
+        (s) => s.size === 2 && s.has(S_MON_8.id) && s.has(S_TUE_10.id),
+      ),
+    );
   });
 
   test("one optional with two sections: only the non-conflicting section appears", () => {
     const base = [S_MON_8];
     // S_MON_8_B conflicts with base; S_TUE_10 does not
     const optionals = [[S_MON_8_B, S_TUE_10]];
-    const results = addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    const results = addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     const idSets = toIdSets(results);
     // No result should contain S_MON_8_B
     assert.ok(idSets.every((s) => !s.has(S_MON_8_B.id)));
@@ -499,11 +600,17 @@ describe("addOptionalCourses — exact result IDs", () => {
   test("two optionals: all 4 exact combinations present", () => {
     const base = [S_MON_8];
     const optionals = [[S_TUE_10], [S_WED_8]];
-    const results = addOptionalCourses(base, combinedMask(base), optionals, buildMasks(optionals));
+    const results = addOptionalCourses(
+      base,
+      combinedMask(base),
+      optionals,
+      buildMasks(optionals),
+    );
     const idSets = toIdSets(results);
     assert.equal(idSets.length, 4);
     // Exact 4 combinations
-    const has = (ids: number[]) => idSets.some((s) => s.size === ids.length && ids.every((id) => s.has(id)));
+    const has = (ids: number[]) =>
+      idSets.some((s) => s.size === ids.length && ids.every((id) => s.has(id)));
     assert.ok(has([S_MON_8.id]));
     assert.ok(has([S_MON_8.id, S_TUE_10.id]));
     assert.ok(has([S_MON_8.id, S_WED_8.id]));
@@ -519,13 +626,13 @@ describe("generateCombinationsOptimized — capped results are a valid subset", 
   test("every schedule in the capped result also appears in the uncapped result", () => {
     // Small enough that uncapped is tractable
     const sectionsByCourse = [
-      [S_MON_8,  S_MON_10, S_MON_12],
-      [S_TUE_8,  S_TUE_10],
-      [S_WED_8,  S_WED_10],
+      [S_MON_8, S_MON_10, S_MON_12],
+      [S_TUE_8, S_TUE_10],
+      [S_WED_8, S_WED_10],
     ];
 
     const uncapped = generateCombinationsOptimized(sectionsByCourse);
-    const capped   = generateCombinationsOptimized(sectionsByCourse, 3);
+    const capped = generateCombinationsOptimized(sectionsByCourse, 3);
 
     assert.ok(capped.length <= 3);
     assert.ok(capped.length <= uncapped.length);
@@ -539,7 +646,10 @@ describe("generateCombinationsOptimized — capped results are a valid subset", 
         for (const id of ids) if (!u.has(id)) return false;
         return true;
       });
-      assert.ok(found, `capped schedule [${[...ids]}] not found in uncapped results`);
+      assert.ok(
+        found,
+        `capped schedule [${[...ids]}] not found in uncapped results`,
+      );
     }
   });
 
@@ -549,6 +659,8 @@ describe("generateCombinationsOptimized — capped results are a valid subset", 
       [S_WED_8, S_WED_10],
     ];
     const results = generateCombinationsOptimized(sectionsByCourse, 5);
-    assert.ok(results.every(({ schedule }) => !hasConflictInSchedule(schedule)));
+    assert.ok(
+      results.every(({ schedule }) => !hasConflictInSchedule(schedule)),
+    );
   });
 });

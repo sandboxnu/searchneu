@@ -15,9 +15,7 @@ import {
   MAX_RESULTS,
   generateCombinationsOptimized,
   addOptionalCourses,
-  incrementIndex,
 } from "./generateCombinations";
-export { MAX_RESULTS, generateCombinationsOptimized, addOptionalCourses, incrementIndex };
 
 export const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -143,7 +141,10 @@ export const generateSchedules = async (
     (sections: SectionWithCourse[]) => sections.map(meetingTimesToBinaryMask),
   );
 
-  const lockedSchedules = generateCombinationsOptimized(lockedSectionsByCourse);
+  const lockedSchedules = generateCombinationsOptimized(
+    lockedSectionsByCourse,
+    MAX_RESULTS,
+  );
 
   // Edge case: No locked courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {

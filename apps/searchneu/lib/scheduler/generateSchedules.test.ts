@@ -44,7 +44,14 @@ function simulateGenerateSchedules(
   const lockedSchedules = generateCombinationsOptimized(lockedCourses);
 
   if (lockedCourses.length === 0 && optionalCourses.length > 0) {
-    return addOptionalCourses([], BigInt(0), optionalCourses, optionalMasks, numCourses, MAX_RESULTS);
+    return addOptionalCourses(
+      [],
+      BigInt(0),
+      optionalCourses,
+      optionalMasks,
+      numCourses,
+      MAX_RESULTS,
+    );
   }
 
   if (optionalCourses.length === 0) {
@@ -58,7 +65,16 @@ function simulateGenerateSchedules(
   for (const { schedule, mask } of lockedSchedules) {
     if (numCourses !== undefined && schedule.length > numCourses) continue;
     const remaining = MAX_RESULTS - all.length;
-    all.push(...addOptionalCourses(schedule, mask, optionalCourses, optionalMasks, numCourses, remaining));
+    all.push(
+      ...addOptionalCourses(
+        schedule,
+        mask,
+        optionalCourses,
+        optionalMasks,
+        numCourses,
+        remaining,
+      ),
+    );
     if (all.length >= MAX_RESULTS) break;
   }
   return all;
@@ -69,21 +85,61 @@ function simulateGenerateSchedules(
 // ---------------------------------------------------------------------------
 
 // Four non-conflicting courses — one section each, all different days/times
-const CS_SEC   = createMockSection(1,  [{ days: [1],    startTime: 900,  endTime: 1000 }], { courseId: 1 });
-const MATH_SEC = createMockSection(2,  [{ days: [2],    startTime: 1000, endTime: 1100 }], { courseId: 2 });
-const PHYS_SEC = createMockSection(3,  [{ days: [3],    startTime: 1100, endTime: 1200 }], { courseId: 3 });
-const ENGW_SEC = createMockSection(4,  [{ days: [4],    startTime: 1300, endTime: 1400 }], { courseId: 4 });
+const CS_SEC = createMockSection(
+  1,
+  [{ days: [1], startTime: 900, endTime: 1000 }],
+  { courseId: 1 },
+);
+const MATH_SEC = createMockSection(
+  2,
+  [{ days: [2], startTime: 1000, endTime: 1100 }],
+  { courseId: 2 },
+);
+const PHYS_SEC = createMockSection(
+  3,
+  [{ days: [3], startTime: 1100, endTime: 1200 }],
+  { courseId: 3 },
+);
+const ENGW_SEC = createMockSection(
+  4,
+  [{ days: [4], startTime: 1300, endTime: 1400 }],
+  { courseId: 4 },
+);
 
 // Two sections of CS — one on Mon, one conflicts with MATH
-const CS_SEC_A = createMockSection(10, [{ days: [1],    startTime: 900,  endTime: 1000 }], { courseId: 10 });
-const CS_SEC_B = createMockSection(11, [{ days: [2],    startTime: 1000, endTime: 1100 }], { courseId: 10 }); // conflicts with MATH_SEC2
+const CS_SEC_A = createMockSection(
+  10,
+  [{ days: [1], startTime: 900, endTime: 1000 }],
+  { courseId: 10 },
+);
+const CS_SEC_B = createMockSection(
+  11,
+  [{ days: [2], startTime: 1000, endTime: 1100 }],
+  { courseId: 10 },
+); // conflicts with MATH_SEC2
 
-const MATH_SEC2 = createMockSection(12, [{ days: [2],   startTime: 1000, endTime: 1100 }], { courseId: 11 });
+const MATH_SEC2 = createMockSection(
+  12,
+  [{ days: [2], startTime: 1000, endTime: 1100 }],
+  { courseId: 11 },
+);
 
 // Optional course sections
-const OPT_A = createMockSection(20, [{ days: [5],    startTime: 900,  endTime: 1000 }], { courseId: 20 });
-const OPT_B = createMockSection(21, [{ days: [5],    startTime: 1000, endTime: 1100 }], { courseId: 20 });
-const OPT_C = createMockSection(22, [{ days: [1],    startTime: 900,  endTime: 1000 }], { courseId: 21 }); // conflicts with CS_SEC
+const OPT_A = createMockSection(
+  20,
+  [{ days: [5], startTime: 900, endTime: 1000 }],
+  { courseId: 20 },
+);
+const OPT_B = createMockSection(
+  21,
+  [{ days: [5], startTime: 1000, endTime: 1100 }],
+  { courseId: 20 },
+);
+const OPT_C = createMockSection(
+  22,
+  [{ days: [1], startTime: 900, endTime: 1000 }],
+  { courseId: 21 },
+); // conflicts with CS_SEC
 
 // ---------------------------------------------------------------------------
 // Locked courses only
@@ -126,19 +182,12 @@ describe("locked courses only", () => {
   });
 
   test("single course → one schedule per section", () => {
-    const results = simulateGenerateSchedules(
-      [[CS_SEC_A, CS_SEC_B]],
-      [],
-    );
+    const results = simulateGenerateSchedules([[CS_SEC_A, CS_SEC_B]], []);
     assert.equal(results.length, 2);
   });
 
   test("numCourses matches locked count → all results kept", () => {
-    const results = simulateGenerateSchedules(
-      [[CS_SEC], [MATH_SEC]],
-      [],
-      2,
-    );
+    const results = simulateGenerateSchedules([[CS_SEC], [MATH_SEC]], [], 2);
     assert.equal(results.length, 1);
     assert.equal(results[0].length, 2);
   });
@@ -201,8 +250,8 @@ describe("mixed locked + optional courses", () => {
 
   test("locked course + optional that conflicts → only base schedule", () => {
     const results = simulateGenerateSchedules(
-      [[CS_SEC]],     // Mon@9
-      [[OPT_C]],      // Mon@9 — conflict
+      [[CS_SEC]], // Mon@9
+      [[OPT_C]], // Mon@9 — conflict
     );
     assert.equal(results.length, 1);
     assert.ok(!results[0].some((s) => s.id === OPT_C.id));
@@ -216,17 +265,20 @@ describe("mixed locked + optional courses", () => {
     assert.ok(results.length > 0);
     assert.ok(results.every((s) => !hasConflictInSchedule(s)));
     // Every result must contain both locked courses
-    assert.ok(results.every((s) =>
-      s.some((sec) => sec.id === CS_SEC.id) &&
-      s.some((sec) => sec.id === MATH_SEC.id),
-    ));
+    assert.ok(
+      results.every(
+        (s) =>
+          s.some((sec) => sec.id === CS_SEC.id) &&
+          s.some((sec) => sec.id === MATH_SEC.id),
+      ),
+    );
   });
 
   test("numCourses = locked + 1 → only schedules that add exactly one optional", () => {
     const results = simulateGenerateSchedules(
-      [[CS_SEC]],           // 1 locked
+      [[CS_SEC]], // 1 locked
       [[OPT_A], [PHYS_SEC]], // 2 optional
-      2,                    // must have exactly 2 total
+      2, // must have exactly 2 total
     );
     assert.ok(results.every((s) => s.length === 2));
     assert.ok(results.every((s) => s.some((sec) => sec.id === CS_SEC.id)));
@@ -238,9 +290,18 @@ describe("mixed locked + optional courses", () => {
       [createMockSection(1000, [{ days: [1], startTime: 800, endTime: 850 }])],
       [createMockSection(1001, [{ days: [2], startTime: 800, endTime: 850 }])],
     ];
-    const optional: SectionWithCourse[][] = Array.from({ length: 8 }, (_, i) => [
-      createMockSection(2000 + i, [{ days: [3 + (i % 2)], startTime: 900 + i * 100, endTime: 950 + i * 100 }]),
-    ]);
+    const optional: SectionWithCourse[][] = Array.from(
+      { length: 8 },
+      (_, i) => [
+        createMockSection(2000 + i, [
+          {
+            days: [3 + (i % 2)],
+            startTime: 900 + i * 100,
+            endTime: 950 + i * 100,
+          },
+        ]),
+      ],
+    );
     const results = simulateGenerateSchedules(locked, optional);
     assert.ok(results.length <= MAX_RESULTS);
     assert.ok(results.every((s) => !hasConflictInSchedule(s)));
@@ -253,11 +314,7 @@ describe("mixed locked + optional courses", () => {
 
 describe("schedule invariants", () => {
   test("no returned schedule ever has a time conflict", () => {
-    const courses = [
-      [CS_SEC_A, CS_SEC_B],
-      [MATH_SEC2],
-      [PHYS_SEC],
-    ];
+    const courses = [[CS_SEC_A, CS_SEC_B], [MATH_SEC2], [PHYS_SEC]];
     const results = simulateGenerateSchedules(courses, [[OPT_A, OPT_C]]);
     assert.ok(results.every((s) => !hasConflictInSchedule(s)));
   });
@@ -266,6 +323,10 @@ describe("schedule invariants", () => {
     const locked = [[CS_SEC_A, CS_SEC_B], [MATH_SEC2]];
     const lockedSchedules = generateCombinationsOptimized(locked);
     // Each result must have exactly 2 sections (one per locked course)
-    assert.ok(lockedSchedules.every(({ schedule }) => schedule.length === locked.length));
+    assert.ok(
+      lockedSchedules.every(
+        ({ schedule }) => schedule.length === locked.length,
+      ),
+    );
   });
 });

@@ -653,3 +653,477 @@ test(
     );
   },
 );
+
+// ---------------------------------------------------------------------------
+// Helper builders for adversarial / realistic scenarios
+// ---------------------------------------------------------------------------
+
+/** Every section meets at the SAME time — maximum conflicts, tons of pruning */
+function buildAllConflicting(
+  numCourses: number,
+  sectionsPerCourse: number,
+): SectionWithCourse[][] {
+  const sectionsByCourse: SectionWithCourse[][] = [];
+  for (let c = 0; c < numCourses; c++) {
+    const sections: SectionWithCourse[] = [];
+    for (let i = 0; i < sectionsPerCourse; i++) {
+      sections.push(
+        createMockSection(
+          (c + 1) * 1000 + i,
+          [{ days: [1, 3, 5], startTime: 930, endTime: 1045 }],
+          {
+            courseId: c + 1,
+            courseSubject: SUBJECTS[c % SUBJECTS.length],
+            courseNumber: NUMBERS[c % NUMBERS.length],
+          },
+        ),
+      );
+    }
+    sectionsByCourse.push(sections);
+  }
+  return sectionsByCourse;
+}
+
+/** Every section meets at a UNIQUE time — zero conflicts, no pruning possible */
+function buildNoConflicts(
+  numCourses: number,
+  sectionsPerCourse: number,
+): SectionWithCourse[][] {
+  const days = [1, 2, 3, 4, 5];
+  const sectionsByCourse: SectionWithCourse[][] = [];
+  for (let c = 0; c < numCourses; c++) {
+    const day = days[c % days.length];
+    const baseTime = 800 + c * 60; // each course on its own hour
+    const sections: SectionWithCourse[] = [];
+    for (let i = 0; i < sectionsPerCourse; i++) {
+      sections.push(
+        createMockSection(
+          (c + 1) * 1000 + i,
+          [{ days: [day], startTime: baseTime, endTime: baseTime + 50 }],
+          {
+            courseId: c + 1,
+            courseSubject: SUBJECTS[c % SUBJECTS.length],
+            courseNumber: NUMBERS[c % NUMBERS.length],
+          },
+        ),
+      );
+    }
+    sectionsByCourse.push(sections);
+  }
+  return sectionsByCourse;
+}
+
+/** Mixed: some courses have many sections, some have few (realistic) */
+function buildMixedSizes(courseSizes: number[]): SectionWithCourse[][] {
+  const sectionsByCourse: SectionWithCourse[][] = [];
+  for (let c = 0; c < courseSizes.length; c++) {
+    const sections: SectionWithCourse[] = [];
+    for (let i = 0; i < courseSizes[c]; i++) {
+      const slot = TIME_SLOTS[i % TIME_SLOTS.length];
+      const days = DAY_PATTERNS[i % DAY_PATTERNS.length];
+      sections.push(
+        createMockSection(
+          (c + 1) * 1000 + i,
+          [{ days, startTime: slot.startTime, endTime: slot.endTime }],
+          {
+            courseId: c + 1,
+            courseSubject: SUBJECTS[c % SUBJECTS.length],
+            courseNumber: NUMBERS[c % NUMBERS.length],
+          },
+        ),
+      );
+    }
+    sectionsByCourse.push(sections);
+  }
+  return sectionsByCourse;
+}
+
+// ---------------------------------------------------------------------------
+// Scaling comparison tests
+// ---------------------------------------------------------------------------
+
+test(
+  "extreme: 8 courses × 30 sections (6.56e11 brute force)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 8;
+    const sectionsPerCourse = 30;
+    const sectionsByCourse = buildSectionsByCourse(
+      numCourses,
+      sectionsPerCourse,
+    );
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[extreme] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[extreme] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[extreme] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    assert.ok(optimizedResults.length > 0);
+    assert.ok(optimizedResults.length <= MAX_RESULTS);
+  },
+);
+
+test(
+  "massive: 10 courses × 15 sections (576 billion brute force)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 10;
+    const sectionsPerCourse = 15;
+    const sectionsByCourse = buildSectionsByCourse(
+      numCourses,
+      sectionsPerCourse,
+    );
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[massive] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[massive] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[massive] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    assert.ok(optimizedResults.length > 0);
+    assert.ok(optimizedResults.length <= MAX_RESULTS);
+  },
+);
+
+test(
+  "deep: 12 courses × 10 sections (1 trillion brute force)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 12;
+    const sectionsPerCourse = 10;
+    const sectionsByCourse = buildSectionsByCourse(
+      numCourses,
+      sectionsPerCourse,
+    );
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[deep] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[deep] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[deep] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    // 12 courses share only 8 distinct time slots — no conflict-free complete schedule exists
+    assert.strictEqual(
+      optimizedResults.length,
+      0,
+      "overconstrained: no valid schedules expected",
+    );
+    assert.strictEqual(
+      originalResults.length,
+      0,
+      "overconstrained: no valid schedules expected",
+    );
+  },
+);
+
+test(
+  "wide: 6 courses × 50 sections (15.6 billion brute force)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 6;
+    const sectionsPerCourse = 50;
+    const sectionsByCourse = buildSectionsByCourse(
+      numCourses,
+      sectionsPerCourse,
+    );
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[wide] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[wide] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[wide] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    assert.ok(optimizedResults.length > 0);
+    assert.ok(optimizedResults.length <= MAX_RESULTS);
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Adversarial tests
+// ---------------------------------------------------------------------------
+
+test(
+  "adversarial: all-conflicting 8 × 20 (pruning stress test)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 8;
+    const sectionsPerCourse = 20;
+    const sectionsByCourse = buildAllConflicting(numCourses, sectionsPerCourse);
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[all-conflict] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[all-conflict] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[all-conflict] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    // Should find zero valid schedules since everything conflicts
+    assert.equal(optimizedResults.length, 0, "no valid schedules should exist");
+    assert.equal(originalResults.length, 0, "no valid schedules should exist");
+  },
+);
+
+test(
+  "adversarial: no-conflict 8 × 12 (every combo is valid)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 8;
+    const sectionsPerCourse = 12;
+    const sectionsByCourse = buildNoConflicts(numCourses, sectionsPerCourse);
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[no-conflict] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[no-conflict] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[no-conflict] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    // Every combo is valid so both should hit the cap
+    assert.equal(
+      optimizedResults.length,
+      MAX_RESULTS,
+      "should hit MAX_RESULTS cap",
+    );
+    assert.equal(
+      originalResults.length,
+      MAX_RESULTS,
+      "should hit MAX_RESULTS cap",
+    );
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Realistic mixed sizes test
+// ---------------------------------------------------------------------------
+
+test(
+  "realistic: mixed sizes [3, 7, 25, 4, 15, 2, 12, 8]",
+  { timeout: 120_000 },
+  () => {
+    const courseSizes = [3, 7, 25, 4, 15, 2, 12, 8];
+    const sectionsByCourse = buildMixedSizes(courseSizes);
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    const elapsedOrig = performance.now() - startOrig;
+
+    const brute = courseSizes.reduce((a, b) => a * b, 1);
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[realistic] ${courseSizes.join("×")} = ${brute.toLocaleString()} brute force`,
+    );
+    console.log(
+      `[realistic] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[realistic] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[realistic] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    assert.ok(optimizedResults.length > 0);
+    assert.ok(optimizedResults.length <= MAX_RESULTS);
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Uncapped production scenario
+// ---------------------------------------------------------------------------
+
+test(
+  "uncapped: 8 × 12 with NO maxResults (the production scenario)",
+  { timeout: 120_000 },
+  () => {
+    const numCourses = 8;
+    const sectionsPerCourse = 12;
+    const sectionsByCourse = buildSectionsByCourse(
+      numCourses,
+      sectionsPerCourse,
+    );
+
+    const startOpt = performance.now();
+    const optimizedResults = generateCombinationsOptimized(sectionsByCourse);
+    const elapsedOpt = performance.now() - startOpt;
+
+    const startOrig = performance.now();
+    const originalResults = generateCombinationsOriginal(sectionsByCourse);
+    const elapsedOrig = performance.now() - startOrig;
+
+    const speedup = elapsedOrig / elapsedOpt;
+    console.log(
+      `[uncapped] ORIGINAL:  ${originalResults.length} schedules in ${elapsedOrig.toFixed(2)}ms`,
+    );
+    console.log(
+      `[uncapped] OPTIMIZED: ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+    );
+    console.log(`[uncapped] SPEEDUP:   ${speedup.toFixed(1)}x`);
+
+    // Both should find the same total number of valid schedules
+    assert.equal(
+      optimizedResults.length,
+      originalResults.length,
+      "both versions should find the same number of schedules when uncapped",
+    );
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Edge cases
+// ---------------------------------------------------------------------------
+
+test("edge: single course, 50 sections", { timeout: 120_000 }, () => {
+  const sectionsByCourse = buildSectionsByCourse(1, 50);
+
+  const startOpt = performance.now();
+  const optimizedResults = generateCombinationsOptimized(
+    sectionsByCourse,
+    MAX_RESULTS,
+  );
+  const elapsedOpt = performance.now() - startOpt;
+
+  console.log(
+    `[single] ${optimizedResults.length} schedules in ${elapsedOpt.toFixed(2)}ms`,
+  );
+  assert.equal(optimizedResults.length, 50, "one section per schedule");
+});
+
+test("edge: empty input", { timeout: 120_000 }, () => {
+  const optimizedResults = generateCombinationsOptimized([], MAX_RESULTS);
+  assert.equal(optimizedResults.length, 0);
+});
+
+test(
+  "edge: two courses, one section each, conflicting",
+  { timeout: 120_000 },
+  () => {
+    const sectionsByCourse = buildAllConflicting(2, 1);
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    assert.equal(optimizedResults.length, 0, "should find no valid schedule");
+  },
+);
+
+test(
+  "edge: two courses, one section each, non-conflicting",
+  { timeout: 120_000 },
+  () => {
+    const sectionsByCourse = buildNoConflicts(2, 1);
+    const optimizedResults = generateCombinationsOptimized(
+      sectionsByCourse,
+      MAX_RESULTS,
+    );
+    assert.equal(optimizedResults.length, 1, "exactly one valid schedule");
+  },
+);

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuditPlanSummary, HydratedAuditPlan } from "@/lib/graduate/types";
 import NewPlanModal from "@/components/graduate/modal/NewPlanModal";
+import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
 import {
   Select,
   SelectContent,
@@ -29,6 +30,7 @@ export function HeaderClient({
 }: HeaderClientProps) {
   const router = useRouter();
   const [showNewPlan, setShowNewPlan] = useState(false);
+  const [showEditPlan, setShowEditPlan] = useState(false);
 
   async function handleDelete() {
     if (!confirm(`Delete "${currentPlan.name}"?`)) {
@@ -48,10 +50,6 @@ export function HeaderClient({
     } else {
       toast.error(result.msg ?? "Failed to delete plan");
     }
-  }
-
-  function handleEdit() {
-    toast("Edit plan coming soon");
   }
 
   function handleCopy() {
@@ -95,7 +93,7 @@ export function HeaderClient({
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
-              onClick={handleEdit}
+              onClick={() => setShowEditPlan(true)}
               title="Edit plan"
             >
               <PencilIcon className="size-3.5" />
@@ -173,7 +171,17 @@ export function HeaderClient({
           </div>
         </div>
       </div>
-      <NewPlanModal open={showNewPlan} onOpenChange={setShowNewPlan} isGuest />
+      <NewPlanModal
+        open={showNewPlan}
+        onOpenChange={setShowNewPlan}
+        isGuest={isGuest}
+      />
+      <EditPlanModal
+        key={currentPlan.id}
+        open={showEditPlan}
+        onOpenChange={setShowEditPlan}
+        plan={currentPlan}
+      />
     </div>
   );
 }

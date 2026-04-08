@@ -14,9 +14,10 @@ import { meetingTimesToBinaryMask } from "./binaryMeetingTime";
 import {
   MAX_RESULTS,
   generateCombinationsOptimized,
+  addOptionalCourses,
   incrementIndex,
 } from "./generateCombinations";
-export { MAX_RESULTS, generateCombinationsOptimized, incrementIndex };
+export { MAX_RESULTS, generateCombinationsOptimized, addOptionalCourses, incrementIndex };
 
 export const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -119,71 +120,6 @@ export const getSectionsAndMeetingTimes = (courseId: number) => {
     });
 
   return sections;
-};
-
-/**
- * Helper function to try adding optional courses to a base schedule.
- *
- * Key optimisations vs the original:
- * - Optional section masks are pre-computed once by the caller and passed in.
- * - A single combined `bigint` mask is threaded through recursion instead of
- *   an array — conflict check is O(1) rather than O(n).
- * - The mutable `currentSchedule` array uses push/pop instead of spreading a
- *   new array on every recursive call.
- */
-const addOptionalCourses = (
-  baseSchedule: SectionWithCourse[],
-  baseMask: bigint,
-  optionalSectionsByCourse: SectionWithCourse[][],
-  optionalSectionMasks: bigint[][],
-  numCourses?: number,
-  maxResults?: number,
-): SectionWithCourse[][] => {
-  const results: SectionWithCourse[][] = [];
-  // Mutated in-place; copied only when pushed to results
-  const currentSchedule: SectionWithCourse[] = [...baseSchedule];
-
-  const recurse = (combinedMask: bigint, courseIndex: number) => {
-    if (maxResults !== undefined && results.length >= maxResults) return;
-
-    if (courseIndex === optionalSectionsByCourse.length) {
-      if (numCourses === undefined || currentSchedule.length === numCourses) {
-        results.push([...currentSchedule]);
-      }
-      return;
-    }
-
-    if (numCourses !== undefined) {
-      const remainingSlots = optionalSectionsByCourse.length - courseIndex;
-      if (currentSchedule.length + remainingSlots < numCourses) return;
-
-      if (currentSchedule.length === numCourses) {
-        recurse(combinedMask, optionalSectionsByCourse.length);
-        return;
-      }
-    }
-
-    // Choice A: Skip this optional course
-    recurse(combinedMask, courseIndex + 1);
-
-    if (maxResults !== undefined && results.length >= maxResults) return;
-
-    // Choice B: Try each section of this optional course
-    const sections = optionalSectionsByCourse[courseIndex];
-    const masks = optionalSectionMasks[courseIndex];
-    for (let i = 0; i < sections.length; i++) {
-      const sectionMask = masks[i];
-      if ((combinedMask & sectionMask) === BigInt(0)) {
-        currentSchedule.push(sections[i]);
-        recurse(combinedMask | sectionMask, courseIndex + 1);
-        currentSchedule.pop();
-        if (maxResults !== undefined && results.length >= maxResults) return;
-      }
-    }
-  };
-
-  recurse(baseMask, 0);
-  return results;
 };
 
 // the main generate schedule function

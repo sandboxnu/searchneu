@@ -2,7 +2,7 @@ import { SectionWithCourse } from "./filters";
 import { meetingTimesToBinaryMask } from "./binaryMeetingTime";
 
 // Cap to prevent runaway generation when courses have many non-conflicting sections
-export const MAX_RESULTS = 1_000;
+export const MAX_RESULTS = 100;
 
 /**
  * Used to keep track of indexes of sections and increment them when they conflict w the current schedule
@@ -65,11 +65,16 @@ export const generateCombinationsOptimized = (
   maxResults?: number,
 ): { schedule: SectionWithCourse[]; mask: bigint }[] => {
   if (sectionsByCourse.length === 0) return [];
-  if (sectionsByCourse.length === 1)
-    return sectionsByCourse[0].map((section) => ({
+  if (sectionsByCourse.length === 1) {
+    const limit = maxResults ?? Infinity;
+    return sectionsByCourse[0].slice(0, limit).map((section) => ({
       schedule: [section],
       mask: meetingTimesToBinaryMask(section),
     }));
+  }
+
+  // A course with no sections means no valid schedule can include it
+  if (sectionsByCourse.some((s) => s.length === 0)) return [];
 
   // Sort courses by number of sections (fewest first) to hit conflicts early
   const sortedSections = sectionsByCourse
@@ -122,4 +127,69 @@ export const generateCombinationsOptimized = (
   }
 
   return result;
+};
+
+/**
+ * Try adding optional courses to a base schedule.
+ *
+ * Optimisations:
+ * - Optional section masks are pre-computed once by the caller and passed in.
+ * - A single combined `bigint` mask is threaded through recursion instead of
+ *   an array — conflict check is O(1) rather than O(n).
+ * - The mutable `currentSchedule` array uses push/pop instead of spreading a
+ *   new array on every recursive call.
+ */
+export const addOptionalCourses = (
+  baseSchedule: SectionWithCourse[],
+  baseMask: bigint,
+  optionalSectionsByCourse: SectionWithCourse[][],
+  optionalSectionMasks: bigint[][],
+  numCourses?: number,
+  maxResults?: number,
+): SectionWithCourse[][] => {
+  const results: SectionWithCourse[][] = [];
+  // Mutated in-place; copied only when pushed to results
+  const currentSchedule: SectionWithCourse[] = [...baseSchedule];
+
+  const recurse = (combinedMask: bigint, courseIndex: number) => {
+    if (maxResults !== undefined && results.length >= maxResults) return;
+
+    if (courseIndex === optionalSectionsByCourse.length) {
+      if (numCourses === undefined || currentSchedule.length === numCourses) {
+        results.push([...currentSchedule]);
+      }
+      return;
+    }
+
+    if (numCourses !== undefined) {
+      const remainingSlots = optionalSectionsByCourse.length - courseIndex;
+      if (currentSchedule.length + remainingSlots < numCourses) return;
+
+      if (currentSchedule.length === numCourses) {
+        recurse(combinedMask, optionalSectionsByCourse.length);
+        return;
+      }
+    }
+
+    // Choice A: Skip this optional course
+    recurse(combinedMask, courseIndex + 1);
+
+    if (maxResults !== undefined && results.length >= maxResults) return;
+
+    // Choice B: Try each section of this optional course
+    const sections = optionalSectionsByCourse[courseIndex];
+    const masks = optionalSectionMasks[courseIndex];
+    for (let i = 0; i < sections.length; i++) {
+      const sectionMask = masks[i];
+      if ((combinedMask & sectionMask) === BigInt(0)) {
+        currentSchedule.push(sections[i]);
+        recurse(combinedMask | sectionMask, courseIndex + 1);
+        currentSchedule.pop();
+        if (maxResults !== undefined && results.length >= maxResults) return;
+      }
+    }
+  };
+
+  recurse(baseMask, 0);
+  return results;
 };

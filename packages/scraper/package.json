@@ -67,7 +67,7 @@
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
     "@types/node": "^25.5.0",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.4",
     "nock": "^14.0.11",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"

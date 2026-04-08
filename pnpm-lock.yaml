@@ -55,7 +55,7 @@ importers:
         specifier: ^25.5.0
         version: 25.5.0
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       tsx:
         specifier: ^4.21.0
@@ -122,7 +122,7 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       json-schema-typed:
         specifier: ^8.0.2
@@ -264,7 +264,7 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       server-only:
         specifier: ^0.0.1
@@ -304,7 +304,7 @@ importers:
         specifier: ^0.31.10
         version: 0.31.10
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       typescript:
         specifier: ^6.0.2
@@ -316,10 +316,10 @@ importers:
         specifier: ^3.3.5
         version: 3.3.5
       '@eslint/js':
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
         specifier: ^16.2.2
@@ -365,7 +365,7 @@ importers:
         specifier: ^25.5.0
         version: 25.5.0
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       nock:
         specifier: ^14.0.11

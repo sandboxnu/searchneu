@@ -34,6 +34,7 @@ import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
 import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
+import { Plus } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -308,8 +309,8 @@ export function BasePlanClient({
               )}
             </div>
 
-            <div className="flex-grow overflow-auto pl-2">
-              <div className="flex flex-col gap-0.5">
+            <div className="flex flex-grow flex-col overflow-auto pl-2">
+              <div className="flex flex-col gap-[4px]">
                 {schedule.years.map((year) => (
                   <AuditYearRow
                     key={year.year}
@@ -331,10 +332,11 @@ export function BasePlanClient({
                 ))}
               </div>
               <button
-                className="border-blue/50 text-blue hover:bg-blue/10 mt-2 w-full rounded-lg border border-dashed px-4 py-2 text-sm font-medium transition-colors"
+                className="border-neu4 bg-neu3 text-neu8 mt-[10px] flex flex-row justify-center gap-1 self-center rounded-[36px] border px-[16px] py-[8px] text-[14px] transition-colors"
                 onClick={handleAddYear}
               >
-                + Add Year
+                <Plus className="h-4 w-4 shrink-0" />
+                Add Year
               </button>
             </div>
           </div>

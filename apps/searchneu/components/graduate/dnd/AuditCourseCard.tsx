@@ -3,7 +3,8 @@
 import { AuditCourse } from "@/lib/graduate/types";
 import { useDraggable } from "@dnd-kit/core";
 import { useCourseName } from "../CourseNameContext";
-import { GripVertical, X } from "lucide-react";
+import { GripVertical } from "lucide-react";
+import { DeleteIcon } from "@/components/icons/Delete";
 
 export function AuditCourseCard({
   course,
@@ -21,29 +22,29 @@ export function AuditCourseCard({
   return (
     <div
       ref={setNodeRef}
-      className={`group bg-neu1 relative mb-1.5 flex w-full items-center justify-between rounded-lg text-sm transition-transform ${isDragging ? "invisible" : ""}`}
+      className={`group bg-neu2 border-neu3 relative flex w-full items-center justify-between rounded-[8px] border-[1px] text-[12px] transition-transform ${isDragging ? "invisible" : ""}`}
       {...attributes}
     >
       <div
-        className="flex flex-grow cursor-grab items-center px-2 py-2"
+        className="flex min-w-0 flex-grow cursor-grab items-center p-2"
         {...listeners}
       >
-        <GripVertical className="text-neu5 mr-1.5 h-3 w-3 flex-shrink-0" />
-        <p className="leading-tight">
-          <span className="mr-1 font-bold">
+        <GripVertical className="text-neu4 mr-1.5 h-4 w-4 flex-shrink-0" />
+        <div className="flex min-w-0 items-center gap-1">
+          <span className="text-neu8 font-bold">
             {course.subject}
             {course.classId}
           </span>
-          <span>{name}</span>
-        </p>
+          <span className="text-neu6 truncate leading-none">{name}</span>
+        </div>
       </div>
       {onRemove && (
         <button
-          className="text-neu5 hover:text-red p-1 opacity-0 transition-opacity group-hover:opacity-100"
+          className="text-neu4 hover:text-neu6 p-3 opacity-0 transition-opacity group-hover:opacity-100"
           onClick={onRemove}
           title="Remove course"
         >
-          <X className="h-4 w-4" />
+          <DeleteIcon className="h-3 w-3" />
         </button>
       )}
     </div>
@@ -54,14 +55,14 @@ export function CourseCardOverlay({ course }: { course: AuditCourse }) {
   const name = useCourseName(course.subject, course.classId);
   return (
     <div className="bg-neu3 flex w-64 items-center rounded-lg px-2 py-2 text-sm shadow-lg">
-      <GripVertical className="text-neu5 mr-1.5 h-3 w-3 flex-shrink-0" />
-      <p className="leading-tight">
-        <span className="mr-1 font-bold">
+      <GripVertical className="text-neu4 mr-1.5 h-4 w-4 flex-shrink-0" />
+      <div className="flex min-w-0 items-center gap-1">
+        <span className="text-neu8 font-bold">
           {course.subject}
           {course.classId}
         </span>
-        <span>{name}</span>
-      </p>
+        <span className="text-neu6 truncate">{name}</span>
+      </div>
     </div>
   );
 }

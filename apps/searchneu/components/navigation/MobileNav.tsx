@@ -12,8 +12,10 @@ import { NavBar } from "./NavBar";
 
 export function MobileNav({
   flags,
+  isGuest,
 }: {
   flags: { [key: string]: Promise<boolean> };
+  isGuest: boolean;
 }) {
   return (
     <Sheet>
@@ -36,7 +38,7 @@ export function MobileNav({
             <Logo className="h-6 w-40" />
           </Link>
           <UserIcon />
-          <NavBar flags={flags} closeable />
+          <NavBar flags={flags} closeable isGuest={isGuest} />
         </div>
       </SheetContent>
     </Sheet>

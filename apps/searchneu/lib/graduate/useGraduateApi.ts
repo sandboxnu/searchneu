@@ -55,12 +55,11 @@ export function useGraduateMajor(year: string | null, major: string | null) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!year || !major) return;
+
     const fetchMajor = async () => {
       try {
-        const response = await GraduateAPI.majors.get(
-          parseInt(year ?? "0"),
-          major ?? "",
-        );
+        const response = await GraduateAPI.majors.get(parseInt(year), major);
         setData(response);
       } catch (err) {
         setError(

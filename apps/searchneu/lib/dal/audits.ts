@@ -194,30 +194,21 @@ export async function updateAuditPlan(
   } = updateAuditPlanInput;
 
   const currentAuditPlan = await getAuditPlan(id, userId);
+  if (!currentAuditPlan) return null;
 
-  if (!currentAuditPlan) {
-    return null;
-  }
+  // explicit null = user wants to wipe; undefined = user didn't touch the field
+  const isWipeMajorUpdate = newMajors === null;
+  const isWipeMinorUpdate = newMinors === null;
 
-  const isMajorInfoUpdate = newMajors || newCatalogYear || newConcentrationName;
+  const isMajorInfoUpdate =
+    (newMajors != null && newMajors.length > 0) ||
+    newCatalogYear != null ||
+    (newConcentrationName != null && newConcentrationName.length > 0);
 
-  /** Wipe Major => Remove existing major from the plan. */
-  const isWipeMajorUpdate =
-    !newMajors &&
-    !newCatalogYear &&
-    !newConcentrationName &&
-    currentAuditPlan.majors?.[0];
+  // only validate minors when actually setting new ones, not on catalog year changes
+  const isMinorInfoUpdate = newMinors != null && newMinors.length > 0;
 
-  /** Wipe Minor => Remove existing minor from the plan. */
-  const isWipeMinorUpdate =
-    (!newMinors || newMinors.length === 0) &&
-    currentAuditPlan.minors &&
-    currentAuditPlan.minors.length > 0;
-
-  const isMinorInfoUpdate =
-    (newMinors && newMinors.length > 0) || newCatalogYear;
-
-  const isScheduleUpdate = newSchedule && !isMajorInfoUpdate;
+  const isScheduleUpdate = !!newSchedule && !isMajorInfoUpdate;
 
   if (
     !(
@@ -225,7 +216,8 @@ export async function updateAuditPlan(
       isMajorInfoUpdate ||
       isMinorInfoUpdate ||
       isScheduleUpdate ||
-      newName
+      newName ||
+      isWipeMinorUpdate
     )
   ) {
     console.debug({
@@ -234,16 +226,15 @@ export async function updateAuditPlan(
     });
   }
 
-  // validate the major info if major is being updated
+  // validate major info if a real major update is happening
   if (isMajorInfoUpdate) {
-    const majorToValidate = newMajors || currentAuditPlan.majors;
-    const yearToValidate = newCatalogYear || currentAuditPlan.catalogYear;
+    const majorToValidate = newMajors ?? currentAuditPlan.majors;
+    const yearToValidate = newCatalogYear ?? currentAuditPlan.catalogYear;
     const concentrationToValidate =
       newConcentrationName ?? currentAuditPlan.concentration;
 
     if (majorToValidate && yearToValidate) {
       const isValidYear = await isMajorInYear(majorToValidate, yearToValidate);
-
       if (!isValidYear) {
         console.debug("Attempting to update plan with invalid catalog year", {
           majorName: majorToValidate,
@@ -257,7 +248,6 @@ export async function updateAuditPlan(
         yearToValidate,
         concentrationToValidate || "",
       );
-
       if (!isValidConcentration) {
         console.debug("Attempting to update plan with invalid concentration", {
           majorName: majorToValidate,
@@ -269,86 +259,61 @@ export async function updateAuditPlan(
     }
   }
 
-  if (
-    isMinorInfoUpdate &&
-    (newMinors || currentAuditPlan.minors) &&
-    (newCatalogYear || currentAuditPlan.catalogYear)
-  ) {
-    const yearToValidate = newCatalogYear || currentAuditPlan.catalogYear;
-    const minorName = await getByMinorAndYear(
-      newMinors ?? currentAuditPlan.minors ?? [],
-      yearToValidate ?? 0,
-    );
-
+  // only validate minors when we're actually setting new ones
+  if (isMinorInfoUpdate && newMinors) {
+    const yearToValidate = newCatalogYear ?? currentAuditPlan.catalogYear;
+    const minorName = await getByMinorAndYear(newMinors, yearToValidate ?? 0);
     if (!minorName) {
       console.debug(
-        `Attempting to update a plan with an invalid minor: ${minorName}, ${yearToValidate}`,
+        `Attempting to update a plan with an invalid minor: ${newMinors}, ${yearToValidate}`,
       );
       return null;
     }
   }
 
+  // build new values starting from current, then apply changes
   let name = currentAuditPlan.name;
   let schedule = currentAuditPlan.schedule;
-  let majors = isWipeMajorUpdate ? undefined : currentAuditPlan.majors;
-  let minors = isWipeMinorUpdate ? undefined : currentAuditPlan.minors;
-  let catalogYear = isWipeMajorUpdate
-    ? undefined
-    : currentAuditPlan.catalogYear;
-  let concentration = isWipeMajorUpdate
-    ? undefined
-    : currentAuditPlan.concentration;
+  let majors = isWipeMajorUpdate ? null : currentAuditPlan.majors;
+  let minors = isWipeMinorUpdate ? null : currentAuditPlan.minors;
+  let catalogYear = isWipeMajorUpdate ? null : currentAuditPlan.catalogYear;
+  let concentration = isWipeMajorUpdate ? null : currentAuditPlan.concentration;
 
-  if (newSchedule) {
-    schedule = newSchedule;
+  if (newSchedule) schedule = newSchedule;
+  if (newName) name = newName;
+
+  if (isMajorInfoUpdate) {
+    majors = newMajors ?? currentAuditPlan.majors;
+    catalogYear = newCatalogYear ?? currentAuditPlan.catalogYear;
+    concentration = newConcentrationName ?? currentAuditPlan.concentration;
+    // catalog year changed — clear minors since they may be invalid for the new year
+    if (
+      newCatalogYear != null &&
+      newCatalogYear !== currentAuditPlan.catalogYear
+    ) {
+      minors = null;
+    }
   }
 
-  if (newName) {
-    name = newName;
-  }
-
-  if (newMajors) {
-    majors = newMajors;
-    catalogYear = newCatalogYear;
-    concentration = newConcentrationName;
-  }
-
-  if (newMinors) {
+  if (isMinorInfoUpdate && newMinors) {
     minors = newMinors;
   }
-
-  if (newMinors && newMinors.length > 0) {
-    minors = newMinors;
-  }
-
-  const newPlan = {
-    name,
-    majors,
-    minors,
-    catalogYear,
-    concentration,
-    schedule,
-    whiteboard: newWhiteboard ?? currentAuditPlan.whiteboard,
-  };
 
   const updatedAuditPlan = await db
     .update(auditPlansT)
     .set({
-      name: newPlan.name,
-      schedule: newPlan.schedule,
-      majors: newPlan.majors,
-      minors: newPlan.minors,
-      concentration: newPlan.concentration,
-      catalogYear: newPlan.catalogYear,
-      whiteboard: newPlan.whiteboard,
+      name,
+      schedule,
+      majors,
+      minors,
+      concentration,
+      catalogYear,
+      whiteboard: newWhiteboard ?? currentAuditPlan.whiteboard,
     })
     .where(and(eq(auditPlansT.id, id), eq(auditPlansT.userId, userId)))
     .returning();
 
-  if (updatedAuditPlan.length === 0) {
-    return null;
-  }
-
+  if (updatedAuditPlan.length === 0) return null;
   return updatedAuditPlan[0];
 }
 

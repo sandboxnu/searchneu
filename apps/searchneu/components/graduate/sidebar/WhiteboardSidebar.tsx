@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, ChevronDown, Plus, X, Check, Minus } from "lucide-react";
+import { ChevronUp, ChevronDown, Plus, X, Check, Minus, Wand2 } from "lucide-react";
 import {
   Audit,
   AuditCourse,
@@ -47,6 +47,65 @@ function collectScheduleCourses(schedule: Audit): AuditCourse[] {
     }
   }
   return courses;
+}
+
+/** Recursively collects all COURSE-type requirement keys from a requirement tree. */
+function collectRequiredCourseKeys(req: Requirement): string[] {
+  if (req.type === "COURSE") {
+    return [`${req.subject} ${req.classId}`];
+  }
+  if (
+    req.type === "AND" ||
+    req.type === "OR" ||
+    req.type === "XOM" ||
+    req.type === "SECTION"
+  ) {
+    const children =
+      req.type === "SECTION"
+        ? (req as Section).requirements
+        : (req as IAndCourse | IOrCourse | IXofManyCourse).courses;
+    return (children as Requirement[]).flatMap(collectRequiredCourseKeys);
+  }
+  return [];
+}
+
+/**
+ * Builds a whiteboard by matching schedule courses against each section's
+ * requirements. Existing manually-added courses are preserved.
+ */
+function buildAutoFilledWhiteboard(
+  sections: Section[],
+  scheduleCourses: AuditCourse[],
+  current: Whiteboard,
+): Whiteboard {
+  const scheduleCourseKeys = new Set(
+    scheduleCourses.map((c) => `${c.subject} ${c.classId}`),
+  );
+  const updated: Whiteboard = { ...current };
+  for (const section of sections) {
+    const sectionCourseKeys = new Set<string>();
+    for (const req of section.requirements) {
+      for (const key of collectRequiredCourseKeys(req)) {
+        sectionCourseKeys.add(key);
+      }
+    }
+    const matched = [...sectionCourseKeys].filter((k) =>
+      scheduleCourseKeys.has(k),
+    );
+    // Merge: keep existing courses, add newly matched ones
+    const existing = current[section.title]?.courses ?? [];
+    const merged = [...new Set([...existing, ...matched])];
+    updated[section.title] = {
+      courses: merged,
+      status:
+        merged.length > 0
+          ? (current[section.title]?.status ?? "in_progress") === "not_started"
+            ? "in_progress"
+            : (current[section.title]?.status ?? "in_progress")
+          : (current[section.title]?.status ?? "not_started"),
+    };
+  }
+  return updated;
 }
 
 const STATUS_CONFIG: Record<
@@ -397,6 +456,7 @@ function WhiteboardSection({
               ))}
             </div>
           )}
+
         </div>
       )}
     </div>
@@ -454,6 +514,19 @@ export function WhiteboardSidebar({
     onWhiteboardChange({ ...whiteboard, [sectionTitle]: entry });
   }
 
+  function handleAutoFill() {
+    const allSections = [
+      ...(currentMajor?.requirementSections ?? []),
+      ...(currentMinor?.requirementSections ?? []),
+    ];
+    const updated = buildAutoFilledWhiteboard(
+      allSections,
+      scheduleCourses,
+      whiteboard,
+    );
+    onWhiteboardChange(updated);
+  }
+
   return (
     <SidebarContainer
       title={currentMajor ? currentMajor.name : "No major"}
@@ -501,6 +574,20 @@ export function WhiteboardSidebar({
                   : (currentMinor?.name ?? "Minor")}
               </h2>
               <div className="flex-1" />
+            </div>
+
+            <div className="border-neu25 border-b px-4 py-3">
+              <button
+                type="button"
+                onClick={handleAutoFill}
+                className="text-blue hover:bg-blue/10 flex w-full items-center justify-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors"
+              >
+                <Wand2 className="h-3.5 w-3.5" />
+                Auto-fill from schedule
+              </button>
+              <p className="text-neu6 mt-1 text-center text-xs">
+                Automatically assigns schedule courses to matching sections.
+              </p>
             </div>
 
             {activeTab === "minor" && currentMinor && (

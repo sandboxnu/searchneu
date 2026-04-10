@@ -206,7 +206,7 @@ export default function EditPlanModal({
       const validConcentrations = majorData?.concentrations ?? [];
       const finalConcentration = validConcentrations.includes(concentration)
         ? concentration
-        : undefined;
+        : "";
 
       const response = await fetch(`/api/audit/plan/${plan.id}`, {
         method: "PATCH",
@@ -217,9 +217,7 @@ export default function EditPlanModal({
           majors: isNoMajorSelected ? null : majors,
           minors: !minors?.length ? null : minors,
           catalogYear: isNoMajorSelected ? null : catalogYear,
-          concentration: isNoMajorSelected
-            ? null
-            : (finalConcentration ?? null),
+          concentration: isNoMajorSelected ? "" : finalConcentration,
         }),
       });
 

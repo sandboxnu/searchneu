@@ -11,6 +11,7 @@ import {
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
 import { meetingTimesToBinaryMask, masksConflict } from "./binaryMeetingTime";
+import { buildCoreqGroups } from "./coreqResolver";
 
 export const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -209,72 +210,117 @@ const generateCombinationsOptimized = (
 };
 
 /**
- * Helper function to try adding optional courses to a base schedule.
+ * Helper function to try adding optional course groups to a base schedule.
+ * Each group is treated as a single unit - either all courses in the group are added, or none.
  */
-const addOptionalCourses = (
+const addOptionalCourseGroups = (
   baseSchedule: SectionWithCourse[],
-  optionalSectionsByCourse: SectionWithCourse[][],
+  optionalGroupsByCourse: Map<number, SectionWithCourse[]>,
+  coreqGroups: number[][],
   numCourses?: number,
 ): SectionWithCourse[][] => {
   const results: SectionWithCourse[][] = [];
   const baseMasks = baseSchedule.map(meetingTimesToBinaryMask);
 
+  // Map courseIds to which group index they belong to
+  const groupIndexByCourseId = new Map<number, number>();
+  for (let i = 0; i < coreqGroups.length; i++) {
+    for (const courseId of coreqGroups[i]) {
+      groupIndexByCourseId.set(courseId, i);
+    }
+  }
+
+  // Get optional group indices in order
+  const optionalGroupIndices = Array.from(
+    new Set(
+      Array.from(optionalGroupsByCourse.keys()).map((cid) =>
+        groupIndexByCourseId.get(cid),
+      ),
+    ),
+  )
+    .filter((id): id is number => id !== undefined)
+    .sort((a, b) => a - b);
+
+  // Helper to count how many groups are in a schedule
+  const countGroupsInSchedule = (schedule: SectionWithCourse[]): number => {
+    const groupsPresent = new Set<number>();
+    for (const section of schedule) {
+      const groupIdx = groupIndexByCourseId.get(section.courseId);
+      if (groupIdx !== undefined && optionalGroupIndices.includes(groupIdx)) {
+        groupsPresent.add(groupIdx);
+      }
+    }
+    return groupsPresent.size;
+  };
+
   const generateOptionalCombinations = (
     currentSchedule: SectionWithCourse[],
     currentMasks: bigint[],
-    courseIndex: number,
+    groupIndex: number,
   ) => {
-    // Condition: If we hit the end of the available courses
-    if (courseIndex === optionalSectionsByCourse.length) {
-      // If numCourses is defined, only push if length matches exactly
-      // Otherwise, push everything
-      if (numCourses === undefined || currentSchedule.length === numCourses) {
+    // Condition: If we hit the end of the available groups
+    if (groupIndex === optionalGroupIndices.length) {
+      const groupCount = countGroupsInSchedule(currentSchedule);
+      if (numCourses === undefined || groupCount === numCourses) {
         results.push([...currentSchedule]);
       }
       return;
     }
 
-    // Optimization: If it's impossible to reach numCourses even if we took
-    // every remaining course, stop this branch
+    // Optimization: If it's impossible to reach numCourses even if we took every remaining group
     if (numCourses !== undefined) {
-      const remainingSlots = optionalSectionsByCourse.length - courseIndex;
-      if (currentSchedule.length + remainingSlots < numCourses) return;
+      const groupCount = countGroupsInSchedule(currentSchedule);
+      const remainingGroups = optionalGroupIndices.length - groupIndex;
+      if (groupCount + remainingGroups < numCourses) return;
 
-      // Optimization: If we already have enough courses, don't try to add more
-      // Just jump to the end of the recursion to validate the current length
-      if (currentSchedule.length === numCourses) {
+      // Optimization: If we already have enough groups, jump to validation
+      if (groupCount === numCourses) {
         generateOptionalCombinations(
           currentSchedule,
           currentMasks,
-          optionalSectionsByCourse.length,
+          optionalGroupIndices.length,
         );
         return;
       }
     }
 
-    // Choice A: Try not adding this optional course
-    generateOptionalCombinations(
-      currentSchedule,
-      currentMasks,
-      courseIndex + 1,
+    const currentGroupIdx = optionalGroupIndices[groupIndex];
+    const coursesInGroup = coreqGroups[currentGroupIdx];
+
+    // Choice A: Try not adding this optional group
+    generateOptionalCombinations(currentSchedule, currentMasks, groupIndex + 1);
+
+    // Choice B: Try adding all sections of all courses in this group (must all fit together)
+    const groupSectionsBysCourse = coursesInGroup.map(
+      (courseId) => optionalGroupsByCourse.get(courseId) || [],
     );
 
-    // Choice B: Try adding each section of this optional course
-    for (const section of optionalSectionsByCourse[courseIndex]) {
-      const sectionMask = meetingTimesToBinaryMask(section);
+    // Generate combinations for this group
+    const groupCombinations = generateCombinationsOptimized(
+      groupSectionsBysCourse,
+    );
+
+    for (const groupCombination of groupCombinations) {
       let hasConflict = false;
-      for (const mask of currentMasks) {
-        if (masksConflict(mask, sectionMask)) {
-          hasConflict = true;
-          break;
+
+      // Check if any section in the group conflicts with current schedule
+      for (const section of groupCombination) {
+        const sectionMask = meetingTimesToBinaryMask(section);
+        for (const mask of currentMasks) {
+          if (masksConflict(mask, sectionMask)) {
+            hasConflict = true;
+            break;
+          }
         }
+        if (hasConflict) break;
       }
 
       if (!hasConflict) {
+        const newMasks = groupCombination.map(meetingTimesToBinaryMask);
         generateOptionalCombinations(
-          [...currentSchedule, section],
-          [...currentMasks, sectionMask],
-          courseIndex + 1,
+          [...currentSchedule, ...groupCombination],
+          [...currentMasks, ...newMasks],
+          groupIndex + 1,
         );
       }
     }
@@ -284,48 +330,105 @@ const addOptionalCourses = (
   return results;
 };
 
-// the main generate schedule function
-// takes a list of locked course IDs and optional course IDs
-// returns a list of valid schedules (each schedule is a list of sections)
+/**
+ * Main schedule generator.
+ *
+ * - Corequisite courses are automatically grouped together
+ * - If one course in a group is selected, all must be selected
+ * - Each group counts as 1 towards numCourses
+ * - Locked courses must all be present; optional courses can be any subset
+ */
 export const generateSchedules = async (
   lockedCourseIds: number[],
   optionalCourseIds: number[],
   numCourses?: number,
 ): Promise<SectionWithCourse[][]> => {
-  const lockedSectionsByCourse = await Promise.all(
-    lockedCourseIds.map(getSectionsAndMeetingTimes),
-  );
-  const optionalSectionsByCourse = await Promise.all(
-    optionalCourseIds.map(getSectionsAndMeetingTimes),
-  );
-  optionalSectionsByCourse.sort((a, b) => a.length - b.length);
+  // Build coreq groups from all courses
+  const allCourseIds = [...lockedCourseIds, ...optionalCourseIds];
+  const coreqGroups = await buildCoreqGroups(allCourseIds);
 
-  const validLockedSchedules = generateCombinationsOptimized(
-    lockedSectionsByCourse,
-  );
+  // Fetch sections for all courses
+  const [lockedSectionsByCourse, optionalSectionsByCourse] = await Promise.all([
+    Promise.all(lockedCourseIds.map(getSectionsAndMeetingTimes)),
+    Promise.all(optionalCourseIds.map(getSectionsAndMeetingTimes)),
+  ]);
+
+  // Create Maps for easier lookup by courseId
+  const lockedGroupsByCourse = new Map<number, SectionWithCourse[]>();
+  lockedCourseIds.forEach((courseId, idx) => {
+    lockedGroupsByCourse.set(courseId, lockedSectionsByCourse[idx]);
+  });
+
+  const optionalGroupsByCourse = new Map<number, SectionWithCourse[]>();
+  optionalCourseIds.forEach((courseId, idx) => {
+    optionalGroupsByCourse.set(courseId, optionalSectionsByCourse[idx]);
+  });
+
+  // For locked courses: they must all be present, so organize by group
+  const lockedGroupsToUse: SectionWithCourse[][] = [];
+  for (const group of coreqGroups) {
+    const lockedCoursesInGroup = group.filter((cid) =>
+      lockedGroupsByCourse.has(cid),
+    );
+    if (lockedCoursesInGroup.length > 0) {
+      // All locked courses in this group must be satisfied
+      lockedGroupsToUse.push(
+        ...lockedCoursesInGroup.map((cid) => lockedGroupsByCourse.get(cid)!),
+      );
+    }
+  }
+
+  const validLockedSchedules = generateCombinationsOptimized(lockedGroupsToUse);
 
   // Edge case: No locked courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    return addOptionalCourses([], optionalSectionsByCourse, numCourses);
+    return addOptionalCourseGroups(
+      [],
+      optionalGroupsByCourse,
+      coreqGroups,
+      numCourses,
+    );
   }
 
-  // If no optional courses, filter the locked schedules by the required count
+  // If no optional courses, filter by group count
   if (optionalCourseIds.length === 0) {
-    return numCourses !== undefined
-      ? validLockedSchedules.filter((s) => s.length === numCourses)
-      : validLockedSchedules;
+    if (numCourses === undefined) {
+      return validLockedSchedules;
+    }
+    // Count groups in each schedule
+    return validLockedSchedules.filter((schedule) => {
+      const groupCount = new Set(
+        schedule.map((s) => {
+          for (const group of coreqGroups) {
+            if (group.includes(s.courseId)) return coreqGroups.indexOf(group);
+          }
+          return -1;
+        }),
+      ).size;
+      return groupCount === numCourses;
+    });
   }
 
   const allSchedules: SectionWithCourse[][] = [];
   for (const lockedSchedule of validLockedSchedules) {
-    // If a locked schedule is already too big, it can't be valid
-    if (numCourses !== undefined && lockedSchedule.length > numCourses)
-      continue;
+    // Count locked groups
+    const lockedGroupCount = new Set(
+      lockedSchedule.map((s) => {
+        for (const group of coreqGroups) {
+          if (group.includes(s.courseId)) return coreqGroups.indexOf(group);
+        }
+        return -1;
+      }),
+    ).size;
 
-    const schedulesWithOptional = addOptionalCourses(
+    // If already too many groups, skip
+    if (numCourses !== undefined && lockedGroupCount > numCourses) continue;
+
+    const schedulesWithOptional = addOptionalCourseGroups(
       lockedSchedule,
-      optionalSectionsByCourse,
-      numCourses, // Pass target down
+      optionalGroupsByCourse,
+      coreqGroups,
+      numCourses ? numCourses - lockedGroupCount : undefined,
     );
     allSchedules.push(...schedulesWithOptional);
   }

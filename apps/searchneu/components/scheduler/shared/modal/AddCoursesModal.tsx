@@ -339,10 +339,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
             <Button
               className="cursor-pointer"
               disabled={
-                isGenerating ||
-                selectedCourseGroups.length +
-                  selectedCourseGroups.flatMap((g) => g.coreqs).length <
-                  numCourses
+                isGenerating || selectedCourseGroups.length < numCourses
               }
               onClick={() => {
                 const allCourseIds = selectedCourseGroups.flatMap((g) => [

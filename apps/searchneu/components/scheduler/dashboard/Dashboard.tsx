@@ -1,6 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { Campus, Nupath, Term } from "@/lib/catalog/types";
 import { GroupedTerms } from "@/lib/catalog/types";
 import { cn } from "@/lib/cn";
@@ -69,6 +77,7 @@ export function DashboardClient({
   nupathsPromise: Promise<Nupath[]>;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [planIdToDelete, setPlanIdToDelete] = useState<number | null>(null);
 
   const [selectedCollege, setSelectedCollege] =
     useState<keyof GroupedTerms>("neu");
@@ -93,10 +102,14 @@ export function DashboardClient({
   // this case should never happen as data is always defined (despite the type)
   if (!plans) throw Error("fallback data not correctly set");
 
-  const handleDeletePlan = async (planId: number) => {
-    if (!confirm("Are you sure you want to delete this plan?")) {
-      return;
-    }
+  const handleDeletePlan = (planId: number) => {
+    setPlanIdToDelete(planId);
+  };
+
+  const confirmDeletePlan = async () => {
+    if (planIdToDelete == null) return;
+    const planId = planIdToDelete;
+    setPlanIdToDelete(null);
 
     mutate(
       async (p) => {
@@ -116,6 +129,37 @@ export function DashboardClient({
 
   return (
     <div className="bg-neu2 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
+      <Dialog
+        open={planIdToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPlanIdToDelete(null);
+        }}
+      >
+        <DialogContent className="p-5 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-bold">Delete Plan?</DialogTitle>
+            <DialogDescription className="text-neu9">
+              Are you sure you want to delete this plan? This action is
+              permanent and cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="text-neu6 border-neu4 bg-neu2 cursor-pointer font-bold"
+              onClick={() => setPlanIdToDelete(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-neu hover:bg-neu/90 text-neu1 cursor-pointer font-bold"
+              onClick={confirmDeletePlan}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <AddCoursesModal
         open={isModalOpen}
         terms={terms}

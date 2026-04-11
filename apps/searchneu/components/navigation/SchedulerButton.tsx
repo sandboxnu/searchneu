@@ -21,7 +21,7 @@ export function SchedulerButton({ pathname }: { pathname: string }) {
       <>
         <button
           onClick={() => setShowLoginPrompt(true)}
-          className="bg-neu1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+          className="bg-neu2 border-neu3 text-neu6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
         >
           <Calendar className="size-4" />
           Scheduler
@@ -39,8 +39,8 @@ export function SchedulerButton({ pathname }: { pathname: string }) {
   return (
     <Link
       href="/scheduler"
-      data-active={pathname === "/scheduler"}
-      className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+      data-active={pathname.startsWith("/scheduler")}
+      className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 text-neu6 data-[active=true]:text-neu8 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
     >
       <Calendar className="size-4" />
       Scheduler

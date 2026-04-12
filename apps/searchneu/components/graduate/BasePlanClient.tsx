@@ -265,7 +265,7 @@ export function BasePlanClient({
       >
         <DeleteDropZone>
           <div className="flex h-full overflow-hidden">
-            <div className="bg-neu25 w-[360px] flex-shrink-0 overflow-y-auto">
+            <div className="bg-neu25 max-h-screen w-[360px] flex-shrink-0 overflow-y-auto">
               <div className="flex justify-center gap-1 px-4 pt-2">
                 <button
                   type="button"

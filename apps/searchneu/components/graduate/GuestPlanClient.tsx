@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Audit, Whiteboard } from "@/lib/graduate/types";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
@@ -21,15 +21,20 @@ export function GuestPlanClient({
   initialCourseNames = {},
 }: GuestPlanClientProps) {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
   const [guestPlan, setGuestPlan] = useLocalStorage<
     (CreateAuditPlanInput & { whiteboard?: Whiteboard }) | null
   >("guest-plan", null);
 
   useEffect(() => {
-    if (!guestPlan) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && !guestPlan) {
       router.replace("/graduate");
     }
-  }, [guestPlan, router]);
+  }, [guestPlan, router, isMounted]);
 
   // Persist server-provided course names to localStorage; on subsequent
   // visits (no search params) fall back to the cached copy.

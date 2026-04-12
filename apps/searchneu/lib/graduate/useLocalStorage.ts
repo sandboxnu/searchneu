@@ -17,16 +17,21 @@ export function useLocalStorage<T>(
   key: string,
   defaultValue: T,
 ): [T, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") return defaultValue;
+  const [storedValue, setStoredValue] = useState<T>(defaultValue);
+
+  // Read from localStorage after mount — the lazy initializer doesn't help
+  // in Next.js because React reuses the server-side defaultValue during
+  // hydration and never re-runs it on the client.
+  useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : defaultValue;
+      if (item !== null) {
+        setStoredValue(JSON.parse(item) as T);
+      }
     } catch (error) {
       console.error(error);
-      return defaultValue;
     }
-  });
+  }, [key]);
 
   // Sync across hook instances in the same tab
   useEffect(() => {

@@ -1,8 +1,8 @@
 // ── YearRow ──────────────────────────────────────────────────────────────────
 
 import { AuditYear, SeasonEnum } from "@/lib/graduate/types";
-import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { AuditTermColumn } from "./AuditTermColumn";
+import { DeleteIcon } from "@/components/icons/Delete";
 
 export function AuditYearRow({
   year,
@@ -23,20 +23,22 @@ export function AuditYearRow({
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="border-neu3 flex flex-col rounded-[8px] border-1 bg-white px-[24px] py-[16px]">
       <div
-        className={`flex cursor-pointer items-center justify-between px-4 py-3 transition-colors duration-150 select-none ${expanded ? "bg-navy hover:bg-navy/80" : "bg-blue hover:bg-blue/90"}`}
+        className={`flex cursor-pointer items-center justify-between rounded-[10px] bg-white transition-colors duration-150 select-none`}
         onClick={onToggle}
       >
-        <div className="flex flex-col">
-          <span className="text-lg font-bold text-white">Year {year.year}</span>
-          <span className="text-sm text-white">
-            {credits} {credits === 1 ? "Credit" : "Credits"} Completed
+        <div className="flex items-center gap-3">
+          <span className="text-neu8 text-[16px] font-bold">
+            Year {year.year}
+          </span>
+          <span className="text-neu6 bg-neu2 rounded-[8px] px-[8px] py-[4px] text-[12px]">
+            {credits} {credits === 1 ? "credit" : "credits"} complete
           </span>
         </div>
         <div className="flex items-center gap-1">
           <button
-            className="hover:text-red/60 p-1 text-white/70 transition-colors"
+            className="border-neu3 bg-neu2 text-neu4 cursor-pointer rounded-[24px] border-1 p-[8px] transition-colors"
             title={`Delete Year ${year.year}`}
             onClick={(e) => {
               e.stopPropagation();
@@ -49,33 +51,31 @@ export function AuditYearRow({
               }
             }}
           >
-            <Trash2 className="h-4 w-4" />
+            <DeleteIcon className="h-3 w-3" />
           </button>
-          {expanded ? (
-            <ChevronUp className="h-5 w-5 text-white" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-white" />
-          )}
         </div>
       </div>
 
       {expanded && (
-        <div className="grid min-h-[220px] grid-cols-4">
-          {(
-            [
-              { term: year.fall, season: SeasonEnum.FL },
-              { term: year.spring, season: SeasonEnum.SP },
-              { term: year.summer1, season: SeasonEnum.S1 },
-              { term: year.summer2, season: SeasonEnum.S2 },
-            ] as const
-          ).map(({ term, season }) => (
-            <AuditTermColumn
-              key={term.id}
-              term={term}
-              onRemoveCourse={(i) => onRemoveCourse(season, i)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="border-neu3 my-[16px] flex border-1"></div>
+          <div className="grid grid-cols-4 gap-[36px] bg-white">
+            {(
+              [
+                { term: year.fall, season: SeasonEnum.FL },
+                { term: year.spring, season: SeasonEnum.SP },
+                { term: year.summer1, season: SeasonEnum.S1 },
+                { term: year.summer2, season: SeasonEnum.S2 },
+              ] as const
+            ).map(({ term, season }) => (
+              <AuditTermColumn
+                key={term.id}
+                term={term}
+                onRemoveCourse={(i) => onRemoveCourse(season, i)}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

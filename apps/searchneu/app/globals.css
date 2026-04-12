@@ -96,6 +96,15 @@
   --scheduler-course-brown-stroke: #e0d3c9;
 
   --font-lato: "Lato", sans-serif;
+
+  /* graduate colors */
+  --graduate-navy-background: #1c3557;
+  --graduate-medium-blue: #6080aa;
+  --graduate-primary-text: #223454;
+  --graduate-secondary-text: #c1cad9;
+  --graduate-neutral-background: #e7ecf2;
+
+  --font-helvetica: "Helvetica Neue", sans-serif;
 }
 
 @theme inline {

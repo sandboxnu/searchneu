@@ -2,6 +2,7 @@ import { AuditTerm } from "@/lib/graduate/types";
 import { useDroppable } from "@dnd-kit/core";
 import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 import { AuditCourseCard } from "./AuditCourseCard";
+import { Plus } from "lucide-react";
 
 export function AuditTermColumn({
   term,
@@ -11,31 +12,32 @@ export function AuditTermColumn({
   onRemoveCourse: (courseIndex: number) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: term.id! });
-  const credits = term.classes.reduce((s, c) => s + c.numCreditsMin, 0);
   const seasonLabel = SEASON_DISPLAY[term.season] ?? term.season;
 
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col px-3 pt-3 pb-6 transition-colors duration-100 ${isOver ? "bg-neu3" : "bg-neu25"}`}
+      className={`flex flex-col gap-[8px] rounded-[8px] p-[6px] transition-colors duration-100 ${isOver ? "bg-neu2" : "bg-neu0"}`}
     >
-      <div className="flex items-start gap-2 pb-2">
-        <span className="text-xs font-bold tracking-wide uppercase">
+      <div className="text-neu6 flex items-start">
+        <span className="text-[12px] font-bold tracking-wide uppercase">
           {seasonLabel}
         </span>
-        <span className="text-blue text-xs font-medium">
-          {credits} {credits === 1 ? "Credit" : "Credits"}
-        </span>
       </div>
-      {term.classes.map((course, i) => (
-        <AuditCourseCard
-          key={course.id}
-          course={course}
-          onRemove={() => onRemoveCourse(i)}
-        />
-      ))}
-      <button className="border-neu4 text-neu5 hover:border-blue/70 hover:text-blue mt-1 w-full rounded border border-dashed py-1.5 text-xs transition-colors">
-        + Add Course
+      {term.classes.length > 0 && (
+        <div className="flex flex-col gap-[4px]">
+          {term.classes.map((course, i) => (
+            <AuditCourseCard
+              key={course.id}
+              course={course}
+              onRemove={() => onRemoveCourse(i)}
+            />
+          ))}
+        </div>
+      )}
+      <button className="bg-neu0 text-neu7 border-neu3 flex w-full cursor-pointer items-center justify-center gap-1 rounded-[36px] border-1 py-2 transition-colors">
+        <Plus className="h-4 w-4 shrink-0" />
+        <span className="text-sm leading-none">Add Courses</span>
       </button>
     </div>
   );

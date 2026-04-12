@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 /**
@@ -17,6 +17,9 @@ export function useLocalStorage<T>(
   key: string,
   defaultValue: T,
 ): [T, (value: T) => void] {
+  const defaultValueRef = useRef(defaultValue);
+  const cachedRef = useRef<{ raw: string | null; parsed: T } | null>(null);
+
   const subscribe = useCallback(
     (callback: () => void) => {
       const handler = (e: Event) => {
@@ -30,14 +33,20 @@ export function useLocalStorage<T>(
 
   const getSnapshot = useCallback(() => {
     try {
-      const item = window.localStorage.getItem(key);
-      return item !== null ? (JSON.parse(item) as T) : defaultValue;
+      const raw = window.localStorage.getItem(key);
+      if (cachedRef.current && cachedRef.current.raw === raw) {
+        return cachedRef.current.parsed;
+      }
+      const parsed =
+        raw !== null ? (JSON.parse(raw) as T) : defaultValueRef.current;
+      cachedRef.current = { raw, parsed };
+      return parsed;
     } catch {
-      return defaultValue;
+      return defaultValueRef.current;
     }
-  }, [key, defaultValue]);
+  }, [key]);
 
-  const getServerSnapshot = useCallback(() => defaultValue, [defaultValue]);
+  const getServerSnapshot = useCallback(() => defaultValueRef.current, []);
 
   const storedValue = useSyncExternalStore(
     subscribe,

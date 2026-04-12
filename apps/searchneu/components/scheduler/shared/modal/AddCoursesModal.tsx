@@ -273,7 +273,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
           <DialogDescription className="text-center">
             Add up to 6 courses{" "}
-            <span className="italic">(excluding corequisites)</span> for{" "}
+            <span className="italic">(including corequisites)</span> for{" "}
             <span className="font-bold">
               {activeTermLabel.split(" ").slice(0, 2).join(" ")}.
             </span>

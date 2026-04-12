@@ -697,7 +697,7 @@ export function WhiteboardSidebar({
 
             {sections?.map((section: Section, index: number) => (
               <WhiteboardSection
-                key={section.title}
+                key={`${section.title}-${index}`}
                 section={section}
                 entry={whiteboard[section.title] ?? defaultEntry}
                 scheduleCourses={scheduleCourses}

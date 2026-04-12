@@ -37,8 +37,8 @@ export function NavBar({
         <LinkWrapper mobileNav={closeable}>
           <Link
             href="/rooms"
-            data-active={pathname === "/rooms"}
-            className="bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
+            data-active={pathname.startsWith("/rooms")}
+            className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 text-neu6 data-[active=true]:text-neu8 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
           >
             <DoorOpen className="size-4" />
             <span>Rooms</span>
@@ -49,8 +49,8 @@ export function NavBar({
         <LinkWrapper mobileNav={closeable}>
           <Link
             href="/graduate"
-            data-active={pathname === "/graduate"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
+            data-active={pathname.startsWith("/graduate")}
+            className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 text-neu6 data-[active=true]:text-neu8 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
           >
             <GraduationCapIcon className="size-4" />
             Graduate
@@ -60,8 +60,8 @@ export function NavBar({
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/catalog"
-          data-active={pathname === "/catalog"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+          data-active={pathname.startsWith("/catalog")}
+          className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 text-neu6 data-[active=true]:text-neu8 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
         >
           <BookMarked className="size-4" />
           <span>Catalog</span>
@@ -73,8 +73,8 @@ export function NavBar({
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/notifications"
-          data-active={pathname === "/notifications"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
+          data-active={pathname.startsWith("/notifications")}
+          className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 text-neu6 data-[active=true]:text-neu8 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
         >
           <Bell className="size-4" />
           <span>Notifications</span>
@@ -83,8 +83,8 @@ export function NavBar({
       <LinkWrapper mobileNav={closeable}>
         <Link
           href="/faq"
-          data-active={pathname === "/faq"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
+          data-active={pathname.startsWith("/faq")}
+          className="bg-neu2 data-[active=true]:bg-neu1 border-neu3 data-[active=true]:border-neu4 flex items-center rounded-full border-1 p-2 text-sm"
         >
           <CircleQuestionMark className="text-red size-5" />
         </Link>

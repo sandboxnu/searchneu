@@ -7,6 +7,8 @@ import {
   getSectionColor,
 } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
+import { Searchskie } from "@/components/icons/Searchskie";
+import { type SidebarTab } from "../right-sidebar/ScheduleSidebar";
 import { CalendarView } from "./CalendarView";
 import { CourseInfoPopup } from "./CourseInfoPopup/CourseInfoPopup";
 
@@ -16,6 +18,8 @@ interface SchedulerViewProps {
   selectedScheduleKey: string | null;
   colorMap: Map<string, CourseColor>;
   isFavorited: boolean;
+  isLoading: boolean;
+  sidebarTab: SidebarTab;
   onToggleFavorite: () => void;
 }
 
@@ -25,6 +29,8 @@ export function SchedulerView({
   selectedScheduleKey,
   colorMap,
   isFavorited,
+  isLoading,
+  sidebarTab,
   onToggleFavorite,
 }: SchedulerViewProps) {
   const currentSchedule = useMemo(() => {
@@ -68,7 +74,10 @@ export function SchedulerView({
     openedAt: number;
   } | null>(null);
 
-  const hasSchedules = schedules.length > 0 && currentSchedule;
+  const activeList = sidebarTab === "all" ? allSchedules : schedules;
+  const hasSchedules = activeList.length > 0 && currentSchedule;
+  const showLoading = isLoading && !hasSchedules;
+  const showEmpty = !isLoading && !hasSchedules;
 
   return (
     <div
@@ -163,13 +172,29 @@ export function SchedulerView({
       )}
 
       {/* Calendar View */}
-      {hasSchedules ? (
+      {hasSchedules && (
         <div className="min-h-0 flex-1 overflow-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <CalendarView schedule={currentSchedule} colorMap={colorMap} />
         </div>
-      ) : (
-        <div className="flex flex-1 items-center justify-center text-gray-500">
-          No schedules found. Try adjusting your filters or course selection.
+      )}
+      {showLoading && (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <Searchskie className="w-72 pb-8" />
+            <h1 className="text-xl font-semibold">
+              Searching for possible schedules...
+            </h1>
+            <p className="">Thank you for your patience!</p>
+          </div>
+        </div>
+      )}
+      {showEmpty && (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <Searchskie className="w-72 pb-8" />
+            <h1 className="text-xl font-semibold">No Schedules Found.</h1>
+            <p className="">Try adjusting your filters or course selection.</p>
+          </div>
         </div>
       )}
       {asyncPopupState && (

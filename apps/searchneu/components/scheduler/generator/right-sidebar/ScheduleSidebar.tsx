@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { MiniCalendar } from "../../shared/MiniCalendar";
 
-type SidebarTab = "favorites" | "filters" | "all";
+export type SidebarTab = "favorites" | "filters" | "all";
 
 interface ScheduleSidebarProps {
   allSchedules: SectionWithCourse[][];
@@ -15,8 +15,68 @@ interface ScheduleSidebarProps {
   favoritedKeys: Map<string, number>;
   selectedScheduleKey: string | null;
   colorMap: Map<string, CourseColor>;
+  isLoading: boolean;
+  activeTab: SidebarTab;
+  onTabChange: (tab: SidebarTab) => void;
   onSelectSchedule: (scheduleKey: string) => void;
   onToggleFavorite: (scheduleKey: string) => void;
+}
+
+const SKELETON_DAYS = ["S", "M", "T", "W", "TH", "F", "S"];
+
+function SkeletonMiniCalendar() {
+  return (
+    <div className="border-neu25 w-full rounded-lg border bg-white p-2">
+      {/* Day headers */}
+      <div className="mb-1 grid grid-cols-7 gap-0">
+        {SKELETON_DAYS.map((day, i) => (
+          <div
+            key={i}
+            className="text-neu3 text-center text-[14px] font-semibold"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* Skeleton async bars */}
+      <div className="mb-1 space-y-0.5">
+        <div className="grid grid-cols-7 gap-0">
+          <div />
+          <div className="bg-neu2 h-2 rounded-[2px]" />
+          <div />
+          <div className="bg-neu2 h-2 rounded-[2px]" />
+          <div className="bg-neu2 h-2 rounded-[2px]" />
+          <div />
+          <div />
+        </div>
+      </div>
+
+      {/* Skeleton calendar blocks */}
+      <div
+        className="relative grid grid-cols-7 gap-0"
+        style={{ height: "122px" }}
+      >
+        <div />
+        <div className="relative h-full">
+          <div
+            className="bg-neu2 absolute inset-x-px rounded-[2px]"
+            style={{ top: "30px", height: "40px" }}
+          />
+        </div>
+        <div />
+        <div />
+        <div />
+        <div />
+        <div className="relative h-full">
+          <div
+            className="bg-neu2 absolute inset-x-px rounded-[2px]"
+            style={{ top: "25px", height: "45px" }}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function ScheduleSidebar({
@@ -25,10 +85,12 @@ export function ScheduleSidebar({
   favoritedKeys,
   selectedScheduleKey,
   colorMap,
+  isLoading,
+  activeTab,
+  onTabChange,
   onSelectSchedule,
   onToggleFavorite,
 }: ScheduleSidebarProps) {
-  const [activeTab, setActiveTab] = useState<SidebarTab>("filters");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayedSchedules = useMemo(() => {
@@ -87,7 +149,7 @@ export function ScheduleSidebar({
           {tabItems.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => onTabChange(tab.key)}
               className={`-mb-px flex cursor-pointer items-center gap-1 py-1 text-xs font-bold uppercase transition-colors ${
                 activeTab === tab.key
                   ? "border-neu5 text-neu6 border-b"
@@ -119,7 +181,13 @@ export function ScheduleSidebar({
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {displayedSchedules.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonMiniCalendar key={i} />
+            ))}
+          </div>
+        ) : displayedSchedules.length > 0 ? (
           <div
             style={{
               height: `${virtualizer.getTotalSize()}px`,
@@ -157,10 +225,10 @@ export function ScheduleSidebar({
             })}
           </div>
         ) : (
-          <div className="text-neu6 py-8 text-center text-sm">
-            {activeTab === "favorites"
-              ? "No favorited schedules yet."
-              : "No schedules found."}
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonMiniCalendar key={i} />
+            ))}
           </div>
         )}
       </div>

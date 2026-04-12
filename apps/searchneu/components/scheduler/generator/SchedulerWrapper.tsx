@@ -10,7 +10,10 @@ import {
 import { getCourseColorMap } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { SchedulerView } from "./calendar/SchedulerView";
-import { ScheduleSidebar } from "./right-sidebar/ScheduleSidebar";
+import {
+  ScheduleSidebar,
+  type SidebarTab,
+} from "./right-sidebar/ScheduleSidebar";
 import { FilterPanel } from "./left-sidebar/FilterPanel";
 import { GroupedTerms, Campus, Nupath } from "@/lib/catalog/types";
 import {
@@ -50,6 +53,10 @@ export function SchedulerWrapper({
   const [filters, setFilters] = useState<ScheduleFilters>({});
   const [planRefreshTrigger, setPlanRefreshTrigger] = useState(0);
   const [schedules, setSchedules] = useState<SectionWithCourse[][]>([]);
+  const [isLoadingSchedules, setIsLoadingSchedules] = useState(false);
+  const [sidebarTab, setSidebarTab] = useState<SidebarTab>("filters");
+  // True on both server and client when we have a planId but haven't loaded schedules yet
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [courseToSections, setCourseToSections] = useState<
     Map<number, SectionWithCourse[]>
   >(new Map());
@@ -124,6 +131,7 @@ export function SchedulerWrapper({
       }
 
       planSyncRef.current = true;
+      setIsLoadingSchedules(true);
 
       try {
         const planIdNum = parseInt(planIdFromUrl);
@@ -297,6 +305,9 @@ export function SchedulerWrapper({
         }
       } catch (error) {
         console.error("Error loading plan:", error);
+      } finally {
+        setIsLoadingSchedules(false);
+        setHasLoadedOnce(true);
       }
     };
 
@@ -415,6 +426,7 @@ export function SchedulerWrapper({
     async (lockedCourseIds: Set<number>) => {
       if (courseToSections.size === 0) return;
 
+      setIsLoadingSchedules(true);
       try {
         // Calculate optional course IDs from the available courses
         const allCourseIds = Array.from(courseToSections.keys());
@@ -449,6 +461,8 @@ export function SchedulerWrapper({
         setSchedules(newSchedules);
       } catch (error) {
         console.error("Error regenerating schedules:", error);
+      } finally {
+        setIsLoadingSchedules(false);
       }
     },
     [courseToSections, filters.numCourses],
@@ -644,6 +658,10 @@ export function SchedulerWrapper({
             selectedScheduleKey={currentScheduleKey}
             colorMap={colorMap}
             isFavorited={isFavorited}
+            isLoading={
+              isLoadingSchedules || (!!planIdFromUrl && !hasLoadedOnce)
+            }
+            sidebarTab={sidebarTab}
             onToggleFavorite={() => {
               if (selectedScheduleKey) {
                 handleToggleFavorite(selectedScheduleKey);
@@ -657,6 +675,9 @@ export function SchedulerWrapper({
           favoritedKeys={favoritedSchedules}
           selectedScheduleKey={currentScheduleKey}
           colorMap={colorMap}
+          isLoading={isLoadingSchedules || (!!planIdFromUrl && !hasLoadedOnce)}
+          activeTab={sidebarTab}
+          onTabChange={setSidebarTab}
           onSelectSchedule={setSelectedScheduleKey}
           onToggleFavorite={handleToggleFavorite}
         />

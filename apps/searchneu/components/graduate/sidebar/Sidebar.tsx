@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { GripVertical, ChevronUp, ChevronDown, Check, X } from "lucide-react";
 import {
-  HydratedAuditPlan,
   Section,
   Requirement,
   IAndCourse,
@@ -13,6 +12,9 @@ import {
   ICourseRange,
   IRequiredCourse,
   SidebarValidationStatus,
+  Audit,
+  Major,
+  Minor,
 } from "@/lib/graduate/types";
 import {
   creditsInAudit,
@@ -248,7 +250,12 @@ export function Sidebar({
   majors,
   minors,
   concentration,
-}: HydratedAuditPlan) {
+}: {
+  schedule: Audit;
+  majors: Major[];
+  minors: Minor[];
+  concentration: string | null;
+}) {
   const currentMajor = majors?.[0] ?? null;
   const currentMinor = minors?.[0] ?? null;
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");

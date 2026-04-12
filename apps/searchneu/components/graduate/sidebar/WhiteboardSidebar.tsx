@@ -5,7 +5,6 @@ import { ChevronUp, ChevronDown, Plus, X, Check, Minus } from "lucide-react";
 import {
   Audit,
   AuditCourse,
-  HydratedAuditPlan,
   Whiteboard,
   WhiteboardEntry,
   WhiteboardStatus,
@@ -16,6 +15,8 @@ import {
   IXofManyCourse,
   ICourseRange,
   IRequiredCourse,
+  Major,
+  Minor,
 } from "@/lib/graduate/types";
 import {
   creditsInAudit,
@@ -412,7 +413,11 @@ export function WhiteboardSidebar({
   concentration,
   whiteboard,
   onWhiteboardChange,
-}: HydratedAuditPlan & {
+}: {
+  schedule: Audit;
+  majors: Major[];
+  minors: Minor[];
+  concentration: string | null;
   whiteboard: Whiteboard;
   onWhiteboardChange: (updated: Whiteboard) => void;
 }) {

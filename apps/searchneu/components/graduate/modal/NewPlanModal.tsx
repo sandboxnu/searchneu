@@ -272,7 +272,30 @@ export default function NewPlanModal({
 
       if (isGuest) {
         setGuestPlan(newPlan);
+
+        const courseKeys = new Set<string>();
+        for (const year of schedule.years) {
+          for (const term of [
+            year.fall,
+            year.spring,
+            year.summer1,
+            year.summer2,
+          ]) {
+            for (const c of term.classes)
+              courseKeys.add(`${c.subject}-${c.classId}`);
+          }
+        }
+
+        const queryParams = new URLSearchParams();
+        for (const m of newPlan.majors ?? []) queryParams.append("majors", m);
+        for (const m of newPlan.minors ?? []) queryParams.append("minors", m);
+        if (newPlan.catalogYear)
+          queryParams.set("catalogYear", String(newPlan.catalogYear));
+        if (courseKeys.size)
+          queryParams.set("courses", [...courseKeys].join(","));
+
         toast(`Plan ${newPlan.name} created locally! Redirecting...`);
+        router.push(`/graduate/guest?${queryParams.toString()}`);
         return;
       }
 

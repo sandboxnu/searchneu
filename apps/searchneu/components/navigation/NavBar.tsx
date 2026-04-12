@@ -17,9 +17,11 @@ import { cn } from "@/lib/cn";
 export function NavBar({
   flags,
   closeable = false,
+  isGuest = false,
 }: {
   flags: { [key: string]: Promise<boolean> };
   closeable?: boolean;
+  isGuest: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
   const graduateFlag = use(flags["graduate"]);
@@ -48,7 +50,7 @@ export function NavBar({
       {graduateFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
-            href="/graduate"
+            href={isGuest ? "/graduate/guest" : "/graduate"}
             data-active={pathname === "/graduate"}
             className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
           >

@@ -181,7 +181,6 @@ function RequirementItem({
 
 function SidebarSection({
   section,
-  validationStatus = SidebarValidationStatus.Complete,
   defaultOpen = false,
   dndIdPrefix,
 }: {
@@ -191,7 +190,6 @@ function SidebarSection({
   dndIdPrefix?: string;
 }) {
   const [opened, setOpened] = useState(defaultOpen);
-  const isComplete = validationStatus === SidebarValidationStatus.Complete;
 
   return (
     <div
@@ -200,15 +198,6 @@ function SidebarSection({
     >
       <div className="bg-neu2 hover:bg-neu25 active:bg-neu3 sticky top-0 z-10 m-0 flex flex-row items-start justify-between px-4 py-4 font-bold transition-[background-color,border-color,color] delay-100 duration-[0.25s] ease-out">
         <div className="flex h-full flex-row gap-2">
-          <div
-            className={`mt-0.5 flex h-[18px] min-h-[18px] w-[18px] min-w-[18px] items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-[0.25s] ease-out ${isComplete ? "border-green bg-green text-white" : "border-neu5 bg-neu5 text-white"}`}
-          >
-            {isComplete ? (
-              <Check className="h-2.5 w-2.5" strokeWidth={3} />
-            ) : (
-              <X className="h-2.5 w-2.5" strokeWidth={3} />
-            )}
-          </div>
           <span className="text-navy mt-0 text-sm">{section.title}</span>
         </div>
         {opened ? (
@@ -343,7 +332,6 @@ export function Sidebar({
               <SidebarSection
                 key={index}
                 section={section}
-                validationStatus={SidebarValidationStatus.Complete}
                 defaultOpen={index === 0}
                 dndIdPrefix={`s${index}`}
               />

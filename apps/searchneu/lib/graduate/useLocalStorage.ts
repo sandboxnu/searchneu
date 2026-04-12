@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 /**
@@ -17,38 +17,37 @@ export function useLocalStorage<T>(
   key: string,
   defaultValue: T,
 ): [T, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState<T>(defaultValue);
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const handler = (e: Event) => {
+        if ((e as CustomEvent).detail.key === key) callback();
+      };
+      window.addEventListener("local-storage-sync", handler);
+      return () => window.removeEventListener("local-storage-sync", handler);
+    },
+    [key],
+  );
 
-  // Read from localStorage after mount — the lazy initializer doesn't help
-  // in Next.js because React reuses the server-side defaultValue during
-  // hydration and never re-runs it on the client.
-  useEffect(() => {
+  const getSnapshot = useCallback(() => {
     try {
       const item = window.localStorage.getItem(key);
-      if (item !== null) {
-        setStoredValue(JSON.parse(item) as T);
-      }
-    } catch (error) {
-      console.error(error);
+      return item !== null ? (JSON.parse(item) as T) : defaultValue;
+    } catch {
+      return defaultValue;
     }
-  }, [key]);
+  }, [key, defaultValue]);
 
-  // Sync across hook instances in the same tab
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail.key === key) {
-        setStoredValue(detail.value as T);
-      }
-    };
-    window.addEventListener("local-storage-sync", handler);
-    return () => window.removeEventListener("local-storage-sync", handler);
-  }, [key]);
+  const getServerSnapshot = useCallback(() => defaultValue, [defaultValue]);
+
+  const storedValue = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   const setValue = useCallback(
     (value: T) => {
       try {
-        setStoredValue(value);
         window.localStorage.setItem(key, JSON.stringify(value));
         window.dispatchEvent(
           new CustomEvent("local-storage-sync", { detail: { key, value } }),

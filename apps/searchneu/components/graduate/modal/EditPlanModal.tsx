@@ -39,7 +39,7 @@ import {
 } from "@/lib/graduate/useGraduateApi";
 
 type PlanInfo = {
-  id: number;
+  id?: number;
   name: string;
   majors?: { name: string }[] | null;
   minors?: { name: string }[] | null;
@@ -51,6 +51,8 @@ interface EditPlanModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   plan: PlanInfo;
+  isGuest?: boolean;
+  onGuestSave?: (updatedPlan: Record<string, unknown>) => void;
   onPlanUpdated?: () => void;
 }
 
@@ -58,6 +60,8 @@ export default function EditPlanModal({
   open,
   onOpenChange,
   plan,
+  isGuest = false,
+  onGuestSave,
   onPlanUpdated,
 }: EditPlanModalProps) {
   const router = useRouter();
@@ -207,6 +211,52 @@ export default function EditPlanModal({
       const finalConcentration = validConcentrations.includes(concentration)
         ? concentration
         : undefined;
+
+      if (isGuest && onGuestSave) {
+        const current = JSON.parse(localStorage.getItem("guest-plan") ?? "{}");
+        const updatedPlan = {
+          ...current,
+          name: message || plan.name,
+          majors: isNoMajorSelected ? undefined : majors,
+          minors: !minors?.length ? undefined : minors,
+          catalogYear: isNoMajorSelected ? undefined : catalogYear,
+          concentration: isNoMajorSelected
+            ? undefined
+            : (finalConcentration ?? undefined),
+        };
+        onGuestSave(updatedPlan);
+
+        const courseKeys = new Set<string>();
+        const schedule = current.schedule;
+        if (schedule?.years) {
+          for (const year of schedule.years) {
+            for (const term of [
+              year.fall,
+              year.spring,
+              year.summer1,
+              year.summer2,
+            ]) {
+              for (const c of term.classes)
+                courseKeys.add(`${c.subject}-${c.classId}`);
+            }
+          }
+        }
+
+        const queryParams = new URLSearchParams();
+        for (const m of updatedPlan.majors ?? [])
+          queryParams.append("majors", m);
+        for (const m of updatedPlan.minors ?? [])
+          queryParams.append("minors", m);
+        if (updatedPlan.catalogYear)
+          queryParams.set("catalogYear", String(updatedPlan.catalogYear));
+        if (courseKeys.size)
+          queryParams.set("courses", [...courseKeys].join(","));
+
+        toast(`Plan "${updatedPlan.name}" updated successfully!`);
+        onOpenChange(false);
+        router.push(`/graduate/guest?${queryParams.toString()}`);
+        return;
+      }
 
       const response = await fetch(`/api/audit/plan/${plan.id}`, {
         method: "PATCH",

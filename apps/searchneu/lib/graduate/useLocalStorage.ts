@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 /**
@@ -7,6 +7,9 @@ import { toast } from "sonner";
  * Accessing the hook allows for the functionality of setting and getting a
  * value in localstorage. The storedValue returned is the value in localstorage
  * for the key given to this hook. If it is undefined, the hook will return null.
+ *
+ * When multiple components use the same key, calling setValue in one will
+ * automatically update all others via a custom DOM event.
  *
  * @param key Key for the localstorage value.
  */
@@ -25,14 +28,32 @@ export function useLocalStorage<T>(
     }
   });
 
-  const setValue = (value: T) => {
-    try {
-      setStoredValue(value);
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      toast(`${error}`);
-    }
-  };
+  // Sync across hook instances in the same tab
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail.key === key) {
+        setStoredValue(detail.value as T);
+      }
+    };
+    window.addEventListener("local-storage-sync", handler);
+    return () => window.removeEventListener("local-storage-sync", handler);
+  }, [key]);
+
+  const setValue = useCallback(
+    (value: T) => {
+      try {
+        setStoredValue(value);
+        window.localStorage.setItem(key, JSON.stringify(value));
+        window.dispatchEvent(
+          new CustomEvent("local-storage-sync", { detail: { key, value } }),
+        );
+      } catch (error) {
+        toast(`${error}`);
+      }
+    },
+    [key],
+  );
 
   return [storedValue, setValue];
 }

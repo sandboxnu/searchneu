@@ -79,12 +79,11 @@ export function useGraduateMinor(year: string | null, minor: string | null) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!year || !minor) return;
+
     const fetchMinor = async () => {
       try {
-        const response = await GraduateAPI.minors.get(
-          parseInt(year ?? "0"),
-          minor ?? "",
-        );
+        const response = await GraduateAPI.minors.get(parseInt(year), minor);
         setData(response);
       } catch (err) {
         setError(
@@ -144,7 +143,6 @@ export function useHasTemplate(majorNames: string[], catalogYear: number) {
         if (response == null || response.templateData === null) {
           setHasTemplate(false);
         } else {
-          console.log("DENIS YAY RESPONSE", response);
           setHasTemplate(true);
         }
       } catch (error) {

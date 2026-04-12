@@ -1,7 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -11,28 +11,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { PencilIcon, Trash2Icon, CopyIcon, ShareIcon } from "lucide-react";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
+import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
 
-export function GuestHeaderClient({}) {
+export function GuestHeaderClient() {
   const router = useRouter();
+  const [showEditPlan, setShowEditPlan] = useState(false);
 
-  const [guestPlan] = useLocalStorage<CreateAuditPlanInput | null>(
-    "guest-plan",
-    null,
-  );
-
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [guestPlan, setGuestPlan] =
+    useLocalStorage<CreateAuditPlanInput | null>("guest-plan", null);
 
   async function handleDelete() {
     if (!confirm(`Delete "${guestPlan?.name}"?`)) {
       return;
     }
     window.localStorage.removeItem("guest-plan");
+    window.localStorage.removeItem("guest-plan-courseNames");
 
     if (window.localStorage.getItem("guest-plan") === null) {
       toast(`Plan "${guestPlan?.name}" deleted`);
@@ -40,18 +36,6 @@ export function GuestHeaderClient({}) {
     } else {
       toast.error(`Failed to delete "${guestPlan?.name}"`);
     }
-  }
-
-  function handleEdit() {
-    toast("Edit plan coming soon");
-  }
-
-  function handleCopy() {
-    toast("Copy plan coming soon");
-  }
-
-  function handleShare() {
-    toast("Share plan coming soon");
   }
 
   return (
@@ -64,7 +48,7 @@ export function GuestHeaderClient({}) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem key={1} value={String(1)}>
-                {mounted && guestPlan ? guestPlan.name : "Guest Plan"}
+                {guestPlan ? guestPlan.name : "Guest Plan"}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -82,7 +66,7 @@ export function GuestHeaderClient({}) {
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
-              onClick={handleEdit}
+              onClick={() => setShowEditPlan(true)}
               title="Edit plan"
             >
               <PencilIcon className="size-3.5" />
@@ -96,26 +80,6 @@ export function GuestHeaderClient({}) {
             >
               <Trash2Icon className="size-3.5" />
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="size-8 rounded-full p-0"
-              onClick={handleCopy}
-              title="Copy plan"
-              disabled={true}
-            >
-              <CopyIcon className="size-3.5" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="size-8 rounded-full p-0"
-              onClick={handleShare}
-              title="Share plan"
-              disabled={true}
-            >
-              <ShareIcon className="size-3.5" />
-            </Button>
           </div>
         </div>
 
@@ -126,10 +90,7 @@ export function GuestHeaderClient({}) {
             <span className="text-neu6 text-xs font-bold uppercase">
               Majors
             </span>
-            {mounted &&
-            guestPlan &&
-            guestPlan.majors &&
-            guestPlan.majors.length > 0 ? (
+            {guestPlan && guestPlan.majors && guestPlan.majors.length > 0 ? (
               guestPlan.majors.map((major) => (
                 <span
                   key={major}
@@ -146,10 +107,7 @@ export function GuestHeaderClient({}) {
             <span className="text-neu6 text-xs font-bold uppercase">
               Minors
             </span>
-            {mounted &&
-            guestPlan &&
-            guestPlan.minors &&
-            guestPlan.minors.length > 0 ? (
+            {guestPlan && guestPlan.minors && guestPlan.minors.length > 0 ? (
               guestPlan.minors.map((minor) => (
                 <span
                   key={minor}
@@ -164,6 +122,24 @@ export function GuestHeaderClient({}) {
           </div>
         </div>
       </div>
+      {guestPlan && (
+        <EditPlanModal
+          key="guest"
+          open={showEditPlan}
+          onOpenChange={setShowEditPlan}
+          isGuest
+          onGuestSave={(updated) =>
+            setGuestPlan(updated as CreateAuditPlanInput)
+          }
+          plan={{
+            name: guestPlan.name,
+            majors: guestPlan.majors?.map((m) => ({ name: m })),
+            minors: guestPlan.minors?.map((m) => ({ name: m })),
+            catalogYear: guestPlan.catalogYear,
+            concentration: guestPlan.concentration,
+          }}
+        />
+      )}
     </div>
   );
 }

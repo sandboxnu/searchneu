@@ -83,7 +83,7 @@ export function MobileWrapper(props: {
             </DrawerContent>
           </Drawer>
 
-          <SearchBar />
+          <SearchBar placeholder="Search by course or phrase..." />
         </div>
         <div className="flex h-full min-h-0 w-full min-w-0">
           <div

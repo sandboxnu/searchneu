@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronUp, ChevronDown, Plus, X, Check, Minus } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  Plus,
+  X,
+  Check,
+  Minus,
+  Wand2,
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import {
   Audit,
   AuditCourse,
@@ -50,6 +58,65 @@ function collectScheduleCourses(schedule: Audit): AuditCourse[] {
   return courses;
 }
 
+/** Recursively collects all COURSE-type requirement keys from a requirement tree. */
+function collectRequiredCourseKeys(req: Requirement): string[] {
+  if (req.type === "COURSE") {
+    return [`${req.subject} ${req.classId}`];
+  }
+  if (
+    req.type === "AND" ||
+    req.type === "OR" ||
+    req.type === "XOM" ||
+    req.type === "SECTION"
+  ) {
+    const children =
+      req.type === "SECTION"
+        ? (req as Section).requirements
+        : (req as IAndCourse | IOrCourse | IXofManyCourse).courses;
+    return (children as Requirement[]).flatMap(collectRequiredCourseKeys);
+  }
+  return [];
+}
+
+/**
+ * Builds a whiteboard by matching schedule courses against each section's
+ * requirements. Existing manually-added courses are preserved.
+ */
+function buildAutoFilledWhiteboard(
+  sections: Section[],
+  scheduleCourses: AuditCourse[],
+  current: Whiteboard,
+): Whiteboard {
+  const scheduleCourseKeys = new Set(
+    scheduleCourses.map((c) => `${c.subject} ${c.classId}`),
+  );
+  const updated: Whiteboard = { ...current };
+  for (const section of sections) {
+    const sectionCourseKeys = new Set<string>();
+    for (const req of section.requirements) {
+      for (const key of collectRequiredCourseKeys(req)) {
+        sectionCourseKeys.add(key);
+      }
+    }
+    const matched = [...sectionCourseKeys].filter((k) =>
+      scheduleCourseKeys.has(k),
+    );
+    // Merge: keep existing courses, add newly matched ones
+    const existing = current[section.title]?.courses ?? [];
+    const merged = [...new Set([...existing, ...matched])];
+    updated[section.title] = {
+      courses: merged,
+      status:
+        merged.length > 0
+          ? (current[section.title]?.status ?? "in_progress") === "not_started"
+            ? "in_progress"
+            : (current[section.title]?.status ?? "in_progress")
+          : (current[section.title]?.status ?? "not_started"),
+    };
+  }
+  return updated;
+}
+
 const STATUS_CONFIG: Record<
   WhiteboardStatus,
   { label: string; border: string; bg: string; icon: React.ReactNode }
@@ -85,11 +152,73 @@ const STATUS_CYCLE: WhiteboardStatus[] = [
 function CourseName({
   subject,
   classId,
+  planCourses,
+  assignedCourses,
+  onAddCourse,
 }: {
   subject: string;
   classId: number;
+  planCourses?: Set<string>;
+  assignedCourses?: Set<string>;
+  onAddCourse?: (courseKey: string) => void;
 }) {
   const name = useCourseName(subject, classId);
+  const key = `${subject} ${classId}`;
+  const inPlan = planCourses?.has(key) ?? false;
+  const isAssigned = assignedCourses?.has(key) ?? false;
+
+  // Green when the course is both in plan AND assigned to this section
+  if (isAssigned) {
+    return (
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.stopPropagation();
+          onAddCourse?.(key);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            onAddCourse?.(key);
+          }
+        }}
+        className="hover:bg-green/10 cursor-pointer rounded px-0.5 transition-colors"
+      >
+        <span className="text-green font-bold">
+          {subject}&nbsp;{classId}
+        </span>
+        {name && <span className="text-neu6"> {name}</span>}
+      </span>
+    );
+  }
+
+  // Blue when the course is in the plan but not yet assigned to this section
+  if (inPlan && onAddCourse) {
+    return (
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.stopPropagation();
+          onAddCourse(key);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            onAddCourse(key);
+          }
+        }}
+        className="hover:bg-blue/10 cursor-pointer rounded px-0.5 transition-colors"
+      >
+        <span className="text-blue font-bold">
+          {subject}&nbsp;{classId}
+        </span>
+        {name && <span className="text-neu6"> {name}</span>}
+      </span>
+    );
+  }
+
   return (
     <>
       <span className="font-semibold">
@@ -100,15 +229,28 @@ function CourseName({
   );
 }
 
-function RequirementItem({ req }: { req: Requirement }) {
+interface RequirementItemProps {
+  req: Requirement;
+  planCourses?: Set<string>;
+  assignedCourses?: Set<string>;
+  onAddCourse?: (courseKey: string) => void;
+}
+
+function RequirementItem({
+  req,
+  planCourses,
+  assignedCourses,
+  onAddCourse,
+}: RequirementItemProps) {
   const cls = "pl-1 pt-1";
+  const childProps = { planCourses, assignedCourses, onAddCourse };
 
   if (req.type === "COURSE") {
     const c = req as IRequiredCourse;
     return (
       <div className={cls}>
         <p className="text-sm leading-tight">
-          <CourseName subject={c.subject} classId={c.classId} />
+          <CourseName subject={c.subject} classId={c.classId} {...childProps} />
         </p>
       </div>
     );
@@ -122,7 +264,7 @@ function RequirementItem({ req }: { req: Requirement }) {
           Complete all of the following:
         </p>
         {r.courses.map((c, i) => (
-          <RequirementItem key={i} req={c} />
+          <RequirementItem key={i} req={c} {...childProps} />
         ))}
       </div>
     );
@@ -134,7 +276,7 @@ function RequirementItem({ req }: { req: Requirement }) {
       <div className={cls}>
         <p className="text-neu7 text-sm italic">Complete 1 of the following:</p>
         {r.courses.map((c, i) => (
-          <RequirementItem key={i} req={c} />
+          <RequirementItem key={i} req={c} {...childProps} />
         ))}
       </div>
     );
@@ -148,7 +290,7 @@ function RequirementItem({ req }: { req: Requirement }) {
           Complete {r.numCreditsMin} credits from the following:
         </p>
         {r.courses.map((c, i) => (
-          <RequirementItem key={i} req={c} />
+          <RequirementItem key={i} req={c} {...childProps} />
         ))}
       </div>
     );
@@ -176,7 +318,7 @@ function RequirementItem({ req }: { req: Requirement }) {
       <div className={cls}>
         <p className="text-neu7 text-xs font-medium uppercase">{s.title}</p>
         {s.requirements.map((r, i) => (
-          <RequirementItem key={i} req={r} />
+          <RequirementItem key={i} req={r} {...childProps} />
         ))}
       </div>
     );
@@ -262,12 +404,14 @@ function WhiteboardSection({
   scheduleCourses,
   onUpdate,
   defaultOpen,
+  planCourses,
 }: {
   section: Section;
   entry: WhiteboardEntry;
   scheduleCourses: AuditCourse[];
   onUpdate: (entry: WhiteboardEntry) => void;
   defaultOpen: boolean;
+  planCourses: Set<string>;
 }) {
   const [opened, setOpened] = useState(defaultOpen);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -338,7 +482,13 @@ function WhiteboardSection({
             </p>
           )}
           {section.requirements.map((requirement, index) => (
-            <RequirementItem key={index} req={requirement} />
+            <RequirementItem
+              key={index}
+              req={requirement}
+              planCourses={planCourses}
+              assignedCourses={assignedSet}
+              onAddCourse={toggleCourse}
+            />
           ))}
 
           {/* Add courses button + popover (pinned at top for stable position) */}
@@ -424,6 +574,18 @@ export function WhiteboardSidebar({
   const currentMajor = majors?.[0] ?? null;
   const currentMinor = minors?.[0] ?? null;
   const [activeTab, setActiveTab] = useState<"major" | "minor">("major");
+  const subtitle =
+    concentration === "Undecided" || concentration == null
+      ? UNDECIDED_CONCENTRATION
+      : concentration;
+  const creditsToTake = currentMajor?.totalCreditsRequired ?? 0;
+  const creditsTaken = creditsInAudit(schedule);
+  const scheduleCourses = collectScheduleCourses(schedule);
+  // Set of all courses in the user's plan/schedule
+  const planCourses = useMemo(
+    () => new Set(scheduleCourses.map((c) => `${c.subject} ${c.classId}`)),
+    [scheduleCourses],
+  );
 
   if (!schedule) {
     return (
@@ -437,14 +599,6 @@ export function WhiteboardSidebar({
     );
   }
 
-  const subtitle =
-    concentration === "Undecided" || concentration == null
-      ? UNDECIDED_CONCENTRATION
-      : concentration;
-  const creditsToTake = currentMajor?.totalCreditsRequired ?? 0;
-  const creditsTaken = creditsInAudit(schedule);
-  const scheduleCourses = collectScheduleCourses(schedule);
-
   const sections =
     activeTab === "major"
       ? currentMajor?.requirementSections
@@ -457,6 +611,19 @@ export function WhiteboardSidebar({
 
   function handleSectionUpdate(sectionTitle: string, entry: WhiteboardEntry) {
     onWhiteboardChange({ ...whiteboard, [sectionTitle]: entry });
+  }
+
+  function handleAutoFill() {
+    const allSections = [
+      ...(currentMajor?.requirementSections ?? []),
+      ...(currentMinor?.requirementSections ?? []),
+    ];
+    const updated = buildAutoFilledWhiteboard(
+      allSections,
+      scheduleCourses,
+      whiteboard,
+    );
+    onWhiteboardChange(updated);
   }
 
   return (
@@ -508,6 +675,20 @@ export function WhiteboardSidebar({
               <div className="flex-1" />
             </div>
 
+            <div className="border-neu25 border-b px-4 py-3">
+              <button
+                type="button"
+                onClick={handleAutoFill}
+                className="text-blue hover:bg-blue/10 flex w-full items-center justify-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors"
+              >
+                <Wand2 className="h-3.5 w-3.5" />
+                Auto-fill from schedule
+              </button>
+              <p className="text-neu6 mt-1 text-center text-xs">
+                Automatically assigns schedule courses to matching sections.
+              </p>
+            </div>
+
             {activeTab === "minor" && currentMinor && (
               <h3 className="text-navy px-4 py-4 text-base font-semibold">
                 Minor Requirements
@@ -522,6 +703,7 @@ export function WhiteboardSidebar({
                 scheduleCourses={scheduleCourses}
                 onUpdate={(entry) => handleSectionUpdate(section.title, entry)}
                 defaultOpen={index === 0}
+                planCourses={planCourses}
               />
             ))}
 

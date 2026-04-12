@@ -12,6 +12,71 @@ import {
 } from "../controllers/majors";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { Audit, Requirement, Section } from "../graduate/types";
+
+/**
+ * Recursively collects all IRequiredCourse entries from a requirement tree,
+ * returning them as "SUBJECT CLASSID" strings.
+ */
+function collectRequiredCourseKeys(req: Requirement): string[] {
+  if (req.type === "COURSE") {
+    return [`${req.subject} ${req.classId}`];
+  }
+  if (
+    req.type === "AND" ||
+    req.type === "OR" ||
+    req.type === "XOM" ||
+    req.type === "SECTION"
+  ) {
+    const children =
+      req.type === "SECTION"
+        ? (req as Section).requirements
+        : (req as { courses: Requirement[] }).courses;
+    return children.flatMap(collectRequiredCourseKeys);
+  }
+  return [];
+}
+
+/**
+ * Builds a whiteboard pre-populated with courses from the schedule that match
+ * requirements in each section. Matching is exact: subject + classId.
+ */
+function autoPopulateWhiteboard(
+  sections: Section[],
+  schedule: Audit,
+): Record<string, { courses: string[]; status: string }> {
+  // Collect all "SUBJECT CLASSID" keys from the schedule
+  const scheduleCourseKeys = new Set<string>();
+  for (const year of schedule.years ?? []) {
+    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
+      for (const c of term.classes) {
+        scheduleCourseKeys.add(`${c.subject} ${c.classId}`);
+      }
+    }
+  }
+
+  const whiteboard: Record<string, { courses: string[]; status: string }> = {};
+  for (const section of sections) {
+    // Collect every required course key mentioned in this section
+    const sectionCourseKeys = new Set<string>();
+    for (const req of section.requirements) {
+      for (const key of collectRequiredCourseKeys(req)) {
+        sectionCourseKeys.add(key);
+      }
+    }
+
+    // Find which of those appear in the schedule
+    const matched = [...sectionCourseKeys].filter((k) =>
+      scheduleCourseKeys.has(k),
+    );
+
+    whiteboard[section.title] = {
+      courses: matched,
+      status: matched.length > 0 ? "in_progress" : "not_started",
+    };
+  }
+  return whiteboard;
+}
 
 /**
  * Verifies the current user from their JWT token and returns their user data.
@@ -102,9 +167,11 @@ export async function createAuditPlan(
       );
       return null;
     } else {
-      majorName.requirementSections.forEach((rs) => {
-        whiteboard[rs.title] = { courses: [], status: "not_started" };
-      });
+      const populated = autoPopulateWhiteboard(
+        majorName.requirementSections,
+        schedule as Audit,
+      );
+      Object.assign(whiteboard, populated);
     }
   }
 

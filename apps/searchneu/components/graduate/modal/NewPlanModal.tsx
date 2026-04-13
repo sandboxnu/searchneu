@@ -101,18 +101,38 @@ export default function NewPlanModal({
   >([]);
   const [isLoadingConcentration, setIsLoadingConcentration] = useState(false);
 
+  //form submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // guest plan
-  const [, setGuestPlan] = useLocalStorage<CreateAuditPlanInput | null>(
-    "guest-plan",
-    null,
-  );
+  const [guestPlan, setGuestPlan] =
+    useLocalStorage<CreateAuditPlanInput | null>("guest-plan", null);
+
+  // If a guest plan already exists in localStorage, redirect straight to it
+  useEffect(() => {
+    if (!isGuest || !guestPlan || isSubmitting) return;
+
+    const queryParams = new URLSearchParams();
+    for (const m of guestPlan.majors ?? []) queryParams.append("majors", m);
+    for (const m of guestPlan.minors ?? []) queryParams.append("minors", m);
+    if (guestPlan.catalogYear)
+      queryParams.set("catalogYear", String(guestPlan.catalogYear));
+
+    const courseKeys = new Set<string>();
+    for (const year of guestPlan.schedule?.years ?? []) {
+      for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
+        for (const c of term.classes)
+          courseKeys.add(`${c.subject}-${c.classId}`);
+      }
+    }
+    if (courseKeys.size) queryParams.set("courses", [...courseKeys].join(","));
+
+    router.replace(`/graduate/guest?${queryParams.toString()}`);
+  }, [isGuest, guestPlan, isSubmitting, router]);
 
   //templates
   const recommendedTemplateLabel = `This will pre-populate your plan with the recommended course sequence`;
   const [useRecommendedTemplate, setUseRecommendedTemplate] = useState(false);
-
-  //form submission
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //template
   const { hasTemplate, isLoading: isTemplateLoading } = useHasTemplate(

@@ -1,56 +1,42 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 
+function readStorage<T>(key: string, defaultValue: T): T {
+  try {
+    const item = window.localStorage.getItem(key);
+    return item !== null ? (JSON.parse(item) as T) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
+
 /**
- * Using this hook allows for any component to access localstorage as NextJS
- * uses SSR, so localstorage may not be accessible upon initial page load.
- * Accessing the hook allows for the functionality of setting and getting a
- * value in localstorage. The storedValue returned is the value in localstorage
- * for the key given to this hook. If it is undefined, the hook will return null.
- *
- * When multiple components use the same key, calling setValue in one will
- * automatically update all others via a custom DOM event.
- *
- * @param key Key for the localstorage value.
+ * SSR-safe localStorage hook with cross-component sync.
  */
 export function useLocalStorage<T>(
   key: string,
   defaultValue: T,
 ): [T, (value: T) => void] {
-  const subscribe = useCallback(
-    (callback: () => void) => {
-      const handler = (e: Event) => {
-        if ((e as CustomEvent).detail.key === key) callback();
-      };
-      window.addEventListener("local-storage-sync", handler);
-      return () => window.removeEventListener("local-storage-sync", handler);
-    },
-    [key],
-  );
+  const [value, setValue] = useState<T>(() => readStorage(key, defaultValue));
 
-  const getSnapshot = useCallback(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item !== null ? (JSON.parse(item) as T) : defaultValue;
-    } catch {
-      return defaultValue;
-    }
+  // Sync when another component writes to the same key
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if ((e as CustomEvent).detail?.key === key) {
+        setValue(readStorage(key, defaultValue));
+      }
+    };
+    window.addEventListener("local-storage-sync", handler);
+    return () => window.removeEventListener("local-storage-sync", handler);
   }, [key, defaultValue]);
 
-  const getServerSnapshot = useCallback(() => defaultValue, [defaultValue]);
-
-  const storedValue = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
-
-  const setValue = useCallback(
-    (value: T) => {
+  const set = useCallback(
+    (newValue: T) => {
       try {
-        window.localStorage.setItem(key, JSON.stringify(value));
+        setValue(newValue);
+        window.localStorage.setItem(key, JSON.stringify(newValue));
         window.dispatchEvent(
-          new CustomEvent("local-storage-sync", { detail: { key, value } }),
+          new CustomEvent("local-storage-sync", { detail: { key } }),
         );
       } catch (error) {
         toast(`${error}`);
@@ -59,5 +45,5 @@ export function useLocalStorage<T>(
     [key],
   );
 
-  return [storedValue, setValue];
+  return [value, set];
 }

@@ -1,21 +1,28 @@
 // ── YearRow ──────────────────────────────────────────────────────────────────
 
-import { AuditYear, SeasonEnum } from "@/lib/graduate/types";
+import { AuditCourse, AuditYear, Major, Minor, SeasonEnum } from "@/lib/graduate/types";
+import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { AuditTermColumn } from "./AuditTermColumn";
 
 export function AuditYearRow({
   year,
   expanded,
+  majors,
+  minors,
   onToggle,
   onRemoveCourse,
   onDeleteYear,
+  onAddCourses,
 }: {
   year: AuditYear;
   expanded: boolean;
+  majors: Major[];
+  minors: Minor[];
   onToggle: () => void;
   onRemoveCourse: (season: SeasonEnum, courseIndex: number) => void;
   onDeleteYear: () => void;
+  onAddCourses: (season: SeasonEnum, courses: AuditCourse[]) => void;
 }) {
   const credits = [year.fall, year.spring, year.summer1, year.summer2].reduce(
     (sum, t) => sum + t.classes.reduce((s, c) => s + c.numCreditsMin, 0),
@@ -72,7 +79,11 @@ export function AuditYearRow({
             <AuditTermColumn
               key={term.id}
               term={term}
+              termLabel={`Year ${year.year} ${SEASON_DISPLAY[season]}`}
+              majors={majors}
+              minors={minors}
               onRemoveCourse={(i) => onRemoveCourse(season, i)}
+              onAddCourses={(courses) => onAddCourses(season, courses)}
             />
           ))}
         </div>

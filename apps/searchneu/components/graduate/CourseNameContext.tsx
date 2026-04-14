@@ -11,7 +11,8 @@ export const CourseNameContext = createContext<Record<string, string>>({});
 export function useCourseName(
   subject: string,
   classId: string | number,
+  fallbackName?: string,
 ): string {
   const map = useContext(CourseNameContext);
-  return map[`${subject}-${classId}`] ?? `${subject} ${classId}`;
+  return map[`${subject}-${classId}`] ?? fallbackName ?? `${subject} ${classId}`;
 }

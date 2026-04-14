@@ -1,16 +1,27 @@
-import { AuditTerm } from "@/lib/graduate/types";
+import { AuditCourse, AuditTerm, Major, Minor } from "@/lib/graduate/types";
 import { useDroppable } from "@dnd-kit/core";
 import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 import { AuditCourseCard } from "./AuditCourseCard";
+import { useState } from "react";
+import AuditAddCoursesModal from "../modal/AuditAddCoursesModal";
 
 export function AuditTermColumn({
   term,
+  termLabel,
+  majors,
+  minors,
   onRemoveCourse,
+  onAddCourses,
 }: {
   term: AuditTerm;
+  termLabel: string;
+  majors: Major[];
+  minors: Minor[];
   onRemoveCourse: (courseIndex: number) => void;
+  onAddCourses: (courses: AuditCourse[]) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: term.id! });
+  const [modalOpen, setModalOpen] = useState(false);
   const credits = term.classes.reduce((s, c) => s + c.numCreditsMin, 0);
   const seasonLabel = SEASON_DISPLAY[term.season] ?? term.season;
 
@@ -34,9 +45,21 @@ export function AuditTermColumn({
           onRemove={() => onRemoveCourse(i)}
         />
       ))}
-      <button className="border-neu4 text-neu5 hover:border-blue/70 hover:text-blue mt-1 w-full rounded border border-dashed py-1.5 text-xs transition-colors">
+      <button
+        className="border-neu4 text-neu5 hover:border-blue/70 hover:text-blue mt-1 w-full rounded border border-dashed py-1.5 text-xs transition-colors"
+        onClick={() => setModalOpen(true)}
+      >
         + Add Course
       </button>
+
+      <AuditAddCoursesModal
+        open={modalOpen}
+        termLabel={termLabel}
+        majors={majors}
+        minors={minors}
+        onClose={() => setModalOpen(false)}
+        onAddCourses={onAddCourses}
+      />
     </div>
   );
 }

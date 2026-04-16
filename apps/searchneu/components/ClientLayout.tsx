@@ -2,11 +2,6 @@
 
 import FeedbackModal from "@/components/feedback/FeedbackModal";
 import { FeedbackProvider } from "@/components/feedback/FeedbackContext";
-import dynamic from "next/dynamic";
-
-const GivingDayModal = dynamic(() => import("./GivingDayModal"), {
-  ssr: false,
-});
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   // useEffect(() => {
@@ -53,7 +48,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             },
           }}
         /> */}
-        <GivingDayModal />
+        {/* <GivingDayModal /> */}
       </div>
     </FeedbackProvider>
   );

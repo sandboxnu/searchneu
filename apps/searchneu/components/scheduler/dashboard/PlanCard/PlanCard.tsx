@@ -9,6 +9,7 @@ import {
   type CourseColor,
   getCourseColorMap,
 } from "@/lib/scheduler/courseColors";
+import { buildGeneratorUrl } from "@/lib/scheduler/filterParams";
 import { MiniCalendar } from "../../shared/MiniCalendar";
 import type { SectionWithCourse } from "@/lib/scheduler/filters";
 import { FilterTags } from "./FilterTags";
@@ -16,18 +17,23 @@ import type { Nupath, Campus } from "@/lib/catalog/types";
 
 interface PlanCardProps {
   plan: SavedPlan;
+  term: string;
   onDelete: (planId: number) => void;
   campuses: Campus[];
   nupaths: Nupath[];
 }
 
-export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
+export function PlanCard({
+  plan,
+  term,
+  onDelete,
+  campuses,
+  nupaths,
+}: PlanCardProps) {
   const router = useRouter();
 
   const handleEdit = () => {
-    const params = new URLSearchParams();
-    params.set("planId", plan.id.toString());
-    router.push(`/scheduler/generator?${params.toString()}`);
+    router.push(buildGeneratorUrl({ ...plan, term }, campuses, nupaths));
   };
 
   const handleDelete = () => {

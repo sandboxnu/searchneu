@@ -30,6 +30,8 @@ import {
   DELETE_ZONE_ID,
 } from "@/lib/graduate/planUtils";
 import { CourseNameContext } from "./CourseNameContext";
+import { CourseDetailsContext } from "./CourseDetailsContext";
+import type { CourseDetails } from "@/lib/graduate/types";
 import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
@@ -45,6 +47,7 @@ export interface BasePlanClientProps {
   minors: Minor[];
   concentration: string | null;
   courseNames: Record<string, string>;
+  courseDetails: Record<string, CourseDetails>;
   onPersistSchedule: (stripped: Audit, pruned: Whiteboard | null) => void;
   onPersistWhiteboard: (updated: Whiteboard) => void;
 }
@@ -58,6 +61,7 @@ export function BasePlanClient({
   minors,
   concentration,
   courseNames,
+  courseDetails,
   onPersistSchedule,
   onPersistWhiteboard,
 }: BasePlanClientProps) {
@@ -258,94 +262,96 @@ export function BasePlanClient({
 
   return (
     <CourseNameContext.Provider value={courseNames}>
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        collisionDetection={collisionAlgorithm}
-      >
-        <DeleteDropZone>
-          <div className="flex h-full overflow-hidden">
-            <div className="bg-neu25 max-h-screen w-[360px] flex-shrink-0 overflow-y-auto">
-              <div className="flex justify-center gap-1 px-4 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setSidebarMode("requirements")}
-                  className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
-                    sidebarMode === "requirements"
-                      ? "bg-navy text-white shadow-md"
-                      : "bg-neu3 text-neu6 hover:bg-neu4"
-                  }`}
-                >
-                  Requirements
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSidebarMode("whiteboard")}
-                  className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
-                    sidebarMode === "whiteboard"
-                      ? "bg-navy text-white shadow-md"
-                      : "bg-neu3 text-neu6 hover:bg-neu4"
-                  }`}
-                >
-                  Whiteboard
-                </button>
-              </div>
-              {sidebarMode === "whiteboard" ? (
-                <WhiteboardSidebar
-                  schedule={schedule}
-                  majors={majors}
-                  minors={minors}
-                  concentration={concentration}
-                  whiteboard={whiteboard}
-                  onWhiteboardChange={persistWhiteboard}
-                />
-              ) : (
-                <Sidebar
-                  schedule={schedule}
-                  majors={majors}
-                  minors={minors}
-                  concentration={concentration}
-                />
-              )}
-            </div>
-
-            <div className="flex flex-grow flex-col overflow-auto pl-2">
-              <div className="flex flex-col gap-[4px]">
-                {schedule.years.map((year) => (
-                  <AuditYearRow
-                    key={year.year}
-                    year={year}
-                    expanded={expandedYears.has(year.year)}
-                    onToggle={() =>
-                      setExpandedYears((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(year.year)) next.delete(year.year);
-                        else next.add(year.year);
-                        return next;
-                      })
-                    }
-                    onRemoveCourse={(season, i) =>
-                      handleRemoveCourse(year.year, season, i)
-                    }
-                    onDeleteYear={() => handleDeleteYear(year.year)}
+      <CourseDetailsContext.Provider value={courseDetails}>
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          collisionDetection={collisionAlgorithm}
+        >
+          <DeleteDropZone>
+            <div className="flex min-h-0 flex-1 overflow-hidden">
+              <div className="bg-neu25 w-[360px] flex-shrink-0 overflow-y-auto">
+                <div className="flex justify-center gap-1 px-4 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSidebarMode("requirements")}
+                    className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
+                      sidebarMode === "requirements"
+                        ? "bg-navy text-white shadow-md"
+                        : "bg-neu3 text-neu6 hover:bg-neu4"
+                    }`}
+                  >
+                    Requirements
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSidebarMode("whiteboard")}
+                    className={`rounded-lg px-3 py-1 text-xs font-bold uppercase transition-all ${
+                      sidebarMode === "whiteboard"
+                        ? "bg-navy text-white shadow-md"
+                        : "bg-neu3 text-neu6 hover:bg-neu4"
+                    }`}
+                  >
+                    Whiteboard
+                  </button>
+                </div>
+                {sidebarMode === "whiteboard" ? (
+                  <WhiteboardSidebar
+                    schedule={schedule}
+                    majors={majors}
+                    minors={minors}
+                    concentration={concentration}
+                    whiteboard={whiteboard}
+                    onWhiteboardChange={persistWhiteboard}
                   />
-                ))}
+                ) : (
+                  <Sidebar
+                    schedule={schedule}
+                    majors={majors}
+                    minors={minors}
+                    concentration={concentration}
+                  />
+                )}
               </div>
-              <button
-                className="border-neu4 bg-neu3 text-neu8 mt-[10px] flex flex-row justify-center gap-1 self-center rounded-[36px] border px-[16px] py-[8px] text-[14px] transition-colors"
-                onClick={handleAddYear}
-              >
-                <Plus className="h-4 w-4 shrink-0" />
-                Add Year
-              </button>
-            </div>
-          </div>
-        </DeleteDropZone>
 
-        <DragOverlay dropAnimation={null}>
-          {activeCourse && <CourseCardOverlay course={activeCourse} />}
-        </DragOverlay>
-      </DndContext>
+              <div className="flex flex-grow flex-col overflow-auto pl-2">
+                <div className="flex flex-col gap-[4px]">
+                  {schedule.years.map((year) => (
+                    <AuditYearRow
+                      key={year.year}
+                      year={year}
+                      expanded={expandedYears.has(year.year)}
+                      onToggle={() =>
+                        setExpandedYears((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(year.year)) next.delete(year.year);
+                          else next.add(year.year);
+                          return next;
+                        })
+                      }
+                      onRemoveCourse={(season, i) =>
+                        handleRemoveCourse(year.year, season, i)
+                      }
+                      onDeleteYear={() => handleDeleteYear(year.year)}
+                    />
+                  ))}
+                </div>
+                <button
+                  className="border-neu4 bg-neu3 text-neu8 mt-[10px] flex flex-row justify-center gap-1 self-center rounded-[36px] border px-[16px] py-[8px] text-[14px] transition-colors"
+                  onClick={handleAddYear}
+                >
+                  <Plus className="h-4 w-4 shrink-0" />
+                  Add Year
+                </button>
+              </div>
+            </div>
+          </DeleteDropZone>
+
+          <DragOverlay dropAnimation={null}>
+            {activeCourse && <CourseCardOverlay course={activeCourse} />}
+          </DragOverlay>
+        </DndContext>
+      </CourseDetailsContext.Provider>
     </CourseNameContext.Provider>
   );
 }
@@ -355,7 +361,7 @@ export function BasePlanClient({
 function DeleteDropZone({ children }: { children: React.ReactNode }) {
   const { setNodeRef } = useDroppable({ id: DELETE_ZONE_ID });
   return (
-    <div ref={setNodeRef} className="flex h-full flex-col overflow-hidden">
+    <div ref={setNodeRef} className="flex min-h-0 flex-1 flex-col">
       {children}
     </div>
   );

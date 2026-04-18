@@ -98,6 +98,7 @@ export function GuestPlanClient({
       minors={minorData ? [minorData] : []}
       concentration={guestPlan.concentration ?? null}
       courseNames={courseNames}
+      courseDetails={{}}
       onPersistSchedule={handlePersistSchedule}
       onPersistWhiteboard={handlePersistWhiteboard}
     />

@@ -10,6 +10,8 @@ import {
 import { sql, and, or, eq, desc } from "drizzle-orm";
 import { cache } from "react";
 import type { Course } from "@/lib/catalog/types";
+import type { CourseDetails } from "@/lib/graduate/types";
+import type { Requisite } from "@sneu/scraper/types";
 
 /**
  * base query shared by all course lookups. joins subjects, nupath data, and
@@ -158,4 +160,90 @@ export async function getCourseNamesBatch(
     nameMap[`${row.subjectCode}-${row.courseNumber}`] = row.name;
   }
   return nameMap;
+}
+
+/**
+ * Batch-fetches the NUPath short codes for each (subjectCode, courseNumber) pair
+ * in a single query. Returns a map of "SUBJECT-COURSENUMBER" → NUPath short codes.
+ */
+export async function getCourseNupathsBatch(
+  keys: Set<string>,
+): Promise<Record<string, string[]>> {
+  if (keys.size === 0) return {};
+
+  const pairs = [...keys].map((k) => {
+    const [subject, classId] = k.split("-");
+    return { subject, classId };
+  });
+
+  const conditions = pairs.map((p) =>
+    and(eq(subjectsT.code, p.subject), eq(coursesT.courseNumber, p.classId)),
+  );
+
+  const rows = await db
+    .select({
+      subjectCode: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+      nupaths: sql<
+        string[]
+      >`array_remove(array_agg(distinct ${nupathsT.short}), null)`,
+    })
+    .from(coursesT)
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .leftJoin(courseNupathJoinT, eq(coursesT.id, courseNupathJoinT.courseId))
+    .leftJoin(nupathsT, eq(courseNupathJoinT.nupathId, nupathsT.id))
+    .where(or(...conditions))
+    .groupBy(subjectsT.code, coursesT.courseNumber);
+
+  const nupathMap: Record<string, string[]> = {};
+  for (const row of rows) {
+    nupathMap[`${row.subjectCode}-${row.courseNumber}`] = row.nupaths ?? [];
+  }
+  return nupathMap;
+}
+
+export type { CourseDetails };
+
+/**
+ * Batch-fetches credits, coreqs, and prereqs for each (subjectCode, courseNumber)
+ * pair in a single query. Returns a map of "SUBJECT-COURSENUMBER" → CourseDetails.
+ */
+export async function getCourseDetailsBatch(
+  keys: Set<string>,
+): Promise<Record<string, CourseDetails>> {
+  if (keys.size === 0) return {};
+
+  const pairs = [...keys].map((k) => {
+    const [subject, classId] = k.split("-");
+    return { subject, classId };
+  });
+
+  const conditions = pairs.map((p) =>
+    and(eq(subjectsT.code, p.subject), eq(coursesT.courseNumber, p.classId)),
+  );
+
+  const rows = await db
+    .selectDistinctOn([subjectsT.code, coursesT.courseNumber], {
+      subjectCode: subjectsT.code,
+      courseNumber: coursesT.courseNumber,
+      minCredits: coursesT.minCredits,
+      maxCredits: coursesT.maxCredits,
+      coreqs: coursesT.coreqs,
+      prereqs: coursesT.prereqs,
+    })
+    .from(coursesT)
+    .innerJoin(subjectsT, eq(coursesT.subject, subjectsT.id))
+    .where(or(...conditions))
+    .orderBy(subjectsT.code, coursesT.courseNumber, desc(coursesT.termId));
+
+  const detailsMap: Record<string, CourseDetails> = {};
+  for (const row of rows) {
+    detailsMap[`${row.subjectCode}-${row.courseNumber}`] = {
+      minCredits: Number(row.minCredits),
+      maxCredits: Number(row.maxCredits),
+      coreqs: row.coreqs as Requisite,
+      prereqs: row.prereqs as Requisite,
+    };
+  }
+  return detailsMap;
 }

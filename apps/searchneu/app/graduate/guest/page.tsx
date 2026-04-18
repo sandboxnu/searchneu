@@ -63,7 +63,7 @@ export default async function Page({
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-4 px-6">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-4 px-6">
       <GuestHeaderClient />
       <GuestPlanClient initialCourseNames={courseNames} />
     </div>

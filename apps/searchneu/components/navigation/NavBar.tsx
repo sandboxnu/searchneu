@@ -50,7 +50,7 @@ export function NavBar({
       {graduateFlag && (
         <LinkWrapper mobileNav={closeable}>
           <Link
-            href={isGuest ? "/graduate/guest" : "/graduate"}
+            href="/graduate"
             data-active={pathname === "/graduate"}
             className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
           >

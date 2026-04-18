@@ -2,6 +2,13 @@ import { Requisite } from "@sneu/scraper/types";
 import type { auditPlansT } from "../db";
 export type AuditPlanRow = typeof auditPlansT.$inferSelect;
 
+export interface CourseDetails {
+  minCredits: number;
+  maxCredits: number;
+  coreqs: Requisite;
+  prereqs: Requisite;
+}
+
 export type WhiteboardStatus = "not_started" | "in_progress" | "completed";
 
 export interface WhiteboardEntry {
@@ -459,12 +466,4 @@ export interface Template {
       };
     };
   };
-}
-
-// SidebarValidationStatus is used to determine the validation status of a section in the sidebar
-export enum SidebarValidationStatus {
-  Loading = "Loading",
-  Error = "Error",
-  Complete = "Complete",
-  InProgress = "InProgress",
 }

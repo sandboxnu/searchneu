@@ -1,8 +1,17 @@
 // ── YearRow ──────────────────────────────────────────────────────────────────
 
+import { useState } from "react";
 import { AuditYear, SeasonEnum } from "@/lib/graduate/types";
 import { AuditTermColumn } from "./AuditTermColumn";
 import { DeleteIcon } from "@/components/icons/Delete";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 export function AuditYearRow({
   year,
@@ -17,6 +26,8 @@ export function AuditYearRow({
   onRemoveCourse: (season: SeasonEnum, courseIndex: number) => void;
   onDeleteYear: () => void;
 }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   const credits = [year.fall, year.spring, year.summer1, year.summer2].reduce(
     (sum, t) => sum + t.classes.reduce((s, c) => s + c.numCreditsMin, 0),
     0,
@@ -42,19 +53,35 @@ export function AuditYearRow({
             title={`Delete Year ${year.year}`}
             onClick={(e) => {
               e.stopPropagation();
-              if (
-                confirm(
-                  `Delete Year ${year.year}? All courses in this year will be removed.`,
-                )
-              ) {
-                onDeleteYear();
-              }
+              setConfirmOpen(true);
             }}
           >
             <DeleteIcon className="h-3 w-3" />
           </button>
         </div>
       </div>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogTitle>Delete Year {year.year}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            All courses in this year will be removed.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                onDeleteYear();
+                setConfirmOpen(false);
+              }}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {expanded && (
         <>

@@ -38,25 +38,8 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function collectScheduleCourses(schedule: Audit): AuditCourse[] {
-  const seen = new Set<string>();
-  const courses: AuditCourse[] = [];
-  for (const year of schedule.years ?? []) {
-    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
-      for (const c of term.classes) {
-        const key = `${c.subject} ${c.classId}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          courses.push(c);
-        }
-      }
-    }
-  }
-  return courses;
-}
+import { collectScheduleCourses } from "@/lib/graduate/requirementUtils";
+import { SidebarContainer } from "./SidebarContainer";
 
 /** Recursively collects all COURSE-type requirement keys from a requirement tree. */
 function collectRequiredCourseKeys(req: Requirement): string[] {
@@ -578,6 +561,7 @@ export function WhiteboardSidebar({
     concentration === "Undecided" || concentration == null
       ? UNDECIDED_CONCENTRATION
       : concentration;
+  const isUndecided = subtitle === UNDECIDED_CONCENTRATION;
   const creditsToTake = currentMajor?.totalCreditsRequired ?? 0;
   const creditsTaken = creditsInAudit(schedule);
   const scheduleCourses = collectScheduleCourses(schedule);
@@ -589,7 +573,15 @@ export function WhiteboardSidebar({
 
   if (!schedule) {
     return (
-      <SidebarContainer title="Failed to load major">
+      <SidebarContainer
+        headerContent={
+          <div className="px-4 pt-8 pb-4">
+            <h1 className="text-navy text-2xl font-bold">
+              Failed to load major
+            </h1>
+          </div>
+        }
+      >
         <div className="px-4 py-8 text-center">
           <span className="text-neu6 text-xs">
             Schedule data is unavailable
@@ -628,10 +620,28 @@ export function WhiteboardSidebar({
 
   return (
     <SidebarContainer
-      title={currentMajor ? currentMajor.name : "No major"}
-      subtitle={subtitle}
-      creditsTaken={creditsTaken}
-      creditsToTake={creditsToTake}
+      headerContent={
+        <div className="shrink-0 px-4 pt-8 pb-4">
+          <div className="pb-2">
+            <h1 className="text-navy text-2xl font-bold">
+              {currentMajor ? currentMajor.name : "No major"}
+            </h1>
+            {subtitle && (
+              <p
+                className={`text-sm ${isUndecided ? "text-red italic" : "text-navy"}`}
+              >
+                {subtitle}
+              </p>
+            )}
+          </div>
+          <div className="mb-2 flex items-baseline gap-1">
+            <span className="text-navy text-2xl font-bold">
+              {creditsTaken}/{creditsToTake}
+            </span>
+            <span className="text-navy">Credits Completed</span>
+          </div>
+        </div>
+      }
     >
       <div className="flex flex-1 flex-col overflow-y-auto">
         <div className="bg-neu2 pt-3">
@@ -716,52 +726,5 @@ export function WhiteboardSidebar({
         </div>
       </div>
     </SidebarContainer>
-  );
-}
-
-// ── SidebarContainer (matches original Sidebar) ─────────────────────────────
-
-function SidebarContainer({
-  title,
-  subtitle,
-  creditsTaken,
-  creditsToTake,
-  children,
-}: {
-  title: string;
-  subtitle?: string;
-  creditsTaken?: number;
-  creditsToTake?: number;
-  children?: React.ReactNode;
-}) {
-  const isUndecided = subtitle === UNDECIDED_CONCENTRATION;
-
-  return (
-    <div className="border-neu25 flex h-full flex-col overflow-hidden border-r">
-      <div className="shrink-0 px-4 pt-8 pb-4">
-        <div className="pb-2">
-          <h1 className="text-navy text-2xl font-bold">{title}</h1>
-          {subtitle && (
-            <p
-              className={`text-sm ${isUndecided ? "text-red italic" : "text-navy"}`}
-            >
-              {subtitle}
-            </p>
-          )}
-        </div>
-        {creditsTaken !== undefined && (
-          <div className="mb-2 flex items-baseline gap-1">
-            <span className="text-navy text-2xl font-bold">
-              {creditsTaken}
-              {creditsToTake !== undefined ? `/${creditsToTake}` : ""}
-            </span>
-            <span className="text-navy">Credits Completed</span>
-          </div>
-        )}
-      </div>
-      <div className="[&::-webkit-scrollbar-thumb]:bg-neu4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent">
-        {children}
-      </div>
-    </div>
   );
 }

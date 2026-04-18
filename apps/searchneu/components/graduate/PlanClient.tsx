@@ -3,14 +3,20 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { Audit, HydratedAuditPlan, Whiteboard } from "@/lib/graduate/types";
+import type { CourseDetails } from "@/lib/graduate/types";
 import { BasePlanClient } from "./BasePlanClient";
 
 interface PlanClientProps {
   plan: HydratedAuditPlan & { courseNames: Record<string, string> };
   courseNames: Record<string, string>;
+  courseDetails: Record<string, CourseDetails>;
 }
 
-export function PlanClient({ plan, courseNames }: PlanClientProps) {
+export function PlanClient({
+  plan,
+  courseNames,
+  courseDetails,
+}: PlanClientProps) {
   const handlePersistSchedule = useCallback(
     async (stripped: Audit, pruned: Whiteboard | null) => {
       try {
@@ -62,6 +68,7 @@ export function PlanClient({ plan, courseNames }: PlanClientProps) {
       minors={plan.minors}
       concentration={plan.concentration}
       courseNames={courseNames}
+      courseDetails={courseDetails}
       onPersistSchedule={handlePersistSchedule}
       onPersistWhiteboard={handlePersistWhiteboard}
     />

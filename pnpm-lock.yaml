@@ -368,8 +368,8 @@ importers:
         specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       nock:
-        specifier: ^14.0.11
-        version: 14.0.11
+        specifier: ^14.0.12
+        version: 14.0.12
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -5039,8 +5039,8 @@ packages:
       sass:
         optional: true
 
-  nock@14.0.11:
-    resolution: {integrity: sha512-u5xUnYE+UOOBA6SpELJheMCtj2Laqx15Vl70QxKo43Wz/6nMHXS7PrEioXLjXAwhmawdEMNImwKCcPhBJWbKVw==}
+  nock@14.0.12:
+    resolution: {integrity: sha512-kZM3bHV0KzhHH6E2eRszHyML/w87AUzLBwupNTHohtYWP9fZYgUPmCbSKq6ITfEEmHqN4/p0MscvUipT4P5Qsg==}
     engines: {node: '>=18.20.0 <20 || >=20.12.1'}
 
   node-exports-info@1.6.0:
@@ -10717,7 +10717,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nock@14.0.11:
+  nock@14.0.12:
     dependencies:
       '@mswjs/interceptors': 0.41.3
       json-stringify-safe: 5.0.1

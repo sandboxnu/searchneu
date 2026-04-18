@@ -196,6 +196,44 @@ export function BasePlanClient({
     }
   }
 
+  function handleAddCourses(
+    yearNum: number,
+    season: SeasonEnum,
+    courses: AuditCourse[],
+  ) {
+    let skipped = 0;
+    const updated = produce(schedule, (draft) => {
+      const year = draft.years.find((y) => y.year === yearNum);
+      if (!year) return;
+      const termMap: Record<string, AuditTerm> = {
+        [SeasonEnum.FL]: year.fall,
+        [SeasonEnum.SP]: year.spring,
+        [SeasonEnum.S1]: year.summer1,
+        [SeasonEnum.S2]: year.summer2,
+      };
+      const term = termMap[season];
+      if (!term) return;
+      for (const course of courses) {
+        if (
+          !course.generic &&
+          term.classes.some(
+            (c) => c.classId === course.classId && c.subject === course.subject,
+          )
+        ) {
+          skipped++;
+          continue;
+        }
+        term.classes.push({ ...course, id: null });
+      }
+    });
+    if (skipped > 0) {
+      toast.warning(
+        `${skipped} course${skipped !== 1 ? "s were" : " was"} already in this term.`,
+      );
+    }
+    persist(updated);
+  }
+
   function handleRemoveCourse(
     yearNum: number,
     season: SeasonEnum,
@@ -320,6 +358,8 @@ export function BasePlanClient({
                     <AuditYearRow
                       key={year.year}
                       year={year}
+                      majors={majors}
+                      minors={minors}
                       expanded={expandedYears.has(year.year)}
                       onToggle={() =>
                         setExpandedYears((prev) => {
@@ -333,6 +373,9 @@ export function BasePlanClient({
                         handleRemoveCourse(year.year, season, i)
                       }
                       onDeleteYear={() => handleDeleteYear(year.year)}
+                      onAddCourses={(season, courses) =>
+                        handleAddCourses(year.year, season, courses)
+                      }
                     />
                   ))}
                 </div>

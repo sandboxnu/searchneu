@@ -154,7 +154,7 @@ function CoreqLine({
 }
 
 export function CourseCardOverlay({ course }: { course: AuditCourse }) {
-  const name = useCourseName(course.subject, course.classId);
+  const name = useCourseName(course.subject, course.classId, course.name);
   return (
     <div className="bg-neu3 flex w-64 items-center rounded-lg px-2 py-2 text-sm shadow-lg">
       <GripVertical className="text-neu4 mr-1.5 h-4 w-4 flex-shrink-0" />

@@ -1,7 +1,14 @@
 // ── YearRow ──────────────────────────────────────────────────────────────────
 
 import { useState } from "react";
-import { AuditYear, SeasonEnum } from "@/lib/graduate/types";
+import {
+  AuditCourse,
+  AuditYear,
+  Major,
+  Minor,
+  SeasonEnum,
+} from "@/lib/graduate/types";
+import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 import { AuditTermColumn } from "./AuditTermColumn";
 import { DeleteIcon } from "@/components/icons/Delete";
 import {
@@ -16,15 +23,21 @@ import { Button } from "@/components/ui/button";
 export function AuditYearRow({
   year,
   expanded,
+  majors,
+  minors,
   onToggle,
   onRemoveCourse,
   onDeleteYear,
+  onAddCourses,
 }: {
   year: AuditYear;
   expanded: boolean;
+  majors: Major[];
+  minors: Minor[];
   onToggle: () => void;
   onRemoveCourse: (season: SeasonEnum, courseIndex: number) => void;
   onDeleteYear: () => void;
+  onAddCourses: (season: SeasonEnum, courses: AuditCourse[]) => void;
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -84,25 +97,26 @@ export function AuditYearRow({
       </AlertDialog>
 
       {expanded && (
-        <>
-          <div className="border-neu3 my-[16px] flex border-1"></div>
-          <div className="grid grid-cols-4 gap-[36px] bg-white">
-            {(
-              [
-                { term: year.fall, season: SeasonEnum.FL },
-                { term: year.spring, season: SeasonEnum.SP },
-                { term: year.summer1, season: SeasonEnum.S1 },
-                { term: year.summer2, season: SeasonEnum.S2 },
-              ] as const
-            ).map(({ term, season }) => (
-              <AuditTermColumn
-                key={term.id}
-                term={term}
-                onRemoveCourse={(i) => onRemoveCourse(season, i)}
-              />
-            ))}
-          </div>
-        </>
+        <div className="grid min-h-[220px] grid-cols-4">
+          {(
+            [
+              { term: year.fall, season: SeasonEnum.FL },
+              { term: year.spring, season: SeasonEnum.SP },
+              { term: year.summer1, season: SeasonEnum.S1 },
+              { term: year.summer2, season: SeasonEnum.S2 },
+            ] as const
+          ).map(({ term, season }) => (
+            <AuditTermColumn
+              key={term.id}
+              term={term}
+              termLabel={`Year ${year.year} ${SEASON_DISPLAY[season]}`}
+              majors={majors}
+              minors={minors}
+              onRemoveCourse={(i) => onRemoveCourse(season, i)}
+              onAddCourses={(courses) => onAddCourses(season, courses)}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

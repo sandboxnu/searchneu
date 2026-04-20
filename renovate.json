@@ -5,18 +5,26 @@
     ":semanticCommits",
     "group:monorepos",
     "group:recommended",
-    "schedule:weekends"
+    "schedule:every 2 weeks on Saturday"
   ],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "description": "Group all non-frozen dependencies into a single PR",
+      "matchPackagePatterns": ["*"],
+      "groupName": "all dependencies",
       "automerge": true
     },
     {
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true
+      "description": "Freeze eslint and @eslint/js at v9 — v10 is broken",
+      "matchPackageNames": ["eslint", "@eslint/js"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
+      "description": "Freeze paradedb docker image",
+      "matchPackageNames": ["paradedb/paradedb"],
+      "enabled": false
     }
   ]
 }

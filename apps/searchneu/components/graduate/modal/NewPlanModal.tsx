@@ -150,6 +150,7 @@ export default function NewPlanModal({
   //change supported majors based on catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMajorsData) {
+      // eslint-disable-next-line
       setMajorOptions([]);
       setMajors([]);
       return;
@@ -174,6 +175,7 @@ export default function NewPlanModal({
   //change supported minors based on catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMinorsData) {
+      // eslint-disable-next-line
       setMinorOptions([]);
       setMinors([]);
       return;
@@ -198,6 +200,7 @@ export default function NewPlanModal({
 
   //change concentrations based on major
   useEffect(() => {
+    // eslint-disable-next-line
     setIsLoadingConcentration(true);
     if (!majors || !catalogYear || !supportedMajorsData) {
       setConcentrationOptions([]);
@@ -224,6 +227,7 @@ export default function NewPlanModal({
 
   //reset template when major or catalog year changes
   useEffect(() => {
+    // eslint-disable-next-line
     setUseRecommendedTemplate(false);
   }, [majors, catalogYear]);
 

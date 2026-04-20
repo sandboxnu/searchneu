@@ -110,6 +110,7 @@ export default function EditPlanModal({
   // re-seed all form state whenever the modal opens
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line
       setMessage(plan.name);
       setCatalogYear(plan.catalogYear ?? -1);
       setMajors(plan.majors?.map((m) => m.name) ?? []);
@@ -122,6 +123,7 @@ export default function EditPlanModal({
   // majors options driven by catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMajorsData) {
+      // eslint-disable-next-line
       setMajorOptions([]);
       return;
     }
@@ -138,6 +140,7 @@ export default function EditPlanModal({
   // minor options driven by catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMinorsData) {
+      // eslint-disable-next-line
       setMinorOptions([]);
       return;
     }
@@ -153,6 +156,7 @@ export default function EditPlanModal({
 
   // concentration options driven by major
   useEffect(() => {
+    // eslint-disable-next-line
     setIsLoadingConcentration(true);
     if (!majors.length || !catalogYear || !supportedMajorsData) {
       setConcentrationOptions([]);

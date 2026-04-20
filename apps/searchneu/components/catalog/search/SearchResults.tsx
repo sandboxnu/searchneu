@@ -1,13 +1,16 @@
 "use client";
 
 import { ResultCard } from "./ResultCard";
-import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useDeferredValue, useRef } from "react";
+import {
+  ReadonlyURLSearchParams,
+  useParams,
+  useSearchParams,
+} from "next/navigation";
+import { useDeferredValue, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "@/lib/cn";
 import Link from "next/link";
-import useSWR from "swr";
-import type { CourseSearchResult } from "@/lib/catalog/types";
+import { useCatalogSearch } from "@/lib/catalog/use-catalog-search";
 
 // NOTE: in general prefer named exports. however, since the `SearchResults` component
 // needs to be imported dynamically to avoid SSR, it has to be default exported
@@ -17,48 +20,45 @@ import type { CourseSearchResult } from "@/lib/catalog/types";
 export default function SearchResults() {
   const params = useSearchParams();
   const { term, course } = useParams();
-  const deferred = useDeferredValue(params.toString());
-  const stale = deferred !== params.toString();
 
   return (
-    <div
-      className={cn(
-        "bg-neu2 flex h-full flex-col rounded-t-lg",
-        stale ? "opacity-60" : "",
-      )}
-    >
-      <Suspense fallback={<ResultsListSkeleton />}>
-        <ResultsList
-          params={deferred}
-          term={term?.toString() ?? ""}
-          course={course?.toString() ?? ""}
-        />
-      </Suspense>
+    <div className={cn("bg-neu2 flex h-full flex-col rounded-t-lg")}>
+      <ResultsList
+        params={params}
+        term={term?.toString() ?? ""}
+        course={course?.toString() ?? ""}
+      />
     </div>
   );
 }
 
-function ResultsList(props: { params: string; term: string; course: string }) {
+function ResultsList(props: {
+  params: ReadonlyURLSearchParams;
+  term: string;
+  course: string;
+}) {
   "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
 
   const searchP = new URLSearchParams(props.params);
-  searchP.set("term", props.term);
 
-  const { data: results } = useSWR<CourseSearchResult[]>(
-    `/api/catalog/search?${searchP.toString()}`,
-    (u: string) => fetch(u).then((r) => r.json()),
-    { suspense: true },
-  );
+  const filters = {
+    query: searchP.get("q") ?? "",
+    subjects: searchP.getAll("subj").map((s) => s.toUpperCase()),
+    minCourseLevel: Number(searchP.get("nci") ?? -1),
+    maxCourseLevel: Number(searchP.get("xci") ?? -1),
+    nupaths: searchP.getAll("nupath").map((n) => n.toUpperCase()),
+    campuses: searchP.getAll("camp"),
+    classTypes: searchP.getAll("clty"),
+    honors: searchP.get("honors") === "true",
+  };
 
-  if (!results) {
-    throw Error("failed searching");
-  }
+  const { results, isLoading } = useCatalogSearch(props.term, filters);
 
   const parentRef = useRef(null);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const virtual = useVirtualizer({
-    count: Array.isArray(results) ? results.length : 0,
+    count: results.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 103,
     scrollPaddingStart: 0,
@@ -66,6 +66,10 @@ function ResultsList(props: { params: string; term: string; course: string }) {
   });
 
   const items = virtual.getVirtualItems();
+
+  if (isLoading) {
+    return <ResultsListSkeleton />;
+  }
 
   if (results.length === 0) {
     return (

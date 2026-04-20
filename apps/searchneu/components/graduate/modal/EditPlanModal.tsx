@@ -214,7 +214,7 @@ export default function EditPlanModal({
       const validConcentrations = majorData?.concentrations ?? [];
       const finalConcentration = validConcentrations.includes(concentration)
         ? concentration
-        : undefined;
+        : "";
 
       if (isGuest && onGuestSave) {
         const current = JSON.parse(localStorage.getItem("guest-plan") ?? "{}");
@@ -271,9 +271,7 @@ export default function EditPlanModal({
           majors: isNoMajorSelected ? null : majors,
           minors: !minors?.length ? null : minors,
           catalogYear: isNoMajorSelected ? null : catalogYear,
-          concentration: isNoMajorSelected
-            ? null
-            : (finalConcentration ?? null),
+          concentration: isNoMajorSelected ? "" : finalConcentration,
         }),
       });
 

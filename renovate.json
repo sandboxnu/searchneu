@@ -4,15 +4,15 @@
     "config:recommended",
     ":semanticCommits",
     "group:monorepos",
-    "group:recommended",
-    "schedule:every 2 weeks on Saturday"
+    "group:recommended"
   ],
+  "schedule": ["* 0-4 1,15 * *"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "packageRules": [
     {
       "description": "Group all non-frozen dependencies into a single PR",
-      "matchPackagePatterns": ["*"],
+      "matchPackageNames": ["*"],
       "groupName": "all dependencies",
       "automerge": true
     },

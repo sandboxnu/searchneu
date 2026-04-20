@@ -20,7 +20,7 @@ export function SearchBar() {
     const timeoutId = setTimeout(() => {
       if (query.trim()) track("search", { query });
       setValue("q", query.trim() ? query : null, "replace");
-    }, 300);
+    }, 100);
 
     if (!course) {
       if (!query.trim()) {

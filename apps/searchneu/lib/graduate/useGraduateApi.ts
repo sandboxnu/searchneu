@@ -129,6 +129,7 @@ export function useHasTemplate(majorNames: string[], catalogYear: number) {
 
   useEffect(() => {
     if (!majorNames[0] || !catalogYear) {
+      // eslint-disable-next-line
       setHasTemplate(false);
       return;
     }
@@ -169,6 +170,7 @@ export function useTemplate(
 
   useEffect(() => {
     if (!majorNames?.[0] || !catalogYear) {
+      // eslint-disable-next-line
       setTemplate(null);
       return;
     }

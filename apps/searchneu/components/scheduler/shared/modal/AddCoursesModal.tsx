@@ -2,15 +2,14 @@
 
 import {
   Course,
-  GroupedTerms,
   CourseSearchResult,
+  GroupedTerms,
   Term,
 } from "@/lib/catalog/types";
 import {
   extractCoreqReqs,
   fetchCoreqCourses,
   fetchCourseById,
-  fetchSectionsForCourses,
   getSelectionText,
   isAlreadySelected,
   isCourseMatch,
@@ -18,12 +17,10 @@ import {
 } from "@/lib/scheduler/addCourseModal";
 import {
   CourseReq,
-  ExistingPlanData,
   ModalCourse,
   SelectedCourseGroupData,
 } from "@/lib/scheduler/types";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "../../../ui/button";
 import {
@@ -45,49 +42,36 @@ interface AddCoursesModalProps {
   closeFn: () => void;
   terms: GroupedTerms;
   selectedTerm: Term | null;
-  planId?: number;
-  callback?: () => void;
+  initialCourseIds: number[];
+  initialNumCourses?: number;
+  onGenerate: (courseIds: number[], numCourses: number) => void;
 }
 
-export default function AddCoursesModal(props: AddCoursesModalProps) {
-  const router = useRouter();
-
-  const [numCourses, setNumCourses] = useState<number>(4);
+export default function AddCoursesModal({
+  open,
+  closeFn,
+  terms,
+  selectedTerm,
+  initialCourseIds,
+  initialNumCourses,
+  onGenerate,
+}: AddCoursesModalProps) {
+  const [numCourses, setNumCourses] = useState<number>(initialNumCourses ?? 4);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourseGroups, setSelectedCourseGroups] = useState<
     SelectedCourseGroupData[]
   >([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [initialExistingPlan, setInitialExistingPlan] =
-    useState<ExistingPlanData | null>(null);
 
-  // Fetch existing plan data if planId is provided (for updating)
-  // Refetch whenever the modal is opened to ensure we have the latest plan data
+  // Sync selected number of courses if it was anything other than default
   useEffect(() => {
-    if (!props.planId || !props.open) return;
+    if (open && initialNumCourses != null) {
+      setNumCourses(initialNumCourses);
+    }
+  }, [open, initialNumCourses]);
 
-    const fetchExistingPlan = async () => {
-      try {
-        const res = await fetch(`/api/scheduler/saved-plans/${props.planId}`, {
-          cache: "no-store",
-        });
-        if (res.ok) {
-          const planData = await res.json();
-          setInitialExistingPlan(planData);
-          if (planData.numCourses !== undefined) {
-            setNumCourses(planData.numCourses);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching existing plan:", error);
-      }
-    };
-
-    fetchExistingPlan();
-  }, [props.planId, props.open]);
-
-  const activeTerm = props.selectedTerm ?? props.terms.neu[0];
-  const activeTermLabel = Object.values(props.terms)
+  const activeTerm = selectedTerm ?? terms.neu[0];
+  const activeTermLabel = Object.values(terms)
     .flat()
     .find((t) => t.term === activeTerm.term)?.name;
 
@@ -96,116 +80,12 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
       fetchCoreqCourses(course, currentGroups, activeTerm),
     [activeTerm],
   );
-
-  const handleGenerateSchedules = useCallback(
-    async (courseIds: number[], numCoursesValue: number) => {
-      setIsGenerating(true);
-      try {
-        // Fetch latest plan data in case filters were updated while modal was open
-        let latestPlanData: ExistingPlanData | null = null;
-        if (props.planId) {
-          try {
-            const res = await fetch(
-              `/api/scheduler/saved-plans/${props.planId}`,
-              { cache: "no-store" },
-            );
-            if (res.ok) {
-              latestPlanData = await res.json();
-            }
-          } catch (error) {
-            console.error("Error fetching latest plan data:", error);
-          }
-        }
-
-        const sectionsByCourseId = await fetchSectionsForCourses(courseIds);
-
-        // Build courses array, preserving lock/hidden status from the latest plan data
-        const existingPlanForUpdate = latestPlanData || initialExistingPlan;
-        const courses = courseIds.map((courseId) => {
-          const sections = sectionsByCourseId.get(courseId) ?? [];
-          const existingCourse = existingPlanForUpdate?.courses.find(
-            (c) => c.courseId === courseId,
-          );
-
-          if (existingCourse) {
-            return {
-              courseId,
-              isLocked: existingCourse.isLocked,
-              sections: sections.map((s) => {
-                const existingSection = existingCourse.sections.find(
-                  (es) => es.sectionId === s.id,
-                );
-                return {
-                  sectionId: s.id,
-                  isHidden: existingSection?.isHidden ?? false,
-                };
-              }),
-            };
-          } else {
-            return {
-              courseId,
-              sections: sections.map((s) => ({ sectionId: s.id })),
-            };
-          }
-        });
-
-        if (props.planId && (latestPlanData || initialExistingPlan)) {
-          const response = await fetch(
-            `/api/scheduler/saved-plans/${props.planId}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ courses, numCourses: numCoursesValue }),
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error(`Failed to update plan: ${response.statusText}`);
-          }
-
-          props.callback?.();
-          props.closeFn();
-        } else {
-          const response = await fetch("/api/scheduler/saved-plans", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              term: activeTerm.term + activeTerm.part,
-              courses,
-              numCourses: numCoursesValue,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`Failed to create plan: ${response.statusText}`);
-          }
-
-          const plan = await response.json();
-          router.push(`/scheduler/generator?planId=${plan.id}`);
-          props.closeFn();
-        }
-      } catch (error) {
-        console.error("Error saving plan:", error);
-        alert("Failed to save plan. Please try again.");
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [activeTerm, router, props, initialExistingPlan],
-  );
-
-  // Initialize modal with existing plan courses if updating
-  // Only use initialExistingPlan to avoid reinitializing course selection during handleGenerateSchedules
   useEffect(() => {
-    const courseIdsToLoad = initialExistingPlan
-      ? initialExistingPlan.courses.map((c) => c.courseId)
-      : [];
-
-    if (!courseIdsToLoad.length) return;
+    if (!open || initialCourseIds.length === 0) return;
 
     const syncInitialCourses = async () => {
       const rawResults = await Promise.all(
-        courseIdsToLoad.map(fetchCourseById),
+        initialCourseIds.map(fetchCourseById),
       );
       const fetchedCourses = rawResults.filter((r): r is Course => r !== null);
 
@@ -220,7 +100,22 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
     };
 
     syncInitialCourses();
-  }, [activeTerm, initialExistingPlan]);
+  }, [open, initialCourseIds, activeTerm, fetchCoreqs]);
+
+  const handleGenerateSchedules = useCallback(
+    async (courseIds: number[], numCoursesValue: number) => {
+      setIsGenerating(true);
+      try {
+        onGenerate(courseIds, numCoursesValue);
+        closeFn();
+      } catch (error) {
+        console.error("Error generating schedules:", error);
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [onGenerate, closeFn],
+  );
 
   const handleSelectCourse = async (course: CourseSearchResult) => {
     if (
@@ -267,7 +162,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
   };
 
   return (
-    <Dialog open={props.open} onOpenChange={(open) => !open && props.closeFn()}>
+    <Dialog open={open} onOpenChange={(o) => !o && closeFn()}>
       <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px] [&_[data-slot=dialog-close]]:cursor-pointer">
         <DialogHeader className="flex w-full items-center">
           <DialogTitle className="text-2xl font-bold">Add Courses</DialogTitle>
@@ -275,7 +170,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
             Add up to 6 courses{" "}
             <span className="italic">(including corequisites)</span> for{" "}
             <span className="font-bold">
-              {activeTermLabel.split(" ").slice(0, 2).join(" ")}.
+              {activeTermLabel?.split(" ").slice(0, 2).join(" ")}.
             </span>
           </DialogDescription>
         </DialogHeader>

@@ -16,22 +16,23 @@ export function RangeSlider() {
 
   // debounce the range slider (avoid request every notch)
   useEffect(() => {
-    function updateSearchParams(range: number[]) {
-      const params = new URLSearchParams(searchParams);
-      if (range[0] === 1 && range[1] === 9) {
+    const timeoutId = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      if (d[0] === 1 && d[1] === 9) {
         params.delete("nci");
         params.delete("xci");
-        window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-        return;
+      } else {
+        params.set("nci", String(d[0]));
+        params.set("xci", String(d[1]));
       }
 
-      params.set("nci", String(range[0]));
-      params.set("xci", String(range[1]));
-      window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-    }
+      const newUrl = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
 
-    const timeoutId = setTimeout(() => {
-      updateSearchParams(d);
+      if (newUrl !== `${window.location.pathname}${window.location.search}`) {
+        window.history.pushState(null, "", newUrl);
+      }
     }, 500);
 
     return () => clearTimeout(timeoutId);

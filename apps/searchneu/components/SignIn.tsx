@@ -37,32 +37,38 @@ export function SignIn({
 
   return (
     <Dialog onOpenChange={() => closeFn()} defaultOpen={true}>
-      <DialogContent className="px-8 sm:max-w-[425px]">
-        <DialogHeader className="flex w-full items-center">
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
           <DialogTitle>Sign In</DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription>
             Sign in to access all SearchNEU features! We currently only support
             valid <span className="font-bold">husky.neu.edu</span>{" "}
             accounts.{" "}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex w-full items-center justify-center py-4">
+        <div className="flex w-full items-center justify-center">
           <Magoskie className="w-32" />
         </div>
-        <DialogDescription className="text-center">
+        <DialogDescription>
           By signing up, you agree to our{" "}
-          <Link href="/terms" className="text-b2 underline">
+          <Link
+            href="/terms"
+            className="text-blue hover:text-blue/80 underline"
+          >
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="text-b2 underline">
+          <Link
+            href="/privacy"
+            className="text-blue hover:text-blue/80 underline"
+          >
             Privacy Policy
           </Link>
         </DialogDescription>
         <DialogFooter>
           <Button
             type="submit"
-            className="bg-accent hover:bg-accent/80 w-full"
+            className="w-full"
             onClick={() => doSignIn()}
             disabled={isPending}
           >

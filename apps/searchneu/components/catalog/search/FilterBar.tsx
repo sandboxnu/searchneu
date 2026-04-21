@@ -25,7 +25,7 @@ export function SearchPanel(props: {
   nupaths: Promise<Nupath[]>;
 }) {
   return (
-    <div className="bg-neu1 h-full min-h-0 w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
+    <div className="bg-neu0 h-full min-h-0 w-full space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t">
       <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
       <Suspense fallback={<ToggleSkeleton />}>
         <CollegeSelect terms={props.terms} />

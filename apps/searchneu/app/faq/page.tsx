@@ -1,7 +1,7 @@
 import faqData from "../../faqs.json";
 import howToData from "../../howto.json";
 import { FAQDropDown } from "@/components/ui/accordion";
-import { HowToCard } from "@/components/ui/how-to-card";
+import { HowToCard } from "@/components/faq/how-to-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { faqHowToFlag } from "@/lib/flags";
 

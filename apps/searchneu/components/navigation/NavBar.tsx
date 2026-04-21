@@ -1,27 +1,21 @@
 "use client";
 import {
-  CircleQuestionMark,
-  DoorOpen,
   GraduationCapIcon,
-  Bell,
-  BookMarked,
+  CalendarIcon,
+  BellIcon,
+  CircleQuestionMarkIcon,
+  BookMarkedIcon,
+  DoorOpenIcon,
 } from "lucide-react";
-import { type ReactNode, use } from "react";
+import { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
-import { SheetClose } from "../ui/sheet";
-import { SchedulerButton } from "./SchedulerButton";
-import { cn } from "@/lib/cn";
 
 export function NavBar({
   flags,
-  closeable = false,
-  isGuest = false,
 }: {
   flags: { [key: string]: Promise<boolean> };
-  closeable?: boolean;
-  isGuest: boolean;
 }) {
   const roomsFlag = use(flags["rooms"]);
   const graduateFlag = use(flags["graduate"]);
@@ -29,82 +23,65 @@ export function NavBar({
   const pathname = usePathname();
 
   return (
-    <nav className={cn("flex gap-2 font-semibold", { "flex-col": closeable })}>
+    <nav className="flex gap-2 font-semibold">
       <FlagValues
         values={{
           rooms: roomsFlag,
         }}
       />
       {roomsFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href="/rooms"
-            data-active={pathname === "/rooms"}
-            className="bg-neu1 flex items-center gap-2 rounded-full border-1 px-4 py-2 text-sm"
-          >
-            <DoorOpen className="size-4" />
-            <span>Rooms</span>
-          </Link>
-        </LinkWrapper>
+        <Link
+          href="/rooms"
+          data-active={pathname.includes("/rooms")}
+          className="bg-neu0 flex items-center gap-2 rounded-full border px-4 py-2 text-sm"
+        >
+          <DoorOpenIcon className="size-4" />
+          <span>Rooms</span>
+        </Link>
       )}
       {graduateFlag && (
-        <LinkWrapper mobileNav={closeable}>
-          <Link
-            href={isGuest ? "/graduate/guest" : "/graduate"}
-            data-active={pathname === "/graduate"}
-            className="bg-neu1 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border-1 p-2 text-sm"
-          >
-            <GraduationCapIcon className="size-4" />
-            Graduate
-          </Link>
-        </LinkWrapper>
+        <Link
+          // NOTE: access control should be on the page, not navigation
+          // href={isGuest ? "/graduate/guest" : "/graduate"}
+          href="/graduate"
+          data-active={pathname.includes("/graduate")}
+          className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"
+        >
+          <GraduationCapIcon className="size-4" />
+          Graduate
+        </Link>
       )}
-      <LinkWrapper mobileNav={closeable}>
-        <Link
-          href="/catalog"
-          data-active={pathname === "/catalog"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
-        >
-          <BookMarked className="size-4" />
-          <span>Catalog</span>
-        </Link>
-      </LinkWrapper>
-      <LinkWrapper mobileNav={closeable}>
-        <SchedulerButton pathname={pathname} />
-      </LinkWrapper>
-      <LinkWrapper mobileNav={closeable}>
-        <Link
-          href="/notifications"
-          data-active={pathname === "/notifications"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-1 p-2 px-4 text-sm"
-        >
-          <Bell className="size-4" />
-          <span>Notifications</span>
-        </Link>
-      </LinkWrapper>
-      <LinkWrapper mobileNav={closeable}>
-        <Link
-          href="/faq"
-          data-active={pathname === "/faq"}
-          className="bg-neu1 data-[active=true]:border-neu3 flex items-center rounded-full border-1 p-2 text-sm"
-        >
-          <CircleQuestionMark className="text-red size-5" />
-        </Link>
-      </LinkWrapper>
+      <Link
+        href="/catalog"
+        data-active={pathname.includes("/catalog")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+      >
+        <BookMarkedIcon className="size-4" />
+        <span>Catalog</span>
+      </Link>
+      <Link
+        href="/scheduler"
+        data-active={pathname.includes("/scheduler")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+      >
+        <CalendarIcon className="size-4" />
+        <span> Scheduler</span>
+      </Link>
+      <Link
+        href="/notifications"
+        data-active={pathname.includes("/notifications")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+      >
+        <BellIcon className="size-4" />
+        <span>Notifications</span>
+      </Link>
+      <Link
+        href="/faq"
+        data-active={pathname.includes("/faq")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex items-center rounded-full border p-2 text-sm"
+      >
+        <CircleQuestionMarkIcon className="text-r5 size-5" />
+      </Link>
     </nav>
   );
-}
-
-function LinkWrapper({
-  mobileNav,
-  children,
-}: {
-  mobileNav: boolean;
-  children: ReactNode;
-}) {
-  if (mobileNav) {
-    return <SheetClose asChild={true}>{children}</SheetClose>;
-  }
-
-  return children;
 }

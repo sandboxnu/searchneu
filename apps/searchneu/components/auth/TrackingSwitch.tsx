@@ -160,20 +160,20 @@ export function TrackingSwitch({
       {oneMoreStep && (
         <Dialog open={true} onOpenChange={() => setOneMoreStep(false)}>
           <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader className="flex w-full items-center">
+            <DialogHeader>
               <DialogTitle>One More Step</DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogDescription>
                 Add and verify your phone number to be the first to know when
                 seats open up.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex w-full items-center justify-center py-4">
+            <div className="flex w-full items-center justify-center">
               <Chairskie className="w-32" />
             </div>
             <DialogFooter>
               <Button
                 type="submit"
-                className="bg-accent hover:bg-accent/80 w-full"
+                className="w-full"
                 onClick={() => {
                   const params = new URLSearchParams();
                   params.set("redirect_uri", window.location.toString());

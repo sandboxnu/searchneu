@@ -16,27 +16,22 @@ export function SearchBar() {
   const [inputValue, setInputValue] = useState(query);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const params = new URLSearchParams(searchParams);
+    const timeoutId = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
       if (!query.trim()) {
         params.delete("q");
-        window.history.replaceState(
-          null,
-          "",
-          params.toString()
-            ? `${pathname}?${params.toString()}`
-            : `${pathname}`,
-        );
-        return;
+      } else {
+        params.set("q", query);
+        track("search", { query: query });
       }
 
-      params.set("q", query);
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-      track("search", { query: query });
-    };
+      const newUrl = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
 
-    const timeoutId = setTimeout(() => {
-      fetchData();
+      if (newUrl !== `${window.location.pathname}${window.location.search}`) {
+        window.history.replaceState(null, "", newUrl);
+      }
     }, 300);
 
     if (!course) {
@@ -91,7 +86,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-neu1 focus:border-neu3 visible border pl-10 md:hidden"
+        className="bg-neu0 focus:border-neu3 visible border pl-10 md:hidden"
         placeholder="Search by course or phrase..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -99,7 +94,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-neu1 focus:border-neu3 hidden border pl-10 md:block"
+        className="bg-neu0 focus:border-neu3 hidden border pl-10 md:block"
         placeholder="Search by course or phrase..."
         value={inputValue}
         onChange={(e) => {

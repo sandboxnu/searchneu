@@ -34,10 +34,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <FeedbackProvider>
-      <div>
-        <main className="min-h-[100dvh] w-screen grow">{children}</main>
-        <FeedbackModal />
-        {/* <Toaster
+      <main className="min-h-dvh w-screen grow">{children}</main>
+      <FeedbackModal />
+      {/* <Toaster
           toastOptions={{
             classNames: {
               toast:
@@ -48,8 +47,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             },
           }}
         /> */}
-        {/* <GivingDayModal /> */}
-      </div>
+      {/* <GivingDayModal /> */}
     </FeedbackProvider>
   );
 }

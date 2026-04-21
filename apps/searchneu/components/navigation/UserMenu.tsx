@@ -23,10 +23,7 @@ export function UserIcon() {
 
   return (
     <>
-      <Button
-        className="bg-accent hover:bg-accent/80 h-9 rounded-full font-bold"
-        onClick={() => setShowSI(!showSI)}
-      >
+      <Button className="h-9 font-bold" onClick={() => setShowSI(!showSI)}>
         Sign In
       </Button>
       {showSI && <SignIn closeFn={() => setShowSI(false)} />}

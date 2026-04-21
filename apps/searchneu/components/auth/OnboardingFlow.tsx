@@ -72,15 +72,15 @@ export function OnboardingFlow({ redirectUri }: { redirectUri: string }) {
 function StartPage({ next, abort }: { next: () => void; abort: () => void }) {
   return (
     <>
-      <AlertDialogHeader className="flex w-full items-center">
+      <AlertDialogHeader>
         <AlertDialogTitle>Notification Method</AlertDialogTitle>
-        <AlertDialogDescription className="text-center">
+        <AlertDialogDescription>
           Link your phone number to receive seat tracking notifications. This
           can be done later.
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <div className="flex w-full items-center justify-center py-4">
-        <Searchskie className="w-[20vh]" />
+      <div className="flex w-full items-center justify-center">
+        <Searchskie className="w-[15vh]" />
       </div>
       <AlertDialogFooter>
         <div className="flex w-full flex-col gap-1">
@@ -118,15 +118,21 @@ function ConsentPage({ next, abort }: { next: () => void; abort: () => void }) {
 
   return (
     <>
-      <AlertDialogHeader className="flex w-full items-center">
+      <AlertDialogHeader>
         <AlertDialogTitle>Legal</AlertDialogTitle>
-        <AlertDialogDescription className="text-center">
+        <AlertDialogDescription>
           By continuing you agree to the SMS Notification Policies in the{" "}
-          <Link href="/terms" className="text-b2 underline">
+          <Link
+            href="/terms"
+            className="text-blue hover:text-blue/80 underline"
+          >
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="text-b2 underline">
+          <Link
+            href="/privacy"
+            className="text-blue hover:text-blue/80 underline"
+          >
             Privacy Policy
           </Link>{" "}
           and give explicit consent to receive SMS messages. Msg and data rates
@@ -194,14 +200,14 @@ function PhoneNumberPage({
 
   return (
     <>
-      <AlertDialogHeader className="flex w-full items-center">
+      <AlertDialogHeader>
         <AlertDialogTitle>Phone Number</AlertDialogTitle>
-        <AlertDialogDescription className="text-center">
+        <AlertDialogDescription>
           Your phone number will be used for class notifications and nothing
           else.
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <div className="flex flex-col items-center justify-center pb-4">
+      <div className="flex flex-col items-center justify-center">
         <PhoneInput
           id="phone"
           aria-label="phone input"
@@ -278,9 +284,9 @@ function OTPPage({
 
   return (
     <>
-      <AlertDialogHeader className="flex w-full items-center">
+      <AlertDialogHeader>
         <AlertDialogTitle>Verify Phone Number</AlertDialogTitle>
-        <AlertDialogDescription className="text-center">
+        <AlertDialogDescription>
           Enter the code sent to {phoneNumber}
         </AlertDialogDescription>
       </AlertDialogHeader>
@@ -336,14 +342,14 @@ function OTPPage({
 function SuccessPage({ next }: { next: () => void }) {
   return (
     <>
-      <AlertDialogHeader className="flex w-full items-center">
+      <AlertDialogHeader>
         <AlertDialogTitle>Verification Success</AlertDialogTitle>
-        <AlertDialogDescription className="text-center">
-          Your phone number is successfully verified!
+        <AlertDialogDescription>
+          Your phone number is successfully verified! Happy searching!
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <div className="flex w-full items-center justify-center py-4">
-        <BadgeCheck className="text-neu size-16" />
+      <div className="flex w-full items-center justify-center">
+        <BadgeCheck className="text-r5 size-16" />
       </div>
       <AlertDialogFooter>
         <Button type="submit" className="w-full" onClick={next}>

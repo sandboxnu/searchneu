@@ -5,21 +5,12 @@ import { graduateFlag, roomsFlag } from "@/lib/flags";
 import { Suspense } from "react";
 import { NavBar } from "./NavBar";
 import { MobileNav } from "./MobileNav";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 
 export async function Header() {
-  const enableRoomsPage = roomsFlag();
-  const enableGraduatePage = graduateFlag();
-
   const flags = {
-    rooms: enableRoomsPage,
-    graduate: enableGraduatePage,
+    rooms: roomsFlag(),
+    graduate: graduateFlag(),
   };
-
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
 
   return (
     <header className="z-20 flex h-9 w-full items-center justify-between bg-transparent px-4 md:px-6">
@@ -28,11 +19,13 @@ export async function Header() {
       </Link>
       <div className="hidden items-center gap-2 lg:flex">
         <Suspense>
-          <NavBar flags={flags} isGuest={!session} />
+          <NavBar flags={flags} />
+        </Suspense>
+        <Suspense>
+          <MobileNav flags={flags} />
         </Suspense>
         <UserIcon />
       </div>
-      <MobileNav flags={flags} isGuest={!session} />
     </header>
   );
 }

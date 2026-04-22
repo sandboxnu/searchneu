@@ -1,4 +1,7 @@
-import { GraduateAPI } from "../graduate/graduateApiClient";
+import {
+  getMajor as getMajorFromDb,
+  getMinor as getMinorFromDb,
+} from "@/lib/dal/catalog";
 import { Major, Minor, SupportedConcentrations } from "@/lib/graduate/types";
 
 const UNDECIDED_STRING = "Undecided";
@@ -17,12 +20,10 @@ export async function getByMajorAndYear(
 ): Promise<Major | null> {
   try {
     const majors = await Promise.all(
-      majorNames.map((majorName) =>
-        GraduateAPI.majors.get(catalogYear, majorName),
-      ),
+      majorNames.map((majorName) => getMajorFromDb(catalogYear, majorName)),
     );
 
-    return majors[0];
+    return majors[0] ?? null;
   } catch (error) {
     console.error("error getting by major and year", error);
     return null;
@@ -43,12 +44,10 @@ export async function getByMinorAndYear(
 ): Promise<Minor | null> {
   try {
     const minors = await Promise.all(
-      minorNames.map((minorName) =>
-        GraduateAPI.minors.get(catalogYear, minorName),
-      ),
+      minorNames.map((minorName) => getMinorFromDb(catalogYear, minorName)),
     );
 
-    return minors[0];
+    return minors[0] ?? null;
   } catch (error) {
     console.error("error getting by minor and year", error);
     return null;

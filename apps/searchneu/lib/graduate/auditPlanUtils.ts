@@ -1,26 +1,13 @@
-import {
-  Audit,
-  AuditCourse,
-  AuditYear,
-  SeasonEnum,
-  StatusEnum,
-  Template,
-} from "./types";
+import { Audit, AuditCourse, AuditYear, SeasonEnum, StatusEnum } from "./types";
 
-export function createScheduleFromTemplate(template: Template): Audit {
+export function createScheduleFromTemplate(
+  planData: Record<string, Record<string, string[]>>,
+): Audit {
   const schedule = createEmptySchedule();
 
   try {
-    // Check if we have the template data
-    if (!template.templateData || !template.name) {
-      console.error("Missing template data or name");
-      return schedule;
-    }
-
-    // Get the plan data from the template
-    const planData = template.templateData[template.name];
     if (!planData) {
-      console.error("No plan data found in template");
+      console.error("Missing plan data");
       return schedule;
     }
 

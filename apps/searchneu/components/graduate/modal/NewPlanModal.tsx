@@ -110,6 +110,7 @@ export default function NewPlanModal({
   //templates
   const recommendedTemplateLabel = `This will pre-populate your plan with the recommended course sequence`;
   const [useRecommendedTemplate, setUseRecommendedTemplate] = useState(false);
+  const [selectedTemplateOption, setSelectedTemplateOption] = useState("");
 
   //form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,6 +125,24 @@ export default function NewPlanModal({
     useRecommendedTemplate ? catalogYear : null,
   );
 
+  const templateOptionNames = useMemo(() => {
+    if (!template?.templateData) return [];
+    return Object.keys(template.templateData).filter(
+      (value) => value != "metadata",
+    );
+  }, [template]);
+
+  // Auto-select if there's only one template option
+  useEffect(() => {
+    if (templateOptionNames.length === 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedTemplateOption(templateOptionNames[0]);
+    } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedTemplateOption("");
+    }
+  }, [templateOptionNames]);
+
   //helper function - close modal
   const handleClose = () => {
     setIsOpen(false);
@@ -135,6 +154,7 @@ export default function NewPlanModal({
     setMinors([]);
     setConcentration("");
     setUseRecommendedTemplate(false);
+    setSelectedTemplateOption("");
   };
 
   const handleNoMajor = () => {
@@ -145,12 +165,13 @@ export default function NewPlanModal({
     setMinors([]);
     setConcentration("");
     setUseRecommendedTemplate(false);
+    setSelectedTemplateOption("");
   };
 
   //change supported majors based on catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMajorsData) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMajorOptions([]);
       setMajors([]);
       return;
@@ -175,7 +196,7 @@ export default function NewPlanModal({
   //change supported minors based on catalog year
   useEffect(() => {
     if (!catalogYear || !supportedMinorsData) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMinorOptions([]);
       setMinors([]);
       return;
@@ -200,7 +221,7 @@ export default function NewPlanModal({
 
   //change concentrations based on major
   useEffect(() => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoadingConcentration(true);
     if (!majors || !catalogYear || !supportedMajorsData) {
       setConcentrationOptions([]);
@@ -227,8 +248,10 @@ export default function NewPlanModal({
 
   //reset template when major or catalog year changes
   useEffect(() => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUseRecommendedTemplate(false);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedTemplateOption("");
   }, [majors, catalogYear]);
 
   //create plan
@@ -249,9 +272,16 @@ export default function NewPlanModal({
     try {
       let schedule: Audit;
       // NOTE: for now, template plans are based on the first selected major */
-      if (useRecommendedTemplate && template && majors[0]) {
+      if (
+        useRecommendedTemplate &&
+        template?.templateData &&
+        selectedTemplateOption &&
+        majors[0]
+      ) {
         try {
-          schedule = createScheduleFromTemplate(template);
+          schedule = createScheduleFromTemplate(
+            template.templateData[selectedTemplateOption],
+          );
         } catch (error) {
           console.error("error creating schedule from template:", error);
           toast(
@@ -615,9 +645,11 @@ export default function NewPlanModal({
                           type="checkbox"
                           checked={useRecommendedTemplate}
                           id="use-template"
-                          onChange={() =>
-                            setUseRecommendedTemplate(!useRecommendedTemplate)
-                          }
+                          onChange={() => {
+                            const next = !useRecommendedTemplate;
+                            setUseRecommendedTemplate(next);
+                            if (!next) setSelectedTemplateOption("");
+                          }}
                           className="accent-red h-3 w-3 scale-150 rounded"
                           disabled={
                             majors.length === 0 &&
@@ -636,6 +668,36 @@ export default function NewPlanModal({
                       <p className="text-neu6 ml-5 text-sm">
                         {recommendedTemplateLabel}
                       </p>
+
+                      {useRecommendedTemplate &&
+                        templateOptionNames.length > 1 && (
+                          <div className="mt-3 ml-5">
+                            <Label
+                              htmlFor="template-option-select"
+                              className="text-neu6 text-xs font-bold"
+                            >
+                              SELECT A PLAN OPTION
+                            </Label>
+                            <Select
+                              value={selectedTemplateOption}
+                              onValueChange={setSelectedTemplateOption}
+                            >
+                              <SelectTrigger
+                                className="border-neu3 mt-1 w-full rounded-4xl border bg-transparent"
+                                id="template-option-select"
+                              >
+                                <SelectValue placeholder="Select a template option" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {templateOptionNames.map((name) => (
+                                  <SelectItem key={name} value={name}>
+                                    {name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                     </div>
                   )}
                 <div className="mt-2 flex justify-center gap-4">
@@ -657,7 +719,10 @@ export default function NewPlanModal({
                       (!isNoMajorSelected && majors.length == 0) ||
                       catalogYear <= 2000 ||
                       (concentrationOptions.length > 0 &&
-                        concentration.length == 0)
+                        concentration.length == 0) ||
+                      (useRecommendedTemplate &&
+                        templateOptionNames.length > 1 &&
+                        !selectedTemplateOption)
                     }
                   >
                     Create Plan

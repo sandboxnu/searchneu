@@ -1,8 +1,8 @@
 import { GuestHeaderClient } from "@/components/graduate/GuestHeaderClient";
 import { GuestPlanClient } from "@/components/graduate/GuestPlanClient";
+import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { getCourseNamesBatch } from "@/lib/dal/courses";
-import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
-import { Requirement } from "@/lib/graduate/types";
+import { Major, Minor, Requirement } from "@/lib/graduate/types";
 
 function collectCourseKeys(reqs: Requirement[], out: Set<string>): void {
   for (const req of reqs) {
@@ -41,16 +41,17 @@ export default async function Page({
     : [];
 
   let courseNames: Record<string, string> = {};
+  let majors: Major[] = [];
+  let minors: Minor[] = [];
 
   if (catalogYear) {
-    const [majors, minors] = await Promise.all([
-      Promise.all(
-        majorNames.map((m) => GraduateAPI.majors.get(catalogYear, m)),
-      ),
-      Promise.all(
-        minorNames.map((m) => GraduateAPI.minors.get(catalogYear, m)),
-      ),
+    const [fetchedMajors, fetchedMinors] = await Promise.all([
+      Promise.all(majorNames.map((m) => getMajor(catalogYear, m))),
+      Promise.all(minorNames.map((m) => getMinor(catalogYear, m))),
     ]);
+
+    majors = fetchedMajors.filter((m): m is Major => m !== null);
+    minors = fetchedMinors.filter((m): m is Minor => m !== null);
 
     const keys = new Set<string>(scheduleCourseKeys);
     for (const m of [...majors, ...minors]) {
@@ -65,7 +66,11 @@ export default async function Page({
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col gap-4 px-6">
       <GuestHeaderClient />
-      <GuestPlanClient initialCourseNames={courseNames} />
+      <GuestPlanClient
+        initialCourseNames={courseNames}
+        initialMajors={majors}
+        initialMinors={minors}
+      />
     </div>
   );
 }

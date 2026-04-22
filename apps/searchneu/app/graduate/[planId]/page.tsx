@@ -25,7 +25,7 @@ import {
   WhiteboardEntry,
   DEFAULT_CATALOG_YEAR,
 } from "@/lib/graduate/types";
-import { GraduateAPI } from "@/lib/graduate/graduateApiClient";
+import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
 
@@ -111,19 +111,17 @@ async function hydratePlan(row: AuditPlanRow): Promise<
     courseDetails: Record<string, CourseDetails>;
   }
 > {
-  const majors =
+  const majors = (
     row.majors && row.catalogYear
-      ? await Promise.all(
-          row.majors.map((m) => GraduateAPI.majors.get(row.catalogYear!, m)),
-        )
-      : [];
+      ? await Promise.all(row.majors.map((m) => getMajor(row.catalogYear!, m)))
+      : []
+  ).filter((m): m is Major => m !== null);
 
-  const minors =
+  const minors = (
     row.minors && row.catalogYear
-      ? await Promise.all(
-          row.minors.map((m) => GraduateAPI.minors.get(row.catalogYear!, m)),
-        )
-      : [];
+      ? await Promise.all(row.minors.map((m) => getMinor(row.catalogYear!, m)))
+      : []
+  ).filter((m): m is Minor => m !== null);
 
   const schedule = row.schedule as Audit;
 

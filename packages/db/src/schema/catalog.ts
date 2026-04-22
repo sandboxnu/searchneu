@@ -231,3 +231,33 @@ export const meetingTimesT = pgTable(
     ),
   ],
 );
+
+export const catalogMajorsT = pgTable("catalog_majors", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull(),
+  totalCreditsRequired: integer().notNull(),
+  yearVersion: integer().notNull(),
+  requirementSections: jsonb().notNull(),
+  concentrationOptions: jsonb().notNull(),
+  minConcentrationOptions: integer().notNull().default(0),
+  templateOptions: jsonb().notNull(),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const catalogMinorsT = pgTable("catalog_minors", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull(),
+  totalCreditsRequired: integer().notNull(),
+  yearVersion: integer().notNull(),
+  requirementSections: jsonb().notNull(),
+  concentrationOptions: jsonb().notNull(),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});

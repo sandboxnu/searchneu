@@ -2,23 +2,23 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Audit, Whiteboard } from "@/lib/graduate/types";
+import { Audit, Major, Minor, Whiteboard } from "@/lib/graduate/types";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
-import {
-  useGraduateMajor,
-  useGraduateMinor,
-} from "@/lib/graduate/useGraduateApi";
 import { BasePlanClient } from "./BasePlanClient";
 
 const COURSE_NAMES_KEY = "guest-plan-courseNames";
 
 interface GuestPlanClientProps {
   initialCourseNames?: Record<string, string>;
+  initialMajors?: Major[];
+  initialMinors?: Minor[];
 }
 
 export function GuestPlanClient({
   initialCourseNames = {},
+  initialMajors = [],
+  initialMinors = [],
 }: GuestPlanClientProps) {
   const router = useRouter();
   const [guestPlan, setGuestPlan] = useLocalStorage<
@@ -54,20 +54,6 @@ export function GuestPlanClient({
     }
   }, [initialCourseNames]);
 
-  const catalogYearStr = guestPlan?.catalogYear
-    ? String(guestPlan.catalogYear)
-    : null;
-
-  const { majorData } = useGraduateMajor(
-    catalogYearStr,
-    guestPlan?.majors?.[0] ?? null,
-  );
-
-  const { minorData } = useGraduateMinor(
-    catalogYearStr,
-    guestPlan?.minors?.[0] ?? null,
-  );
-
   const handlePersistSchedule = useCallback(
     (stripped: Audit, pruned: Whiteboard | null) => {
       const current = JSON.parse(localStorage.getItem("guest-plan") ?? "{}");
@@ -94,8 +80,8 @@ export function GuestPlanClient({
     <BasePlanClient
       initialSchedule={guestPlan.schedule ?? { years: [] }}
       initialWhiteboard={guestPlan.whiteboard ?? {}}
-      majors={majorData ? [majorData] : []}
-      minors={minorData ? [minorData] : []}
+      majors={initialMajors}
+      minors={initialMinors}
       concentration={guestPlan.concentration ?? null}
       courseNames={courseNames}
       courseDetails={{}}

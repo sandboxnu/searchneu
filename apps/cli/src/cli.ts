@@ -21,6 +21,9 @@ const tools = defineCommand({
     "sync-db": import("./tools/sync-db").then((m) => m.default),
     "update-cache": import("./tools/update-cache").then((m) => m.default),
     "backup-db": import("./tools/backup-db").then((m) => m.default),
+    "populate-catalog": import("./tools/populate-catalog").then(
+      (m) => m.default,
+    ),
     "migrate-trackers": import("./tools/migrate-trackers").then(
       (m) => m.default,
     ),

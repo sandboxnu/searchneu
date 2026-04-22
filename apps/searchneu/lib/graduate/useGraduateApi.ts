@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { GraduateAPI } from "./graduateApiClient";
-import { Major, Minor, Template } from "./types";
+import { Template } from "./types";
 import {
   GetSupportedMajorsResponse,
   GetSupportedMinorsResponse,
@@ -13,7 +12,11 @@ export function useSupportedMajors() {
   useEffect(() => {
     const fetchMajors = async () => {
       try {
-        const response = await GraduateAPI.majors.getSupportedMajors();
+        const res = await fetch("/api/catalog/majors/supported");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const response: GetSupportedMajorsResponse = await res.json();
         setData(response);
       } catch (err) {
         setError(
@@ -35,7 +38,11 @@ export function useSupportedMinors() {
   useEffect(() => {
     const fetchMinors = async () => {
       try {
-        const response = await GraduateAPI.minors.getSupportedMinors();
+        const res = await fetch("/api/catalog/minors/supported");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const response: GetSupportedMinorsResponse = await res.json();
         setData(response);
       } catch (err) {
         setError(
@@ -50,86 +57,13 @@ export function useSupportedMinors() {
   return { data, error };
 }
 
-export function useGraduateMajor(year: string | null, major: string | null) {
-  const [data, setData] = useState<Major | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!year || !major) return;
-
-    const fetchMajor = async () => {
-      try {
-        const response = await GraduateAPI.majors.get(parseInt(year), major);
-        setData(response);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch major"),
-        );
-      }
-    };
-
-    fetchMajor();
-  }, [year, major]);
-
-  return { majorData: data, error };
-}
-
-export function useGraduateMinor(year: string | null, minor: string | null) {
-  const [data, setData] = useState<Minor | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!year || !minor) return;
-
-    const fetchMinor = async () => {
-      try {
-        const response = await GraduateAPI.minors.get(parseInt(year), minor);
-        setData(response);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch minors"),
-        );
-      }
-    };
-    fetchMinor();
-  }, [year, minor]);
-
-  return { minorData: data, error };
-}
-
-export function useGraduateTemplate(year: string | null, major: string | null) {
-  const [data, setData] = useState<Template | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const response = await GraduateAPI.templates.getForMajor(
-          parseInt(year ?? "0"),
-          major ?? "",
-        );
-        if (response) {
-          setData(response);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch templates"),
-        );
-      }
-    };
-    fetchTemplates();
-  }, [year, major]);
-
-  return { templatesData: data, error };
-}
-
 export function useHasTemplate(majorNames: string[], catalogYear: number) {
   const [hasTemplate, setHasTemplate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!majorNames[0] || !catalogYear) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasTemplate(false);
       return;
     }
@@ -137,10 +71,13 @@ export function useHasTemplate(majorNames: string[], catalogYear: number) {
     const checkTemplate = async () => {
       setIsLoading(true);
       try {
-        const response = await GraduateAPI.templates.getForMajor(
-          catalogYear,
-          majorNames[0],
+        const res = await fetch(
+          `/api/catalog/templates/${catalogYear}/${encodeURIComponent(majorNames[0])}`,
         );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const response: Template | null = await res.json();
         if (response == null || response.templateData === null) {
           setHasTemplate(false);
         } else {
@@ -170,7 +107,7 @@ export function useTemplate(
 
   useEffect(() => {
     if (!majorNames?.[0] || !catalogYear) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTemplate(null);
       return;
     }
@@ -178,10 +115,11 @@ export function useTemplate(
     const fetchTemplate = async () => {
       setIsLoading(true);
       try {
-        const response = await GraduateAPI.templates.getForMajor(
-          catalogYear,
-          majorNames[0],
+        const res = await fetch(
+          `/api/catalog/templates/${catalogYear}/${encodeURIComponent(majorNames[0])}`,
         );
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const response: Template | null = await res.json();
         setTemplate(response);
       } catch (err) {
         setError(

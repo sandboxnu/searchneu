@@ -1,4 +1,4 @@
-import { SupportedMajors, MetaInfo, Maybe, SupportedMinors } from "./types";
+import { SupportedMajors, SupportedMinors } from "./types";
 
 /** Types our API responds with. */
 export interface GetSupportedMajorsResponse {
@@ -8,11 +8,4 @@ export interface GetSupportedMajorsResponse {
 
 export interface GetSupportedMinorsResponse {
   supportedMinors: SupportedMinors;
-}
-
-export interface GetMetaInfoResponse extends MetaInfo {
-  commit: Maybe<string>;
-  commitMessage: Maybe<string>;
-  build_timestamp: Maybe<number>;
-  environment: Maybe<string>;
 }

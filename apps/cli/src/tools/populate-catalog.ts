@@ -19,7 +19,15 @@ import { defineCommand } from "citty";
 import { brandIntro, isVerbose, p, pc, setVerbosity } from "../ui";
 import { getDb } from "@sneu/db/pg";
 import { catalogMajorsT, catalogMinorsT } from "@sneu/db/schema";
-import { chunk } from "../../../../packages/scraper/src/upload/types";
+
+export function chunk<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
 /**
  * Recursively find all files matching a given filename within a directory.
  */

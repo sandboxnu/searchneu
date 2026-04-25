@@ -8,7 +8,8 @@ import {
   IXofManyCourse,
   ICourseRange,
   IRequiredCourse,
-  NUPathEnum,
+  Whiteboard,
+  WhiteboardStatus,
 } from "./types";
 
 /** Collect all "SUBJECT CLASSID" keys present in a schedule. */
@@ -145,6 +146,82 @@ export function isSectionComplete(
 ): boolean {
   const { fulfilled } = sectionCompletion(section, scheduleCourses);
   return fulfilled >= section.minRequirementCount;
+}
+
+/** Recursively collect all "SUBJECT CLASSID" keys from required courses in a requirement tree. */
+export function collectRequiredCourseKeys(req: Requirement): string[] {
+  if (req.type === "COURSE") {
+    return [`${req.subject} ${req.classId}`];
+  }
+  if (
+    req.type === "AND" ||
+    req.type === "OR" ||
+    req.type === "XOM" ||
+    req.type === "SECTION"
+  ) {
+    const children =
+      req.type === "SECTION"
+        ? (req as Section).requirements
+        : (req as IAndCourse | IOrCourse | IXofManyCourse).courses;
+    return (children as Requirement[]).flatMap(collectRequiredCourseKeys);
+  }
+  return [];
+}
+
+/**
+ * Build a whiteboard by matching schedule courses against each section's
+ * requirements. If `current` is provided, manual entries are preserved and
+ * "not_started" auto-upgrades to "in_progress" once a match exists.
+ */
+export function buildWhiteboardFromSchedule(
+  sections: Section[],
+  schedule: Audit,
+  current: Whiteboard = {},
+): Whiteboard {
+  const scheduleKeys = collectScheduleCourseKeys(schedule);
+  const updated: Whiteboard = { ...current };
+
+  for (const section of sections) {
+    const sectionKeys = new Set<string>();
+    for (const req of section.requirements) {
+      for (const key of collectRequiredCourseKeys(req)) {
+        sectionKeys.add(key);
+      }
+    }
+    const matched = [...sectionKeys].filter((k) => scheduleKeys.has(k));
+    const existingCourses = current[section.title]?.courses ?? [];
+    const merged = [...new Set([...existingCourses, ...matched])];
+    const existingStatus = current[section.title]?.status;
+
+    let status: WhiteboardStatus;
+    if (merged.length > 0) {
+      status =
+        (existingStatus ?? "not_started") === "not_started"
+          ? "in_progress"
+          : (existingStatus ?? "in_progress");
+    } else {
+      status = existingStatus ?? "not_started";
+    }
+
+    updated[section.title] = { courses: merged, status };
+  }
+  return updated;
+}
+
+/** Remove whiteboard course entries that no longer exist in the schedule. */
+export function pruneWhiteboard(
+  schedule: Audit,
+  wb: Whiteboard,
+): Whiteboard | null {
+  const valid = collectScheduleCourseKeys(schedule);
+  let changed = false;
+  const pruned: Whiteboard = {};
+  for (const [section, entry] of Object.entries(wb)) {
+    const filtered = entry.courses.filter((k) => valid.has(k));
+    if (filtered.length !== entry.courses.length) changed = true;
+    pruned[section] = { ...entry, courses: filtered };
+  }
+  return changed ? pruned : null;
 }
 
 /** Collect all NUPath short codes fulfilled by courses in the schedule. */

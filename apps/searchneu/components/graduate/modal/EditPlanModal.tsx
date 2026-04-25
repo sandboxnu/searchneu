@@ -258,7 +258,7 @@ export default function EditPlanModal({
 
         toast(`Plan "${updatedPlan.name}" updated successfully!`);
         onOpenChange(false);
-        router.push(`/graduate/guest?${queryParams.toString()}`);
+        router.push(`/graduate?${queryParams.toString()}`);
         return;
       }
 

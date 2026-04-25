@@ -329,7 +329,7 @@ export default function NewPlanModal({
           queryParams.set("courses", [...courseKeys].join(","));
 
         toast(`Plan ${newPlan.name} created locally! Redirecting...`);
-        router.push(`/graduate/guest?${queryParams.toString()}`);
+        router.push(`/graduate?${queryParams.toString()}`);
         return;
       }
 

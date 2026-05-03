@@ -3,15 +3,14 @@ import { useState } from "react";
 import Image from "next/image";
 import { Carousel, CarouselItem } from "@/components/ui/carousel";
 
-type HowTo = {
-  id: number;
+interface HowTo {
   img: string;
   title: string;
   description: string;
   carouselItems: CarouselItem[];
-};
+}
 
-function HowToCard({ howto }: { howto: HowTo }) {
+export function HowToCard({ howto }: { howto: HowTo }) {
   const [open, setOpen] = useState(false);
   const firstWord = howto.title.split(" ")[0];
   const restOfTitle = howto.title.split(" ").slice(1).join(" ");
@@ -47,6 +46,3 @@ function HowToCard({ howto }: { howto: HowTo }) {
     </>
   );
 }
-
-export { HowToCard };
-export type { HowTo };

@@ -41,7 +41,7 @@ export function RangeSlider() {
   return (
     <>
       <Slider
-        className="**:data-[slot=slider-thumb]:bg-accent **:data-[slot=slider-range]:bg-accent"
+        className="**:data-[slot=slider-thumb]:bg-r5 **:data-[slot=slider-range]:bg-r5"
         id="course-id-range"
         value={d}
         onValueChange={setD}

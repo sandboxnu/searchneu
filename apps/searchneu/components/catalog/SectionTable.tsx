@@ -84,7 +84,7 @@ export function SectionTable({
             <col className="min-w-12" />
           </colgroup>
           <thead>
-            <tr className="bg-secondary text-neu6 border-b text-xs">
+            <tr className="bg-neu1 text-neu6 border-b text-xs">
               <th className="px-6 py-4 text-center font-bold">NOTIFY</th>
               <th className="px-4 py-4 text-center font-bold">CRN</th>
               <th className="px-4 py-4 text-center font-bold">

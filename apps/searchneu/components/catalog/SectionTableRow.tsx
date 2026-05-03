@@ -24,7 +24,7 @@ export function SectionTableRow({
   const [tracked, setTracked] = useState(initialTracked);
 
   return (
-    <tr className="hover:bg-neu2">
+    <tr className="hover:bg-neu1">
       <td
         className={cn("py-5 text-right", {
           "py-[23px] align-top": numMeetingTimes > 1,
@@ -48,9 +48,7 @@ export function SectionTableRow({
       >
         <div>
           <p className="text-neu9">{section.crn}</p>
-          {section.honors && (
-            <p className="mt-1 text-xs text-gray-500">honors</p>
-          )}
+          {section.honors && <p className="text-neu7 mt-1 text-xs">honors</p>}
         </div>
       </td>
 
@@ -69,7 +67,7 @@ export function SectionTableRow({
             {section.seatRemaining} / {section.seatCapacity}
           </span>
           {showWaitlist && (
-            <span className="inline-block shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600">
+            <span className="bg-neu2 text-neu7 inline-block shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap">
               {section.waitlistRemaining} / {section.waitlistCapacity}
             </span>
           )}
@@ -98,7 +96,7 @@ export function SectionTableRow({
         })}
       >
         <div className="flex justify-center">
-          <span className="inline-block rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600">
+          <span className="bg-neu2 text-neu7 inline-block rounded-full px-4 py-2 text-sm font-medium">
             {section.campus}
           </span>
         </div>

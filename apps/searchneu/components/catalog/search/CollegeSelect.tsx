@@ -23,10 +23,6 @@ export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
       terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
     ) ?? "neu";
 
-  // HACK: this will blink but for now its fine
-  if (typeof window !== "undefined")
-    document.body.setAttribute("data-theme", activeCollege);
-
   const collegeOptions = [
     { value: "neu", label: "Northeastern University" },
     { value: "cps", label: "College of Professional Studies" },
@@ -39,14 +35,13 @@ export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
         onValueChange={(val) => {
           if (val === "") return;
           const newestTerm = terms[val as keyof GroupedTerms][0];
-          document.body.setAttribute("data-theme", val);
           router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
         }}
         value={activeCollege}
       >
         <SelectTrigger
-          className={cn("bg-neu h-[40px] w-full font-semibold", {
-            "text-neu bg-r1/20 focus-visible:border-r1 [&>svg]:text-neu":
+          className={cn("bg-r5 h-[40px] w-full font-semibold", {
+            "text-r5 bg-r1/20 focus-visible:border-r1 [&>svg]:text-r5":
               activeCollege === "neu",
             "text-cps bg-c1/20 focus-visible:border-c1 [&>svg]:text-cps":
               activeCollege === "cps",
@@ -64,7 +59,7 @@ export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
               className={cn(
                 "text-sm font-semibold",
                 {
-                  "text-neu focus:bg-r1/20 focus:text-neu":
+                  "text-r5 focus:bg-r1/20 focus:text-r5":
                     college.value === "neu",
                   "text-cps focus:bg-c1/20 focus:text-cps":
                     college.value === "cps",

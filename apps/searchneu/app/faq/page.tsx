@@ -9,7 +9,7 @@ export default async function Page() {
   const showHowTo = await faqHowToFlag();
 
   return (
-    <div className="p-8 px-40">
+    <div className="p-8 px-40 pb-20">
       {showHowTo && (
         <>
           <h2 className="text-neu7 pl-4 text-2xl text-[28px] font-bold">

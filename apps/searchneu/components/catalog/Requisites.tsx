@@ -93,7 +93,7 @@ export function RequisiteBlock({
       {contentHeight > 120 && isCondition(req as RequisiteItem) && (
         <Button
           className={cn(
-            "text-neu6 hover:bg-neu3/30 hover:text-neu6 mt-2 -mb-2 h-6 py-1.5 text-[10px] font-bold",
+            "text-neu6 hover:bg-neu2/30 hover:text-neu6 mt-2 -mb-2 h-6 py-1.5 text-[10px] font-bold",
           )}
           variant="ghost"
           onClick={handleToggle}
@@ -131,7 +131,7 @@ function RequisiteItemComponent({
     return (
       <div
         className={cn("space-y-1", {
-          "border-neu3 border-l-2 pl-1": depth > 0,
+          "border-neu2 border-l-2 pl-1": depth > 0,
         })}
       >
         {depth > 0 && item.type === "or" && (
@@ -170,7 +170,7 @@ function RequisiteItemComponent({
     return (
       <Link
         href={`/catalog/${term}/${item.subject}%20${item.courseNumber}?${searchParam ?? ""}`}
-        className="bg-neu1 flex items-center rounded-lg border p-2.5"
+        className="bg-neu0 flex items-center rounded-lg border p-2.5"
       >
         <span className="text-neu8 text-xs font-bold whitespace-nowrap">
           {item.subject} {item.courseNumber}
@@ -186,7 +186,7 @@ function RequisiteItemComponent({
 
   if (isTest(item)) {
     return (
-      <div className="bg-neu1 flex items-center rounded-lg border p-2.5">
+      <div className="bg-neu0 flex items-center rounded-lg border p-2.5">
         <span className="text-neu8 text-xs font-bold whitespace-nowrap">
           {item.name}
         </span>

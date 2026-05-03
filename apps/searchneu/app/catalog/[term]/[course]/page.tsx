@@ -174,7 +174,7 @@ export default async function Page(props: {
           REQUIREMENTS
         </h3>
         <div className="flex flex-col gap-2 md:flex-row">
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               PREREQUISITES
             </h3>
@@ -184,7 +184,7 @@ export default async function Page(props: {
               prereqMode={true}
             />
           </div>
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               COREQUISITES
             </h3>
@@ -194,7 +194,7 @@ export default async function Page(props: {
               prereqMode={false}
             />
           </div>
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               POSTREQUISITES
             </h3>

@@ -164,7 +164,7 @@ export function SchedulerView({
 
       {/* Calendar View */}
       {hasSchedules ? (
-        <div className="min-h-0 flex-1 overflow-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="min-h-0 flex-1 [scrollbar-width:none] overflow-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <CalendarView schedule={currentSchedule} colorMap={colorMap} />
         </div>
       ) : (

@@ -211,7 +211,7 @@ export function PastNotificationsSection({
         <InfoTooltip text="All your past notifications in one place. Sections are shown by CRN, and each entry matches a text sent to your phone." />
       </div>
 
-      <div className="scrollbar-track-transparent flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+      <div className="flex min-h-0 flex-1 scrollbar-track-transparent flex-col gap-2 overflow-y-auto">
         {notifications.length > 0 ? (
           notifications.map((notif) => {
             const { dateLabel, time, isToday } = formatNotificationDate(

@@ -78,7 +78,7 @@ export function CourseBox({
 
         {/* Expanded sections - scrollable */}
         {open && (
-          <div className="min-h-0 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="min-h-0 [scrollbar-width:none] overflow-y-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {sections.map((s) => (
               <SectionRow
                 key={s.crn}

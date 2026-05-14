@@ -86,7 +86,7 @@ export function FiltersTab({
   };
 
   return (
-    <div className="flex h-full flex-col gap-6 overflow-y-auto pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex h-full [scrollbar-width:none] flex-col gap-6 overflow-y-auto pb-6 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {/* CAMPUS */}
       <div className="flex flex-col gap-3">
         <span className="text-xs leading-[14px] font-bold text-[#5f5f5f] uppercase">

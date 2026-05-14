@@ -24,11 +24,11 @@ export async function sendNotifications(
 ) {
   const seatMessages = seatNotifs.map(
     (n) =>
-      `A seat opened up in ${n.courseSubject} ${n.courseNumber} (CRN: ${n.sectionCrn}). Check it out at https://searchneu.com/catalog/${n.term}/${n.courseSubject}%20${n.courseNumber} !`,
+      `A seat opened up in ${n.courseSubject} ${n.courseNumber} (CRN: ${n.sectionCrn}). Check it out at https://searchneu.com/catalog/${n.term}/${n.courseSubject}%20${n.courseNumber} ! Reply with UNSUBSCRIBE to unsubscribe from all trackers`,
   );
   const waitlistMessages = waitlistNotifs.map(
     (n) =>
-      `A waitlist seat has opened up in ${n.courseSubject} ${n.courseNumber} (CRN: ${n.sectionCrn}). Check it out at https://searchneu.com/catalog/${n.term}/${n.courseSubject}%20${n.courseNumber} !`,
+      `A waitlist seat has opened up in ${n.courseSubject} ${n.courseNumber} (CRN: ${n.sectionCrn}). Check it out at https://searchneu.com/catalog/${n.term}/${n.courseSubject}%20${n.courseNumber} ! Reply with UNSUBSCRIBE to unsubscribe from all trackers`,
   );
   const messages = [...seatMessages, ...waitlistMessages];
   const notifs = [...seatNotifs, ...waitlistNotifs];

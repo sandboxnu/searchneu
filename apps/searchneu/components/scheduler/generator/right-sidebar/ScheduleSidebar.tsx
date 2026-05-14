@@ -117,7 +117,7 @@ export function ScheduleSidebar({
       {/* Virtualized schedule list */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex-1 [scrollbar-width:none] overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         {displayedSchedules.length > 0 ? (
           <div

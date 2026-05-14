@@ -106,6 +106,16 @@ export async function verifyPhoneAction(phoneNumber: string, code: string) {
       .set({ phoneNumberVerified: true })
       .where(eq(usersT.id, session.user.id));
 
+    try {
+      await twilio.messages.create({
+        body: "Your phone number has been verified for notifications from SearchNEU! Toggle a section's trackers to receive notifications when a seat becomes available",
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phoneNumber,
+      });
+    } catch (error) {
+      logger.error("error sending verification confirmation SMS", error);
+    }
+
     return { ok: true };
   } catch (err) {
     logger.error("error confirming verification code");

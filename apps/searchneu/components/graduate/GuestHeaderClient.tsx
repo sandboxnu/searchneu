@@ -23,6 +23,8 @@ export function GuestHeaderClient() {
   const [guestPlan, setGuestPlan] =
     useLocalStorage<CreateAuditPlanInput | null>("guest-plan", null);
 
+  if (!guestPlan) return null;
+
   async function handleDelete() {
     if (!confirm(`Delete "${guestPlan?.name}"?`)) {
       return;

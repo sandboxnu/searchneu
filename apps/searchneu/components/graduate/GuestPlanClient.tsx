@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { Audit, Major, Minor, Whiteboard } from "@/lib/graduate/types";
+import { useCallback, useMemo } from "react";
+import { Audit, Whiteboard, Major, Minor } from "@/lib/graduate/types";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import { BasePlanClient } from "./BasePlanClient";
+import NewPlanModal from "./modal/NewPlanModal";
 
 const COURSE_NAMES_KEY = "guest-plan-courseNames";
 
@@ -20,16 +20,9 @@ export function GuestPlanClient({
   initialMajors = [],
   initialMinors = [],
 }: GuestPlanClientProps) {
-  const router = useRouter();
   const [guestPlan, setGuestPlan] = useLocalStorage<
     (CreateAuditPlanInput & { whiteboard?: Whiteboard }) | null
   >("guest-plan", null);
-
-  useEffect(() => {
-    if (!guestPlan) {
-      router.replace("/graduate");
-    }
-  }, [guestPlan, router]);
 
   // Persist server-provided course names to localStorage; on subsequent
   // visits (no search params) fall back to the cached copy.
@@ -74,7 +67,7 @@ export function GuestPlanClient({
     [setGuestPlan],
   );
 
-  if (!guestPlan) return null;
+  if (!guestPlan) return <NewPlanModal isGuest={true} />;
 
   return (
     <BasePlanClient

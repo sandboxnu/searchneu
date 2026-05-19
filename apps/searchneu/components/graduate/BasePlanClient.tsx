@@ -17,7 +17,6 @@ import {
   Major,
   Minor,
   SeasonEnum,
-  StatusEnum,
   Whiteboard,
 } from "@/lib/graduate/types";
 import {
@@ -28,7 +27,11 @@ import {
   collisionAlgorithm,
   nextId,
   DELETE_ZONE_ID,
+  addYear,
+  deleteYear,
+  removeCourse,
 } from "@/lib/graduate/planUtils";
+import { pruneWhiteboard } from "@/lib/graduate/requirementUtils";
 import { CourseNameContext } from "./CourseNameContext";
 import { CourseDetailsContext } from "./CourseDetailsContext";
 import type { CourseDetails } from "@/lib/graduate/types";
@@ -78,30 +81,6 @@ export function BasePlanClient({
   const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
     "whiteboard",
   );
-
-  /** Collect all "SUBJECT CLASSID" keys present in a schedule. */
-  function scheduleCourseKeys(audit: Audit): Set<string> {
-    const keys = new Set<string>();
-    for (const y of audit.years) {
-      for (const t of [y.fall, y.spring, y.summer1, y.summer2]) {
-        for (const c of t.classes) keys.add(`${c.subject} ${c.classId}`);
-      }
-    }
-    return keys;
-  }
-
-  /** Remove whiteboard courses that no longer exist in the schedule. */
-  function pruneWhiteboard(audit: Audit, wb: Whiteboard): Whiteboard | null {
-    const valid = scheduleCourseKeys(audit);
-    let changed = false;
-    const pruned: Whiteboard = {};
-    for (const [section, entry] of Object.entries(wb)) {
-      const filtered = entry.courses.filter((k) => valid.has(k));
-      if (filtered.length !== entry.courses.length) changed = true;
-      pruned[section] = { ...entry, courses: filtered };
-    }
-    return changed ? pruned : null;
-  }
 
   function persist(updated: Audit) {
     const withIds = assignDndIds(updated);
@@ -239,32 +218,11 @@ export function BasePlanClient({
     season: SeasonEnum,
     courseIndex: number,
   ) {
-    const updated = produce(schedule, (draft) => {
-      const year = draft.years.find((y) => y.year === yearNum);
-      if (!year) return;
-      const termMap: Record<string, AuditTerm> = {
-        [SeasonEnum.FL]: year.fall,
-        [SeasonEnum.SP]: year.spring,
-        [SeasonEnum.S1]: year.summer1,
-        [SeasonEnum.S2]: year.summer2,
-      };
-      const term = termMap[season];
-      if (term) {
-        term.classes.splice(courseIndex, 1);
-      }
-    });
-    persist(updated);
+    persist(removeCourse(schedule, yearNum, season, courseIndex));
   }
 
   function handleDeleteYear(yearNum: number) {
-    const updated = produce(schedule, (draft) => {
-      const idx = yearNum - 1;
-      if (idx >= draft.years.length) return;
-      draft.years.splice(idx, 1);
-      draft.years.forEach((y, i) => {
-        y.year = i + 1;
-      });
-    });
+    const updated = deleteYear(schedule, yearNum);
     setExpandedYears((prev) => {
       const next = new Set<number>();
       for (let i = 1; i <= updated.years.length; i++) {
@@ -277,24 +235,8 @@ export function BasePlanClient({
   }
 
   function handleAddYear() {
-    const nextYear = schedule.years.length + 1;
-    const emptyTerm = (season: SeasonEnum): AuditTerm => ({
-      season,
-      status: StatusEnum.CLASSES,
-      classes: [],
-      id: `${nextYear}-${season}`,
-    });
-    const updated = produce(schedule, (draft) => {
-      draft.years.push({
-        year: nextYear,
-        fall: emptyTerm(SeasonEnum.FL),
-        spring: emptyTerm(SeasonEnum.SP),
-        summer1: emptyTerm(SeasonEnum.S1),
-        summer2: emptyTerm(SeasonEnum.S2),
-        isSummerFull: false,
-      });
-    });
-    setExpandedYears((prev) => new Set([...prev, nextYear]));
+    const { schedule: updated, addedYear } = addYear(schedule);
+    setExpandedYears((prev) => new Set([...prev, addedYear]));
     persist(updated);
   }
 
@@ -308,7 +250,7 @@ export function BasePlanClient({
         >
           <DeleteDropZone>
             <div className="flex min-h-0 flex-1 overflow-hidden">
-              <div className="bg-neu25 w-[360px] flex-shrink-0 overflow-y-auto">
+              <div className="bg-neu25 h-[80vh] w-[360px] flex-shrink-0 pb-10">
                 <div className="flex justify-center gap-1 px-4 pt-2">
                   <button
                     type="button"

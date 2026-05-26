@@ -57,6 +57,9 @@ export const auth = betterAuth({
         type: "number",
         defaultValue: 12,
       },
+      smsOptOut: {
+        type: "boolean",
+      },
     },
   },
   plugins: [

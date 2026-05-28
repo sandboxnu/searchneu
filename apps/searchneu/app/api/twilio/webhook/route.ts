@@ -3,6 +3,25 @@ import { and, eq, isNull } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import twilio from "twilio";
 
+async function findUserByPhoneNumber(fromNumber: string) {
+  const [foundUser] = await db
+    .select()
+    .from(usersT)
+    .where(eq(usersT.phoneNumber, fromNumber));
+
+  return foundUser;
+}
+
+function sendTwinmlMessage(message: string) {
+  const twiml = new twilio.twiml.MessagingResponse();
+  twiml.message(message);
+
+  return new Response(twiml.toString(), {
+    headers: { "Content-Type": "text/xml" },
+    status: 200,
+  });
+}
+
 export async function POST(req: NextRequest) {
   const authToken = process.env.TWILIO_AUTH_TOKEN!;
   const url = req.url;
@@ -16,7 +35,6 @@ export async function POST(req: NextRequest) {
     url,
     params,
   );
-  console.log("IS VALID", isValid);
 
   if (!isValid) {
     return new Response("Unauthorized", { status: 401 });
@@ -24,29 +42,60 @@ export async function POST(req: NextRequest) {
 
   const { From: fromNumber, Body: messageBody } = params;
 
-  if (messageBody?.toLowerCase().trim() === "unsubscribe") {
-    const [foundUser] = await db
-      .select()
-      .from(usersT)
-      .where(eq(usersT.phoneNumber, fromNumber));
+  const message = messageBody?.toLowerCase().trim();
 
-    if (foundUser) {
-      await db
-        .update(trackersT)
-        .set({ deletedAt: new Date() })
-        .where(
-          and(eq(trackersT.userId, foundUser.id), isNull(trackersT.deletedAt)),
+  switch (message) {
+    case "unsubscribe": {
+      const foundUser = await findUserByPhoneNumber(fromNumber);
+
+      if (foundUser) {
+        await db
+          .update(trackersT)
+          .set({ deletedAt: new Date() })
+          .where(
+            and(
+              eq(trackersT.userId, foundUser.id),
+              isNull(trackersT.deletedAt),
+            ),
+          );
+
+        return sendTwinmlMessage(
+          "You have been unsubscribed from all SearchNEU trackers. Start tracking another section to turn notifications back on!",
         );
+      }
+      break;
+    }
+    case "stop": {
+      const foundUser = await findUserByPhoneNumber(fromNumber);
 
-      const twiml = new twilio.twiml.MessagingResponse();
-      twiml.message(
-        "You have been unsubscribed from all SearchNEU trackers. Start tracking another section to turn notifications back on!",
-      );
+      if (foundUser) {
+        await db
+          .update(trackersT)
+          .set({ deletedAt: new Date() })
+          .where(
+            and(
+              eq(trackersT.userId, foundUser.id),
+              isNull(trackersT.deletedAt),
+            ),
+          );
 
-      return new Response(twiml.toString(), {
-        headers: { "Content-Type": "text/xml" },
-        status: 200,
-      });
+        await db
+          .update(usersT)
+          .set({ smsOptOut: true })
+          .where(eq(usersT.id, foundUser.id));
+      }
+      break;
+    }
+    case "start": {
+      const foundUser = await findUserByPhoneNumber(fromNumber);
+
+      if (foundUser) {
+        await db
+          .update(usersT)
+          .set({ smsOptOut: false })
+          .where(eq(usersT.id, foundUser.id));
+      }
+      break;
     }
   }
 

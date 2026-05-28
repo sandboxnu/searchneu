@@ -74,6 +74,21 @@ export function TrackingSwitch({
           return;
         }
 
+        if (res.msg === "message notifications turned off") {
+          toast(
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="size-4" />
+              <p>
+                Message notifications turned off.{" "}
+                <Link href="/" className="text-blue hover:text-blue/80">
+                  Learn More
+                </Link>
+              </p>
+            </div>,
+          );
+          return;
+        }
+
         toast(
           <div className="flex items-center gap-2">
             <TriangleAlert className="size-4" />
@@ -126,6 +141,26 @@ export function TrackingSwitch({
           </TooltipTrigger>
           <TooltipContent>
             <p>Sign in to be notified when a seat opens</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    );
+  }
+
+  if (session.user.smsOptOut) {
+    return (
+      <div className="flex w-full justify-center">
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2">
+              <Switch disabled={true} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>
+              Message notifications are turned off, reply START to one of our
+              messages to turn them back on
+            </p>
           </TooltipContent>
         </Tooltip>
       </div>

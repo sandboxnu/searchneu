@@ -24,6 +24,7 @@ export const user = pgTable("user", {
   phoneNumberVerified: boolean("phone_number_verified"),
   acceptedTerms: timestamp("accepted_terms"),
   trackingLimit: integer("tracking_limit").default(12),
+  smsOptOut: boolean("sms_opt_out").default(false).notNull(),
 });
 
 export const session = pgTable(

@@ -17,6 +17,9 @@ export async function createTrackerAction(id: number) {
   if (!session.user.phoneNumberVerified)
     return { ok: false, msg: "phone number not verified" };
 
+  if (session.user.smsOptOut)
+    return { ok: false, msg: "message notifications turned off" };
+
   const existingTrackers = await db.query.trackersT.findMany({
     where: and(
       eq(trackersT.userId, session.user.id),

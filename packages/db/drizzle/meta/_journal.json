@@ -43,6 +43,13 @@
       "when": 1776830203352,
       "tag": "0005_redundant_jetstream",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779457457282,
+      "tag": "0006_overjoyed_angel",
+      "breakpoints": true
     }
   ]
 }

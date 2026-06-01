@@ -2,8 +2,24 @@ packages:
   - apps/*
   - packages/*
 
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+
 ignoredBuiltDependencies:
   - sharp
+
+minimumReleaseAgeExclude:
+  - "@better-auth/core@1.6.13"
+  - "@better-auth/drizzle-adapter@1.6.13"
+  - "@better-auth/kysely-adapter@1.6.13"
+  - "@better-auth/memory-adapter@1.6.13"
+  - "@better-auth/mongo-adapter@1.6.13"
+  - "@better-auth/prisma-adapter@1.6.13"
+  - "@better-auth/telemetry@1.6.13"
+  - better-auth@1.6.13
+  - tsx@4.22.4
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"
@@ -11,5 +27,6 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - unrs-resolver
+
 patchedDependencies:
-  '@better-auth/kysely-adapter@1.6.13': patches/@better-auth__kysely-adapter@1.6.13.patch
+  "@better-auth/kysely-adapter@1.6.13": patches/@better-auth__kysely-adapter@1.6.13.patch

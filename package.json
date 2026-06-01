@@ -19,7 +19,7 @@
     "turbo": "^2.9.16"
   },
   "packageManager": "pnpm@11.5.0",
-  "engine": {
-    "node": "24.x"
+  "engines": {
+    "node": "26.x"
   }
 }

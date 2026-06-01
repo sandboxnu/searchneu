@@ -516,6 +516,7 @@ const detach = defineCommand({
     `);
     const existingNames = new Set(
       existing.rows.map(
+        // @ts-expect-error rows are returned from db, too lazy to type them
         (r) => (r as { constraint_name: string }).constraint_name,
       ),
     );
@@ -934,6 +935,7 @@ const reattach = defineCommand({
       `);
       const existingNames = new Set(
         existingFks.rows.map(
+          // @ts-expect-error rows are returned from db, too lazy to type them
           (r) => (r as { constraint_name: string }).constraint_name,
         ),
       );

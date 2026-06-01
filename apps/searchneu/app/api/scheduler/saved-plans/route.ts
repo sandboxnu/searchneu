@@ -1,13 +1,13 @@
 import { verifyUser } from "@/lib/dal/audits";
+import { getTerm } from "@/lib/dal/terms";
 import {
   db,
-  savedPlansT,
   savedPlanCoursesT,
   savedPlanSectionsT,
+  savedPlansT,
 } from "@/lib/db";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
-import { getTerm } from "@/lib/dal/terms";
 
 interface SavePlanSection {
   sectionId: number;
@@ -55,6 +55,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const term = await getTerm(body.term);
+    if (!term) {
+      return Response.json({ error: "term not found" }, { status: 400 });
+    }
+
     // Auto-generate name if not provided
     let planName = body.name;
     if (!planName) {
@@ -62,17 +67,9 @@ export async function POST(req: NextRequest) {
         .select()
         .from(savedPlansT)
         .where(
-          and(
-            eq(savedPlansT.userId, user.id),
-            eq(savedPlansT.termId, parseInt(body.term, 10)),
-          ),
+          and(eq(savedPlansT.userId, user.id), eq(savedPlansT.termId, term.id)),
         );
       planName = `Plan ${existingPlans.length + 1}`;
-    }
-
-    const term = await getTerm(body.term);
-    if (!term) {
-      return Response.json({ error: "term not found" }, { status: 400 });
     }
 
     // Create the saved plan

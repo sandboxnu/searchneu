@@ -22,8 +22,8 @@ interface FilterPanelProps {
   terms: GroupedTerms;
   lockedCourseIds: Set<number>;
   onLockedCourseIdsChange: (ids: Set<number>) => void;
-  planId?: number;
-  onSchedulesGenerated?: () => void;
+  initialCourseIds: number[];
+  onGenerate: (courseIds: number[], numCourses: number) => void;
 }
 
 type Tab = "courses" | "filters";
@@ -38,8 +38,8 @@ export function FilterPanel({
   terms,
   lockedCourseIds,
   onLockedCourseIdsChange,
-  planId,
-  onSchedulesGenerated,
+  initialCourseIds,
+  onGenerate,
 }: FilterPanelProps) {
   const { openFeedback } = useFeedback();
   const [activeTab, setActiveTab] = useState<Tab>("courses");
@@ -53,8 +53,9 @@ export function FilterPanel({
         closeFn={() => setIsModalOpen(false)}
         terms={terms}
         selectedTerm={null}
-        planId={planId}
-        callback={onSchedulesGenerated}
+        initialCourseIds={initialCourseIds}
+        initialNumCourses={filters.numCourses}
+        onGenerate={onGenerate}
       />
       {/* Tabs */}
       <div className="flex w-fit gap-4 border-b border-[#e0e0e0]">

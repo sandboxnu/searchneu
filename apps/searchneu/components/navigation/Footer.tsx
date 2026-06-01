@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Logo } from "../icons/logo";
 import { Footskie } from "../icons/Footskie";
+import { Logo } from "../icons/logo";
 
 export function LinkColumn({
   name,

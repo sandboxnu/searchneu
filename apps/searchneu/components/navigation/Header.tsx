@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { Logo } from "../icons/logo";
-import { UserIcon } from "./UserMenu";
 import { graduateFlag, roomsFlag } from "@/lib/flags";
+import Link from "next/link";
 import { Suspense } from "react";
+import { Logo } from "../icons/logo";
 import { NavBar } from "./NavBar";
 import { MobileNav } from "./MobileNav";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { UserIcon } from "./UserMenu";
 
 export async function Header() {
   const enableRoomsPage = roomsFlag();

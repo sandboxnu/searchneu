@@ -11,3 +11,5 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - unrs-resolver
+patchedDependencies:
+  '@better-auth/kysely-adapter@1.6.13': patches/@better-auth__kysely-adapter@1.6.13.patch

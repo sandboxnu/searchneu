@@ -13,7 +13,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-turbo": "^2.9.12",
-    "typescript-eslint": "^8.59.3"
+    "eslint-plugin-turbo": "^2.9.16",
+    "typescript-eslint": "^8.60.0"
   }
 }

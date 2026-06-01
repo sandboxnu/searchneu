@@ -19,7 +19,7 @@ import { defineCommand } from "citty";
 import { brandIntro, isVerbose, p, pc, setVerbosity } from "../ui";
 import { getDb } from "@sneu/db/pg";
 import { catalogMajorsT, catalogMinorsT } from "@sneu/db/schema";
-import { chunk } from "../../../../packages/scraper/src/upload/types";
+import { chunk } from "./chunk";
 /**
  * Recursively find all files matching a given filename within a directory.
  */

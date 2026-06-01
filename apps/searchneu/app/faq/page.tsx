@@ -1,9 +1,9 @@
 import faqData from "../../faqs.json";
 import howToData from "../../howto.json";
-import { FAQDropDown } from "@/components/ui/accordion";
 import { HowToCard } from "@/components/ui/how-to-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { faqHowToFlag } from "@/lib/flags";
+import { FAQTabs } from "./faq-tabs";
 
 export default async function Page() {
   const showHowTo = await faqHowToFlag();
@@ -27,15 +27,12 @@ export default async function Page() {
           </>
         )}
         <h2 className="text-neu7 mb-4 pl-4 text-2xl font-bold">FAQs</h2>
-        <div className="pl-4">
-          {faqData.faqs.map((faq) => (
-            <FAQDropDown
-              key={faq.id}
-              title={faq.title}
-              description={faq.description}
-            />
-          ))}
-        </div>
+        <FAQTabs
+          tabs={[
+            { label: "Catalog", faqs: faqData.catalog },
+            { label: "Scheduler", faqs: faqData.scheduler },
+          ]}
+        />
       </div>
     </div>
   );

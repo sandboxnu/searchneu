@@ -1,5 +1,5 @@
 {
-  "faqs": [
+  "catalog": [
     {
       "id": 1,
       "title": "What is SearchNEU?",
@@ -39,6 +39,58 @@
       "id": 8,
       "title": "What's next for SearchNEU?",
       "description": "We're always looking for ways to enhance the experience of using SearchNEU. Right now, we're exploring new features and potential integrations between SearchNEU and GraduateNU. We'd love to hear your ideas—share your suggestions with us through the SearchNEU Contact Form!"
+    }
+  ],
+  "scheduler": [
+    {
+      "id": 1,
+      "title": "What is SearchNEU Scheduler? How does it work?",
+      "description": "SearchNEU Scheduler is a schedule generator designed to help students efficiently find their ideal course schedule for an upcoming semester. To get started, students enter the courses they are considering. The tool then generates all possible schedule combinations. From there, students can refine their options using a range of filters, including hiding specific sections, setting preferred start and end times, or choosing desired days off."
+    },
+    {
+      "id": 2,
+      "title": "How many courses can I add to the schedule generator?",
+      "description": "Each user can add up to 6 courses to the generator, not including co-reqs. Additionally, users can add more than the number of courses they are planning to take for the semester to the generator. For example, if the user selects they are taking 4 courses for Fall 2026 but is still deciding between whether to take two electives, they can add both of these electives to the generator (with total 5 courses added to the generator)."
+    },
+    {
+      "id": 3,
+      "title": "What filters are in SearchNEU Scheduler?",
+      "description": "",
+      "sections": [
+        {
+          "heading": "Locking and Unlocking Classes",
+          "body": "All courses added to the generator are default \u201cunlocked.\u201d But if a user knows they need a specific course in their schedule (have to take that class), then they can \u201clock\u201d that class, ensuring it shows up in all schedules generated."
+        },
+        {
+          "heading": "Hiding and Unhiding Sections",
+          "body": "All sections of each course added to the generator are default shown in the generated schedules. To narrow down schedules, users can \u201chide\u201d certain sections with professors they don\u2019t want to take."
+        },
+        {
+          "heading": "Campuses",
+          "body": "The default campus course shown is Boston. But students on satellite campuses can select their campus location to ensure their schedules have accurate course sections and times."
+        },
+        {
+          "heading": "Time",
+          "body": "Users who do not want classes to start or end before a specific time can add a \u201cstart after\u201d and \u201cend before\u201d time, filtering down schedules that only have courses that start after the specified time and before the specified time."
+        },
+        {
+          "heading": "Free Days",
+          "body": "If users want certain days off could select specific days they don\u2019t want to have class, filtering down schedules that exclude classes on those days."
+        },
+        {
+          "heading": "NU Path",
+          "body": "If users want to ensure they take courses that satisfy specific NU path requirements, they can add those NU path requirements to filter down schedules that only meet those requirements."
+        },
+        {
+          "heading": "Include Honors Sections",
+          "body": "By default, all sections, including honors sections will be shown. If a user does not want to see honors sections, they can toggle this off, ensuring their schedules only have non-honors course sections."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Where can I find my saved schedules?",
+      "description": "Users can find both their plan (courses entered into the generator) and any saved schedules from that plan on the dashboard. The dashboard can be found by clicking the \u201cscheduler\u201d in the top navigation bar."
     }
   ]
 }

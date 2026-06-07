@@ -8,107 +8,77 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { use, type ComponentProps } from "react";
+import { Suspense, use } from "react";
 import type { GroupedTerms } from "@/lib/catalog/types";
+import { groupTermsByYear, type College } from "@/lib/catalog/terms";
 import { cn } from "@/lib/cn";
+import { FilterSection, FilterSkeleton } from "./FilterSection";
 
-export function TermSelect(
-  props: { terms: Promise<GroupedTerms> } & ComponentProps<
-    typeof SelectTrigger
-  >,
-) {
+export function TermSelect(props: { terms: Promise<GroupedTerms> }) {
+  return (
+    <FilterSection label="SEMESTER" htmlFor="course-term-select">
+      <Suspense fallback={<FilterSkeleton />}>
+        <TermSelectControl terms={props.terms} id="course-term-select" />
+      </Suspense>
+    </FilterSection>
+  );
+}
+
+function TermSelectControl(props: { terms: Promise<GroupedTerms>; id?: string }) {
   const terms = use(props.terms);
 
   const { term } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const activeCollege =
-    Object.keys(terms).find((k) =>
-      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-    ) ?? "neu";
+  const activeCollege = (Object.keys(terms).find((k) =>
+    terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
+  ) ?? "neu") as College;
 
-  // Group terms by year and sort them
-  const groupedByYear = terms[activeCollege as keyof GroupedTerms].reduce(
-    (acc, t) => {
-      const year = t.name
-        .split(" ")
-        .filter((s) => s.length === 4 && !isNaN(Number(s)))[0];
-      if (!acc[year]) {
-        acc[year] = [];
-      }
-      acc[year].push(t);
-      return acc;
-    },
-    {} as Record<string, (typeof terms)[keyof GroupedTerms]>,
-  );
+  const years = groupTermsByYear(terms[activeCollege]);
 
-  // Sort terms within each year
-  const termOrder = {
-    Fall: 0,
-    Spring: 1,
-    "Full Summer": 2,
-    "Summer 1": 3,
-    "Summer 2": 4,
-  };
-  Object.values(groupedByYear).forEach((yearTerms) => {
-    yearTerms.sort((a, b) => {
-      const aName = a.name.replace(" Semester", "").split(" ")[0];
-      const bName = b.name.replace(" Semester", "").split(" ")[0];
-      return (
-        termOrder[aName as keyof typeof termOrder] -
-        termOrder[bName as keyof typeof termOrder]
-      );
-    });
-  });
-
-  // Sort years in reverse chronological order
-  const sortedYears = Object.keys(groupedByYear).sort(
-    (a, b) => Number(b) - Number(a),
+  const termObj = terms[activeCollege].find(
+    (t) => t.term + t.part === term?.toString(),
   );
 
   return (
-    <div className="text-neu8 space-y-2 pt-3 font-[700]">
-      <Select
-        onValueChange={(e) =>
-          router.push(`/catalog/${e}?${searchParams.toString()}`)
-        }
-        value={term?.toString()}
-      >
-        <SelectTrigger
-          className="bg-secondary border-neu25 w-full border border-solid"
-          {...props}
-        >
-          <SelectValue placeholder="Select term" />
-        </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
-          {sortedYears.map((year) => (
-            <div key={year}>
+    <Select
+      onValueChange={(e) =>
+        router.push(`/catalog/${e}?${searchParams.toString()}`)
+      }
+      value={term?.toString()}
+    >
+      <SelectTrigger id={props.id} className="w-full">
+        <SelectValue placeholder="Select term" className="font-semibold">
+          {termObj?.name ?? "Unknown"}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent align="center" alignItemWithTrigger={false}>
+        {years.map(({ year, terms: yearTerms }) => (
+          <div key={year}>
+            <SelectItem
+              value={`header-${year}`}
+              disabled
+              className="text-neu6 -ml-4 text-xs font-semibold uppercase"
+            >
+              {year}
+            </SelectItem>
+            {yearTerms.map((t) => (
               <SelectItem
-                value={`header-${year}`}
-                disabled
-                className="text-neu6 text-xs font-[700] uppercase"
+                key={t.id}
+                value={t.term + t.part}
+                className={cn(
+                  t.term === term?.toString()
+                    ? "text-neu8 font-semibold"
+                    : "text-neu6 font-normal",
+                )}
               >
-                {year}
+                {t.name.replace(" Semester", "")}
               </SelectItem>
-              {groupedByYear[year].map((t) => (
-                <SelectItem
-                  key={t.id}
-                  value={t.term + t.part}
-                  className={cn(
-                    "pl-4",
-                    t.term === term?.toString()
-                      ? "text-neu8 font-[600]"
-                      : "text-neu6 font-[400]",
-                  )}
-                >
-                  {t.name.replace(" Semester", "")}
-                </SelectItem>
-              ))}
-            </div>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+            ))}
+          </div>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

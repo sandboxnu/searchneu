@@ -1,7 +1,6 @@
 "use client";
 
-import { SearchPanel } from "./search/FilterBar";
-import type { GroupedTerms, Nupath, Subject } from "@/lib/catalog/types";
+import { SearchPanel, type CatalogFilterData } from "./search/SearchPanel";
 import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { SearchBar } from "./search/SearchBar";
@@ -23,14 +22,11 @@ const SearchResults = dynamic(() => import("./search/SearchResults"), {
   ssr: false,
 });
 
-export function MobileWrapper(props: {
-  terms: Promise<GroupedTerms>;
-  subjects: Promise<Subject[]>;
-  campuses: Promise<{ name: string | null; group: string | null }[]>;
-  classTypes: Promise<string[]>;
-  nupaths: Promise<Nupath[]>;
-  coursePage: ReactNode;
-}) {
+export function MobileWrapper(
+  props: CatalogFilterData & {
+    coursePage: ReactNode;
+  },
+) {
   const { course } = useParams();
   const searchParams = useSearchParams();
   const [newSearch, setNewSearch] = useState(false);
@@ -57,7 +53,7 @@ export function MobileWrapper(props: {
       </div>
       <div
         data-show={Boolean(course)}
-        className="flex min-h-0 w-full min-w-0 flex-col gap-4 md:data-[show=false]:pl-3 md:data-[show=true]:pl-0 xl:pl-3!"
+        className="flex min-h-0 w-full min-w-0 flex-col gap-3 md:data-[show=false]:pl-3 md:data-[show=true]:pl-0 xl:pl-3!"
       >
         <div data-show={Boolean(course)} className="flex items-center gap-2">
           <Drawer>

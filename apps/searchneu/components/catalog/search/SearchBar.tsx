@@ -1,14 +1,15 @@
 "use client";
 
-import { usePathname, useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import { track } from "@vercel/analytics";
+import { useSearchParamWriter } from "@/lib/catalog/useSearchParamWriter";
 
 export function SearchBar() {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const { setValue } = useSearchParamWriter();
   const { course } = useParams();
   const [query, setQuery] = useState(searchParams.get("q")?.toString() ?? "");
   const [popped, setPopped] = useState(false);
@@ -17,21 +18,8 @@ export function SearchBar() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams(window.location.search);
-      if (!query.trim()) {
-        params.delete("q");
-      } else {
-        params.set("q", query);
-        track("search", { query: query });
-      }
-
-      const newUrl = params.toString()
-        ? `${pathname}?${params.toString()}`
-        : pathname;
-
-      if (newUrl !== `${window.location.pathname}${window.location.search}`) {
-        window.history.replaceState(null, "", newUrl);
-      }
+      if (query.trim()) track("search", { query });
+      setValue("q", query.trim() ? query : null, "replace");
     }, 300);
 
     if (!course) {
@@ -62,16 +50,8 @@ export function SearchBar() {
   });
 
   function handleSubmit() {
-    const params = new URLSearchParams(searchParams);
     setQuery(inputValue.trim());
-    if (!query.trim()) {
-      params.delete("q");
-      window.history.pushState(null, "", `${pathname}?${params.toString()}`);
-      return;
-    }
-
-    params.set("q", query);
-    window.history.pushState(null, "", `${pathname}?${params.toString()}`);
+    setValue("q", query.trim() ? query : null);
   }
 
   return (
@@ -86,7 +66,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-neu0 focus:border-neu3 visible border pl-10 md:hidden"
+        className="bg-neu0 focus:border-neu3 visible h-10 border pl-10 md:hidden"
         placeholder="Search by course or phrase..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -94,7 +74,7 @@ export function SearchBar() {
       />
       <Input
         ref={searchInputRef}
-        className="bg-neu0 focus:border-neu3 hidden border pl-10 md:block"
+        className="bg-neu0 focus:border-neu3 hidden h-10 border pl-10 md:block"
         placeholder="Search by course or phrase..."
         value={inputValue}
         onChange={(e) => {

@@ -106,12 +106,15 @@ export function TrackingSwitch({
   if (!isTermActive) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>Term is view only</p>
           </TooltipContent>
@@ -133,12 +136,15 @@ export function TrackingSwitch({
   if (!session) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>Sign in to be notified when a seat opens</p>
           </TooltipContent>
@@ -150,12 +156,15 @@ export function TrackingSwitch({
   if (session.user.smsOptOut) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>
               Message notifications are turned off, reply START to one of our
@@ -169,21 +178,23 @@ export function TrackingSwitch({
 
   return (
     <div className="flex w-full justify-center">
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <div className="flex items-center gap-1">
-            <Switch
-              checked={checked}
-              onClick={() => onCheck()}
-              className={cn("data-[state=checked]:bg-accent", {
-                "animate-pulse": isPending,
-              })}
-              {...props}
-              disabled={disabled}
-            />
-            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
-          </div>
-        </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          delay={0}
+          render={
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={checked}
+                onClick={() => onCheck()}
+                className={cn({
+                  "animate-pulse": isPending,
+                })}
+                {...props}
+                disabled={disabled}
+              />
+            </div>
+          }
+        />
         <TooltipContent>
           {disabled ? (
             <p>Sections with open seats cannot be tracked</p>

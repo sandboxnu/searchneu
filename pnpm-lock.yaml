@@ -11,6 +11,9 @@ importers:
 
   .:
     devDependencies:
+      node:
+        specifier: runtime:^26.3.0
+        version: runtime:26.3.0
       prettier:
         specifier: ^3.8.3
         version: 3.8.3
@@ -4761,6 +4764,127 @@ packages:
   node-releases@2.0.46:
     resolution: {integrity: sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==}
     engines: {node: '>=18'}
+
+  node@runtime:26.3.0:
+    resolution:
+      type: variations
+      variants:
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-R5NBrZoQMO451k0ZLnswxxn2gNCW+LSPDPUS8kD8MoU=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-aix-ppc64.tar.gz
+          targets:
+            - cpu: ppc64
+              os: aix
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-d+9/ehWqdXwsoZ1jz0HI2es7GFkOvGiDhxMQeH2Ma2w=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-darwin-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-dFO9VKF73GVuLnhNcC9u6yJPtReWXm+MWjGojIPTgEw=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-darwin-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-suAfZZBcJMtd0ZxM+/7+ARjgUEwXDMGL6sNDoqu7Wb0=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-DmzJoiNTm+AnN4hl2Vmu5Vv46UHJv2kLIIK3i/zA5O8=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-ppc64le.tar.gz
+          targets:
+            - cpu: ppc64le
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-sYgOE6lXQw9FTLgrqYf8r4LMRBPHQoJ8BLtewgeZ1CY=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-s390x.tar.gz
+          targets:
+            - cpu: s390x
+              os: linux
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-puZcxlPkDBZTt3dC+RhdvOP/H5n6J0bSEb3bU1MO8gY=
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+        - resolution:
+            archive: zip
+            bin:
+              node: node.exe
+            integrity: sha256-GMUBRyLh3r2z5pNQEEOgh0hebxJ3sgx5xeyGvOYCfuA=
+            prefix: node-v26.3.0-win-arm64
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-win-arm64.zip
+          targets:
+            - cpu: arm64
+              os: win32
+        - resolution:
+            archive: zip
+            bin:
+              node: node.exe
+            integrity: sha256-7G0PawVsiUmKmybE1cd6Mf0Lf+RbqKRfqH0m9mw+vOQ=
+            prefix: node-v26.3.0-win-x64
+            type: binary
+            url: https://nodejs.org/download/release/v26.3.0/node-v26.3.0-win-x64.zip
+          targets:
+            - cpu: x64
+              os: win32
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-JIf/TwPb2JmKN3iIbVDB7l8To7nO+/o67QLDLb8eH7g=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-arm64-musl.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+              libc: musl
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-atLnwM9pP+zC/rsav3U5QCRPO6qgRiY2HtUtZIQ//Gc=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v26.3.0/node-v26.3.0-linux-x64-musl.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+              libc: musl
+    version: 26.3.0
+    hasBin: true
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -10142,6 +10266,8 @@ snapshots:
       he: 1.2.0
 
   node-releases@2.0.46: {}
+
+  node@runtime:26.3.0: {}
 
   normalize-path@3.0.0: {}
 

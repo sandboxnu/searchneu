@@ -38,7 +38,7 @@ export default function RootLayout({
           <>
             <VercelToolbar />
             <Script
-              src="//unpkg.com/react-scan/dist/auto.global.js"
+              src="//unpkg.com/react-scan@0.5.7/dist/auto.global.js"
               crossOrigin="anonymous"
               strategy="beforeInteractive"
             />

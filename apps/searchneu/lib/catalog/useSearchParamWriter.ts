@@ -22,7 +22,8 @@ export function useSearchParamWriter() {
         : window.location.pathname;
 
       // avoid redundant history entries when nothing actually changed
-      if (url === `${window.location.pathname}${window.location.search}`) return;
+      if (url === `${window.location.pathname}${window.location.search}`)
+        return;
 
       if (mode === "replace") window.history.replaceState(null, "", url);
       else window.history.pushState(null, "", url);

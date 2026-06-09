@@ -24,7 +24,9 @@ export interface CatalogFilterData {
 // param code, label, placeholder, and the mapping from domain data to options.
 // This keeps the panel free of transform/param-code boilerplate.
 
-export function SubjectSelect(props: { subjects: CatalogFilterData["subjects"] }) {
+export function SubjectSelect(props: {
+  subjects: CatalogFilterData["subjects"];
+}) {
   return (
     <SPMultiselect
       label="SUBJECTS"
@@ -62,7 +64,9 @@ export function ClassTypeSelect(props: {
   );
 }
 
-export function CampusSelect(props: { campuses: CatalogFilterData["campuses"] }) {
+export function CampusSelect(props: {
+  campuses: CatalogFilterData["campuses"];
+}) {
   return (
     <SPMultiselect
       label="CAMPUSES"
@@ -93,9 +97,7 @@ export function HonorsSwitch() {
           id="course-honors-toggle"
           checked={Boolean(searchParams.get("honors"))}
           className="data-[state=checked]:bg-accent"
-          onCheckedChange={(state) =>
-            setValue("honors", state ? "true" : null)
-          }
+          onCheckedChange={(state) => setValue("honors", state ? "true" : null)}
         />
       }
     />

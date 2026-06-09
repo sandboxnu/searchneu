@@ -2,6 +2,10 @@
   "$schema": "https://v2-8-0.turborepo.dev/schema.json",
   "ui": "tui",
   "tasks": {
+    "//#setup": {
+      "cache": false,
+      "passThroughEnv": ["DOCKER_*", "COMPOSE_*"]
+    },
     "build": {
       "env": [
         "NODE_ENV",

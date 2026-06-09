@@ -192,36 +192,6 @@ export interface Campus {
 // ---------------------------------------------------------------------------
 
 /**
- * input filters for the course search query. all array fields are treated as
- * OR within the field and AND across fields. an empty array means "no filter"
- * for that dimension
- *
- * `minCourseLevel` and `maxCourseLevel` represent the thousand-level of the
- * course number - e.g. `1` filters to 1000–1999, `4` to 4000–4999.
- * use `-1` to indicate no bound
- */
-export interface CourseSearchFilters {
-  /** 6-character Banner term code, e.g. `"202510"`. required */
-  term: string;
-  /** free-text query matched against course name and register string. empty string means no text filter */
-  query: string;
-  /** subject codes to include, e.g. `["CS", "DS"]`. empty means all subjects */
-  subjects: string[];
-  /** minimum course level (thousands digit). -1 means no lower bound */
-  minCourseLevel: number;
-  /** maximum course level (thousands digit). -1 means no upper bound */
-  maxCourseLevel: number;
-  /** NUpath short codes to require, e.g. `["ND", "AD"]`. empty means no nupath filter */
-  nupaths: string[];
-  /** campus names to include. empty means all campuses */
-  campuses: string[];
-  /** class type strings to include, e.g. `["Lecture", "Lab"]`. empty means all types */
-  classTypes: string[];
-  /** when true, only include courses with at least one honors section */
-  honors: boolean;
-}
-
-/**
  * a single row in the course search results. unlike `Course`, this type
  * aggregates section-level data (seat counts, campus list, class types) so the
  * search UI can display availability without a second query per course
@@ -249,36 +219,7 @@ export interface CourseSearchResult {
   classType: string[];
   /** true if any section is an honors section */
   honors: boolean;
-  /** ParadeDB BM25 relevance score. Higher is more relevant */
-  score: number;
-}
-
-/**
- * input filters for the rooms search query. all array fields are treated as
- * OR within the field and AND across fields. an empty array means "no filter"
- * for that dimension
- *
- * `minCapacity` and `maxCapacity` are filtered via the maximum section capacity.
- */
-export interface BuildingSearchFilters {
-  query: string;
-  campuses: string[];
-  minTime: number; // Change times type later
-  maxTime: number;
-  days: string[];
-  minCap: number;
-  maxCap: number;
-}
-
-/**
- * A single row in the room search results. Note that a secondary query
- * is required to determine room schedule, time ranges, and days of the week.
- * NOTE: potentially return schedules here?
- */
-export interface BuildingSearchResult {
-  buildingId: number;
-  buildingName: string;
-  campus: string;
+  /** MiniSearch relevance score. Higher is more relevant. `0` when no text query is active */
   score: number;
 }
 

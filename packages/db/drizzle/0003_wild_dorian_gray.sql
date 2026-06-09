@@ -1,4 +1,3 @@
-CREATE INDEX "building_search_idx" ON "buildings" USING bm25 ("id","name","code") WITH (key_field=id,text_fields='{
-          "name": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}},
-          "code": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}}
-        }');
+-- The bm25 (ParadeDB) "building_search_idx" index originally created here was
+-- removed as part of migrating off ParadeDB to plain PostgreSQL. This migration
+-- is intentionally a no-op so that the migration history remains intact.

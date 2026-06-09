@@ -50,6 +50,13 @@
       "when": 1779457457282,
       "tag": "0006_overjoyed_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1781044991389,
+      "tag": "0007_drop_bm25_indexes",
+      "breakpoints": true
     }
   ]
 }

@@ -55,24 +55,6 @@ export const coursesT = pgTable(
   },
   (table) => [
     unique("term_course").on(table.termId, table.subject, table.courseNumber),
-    index("courses_search_idx")
-      .using(
-        "bm25",
-        table.id,
-        table.name,
-        table.register,
-        table.courseNumber,
-        table.termId,
-      )
-      .with({
-        key_field: "id",
-        // NOTE: this template literal is interpreted as raw SQL and therefore must be escaped properly
-        text_fields: `'{
-          "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
-          "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
-          "courseNumber": {"fast": true}
-        }'`,
-      }),
   ],
 );
 
@@ -169,17 +151,6 @@ export const buildingsT = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("building_search_idx")
-      .using("bm25", table.id, table.name, table.code)
-      .with({
-        key_field: "id",
-        text_fields: `'{
-          "name": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}},
-          "code": {"tokenizer": {"type": "ngram", "min_gram": 3, "max_gram": 5, "prefix_only": false}}
-        }'`,
-      }),
-  ],
 );
 
 export const roomsT = pgTable(

@@ -2,6 +2,7 @@
   "name": "sneu",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setup.mjs",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -11,7 +12,7 @@
     "db:migrate": "turbo run db:migrate --filter=@sneu/db",
     "db:push": "turbo run db:push --filter=@sneu/db",
     "db:studio": "turbo run db:studio --filter=@sneu/db",
-    "cli": "turbo run cli --filter=@sneu/scraper-cli"
+    "cli": "turbo run cli --filter=@sneu/cli"
   },
   "devDependencies": {
     "prettier": "^3.8.3",

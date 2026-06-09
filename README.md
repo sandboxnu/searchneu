@@ -45,7 +45,27 @@ TODO
 
 ## quickstart
 
-View the README files in the desired application for quickstart instructions.
+Make sure [Docker](https://www.docker.com/) is installed and running, then:
+
+```sh
+pnpm install   # install dependencies (pnpm is the package manager)
+turbo setup    # creates .env files, starts the database, runs migrations
+turbo dev      # start the dev servers (app on http://localhost:3000)
+```
+
+Apart from `pnpm install`, every workflow runs through turbo. `turbo setup` is
+idempotent — re-run it any time (e.g. after restarting Docker).
+
+Course catalog data is **not** seeded automatically (it requires a live Banner
+scrape). The app runs fine against an empty database; to populate courses:
+
+```sh
+turbo cli -- generate --terms=all        # scrape Banner -> cache
+turbo cli -- tools seed-config --seed     # write static config
+turbo cli -- upload --terms=all           # load into the database
+```
+
+For app-specific details, see the README in each application under `apps/`.
 
 ## BEATS
 

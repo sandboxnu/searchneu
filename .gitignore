@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# but do commit the example templates used by `pnpm setup`
+!.env.example
+!**/.env.example
 
 # vercel
 .vercel

@@ -38,7 +38,8 @@ const c = {
 
 let step = 0;
 const log = {
-  step: (msg) => console.log(`\n${c.cyan}${c.bold}[${++step}] ${msg}${c.reset}`),
+  step: (msg) =>
+    console.log(`\n${c.cyan}${c.bold}[${++step}] ${msg}${c.reset}`),
   info: (msg) => console.log(`    ${c.dim}${msg}${c.reset}`),
   ok: (msg) => console.log(`    ${c.green}✓ ${msg}${c.reset}`),
   warn: (msg) => console.log(`    ${c.yellow}! ${msg}${c.reset}`),
@@ -113,11 +114,9 @@ log.ok("Postgres + Neon proxy are healthy");
 
 // 4. Build the workspace packages the app/migrations import from dist/.
 log.step("Building workspace packages");
-run(
-  "pnpm",
-  ["--filter", "@sneu/db", "--filter", "@sneu/scraper", "build"],
-  { label: "pnpm build" },
-);
+run("pnpm", ["--filter", "@sneu/db", "--filter", "@sneu/scraper", "build"], {
+  label: "pnpm build",
+});
 log.ok("@sneu/db and @sneu/scraper built");
 
 // 5. Apply database migrations (idempotent — drizzle skips applied ones).
@@ -134,7 +133,9 @@ log.ok("Migrations applied");
 console.log(`\n${c.green}${c.bold}✓ Setup complete.${c.reset}\n`);
 console.log(`${c.bold}Start the dev servers:${c.reset}`);
 console.log(`  ${c.cyan}turbo dev${c.reset}`);
-console.log(`\n${c.bold}Optional — load course catalog data${c.reset} ${c.dim}(requires a live Banner scrape):${c.reset}`);
+console.log(
+  `\n${c.bold}Optional — load course catalog data${c.reset} ${c.dim}(requires a live Banner scrape):${c.reset}`,
+);
 console.log(`  ${c.cyan}turbo cli -- generate --terms=all${c.reset}`);
 console.log(`  ${c.cyan}turbo cli -- tools seed-config --seed${c.reset}`);
 console.log(`  ${c.cyan}turbo cli -- upload --terms=all${c.reset}`);

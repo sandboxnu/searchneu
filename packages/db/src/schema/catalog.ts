@@ -136,22 +136,19 @@ export const courseNupathJoinT = pgTable(
   ],
 );
 
-export const buildingsT = pgTable(
-  "buildings",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text().notNull().unique(),
-    code: text().notNull().unique(),
-    campus: integer()
-      .notNull()
-      .references(() => campusesT.id),
-    createdAt: timestamp().notNull().defaultNow(),
-    updatedAt: timestamp()
-      .notNull()
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-);
+export const buildingsT = pgTable("buildings", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text().notNull().unique(),
+  code: text().notNull().unique(),
+  campus: integer()
+    .notNull()
+    .references(() => campusesT.id),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
 
 export const roomsT = pgTable(
   "rooms",

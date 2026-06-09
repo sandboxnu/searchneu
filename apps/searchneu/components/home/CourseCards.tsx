@@ -1,23 +1,13 @@
 import { ResultCard } from "@/components/catalog/search/ResultCard";
 import LogoLoop from "@/components/ui/logo-loop";
-import { getSearchCourses } from "@/lib/dal/search";
+import { getAllCoursesForTerm } from "@/lib/dal/catalog-courses";
 import { getTerms } from "@/lib/dal/terms";
 
 export async function CourseCards() {
   const terms = await getTerms();
   const term = terms.neu[0].term + terms.neu[0].part;
 
-  const courses = await getSearchCourses({
-    term,
-    query: "",
-    subjects: [],
-    minCourseLevel: -1,
-    maxCourseLevel: -1,
-    nupaths: [],
-    campuses: [],
-    classTypes: [],
-    honors: false,
-  });
+  const courses = await getAllCoursesForTerm(term);
 
   // WARN: we should obv fix this and remove the ignore
   // eslint-disable-next-line react-hooks/purity

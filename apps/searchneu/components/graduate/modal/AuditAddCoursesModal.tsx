@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useDeferredValue,
-  useMemo,
-} from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +18,7 @@ import {
   fetchCoreqCourses,
 } from "@/lib/scheduler/addCourseModal";
 import { CourseSearchResult, GroupedTerms, Term } from "@/lib/catalog/types";
+import { useCatalogSearch } from "@/lib/catalog/use-catalog-search";
 import {
   CourseReq,
   ModalCourse,
@@ -578,48 +573,21 @@ function AuditSearchResults({
   requirementKeys: RequirementKeys | null;
   onSelectSearchResult: (course: CourseSearchResult) => void;
 }) {
-  const [resultsState, setResultsState] = useState<{
-    query: string;
-    data: CourseSearchResult[];
-  } | null>(null);
-  const deferredQuery = useDeferredValue(searchQuery);
-
-  useEffect(() => {
-    if (!deferredQuery) return;
-
-    const controller = new AbortController();
-    const url = `/api/catalog/search?${new URLSearchParams({ q: deferredQuery, term: mostRecentTerm.term + mostRecentTerm.part })}`;
-
-    fetch(url, { signal: controller.signal })
-      .then((r) => r.json())
-      .then((d) => {
-        setResultsState({
-          query: deferredQuery,
-          data: Array.isArray(d) ? d : [],
-        });
-      })
-      .catch((err) => {
-        if (err.name !== "AbortError") console.error(err);
-      });
-
-    return () => controller.abort();
-  }, [deferredQuery, mostRecentTerm]);
-
-  const allResults = resultsState?.data ?? null;
-  const loading = !!deferredQuery && resultsState?.query !== deferredQuery;
+  const { results, isLoading } = useCatalogSearch(
+    mostRecentTerm.term + mostRecentTerm.part,
+    { query: searchQuery },
+  );
 
   const filteredResults = useMemo(() => {
-    if (!allResults) return null;
-    return allResults.filter((course) =>
+    if (!searchQuery) return null;
+    return results.filter((course) =>
       courseMatchesFilter(course, selectedNupaths, requirementKeys),
     );
-  }, [allResults, selectedNupaths, requirementKeys]);
-
-  const stale = searchQuery !== deferredQuery || loading;
+  }, [results, searchQuery, selectedNupaths, requirementKeys]);
 
   if (!searchQuery) return null;
 
-  if (loading && !resultsState) {
+  if (isLoading) {
     return (
       <div className="flex-1 space-y-2 overflow-hidden p-2">
         {Array.from({ length: 6 }).map((_, i) => (
@@ -650,12 +618,7 @@ function AuditSearchResults({
   }
 
   return (
-    <div
-      className={cn(
-        "border-neu25 min-h-0 flex-1 overflow-y-auto rounded-lg border",
-        stale && "opacity-60",
-      )}
-    >
+    <div className="border-neu25 min-h-0 flex-1 overflow-y-auto rounded-lg border">
       {displayResults.map((course) => {
         const coreqRefs = extractCoreqReqs(course.coreqs as CourseReq);
         return (

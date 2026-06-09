@@ -12,12 +12,7 @@ import { cn } from "@/lib/cn";
 import Link from "next/link";
 import { useCatalogSearch } from "@/lib/catalog/use-catalog-search";
 
-// NOTE: in general prefer named exports. however, since the `SearchResults` component
-// needs to be imported dynamically to avoid SSR, it has to be default exported
-
-/**
- */
-export default function SearchResults() {
+export function SearchResults() {
   const params = useSearchParams();
   const { term, course } = useParams();
 
@@ -119,7 +114,7 @@ function ResultsListSkeleton() {
       {Array.from({ length: 10 }).map((_, i) => (
         <li
           key={i}
-          className="bg-neu3 h-[95px] w-full animate-pulse rounded-lg"
+          className="bg-neu3 h-23.75 w-full animate-pulse rounded-lg"
         />
       ))}
     </ul>

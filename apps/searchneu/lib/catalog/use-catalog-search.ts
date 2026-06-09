@@ -3,7 +3,7 @@ import MiniSearch from "minisearch";
 import useSWR from "swr";
 import type { CourseSearchResult } from "./types";
 
-interface CatalogSearchFilters {
+export interface CatalogSearchFilters {
   query: string;
   subjects: string[];
   minCourseLevel: number;
@@ -14,6 +14,17 @@ interface CatalogSearchFilters {
   honors: boolean;
 }
 
+const DEFAULT_FILTERS: CatalogSearchFilters = {
+  query: "",
+  subjects: [],
+  minCourseLevel: -1,
+  maxCourseLevel: -1,
+  nupaths: [],
+  campuses: [],
+  classTypes: [],
+  honors: false,
+};
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 /**
@@ -21,8 +32,14 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json());
  *
  * fetches all courses for a term once, builds an in-memory search index,
  * then performs text search and filtering entirely on the client for speed.
+ *
+ * any filter not supplied falls back to a "no filter" default, so callers that
+ * only need free-text search can pass just a `query`.
  */
-export function useCatalogSearch(term: string, filters: CatalogSearchFilters) {
+export function useCatalogSearch(
+  term: string,
+  filters: Partial<CatalogSearchFilters>,
+) {
   const { data: courses, isLoading } = useSWR<CourseSearchResult[]>(
     term ? `/api/catalog/courses/all?term=${term}` : null,
     fetcher,
@@ -88,7 +105,7 @@ export function useCatalogSearch(term: string, filters: CatalogSearchFilters) {
       campuses,
       classTypes,
       honors,
-    } = filters;
+    } = { ...DEFAULT_FILTERS, ...filters };
 
     let matched: CourseSearchResult[];
 

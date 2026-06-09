@@ -3,7 +3,9 @@
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -43,28 +45,14 @@ export function TermsDropdown({
       </SelectTrigger>
       <SelectContent align="center" alignItemWithTrigger={false}>
         {years.map(({ year, terms: yearTerms }) => (
-          <div key={year}>
-            <SelectItem
-              value={`header-${year}`}
-              disabled
-              className="text-neu6 -ml-4 text-xs font-semibold uppercase"
-            >
-              {year}
-            </SelectItem>
+          <SelectGroup key={year}>
+            <SelectLabel className="">{year}</SelectLabel>
             {yearTerms.map((t) => (
-              <SelectItem
-                key={t.id}
-                value={String(t.id)}
-                className={cn(
-                  t.id === selectedTerm?.id
-                    ? "text-neu8 font-semibold"
-                    : "text-neu6 font-normal",
-                )}
-              >
+              <SelectItem key={t.id} value={t.term + t.part} className="pl-8">
                 {t.name.replace(" Semester", "")}
               </SelectItem>
             ))}
-          </div>
+          </SelectGroup>
         ))}
       </SelectContent>
     </Select>

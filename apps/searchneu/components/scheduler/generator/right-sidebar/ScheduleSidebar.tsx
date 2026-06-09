@@ -28,6 +28,8 @@ export function ScheduleSidebar({
   onSelectSchedule,
   onToggleFavorite,
 }: ScheduleSidebarProps) {
+  "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
+
   const [activeTab, setActiveTab] = useState<SidebarTab>("filters");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +44,7 @@ export function ScheduleSidebar({
     [displayedSchedules],
   );
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: displayedSchedules.length,
     getScrollElement: () => scrollRef.current,

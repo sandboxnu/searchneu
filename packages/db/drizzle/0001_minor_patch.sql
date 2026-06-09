@@ -317,11 +317,6 @@ CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> state
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
 CREATE UNIQUE INDEX "campus_name_idx" ON "campuses" USING btree ("name");--> statement-breakpoint
 CREATE INDEX "course_nupath_join_course_idx" ON "course_nupath_join" USING btree ("courseId");--> statement-breakpoint
-CREATE INDEX "courses_search_idx" ON "courses" USING bm25 ("id","name","register","courseNumber","termId") WITH (key_field=id,text_fields='{
-          "name": {"tokenizer": {"type": "ngram", "min_gram": 4, "max_gram": 5, "prefix_only": false}},
-          "register": {"tokenizer": {"type": "ngram", "min_gram": 2, "max_gram": 4, "prefix_only": false}},
-          "courseNumber": {"fast": true}
-        }');--> statement-breakpoint
 CREATE INDEX "section_meeting_idx" ON "meeting_times" USING btree ("sectionId");--> statement-breakpoint
 CREATE INDEX "room_meeting_idx" ON "meeting_times" USING btree ("roomId");--> statement-breakpoint
 CREATE UNIQUE INDEX "nupath_short_idx" ON "nupaths" USING btree ("short");--> statement-breakpoint

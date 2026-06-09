@@ -22,7 +22,6 @@ import {
   ModalCourse,
   SelectedCourseGroupData,
 } from "@/lib/scheduler/types";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "../../../ui/button";
@@ -34,11 +33,8 @@ import {
   DialogTitle,
 } from "../../../ui/dialog";
 import { ModalSearchBar } from "./ModalSearchBar";
+import ModalSearchResults from "./ModalSearchResults";
 import SelectedCourseGroup from "./SelectedCourseGroup";
-
-const ModalSearchResults = dynamic(() => import("./ModalSearchResults"), {
-  ssr: false,
-});
 
 interface AddCoursesModalProps {
   open: boolean;
@@ -286,15 +282,13 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
             <div className="text-neu8 text-[16px]">
               How many courses are you taking?
             </div>
-            <div className="border-neu2 flex rounded-[28px] border bg-white p-1">
+            <div className="border-neu2 bg-neu0 flex rounded-[28px] border p-1">
               {[1, 2, 3, 4, 5, 6].map((num) => (
                 <button
                   key={num}
                   onClick={() => setNumCourses(num)}
                   className={`flex h-5.5 w-10.5 cursor-pointer items-center justify-center rounded-[46px] text-xs font-semibold ${
-                    numCourses === num
-                      ? "bg-red-500 text-white"
-                      : "hover:bg-muted"
+                    numCourses === num ? "bg-r5 text-neu0" : "hover:bg-neu2"
                   }`}
                 >
                   {num}
@@ -321,7 +315,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
           </div>
 
           <div className="flex h-full w-1/2 flex-col gap-2.5 max-[768px]:w-full">
-            <div className="bg-neu25 flex min-h-0 flex-1 flex-col rounded-lg p-2">
+            <div className="bg-neu1 flex min-h-0 flex-1 flex-col rounded-lg p-2">
               <div className="text-neu5 p-2 text-xs">
                 {getSelectionText(selectedCourseGroups)}
               </div>

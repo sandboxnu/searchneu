@@ -1,5 +1,6 @@
 import { ModalCourse } from "@/lib/scheduler/types";
 import { DeleteIcon } from "../../../icons/Delete";
+import { Button } from "@/components/ui/button";
 
 interface SelectedCourse {
   subject: string;
@@ -11,7 +12,7 @@ interface SelectedCourse {
 
 const SelectedCourseItem = ({ course }: { course: SelectedCourse }) => {
   const containerClass = [
-    "group text-neu6 hover:bg-neu2 bg-neu1 flex h-[50px] w-full flex-row items-center justify-between px-[16px] text-[12px] transition-colors",
+    "group text-neu6 bg-neu0 flex h-[50px] w-full flex-row items-center justify-between px-[16px] text-[12px] transition-colors",
     course.isGrouped ? "rounded-none" : "rounded-lg",
   ].join(" ");
 
@@ -23,12 +24,14 @@ const SelectedCourseItem = ({ course }: { course: SelectedCourse }) => {
         </span>
         <span className="truncate">{course.title}</span>
       </p>
-      <button
+      <Button
         onClick={course.handleDelete}
-        className="invisible cursor-pointer rounded-md p-1 group-hover:visible"
+        variant="ghost"
+        size="icon"
+        className="hidden group-hover:flex"
       >
         <DeleteIcon />
-      </button>
+      </Button>
     </div>
   );
 };
@@ -43,7 +46,7 @@ const SelectedCourseGroup = ({
   onDeleteCourse: (course: ModalCourse, isCoreq: boolean) => void;
 }) => {
   return (
-    <div className="border-neu3 flex min-h-fit flex-col overflow-hidden rounded-lg border">
+    <div className="border-neu2 flex min-h-fit flex-col overflow-hidden rounded-lg border">
       {/* parent */}
       <SelectedCourseItem
         course={{
@@ -57,7 +60,7 @@ const SelectedCourseGroup = ({
 
       {/* coreqs */}
       {coreqs.map((coreq, idx) => (
-        <div key={idx} className="border-neu3 border-t">
+        <div key={idx} className="border-neu2 border-t">
           <SelectedCourseItem
             course={{
               subject: coreq.subjectCode,

@@ -2,9 +2,9 @@
 
 import { SearchPanel, type CatalogFilterData } from "./search/SearchPanel";
 import { useParams, useSearchParams } from "next/navigation";
-import dynamic from "next/dynamic";
 import { SearchBar } from "./search/SearchBar";
-import { useEffect, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useState, type ReactNode } from "react";
+import { SearchResults } from "./search/SearchResults";
 import {
   Drawer,
   DrawerClose,
@@ -15,12 +15,6 @@ import {
 } from "../ui/drawer";
 import { ListFilter } from "lucide-react";
 import { Button } from "../ui/button";
-
-// BUG: ssr on the results list w/ query params causes hydration error
-// https://nextjs.org/docs/messages/react-hydration-error
-const SearchResults = dynamic(() => import("./search/SearchResults"), {
-  ssr: false,
-});
 
 export function MobileWrapper(
   props: CatalogFilterData & {
@@ -87,7 +81,9 @@ export function MobileWrapper(
             data-firsttime={Boolean(newSearch)}
             className="w-full data-[firsttime=true]:data-[show=false]:block data-[firsttime=false]:data-[show=true]:hidden xl:block! xl:max-w-[320px]"
           >
-            <SearchResults />
+            <Suspense fallback={null}>
+              <SearchResults />
+            </Suspense>
           </div>
           <div
             data-show={Boolean(course)}

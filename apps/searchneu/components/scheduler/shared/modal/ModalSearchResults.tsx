@@ -1,9 +1,9 @@
 "use client";
 
 import { CourseSearchResult, Term } from "@/lib/catalog/types";
-import { cn } from "@/lib/cn";
+import { useCatalogSearch } from "@/lib/catalog/use-catalog-search";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Suspense, use, useDeferredValue, useRef } from "react";
+import { useRef } from "react";
 
 const ResultCard = ({
   result,
@@ -36,40 +36,15 @@ export default function ModalSearchResults({
   term: Term;
   onSelectSearchResult: (course: CourseSearchResult) => void;
 }) {
-  const deferredQuery = useDeferredValue(searchQuery);
-  const deferredTerm = useDeferredValue(term);
-  const stale = deferredQuery !== searchQuery || deferredTerm !== term;
-
   return (
-    <div
-      className={cn(
-        "flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg",
-        stale ? "opacity-60" : "",
-      )}
-    >
-      <Suspense fallback={<ResultsListSkeleton />}>
-        <ResultsList
-          query={deferredQuery}
-          term={deferredTerm}
-          onSelectSearchResult={onSelectSearchResult}
-        />
-      </Suspense>
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg">
+      <ResultsList
+        query={searchQuery}
+        term={term}
+        onSelectSearchResult={onSelectSearchResult}
+      />
     </div>
   );
-}
-
-// Cache for the data fetcher
-let cacheKey = "";
-let cachePromise: Promise<unknown> = Promise.resolve([]);
-
-function fetcher<T>(key: string, url: string): Promise<T> {
-  if (cacheKey !== key) {
-    cacheKey = key;
-    if (typeof window !== "undefined") {
-      cachePromise = fetch(url).then((r) => r.json());
-    }
-  }
-  return cachePromise as Promise<T>;
 }
 
 function ResultsList({
@@ -81,22 +56,17 @@ function ResultsList({
   term: Term;
   onSelectSearchResult: (course: CourseSearchResult) => void;
 }) {
-  "use no memo";
+  "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
 
-  const searchParams = new URLSearchParams();
-  searchParams.set("q", query);
-  searchParams.set("term", term.term + term.part);
-  const url = `/api/catalog/search?${searchParams.toString()}`;
-  const cacheKey = `${query}-${term}`;
-
-  const results = use(
-    fetcher<CourseSearchResult[] | { error: string }>(cacheKey, url),
-  );
+  const { results, isLoading } = useCatalogSearch(term.term + term.part, {
+    query,
+  });
 
   const parentRef = useRef<HTMLDivElement>(null);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtual = useVirtualizer({
-    count: Array.isArray(results) ? Math.min(results.length, 20) : 0,
+    count: Math.min(results.length, 20),
     getScrollElement: () => parentRef.current,
     estimateSize: () => 48,
     overscan: 5,
@@ -104,15 +74,8 @@ function ResultsList({
 
   const items = virtual.getVirtualItems();
 
-  if (!Array.isArray(results)) {
-    if (results.error === "insufficient query length") {
-      return (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-neu6 text-sm">Type more to search</p>
-        </div>
-      );
-    }
-    throw new Error(results.error || "Unknown error");
+  if (isLoading) {
+    return <ResultsListSkeleton />;
   }
 
   if (results.length === 0) {

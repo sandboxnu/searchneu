@@ -20,11 +20,6 @@
       "description": "Freeze eslint and @eslint/js at v9 — v10 is broken",
       "matchPackageNames": ["eslint", "@eslint/js"],
       "allowedVersions": "<10.0.0"
-    },
-    {
-      "description": "Freeze paradedb docker image",
-      "matchPackageNames": ["paradedb/paradedb"],
-      "enabled": false
     }
   ]
 }

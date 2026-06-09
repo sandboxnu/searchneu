@@ -159,7 +159,7 @@ pnpm db:studio    # Open database UI
 
 **Docker Compose** (`compose.yaml`) provides:
 
-- **postgres** - ParadeDB (PostgreSQL with full-text search extensions)
+- **postgres** - PostgreSQL database
 - **neon-proxy** - Local proxy that mimics Neon's serverless HTTP interface
 
 This allows you to develop locally with the same database interface used in production.
@@ -175,7 +175,7 @@ This allows you to develop locally with the same database interface used in prod
 
 **Backend/Database:**
 
-- PostgreSQL with ParadeDB
+- PostgreSQL
 - Drizzle ORM
 - Neon serverless (production)
 

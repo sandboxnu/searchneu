@@ -49,6 +49,7 @@
         "VERCEL_BRANCH_URL"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "with": ["@sneu/db#db:studio"],
       "persistent": true,
       "cache": false
     },

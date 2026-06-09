@@ -13,9 +13,12 @@ export function FaqAccordionSection() {
   return (
     <Accordion multiple className="pl-4">
       {FaqData.map((faq, id) => (
-        <AccordionItem key={id} value={id}>
+        <AccordionItem key={id} value={String(id)}>
           <AccordionTrigger>{faq.title}</AccordionTrigger>
           <AccordionContent>{faq.description}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
         </AccordionItem>
       ))}
     </Accordion>

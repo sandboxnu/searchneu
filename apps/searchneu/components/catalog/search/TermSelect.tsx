@@ -36,7 +36,9 @@ function TermSelectControl(props: {
   const searchParams = useSearchParams();
 
   const activeCollege = (Object.keys(terms).find((k) =>
-    terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
+    terms[k as keyof GroupedTerms].find(
+      (t) => t.term + t.part === term?.toString(),
+    ),
   ) ?? "neu") as College;
 
   const years = groupTermsByYear(terms[activeCollege]);
@@ -47,10 +49,12 @@ function TermSelectControl(props: {
 
   return (
     <Select
-      onValueChange={(e) =>
-        router.push(`/catalog/${e}?${searchParams.toString()}`)
-      }
+      onValueChange={(e) => {
+        if (!e) return;
+        router.push(`/catalog/${e}?${searchParams.toString()}`);
+      }}
       value={term?.toString()}
+    >
     >
       <SelectTrigger id={props.id} className="w-full">
         <SelectValue placeholder="Select term" className="font-semibold">

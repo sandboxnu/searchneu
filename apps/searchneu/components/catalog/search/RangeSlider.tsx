@@ -37,10 +37,12 @@ export function RangeSlider() {
     <FilterSection label="COURSE ID RANGE" htmlFor="course-id-range">
       <div>
         <Slider
-          className="**:data-[slot=slider-thumb]:bg-r5 **:data-[slot=slider-range]:bg-r5"
+          className=""
           id="course-id-range"
           value={d}
-          onValueChange={setD}
+          onValueChange={(value) =>
+            setD(Array.isArray(value) ? value : [value])
+          }
           min={1}
           max={9}
           step={1}
@@ -60,10 +62,10 @@ export function RangeSlider() {
 function RangeTicks() {
   function GenerateTicks(n: number) {
     return (
-      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
+      <div key={n * 1000} className="flex w-0.5 flex-col items-center">
         <span
           className={cn(
-            "text-muted-foreground border-l",
+            "text-neu5 border-l",
             n % 2 === 0 ? "h-3 border-current" : "h-2 border-current",
           )}
         />
@@ -72,7 +74,7 @@ function RangeTicks() {
   }
 
   return (
-    <div className="mx-[5px] flex w-full justify-between px-0.5">
+    <div className="mx-1.25 flex w-full justify-between px-0.5">
       {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateTicks)}
     </div>
   );
@@ -81,9 +83,9 @@ function RangeTicks() {
 function RangeLabels() {
   function GenerateLabels(n: number) {
     return (
-      <div key={n * 1000} className="flex w-[2px] flex-col items-center">
+      <div key={n * 1000} className="flex w-0.5 flex-col items-center">
         {n % 2 === 0 ? (
-          <span className="text-muted-foreground text-sm">{n * 1000}</span>
+          <span className="text-neu6 text-sm">{n * 1000}</span>
         ) : (
           <span>&nbsp;</span>
         )}
@@ -92,7 +94,7 @@ function RangeLabels() {
   }
 
   return (
-    <div className="mx-[5px] flex w-full justify-between px-0">
+    <div className="mx-1.25 flex w-full justify-between px-0">
       {Array.from({ length: 9 }, (_, i) => i + 1).map(GenerateLabels)}
     </div>
   );

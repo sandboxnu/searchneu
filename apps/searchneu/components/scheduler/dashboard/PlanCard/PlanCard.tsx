@@ -55,21 +55,21 @@ export function PlanCard({ plan, onDelete, campuses, nupaths }: PlanCardProps) {
   };
 
   return (
-    <div className="border-neu3 rounded-lg border bg-white p-6 shadow-sm">
+    <div className="border-neu2 bg-neu0 rounded-lg border p-6">
       {/* Header with name and buttons */}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-bold">{plan.name}</h2>
         <div className="flex items-center gap-3">
           <button
             onClick={handleEdit}
-            className="border-neu3 bg-neu25 text-neu8 hover:bg-neu3 hover:text-neu9 flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-neu2 bg-neu1 text-neu8 hover:bg-neu3 hover:text-neu9 flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Pencil className="h-4 w-4" />
             Edit Plan
           </button>
           <button
             onClick={handleDelete}
-            className="border-neu3 bg-neu25 text-neu8 hover:bg-red/5 hover:text-red flex cursor-pointer items-center rounded-full border px-3 py-1.5 transition-colors"
+            className="border-neu2 bg-neu1 text-neu8 hover:bg-r1 hover:text-r5/80 hover:border-r5/50 flex cursor-pointer items-center rounded-full border px-3 py-1.5 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
           </button>

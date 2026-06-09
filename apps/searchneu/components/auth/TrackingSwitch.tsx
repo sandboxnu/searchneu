@@ -35,6 +35,7 @@ export function TrackingSwitch({
   sectionId: number;
   inital: boolean;
   isTermActive: boolean;
+  onCheckedChange: (state: boolean) => void;
 } & React.ComponentProps<typeof Switch>) {
   const { data: session, isPending: loading } = authClient.useSession();
   const [checked, setChecked] = useState(inital);
@@ -127,7 +128,7 @@ export function TrackingSwitch({
     return (
       <div className="flex w-full justify-center">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-[1.125rem] w-8 rounded-full" />
+          <Skeleton className="h-4.5 w-8 rounded-full" />
         </div>
       </div>
     );
@@ -205,7 +206,7 @@ export function TrackingSwitch({
       </Tooltip>
       {oneMoreStep && (
         <Dialog open={true} onOpenChange={() => setOneMoreStep(false)}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-106.25">
             <DialogHeader>
               <DialogTitle>One More Step</DialogTitle>
               <DialogDescription>

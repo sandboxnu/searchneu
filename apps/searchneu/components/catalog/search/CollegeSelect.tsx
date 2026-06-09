@@ -52,7 +52,7 @@ function CollegeSelectControl(props: { terms: Promise<GroupedTerms> }) {
     >
       <SelectTrigger
         className={cn(
-          "bg-r5 h-[40px] w-full font-semibold",
+          "bg-r5 h-10 w-full font-semibold",
           collegeTriggerClass(activeCollege),
         )}
       >

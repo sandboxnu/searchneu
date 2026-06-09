@@ -47,7 +47,7 @@ export function MobileWrapper(
     <div className="flex min-h-0 w-screen min-w-0 flex-1 px-4 pt-4 xl:px-6">
       <div
         data-show={Boolean(course)}
-        className="hidden h-full min-h-0 w-full max-w-[280px] md:block md:data-[show=true]:hidden xl:block!"
+        className="hidden h-full min-h-0 w-full max-w-70 md:block md:data-[show=true]:hidden xl:block!"
       >
         <SearchPanel {...props} />
       </div>

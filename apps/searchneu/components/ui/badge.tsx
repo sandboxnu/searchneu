@@ -1,20 +1,23 @@
-import * as React from "react";
-import { Slot } from "radix-ui";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/cn";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-neu4 focus-visible:ring-neu4/50 focus-visible:ring-[3px] aria-invalid:ring-red/20 aria-invalid:border-red transition-[color,box-shadow] overflow-hidden",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded border border-transparent leading-tight font-bold px-2 py-1 text-xs whitespace-nowrap transition-all focus-visible:border-neu2 focus-visible:ring-[3px] focus-visible:ring-neu2/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-neu3 text-neu9 [a&]:hover:bg-neu/90",
-        secondary: "border-transparent bg-neu2 text-neu9 [a&]:hover:bg-neu3/90",
+        default: "bg-neu2 text-neu7 [a]:hover:bg-neu2/80 h-[17px]",
+        secondary: "bg-neu2 text-neu5 [a]:hover:bg-neu7/80 h-[17px]",
+        rounded:
+          "rounded-full px-3 py-1 border-neu2 bg-neu1 text-neu6 h-[27px]",
         destructive:
-          "border-transparent bg-red text-neu1 [a&]:hover:bg-red/90 focus-visible:ring-red/20",
-        outline: "text-neu9 [a&]:hover:bg-navy [a&]:hover:text-neu1",
-        accent: "border-transparent bg-red text-sm [&>svg]:size-4 px-4",
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 [a]:hover:bg-destructive/20",
+        outline: "border-neu2 text-neu9 [a]:hover:bg-neu1 [a]:hover:text-neu9",
+        ghost: "hover:bg-neu1 hover:text-muted-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {
@@ -25,20 +28,24 @@ const badgeVariants = cva(
 
 function Badge({
   className,
-  variant,
-  asChild = false,
+  variant = "default",
+  render,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot.Slot : "span";
-
-  return (
-    <Comp
-      data-slot="badge"
-      className={cn(badgeVariants({ variant }), className)}
-      {...props}
-    />
-  );
+}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(
+      {
+        className: cn(badgeVariants({ variant }), className),
+      },
+      props,
+    ),
+    render,
+    state: {
+      slot: "badge",
+      variant,
+    },
+  });
 }
 
 export { Badge, badgeVariants };

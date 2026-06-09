@@ -13,7 +13,7 @@ import { PlanCard } from "./PlanCard/PlanCard";
 import { TermsDropdown } from "./TermsDropdown";
 
 // Add type for plan
-export type SavedPlan = {
+export interface SavedPlan {
   id: number;
   userId: string;
   term: string;
@@ -57,7 +57,7 @@ export type SavedPlan = {
       }>;
     }>;
   }>;
-};
+}
 
 export function DashboardClient({
   termsPromise,
@@ -115,7 +115,7 @@ export function DashboardClient({
   };
 
   return (
-    <div className="bg-neu2 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
+    <div className="flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
       <AddCoursesModal
         open={isModalOpen}
         terms={terms}
@@ -124,23 +124,27 @@ export function DashboardClient({
           setIsModalOpen(false);
         }}
       />
-      <div className="bg-neu1 h-full min-h-0 w-full max-w-[280px] space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1">
-        <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
-        <CollegeDropdown
-          terms={terms}
-          selectedCollege={selectedCollege}
-          onCollegeChange={setSelectedCollege}
-          onTermChange={setSelectedTerm}
-        />
+      <div className="bg-neu0 h-full min-h-0 w-full max-w-70 space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t">
+        <div className="space-y-3">
+          <h3 className="text-neu7 text-xs font-bold">SCHOOL</h3>
+          <CollegeDropdown
+            terms={terms}
+            selectedCollege={selectedCollege}
+            onCollegeChange={setSelectedCollege}
+            onTermChange={setSelectedTerm}
+          />
+        </div>
 
-        <h3 className="text-neu7 text-xs font-bold">SEMESTER</h3>
-        <TermsDropdown
-          terms={terms}
-          id="course-term-select"
-          selectedCollege={selectedCollege}
-          selectedTerm={selectedTerm}
-          onTermChange={setSelectedTerm}
-        />
+        <div className="space-y-3">
+          <h3 className="text-neu7 text-xs font-bold">SEMESTER</h3>
+          <TermsDropdown
+            terms={terms}
+            id="course-term-select"
+            selectedCollege={selectedCollege}
+            selectedTerm={selectedTerm}
+            onTermChange={setSelectedTerm}
+          />
+        </div>
 
         <Button
           className="mt-auto w-full cursor-pointer"
@@ -152,7 +156,7 @@ export function DashboardClient({
 
       <div
         className={cn(
-          `bg-neu1 flex h-full min-h-0 w-full flex-col place-content-center space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t-1`,
+          `bg-neu0 flex h-full min-h-0 w-full flex-col place-content-center space-y-4 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t`,
           {
             "place-content-start": plans?.length > 0,
           },

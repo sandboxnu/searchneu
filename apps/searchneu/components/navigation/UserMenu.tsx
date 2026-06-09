@@ -35,18 +35,20 @@ function UserMenu() {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="relative hidden size-10 rounded-full md:flex"
-          >
-            <Avatar className="size-10">
-              <AvatarFallback>
-                <Iconskie className="size-full" />
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className="relative hidden size-10 rounded-full md:flex"
+            >
+              <Avatar className="size-10">
+                <AvatarFallback>
+                  <Iconskie className="size-full" />
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          }
+        ></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => authClient.signOut()}

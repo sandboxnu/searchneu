@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
-import { CheckIcon, ChevronDownIcon, XIcon } from "lucide-react";
+import { ChevronDownIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
@@ -172,7 +172,10 @@ function ComboboxLabel({
   return (
     <ComboboxPrimitive.GroupLabel
       data-slot="combobox-label"
-      className={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
+      className={cn(
+        "text-neu4 px-4 py-2 text-xs font-semibold uppercase",
+        className,
+      )}
       {...props}
     />
   );
@@ -239,7 +242,7 @@ function ComboboxChip({
     <ComboboxPrimitive.Chip
       data-slot="combobox-chip"
       className={cn(
-        "bg-neu2 text-neu7 flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-sm px-1.5 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
+        "bg-neu2 text-neu7 flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-full px-1.5 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
         className,
       )}
       {...props}

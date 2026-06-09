@@ -42,7 +42,9 @@ interface MultiselectProps<T> {
 // only the combobox control suspends on `opts`, so the label stays visible
 // while options load. Provide a `group` on each option (via `transform`) to
 // render the dropdown as grouped sections rather than a flat list.
-export function SPMultiselect<T>(props: MultiselectProps<T> & { label: string }) {
+export function SPMultiselect<T>(
+  props: MultiselectProps<T> & { label: string },
+) {
   return (
     <FilterSection
       label={props.label}
@@ -115,7 +117,13 @@ function MultiselectControl<T>(props: MultiselectProps<T>) {
   const anchorRef = useComboboxAnchor();
 
   const renderItem = (opt: Option) => (
-    <ComboboxItem key={opt.value} value={opt}>
+    <ComboboxItem
+      key={opt.value}
+      value={opt}
+      className={cn({
+        "pl-8": grouped,
+      })}
+    >
       {opt.value !== opt.label && (
         <span className="font-bold">{opt.value}</span>
       )}

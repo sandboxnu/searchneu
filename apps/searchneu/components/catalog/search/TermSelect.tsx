@@ -4,14 +4,15 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Suspense, use } from "react";
 import type { GroupedTerms } from "@/lib/catalog/types";
 import { groupTermsByYear, type College } from "@/lib/catalog/terms";
-import { cn } from "@/lib/cn";
 import { FilterSection, FilterSkeleton } from "./FilterSection";
 
 export function TermSelect(props: { terms: Promise<GroupedTerms> }) {
@@ -24,7 +25,10 @@ export function TermSelect(props: { terms: Promise<GroupedTerms> }) {
   );
 }
 
-function TermSelectControl(props: { terms: Promise<GroupedTerms>; id?: string }) {
+function TermSelectControl(props: {
+  terms: Promise<GroupedTerms>;
+  id?: string;
+}) {
   const terms = use(props.terms);
 
   const { term } = useParams();
@@ -55,28 +59,14 @@ function TermSelectControl(props: { terms: Promise<GroupedTerms>; id?: string })
       </SelectTrigger>
       <SelectContent align="center" alignItemWithTrigger={false}>
         {years.map(({ year, terms: yearTerms }) => (
-          <div key={year}>
-            <SelectItem
-              value={`header-${year}`}
-              disabled
-              className="text-neu6 -ml-4 text-xs font-semibold uppercase"
-            >
-              {year}
-            </SelectItem>
+          <SelectGroup key={year}>
+            <SelectLabel className="">{year}</SelectLabel>
             {yearTerms.map((t) => (
-              <SelectItem
-                key={t.id}
-                value={t.term + t.part}
-                className={cn(
-                  t.term === term?.toString()
-                    ? "text-neu8 font-semibold"
-                    : "text-neu6 font-normal",
-                )}
-              >
+              <SelectItem key={t.id} value={t.term + t.part} className="pl-8">
                 {t.name.replace(" Semester", "")}
               </SelectItem>
             ))}
-          </div>
+          </SelectGroup>
         ))}
       </SelectContent>
     </Select>

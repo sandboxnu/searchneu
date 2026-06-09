@@ -27,7 +27,7 @@ export function SectionTableRow({
     <tr className="hover:bg-neu1">
       <td
         className={cn("py-5 text-right", {
-          "py-[23px] align-top": numMeetingTimes > 1,
+          "py-5.75 align-top": numMeetingTimes > 1,
         })}
       >
         <div className="flex px-6">
@@ -43,7 +43,7 @@ export function SectionTableRow({
 
       <td
         className={cn("py-5 text-center", {
-          "py-[22px] align-top": numMeetingTimes > 1,
+          "py-5.5 align-top": numMeetingTimes > 1,
         })}
       >
         <div>

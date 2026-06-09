@@ -24,12 +24,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  MultiSelect,
-  MultiSelectContent,
-  MultiSelectItem,
-  MultiSelectTrigger,
-  MultiSelectValue,
-} from "@/components/ui/multi-select";
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "@/components/ui/combobox";
+import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -59,6 +65,8 @@ export default function NewPlanModal({
   isGuest,
 }: NewPlanModalProps) {
   const router = useRouter();
+  const majorsAnchorRef = useComboboxAnchor();
+  const minorsAnchorRef = useComboboxAnchor();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(true);
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
@@ -442,59 +450,52 @@ export default function NewPlanModal({
                   >
                     MAJOR(S)
                   </Label>
-                  <MultiSelect
-                    values={majors}
-                    onValuesChange={setMajors}
+                  <Combobox
+                    items={majorOptions
+                      .map((major) => major.majorName)
+                      .sort((a, b) => a.length - b.length)}
+                    multiple
+                    value={majors}
+                    onValueChange={setMajors}
                     disabled={catalogYear == -1}
                   >
-                    <MultiSelectTrigger
-                      className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed"
-                      id="majors-select"
+                    <ComboboxChips
+                      ref={majorsAnchorRef}
+                      className={cn(
+                        "border-neu3 w-full rounded-4xl bg-transparent",
+                        catalogYear == -1 &&
+                          "bg-neu3 cursor-not-allowed opacity-50",
+                      )}
                     >
-                      <MultiSelectValue
+                      <ComboboxValue>
+                        {(values: string[]) =>
+                          values.map((major) => (
+                            <ComboboxChip key={major} aria-label={major}>
+                              {major}
+                            </ComboboxChip>
+                          ))
+                        }
+                      </ComboboxValue>
+                      <ComboboxChipsInput
+                        id="majors-select"
                         placeholder={
                           isLoadingMajors
                             ? "Loading majors..."
                             : "Select a major"
                         }
-                        displayTagsUnderneath={true}
                       />
-                    </MultiSelectTrigger>
-                    <MultiSelectContent>
-                      {majorOptions
-                        .sort((a, b) => a.majorName.length - b.majorName.length)
-                        .map((major) => (
-                          <MultiSelectItem
-                            key={major.majorName}
-                            value={major.majorName}
-                          >
-                            {major.majorName}
-                          </MultiSelectItem>
-                        ))}
-                    </MultiSelectContent>
-                  </MultiSelect>
-
-                  {/* selected major tags */}
-                  {majors.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-3">
-                      {majors.map((major) => (
-                        <div
-                          key={major}
-                          className="bg-neu2 text-neu6 flex items-center gap-1 rounded-full px-3 py-1 text-sm"
-                        >
-                          <span>{major}</span>
-                          <button
-                            onClick={() =>
-                              setMajors(majors.filter((m) => m !== major))
-                            }
-                            className="ml-1 cursor-pointer hover:opacity-70"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    </ComboboxChips>
+                    <ComboboxContent anchor={majorsAnchorRef}>
+                      <ComboboxEmpty>No results found</ComboboxEmpty>
+                      <ComboboxList>
+                        {(major: string) => (
+                          <ComboboxItem key={major} value={major}>
+                            {major}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </div>
               )}
 
@@ -574,61 +575,52 @@ export default function NewPlanModal({
                   >
                     MINOR(S)
                   </Label>
-                  <MultiSelect
-                    values={minors}
-                    onValuesChange={setMinors}
+                  <Combobox
+                    items={minorOptions
+                      .map((minor) => minor.minorName)
+                      .sort((a, b) => a.length - b.length)}
+                    multiple
+                    value={minors}
+                    onValueChange={setMinors}
                     disabled={catalogYear == -1}
                   >
-                    <MultiSelectTrigger
-                      className="border-neu3 disabled:bg-neu3 w-full rounded-4xl border bg-transparent shadow-none disabled:cursor-not-allowed"
-                      id="minor-select"
+                    <ComboboxChips
+                      ref={minorsAnchorRef}
+                      className={cn(
+                        "border-neu3 w-full rounded-4xl bg-transparent",
+                        catalogYear == -1 &&
+                          "bg-neu3 cursor-not-allowed opacity-50",
+                      )}
                     >
-                      <MultiSelectValue
+                      <ComboboxValue>
+                        {(values: string[]) =>
+                          values.map((minor) => (
+                            <ComboboxChip key={minor} aria-label={minor}>
+                              {minor.split(",")[0].trim()}
+                            </ComboboxChip>
+                          ))
+                        }
+                      </ComboboxValue>
+                      <ComboboxChipsInput
+                        id="minor-select"
                         placeholder={
                           isLoadingMinors
                             ? "Loading minors..."
                             : "Select a minor"
                         }
-                        displayTagsUnderneath={true}
                       />
-                    </MultiSelectTrigger>
-                    <MultiSelectContent>
-                      {minorOptions
-                        .sort((a, b) => a.minorName.length - b.minorName.length)
-                        .map((minor) => (
-                          <MultiSelectItem
-                            key={minor.minorName}
-                            value={minor.minorName}
-                          >
-                            {minor.minorName}
-                          </MultiSelectItem>
-                        ))}
-                    </MultiSelectContent>
-                  </MultiSelect>
-
-                  {/* selected minor tags */}
-                  {minors.length > 0 &&
-                    !isNoMajorSelected &&
-                    majors.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {minors.map((minor) => (
-                          <div
-                            key={minor}
-                            className="bg-neu2 text-neu6 flex items-center gap-1 rounded-full px-3 py-1 text-sm"
-                          >
-                            <span>{minor.split(",")[0].trim()}</span>
-                            <button
-                              onClick={() =>
-                                setMinors(minors.filter((m) => m !== minor))
-                              }
-                              className="ml-1 cursor-pointer hover:opacity-70"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    </ComboboxChips>
+                    <ComboboxContent anchor={minorsAnchorRef}>
+                      <ComboboxEmpty>No results found</ComboboxEmpty>
+                      <ComboboxList>
+                        {(minor: string) => (
+                          <ComboboxItem key={minor} value={minor}>
+                            {minor}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </div>
               )}
 

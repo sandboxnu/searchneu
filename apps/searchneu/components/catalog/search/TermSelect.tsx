@@ -55,7 +55,6 @@ function TermSelectControl(props: {
       }}
       value={term?.toString()}
     >
-    >
       <SelectTrigger id={props.id} className="w-full">
         <SelectValue placeholder="Select term" className="font-semibold">
           {termObj?.name ?? "Unknown"}

@@ -19,9 +19,6 @@ export function FaqAccordionSection() {
         </AccordionItem>
       ))}
     </Accordion>
-        </AccordionItem>
-      ))}
-    </Accordion>
   );
 }
 

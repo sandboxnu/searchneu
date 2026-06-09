@@ -58,15 +58,17 @@ export function NotificationTermCardSkeleton() {
 function InfoTooltip({ text }: { text: string }) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          className="text-neu6 hover:text-neu9 transition"
-          aria-label={text}
-        >
-          <Info className="size-4" />
-        </button>
-      </TooltipTrigger>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            className="text-neu6 hover:text-neu9 transition"
+            aria-label={text}
+          >
+            <Info className="size-4" />
+          </button>
+        }
+      />
       <TooltipContent
         side="right"
         className="max-w-60 min-w-0 break-words whitespace-normal"

@@ -1,8 +1,50 @@
 "use client";
 
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { Footskie } from "../icons/Footskie";
+
+const HEARTS = ["❤️", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤"];
+
+function CyclingHeart() {
+  const [index, setIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const onEnter = useCallback(() => {
+    if (intervalRef.current) return;
+    setIndex(0);
+    intervalRef.current = setInterval(() => {
+      setIndex((i) => (i + 1) % HEARTS.length);
+    }, 100);
+  }, []);
+
+  const onLeave = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setIndex(0);
+  }, []);
+
+  const spanRef = useCallback((node: HTMLSpanElement | null) => {
+    if (!node && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  return (
+    <span
+      ref={spanRef}
+      className="cursor-default"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
+      {HEARTS[index]}
+    </span>
+  );
+}
 
 export function LinkColumn({
   name,
@@ -39,44 +81,11 @@ export function Footer() {
           <Logo className="absolute top-15 left-15 h-7 w-auto" />
           <div className="h-78 w-[200px]"></div>
         </div>
-        <div className="absolute right-30 bottom-10 left-15 flex flex-col items-center items-start justify-between gap-4 text-sm md:top-67.5 lg:flex-row">
+        <div className="absolute right-30 bottom-10 left-15 flex flex-col items-center justify-between gap-4 text-center text-sm md:top-67.5 md:text-start lg:flex-row">
           <div className="flex flex-col gap-1 xl:flex-row">
             <p className="text-neu6">
-              2025 SearchNEU. Made with{" "}
-              <span
-                className="cursor-pointer"
-                onMouseOver={async () => {
-                  const d = document.getElementById("footer-heart");
-                  if (!d) return;
-                  const hearts = [
-                    "❤️",
-                    "🧡",
-                    "💛",
-                    "💚",
-                    "💙",
-                    "💜",
-                    "🤎",
-                    "🖤",
-                  ];
-                  let currentIndex = 0;
-
-                  const cycleColors = () => {
-                    if (currentIndex < hearts.length) {
-                      d.textContent = hearts[currentIndex];
-                      currentIndex++;
-                      setTimeout(cycleColors, 100);
-                    } else {
-                      d.textContent = "❤️";
-                    }
-                  };
-
-                  cycleColors();
-                }}
-                id="footer-heart"
-              >
-                ❤️
-              </span>{" "}
-              by UX Designers and Developers of{" "}
+              2025 SearchNEU. Made with <CyclingHeart /> by UX Designers and
+              Developers of{" "}
               <a
                 href="https://www.sandboxnu.com/"
                 className="hover:text-neu6/80 underline"
@@ -88,14 +97,14 @@ export function Footer() {
           </div>
           <div className="text-neu6 flex flex-col gap-2 md:flex-row md:gap-6">
             <div>
-              <a href="/terms" className="hover:text-neu6/80">
+              <Link href="/terms" className="hover:text-neu6/80">
                 Terms & Conditions
-              </a>
+              </Link>
             </div>
             <div>
-              <a href="/privacy" className="hover:text-neu6/80">
+              <Link href="/privacy" className="hover:text-neu6/80">
                 Privacy Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -107,7 +116,7 @@ export function Footer() {
             labels={[
               ["Home", "/"],
               ["Catalog", "/catalog"],
-              ["Rooms", "/rooms"],
+              ["Scheduler", "/scheduler"],
             ]}
           />
           <LinkColumn
@@ -133,7 +142,6 @@ export function Footer() {
             name="Affiliations"
             labels={[
               ["Sandbox", "https://www.sandboxnu.com/"],
-              ["GraduateNU", "https://graduatenu.com/"],
               ["Cooper", "https://coopernu.com/"],
             ]}
           />

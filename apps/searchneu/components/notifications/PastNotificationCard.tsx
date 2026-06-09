@@ -21,11 +21,13 @@ export function PastNotificationCard({
       <div className="grid grid-cols-[auto_1fr] items-center gap-2">
         <span className="text-neu9 font-bold">CRN {crn}</span>
         <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="text-neu6 cursor-default truncate text-right">
-              {course}
-            </span>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <span className="text-neu6 cursor-default truncate text-right">
+                {course}
+              </span>
+            }
+          />
           <TooltipContent side="top" className="max-w-xs">
             {name}
           </TooltipContent>

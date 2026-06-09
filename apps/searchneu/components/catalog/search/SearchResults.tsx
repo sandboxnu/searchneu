@@ -23,7 +23,7 @@ export default function SearchResults() {
   return (
     <div
       className={cn(
-        "bg-neu2 flex h-full flex-col rounded-t-lg",
+        "bg-neu1 flex h-full flex-col rounded-t-lg",
         stale ? "opacity-60" : "",
       )}
     >
@@ -98,7 +98,7 @@ function ResultsList(props: { params: string; term: string; course: string }) {
                   " " +
                   results[v.index].courseNumber
               }
-              className="bg-neu1 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border-1 p-4"
+              className="bg-neu0 data-[active=true]:border-neu3 flex cursor-default flex-col rounded-lg border p-4"
             >
               <ResultCard result={results[v.index]} />
             </Link>

@@ -94,7 +94,7 @@ export function FiltersTab({
         </span>
         <Select
           value={filters.desiredCampus ?? ""}
-          onValueChange={(value) => updateFilter("desiredCampus", value)}
+          onValueChange={(value) => updateFilter("desiredCampus", value ?? "")}
         >
           <SelectTrigger className="w-full">
             <SelectValue />

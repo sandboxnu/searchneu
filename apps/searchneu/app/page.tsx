@@ -1,6 +1,6 @@
 import { CourseCards } from "@/components/home/CourseCards";
 import { NeuSearchskiePattern } from "@/components/home/NeuSearchskiePattern";
-import { Search } from "@/components/home/Search";
+import { HomeSearchSection } from "@/components/home/Search";
 import { Footer } from "@/components/navigation/Footer";
 import { Header } from "@/components/navigation/Header";
 import ClickSpark from "@/components/ui/click-spark";
@@ -28,13 +28,13 @@ export default async function Home() {
 
           <div className="text-neu8 mt-[25%] flex flex-col items-center text-4xl font-bold md:mt-[10%] md:text-7xl">
             <span className="-mb-2 flex">
-              <p className="text-neu mr-3 italic md:mr-5">Never</p>miss an open
+              <p className="text-r5 mr-3 italic md:mr-5">Never</p>miss an open
             </span>
             <span>waitlist seat again</span>
           </div>
 
           <div className="mt-[15%] flex items-center justify-center md:mt-[5%]">
-            <Search />
+            <HomeSearchSection />
           </div>
 
           <div className="mt-[20%] md:mt-[5%]">

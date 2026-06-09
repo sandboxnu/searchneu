@@ -59,7 +59,7 @@ export function HomeSearchInterface({
             {
               "border-r1 bg-r1/30 text-neu hover:bg-r1/50":
                 selectedCollege !== "neu",
-              "border-neu bg-neu text-neu1 hover:bg-neu/80":
+              "border-neu bg-r5 text-neu1 hover:bg-neu/80":
                 selectedCollege === "neu",
             },
           )}
@@ -106,7 +106,7 @@ export function HomeSearchInterface({
           className={cn(
             "absolute top-1/2 left-3 size-7 -translate-y-1/2 -scale-x-100 transform transition duration-200 lg:left-6 lg:size-8",
             {
-              "text-neu": selectedCollege === "neu",
+              "text-r5": selectedCollege === "neu",
               "text-cps": selectedCollege === "cps",
               "text-law": selectedCollege === "law",
             },

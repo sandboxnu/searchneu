@@ -9,81 +9,64 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import type { GroupedTerms, Term } from "@/lib/catalog/types";
+import {
+  COLLEGE_OPTIONS,
+  collegeItemClass,
+  collegeTriggerClass,
+} from "@/lib/catalog/terms";
 import { cn } from "@/lib/cn";
 
-export function CollegeDropdown(props: {
+export function CollegeDropdown({
+  terms,
+  selectedCollege,
+  onCollegeChange,
+  onTermChange,
+}: {
   terms: GroupedTerms;
   selectedCollege: keyof GroupedTerms;
   onCollegeChange: (college: keyof GroupedTerms) => void;
   onTermChange: (term: Term) => void;
 }) {
-  const collegeOptions = [
-    { value: "neu", label: "Northeastern University" },
-    { value: "cps", label: "College of Professional Studies" },
-    { value: "law", label: "School of Law" },
-  ];
-
-  const availableTerms =
-    props.terms[props.selectedCollege as keyof GroupedTerms] ?? [];
-
   // Auto-select first term when college changes or on initial load
   useEffect(() => {
+    const availableTerms = terms[selectedCollege] ?? [];
     if (availableTerms.length > 0) {
-      props.onTermChange(availableTerms[0]);
+      onTermChange(availableTerms[0]);
     }
-  }, [props.selectedCollege]);
+  }, [terms, selectedCollege, onTermChange]);
 
   return (
-    <div className="space-y-2">
-      <Select
-        onValueChange={(val) => {
-          if (val === "") return;
-          props.onCollegeChange(val as keyof GroupedTerms);
-        }}
-        value={props.selectedCollege}
+    <Select
+      onValueChange={(val) => {
+        if (!val) return;
+        onCollegeChange(val as keyof GroupedTerms);
+      }}
+      value={selectedCollege}
+    >
+      <SelectTrigger
+        className={cn(
+          "bg-r5 h-10 w-full font-semibold",
+          collegeTriggerClass(selectedCollege),
+        )}
       >
-        <SelectTrigger
-          className={cn("bg-neu h-10 w-full cursor-pointer font-semibold", {
-            "text-neu bg-r1/20 focus-visible:border-r1 [&>svg]:text-neu":
-              props.selectedCollege === "neu",
-            "text-cps bg-c1/20 focus-visible:border-c1 [&>svg]:text-cps":
-              props.selectedCollege === "cps",
-            "text-law bg-l1/20 focus-visible:border-l1 [&>svg]:text-law":
-              props.selectedCollege === "law",
-          })}
-        >
-          <SelectValue placeholder="Select school" />
-        </SelectTrigger>
-        <SelectContent>
-          {collegeOptions.map((college) => (
-            <SelectItem
-              key={college.value}
-              value={college.value}
-              className={cn(
-                "cursor-pointer text-sm font-semibold",
-                {
-                  "text-neu focus:bg-r1/20 focus:text-neu":
-                    college.value === "neu",
-                  "text-cps focus:bg-c1/20 focus:text-cps":
-                    college.value === "cps",
-                  "text-law focus:bg-l1/20 focus:text-law":
-                    college.value === "law",
-                },
-                {
-                  "bg-r1/20":
-                    props.selectedCollege === "neu" && college.value === "neu",
-                  "bg-c1/20":
-                    props.selectedCollege === "cps" && college.value === "cps",
-                  "bg-l1/20":
-                    props.selectedCollege === "law" && college.value === "law",
-                },
-              )}
-            >
-              {college.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+        <SelectValue placeholder="Select school">
+          {COLLEGE_OPTIONS.find((o) => o.value === selectedCollege)?.label}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent align="center" alignItemWithTrigger={false}>
+        {COLLEGE_OPTIONS.map((college) => (
+          <SelectItem
+            key={college.value}
+            value={college.value}
+            className={cn(
+              "text-sm font-semibold",
+              collegeItemClass(college.value, selectedCollege),
+            )}
+          >
+            {college.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

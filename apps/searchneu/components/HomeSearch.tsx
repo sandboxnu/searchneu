@@ -62,7 +62,10 @@ function TermSelect(props: {
   handler: [string, Dispatch<SetStateAction<string>>];
 }) {
   return (
-    <Select value={props.handler[0]} onValueChange={(v) => props.handler[1](v)}>
+    <Select
+      value={props.handler[0]}
+      onValueChange={(v) => props.handler[1](v ?? "")}
+    >
       <SelectTrigger className="bg-neu1 ring-0 data-[size=default]:h-10 md:w-40 md:rounded-r-none md:border-none xl:w-52">
         <SelectValue placeholder="Select term" />
       </SelectTrigger>

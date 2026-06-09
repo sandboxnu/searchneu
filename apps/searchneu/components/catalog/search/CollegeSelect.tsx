@@ -8,84 +8,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { use } from "react";
+import { Suspense, use } from "react";
 import type { GroupedTerms } from "@/lib/catalog/types";
+import {
+  COLLEGE_OPTIONS,
+  collegeItemClass,
+  collegeTriggerClass,
+  type College,
+} from "@/lib/catalog/terms";
 import { cn } from "@/lib/cn";
+import { FilterSection, FilterSkeleton } from "./FilterSection";
 
 export function CollegeSelect(props: { terms: Promise<GroupedTerms> }) {
+  return (
+    <FilterSection label="SCHOOL">
+      <Suspense fallback={<FilterSkeleton />}>
+        <CollegeSelectControl terms={props.terms} />
+      </Suspense>
+    </FilterSection>
+  );
+}
+
+function CollegeSelectControl(props: { terms: Promise<GroupedTerms> }) {
   const terms = use(props.terms);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { term } = useParams();
 
-  const activeCollege =
-    Object.keys(terms).find((k) =>
-      terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
-    ) ?? "neu";
-
-  // HACK: this will blink but for now its fine
-  if (typeof window !== "undefined")
-    document.body.setAttribute("data-theme", activeCollege);
-
-  const collegeOptions = [
-    { value: "neu", label: "Northeastern University" },
-    { value: "cps", label: "College of Professional Studies" },
-    { value: "law", label: "School of Law" },
-  ];
+  const activeCollege = (Object.keys(terms).find((k) =>
+    terms[k as keyof GroupedTerms].find((t) => t.term === term?.toString()),
+  ) ?? "neu") as College;
 
   return (
-    <div className="space-y-2">
-      <Select
-        onValueChange={(val) => {
-          if (val === "") return;
-          const newestTerm = terms[val as keyof GroupedTerms][0];
-          document.body.setAttribute("data-theme", val);
-          router.push(`/catalog/${newestTerm.term}?${searchParams.toString()}`);
-        }}
-        value={activeCollege}
+    <Select
+      onValueChange={(val) => {
+        if (!val) return;
+        const newestTerm = terms[val as keyof GroupedTerms][0];
+        router.push(
+          `/catalog/${newestTerm.term + newestTerm.part}?${searchParams.toString()}`,
+        );
+      }}
+      value={activeCollege}
+    >
+      <SelectTrigger
+        className={cn(
+          "bg-r5 h-10 w-full font-semibold",
+          collegeTriggerClass(activeCollege),
+        )}
       >
-        <SelectTrigger
-          className={cn("bg-neu h-[40px] w-full font-semibold", {
-            "text-neu bg-r1/20 focus-visible:border-r1 [&>svg]:text-neu":
-              activeCollege === "neu",
-            "text-cps bg-c1/20 focus-visible:border-c1 [&>svg]:text-cps":
-              activeCollege === "cps",
-            "text-law bg-l1/20 focus-visible:border-l1 [&>svg]:text-law":
-              activeCollege === "law",
-          })}
-        >
-          <SelectValue placeholder="Select school" />
-        </SelectTrigger>
-        <SelectContent>
-          {collegeOptions.map((college) => (
-            <SelectItem
-              key={college.value}
-              value={college.value}
-              className={cn(
-                "text-sm font-semibold",
-                {
-                  "text-neu focus:bg-r1/20 focus:text-neu":
-                    college.value === "neu",
-                  "text-cps focus:bg-c1/20 focus:text-cps":
-                    college.value === "cps",
-                  "text-law focus:bg-l1/20 focus:text-law":
-                    college.value === "law",
-                },
-                {
-                  "bg-r1/20":
-                    activeCollege === "neu" && college.value === "neu",
-                  "bg-c1/20":
-                    activeCollege === "cps" && college.value === "cps",
-                  "bg-l1/20":
-                    activeCollege === "law" && college.value === "law",
-                },
-              )}
-            >
-              {college.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+        <SelectValue placeholder="Select school">
+          {COLLEGE_OPTIONS.find((o) => o.value === activeCollege)?.label}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent align="center" alignItemWithTrigger={false}>
+        {COLLEGE_OPTIONS.map((college) => (
+          <SelectItem
+            key={college.value}
+            value={college.value}
+            className={cn(
+              "text-sm font-semibold",
+              collegeItemClass(college.value, activeCollege),
+            )}
+          >
+            {college.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

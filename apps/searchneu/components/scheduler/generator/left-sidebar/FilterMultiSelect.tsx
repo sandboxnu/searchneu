@@ -81,19 +81,21 @@ export function FilterMultiSelect({
           )}
 
           <Popover open={open} onOpenChange={setOpen} modal={true}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-              >
-                <PlusIcon
-                  className={cn(
-                    "size-5 transition-transform",
-                    open && "rotate-45",
-                  )}
-                />
-              </button>
-            </PopoverTrigger>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                >
+                  <PlusIcon
+                    className={cn(
+                      "size-5 transition-transform",
+                      open && "rotate-45",
+                    )}
+                  />
+                </button>
+              }
+            />
             <PopoverContent className="w-[280px] p-0" align="end">
               <Command
                 filter={(value, search, keywords) => {

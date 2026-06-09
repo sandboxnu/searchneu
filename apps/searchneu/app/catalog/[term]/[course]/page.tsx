@@ -68,7 +68,7 @@ export default async function Page(props: {
   const trackedSections = getTrackedSections();
 
   return (
-    <div className="bg-neu1 flex h-full min-w-0 flex-1 flex-shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg rounded-b-none border border-b-0 px-4 pt-10 pb-8 md:px-10">
+    <div className="bg-neu0 flex h-full min-w-0 flex-1 shrink-0 flex-col items-center gap-8 self-stretch overflow-y-scroll rounded-t-lg rounded-b-none border border-b-0 px-4 pt-10 pb-8 md:px-10">
       <div className="flex items-end justify-between self-stretch">
         <div className="align-start flex flex-col gap-1">
           <h1
@@ -151,21 +151,13 @@ export default async function Page(props: {
         <h3 className="text-neu5 col-span-12 text-xs font-bold">NUPATHS</h3>
         <div className="mt-2 flex flex-col gap-2 md:flex-row">
           {course.nupathNames.map((n, i) => (
-            <Badge
-              key={n}
-              className="text-neu6 bg-neu2 border-neu25 flex gap-2 rounded-full border px-3 py-1 text-sm"
-            >
-              <span className="text-neu7 font-bold">{course.nupaths[i]}</span>
+            <Badge key={n} className="flex gap-2 text-sm" variant="rounded">
+              <span className="text-neu7">{course.nupaths[i]}</span>
               {n}
             </Badge>
           ))}
           {course.nupaths.length === 0 && (
-            <Badge
-              variant="secondary"
-              className="text-neu4 bg-neu2 rounded-full px-3 py-1 text-xs font-bold"
-            >
-              No NUPaths
-            </Badge>
+            <Badge variant="secondary">No NUPaths</Badge>
           )}
         </div>
       </div>
@@ -174,7 +166,7 @@ export default async function Page(props: {
           REQUIREMENTS
         </h3>
         <div className="flex flex-col gap-2 md:flex-row">
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               PREREQUISITES
             </h3>
@@ -184,7 +176,7 @@ export default async function Page(props: {
               prereqMode={true}
             />
           </div>
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               COREQUISITES
             </h3>
@@ -194,7 +186,7 @@ export default async function Page(props: {
               prereqMode={false}
             />
           </div>
-          <div className="bg-neu2 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
+          <div className="bg-neu1 flex h-fit flex-1 flex-col rounded-lg px-4 py-4">
             <h3 className="text-neu7 mb-2 text-xs font-bold tracking-wide">
               POSTREQUISITES
             </h3>

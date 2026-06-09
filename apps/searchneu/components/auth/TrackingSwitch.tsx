@@ -35,6 +35,7 @@ export function TrackingSwitch({
   sectionId: number;
   inital: boolean;
   isTermActive: boolean;
+  onCheckedChange?: (state: boolean) => void;
 } & React.ComponentProps<typeof Switch>) {
   const { data: session, isPending: loading } = authClient.useSession();
   const [checked, setChecked] = useState(inital);
@@ -106,12 +107,15 @@ export function TrackingSwitch({
   if (!isTermActive) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>Term is view only</p>
           </TooltipContent>
@@ -124,7 +128,7 @@ export function TrackingSwitch({
     return (
       <div className="flex w-full justify-center">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-[1.125rem] w-8 rounded-full" />
+          <Skeleton className="h-4.5 w-8 rounded-full" />
         </div>
       </div>
     );
@@ -133,12 +137,15 @@ export function TrackingSwitch({
   if (!session) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>Sign in to be notified when a seat opens</p>
           </TooltipContent>
@@ -150,12 +157,15 @@ export function TrackingSwitch({
   if (session.user.smsOptOut) {
     return (
       <div className="flex w-full justify-center">
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Switch disabled={true} />
-            </div>
-          </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <div className="flex items-center gap-2">
+                <Switch disabled={true} />
+              </div>
+            }
+          />
           <TooltipContent>
             <p>
               Message notifications are turned off, reply START to one of our
@@ -169,21 +179,23 @@ export function TrackingSwitch({
 
   return (
     <div className="flex w-full justify-center">
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <div className="flex items-center gap-1">
-            <Switch
-              checked={checked}
-              onClick={() => onCheck()}
-              className={cn("data-[state=checked]:bg-accent", {
-                "animate-pulse": isPending,
-              })}
-              {...props}
-              disabled={disabled}
-            />
-            {/* {isPending && <Loader2 className="size-4 animate-spin" />} */}
-          </div>
-        </TooltipTrigger>
+      <Tooltip>
+        <TooltipTrigger
+          delay={0}
+          render={
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={checked}
+                onClick={() => onCheck()}
+                className={cn({
+                  "animate-pulse": isPending,
+                })}
+                {...props}
+                disabled={disabled}
+              />
+            </div>
+          }
+        />
         <TooltipContent>
           {disabled ? (
             <p>Sections with open seats cannot be tracked</p>
@@ -194,21 +206,21 @@ export function TrackingSwitch({
       </Tooltip>
       {oneMoreStep && (
         <Dialog open={true} onOpenChange={() => setOneMoreStep(false)}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader className="flex w-full items-center">
+          <DialogContent className="sm:max-w-106.25">
+            <DialogHeader>
               <DialogTitle>One More Step</DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogDescription>
                 Add and verify your phone number to be the first to know when
                 seats open up.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex w-full items-center justify-center py-4">
+            <div className="flex w-full items-center justify-center">
               <Chairskie className="w-32" />
             </div>
             <DialogFooter>
               <Button
                 type="submit"
-                className="bg-accent hover:bg-accent/80 w-full"
+                className="w-full"
                 onClick={() => {
                   const params = new URLSearchParams();
                   params.set("redirect_uri", window.location.toString());

@@ -1,4 +1,4 @@
-import { Search } from "@/components/home/Search";
+import { HomeSearchSection } from "@/components/home/Search";
 import { FourOFourskie } from "@/components/icons/FourOFourskie";
 import {
   BellIcon,
@@ -24,7 +24,7 @@ export default function NotFound() {
         </h4>
 
         <div className="absolute -bottom-5 w-full md:w-auto lg:-bottom-8">
-          <Search />
+          <HomeSearchSection />
         </div>
       </div>
       <div className="flex h-full w-full flex-wrap gap-2 pt-24">

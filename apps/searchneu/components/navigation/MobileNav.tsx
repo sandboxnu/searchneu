@@ -31,11 +31,13 @@ interface MobileNavParams {
 export function MobileNav({ flags }: MobileNavParams) {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="lg:hidden">
-          <MenuIcon className="text-neu8 size-5" />
-        </Button>
-      </SheetTrigger>
+      <SheetTrigger
+        render={
+          <Button variant="ghost" size="icon" className="lg:hidden">
+            <MenuIcon className="text-neu8 size-5" />
+          </Button>
+        }
+      />
       <SheetContent
         className="bg-neu2 flex w-[90%] flex-col justify-between px-6 pt-6 pb-4"
         showCloseButton={true}
@@ -67,70 +69,82 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         }}
       />
       {roomsFlag && (
-        <SheetClose asChild>
-          <Link
-            href="/rooms"
-            data-active={pathname.includes("/rooms")}
-            className="bg-neu0 flex items-center gap-2 rounded-full border px-4 py-2 text-sm"
-          >
-            <DoorOpenIcon className="size-4" />
-            <span>Rooms</span>
-          </Link>
-        </SheetClose>
+        <SheetClose
+          render={
+            <Link
+              href="/rooms"
+              data-active={pathname.includes("/rooms")}
+              className="bg-neu0 flex items-center gap-2 rounded-full border px-4 py-2 text-sm"
+            >
+              <DoorOpenIcon className="size-4" />
+              <span>Rooms</span>
+            </Link>
+          }
+        />
       )}
       {graduateFlag && (
-        <SheetClose asChild>
-          <Link
-            // NOTE: access control should be on the page, not navigation
-            // href={isGuest ? "/graduate/guest" : "/graduate"}
-            href="/graduate"
-            data-active={pathname.includes("/graduate")}
-            className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"
-          >
-            <GraduationCapIcon className="size-4" />
-            Graduate
-          </Link>
-        </SheetClose>
+        <SheetClose
+          render={
+            <Link
+              // NOTE: access control should be on the page, not navigation
+              // href={isGuest ? "/graduate/guest" : "/graduate"}
+              href="/graduate"
+              data-active={pathname.includes("/graduate")}
+              className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"
+            >
+              <GraduationCapIcon className="size-4" />
+              Graduate
+            </Link>
+          }
+        />
       )}
-      <SheetClose asChild>
-        <Link
-          href="/catalog"
-          data-active={pathname.includes("/catalog")}
-          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-        >
-          <BookMarkedIcon className="size-4" />
-          <span>Catalog</span>
-        </Link>
-      </SheetClose>
-      <SheetClose asChild>
-        <Link
-          href="/scheduler"
-          data-active={pathname.includes("/scheduler")}
-          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-        >
-          <CalendarIcon className="size-4" />
-          <span> Scheduler</span>
-        </Link>
-      </SheetClose>
-      <SheetClose asChild>
-        <Link
-          href="/notifications"
-          data-active={pathname.includes("/notifications")}
-          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-        >
-          <BellIcon className="size-4" />
-          <span>Notifications</span>
-        </Link>
-      </SheetClose>
-      <SheetClose asChild>
-        <Link
-          href="/faq"
-          data-active={pathname.includes("/faq")}
-          className="bg-neu0 data-[active=true]:border-neu3 flex items-center rounded-full border p-2 text-sm"
-        >
-          <CircleQuestionMarkIcon className="text-r5 size-5" />
-        </Link>
-      </SheetClose>
+      <SheetClose
+        render={
+          <Link
+            href="/catalog"
+            data-active={pathname.includes("/catalog")}
+            className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+          >
+            <BookMarkedIcon className="size-4" />
+            <span>Catalog</span>
+          </Link>
+        }
+      />
+      <SheetClose
+        render={
+          <Link
+            href="/scheduler"
+            data-active={pathname.includes("/scheduler")}
+            className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+          >
+            <CalendarIcon className="size-4" />
+            <span> Scheduler</span>
+          </Link>
+        }
+      />
+      <SheetClose
+        render={
+          <Link
+            href="/notifications"
+            data-active={pathname.includes("/notifications")}
+            className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+          >
+            <BellIcon className="size-4" />
+            <span>Notifications</span>
+          </Link>
+        }
+      />
+      <SheetClose
+        render={
+          <Link
+            href="/faq"
+            data-active={pathname.includes("/faq")}
+            className="bg-neu0 data-[active=true]:border-neu3 flex items-center rounded-full border p-2 text-sm"
+          >
+            <CircleQuestionMarkIcon className="text-r5 size-5" />
+          </Link>
+        }
+      />
     </nav>
   );
 }

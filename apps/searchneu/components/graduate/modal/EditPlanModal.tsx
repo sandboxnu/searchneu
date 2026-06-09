@@ -341,7 +341,7 @@ export default function EditPlanModal({
             </Label>
             <Select
               value={catalogYear === -1 ? "" : catalogYear.toString()}
-              onValueChange={handleCatalogYearChange}
+              onValueChange={(v) => handleCatalogYearChange(v ?? "")}
             >
               <SelectTrigger
                 className="border-neu3 w-full rounded-4xl border bg-transparent"
@@ -438,12 +438,14 @@ export default function EditPlanModal({
               {`Can't find my major?`}
             </Label>
             <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2">
-                    <CircleQuestionMark size="18" color="#858585" />
-                  </div>
-                </TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <div className="flex items-center gap-2">
+                      <CircleQuestionMark size="18" color="#858585" />
+                    </div>
+                  }
+                />
                 <TooltipContent>
                   <p>{noMajorHelperLabel}</p>
                 </TooltipContent>
@@ -460,7 +462,10 @@ export default function EditPlanModal({
               >
                 CONCENTRATION
               </Label>
-              <Select value={concentration} onValueChange={setConcentration}>
+              <Select
+                value={concentration}
+                onValueChange={(v) => setConcentration(v ?? "")}
+              >
                 <SelectTrigger
                   className="border-neu3 w-full rounded-4xl border bg-transparent"
                   id="concentration-select"

@@ -20,7 +20,7 @@ export default function FeedbackForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!message.trim()) return;
 
@@ -38,10 +38,9 @@ export default function FeedbackForm() {
         setContact("");
         setFeedbackType("");
         setSuccess(true);
-        setSubmitting(false);
       }
     } finally {
-      setSubmitting(true);
+      setSubmitting(false);
     }
   }
 
@@ -79,7 +78,10 @@ export default function FeedbackForm() {
         <div className="text-neu6 mb-1 text-xs font-bold">
           TYPE OF FEEDBACK <span className="text-r4">*</span>
         </div>
-        <Select value={feedbackType} onValueChange={setFeedbackType}>
+        <Select
+          value={feedbackType}
+          onValueChange={(value) => setFeedbackType(value ?? "")}
+        >
           <SelectTrigger className="text-neu7 h-9 w-full border font-bold">
             <SelectValue placeholder="Select Feedback Type" />
           </SelectTrigger>

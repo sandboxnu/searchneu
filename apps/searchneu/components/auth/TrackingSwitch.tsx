@@ -35,7 +35,7 @@ export function TrackingSwitch({
   sectionId: number;
   inital: boolean;
   isTermActive: boolean;
-  onCheckedChange: (state: boolean) => void;
+  onCheckedChange?: (state: boolean) => void;
 } & React.ComponentProps<typeof Switch>) {
   const { data: session, isPending: loading } = authClient.useSession();
   const [checked, setChecked] = useState(inital);

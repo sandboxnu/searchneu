@@ -477,15 +477,17 @@ function WhiteboardSection({
           {/* Add courses button + popover (pinned at top for stable position) */}
           <div className="mb-3 pl-1">
             <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  className="text-blue hover:bg-blue/10 flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors"
-                >
-                  <Plus className="h-3 w-3" />
-                  Add courses
-                </button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <button
+                    type="button"
+                    className="text-blue hover:bg-blue/10 flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Add courses
+                  </button>
+                }
+              />
               <PopoverContent align="start" className="w-72 p-0">
                 <div className="border-neu25 border-b p-2">
                   <input

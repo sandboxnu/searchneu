@@ -70,15 +70,17 @@ function ErrorHeader() {
 
       <div className="hidden items-center gap-2 lg:flex">{Nav}</div>
       <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-neu1 rounded-full border lg:hidden"
-          >
-            <MenuIcon className="text-neu8 size-5" />
-          </Button>
-        </SheetTrigger>
+        <SheetTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-neu1 rounded-full border lg:hidden"
+            >
+              <MenuIcon className="text-neu8 size-5" />
+            </Button>
+          }
+        />
         <SheetContent className="bg-neu2 flex w-[90%] flex-col justify-between px-6 pt-6 pb-4">
           <SheetTitle className="hidden">Nav bar</SheetTitle>
           <div className="flex flex-col gap-8">

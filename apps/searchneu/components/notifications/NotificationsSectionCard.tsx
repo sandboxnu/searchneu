@@ -95,30 +95,32 @@ function NotificationBells({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="flex items-center gap-1">
-          {Array.from({ length: emptySlots }).map((_, i) => (
-            <div
-              key={`diamond-${i}`}
-              className="flex size-2.5 items-center justify-center rounded-sm"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10">
-                <path d="M5 0L10 5L5 10L0 5L5 0Z" className="fill-r1" />
-              </svg>
-            </div>
-          ))}
+      <TooltipTrigger
+        render={
+          <div className="flex items-center gap-1">
+            {Array.from({ length: emptySlots }).map((_, i) => (
+              <div
+                key={`diamond-${i}`}
+                className="flex size-2.5 items-center justify-center rounded-sm"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10">
+                  <path d="M5 0L10 5L5 10L0 5L5 0Z" className="fill-r1" />
+                </svg>
+              </div>
+            ))}
 
-          {Array.from({ length: filledBells }).map((_, i) => (
-            <Bell
-              key={i}
-              className={cn(
-                "text-r4 size-3 fill-current stroke-0",
-                isSubscribed ? "opacity-100" : "opacity-40",
-              )}
-            />
-          ))}
-        </div>
-      </TooltipTrigger>
+            {Array.from({ length: filledBells }).map((_, i) => (
+              <Bell
+                key={i}
+                className={cn(
+                  "text-r4 size-3 fill-current stroke-0",
+                  isSubscribed ? "opacity-100" : "opacity-40",
+                )}
+              />
+            ))}
+          </div>
+        }
+      />
       <TooltipContent>
         <p>
           {filledBells} notification{filledBells !== 1 ? "s" : ""} remaining

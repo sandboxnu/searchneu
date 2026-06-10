@@ -1,0 +1,65 @@
+name: Migrate Production DB
+
+# Applies pending Drizzle migrations to the production Neon database.
+#
+# Preview branches are migrated at build time by Vercel (see apps/searchneu
+# vercel.json, guarded to VERCEL_ENV=preview). Production is intentionally NOT
+# migrated by the Vercel build -- it is migrated here so we can:
+#   - serialize runs (concurrency group) so two migrations never race,
+#   - gate behind the "production" GitHub Environment (required reviewers +
+#     scoped secret + an auditable run history),
+#   - decouple migration failures from the frontend deploy.
+#
+# Ordering note: this workflow and Vercel's production deploy both run on push
+# to `main`, so they are not strictly ordered. Migrations MUST therefore be
+# backward compatible (expand/contract): ship additive changes first, deploy
+# code that tolerates both old and new schema, and only drop/rename in a later
+# release. This makes deploy order irrelevant and keeps rollbacks safe.
+#
+# Required configuration:
+#   secrets.PROD_DATABASE_URL - production Neon connection string, defined in
+#     the "production" GitHub Environment. drizzle.config.ts strips "-pooler",
+#     so a pooled or direct URL both work.
+
+on:
+  push:
+    branches: [main]
+    # Only run when migrations or the drizzle config actually change.
+    paths:
+      - "packages/db/drizzle/**"
+      - "packages/db/drizzle.config.ts"
+      - ".github/workflows/db-migrate-prod.yml"
+  # Allow manual re-runs from the Actions tab if needed.
+  workflow_dispatch:
+
+# Never run two production migrations at the same time.
+concurrency:
+  group: db-migrate-prod
+  cancel-in-progress: false
+
+jobs:
+  migrate-prod:
+    name: Migrate production database
+    runs-on: ubuntu-latest
+    # Scopes PROD_DATABASE_URL and enables environment protection rules.
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.16.0
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Drizzle migrations against production
+        run: pnpm --filter @sneu/db run db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}

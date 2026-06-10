@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "app/api/update/route.ts": {
       "maxDuration": 800
@@ -9,5 +10,6 @@
       "path": "/api/update",
       "schedule": "*/5 * * * *"
     }
-  ]
+  ],
+  "buildCommand": "if [ \"$VERCEL_ENV\" = preview ]; then pnpm --filter @sneu/db run db:migrate; fi && turbo build"
 }

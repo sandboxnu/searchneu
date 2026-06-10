@@ -1,25 +1,28 @@
 {
-  "$schema": "https://v2-8-0.turborepo.dev/schema.json",
-  "ui": "tui",
+  "extends": ["//"],
   "tasks": {
-    "//#setup": {
-      "cache": false,
-      "passThroughEnv": ["DOCKER_*", "COMPOSE_*"]
-    },
     "build": {
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "CRON_SECRET",
+        "TWILIO_ACCOUNT_SID",
+        "TWILIO_AUTH_TOKEN",
+        "TWILIO_VERIFY_SID",
+        "TWILIO_PHONE_NUMBER",
+        "TWILIO_SID",
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "FLAGS_SECRET",
+        "SLACK_WEBHOOK_URL",
+        "VERCEL_URL",
+        "VERCEL_BRANCH_URL"
+      ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "./dist/**"]
-    },
-    "dev": {
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "with": ["@sneu/db#db:studio"],
-      "persistent": true,
-      "cache": false
-    },
-    "test": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
     "dev": {
       "env": [
@@ -53,7 +56,6 @@
         "TWILIO_ACCOUNT_SID",
         "TWILIO_AUTH_TOKEN",
         "TWILIO_VERIFY_SID",
-        "TWILIO_PHONE_NUMBER",
         "BETTER_AUTH_URL",
         "BETTER_AUTH_SECRET",
         "GOOGLE_CLIENT_ID",
@@ -65,9 +67,6 @@
       ],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
     }
   }
 }

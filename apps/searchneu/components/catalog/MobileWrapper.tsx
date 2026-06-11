@@ -50,7 +50,7 @@ export function MobileWrapper(
         className="flex min-h-0 w-full min-w-0 flex-col gap-3 md:data-[show=false]:pl-3 md:data-[show=true]:pl-0 xl:pl-3!"
       >
         <div data-show={Boolean(course)} className="flex items-center gap-2">
-          <Drawer>
+          <Drawer repositionInputs={false}>
             <DrawerTrigger asChild>
               <Button
                 variant="ghost"
@@ -60,9 +60,9 @@ export function MobileWrapper(
                 <ListFilter className="text-neu6 size-4" strokeWidth={2} />
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="data-[vaul-drawer-direction=bottom]:max-h-[95dvh]">
+            <DrawerContent className="data-[vaul-drawer-direction=bottom]:h-[95dvh] data-[vaul-drawer-direction=bottom]:max-h-[95dvh]">
               <DrawerTitle className="text-center">Catalog Filters</DrawerTitle>
-              <div className="overflow-y-scroll">
+              <div className="flex min-h-0 flex-1">
                 <SearchPanel {...props} />
               </div>
               <DrawerFooter className="">

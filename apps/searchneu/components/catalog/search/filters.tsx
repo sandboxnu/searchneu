@@ -31,7 +31,7 @@ export function SubjectSelect(props: {
     <SPMultiselect
       label="SUBJECTS"
       spCode="subj"
-      placeholder="Select subjects"
+      placeholder="Search by subject code or phrase (ARTG, ENGW)"
       opts={props.subjects}
       transform={(opts) => opts.map((o) => ({ label: o.name, value: o.code }))}
     />
@@ -43,7 +43,7 @@ export function NupathSelect(props: { nupaths: CatalogFilterData["nupaths"] }) {
     <SPMultiselect
       label="NUPATHS"
       spCode="nupath"
-      placeholder="Select NUPaths"
+      placeholder="Search by NUPath code or phrase (EI, FQ)"
       opts={props.nupaths}
       transform={(opts) => opts.map((o) => ({ label: o.name, value: o.short }))}
     />
@@ -57,7 +57,7 @@ export function ClassTypeSelect(props: {
     <SPMultiselect
       label="CLASS TYPE"
       spCode="clty"
-      placeholder="Select class type"
+      placeholder="Search by class type"
       opts={props.classTypes}
       transform={(opts) => opts.map((c) => ({ label: c, value: c }))}
     />
@@ -71,7 +71,7 @@ export function CampusSelect(props: {
     <SPMultiselect
       label="CAMPUSES"
       spCode="camp"
-      placeholder="Select campus"
+      placeholder="Choose one or multiple (Boston, Online, etc)"
       opts={props.campuses}
       transform={(opts) =>
         opts.map((o) => ({

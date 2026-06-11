@@ -4,6 +4,7 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/lib/cn";
+import { PortalContainerProvider } from "@/components/ui/portal-container";
 
 function Drawer({
   ...props
@@ -50,6 +51,13 @@ function DrawerContent({
   children,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+  // Popups (combobox/select) portal into this node so they live inside the
+  // drawer rather than at `document.body`. Keeping them in the drawer lets
+  // vaul recognize their scrollable regions, so the list scrolls instead of
+  // the drawer dragging around.
+  const [popupContainer, setPopupContainer] =
+    React.useState<HTMLDivElement | null>(null);
+
   return (
     <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay />
@@ -66,7 +74,10 @@ function DrawerContent({
         {...props}
       >
         <div className="bg-neu2 mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
-        {children}
+        <PortalContainerProvider container={popupContainer}>
+          {children}
+        </PortalContainerProvider>
+        <div ref={setPopupContainer} />
       </DrawerPrimitive.Content>
     </DrawerPortal>
   );

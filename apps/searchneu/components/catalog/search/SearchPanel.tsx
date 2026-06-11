@@ -21,7 +21,7 @@ export type { CatalogFilterData };
 // removing, or reordering a filter is a one-line change here.
 export function SearchPanel(props: CatalogFilterData) {
   return (
-    <div className="bg-neu0 h-full min-h-0 w-full space-y-6 overflow-y-scroll rounded-lg border border-t-0 px-4 py-4 md:border-t">
+    <div className="md:bg-neu0 h-full min-h-0 w-full space-y-6 overflow-y-scroll border-t-0 px-4 py-4 md:rounded-lg md:border md:border-t">
       <CollegeSelect terms={props.terms} />
       <TermSelect terms={props.terms} />
       <CampusSelect campuses={props.campuses} />

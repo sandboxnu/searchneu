@@ -37,7 +37,7 @@ export function SignIn({
 
   return (
     <Dialog onOpenChange={() => closeFn()} defaultOpen={true}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Sign In</DialogTitle>
           <DialogDescription>

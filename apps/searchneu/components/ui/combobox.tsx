@@ -12,6 +12,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { usePortalContainer } from "@/components/ui/portal-container";
 
 const Combobox = ComboboxPrimitive.Root;
 
@@ -99,8 +100,9 @@ function ComboboxContent({
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
   >) {
+  const portalContainer = usePortalContainer();
   return (
-    <ComboboxPrimitive.Portal>
+    <ComboboxPrimitive.Portal container={portalContainer}>
       <ComboboxPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -222,7 +224,7 @@ function ComboboxChips({
     <ComboboxPrimitive.Chips
       data-slot="combobox-chips"
       className={cn(
-        "border-neu2 focus-within:border-neu2 focus-within:ring-neu2/50 has-aria-invalid:border-r1 has-aria-invalid:ring-r1/20 bg-neu1 flex min-h-10 flex-wrap items-center gap-1 rounded-[20px] border bg-clip-padding px-4 py-2 text-sm transition-colors has-data-[slot=combobox-chip]:px-4",
+        "border-neu2 focus-within:border-neu2 focus-within:ring-neu2/50 has-aria-invalid:border-r1 has-aria-invalid:ring-r1/20 bg-neu1 flex min-h-10 flex-wrap items-center gap-1 rounded-[20px] border bg-clip-padding px-4 py-2 text-sm transition-colors has-data-[slot=combobox-chip]:bg-transparent has-data-[slot=combobox-chip]:px-4",
         className,
       )}
       {...props}
@@ -242,7 +244,7 @@ function ComboboxChip({
     <ComboboxPrimitive.Chip
       data-slot="combobox-chip"
       className={cn(
-        "bg-neu2 text-neu7 flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-full px-1.5 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
+        "bg-neu1 border-neu2 text-neu7 flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
         className,
       )}
       {...props}
@@ -250,7 +252,7 @@ function ComboboxChip({
       {children}
       {showRemove && (
         <ComboboxPrimitive.ChipRemove
-          className="-ml-1 opacity-50 hover:opacity-100"
+          className="-ml-2 opacity-50 hover:opacity-100"
           data-slot="combobox-chip-remove"
           render={
             <Button variant="ghost" size="icon-xs">
@@ -270,7 +272,12 @@ function ComboboxChipsInput({
   return (
     <ComboboxPrimitive.Input
       data-slot="combobox-chip-input"
-      className={cn("min-w-16 flex-1 outline-none", className)}
+      // text-base (16px) on mobile prevents iOS Safari from auto-zooming when
+      // the input is focused; drop to text-sm on md+ to match the chips.
+      className={cn(
+        "min-w-16 flex-1 text-base outline-none md:text-sm",
+        className,
+      )}
       {...props}
     />
   );

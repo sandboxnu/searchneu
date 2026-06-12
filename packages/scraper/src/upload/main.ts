@@ -183,7 +183,7 @@ export async function uploadCatalogTerm(
  * Returns a filtered copy of the scrape with only sections matching the
  * given partOfTerm, and only courses that still have sections after filtering.
  */
-function filterScrapeByPartOfTerm(
+export function filterScrapeByPartOfTerm(
   scrape: z.infer<typeof ScraperBannerCache>,
   partOfTerm: string,
 ): z.infer<typeof ScraperBannerCache> {

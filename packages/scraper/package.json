@@ -66,7 +66,7 @@
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
     "@types/he": "^1.2.3",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.3",
     "eslint": "^9.39.4",
     "nock": "^14.0.15",
     "tsx": "^4.22.4",

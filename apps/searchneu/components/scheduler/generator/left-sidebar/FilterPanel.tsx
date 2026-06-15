@@ -11,6 +11,7 @@ import { CoursesTab } from "./CoursesTab";
 import { FiltersTab } from "./FiltersTab";
 import AddCoursesModal from "../../shared/modal/AddCoursesModal";
 import { GroupedTerms } from "@/lib/catalog/types";
+import { Button } from "@/components/ui/button";
 
 interface FilterPanelProps {
   filters: ScheduleFilters;
@@ -46,7 +47,7 @@ export function FilterPanel({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="bg-background flex h-full w-75 flex-col gap-6 overflow-hidden rounded-lg p-6">
+    <div className="bg-neu0 flex h-full w-75 flex-col gap-6 overflow-hidden rounded-lg p-6">
       {/* Course Modal */}
       <AddCoursesModal
         open={isModalOpen}
@@ -57,13 +58,13 @@ export function FilterPanel({
         callback={onSchedulesGenerated}
       />
       {/* Tabs */}
-      <div className="flex w-fit gap-4 border-b border-[#e0e0e0]">
+      <div className="border-neu2 flex w-fit gap-4 border-b">
         <button
           onClick={() => setActiveTab("courses")}
           className={`translate-y-px cursor-pointer py-1 text-xs leading-3.5 font-bold uppercase transition-colors ${
             activeTab === "courses"
-              ? "border-b border-[#a3a3a3] text-[#858585]"
-              : "text-[#c2c2c2] hover:text-[#a3a3a3]"
+              ? "border-neu5 text-neu6 border-b"
+              : "text-neu4 hover:text-neu5"
           }`}
         >
           Courses
@@ -72,8 +73,8 @@ export function FilterPanel({
           onClick={() => setActiveTab("filters")}
           className={`translate-y-px cursor-pointer py-1 text-xs leading-3.5 font-bold uppercase transition-colors ${
             activeTab === "filters"
-              ? "border-b border-[#a3a3a3] text-[#858585]"
-              : "text-[#c2c2c2] hover:text-[#a3a3a3]"
+              ? "border-neu5 text-neu6 border-b"
+              : "text-neu4 hover:text-neu5"
           }`}
         >
           Filters
@@ -101,15 +102,14 @@ export function FilterPanel({
 
       {/* Edit Courses button - courses tab only */}
       {activeTab === "courses" && (
-        <button
+        <Button
+          variant="outline"
           onClick={() => setIsModalOpen(true)}
-          className="flex shrink-0 cursor-pointer items-center justify-center gap-2.5 rounded-full border border-[#f1f2f2] bg-[#f9f9f9] px-4 py-2 transition-colors hover:bg-[#f0f0f0]"
+          className="text-neu5 hover:text-neu7 text-sm font-semibold"
         >
-          <Pencil className="h-2.5 w-2.5 text-[#a3a3a3]" />
-          <span className="text-sm font-semibold text-[#a3a3a3]">
-            Edit Courses
-          </span>
-        </button>
+          <Pencil className="h-2.5 w-2.5" />
+          Edit Courses
+        </Button>
       )}
 
       {/* Suggest a new filter - filters tab only */}

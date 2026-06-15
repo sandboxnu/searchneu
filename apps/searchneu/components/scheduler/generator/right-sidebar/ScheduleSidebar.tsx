@@ -1,13 +1,31 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { MiniCalendar } from "../../shared/MiniCalendar";
+import { StarIcon } from "lucide-react";
+import { cn } from "@/lib/cn";
 
-type SidebarTab = "favorites" | "filters" | "all";
+export type SidebarTab = "favorites" | "filters" | "all";
+
+const EMPTY_STATES: Record<SidebarTab, { title: string; description: string }> =
+  {
+    favorites: {
+      title: "No favorited schedules",
+      description: "Tap the star on a schedule to save it here.",
+    },
+    filters: {
+      title: "No schedules match your filters",
+      description: "Try adjusting your filters or course selection.",
+    },
+    all: {
+      title: "No schedules yet",
+      description: "Add courses to generate possible schedules.",
+    },
+  };
 
 interface ScheduleSidebarProps {
   allSchedules: SectionWithCourse[][];
@@ -15,8 +33,68 @@ interface ScheduleSidebarProps {
   favoritedKeys: Map<string, number>;
   selectedScheduleKey: string | null;
   colorMap: Map<string, CourseColor>;
+  isLoading: boolean;
+  activeTab: SidebarTab;
+  onTabChange: (tab: SidebarTab) => void;
   onSelectSchedule: (scheduleKey: string) => void;
   onToggleFavorite: (scheduleKey: string) => void;
+}
+
+const SKELETON_DAYS = ["S", "M", "T", "W", "TH", "F", "S"];
+
+function SkeletonMiniCalendar() {
+  return (
+    <div className="border-neu2 bg-neu0 w-full rounded-lg border p-2">
+      {/* Day headers */}
+      <div className="mb-1 grid grid-cols-7 gap-0">
+        {SKELETON_DAYS.map((day, i) => (
+          <div
+            key={i}
+            className="text-neu3 text-center text-[14px] font-semibold"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* Skeleton async bars */}
+      <div className="mb-1 space-y-0.5">
+        <div className="grid grid-cols-7 gap-0">
+          <div />
+          <div className="bg-neu2 h-2 rounded-xs" />
+          <div />
+          <div className="bg-neu2 h-2 rounded-xs" />
+          <div className="bg-neu2 h-2 rounded-xs" />
+          <div />
+          <div />
+        </div>
+      </div>
+
+      {/* Skeleton calendar blocks */}
+      <div
+        className="relative grid grid-cols-7 gap-0"
+        style={{ height: "122px" }}
+      >
+        <div />
+        <div className="relative h-full">
+          <div
+            className="bg-neu2 absolute inset-x-px rounded-xs"
+            style={{ top: "30px", height: "40px" }}
+          />
+        </div>
+        <div />
+        <div />
+        <div />
+        <div />
+        <div className="relative h-full">
+          <div
+            className="bg-neu2 absolute inset-x-px rounded-xs"
+            style={{ top: "25px", height: "45px" }}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function ScheduleSidebar({
@@ -25,12 +103,14 @@ export function ScheduleSidebar({
   favoritedKeys,
   selectedScheduleKey,
   colorMap,
+  isLoading,
+  activeTab,
+  onTabChange,
   onSelectSchedule,
   onToggleFavorite,
 }: ScheduleSidebarProps) {
   "use no memo"; // issue: https://github.com/TanStack/virtual/issues/743
 
-  const [activeTab, setActiveTab] = useState<SidebarTab>("filters");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayedSchedules = useMemo(() => {
@@ -83,14 +163,14 @@ export function ScheduleSidebar({
   ];
 
   return (
-    <div className="flex h-[calc(100vh-72px)] w-77.5 shrink-0 flex-col">
+    <div className="flex h-full w-77.5 shrink-0 flex-col">
       {/* Tabs */}
       <div className="flex items-center gap-4 px-3 pt-6">
         <div className="border-neu3 flex items-center gap-4 border-b">
           {tabItems.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => onTabChange(tab.key)}
               className={`-mb-px flex cursor-pointer items-center gap-1 py-1 text-xs font-bold uppercase transition-colors ${
                 activeTab === tab.key
                   ? "border-neu5 text-neu6 border-b"
@@ -98,18 +178,11 @@ export function ScheduleSidebar({
               }`}
             >
               {tab.key === "favorites" && (
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill={activeTab === "favorites" ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+                <StarIcon
+                  className={cn("text-neu4 size-3.5", {
+                    "text-neu6": activeTab === "favorites",
+                  })}
+                />
               )}
               {tab.label} ({tab.count})
             </button>
@@ -120,7 +193,7 @@ export function ScheduleSidebar({
       {/* Virtualized schedule list */}
       <div
         ref={scrollRef}
-        className="flex-1 [scrollbar-width:none] overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="flex-1 scrollbar-none overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         {displayedSchedules.length > 0 ? (
           <div
@@ -159,11 +232,20 @@ export function ScheduleSidebar({
               );
             })}
           </div>
+        ) : isLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonMiniCalendar key={i} />
+            ))}
+          </div>
         ) : (
-          <div className="text-neu6 py-8 text-center text-sm">
-            {activeTab === "favorites"
-              ? "No favorited schedules yet."
-              : "No schedules found."}
+          <div className="flex h-full flex-col items-center justify-center gap-1 px-4 text-center">
+            <h2 className="text-neu7 text-base font-semibold">
+              {EMPTY_STATES[activeTab].title}
+            </h2>
+            <p className="text-neu5 text-sm">
+              {EMPTY_STATES[activeTab].description}
+            </p>
           </div>
         )}
       </div>

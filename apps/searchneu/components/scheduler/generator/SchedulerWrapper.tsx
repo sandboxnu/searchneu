@@ -662,8 +662,8 @@ export function SchedulerWrapper({
             }
             sidebarTab={sidebarTab}
             onToggleFavorite={() => {
-              if (selectedScheduleKey) {
-                handleToggleFavorite(selectedScheduleKey);
+              if (currentScheduleKey) {
+                handleToggleFavorite(currentScheduleKey);
               }
             }}
           />

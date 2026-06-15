@@ -21,11 +21,11 @@ export async function Header() {
         <Suspense>
           <NavBar flags={flags} />
         </Suspense>
-        <Suspense>
-          <MobileNav flags={flags} />
-        </Suspense>
         <UserIcon />
       </div>
+      <Suspense>
+        <MobileNav flags={flags} />
+      </Suspense>
     </header>
   );
 }

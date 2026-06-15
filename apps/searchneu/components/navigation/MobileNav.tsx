@@ -70,6 +70,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
       />
       {roomsFlag && (
         <SheetClose
+          nativeButton={false}
           render={
             <Link
               href="/rooms"
@@ -84,6 +85,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
       )}
       {graduateFlag && (
         <SheetClose
+          nativeButton={false}
           render={
             <Link
               // NOTE: access control should be on the page, not navigation
@@ -99,6 +101,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         />
       )}
       <SheetClose
+        nativeButton={false}
         render={
           <Link
             href="/catalog"
@@ -111,6 +114,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         }
       />
       <SheetClose
+        nativeButton={false}
         render={
           <Link
             href="/scheduler"
@@ -123,6 +127,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         }
       />
       <SheetClose
+        nativeButton={false}
         render={
           <Link
             href="/notifications"
@@ -135,6 +140,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         }
       />
       <SheetClose
+        nativeButton={false}
         render={
           <Link
             href="/faq"

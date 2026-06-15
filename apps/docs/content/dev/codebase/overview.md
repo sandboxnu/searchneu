@@ -94,16 +94,6 @@ Course data scraper and updater.
 - `scrape:gen` - Generate/fetch fresh course data
 - `scrape:up` - Upload scraped data to the database
 
-### @sneu/notifs
-
-**Location:** `packages/notifs/`
-
-Notification delivery system.
-
-- **Purpose:** Send SMS notifications to users via Twilio
-- **Dependencies:** Twilio SDK
-- **Use Case:** Alert students when course seats become available
-
 ### @sneu/tsconfig
 
 **Location:** `packages/tsconfig/`

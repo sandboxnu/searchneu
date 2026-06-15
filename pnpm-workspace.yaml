@@ -10,6 +10,8 @@ allowBuilds:
 ignoredBuiltDependencies:
   - sharp
 
+minimumReleaseAge: 5760
+
 minimumReleaseAgeExclude:
   - "@better-auth/core@1.6.13"
   - "@better-auth/drizzle-adapter@1.6.13"

@@ -128,7 +128,7 @@ export function DashboardClient({
   };
 
   return (
-    <div className="bg-neu2 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
+    <div className="bg-neu1 flex h-screen min-h-0 w-screen gap-3 px-4 pt-4 xl:px-6">
       <Dialog
         open={planIdToDelete !== null}
         onOpenChange={(open) => {
@@ -137,26 +137,17 @@ export function DashboardClient({
       >
         <DialogContent className="p-5 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-bold">Delete Plan?</DialogTitle>
-            <DialogDescription className="text-neu9">
+            <DialogTitle>Delete Plan?</DialogTitle>
+            <DialogDescription>
               Are you sure you want to delete this plan? This action is
               permanent and cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              className="text-neu6 border-neu4 bg-neu2 cursor-pointer font-bold"
-              onClick={() => setPlanIdToDelete(null)}
-            >
+            <Button variant="secondary" onClick={() => setPlanIdToDelete(null)}>
               Cancel
             </Button>
-            <Button
-              className="bg-neu hover:bg-neu/90 text-neu1 cursor-pointer font-bold"
-              onClick={confirmDeletePlan}
-            >
-              Delete
-            </Button>
+            <Button onClick={confirmDeletePlan}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

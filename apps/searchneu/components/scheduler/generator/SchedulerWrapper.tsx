@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   filterSchedules,
   type ScheduleFilters,
@@ -36,7 +36,6 @@ export function SchedulerWrapper({
   campuses,
   nupaths,
 }: SchedulerWrapperProps) {
-  const router = useRouter();
   const [selectedScheduleKey, setSelectedScheduleKey] = useState<string | null>(
     null,
   );

@@ -6,8 +6,26 @@ import { type SectionWithCourse } from "@/lib/scheduler/filters";
 import { type CourseColor } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { MiniCalendar } from "../../shared/MiniCalendar";
+import { StarIcon } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 export type SidebarTab = "favorites" | "filters" | "all";
+
+const EMPTY_STATES: Record<SidebarTab, { title: string; description: string }> =
+  {
+    favorites: {
+      title: "No favorited schedules",
+      description: "Tap the star on a schedule to save it here.",
+    },
+    filters: {
+      title: "No schedules match your filters",
+      description: "Try adjusting your filters or course selection.",
+    },
+    all: {
+      title: "No schedules yet",
+      description: "Add courses to generate possible schedules.",
+    },
+  };
 
 interface ScheduleSidebarProps {
   allSchedules: SectionWithCourse[][];
@@ -26,7 +44,7 @@ const SKELETON_DAYS = ["S", "M", "T", "W", "TH", "F", "S"];
 
 function SkeletonMiniCalendar() {
   return (
-    <div className="border-neu25 w-full rounded-lg border bg-white p-2">
+    <div className="border-neu2 bg-neu0 w-full rounded-lg border p-2">
       {/* Day headers */}
       <div className="mb-1 grid grid-cols-7 gap-0">
         {SKELETON_DAYS.map((day, i) => (
@@ -43,10 +61,10 @@ function SkeletonMiniCalendar() {
       <div className="mb-1 space-y-0.5">
         <div className="grid grid-cols-7 gap-0">
           <div />
-          <div className="bg-neu2 h-2 rounded-[2px]" />
+          <div className="bg-neu2 h-2 rounded-xs" />
           <div />
-          <div className="bg-neu2 h-2 rounded-[2px]" />
-          <div className="bg-neu2 h-2 rounded-[2px]" />
+          <div className="bg-neu2 h-2 rounded-xs" />
+          <div className="bg-neu2 h-2 rounded-xs" />
           <div />
           <div />
         </div>
@@ -60,7 +78,7 @@ function SkeletonMiniCalendar() {
         <div />
         <div className="relative h-full">
           <div
-            className="bg-neu2 absolute inset-x-px rounded-[2px]"
+            className="bg-neu2 absolute inset-x-px rounded-xs"
             style={{ top: "30px", height: "40px" }}
           />
         </div>
@@ -70,7 +88,7 @@ function SkeletonMiniCalendar() {
         <div />
         <div className="relative h-full">
           <div
-            className="bg-neu2 absolute inset-x-px rounded-[2px]"
+            className="bg-neu2 absolute inset-x-px rounded-xs"
             style={{ top: "25px", height: "45px" }}
           />
         </div>
@@ -145,7 +163,7 @@ export function ScheduleSidebar({
   ];
 
   return (
-    <div className="flex h-[calc(100vh-72px)] w-77.5 shrink-0 flex-col">
+    <div className="flex h-full w-77.5 shrink-0 flex-col">
       {/* Tabs */}
       <div className="flex items-center gap-4 px-3 pt-6">
         <div className="border-neu3 flex items-center gap-4 border-b">
@@ -160,18 +178,11 @@ export function ScheduleSidebar({
               }`}
             >
               {tab.key === "favorites" && (
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill={activeTab === "favorites" ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+                <StarIcon
+                  className={cn("text-neu4 size-3.5", {
+                    "text-neu6": activeTab === "favorites",
+                  })}
+                />
               )}
               {tab.label} ({tab.count})
             </button>
@@ -182,15 +193,9 @@ export function ScheduleSidebar({
       {/* Virtualized schedule list */}
       <div
         ref={scrollRef}
-        className="flex-1 [scrollbar-width:none] overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="flex-1 scrollbar-none overflow-y-auto px-3 pt-3 pb-4 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
-        {isLoading ? (
-          <div className="flex flex-col gap-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonMiniCalendar key={i} />
-            ))}
-          </div>
-        ) : displayedSchedules.length > 0 ? (
+        {displayedSchedules.length > 0 ? (
           <div
             style={{
               height: `${virtualizer.getTotalSize()}px`,
@@ -227,11 +232,20 @@ export function ScheduleSidebar({
               );
             })}
           </div>
-        ) : (
+        ) : isLoading ? (
           <div className="flex flex-col gap-2">
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonMiniCalendar key={i} />
             ))}
+          </div>
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-1 px-4 text-center">
+            <h2 className="text-neu7 text-base font-semibold">
+              {EMPTY_STATES[activeTab].title}
+            </h2>
+            <p className="text-neu5 text-sm">
+              {EMPTY_STATES[activeTab].description}
+            </p>
           </div>
         )}
       </div>

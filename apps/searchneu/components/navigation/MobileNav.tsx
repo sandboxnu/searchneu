@@ -75,7 +75,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
             <Link
               href="/rooms"
               data-active={pathname.includes("/rooms")}
-              className="bg-neu0 flex items-center gap-2 rounded-full border px-4 py-2 text-sm"
+              className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
             >
               <DoorOpenIcon className="size-4" />
               <span>Rooms</span>
@@ -88,11 +88,9 @@ function MobileNavLinks({ flags }: MobileNavParams) {
           nativeButton={false}
           render={
             <Link
-              // NOTE: access control should be on the page, not navigation
-              // href={isGuest ? "/graduate/guest" : "/graduate"}
               href="/graduate"
               data-active={pathname.includes("/graduate")}
-              className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"
+              className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
             >
               <GraduationCapIcon className="size-4" />
               Graduate
@@ -122,7 +120,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
             className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
           >
             <CalendarIcon className="size-4" />
-            <span> Scheduler</span>
+            <span>Scheduler</span>
           </Link>
         }
       />
@@ -145,9 +143,10 @@ function MobileNavLinks({ flags }: MobileNavParams) {
           <Link
             href="/faq"
             data-active={pathname.includes("/faq")}
-            className="bg-neu0 data-[active=true]:border-neu3 flex items-center rounded-full border p-2 text-sm"
+            className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
           >
             <CircleQuestionMarkIcon className="text-r5 size-5" />
+            <span>FAQ</span>
           </Link>
         }
       />

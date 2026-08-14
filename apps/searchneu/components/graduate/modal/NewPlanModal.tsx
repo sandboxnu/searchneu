@@ -76,7 +76,7 @@ export default function NewPlanModal({
   const [message, setMessage] = useState("");
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(false);
   const [isNoMinorSelected, setIsNoMinorSelected] = useState(false);
-  const [catalogYear, setCatalogYear] = useState(-1);
+  const [catalogYear, setCatalogYear] = useState<number | null>(null);
   //const { data: session } = authClient.useSession();
 
   //majors
@@ -157,7 +157,7 @@ export default function NewPlanModal({
     setMessage("");
     setIsNoMajorSelected(false);
     setIsNoMinorSelected(false);
-    setCatalogYear(-1);
+    setCatalogYear(null);
     setMajors([]);
     setMinors([]);
     setConcentration("");
@@ -306,7 +306,7 @@ export default function NewPlanModal({
         schedule: schedule,
         majors: isNoMajorSelected ? undefined : majors,
         minors: isNoMinorSelected || !minors?.length ? undefined : minors,
-        catalogYear: isNoMajorSelected ? undefined : catalogYear,
+        catalogYear: isNoMajorSelected ? undefined : (catalogYear ?? undefined),
         concentration: isNoMajorSelected
           ? undefined
           : concentration || undefined,
@@ -421,8 +421,10 @@ export default function NewPlanModal({
                     CATALOG YEAR
                   </Label>
                   <Select
-                    value={catalogYear.toString()}
-                    onValueChange={(newYear) => setCatalogYear(Number(newYear))}
+                    value={catalogYear === null ? null : String(catalogYear)}
+                    onValueChange={(newYear: string | null) =>
+                      setCatalogYear(newYear === null ? null : Number(newYear))
+                    }
                   >
                     <SelectTrigger
                       className="border-neu3 w-full rounded-4xl border bg-transparent"
@@ -457,13 +459,13 @@ export default function NewPlanModal({
                     multiple
                     value={majors}
                     onValueChange={setMajors}
-                    disabled={catalogYear == -1}
+                    disabled={catalogYear === null}
                   >
                     <ComboboxChips
                       ref={majorsAnchorRef}
                       className={cn(
                         "border-neu3 w-full rounded-4xl bg-transparent",
-                        catalogYear == -1 &&
+                        catalogYear === null &&
                           "bg-neu3 cursor-not-allowed opacity-50",
                       )}
                     >
@@ -584,13 +586,13 @@ export default function NewPlanModal({
                     multiple
                     value={minors}
                     onValueChange={setMinors}
-                    disabled={catalogYear == -1}
+                    disabled={catalogYear === null}
                   >
                     <ComboboxChips
                       ref={minorsAnchorRef}
                       className={cn(
                         "border-neu3 w-full rounded-4xl bg-transparent",
-                        catalogYear == -1 &&
+                        catalogYear === null &&
                           "bg-neu3 cursor-not-allowed opacity-50",
                       )}
                     >
@@ -713,7 +715,7 @@ export default function NewPlanModal({
                     disabled={
                       isSubmitting ||
                       (!isNoMajorSelected && majors.length == 0) ||
-                      catalogYear <= 2000 ||
+                      catalogYear === null ||
                       (concentrationOptions.length > 0 &&
                         concentration.length == 0) ||
                       (useRecommendedTemplate &&

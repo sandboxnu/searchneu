@@ -57,7 +57,10 @@ export function useSupportedMinors() {
   return { data, error };
 }
 
-export function useHasTemplate(majorNames: string[], catalogYear: number) {
+export function useHasTemplate(
+  majorNames: string[],
+  catalogYear: number | null,
+) {
   const [hasTemplate, setHasTemplate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

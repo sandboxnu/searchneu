@@ -78,7 +78,9 @@ export default function EditPlanModal({
   const [isNoMajorSelected, setIsNoMajorSelected] = useState(
     !plan.majors?.length,
   );
-  const [catalogYear, setCatalogYear] = useState(plan.catalogYear ?? -1);
+  const [catalogYear, setCatalogYear] = useState<number | null>(
+    plan.catalogYear ?? null,
+  );
   const [majors, setMajors] = useState<string[]>(
     plan.majors?.map((m) => m.name) ?? [],
   );
@@ -120,7 +122,7 @@ export default function EditPlanModal({
     if (open) {
       // eslint-disable-next-line
       setMessage(plan.name);
-      setCatalogYear(plan.catalogYear ?? -1);
+      setCatalogYear(plan.catalogYear ?? null);
       setMajors(plan.majors?.map((m) => m.name) ?? []);
       setMinors(plan.minors?.map((m) => m.name) ?? []);
       setConcentration(plan.concentration ?? "");
@@ -188,7 +190,7 @@ export default function EditPlanModal({
   function handleClose() {
     // reset to plan values on cancel
     setMessage(plan.name);
-    setCatalogYear(plan.catalogYear ?? -1);
+    setCatalogYear(plan.catalogYear ?? null);
     setMajors(plan.majors?.map((m) => m.name) ?? []);
     setMinors(plan.minors?.map((m) => m.name) ?? []);
     setConcentration(plan.concentration ?? "");
@@ -202,11 +204,11 @@ export default function EditPlanModal({
     setMinors([]);
     setConcentration("");
     // also clear catalog year — no major means none of these fields are meaningful
-    setCatalogYear(-1);
+    setCatalogYear(null);
   }
 
-  function handleCatalogYearChange(v: string) {
-    setCatalogYear(Number(v));
+  function handleCatalogYearChange(v: string | null) {
+    setCatalogYear(v === null ? null : Number(v));
     // cascade: different year = different requirements, wipe dependent fields
     setMajors([]);
     setMinors([]);
@@ -218,7 +220,9 @@ export default function EditPlanModal({
     setIsSubmitting(true);
     try {
       const majorData =
-        supportedMajorsData?.supportedMajors[catalogYear]?.[majors[0]];
+        catalogYear === null
+          ? undefined
+          : supportedMajorsData?.supportedMajors[catalogYear]?.[majors[0]];
       const validConcentrations = majorData?.concentrations ?? [];
       const finalConcentration = validConcentrations.includes(concentration)
         ? concentration
@@ -231,7 +235,9 @@ export default function EditPlanModal({
           name: message || plan.name,
           majors: isNoMajorSelected ? undefined : majors,
           minors: !minors?.length ? undefined : minors,
-          catalogYear: isNoMajorSelected ? undefined : catalogYear,
+          catalogYear: isNoMajorSelected
+            ? undefined
+            : (catalogYear ?? undefined),
           concentration: isNoMajorSelected
             ? undefined
             : (finalConcentration ?? undefined),
@@ -340,8 +346,8 @@ export default function EditPlanModal({
               CATALOG YEAR
             </Label>
             <Select
-              value={catalogYear === -1 ? "" : catalogYear.toString()}
-              onValueChange={(v) => handleCatalogYearChange(v ?? "")}
+              value={catalogYear === null ? null : String(catalogYear)}
+              onValueChange={(v: string | null) => handleCatalogYearChange(v)}
             >
               <SelectTrigger
                 className="border-neu3 w-full rounded-4xl border bg-transparent"
@@ -378,13 +384,13 @@ export default function EditPlanModal({
                   setMajors(newMajors);
                   setConcentration(""); // changing major clears concentration
                 }}
-                disabled={catalogYear === -1}
+                disabled={catalogYear === null}
               >
                 <ComboboxChips
                   ref={majorsAnchorRef}
                   className={cn(
                     "border-neu3 w-full rounded-4xl bg-transparent",
-                    catalogYear === -1 &&
+                    catalogYear === null &&
                       "bg-neu3 cursor-not-allowed opacity-50",
                   )}
                 >
@@ -507,13 +513,13 @@ export default function EditPlanModal({
                 multiple
                 value={minors}
                 onValueChange={setMinors}
-                disabled={catalogYear === -1}
+                disabled={catalogYear === null}
               >
                 <ComboboxChips
                   ref={minorsAnchorRef}
                   className={cn(
                     "border-neu3 w-full rounded-4xl bg-transparent",
-                    catalogYear === -1 &&
+                    catalogYear === null &&
                       "bg-neu3 cursor-not-allowed opacity-50",
                   )}
                 >
@@ -560,7 +566,7 @@ export default function EditPlanModal({
                 disabled={
                   isSubmitting ||
                   (!isNoMajorSelected && majors.length === 0) ||
-                  (!isNoMajorSelected && catalogYear <= 0) ||
+                  (!isNoMajorSelected && catalogYear === null) ||
                   (!isNoMajorSelected &&
                     concentration_options.length > 0 &&
                     concentration.length === 0)

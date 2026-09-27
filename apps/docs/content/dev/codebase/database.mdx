@@ -3,4 +3,12 @@ title: Database
 description: Everything about the SearchNEU database!
 ---
 
-Hello
+Currently a bit barren... we'll work on getting this more set up.
+
+In the meantime, here are the commands to do a full database scrape/re-seed:
+
+```
+turbo cli -- generate --terms=all        # scrape Banner -> cache
+turbo cli -- tools seed-config --seed     # write static config
+turbo cli -- upload --terms=all           # load into the database
+```

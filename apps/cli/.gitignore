@@ -6,4 +6,5 @@ node_modules
 
 # CLI specific
 cache/
+config/
 backups/

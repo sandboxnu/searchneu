@@ -41,13 +41,15 @@ shape!
 
 ### Running the Project
 
-1. Start up the database with `docker compose up -d`.
-2. After the first time you spin up the database, run `turbo db:migrate` to clear
-   the database. More database information can be found [here](dev/codebase/database)
-3. Run `turbo db:push` to upload the drizzle schema
-4. Seed the database with `turbo scrape:up -- --cachePath="<PATH_TO_CATALOG_CACHES>" --terms=all`
-5. Run `turbo dev` to spin up SearchNEU and all packages
-6. Visit http://localhost:3000 to view the site!
+1. Run `turbo setup` to start the database, create .env files, and run any migrations
+2. With the cache repository, seed the database with `turbo cli -- upload --cachePath=[cacheDirPath] --configPath=[configDirPath] --terms=all`
+3. Run `turbo dev` to spin up SearchNEU and all packages
+4. Visit http://localhost:3000 to view the site!
+
+
+#### Notes:
+- To see the database itself, you can run `turbo db:studio` -- this is really handy to make sure your database actually got created/seeded. If something is broken, it's best to wipe all volumes/containers and start over.
+- To run a specific app, such as `searchneu` or `docs`, add the filter flag with the `@sneu` prefix package name (e.g. `turbo dev --filter=@sneu/searchneu`).
 
 ### Specific Topics
 

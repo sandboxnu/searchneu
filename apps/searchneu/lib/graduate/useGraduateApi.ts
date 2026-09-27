@@ -87,7 +87,7 @@ export function useHasTemplate(
           setHasTemplate(true);
         }
       } catch (error) {
-        console.log(`error when checking template: ${error}`);
+        console.error("Error checking template:", error);
         setHasTemplate(false);
       } finally {
         setIsLoading(false);

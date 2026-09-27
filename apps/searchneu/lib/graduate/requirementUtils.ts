@@ -169,6 +169,22 @@ export function collectRequiredCourseKeys(req: Requirement): string[] {
 }
 
 /**
+ * Recursively collect all "SUBJECT-CLASSID" keys from a list of requirements
+ * into `out`. Used to batch-fetch course names for requirement sections.
+ */
+export function collectCourseKeys(reqs: Requirement[], out: Set<string>): void {
+  for (const req of reqs) {
+    if (req.type === "COURSE") {
+      out.add(`${req.subject}-${req.classId}`);
+    } else if (req.type === "AND" || req.type === "OR" || req.type === "XOM") {
+      collectCourseKeys(req.courses, out);
+    } else if (req.type === "SECTION") {
+      collectCourseKeys(req.requirements, out);
+    }
+  }
+}
+
+/**
  * Build a whiteboard by matching schedule courses against each section's
  * requirements. If `current` is provided, manual entries are preserved and
  * "not_started" auto-upgrades to "in_progress" once a match exists.

@@ -5,21 +5,10 @@ import { auth } from "@/lib/auth/auth";
 import { getAuditPlans } from "@/lib/dal/audits";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { getCourseNamesBatch } from "@/lib/dal/courses";
-import { Major, Minor, Requirement } from "@/lib/graduate/types";
+import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
+import { Major, Minor } from "@/lib/graduate/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
-function collectCourseKeys(reqs: Requirement[], out: Set<string>): void {
-  for (const req of reqs) {
-    if (req.type === "COURSE") {
-      out.add(`${req.subject}-${req.classId}`);
-    } else if (req.type === "AND" || req.type === "OR" || req.type === "XOM") {
-      collectCourseKeys(req.courses, out);
-    } else if (req.type === "SECTION") {
-      collectCourseKeys(req.requirements, out);
-    }
-  }
-}
 
 export default async function Page({
   searchParams,

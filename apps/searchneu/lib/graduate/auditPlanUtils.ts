@@ -87,11 +87,6 @@ export function createScheduleFromTemplate(
               id: null,
             };
 
-            // Log the final course object for validation
-            console.log(
-              `Added course: ${course.subject} ${course.classId}, credits: ${course.numCreditsMin}-${course.numCreditsMax} to year ${yearNum}`,
-            );
-
             // Add course to the term
             termObj.classes.push(course);
           });
@@ -99,7 +94,6 @@ export function createScheduleFromTemplate(
       });
     });
 
-    console.log("Final schedule:", schedule);
     return schedule;
   } catch (error) {
     console.error("Error creating schedule from template:", error);

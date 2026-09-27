@@ -169,8 +169,8 @@ export function collectRequiredCourseKeys(req: Requirement): string[] {
 }
 
 /**
- * Recursively collect all "SUBJECT-CLASSID" keys from a list of requirements
- * into `out`. Used to batch-fetch course names for requirement sections.
+ * Collects all of the "SUBJECT-CLASSID" keys from a list of requirements
+ * into `out` so you can batch-fetch course names for the requirement sections
  */
 export function collectCourseKeys(reqs: Requirement[], out: Set<string>): void {
   for (const req of reqs) {

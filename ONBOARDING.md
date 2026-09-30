@@ -318,10 +318,9 @@ These are real and currently on `main`. Good first tickets are marked ★.
    `getByMajorAndYear()` returns `majors[0] ?? null`. A student can select two
    majors; only the first ever affects requirements, templates, or validation.
    Either finish it or restrict the UI to one.
-2. **Changing your major leaves a stale whiteboard.** `updateAuditPlan()` does
-   `whiteboard: newWhiteboard ?? currentAuditPlan.whiteboard` — it never rebuilds
-   from the new major's sections, so entries keyed by the old major's section
-   titles persist and orphan.
+2. **Guest plans keep a stale whiteboard after a major change.** The guest
+   branch of `EditPlanModal` copies the old whiteboard into localStorage, so it
+   never gets the rebuild that signed-in plans get in `updateAuditPlan()`.
 3. ★ **`/graduate` and `/graduate/guest` behave differently when logged out.**
    `app/graduate/page.tsx` fetches `majors`/`minors`, uses them only to collect
    course-name keys, then drops them — it never passes `initialMajors`/

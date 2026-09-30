@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildWhiteboardFromSchedule,
   pruneWhiteboard,
+  rebuildWhiteboardForSections,
   collectRequiredCourseKeys,
 } from "./requirementUtils";
 import { Audit, Section, SeasonEnum, StatusEnum, Whiteboard } from "./types";
@@ -140,4 +141,40 @@ test("pruneWhiteboard: returns null when nothing was removed (caller can skip pe
     Foundations: { courses: ["CS 2500"], status: "in_progress" },
   };
   assert.equal(pruneWhiteboard(schedule, wb), null);
+});
+
+test("rebuildWhiteboardForSections: drops entries for sections not in the new major", () => {
+  const sections = [
+    sectionWithCourses("Core", [{ subject: "CS", classId: 2500 }]),
+  ];
+  const current: Whiteboard = {
+    Core: { courses: [], status: "completed" },
+    "Old Major Section": { courses: ["BIOL 1111"], status: "in_progress" },
+  };
+  const wb = rebuildWhiteboardForSections(sections, scheduleWith([]), current);
+  assert.deepEqual(Object.keys(wb), ["Core"]);
+  assert.equal(wb["Core"]!.status, "completed");
+});
+
+test("rebuildWhiteboardForSections: adds new sections and matches schedule courses", () => {
+  const sections = [
+    sectionWithCourses("Core", [{ subject: "CS", classId: 2500 }]),
+    sectionWithCourses("Math", [{ subject: "MATH", classId: 1341 }]),
+  ];
+  const wb = rebuildWhiteboardForSections(
+    sections,
+    scheduleWith([{ subject: "MATH", classId: "1341" }]),
+    { "Old Major Section": { courses: [], status: "completed" } },
+  );
+  assert.deepEqual(wb, {
+    Core: { courses: [], status: "not_started" },
+    Math: { courses: ["MATH 1341"], status: "in_progress" },
+  });
+});
+
+test("rebuildWhiteboardForSections: no sections (major wiped) empties the whiteboard", () => {
+  const wb = rebuildWhiteboardForSections([], scheduleWith([]), {
+    Core: { courses: ["CS 2500"], status: "completed" },
+  });
+  assert.deepEqual(wb, {});
 });

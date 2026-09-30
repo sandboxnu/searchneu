@@ -12,8 +12,11 @@ import {
 } from "../controllers/majors";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import { Whiteboard } from "../graduate/types";
-import { buildWhiteboardFromSchedule } from "../graduate/requirementUtils";
+import { Audit, Whiteboard } from "../graduate/types";
+import {
+  buildWhiteboardFromSchedule,
+  rebuildWhiteboardForSections,
+} from "../graduate/requirementUtils";
 
 /**
  * Verifies the current user from their JWT token and returns their user data.
@@ -302,6 +305,35 @@ export async function updateAuditPlan(
     minors = newMinors;
   }
 
+  // the whiteboard is keyed by section title, so when the major, minor, or
+  // catalog year changes we rebuild it against the new requirement sections
+  // instead of carrying over entries for sections that no longer exist
+  let whiteboard = (newWhiteboard ?? currentAuditPlan.whiteboard) as Whiteboard;
+  const isProgramChange =
+    !isSameList(majors, currentAuditPlan.majors) ||
+    !isSameList(minors, currentAuditPlan.minors) ||
+    catalogYear !== currentAuditPlan.catalogYear;
+
+  if (isProgramChange) {
+    const major =
+      majors && catalogYear
+        ? await getByMajorAndYear(majors, catalogYear)
+        : null;
+    const minor =
+      minors && catalogYear
+        ? await getByMinorAndYear(minors, catalogYear)
+        : null;
+
+    whiteboard = rebuildWhiteboardForSections(
+      [
+        ...(major?.requirementSections ?? []),
+        ...(minor?.requirementSections ?? []),
+      ],
+      schedule as Audit,
+      whiteboard,
+    );
+  }
+
   const updatedAuditPlan = await db
     .update(auditPlansT)
     .set({
@@ -311,7 +343,7 @@ export async function updateAuditPlan(
       minors,
       concentration,
       catalogYear,
-      whiteboard: newWhiteboard ?? currentAuditPlan.whiteboard,
+      whiteboard,
     })
     .where(and(eq(auditPlansT.id, id), eq(auditPlansT.userId, userId)))
     .returning();
@@ -339,4 +371,9 @@ export async function deleteAuditPlan(id: number, userId: string) {
   }
 
   return deleteResult[0];
+}
+
+/** Whether two nullable lists of names hold the same values in the same order. */
+function isSameList(a: string[] | null, b: string[] | null) {
+  return (a ?? []).join("\n") === (b ?? []).join("\n");
 }

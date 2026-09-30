@@ -224,6 +224,27 @@ export function buildWhiteboardFromSchedule(
   return updated;
 }
 
+/**
+ * Rebuild a whiteboard for a new set of requirement sections (e.g. after the
+ * plan's major or minor changes). Entries whose section title isn't in
+ * `sections` are dropped, since the whiteboard is keyed by section title and
+ * they would otherwise be orphaned. Entries for sections that still exist keep
+ * their manual courses and status, and schedule courses are matched in the same
+ * way as `buildWhiteboardFromSchedule`.
+ */
+export function rebuildWhiteboardForSections(
+  sections: Section[],
+  schedule: Audit,
+  current: Whiteboard = {},
+): Whiteboard {
+  const titles = new Set(sections.map((section) => section.title));
+  const kept: Whiteboard = {};
+  for (const [title, entry] of Object.entries(current)) {
+    if (titles.has(title)) kept[title] = entry;
+  }
+  return buildWhiteboardFromSchedule(sections, schedule, kept);
+}
+
 /** Remove whiteboard course entries that no longer exist in the schedule. */
 export function pruneWhiteboard(
   schedule: Audit,

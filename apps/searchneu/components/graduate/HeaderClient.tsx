@@ -14,6 +14,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { PencilIcon, Trash2Icon, CopyIcon, ShareIcon } from "lucide-react";
 import { deletePlanAction } from "@/lib/graduate/actions";
 
@@ -31,11 +38,10 @@ export function HeaderClient({
   const router = useRouter();
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [showEditPlan, setShowEditPlan] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   async function handleDelete() {
-    if (!confirm(`Delete "${currentPlan.name}"?`)) {
-      return;
-    }
+    setConfirmDeleteOpen(false);
 
     const result = await deletePlanAction(currentPlan.id);
 
@@ -102,7 +108,7 @@ export function HeaderClient({
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
-              onClick={handleDelete}
+              onClick={() => setConfirmDeleteOpen(true)}
               title="Delete plan"
             >
               <Trash2Icon className="size-3.5" />
@@ -182,6 +188,20 @@ export function HeaderClient({
         onOpenChange={setShowEditPlan}
         plan={currentPlan}
       />
+      <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogTitle>{`Delete "${currentPlan.name}"?`}</AlertDialogTitle>
+          <AlertDialogDescription>
+            This plan and all of its courses will be permanently deleted.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmDeleteOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleDelete}>Delete</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

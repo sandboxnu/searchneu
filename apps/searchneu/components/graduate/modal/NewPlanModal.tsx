@@ -36,6 +36,7 @@ import {
   useComboboxAnchor,
 } from "@/components/ui/combobox";
 import { cn } from "@/lib/cn";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -123,6 +124,7 @@ export default function NewPlanModal({
   //form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRedirecting, startRedirect] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
 
   //template
   const { hasTemplate, isLoading: isTemplateLoading } = useHasTemplate(
@@ -164,6 +166,7 @@ export default function NewPlanModal({
     setConcentration("");
     setUseRecommendedTemplate(false);
     setSelectedTemplateOption("");
+    setFormError(null);
   };
 
   const handleNoMajor = () => {
@@ -235,6 +238,7 @@ export default function NewPlanModal({
     if (!majors || !catalogYear || !supportedMajorsData) {
       setConcentrationOptions([]);
       setConcentration("");
+      setIsLoadingConcentration(false);
       return;
     }
 
@@ -268,15 +272,16 @@ export default function NewPlanModal({
     //validation
     if (!isNoMajorSelected) {
       if (!catalogYear) {
-        console.error("Catalog year is required");
+        setFormError("Please select a catalog year.");
         return;
       }
       if (!majors || majors.length === 0 || majors.every((m) => !m)) {
-        console.error("At least one major is required");
+        setFormError("Please select at least one major.");
         return;
       }
     }
 
+    setFormError(null);
     setIsSubmitting(true);
     try {
       let schedule: Audit;
@@ -387,7 +392,7 @@ export default function NewPlanModal({
           className="bg-accent hover:bg-accent/80 w-full"
           onClick={() => setIsOpen(true)}
         >
-          open sesame{" "}
+          + New Plan
         </Button>
       )}
       {isOpen && (
@@ -705,6 +710,11 @@ export default function NewPlanModal({
                         )}
                     </div>
                   )}
+                {formError && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{formError}</AlertDescription>
+                  </Alert>
+                )}
                 <div className="mt-2 flex justify-center gap-4">
                   <Button
                     className=""

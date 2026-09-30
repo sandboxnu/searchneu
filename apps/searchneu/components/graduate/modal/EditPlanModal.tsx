@@ -29,6 +29,7 @@ import {
   useComboboxAnchor,
 } from "@/components/ui/combobox";
 import { cn } from "@/lib/cn";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -89,6 +90,7 @@ export default function EditPlanModal({
   );
   const [concentration, setConcentration] = useState(plan.concentration ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // majors
   const { data: supportedMajorsData, error: majorsError } =
@@ -127,6 +129,7 @@ export default function EditPlanModal({
       setMinors(plan.minors?.map((m) => m.name) ?? []);
       setConcentration(plan.concentration ?? "");
       setIsNoMajorSelected(!plan.majors?.length);
+      setFormError(null);
     }
   }, [open, plan]);
 
@@ -195,6 +198,7 @@ export default function EditPlanModal({
     setMinors(plan.minors?.map((m) => m.name) ?? []);
     setConcentration(plan.concentration ?? "");
     setIsNoMajorSelected(!plan.majors?.length);
+    setFormError(null);
     onOpenChange(false);
   }
 
@@ -217,6 +221,7 @@ export default function EditPlanModal({
   }
 
   async function handleEditPlan() {
+    setFormError(null);
     setIsSubmitting(true);
     try {
       const majorData =
@@ -291,9 +296,6 @@ export default function EditPlanModal({
 
       if (!response.ok) {
         const errorData = await response.json();
-        toast.error(
-          `Failed to update plan: ${errorData.error ?? "Unknown error"}`,
-        );
         throw new Error(errorData.error ?? "Failed to update plan");
       }
 
@@ -304,6 +306,9 @@ export default function EditPlanModal({
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating plan:", error);
+      setFormError(
+        error instanceof Error ? error.message : "Failed to update plan",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -555,6 +560,11 @@ export default function EditPlanModal({
 
           {/* footer */}
           <div className="flex flex-col justify-center gap-4 border-t border-gray-200 py-4">
+            {formError && (
+              <Alert variant="destructive">
+                <AlertDescription>{formError}</AlertDescription>
+              </Alert>
+            )}
             <div className="mt-2 flex justify-center gap-4">
               <Button variant="secondary" size="sm" onClick={handleClose}>
                 Cancel

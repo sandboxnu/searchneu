@@ -195,8 +195,13 @@ export default async function PlanPage({
     redirect("/");
   }
 
-  const planId = (await params).planId;
-  const plan = await getAuditPlan(parseInt(planId, 10), session.user.id);
+  const planId = parseInt((await params).planId, 10);
+  
+  if (Number.isNaN(planId)) {
+    return <NotFound />;
+  }
+
+  const plan = await getAuditPlan(planId, session.user.id);
   const userPlans: AuditPlanSummary[] = await getAuditPlans(session.user.id);
 
   if (!plan) {

@@ -179,7 +179,8 @@ export async function createAuditPlan(
  * @param id the ID of the plan to be updated
  * @param userId the ID of the user updating the plan
  *
- * @returns the updated audit plan object or null if validation/creation fails
+ * @returns the updated audit plan object, the unchanged plan if there was
+ * nothing to update, or null if the plan is missing or validation fails
  */
 export async function updateAuditPlan(
   updateAuditPlanInput: UpdateAuditPlanInput,
@@ -220,13 +221,16 @@ export async function updateAuditPlan(
       isMinorInfoUpdate ||
       isScheduleUpdate ||
       newName ||
-      isWipeMinorUpdate
+      isWipeMinorUpdate ||
+      newWhiteboard
     )
   ) {
+    // nothing to change, so skip the write and hand back the plan as-is
     console.debug({
-      message: "Either update all major fields or only the schedule",
+      message: "Nothing to update on audit plan",
       id,
     });
+    return currentAuditPlan;
   }
 
   // validate major info if a real major update is happening

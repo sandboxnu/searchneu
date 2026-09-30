@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test --import tsx ./**/*.test.ts"
+    "test": "node --test --experimental-test-module-mocks --import tsx ./**/*.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

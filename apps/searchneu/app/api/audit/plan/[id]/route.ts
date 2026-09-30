@@ -62,6 +62,7 @@ export const DELETE = withAuth<{ id: string }>(async (_req, user, { id }) => {
  *
  * @returns 200 with the audit plan object
  * @returns 401 if user is not authenticated
+ * @returns 404 if the plan doesn't exist or belongs to another user
  * @returns 400 if db fetch fails
  */
 export const GET = withAuth<{ id: string }>(async (_req, user, { id }) => {
@@ -69,5 +70,6 @@ export const GET = withAuth<{ id: string }>(async (_req, user, { id }) => {
   if (isNaN(auditPlanId))
     return Response.json({ error: "Invalid plan ID" }, { status: 400 });
   const plan = await getAuditPlan(auditPlanId, user.id);
+  if (!plan) return Response.json({ error: "Plan not found" }, { status: 404 });
   return Response.json(plan);
 });

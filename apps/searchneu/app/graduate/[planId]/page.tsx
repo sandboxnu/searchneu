@@ -196,7 +196,6 @@ export default async function PlanPage({
   }
 
   const planId = parseInt((await params).planId, 10);
-  
   if (Number.isNaN(planId)) {
     return <NotFound />;
   }

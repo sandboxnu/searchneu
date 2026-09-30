@@ -11,6 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
@@ -19,6 +26,7 @@ import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
 export function GuestHeaderClient() {
   const router = useRouter();
   const [showEditPlan, setShowEditPlan] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const [guestPlan, setGuestPlan] =
     useLocalStorage<CreateAuditPlanInput | null>("guest-plan", null);
@@ -26,9 +34,7 @@ export function GuestHeaderClient() {
   if (!guestPlan) return null;
 
   async function handleDelete() {
-    if (!confirm(`Delete "${guestPlan?.name}"?`)) {
-      return;
-    }
+    setConfirmDeleteOpen(false);
     window.localStorage.removeItem("guest-plan");
     window.localStorage.removeItem("guest-plan-courseNames");
 
@@ -77,7 +83,7 @@ export function GuestHeaderClient() {
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
-              onClick={handleDelete}
+              onClick={() => setConfirmDeleteOpen(true)}
               title="Delete plan"
             >
               <Trash2Icon className="size-3.5" />
@@ -142,6 +148,20 @@ export function GuestHeaderClient() {
           }}
         />
       )}
+      <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogTitle>{`Delete "${guestPlan.name}"?`}</AlertDialogTitle>
+          <AlertDialogDescription>
+            This plan and all of its courses will be permanently deleted.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmDeleteOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleDelete}>Delete</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

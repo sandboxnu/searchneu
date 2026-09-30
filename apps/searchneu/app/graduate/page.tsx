@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth/auth";
 import { getAuditPlans } from "@/lib/dal/audits";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { getCourseNamesBatch } from "@/lib/dal/courses";
-import { Requirement } from "@/lib/graduate/types";
+import { Major, Minor, Requirement } from "@/lib/graduate/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -61,15 +61,20 @@ export default async function Page({
     : [];
 
   let courseNames: Record<string, string> = {};
+  let majors: Major[] = [];
+  let minors: Minor[] = [];
+
   if (catalogYear) {
-    const [majors, minors] = await Promise.all([
+    const [fetchedMajors, fetchedMinors] = await Promise.all([
       Promise.all(majorNames.map((m) => getMajor(catalogYear, m))),
       Promise.all(minorNames.map((m) => getMinor(catalogYear, m))),
     ]);
 
+    majors = fetchedMajors.filter((m): m is Major => m !== null);
+    minors = fetchedMinors.filter((m): m is Minor => m !== null);
+
     const keys = new Set<string>(scheduleCourseKeys);
     for (const m of [...majors, ...minors]) {
-      if (!m) continue;
       for (const section of m.requirementSections) {
         collectCourseKeys(section.requirements, keys);
       }
@@ -81,7 +86,11 @@ export default async function Page({
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col gap-4 px-6">
       <GuestHeaderClient />
-      <GuestPlanClient initialCourseNames={courseNames} />
+      <GuestPlanClient
+        initialCourseNames={courseNames}
+        initialMajors={majors}
+        initialMinors={minors}
+      />
     </div>
   );
 }

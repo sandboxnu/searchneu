@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { Audit } from "@/lib/graduate/types";
 import {
   useHasTemplate,
@@ -122,6 +122,7 @@ export default function NewPlanModal({
 
   //form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, startRedirect] = useTransition();
 
   //template
   const { hasTemplate, isLoading: isTemplateLoading } = useHasTemplate(
@@ -313,8 +314,6 @@ export default function NewPlanModal({
       };
 
       if (isGuest) {
-        setGuestPlan(newPlan);
-
         const courseKeys = new Set<string>();
         for (const year of schedule.years) {
           for (const term of [
@@ -337,7 +336,13 @@ export default function NewPlanModal({
           queryParams.set("courses", [...courseKeys].join(","));
 
         toast(`Plan ${newPlan.name} created locally! Redirecting...`);
-        router.push(`/graduate?${queryParams.toString()}`);
+        // Saving the plan and navigating in one transition keeps the modal up
+        // until the server has loaded the majors, so the plan appears once
+        // with its sidebar instead of flashing in without it.
+        startRedirect(() => {
+          setGuestPlan(newPlan);
+          router.push(`/graduate?${queryParams.toString()}`);
+        });
         return;
       }
 
@@ -369,7 +374,9 @@ export default function NewPlanModal({
       console.error("Error creating plan:", error);
     } finally {
       setIsSubmitting(false);
-      handleClose();
+      // Guest modals unmount on their own once the plan renders; closing here
+      // would leave a blank page while the redirect is still loading.
+      if (!isGuest) handleClose();
     }
   };
 
@@ -714,6 +721,7 @@ export default function NewPlanModal({
                     onClick={handleCreatePlan}
                     disabled={
                       isSubmitting ||
+                      isRedirecting ||
                       (!isNoMajorSelected && majors.length == 0) ||
                       catalogYear === null ||
                       (concentrationOptions.length > 0 &&

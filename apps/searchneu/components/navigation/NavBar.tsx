@@ -42,7 +42,6 @@ export function NavBar({
       {graduateFlag && (
         <Link
           // NOTE: access control should be on the page, not navigation
-          // href={isGuest ? "/graduate/guest" : "/graduate"}
           href="/graduate"
           data-active={pathname.includes("/graduate")}
           className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"

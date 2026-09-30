@@ -20,12 +20,12 @@ import {
   Major,
   Minor,
   NUPathEnum,
-  Requirement,
   Whiteboard,
   WhiteboardEntry,
   DEFAULT_CATALOG_YEAR,
 } from "@/lib/graduate/types";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
+import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
 
@@ -37,19 +37,6 @@ function collectRequisiteKeys(req: Requisite, out: Set<string>): void {
   }
   if ("type" in req && "items" in req) {
     for (const item of req.items) collectRequisiteKeys(item, out);
-  }
-}
-
-/** Recursively collect all "SUBJECT-CLASSID" keys from a requirement tree. */
-function collectCourseKeys(reqs: Requirement[], out: Set<string>): void {
-  for (const req of reqs) {
-    if (req.type === "COURSE") {
-      out.add(`${req.subject}-${req.classId}`);
-    } else if (req.type === "AND" || req.type === "OR" || req.type === "XOM") {
-      collectCourseKeys(req.courses, out);
-    } else if (req.type === "SECTION") {
-      collectCourseKeys(req.requirements, out);
-    }
   }
 }
 

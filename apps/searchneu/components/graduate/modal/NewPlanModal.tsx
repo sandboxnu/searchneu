@@ -341,7 +341,7 @@ export default function NewPlanModal({
         // with its sidebar instead of flashing in without it.
         startRedirect(() => {
           setGuestPlan(newPlan);
-          router.push(`/graduate/guest?${queryParams.toString()}`);
+          router.push(`/graduate?${queryParams.toString()}`);
         });
         return;
       }

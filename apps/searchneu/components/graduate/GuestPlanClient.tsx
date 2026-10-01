@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { Audit, Whiteboard, Major, Minor } from "@/lib/graduate/types";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
+import { useMajors, useMinors } from "@/lib/graduate/useGraduateApi";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import { BasePlanClient } from "./BasePlanClient";
 import NewPlanModal from "./modal/NewPlanModal";
@@ -23,6 +24,20 @@ export function GuestPlanClient({
   const [guestPlan, setGuestPlan] = useLocalStorage<
     (CreateAuditPlanInput & { whiteboard?: Whiteboard }) | null
   >("guest-plan", null);
+
+  // The server only loads majors/minors when they're in the URL, so returning
+  // to /graduate without params would leave the sidebar empty. Load them from
+  // the saved plan instead, using the server's copy until the fetch resolves.
+  const { majors } = useMajors(
+    guestPlan?.catalogYear,
+    guestPlan?.majors,
+    initialMajors,
+  );
+  const { minors } = useMinors(
+    guestPlan?.catalogYear,
+    guestPlan?.minors,
+    initialMinors,
+  );
 
   // Persist server-provided course names to localStorage; on subsequent
   // visits (no search params) fall back to the cached copy.
@@ -73,8 +88,8 @@ export function GuestPlanClient({
     <BasePlanClient
       initialSchedule={guestPlan.schedule ?? { years: [] }}
       initialWhiteboard={guestPlan.whiteboard ?? {}}
-      majors={initialMajors}
-      minors={initialMinors}
+      majors={majors}
+      minors={minors}
       concentration={guestPlan.concentration ?? null}
       courseNames={courseNames}
       courseDetails={{}}

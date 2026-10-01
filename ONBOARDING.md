@@ -331,52 +331,49 @@ These are real and currently on `main`. Good first tickets are marked ★.
    `getRequirementCredits()` in `requirementUtils.ts` hardcodes `4`, so
    "X credits from many" mis-counts 1-credit labs and 2-credit seminars. Real
    credit data is already available on the hydrated course.
-5. ★ **Dead guard in `WhiteboardSidebar.tsx`.** The `if (!schedule)` fallback at
-   line 55 is unreachable — `creditsInAudit(schedule)` and
-   `collectScheduleCourses(schedule)` run at lines 48–49 and would throw first.
 
 **Repo health**
 
-6. ★ **CI never typechecks.** `.github/workflows/ci.yaml` runs format, lint and
+5. ★ **CI never typechecks.** `.github/workflows/ci.yaml` runs format, lint and
    test only — no `tsc --noEmit`, no `build`. Type errors can and do land on
    `main`.
-7. **CI runs the wrong Node.** Root `package.json` declares
+6. **CI runs the wrong Node.** Root `package.json` declares
    `engines.node: "26.x"`; CI pins `node-version: 24.16.0`.
-8. ★ **`turbo.json` has duplicate keys.** `dev` and `test` are each defined
+7. ★ **`turbo.json` has duplicate keys.** `dev` and `test` are each defined
    twice; the later definition silently wins. Also `$schema` still points at
    `v2-8-0` while turbo is on `2.9.16`.
-9. ★ **Debug logging ships to production.** `auditPlanUtils.ts` `console.log`s
+8. ★ **Debug logging ships to production.** `auditPlanUtils.ts` `console.log`s
    every course added plus the entire final schedule; `useGraduateApi.ts` has a
    `console.log` in an error path.
-10. **`@sneu/scraper` has a `test` script but zero tests** (`ℹ tests 0`).
-11. ★ **`turbo dev` is all-or-nothing.** One app failing to boot kills every
+9. **`@sneu/scraper` has a `test` script but zero tests** (`ℹ tests 0`).
+10. ★ **`turbo dev` is all-or-nothing.** One app failing to boot kills every
     other dev server in the run (see §2c). Worth making `docs` non-fatal, or
     giving it a `--port` fallback.
-12. **The neon-proxy image tag is unpinned and its cert expires** (see §2c).
+11. **The neon-proxy image tag is unpinned and its cert expires** (see §2c).
     Pinning a digest would make it reproducible but would _guarantee_ expiry;
     the better fix is a `setup` preflight that checks the cert and tells you to
     re-pull.
-13. **`DEFAULT_CATALOG_YEAR = 2026`** (`lib/graduate/types.ts`) but the seeded
+12. **`DEFAULT_CATALOG_YEAR = 2026`** (`lib/graduate/types.ts`) but the seeded
     catalog only covers **2021–2025** locally. Worth confirming prod has 2026
     data before trusting that fallback.
 
 **Documentation**
 
-11. **The docs site has no Graduate page at all.** `apps/docs/content/dev/`
+13. **The docs site has no Graduate page at all.** `apps/docs/content/dev/`
     covers database, frontend, search and Vercel — nothing on Graduate, and
     `/api/audit/*` is absent from `searchneu-api.yaml`.
-12. **`apps/docs/content/dev/codebase/overview.md` is stale** — it never mentions
+14. **`apps/docs/content/dev/codebase/overview.md` is stale** — it never mentions
     `apps/cli` or `packages/notifs`, and it lists `/notifs` as a `@sneu/scraper`
     export. The root `AGENTS.md` also omits `packages/notifs`.
 
 **Design debt (discuss before acting)**
 
-13. `verifyUser()` — the shared auth helper for the whole app, including four
+15. `verifyUser()` — the shared auth helper for the whole app, including four
     scheduler routes — lives in `lib/dal/audits.ts`. It belongs in `lib/auth/`.
-14. `collectCourseKeys()` is copy-pasted three times across the two guest pages
+16. `collectCourseKeys()` is copy-pasted three times across the two guest pages
     and `[planId]/page.tsx`.
-15. `audit_metadata` is unused (see §4).
-16. The three modals are 736 / 652 / 583 lines. `NewPlanModal` and
+17. `audit_metadata` is unused (see §4).
+18. The three modals are 736 / 652 / 583 lines. `NewPlanModal` and
     `EditPlanModal` share most of their major/minor/concentration form logic.
 
 ---

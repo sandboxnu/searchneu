@@ -1,9 +1,70 @@
 import { useState, useEffect } from "react";
-import { Template } from "./types";
+import useSWR from "swr";
+import { Major, Minor, Template } from "./types";
 import {
   GetSupportedMajorsResponse,
   GetSupportedMinorsResponse,
 } from "./api-response-types";
+
+/**
+ * Fetch several majors/minors for one catalog year. A name that 404s
+ * is skipped instead of failing the batch
+ */
+async function fetchCatalogEntries<T>([kind, catalogYear, ...names]: [
+  "majors" | "minors",
+  number,
+  ...string[],
+]): Promise<T[]> {
+  const results: (T | null)[] = await Promise.all(
+    names.map(async (name) => {
+      const res = await fetch(
+        `/api/catalog/${kind}/${catalogYear}/${encodeURIComponent(name)}`,
+      );
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      return (await res.json()) as T;
+    }),
+  );
+  return results.filter((entry): entry is T => entry !== null);
+}
+
+/**
+ * Load the given majors requirements on the client. `fallbackData` is shown
+ * until the fetch resolves (majors the server already loaded)
+ */
+export function useMajors(
+  catalogYear: number | null | undefined,
+  names: string[] | null | undefined,
+  fallbackData?: Major[],
+) {
+  const { data, error, isLoading } = useSWR(
+    catalogYear && names?.length
+      ? (["majors", catalogYear, ...names] as const)
+      : null,
+    fetchCatalogEntries<Major>,
+    { fallbackData, revalidateOnFocus: false },
+  );
+  return { majors: data ?? [], error, isLoading };
+}
+
+/**
+ * Load the given minors requirements on the client. `fallbackData` is shown
+ * until the fetch resolves (minors the server already loaded)
+ */
+export function useMinors(
+  catalogYear: number | null | undefined,
+  names: string[] | null | undefined,
+  fallbackData?: Minor[],
+) {
+  const { data, error, isLoading } = useSWR(
+    catalogYear && names?.length
+      ? (["minors", catalogYear, ...names] as const)
+      : null,
+    fetchCatalogEntries<Minor>,
+    { fallbackData, revalidateOnFocus: false },
+  );
+  return { minors: data ?? [], error, isLoading };
+}
 
 export function useSupportedMajors() {
   const [data, setData] = useState<GetSupportedMajorsResponse | null>(null);

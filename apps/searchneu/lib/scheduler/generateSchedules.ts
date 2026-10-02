@@ -10,7 +10,12 @@ import {
 } from "@/lib/db";
 import { eq, sql } from "drizzle-orm";
 import { SectionWithCourse } from "./filters";
-import { meetingTimesToBinaryMask, masksConflict } from "./binaryMeetingTime";
+import { meetingTimesToBinaryMask } from "./binaryMeetingTime";
+import {
+  MAX_RESULTS,
+  generateCombinationsOptimized,
+  addOptionalCourses,
+} from "./generateCombinations";
 
 export const getSectionsAndMeetingTimes = (courseId: number) => {
   // This code is from the catalog page, ideally we want to abstract this in the future
@@ -115,175 +120,6 @@ export const getSectionsAndMeetingTimes = (courseId: number) => {
   return sections;
 };
 
-/**
- * Used to keep track of indexes of sections and increment them when they conflict w the current schedule
- * Returns true if overflow (we're done), false otherwise
- */
-export const incrementIndex = (
-  indexes: number[],
-  sizes: number[],
-  position: number,
-): boolean => {
-  indexes[position]++;
-
-  // Handle carry/overflow like an odometer
-  while (position >= 0 && indexes[position] >= sizes[position]) {
-    indexes[position] = 0;
-    position--;
-    if (position >= 0) {
-      indexes[position]++;
-    }
-  }
-
-  // If position < 0, we've overflowed completely
-  return position < 0;
-};
-
-/**
- * Optimized iterative generation with conflict-aware skipping.
- * Uses binary time representation for O(1) conflict checking.
- */
-const generateCombinationsOptimized = (
-  sectionsByCourse: SectionWithCourse[][],
-): SectionWithCourse[][] => {
-  if (sectionsByCourse.length === 0) return [];
-  if (sectionsByCourse.length === 1)
-    return sectionsByCourse[0].map((section) => [section]);
-
-  // Sort courses by number of sections (fewest first)
-  const sortedIndices = sectionsByCourse
-    .map((sections, idx) => ({ sections, idx, count: sections.length }))
-    .sort((a, b) => a.count - b.count);
-
-  const sortedSections = sortedIndices.map((item) => item.sections);
-  const result: SectionWithCourse[][] = [];
-  const sizes = sortedSections.map((s) => s.length);
-  const indexes = new Array(sizes.length).fill(0);
-
-  // Pre-compute binary masks for all sections once
-  const sectionMasks: bigint[][] = sortedSections.map((sections) =>
-    sections.map(meetingTimesToBinaryMask),
-  );
-
-  while (true) {
-    // Build combination incrementally and check conflicts as we go
-    const combination: SectionWithCourse[] = [];
-    const combinationMasks: bigint[] = [];
-    let conflictIndex = -1;
-
-    // Build combination one course at a time, checking for conflicts
-    for (let i = 0; i < indexes.length; i++) {
-      const section = sortedSections[i][indexes[i]];
-      const mask = sectionMasks[i][indexes[i]];
-
-      // Check if this section conflicts with any already in the combination
-      for (let j = 0; j < combinationMasks.length; j++) {
-        if (masksConflict(combinationMasks[j], mask)) {
-          conflictIndex = i;
-          break;
-        }
-      }
-
-      if (conflictIndex !== -1) {
-        // Found conflict at position i, stop building this combination
-        break;
-      }
-
-      combination.push(section);
-      combinationMasks.push(mask);
-    }
-
-    if (conflictIndex === -1) {
-      // No conflict - we built a complete valid schedule
-      result.push(combination);
-      // Increment last index normally
-      if (incrementIndex(indexes, sizes, sizes.length - 1)) break;
-    } else {
-      // Conflict found at position conflictIndex
-      // Increment that position to skip this branch
-      if (incrementIndex(indexes, sizes, conflictIndex)) break;
-    }
-  }
-
-  return result;
-};
-
-/**
- * Helper function to try adding optional courses to a base schedule.
- */
-const addOptionalCourses = (
-  baseSchedule: SectionWithCourse[],
-  optionalSectionsByCourse: SectionWithCourse[][],
-  numCourses?: number,
-): SectionWithCourse[][] => {
-  const results: SectionWithCourse[][] = [];
-  const baseMasks = baseSchedule.map(meetingTimesToBinaryMask);
-
-  const generateOptionalCombinations = (
-    currentSchedule: SectionWithCourse[],
-    currentMasks: bigint[],
-    courseIndex: number,
-  ) => {
-    // Condition: If we hit the end of the available courses
-    if (courseIndex === optionalSectionsByCourse.length) {
-      // If numCourses is defined, only push if length matches exactly
-      // Otherwise, push everything
-      if (numCourses === undefined || currentSchedule.length === numCourses) {
-        results.push([...currentSchedule]);
-      }
-      return;
-    }
-
-    // Optimization: If it's impossible to reach numCourses even if we took
-    // every remaining course, stop this branch
-    if (numCourses !== undefined) {
-      const remainingSlots = optionalSectionsByCourse.length - courseIndex;
-      if (currentSchedule.length + remainingSlots < numCourses) return;
-
-      // Optimization: If we already have enough courses, don't try to add more
-      // Just jump to the end of the recursion to validate the current length
-      if (currentSchedule.length === numCourses) {
-        generateOptionalCombinations(
-          currentSchedule,
-          currentMasks,
-          optionalSectionsByCourse.length,
-        );
-        return;
-      }
-    }
-
-    // Choice A: Try not adding this optional course
-    generateOptionalCombinations(
-      currentSchedule,
-      currentMasks,
-      courseIndex + 1,
-    );
-
-    // Choice B: Try adding each section of this optional course
-    for (const section of optionalSectionsByCourse[courseIndex]) {
-      const sectionMask = meetingTimesToBinaryMask(section);
-      let hasConflict = false;
-      for (const mask of currentMasks) {
-        if (masksConflict(mask, sectionMask)) {
-          hasConflict = true;
-          break;
-        }
-      }
-
-      if (!hasConflict) {
-        generateOptionalCombinations(
-          [...currentSchedule, section],
-          [...currentMasks, sectionMask],
-          courseIndex + 1,
-        );
-      }
-    }
-  };
-
-  generateOptionalCombinations(baseSchedule, baseMasks, 0);
-  return results;
-};
-
 // the main generate schedule function
 // takes a list of locked course IDs and optional course IDs
 // returns a list of valid schedules (each schedule is a list of sections)
@@ -300,34 +136,52 @@ export const generateSchedules = async (
   );
   optionalSectionsByCourse.sort((a, b) => a.length - b.length);
 
-  const validLockedSchedules = generateCombinationsOptimized(
+  // Pre-compute optional section masks once — reused for every locked schedule
+  const optionalSectionMasks: bigint[][] = optionalSectionsByCourse.map(
+    (sections: SectionWithCourse[]) => sections.map(meetingTimesToBinaryMask),
+  );
+
+  const lockedSchedules = generateCombinationsOptimized(
     lockedSectionsByCourse,
+    MAX_RESULTS,
   );
 
   // Edge case: No locked courses
   if (lockedCourseIds.length === 0 && optionalCourseIds.length > 0) {
-    return addOptionalCourses([], optionalSectionsByCourse, numCourses);
+    return addOptionalCourses(
+      [],
+      BigInt(0),
+      optionalSectionsByCourse,
+      optionalSectionMasks,
+      numCourses,
+      MAX_RESULTS,
+    );
   }
 
   // If no optional courses, filter the locked schedules by the required count
   if (optionalCourseIds.length === 0) {
+    const schedules = lockedSchedules.map((r) => r.schedule);
     return numCourses !== undefined
-      ? validLockedSchedules.filter((s) => s.length === numCourses)
-      : validLockedSchedules;
+      ? schedules.filter((s) => s.length === numCourses)
+      : schedules;
   }
 
   const allSchedules: SectionWithCourse[][] = [];
-  for (const lockedSchedule of validLockedSchedules) {
+  for (const { schedule, mask } of lockedSchedules) {
     // If a locked schedule is already too big, it can't be valid
-    if (numCourses !== undefined && lockedSchedule.length > numCourses)
-      continue;
+    if (numCourses !== undefined && schedule.length > numCourses) continue;
 
+    const remaining = MAX_RESULTS - allSchedules.length;
     const schedulesWithOptional = addOptionalCourses(
-      lockedSchedule,
+      schedule,
+      mask,
       optionalSectionsByCourse,
-      numCourses, // Pass target down
+      optionalSectionMasks,
+      numCourses,
+      remaining,
     );
-    allSchedules.push(...schedulesWithOptional);
+    for (const s of schedulesWithOptional) allSchedules.push(s);
+    if (allSchedules.length >= MAX_RESULTS) break;
   }
 
   return allSchedules;

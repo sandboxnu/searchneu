@@ -1,31 +1,25 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAuditPlan, getAuditPlans } from "@/lib/dal/audits";
-import {
-  getCourseNamesBatch,
-  getCourseNupathsBatch,
-  getCourseDetailsBatch,
-} from "@/lib/dal/courses";
+import { getCourseNamesBatch, getCourseDetailsBatch } from "@/lib/dal/courses";
 import type { Requisite } from "@sneu/scraper/types";
 import { auth } from "@/lib/auth/auth";
 import NotFound from "@/app/not-found";
 import {
   Audit,
-  AuditCourse,
-  AuditTerm,
   AuditPlanRow,
   AuditPlanSummary,
   CourseDetails,
   HydratedAuditPlan,
   Major,
   Minor,
-  NUPathEnum,
   Whiteboard,
   WhiteboardEntry,
   DEFAULT_CATALOG_YEAR,
 } from "@/lib/graduate/types";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
+import { applyScheduleCourseDetails } from "@/lib/graduate/auditUtils";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
 
@@ -38,44 +32,6 @@ function collectRequisiteKeys(req: Requisite, out: Set<string>): void {
   if ("type" in req && "items" in req) {
     for (const item of req.items) collectRequisiteKeys(item, out);
   }
-}
-
-/**
- * Build a "SUBJECT-CLASSID" → name map by batch-fetching all unique courses
- * from the schedule and major/minor requirements in a single query.
- */
-async function buildCourseNameMap(
-  scheduleKeys: Set<string>,
-  majors: Major[],
-  minors: Minor[],
-): Promise<Record<string, string>> {
-  const keys = new Set(scheduleKeys);
-  for (const m of [...majors, ...minors]) {
-    for (const section of m.requirementSections) {
-      collectCourseKeys(section.requirements, keys);
-    }
-  }
-  return getCourseNamesBatch(keys);
-}
-
-/** Map over every course in a schedule, applying a transform function. */
-function mapScheduleCourses(
-  schedule: Audit,
-  fn: (c: AuditCourse) => AuditCourse,
-): Audit {
-  const mapTerm = (term: AuditTerm): AuditTerm => ({
-    ...term,
-    classes: term.classes.map(fn),
-  });
-  return {
-    years: (schedule.years ?? []).map((year) => ({
-      ...year,
-      fall: mapTerm(year.fall),
-      spring: mapTerm(year.spring),
-      summer1: mapTerm(year.summer1),
-      summer2: mapTerm(year.summer2),
-    })),
-  };
 }
 
 /** Handle old format (string[]) and new format (WhiteboardEntry). */
@@ -112,7 +68,7 @@ async function hydratePlan(row: AuditPlanRow): Promise<
 
   const schedule = row.schedule as Audit;
 
-  // Collect schedule course keys once, reused for names, nupaths, and details
+  // Collect schedule course keys once, reused for names and details
   const scheduleKeys = new Set<string>();
   for (const year of schedule.years ?? []) {
     for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
@@ -121,10 +77,18 @@ async function hydratePlan(row: AuditPlanRow): Promise<
     }
   }
 
-  const courseNames = await buildCourseNameMap(scheduleKeys, majors, minors);
-  const [courseNupaths, courseDetails] = await Promise.all([
-    getCourseNupathsBatch(scheduleKeys),
-    getCourseDetailsBatch(scheduleKeys),
+  // Requirement courses are fetched too, so courses dragged in from the
+  // sidebar get their real credits and NUPaths
+  const allKeys = new Set(scheduleKeys);
+  for (const m of [...majors, ...minors]) {
+    for (const section of m.requirementSections) {
+      collectCourseKeys(section.requirements, allKeys);
+    }
+  }
+
+  const [courseNames, courseDetails] = await Promise.all([
+    getCourseNamesBatch(allKeys),
+    getCourseDetailsBatch(allKeys),
   ]);
 
   // Collect coreq course keys so their names are available in the context
@@ -143,23 +107,7 @@ async function hydratePlan(row: AuditPlanRow): Promise<
     id: row.id,
     name: row.name,
     userId: row.userId,
-    schedule: mapScheduleCourses(schedule, (c) => {
-      const key = `${c.subject}-${c.classId}`;
-      const details = courseDetails[key];
-      return {
-        ...c,
-        name: courseNames[key] ?? c.name,
-        nupaths: (courseNupaths[key] ?? []).filter(
-          (code): code is NUPathEnum => code in NUPathEnum,
-        ),
-        ...(details && {
-          numCreditsMin: details.minCredits,
-          numCreditsMax: details.maxCredits,
-          coreqs: details.coreqs,
-          prereqs: details.prereqs,
-        }),
-      };
-    }),
+    schedule: applyScheduleCourseDetails(schedule, courseDetails, courseNames),
     majors,
     minors,
     concentration: row.concentration,

@@ -1,22 +1,53 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { Audit, Whiteboard, Major, Minor } from "@/lib/graduate/types";
+import {
+  Audit,
+  CourseDetails,
+  Whiteboard,
+  Major,
+  Minor,
+} from "@/lib/graduate/types";
+import { applyScheduleCourseDetails } from "@/lib/graduate/auditUtils";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import { BasePlanClient } from "./BasePlanClient";
 import NewPlanModal from "./modal/NewPlanModal";
 
 const COURSE_NAMES_KEY = "guest-plan-courseNames";
+const COURSE_DETAILS_KEY = "guest-plan-courseDetails";
+
+/**
+ * Persist server-provided data to localStorage; on subsequent visits (no
+ * search params, so the server sends nothing) fall back to the cached copy.
+ */
+function cacheOrRestore<T extends object>(key: string, fromServer: T): T {
+  if (Object.keys(fromServer).length > 0) {
+    try {
+      localStorage.setItem(key, JSON.stringify(fromServer));
+    } catch {
+      // quota exceeded — still use server data for this session
+    }
+    return fromServer;
+  }
+  try {
+    const cached = localStorage.getItem(key);
+    return cached ? (JSON.parse(cached) as T) : fromServer;
+  } catch {
+    return fromServer;
+  }
+}
 
 interface GuestPlanClientProps {
   initialCourseNames?: Record<string, string>;
+  initialCourseDetails?: Record<string, CourseDetails>;
   initialMajors?: Major[];
   initialMinors?: Minor[];
 }
 
 export function GuestPlanClient({
   initialCourseNames = {},
+  initialCourseDetails = {},
   initialMajors = [],
   initialMinors = [],
 }: GuestPlanClientProps) {
@@ -24,28 +55,14 @@ export function GuestPlanClient({
     (CreateAuditPlanInput & { whiteboard?: Whiteboard }) | null
   >("guest-plan", null);
 
-  // Persist server-provided course names to localStorage; on subsequent
-  // visits (no search params) fall back to the cached copy.
-  const courseNames = useMemo(() => {
-    const hasServerNames = Object.keys(initialCourseNames).length > 0;
-    if (hasServerNames) {
-      try {
-        localStorage.setItem(
-          COURSE_NAMES_KEY,
-          JSON.stringify(initialCourseNames),
-        );
-      } catch {
-        // quota exceeded — still use server names for this session
-      }
-      return initialCourseNames;
-    }
-    try {
-      const cached = localStorage.getItem(COURSE_NAMES_KEY);
-      return cached ? (JSON.parse(cached) as Record<string, string>) : {};
-    } catch {
-      return {};
-    }
-  }, [initialCourseNames]);
+  const courseNames = useMemo(
+    () => cacheOrRestore(COURSE_NAMES_KEY, initialCourseNames),
+    [initialCourseNames],
+  );
+  const courseDetails = useMemo(
+    () => cacheOrRestore(COURSE_DETAILS_KEY, initialCourseDetails),
+    [initialCourseDetails],
+  );
 
   const handlePersistSchedule = useCallback(
     (stripped: Audit, pruned: Whiteboard | null) => {
@@ -71,13 +88,16 @@ export function GuestPlanClient({
 
   return (
     <BasePlanClient
-      initialSchedule={guestPlan.schedule ?? { years: [] }}
+      initialSchedule={applyScheduleCourseDetails(
+        guestPlan.schedule ?? { years: [] },
+        courseDetails,
+      )}
       initialWhiteboard={guestPlan.whiteboard ?? {}}
       majors={initialMajors}
       minors={initialMinors}
       concentration={guestPlan.concentration ?? null}
       courseNames={courseNames}
-      courseDetails={{}}
+      courseDetails={courseDetails}
       onPersistSchedule={handlePersistSchedule}
       onPersistWhiteboard={handlePersistWhiteboard}
     />

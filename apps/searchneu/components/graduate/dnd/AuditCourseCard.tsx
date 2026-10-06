@@ -42,21 +42,12 @@ export function AuditCourseCard({
   const details = useCourseDetails(course.subject, course.classId);
   const coreqs =
     coreqsProp ?? extractCoreqCourses(course.coreqs ?? details?.coreqs);
-  // Enrich course with real credits from context so creditsInAudit works
-  // immediately after a drag-drop (without waiting for a server reload).
-  const enrichedCourse: AuditCourse = details
-    ? {
-        ...course,
-        numCreditsMin: course.numCreditsMin || details.minCredits,
-        numCreditsMax: course.numCreditsMax || details.maxCredits,
-      }
-    : course;
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: course.id!,
-    data: { course: enrichedCourse },
+    data: { course },
   });
   const name = useCourseName(course.subject, course.classId);
-  const nupaths = (course.nupaths ?? []).filter(
+  const nupaths = (course.nupaths ?? details?.nupaths ?? []).filter(
     (code) => code in NUPATH_DISPLAY,
   );
 

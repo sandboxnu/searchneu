@@ -10,7 +10,7 @@ import {
 import { sql, and, or, eq, desc } from "drizzle-orm";
 import { cache } from "react";
 import type { Course } from "@/lib/catalog/types";
-import type { CourseDetails } from "@/lib/graduate/types";
+import { NUPathEnum, type CourseDetails } from "@/lib/graduate/types";
 import type { Requisite } from "@sneu/scraper/types";
 
 /**
@@ -205,8 +205,9 @@ export async function getCourseNupathsBatch(
 export type { CourseDetails };
 
 /**
- * Batch-fetches credits, coreqs, and prereqs for each (subjectCode, courseNumber)
- * pair in a single query. Returns a map of "SUBJECT-COURSENUMBER" → CourseDetails.
+ * Batch-fetches credits, coreqs, prereqs, and NUPaths for each
+ * (subjectCode, courseNumber) pair. Returns a map of
+ * "SUBJECT-COURSENUMBER" → CourseDetails.
  */
 export async function getCourseDetailsBatch(
   keys: Set<string>,
@@ -236,13 +237,19 @@ export async function getCourseDetailsBatch(
     .where(or(...conditions))
     .orderBy(subjectsT.code, coursesT.courseNumber, desc(coursesT.termId));
 
+  const nupathMap = await getCourseNupathsBatch(keys);
+
   const detailsMap: Record<string, CourseDetails> = {};
   for (const row of rows) {
-    detailsMap[`${row.subjectCode}-${row.courseNumber}`] = {
+    const key = `${row.subjectCode}-${row.courseNumber}`;
+    detailsMap[key] = {
       minCredits: Number(row.minCredits),
       maxCredits: Number(row.maxCredits),
       coreqs: row.coreqs as Requisite,
       prereqs: row.prereqs as Requisite,
+      nupaths: (nupathMap[key] ?? []).filter(
+        (code): code is NUPathEnum => code in NUPathEnum,
+      ),
     };
   }
   return detailsMap;

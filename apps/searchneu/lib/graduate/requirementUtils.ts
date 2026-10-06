@@ -43,10 +43,48 @@ export function collectScheduleCourses(schedule: Audit): AuditCourse[] {
   return courses;
 }
 
-/** Check if a single requirement is fulfilled given schedule course keys. */
+/**
+ * Map each "SUBJECT CLASSID" in a schedule to its credits. Used to evaluate
+ * requirements, including "X credits from many" requirements that need to
+ * know how many credits each course is worth.
+ */
+export function collectScheduleCourseCredits(
+  schedule: Audit,
+): Map<string, number> {
+  const credits = new Map<string, number>();
+  for (const c of collectScheduleCourses(schedule)) {
+    credits.set(`${c.subject} ${c.classId}`, c.numCreditsMin);
+  }
+  return credits;
+}
+
+/** Schedule course keys that fall inside a RANGE requirement. */
+function matchingRangeCourses(
+  r: ICourseRange,
+  scheduleCourses: Map<string, number>,
+): string[] {
+  const exceptions = new Set(
+    r.exceptions.map((e) => `${e.subject} ${e.classId}`),
+  );
+  return [...scheduleCourses.keys()].filter((key) => {
+    const [subject, classId] = key.split(" ");
+    const id = parseInt(classId, 10);
+    return (
+      subject === r.subject &&
+      id >= r.idRangeStart &&
+      id <= r.idRangeEnd &&
+      !exceptions.has(key)
+    );
+  });
+}
+
+/**
+ * Check if a single requirement is fulfilled. `scheduleCourses` maps each
+ * "SUBJECT CLASSID" in the schedule to its credits.
+ */
 export function isRequirementFulfilled(
   req: Requirement,
-  scheduleCourses: Set<string>,
+  scheduleCourses: Map<string, number>,
 ): boolean {
   switch (req.type) {
     case "COURSE": {
@@ -63,32 +101,11 @@ export function isRequirementFulfilled(
     }
     case "XOM": {
       const r = req as IXofManyCourse;
-      let credits = 0;
-      for (const c of r.courses) {
-        if (isRequirementFulfilled(c, scheduleCourses)) {
-          credits += getRequirementCredits(c, scheduleCourses);
-        }
-      }
-      return credits >= r.numCreditsMin;
+      return sumFulfilledCredits(r.courses, scheduleCourses) >= r.numCreditsMin;
     }
     case "RANGE": {
       const r = req as ICourseRange;
-      const exceptions = new Set(
-        r.exceptions.map((e) => `${e.subject} ${e.classId}`),
-      );
-      for (const key of scheduleCourses) {
-        const [subject, classId] = key.split(" ");
-        const id = parseInt(classId, 10);
-        if (
-          subject === r.subject &&
-          id >= r.idRangeStart &&
-          id <= r.idRangeEnd &&
-          !exceptions.has(key)
-        ) {
-          return true;
-        }
-      }
-      return false;
+      return matchingRangeCourses(r, scheduleCourses).length > 0;
     }
     case "SECTION": {
       const s = req as Section;
@@ -100,32 +117,65 @@ export function isRequirementFulfilled(
   }
 }
 
-/** Estimate credits for a fulfilled requirement (used for XOM counting). */
+/** Total credits from the fulfilled requirements in a list. */
+function sumFulfilledCredits(
+  reqs: Requirement[],
+  scheduleCourses: Map<string, number>,
+): number {
+  let total = 0;
+  for (const req of reqs) {
+    if (isRequirementFulfilled(req, scheduleCourses)) {
+      total += getRequirementCredits(req, scheduleCourses);
+    }
+  }
+  return total;
+}
+
+/** Credits the schedule earns toward a requirement (used for XOM counting). */
 function getRequirementCredits(
   req: Requirement,
-  scheduleCourses: Set<string>,
+  scheduleCourses: Map<string, number>,
 ): number {
-  if (req.type === "COURSE") {
-    // Default to 4 credits per course if we can't determine
-    return 4;
-  }
-  if (req.type === "AND") {
-    const r = req as IAndCourse;
-    let total = 0;
-    for (const c of r.courses) {
-      if (isRequirementFulfilled(c, scheduleCourses)) {
-        total += getRequirementCredits(c, scheduleCourses);
-      }
+  switch (req.type) {
+    case "COURSE": {
+      const c = req as IRequiredCourse;
+      return scheduleCourses.get(`${c.subject} ${c.classId}`) ?? 0;
     }
-    return total;
+    case "OR": {
+      // Only one option counts, so use the first one that is fulfilled
+      const r = req as IOrCourse;
+      const taken = r.courses.find((c) =>
+        isRequirementFulfilled(c, scheduleCourses),
+      );
+      return taken ? getRequirementCredits(taken, scheduleCourses) : 0;
+    }
+    case "RANGE": {
+      const r = req as ICourseRange;
+      return matchingRangeCourses(r, scheduleCourses).reduce(
+        (sum, key) => sum + (scheduleCourses.get(key) ?? 0),
+        0,
+      );
+    }
+    case "AND":
+    case "XOM":
+      return sumFulfilledCredits(
+        (req as IAndCourse | IXofManyCourse).courses,
+        scheduleCourses,
+      );
+    case "SECTION":
+      return sumFulfilledCredits(
+        (req as Section).requirements,
+        scheduleCourses,
+      );
+    default:
+      return 0;
   }
-  return 4;
 }
 
 /** Count fulfilled vs total requirements for a section. */
 export function sectionCompletion(
   section: Section,
-  scheduleCourses: Set<string>,
+  scheduleCourses: Map<string, number>,
 ): { fulfilled: number; total: number } {
   let fulfilled = 0;
   for (const req of section.requirements) {
@@ -142,7 +192,7 @@ export function sectionCompletion(
 /** Check if a section is fully completed. */
 export function isSectionComplete(
   section: Section,
-  scheduleCourses: Set<string>,
+  scheduleCourses: Map<string, number>,
 ): boolean {
   const { fulfilled } = sectionCompletion(section, scheduleCourses);
   return fulfilled >= section.minRequirementCount;

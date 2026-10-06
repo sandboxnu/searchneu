@@ -4,8 +4,16 @@ import {
   buildWhiteboardFromSchedule,
   pruneWhiteboard,
   collectRequiredCourseKeys,
+  isRequirementFulfilled,
 } from "./requirementUtils";
-import { Audit, Section, SeasonEnum, StatusEnum, Whiteboard } from "./types";
+import {
+  Audit,
+  IXofManyCourse,
+  Section,
+  SeasonEnum,
+  StatusEnum,
+  Whiteboard,
+} from "./types";
 
 const term = (
   season: SeasonEnum,
@@ -140,4 +148,65 @@ test("pruneWhiteboard: returns null when nothing was removed (caller can skip pe
     Foundations: { courses: ["CS 2500"], status: "in_progress" },
   };
   assert.equal(pruneWhiteboard(schedule, wb), null);
+});
+
+const xom = (
+  numCreditsMin: number,
+  courses: IXofManyCourse["courses"],
+): IXofManyCourse => ({ type: "XOM", numCreditsMin, courses });
+
+test("isRequirementFulfilled (XOM): counts each course's real credits", () => {
+  const req = xom(4, [
+    { type: "COURSE", subject: "BIOL", classId: 1111 },
+    { type: "COURSE", subject: "BIOL", classId: 1112 },
+  ]);
+  // A 1-credit lab is not enough on its own...
+  assert.equal(isRequirementFulfilled(req, new Map([["BIOL 1112", 1]])), false);
+  // ...but lab + 4-credit lecture is
+  assert.equal(
+    isRequirementFulfilled(
+      req,
+      new Map([
+        ["BIOL 1111", 4],
+        ["BIOL 1112", 1],
+      ]),
+    ),
+    true,
+  );
+});
+
+test("isRequirementFulfilled (XOM): sums every course matching a RANGE", () => {
+  const req = xom(8, [
+    {
+      type: "RANGE",
+      subject: "CS",
+      idRangeStart: 3000,
+      idRangeEnd: 4999,
+      exceptions: [],
+    },
+  ]);
+  const twoSeminars = new Map([
+    ["CS 3001", 2],
+    ["CS 4002", 2],
+  ]);
+  assert.equal(isRequirementFulfilled(req, twoSeminars), false);
+  twoSeminars.set("CS 4500", 4);
+  assert.equal(isRequirementFulfilled(req, twoSeminars), true);
+});
+
+test("isRequirementFulfilled (XOM): an OR only counts one of its options", () => {
+  const req = xom(8, [
+    {
+      type: "OR",
+      courses: [
+        { type: "COURSE", subject: "MATH", classId: 1341 },
+        { type: "COURSE", subject: "MATH", classId: 1342 },
+      ],
+    },
+  ]);
+  const both = new Map([
+    ["MATH 1341", 4],
+    ["MATH 1342", 4],
+  ]);
+  assert.equal(isRequirementFulfilled(req, both), false);
 });

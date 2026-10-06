@@ -7,6 +7,7 @@ export interface CourseDetails {
   maxCredits: number;
   coreqs: Requisite;
   prereqs: Requisite;
+  nupaths: NUPathEnum[];
 }
 
 export type WhiteboardStatus = "not_started" | "in_progress" | "completed";

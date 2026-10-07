@@ -60,8 +60,17 @@ export function PlanClient({
     [plan.id],
   );
 
+  // BasePlanClient keeps the whiteboard in local state, so remount it when the
+  // program changes to pick up the whiteboard the server rebuilt for it
+  const programKey = [
+    plan.catalogYear,
+    ...plan.majors.map((major) => major.name),
+    ...plan.minors.map((minor) => minor.name),
+  ].join("|");
+
   return (
     <BasePlanClient
+      key={programKey}
       initialSchedule={plan.schedule}
       initialWhiteboard={plan.whiteboard ?? {}}
       majors={plan.majors}

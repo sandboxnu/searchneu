@@ -26,14 +26,24 @@ const DEFAULT_FILTERS: CatalogSearchFilters = {
 };
 
 const ACRONYM_STOPWORDS = new Set([
-    "a", "an", "the", "of", "and", "or", "to", "in", "for", "with", "on"
+  "a",
+  "an",
+  "the",
+  "of",
+  "and",
+  "or",
+  "to",
+  "in",
+  "for",
+  "with",
+  "on",
 ]);
 
 function getAcronym(name: string): string {
   const words = name
-      .split(/[^a-zA-Z]+/)
-      .filter(Boolean)
-      .filter((w) => !ACRONYM_STOPWORDS.has(w.toLowerCase()));
+    .split(/[^a-zA-Z]+/)
+    .filter(Boolean)
+    .filter((w) => !ACRONYM_STOPWORDS.has(w.toLowerCase()));
   return words.map((w) => w[0]).join("");
 }
 

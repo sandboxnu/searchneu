@@ -25,6 +25,28 @@ const DEFAULT_FILTERS: CatalogSearchFilters = {
   honors: false,
 };
 
+const ACRONYM_STOPWORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "of",
+  "and",
+  "or",
+  "to",
+  "in",
+  "for",
+  "with",
+  "on",
+]);
+
+function getAcronym(name: string): string {
+  const words = name
+    .split(/[^a-zA-Z]+/)
+    .filter(Boolean)
+    .filter((w) => !ACRONYM_STOPWORDS.has(w.toLowerCase()));
+  return words.map((w) => w[0]).join("");
+}
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 /**
@@ -54,7 +76,7 @@ export function useCatalogSearch(
     if (!courses || courses.length === 0) return null;
 
     const ms = new MiniSearch<CourseSearchResult>({
-      fields: ["name", "register", "courseNumber"],
+      fields: ["name", "register", "courseNumber", "acronym"],
       storeFields: [
         "id",
         "name",
@@ -74,7 +96,7 @@ export function useCatalogSearch(
         "honors",
       ],
       searchOptions: {
-        boost: { register: 1.5, name: 1 },
+        boost: { register: 1.5, acronym: 1.3, name: 1 },
         prefix: true,
         fuzzy: 0.2,
         combineWith: "AND",
@@ -83,6 +105,9 @@ export function useCatalogSearch(
       extractField: (doc, fieldName) => {
         if (fieldName === "register") {
           return `${doc.subjectCode} ${doc.courseNumber}`;
+        }
+        if (fieldName === "acronym") {
+          return getAcronym(doc.name);
         }
         return doc[fieldName as keyof CourseSearchResult] as string;
       },

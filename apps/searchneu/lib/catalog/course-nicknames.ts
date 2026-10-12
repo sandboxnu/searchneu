@@ -15,11 +15,7 @@ export const COURSE_NICKNAMES = [
   { register: "CS 2500", aliases: ["fundies", "fundies 1"] },
   { register: "CS 2510", aliases: ["fundies", "fundies 2"] },
   { register: "CS 4530", aliases: ["swe"] },
-  { register: "MATH 1341", aliases: ["calc1"] },
-  { register: "MATH 1342", aliases: ["calc2"] },
-  { register: "MATH 2321", aliases: ["calc3"] },
-  { register: "MATH 3081", aliases: ["prob and stats"] },
-  { register: "PHYS 3602", aliases: ["e&m"] },
+  { register: "PHYS 3602", aliases: ["e&m"] }
 ] as const satisfies ReadonlyArray<CourseNickname>;
 
 const NICKNAMES_BY_REGISTER: Record<string, readonly string[]> =

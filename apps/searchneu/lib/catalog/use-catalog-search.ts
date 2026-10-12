@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import MiniSearch from "minisearch";
 import useSWR from "swr";
 import type { CourseSearchResult } from "./types";
+import {getNicknames} from "@/lib/catalog/course-nicknames";
 
 export interface CatalogSearchFilters {
   query: string;
@@ -76,7 +77,7 @@ export function useCatalogSearch(
     if (!courses || courses.length === 0) return null;
 
     const ms = new MiniSearch<CourseSearchResult>({
-      fields: ["name", "register", "courseNumber", "acronym"],
+      fields: ["name", "register", "courseNumber", "acronym", "nickname"],
       storeFields: [
         "id",
         "name",
@@ -96,7 +97,7 @@ export function useCatalogSearch(
         "honors",
       ],
       searchOptions: {
-        boost: { register: 1.5, acronym: 1.3, name: 1 },
+        boost: { register: 1.5, nickname: 1.5, acronym: 1.3, name: 1 },
         prefix: true,
         fuzzy: 0.2,
         combineWith: "AND",
@@ -108,6 +109,9 @@ export function useCatalogSearch(
         }
         if (fieldName === "acronym") {
           return getAcronym(doc.name);
+        }
+        if (fieldName === "nickname") {
+          return getNicknames(`${doc.subjectCode} ${doc.courseNumber}`)
         }
         return doc[fieldName as keyof CourseSearchResult] as string;
       },

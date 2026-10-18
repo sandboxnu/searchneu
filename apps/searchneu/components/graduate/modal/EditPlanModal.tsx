@@ -327,7 +327,8 @@ export default function EditPlanModal({
           <DialogTitle className="flex justify-center">Edit Plan</DialogTitle>
         </DialogHeader>
 
-        <div className="flex h-full w-full flex-col justify-between gap-4">
+        {/* min-w-0 stops long select values from stretching the dialog grid */}
+        <div className="flex h-full w-full min-w-0 flex-col justify-between gap-4">
           {/* title */}
           <div>
             <Label htmlFor="title" className="text-neu6 text-xs font-bold">

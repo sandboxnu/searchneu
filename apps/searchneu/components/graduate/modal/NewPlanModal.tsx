@@ -407,7 +407,7 @@ export default function NewPlanModal({
               </DialogTitle>
             </DialogHeader>
             {/* outer div */}
-            <div className="flex h-full w-full flex-col justify-between gap-4">
+            <div className="flex h-full w-full min-w-0 flex-col justify-between gap-4">
               {/* title */}
               <div>
                 <Label htmlFor="title" className="text-neu6 text-xs font-bold">

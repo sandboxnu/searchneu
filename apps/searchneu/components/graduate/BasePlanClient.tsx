@@ -39,7 +39,8 @@ import type { CourseDetails } from "@/lib/graduate/types";
 import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
-import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
+// TODO: restore when whiteboard mode ships after release
+// import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
 import { Plus } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -67,7 +68,8 @@ export function BasePlanClient({
   courseNames,
   courseDetails,
   onPersistSchedule,
-  onPersistWhiteboard,
+  // TODO: restore when whiteboard mode ships after release
+  // onPersistWhiteboard,
 }: BasePlanClientProps) {
   const [schedule, setSchedule] = useState<Audit>(() =>
     assignDndIds(initialSchedule),
@@ -79,9 +81,10 @@ export function BasePlanClient({
   const [expandedYears, setExpandedYears] = useState<Set<number>>(
     () => new Set(),
   );
-  const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
-    "whiteboard",
-  );
+  // TODO: restore when whiteboard mode ships after release (see sidebar toggle below)
+  // const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
+  //   "whiteboard",
+  // );
 
   function persist(updated: Audit) {
     const withIds = assignDndIds(updated);
@@ -95,10 +98,11 @@ export function BasePlanClient({
     onPersistSchedule(stripDndIds(updated), pruned);
   }
 
-  function persistWhiteboard(updated: Whiteboard) {
-    setWhiteboard(updated);
-    onPersistWhiteboard(updated);
-  }
+  // TODO: restore when whiteboard mode ships after release
+  // function persistWhiteboard(updated: Whiteboard) {
+  //   setWhiteboard(updated);
+  //   onPersistWhiteboard(updated);
+  // }
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
@@ -254,7 +258,9 @@ export function BasePlanClient({
           <DeleteDropZone>
             <div className="flex min-h-0 flex-1 overflow-hidden">
               <div className="bg-neu25 flex min-h-0 w-[360px] flex-shrink-0 flex-col">
-                <div className="flex justify-center gap-1 px-4 pt-2">
+                {/* TODO: restore the Requirements/Whiteboard toggle when whiteboard
+                    mode ships after release */}
+                {/* <div className="flex justify-center gap-1 px-4 pt-2">
                   <button
                     type="button"
                     onClick={() => setSidebarMode("requirements")}
@@ -287,14 +293,14 @@ export function BasePlanClient({
                     whiteboard={whiteboard}
                     onWhiteboardChange={persistWhiteboard}
                   />
-                ) : (
-                  <Sidebar
-                    schedule={schedule}
-                    majors={majors}
-                    minors={minors}
-                    concentration={concentration}
-                  />
-                )}
+                ) : ( */}
+                <Sidebar
+                  schedule={schedule}
+                  majors={majors}
+                  minors={minors}
+                  concentration={concentration}
+                />
+                {/* )} */}
               </div>
 
               <div className="flex flex-grow flex-col overflow-auto pl-2">

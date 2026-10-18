@@ -39,7 +39,7 @@ export function RequirementSection({
   defaultOpen = false,
 }: {
   section: Section;
-  scheduleCourses: Set<string>;
+  scheduleCourses: Map<string, number>;
   defaultOpen?: boolean;
 }) {
   const [opened, setOpened] = useState(defaultOpen);
@@ -99,7 +99,7 @@ export function RequirementCard({
   scheduleCourses,
 }: {
   req: Requirement;
-  scheduleCourses: Set<string>;
+  scheduleCourses: Map<string, number>;
 }) {
   if (req.type === "COURSE") {
     const c = req as IRequiredCourse;

@@ -4,9 +4,9 @@ import NewPlanModal from "@/components/graduate/modal/NewPlanModal";
 import { auth } from "@/lib/auth/auth";
 import { getAuditPlans } from "@/lib/dal/audits";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
-import { getCourseNamesBatch } from "@/lib/dal/courses";
+import { getCourseNamesBatch, getCourseDetailsBatch } from "@/lib/dal/courses";
 import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
-import { Major, Minor } from "@/lib/graduate/types";
+import { CourseDetails, Major, Minor } from "@/lib/graduate/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -50,6 +50,7 @@ export default async function Page({
     : [];
 
   let courseNames: Record<string, string> = {};
+  let courseDetails: Record<string, CourseDetails> = {};
   let majors: Major[] = [];
   let minors: Minor[] = [];
 
@@ -69,7 +70,10 @@ export default async function Page({
       }
     }
 
-    courseNames = await getCourseNamesBatch(keys);
+    [courseNames, courseDetails] = await Promise.all([
+      getCourseNamesBatch(keys),
+      getCourseDetailsBatch(keys),
+    ]);
   }
 
   return (
@@ -77,6 +81,7 @@ export default async function Page({
       <GuestHeaderClient />
       <GuestPlanClient
         initialCourseNames={courseNames}
+        initialCourseDetails={courseDetails}
         initialMajors={majors}
         initialMinors={minors}
       />

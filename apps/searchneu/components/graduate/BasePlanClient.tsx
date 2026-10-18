@@ -32,6 +32,7 @@ import {
   removeCourse,
 } from "@/lib/graduate/planUtils";
 import { pruneWhiteboard } from "@/lib/graduate/requirementUtils";
+import { applyCourseDetails } from "@/lib/graduate/auditUtils";
 import { CourseNameContext } from "./CourseNameContext";
 import { CourseDetailsContext } from "./CourseDetailsContext";
 import type { CourseDetails } from "@/lib/graduate/types";
@@ -163,9 +164,11 @@ export function BasePlanClient({
         );
       }
 
-      // Add to target term
+      // Add to target term. Sidebar courses only carry a subject and classId,
+      // so look up their real credits and NUPaths before saving.
+      const details = courseDetails[`${course.subject}-${course.classId}`];
       targetTerm.classes.push({
-        ...course,
+        ...applyCourseDetails(course, details),
         id: `moving-${nextId()}`,
       });
     });

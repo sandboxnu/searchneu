@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Audit, Minor } from "@/lib/graduate/types";
-import { collectScheduleCourseKeys } from "@/lib/graduate/requirementUtils";
+import { collectScheduleCourseCredits } from "@/lib/graduate/requirementUtils";
 import {
   Select,
   SelectContent,
@@ -27,7 +27,7 @@ export function MinorsTab({
   const [selectedMinorIdx, setSelectedMinorIdx] = useState(0);
   const currentMinor = minors[selectedMinorIdx] ?? null;
   const scheduleCourses = useMemo(
-    () => collectScheduleCourseKeys(schedule),
+    () => collectScheduleCourseCredits(schedule),
     [schedule],
   );
 

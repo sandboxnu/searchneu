@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Audit, Major } from "@/lib/graduate/types";
-import { collectScheduleCourseKeys } from "@/lib/graduate/requirementUtils";
+import { collectScheduleCourseCredits } from "@/lib/graduate/requirementUtils";
 import { UNDECIDED_CONCENTRATION } from "@/lib/graduate/auditUtils";
 import {
   Select,
@@ -30,7 +30,7 @@ export function MajorsTab({
   const [selectedMajorIdx, setSelectedMajorIdx] = useState(0);
   const currentMajor = majors[selectedMajorIdx] ?? null;
   const scheduleCourses = useMemo(
-    () => collectScheduleCourseKeys(schedule),
+    () => collectScheduleCourseCredits(schedule),
     [schedule],
   );
 

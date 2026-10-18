@@ -77,13 +77,14 @@ export function createScheduleFromTemplate(
             const subject = courseParts[1];
             const classId = courseParts[2];
 
-            // Create a course object
+            // Credits are unknown here
+            // They are filled in from the catalog when the plan is loaded (applyScheduleCourseDetails)
             const course: AuditCourse = {
               name: courseStr,
               subject,
               classId,
-              numCreditsMin: 4, // Default credits
-              numCreditsMax: 4,
+              numCreditsMin: 0,
+              numCreditsMax: 0,
               id: null,
             };
 

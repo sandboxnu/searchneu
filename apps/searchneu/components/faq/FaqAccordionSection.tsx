@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FeedbackLink } from "@/components/feedback/FeedbackLink";
 
 /**
  * Renders the FAQ accordion list, displaying each question/answer pair
@@ -46,22 +47,59 @@ const FaqData = [
   },
   {
     title: "How do I ask a question/report an issue?",
-    description:
-      "Please share your thoughts using the Search NEU Contact Form.",
+    description: (
+      <>
+        Please share your thoughts using the{" "}
+        <FeedbackLink>Search NEU Contact Form</FeedbackLink>.
+      </>
+    ),
   },
   {
     title: "Where does SearchNEU get its data?",
-    description:
-      "All of our course data is public information we scrape from Northeastern, so you can access any info with a quick search on searchneu.com. For more information, refer to our developer documentation here: https://docs.searchneu.com/#/",
+    description: (
+      <>
+        All of our course data is public information we scrape from
+        Northeastern, so you can access any info with a quick search on
+        searchneu.com. For more information, refer to our developer
+        documentation{" "}
+        <a
+          href="https://docs.searchneu.com/#/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>
+        .
+      </>
+    ),
   },
   {
     title: "Who currently works on / maintains SearchNEU?",
-    description:
-      "SearchNEU is now developed and maintained by Sandbox. View our current team of developers and designers here: https://github.com/sandboxnu/searchneu?tab=readme-ov-file#contributors",
+    description: (
+      <>
+        SearchNEU is now developed and maintained by Sandbox. View our current
+        team of developers and designers{" "}
+        <a
+          href="https://github.com/sandboxnu/searchneu?tab=readme-ov-file#contributors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>
+        .
+      </>
+    ),
   },
   {
     title: "What's next for SearchNEU?",
-    description:
-      "We're always looking for ways to enhance the experience of using SearchNEU. Right now, we're exploring new features and potential integrations between SearchNEU and GraduateNU. We'd love to hear your ideas—share your suggestions with us through the SearchNEU Contact Form!",
+    description: (
+      <>
+        We are always looking for ways to enhance the experience of using
+        SearchNEU. Right now, we are exploring new features and potential
+        integrations between SearchNEU and GraduateNU. We would love to hear
+        your ideas—share your suggestions with us through the{" "}
+        <FeedbackLink>Search NEU Contact Form</FeedbackLink>!
+      </>
+    ),
   },
 ];

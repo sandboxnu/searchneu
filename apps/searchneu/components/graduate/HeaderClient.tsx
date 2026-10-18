@@ -21,7 +21,8 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { PencilIcon, Trash2Icon, CopyIcon, ShareIcon } from "lucide-react";
+// TODO: re-add ShareIcon here when share plan is implemented
+import { PencilIcon, Trash2Icon, CopyIcon } from "lucide-react";
 import { deletePlanAction } from "@/lib/graduate/actions";
 
 interface HeaderClientProps {
@@ -62,9 +63,10 @@ export function HeaderClient({
     toast("Copy plan coming soon");
   }
 
-  function handleShare() {
-    toast("Share plan coming soon");
-  }
+  // TODO: implement share plan, then restore this handler and the button below
+  // function handleShare() {
+  //   toast("Share plan coming soon");
+  // }
 
   return (
     <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
@@ -127,7 +129,8 @@ export function HeaderClient({
             >
               <CopyIcon className="size-3.5" />
             </Button>
-            <Button
+            {/* TODO: restore once share plan is implemented */}
+            {/* <Button
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
@@ -135,7 +138,7 @@ export function HeaderClient({
               title="Share plan"
             >
               <ShareIcon className="size-3.5" />
-            </Button>
+            </Button> */}
           </div>
         </div>
 

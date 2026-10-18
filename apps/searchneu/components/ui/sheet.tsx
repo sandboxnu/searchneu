@@ -65,10 +65,10 @@ function SheetContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-3 right-3"
-                size="icon-sm"
+                className="absolute top-3.5 right-4 md:right-6"
+                size="icon"
               >
-                <XIcon />
+                <XIcon className="size-5" />
                 <span className="sr-only">Close</span>
               </Button>
             }

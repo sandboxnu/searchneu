@@ -72,6 +72,11 @@ export function HeaderClient({
         <div className="flex flex-col gap-4">
           <Select
             value={String(currentPlan.id)}
+            // maps ids to names so the trigger shows the name before the popup opens
+            items={plans.map((plan) => ({
+              value: String(plan.id),
+              label: plan.name,
+            }))}
             onValueChange={(id) => router.push(`/graduate/${id}`)}
           >
             <SelectTrigger className="w-full min-w-48">

@@ -30,6 +30,7 @@ import {
   ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxInput,
   ComboboxItem,
   ComboboxList,
   ComboboxValue,
@@ -66,7 +67,6 @@ export default function NewPlanModal({
   isGuest,
 }: NewPlanModalProps) {
   const router = useRouter();
-  const majorsAnchorRef = useComboboxAnchor();
   const minorsAnchorRef = useComboboxAnchor();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(true);
   const isControlled = controlledOpen !== undefined;
@@ -242,7 +242,7 @@ export default function NewPlanModal({
       return;
     }
 
-    // NOTE: for now, concentrations are chosen from the first major that is selected */
+    // NOTE: only one major can be selected until multi-major support lands (#489)
     const majorData =
       supportedMajorsData.supportedMajors[catalogYear]?.[majors[0]];
 
@@ -276,7 +276,7 @@ export default function NewPlanModal({
         return;
       }
       if (!majors || majors.length === 0 || majors.every((m) => !m)) {
-        setFormError("Please select at least one major.");
+        setFormError("Please select a major.");
         return;
       }
     }
@@ -285,7 +285,7 @@ export default function NewPlanModal({
     setIsSubmitting(true);
     try {
       let schedule: Audit;
-      // NOTE: for now, template plans are based on the first selected major */
+      // NOTE: only one major can be selected until multi-major support lands (#489)
       if (
         useRecommendedTemplate &&
         template?.templateData &&
@@ -462,44 +462,32 @@ export default function NewPlanModal({
                     className="text-neu6 text-xs font-bold"
                     htmlFor="majors-select"
                   >
-                    MAJOR(S)
+                    MAJOR
                   </Label>
+                  {/* single-select until multi-major support lands (#489) */}
                   <Combobox
                     items={majorOptions
                       .map((major) => major.majorName)
                       .sort((a, b) => a.length - b.length)}
-                    multiple
-                    value={majors}
-                    onValueChange={setMajors}
+                    value={majors[0] ?? null}
+                    onValueChange={(major: string | null) =>
+                      setMajors(major ? [major] : [])
+                    }
                     disabled={catalogYear === null}
                   >
-                    <ComboboxChips
-                      ref={majorsAnchorRef}
+                    <ComboboxInput
+                      id="majors-select"
+                      disabled={catalogYear === null}
                       className={cn(
                         "border-neu3 w-full rounded-4xl bg-transparent",
                         catalogYear === null &&
                           "bg-neu3 cursor-not-allowed opacity-50",
                       )}
-                    >
-                      <ComboboxValue>
-                        {(values: string[]) =>
-                          values.map((major) => (
-                            <ComboboxChip key={major} aria-label={major}>
-                              {major}
-                            </ComboboxChip>
-                          ))
-                        }
-                      </ComboboxValue>
-                      <ComboboxChipsInput
-                        id="majors-select"
-                        placeholder={
-                          isLoadingMajors
-                            ? "Loading majors..."
-                            : "Select a major"
-                        }
-                      />
-                    </ComboboxChips>
-                    <ComboboxContent anchor={majorsAnchorRef}>
+                      placeholder={
+                        isLoadingMajors ? "Loading majors..." : "Select a major"
+                      }
+                    />
+                    <ComboboxContent>
                       <ComboboxEmpty>No results found</ComboboxEmpty>
                       <ComboboxList>
                         {(major: string) => (

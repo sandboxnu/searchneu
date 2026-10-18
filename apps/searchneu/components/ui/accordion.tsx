@@ -68,7 +68,7 @@ function AccordionContent({
     >
       <div
         className={cn(
-          "[&_a]:hover:text-blue bg-neu0 text-neu7 rounded-b-lg p-6 text-base [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4",
+          "[&_a]:hover:text-r5 [&_a]:transition-colors bg-neu0 text-neu7 rounded-b-lg p-6 text-base [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4",
           className,
         )}
       >

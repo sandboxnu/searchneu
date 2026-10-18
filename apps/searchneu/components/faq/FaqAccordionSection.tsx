@@ -96,8 +96,8 @@ const FaqData = [
       <>
         We are always looking for ways to enhance the experience of using
         SearchNEU. Right now, we are exploring new features and potential
-        integrations between SearchNEU and GraduateNU. We would love to hear your
-        ideas—share your suggestions with us through the{" "}
+        integrations between SearchNEU and GraduateNU. We would love to hear
+        your ideas—share your suggestions with us through the{" "}
         <FeedbackLink>Search NEU Contact Form</FeedbackLink>!
       </>
     ),

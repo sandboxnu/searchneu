@@ -23,6 +23,7 @@ import {
   ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxInput,
   ComboboxItem,
   ComboboxList,
   ComboboxValue,
@@ -72,7 +73,6 @@ export default function EditPlanModal({
   onPlanUpdated,
 }: EditPlanModalProps) {
   const router = useRouter();
-  const majorsAnchorRef = useComboboxAnchor();
   const minorsAnchorRef = useComboboxAnchor();
 
   const [message, setMessage] = useState(plan.name);
@@ -82,8 +82,9 @@ export default function EditPlanModal({
   const [catalogYear, setCatalogYear] = useState<number | null>(
     plan.catalogYear ?? null,
   );
+  // only the first major is kept until multi-major support lands (#489)
   const [majors, setMajors] = useState<string[]>(
-    plan.majors?.map((m) => m.name) ?? [],
+    plan.majors?.slice(0, 1).map((m) => m.name) ?? [],
   );
   const [minors, setMinors] = useState<string[]>(
     plan.minors?.map((m) => m.name) ?? [],
@@ -125,7 +126,7 @@ export default function EditPlanModal({
       // eslint-disable-next-line
       setMessage(plan.name);
       setCatalogYear(plan.catalogYear ?? null);
-      setMajors(plan.majors?.map((m) => m.name) ?? []);
+      setMajors(plan.majors?.slice(0, 1).map((m) => m.name) ?? []);
       setMinors(plan.minors?.map((m) => m.name) ?? []);
       setConcentration(plan.concentration ?? "");
       setIsNoMajorSelected(!plan.majors?.length);
@@ -194,7 +195,7 @@ export default function EditPlanModal({
     // reset to plan values on cancel
     setMessage(plan.name);
     setCatalogYear(plan.catalogYear ?? null);
-    setMajors(plan.majors?.map((m) => m.name) ?? []);
+    setMajors(plan.majors?.slice(0, 1).map((m) => m.name) ?? []);
     setMinors(plan.minors?.map((m) => m.name) ?? []);
     setConcentration(plan.concentration ?? "");
     setIsNoMajorSelected(!plan.majors?.length);
@@ -377,45 +378,33 @@ export default function EditPlanModal({
                 className="text-neu6 text-xs font-bold"
                 htmlFor="majors-select"
               >
-                MAJOR(S)
+                MAJOR
               </Label>
+              {/* single-select until multi-major support lands (#489) */}
               <Combobox
                 items={majorOptions
                   .map((major) => major.majorName)
                   .sort((a, b) => a.length - b.length)}
-                multiple
-                value={majors}
-                onValueChange={(newMajors: string[]) => {
-                  setMajors(newMajors);
+                value={majors[0] ?? null}
+                onValueChange={(major: string | null) => {
+                  setMajors(major ? [major] : []);
                   setConcentration(""); // changing major clears concentration
                 }}
                 disabled={catalogYear === null}
               >
-                <ComboboxChips
-                  ref={majorsAnchorRef}
+                <ComboboxInput
+                  id="majors-select"
+                  disabled={catalogYear === null}
                   className={cn(
                     "border-neu3 w-full rounded-4xl bg-transparent",
                     catalogYear === null &&
                       "bg-neu3 cursor-not-allowed opacity-50",
                   )}
-                >
-                  <ComboboxValue>
-                    {(values: string[]) =>
-                      values.map((major) => (
-                        <ComboboxChip key={major} aria-label={major}>
-                          {major}
-                        </ComboboxChip>
-                      ))
-                    }
-                  </ComboboxValue>
-                  <ComboboxChipsInput
-                    id="majors-select"
-                    placeholder={
-                      isLoadingMajors ? "Loading majors..." : "Select a major"
-                    }
-                  />
-                </ComboboxChips>
-                <ComboboxContent anchor={majorsAnchorRef}>
+                  placeholder={
+                    isLoadingMajors ? "Loading majors..." : "Select a major"
+                  }
+                />
+                <ComboboxContent>
                   <ComboboxEmpty>No results found</ComboboxEmpty>
                   <ComboboxList>
                     {(major: string) => (

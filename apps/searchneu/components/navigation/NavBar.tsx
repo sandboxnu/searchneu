@@ -11,6 +11,8 @@ import { use } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FlagValues } from "flags/react";
+import { authClient } from "@/lib/auth/auth-client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function NavBar({
   flags,
@@ -21,6 +23,9 @@ export function NavBar({
   const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
+
+  const { data: session, isPending } = authClient.useSession();
+  const schedulerDisabled = !isPending && !session;
 
   return (
     <nav className="flex gap-2 font-semibold">
@@ -58,14 +63,34 @@ export function NavBar({
         <BookMarkedIcon className="size-4" />
         <span>Catalog</span>
       </Link>
-      <Link
-        href="/scheduler"
-        data-active={pathname.includes("/scheduler")}
-        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-      >
-        <CalendarIcon className="size-4" />
-        <span> Scheduler</span>
-      </Link>
+      {schedulerDisabled ? (
+        <Tooltip>
+          <TooltipTrigger
+            delay={0}
+            render={
+              <span
+                aria-disabled="true"
+                className="bg-neu0 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm opacity-50"
+              >
+                <CalendarIcon className="size-4" />
+                <span> Scheduler</span>
+              </span>
+            }
+          />
+          <TooltipContent>
+            <p>Please sign in</p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        <Link
+          href="/scheduler"
+          data-active={pathname.includes("/scheduler")}
+          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+        >
+          <CalendarIcon className="size-4" />
+          <span> Scheduler</span>
+        </Link>
+      )}
       <Link
         href="/notifications"
         data-active={pathname.includes("/notifications")}

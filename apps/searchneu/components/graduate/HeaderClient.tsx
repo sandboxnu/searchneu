@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 // TODO: re-add ShareIcon here when share plan is implemented
-import { PencilIcon, Trash2Icon, CopyIcon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon, CopyIcon } from "lucide-react";
 import { deletePlanAction } from "@/lib/graduate/actions";
 
 interface HeaderClientProps {
@@ -95,12 +95,11 @@ export function HeaderClient({
 
           <div className="flex items-center gap-1.5">
             <Button
-              variant="destructive"
-              size="sm"
               onClick={() => setShowNewPlan(true)}
-              className="rounded-2xl"
+              className="h-9 gap-1 px-3 text-sm font-semibold"
             >
-              + New Plan
+              <PlusIcon className="size-3" />
+              New Plan
             </Button>
             <Button
               variant="secondary"

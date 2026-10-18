@@ -50,7 +50,16 @@ export function GuestHeaderClient() {
     <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
       <div className="flex items-start gap-5">
         <div className="flex flex-col gap-4">
-          <Select value={String(1)}>
+          <Select
+            value={String(1)}
+            // maps the value to a name so the trigger shows it before the popup opens
+            items={[
+              {
+                value: String(1),
+                label: guestPlan ? guestPlan.name : "Guest Plan",
+              },
+            ]}
+          >
             <SelectTrigger className="w-full min-w-48">
               <SelectValue placeholder="Select a plan" />
             </SelectTrigger>

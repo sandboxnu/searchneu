@@ -28,6 +28,7 @@ import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
+import { notFound } from "next/navigation";
 
 /** Extract "SUBJECT-CLASSID" keys from a Requisite (coreqs/prereqs JSON). */
 function collectRequisiteKeys(req: Requisite, out: Set<string>): void {
@@ -184,14 +185,14 @@ export default async function PlanPage({
 
   const planId = parseInt((await params).planId, 10);
   if (Number.isNaN(planId)) {
-    return <NotFound />;
+    notFound();
   }
 
   const plan = await getAuditPlan(planId, session.user.id);
   const userPlans: AuditPlanSummary[] = await getAuditPlans(session.user.id);
 
   if (!plan) {
-    return <NotFound />;
+    notFound();
   }
 
   const hydrated = await hydratePlan(plan);

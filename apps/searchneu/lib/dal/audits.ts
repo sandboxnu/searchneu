@@ -179,7 +179,7 @@ export async function createAuditPlan(
  * @param id the ID of the plan to be updated
  * @param userId the ID of the user updating the plan
  *
- * @returns the updated audit plan object or null if validation/creation fails
+ * @returns the updated audit plan object, null if validation/creation fails, or current audit plan object for no-op
  */
 export async function updateAuditPlan(
   updateAuditPlanInput: UpdateAuditPlanInput,
@@ -227,6 +227,7 @@ export async function updateAuditPlan(
       message: "Either update all major fields or only the schedule",
       id,
     });
+    return currentAuditPlan;
   }
 
   // validate major info if a real major update is happening

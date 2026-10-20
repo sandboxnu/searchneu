@@ -15,7 +15,7 @@ interface DiagramProps {
 export function Diagram({ src, alt, width, height }: DiagramProps) {
   return (
     <figure className="my-6">
-    <figcaption className="text-fd-muted-foreground text-sm">
+      <figcaption className="text-fd-muted-foreground text-sm">
         {alt} &mdash; click to enlarge, or{" "}
         <a href={src} target="_blank" rel="noreferrer">
           open it full size

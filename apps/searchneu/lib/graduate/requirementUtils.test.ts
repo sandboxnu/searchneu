@@ -5,10 +5,14 @@ import {
   pruneWhiteboard,
   collectRequiredCourseKeys,
   isRequirementFulfilled,
+  collectScheduleCourseKeys,
+  collectFulfilledNupaths,
 } from "./requirementUtils";
+import { creditsInAudit } from "./auditUtils";
 import {
   Audit,
   IXofManyCourse,
+  NUPathEnum,
   Section,
   SeasonEnum,
   StatusEnum,
@@ -209,4 +213,32 @@ test("isRequirementFulfilled (XOM): an or only counts one of its options", () =>
     ["MATH 1342", 4],
   ]);
   assert.equal(isRequirementFulfilled(req, both), false);
+});
+
+test("overridden courses count toward requirements, credits, and nupaths", () => {
+  const schedule: Audit = {
+    ...scheduleWith([{ subject: "CS", classId: "2000" }]),
+    overrides: [
+      {
+        name: "Lab for CS 2000",
+        subject: "CS",
+        classId: "2001",
+        nupaths: [NUPathEnum.ND],
+        numCreditsMin: 1,
+        numCreditsMax: 1,
+        id: null,
+      },
+    ],
+  };
+  const keys = collectScheduleCourseKeys(schedule);
+  assert.ok(keys.has("CS 2000"));
+  assert.ok(keys.has("CS 2001"));
+  assert.equal(creditsInAudit(schedule), 5);
+  assert.ok(collectFulfilledNupaths(schedule).has(NUPathEnum.ND));
+});
+
+test("plans saved without overrides still work", () => {
+  const schedule = scheduleWith([{ subject: "CS", classId: "2000" }]);
+  assert.equal(creditsInAudit(schedule), 4);
+  assert.deepEqual([...collectScheduleCourseKeys(schedule)], ["CS 2000"]);
 });

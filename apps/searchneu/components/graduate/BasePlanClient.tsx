@@ -22,7 +22,8 @@ import {
 import {
   assignDndIds,
   stripDndIds,
-  flatTerms,
+  courseContainers,
+  CourseContainer,
   isSidebarCourse,
   collisionAlgorithm,
   nextId,
@@ -38,6 +39,7 @@ import { CourseDetailsContext } from "./CourseDetailsContext";
 import type { CourseDetails } from "@/lib/graduate/types";
 import { Sidebar } from "./sidebar/Sidebar";
 import { AuditYearRow } from "./dnd/AuditYearRow";
+import { AuditOverridesRow } from "./dnd/AuditOverridesRow";
 import { CourseCardOverlay } from "./dnd/AuditCourseCard";
 // TODO: restore when whiteboard mode ships after release
 // import { WhiteboardSidebar } from "./sidebar/WhiteboardSidebar";
@@ -81,6 +83,7 @@ export function BasePlanClient({
   const [expandedYears, setExpandedYears] = useState<Set<number>>(
     () => new Set(),
   );
+  const [overridesExpanded, setOverridesExpanded] = useState(false);
   // TODO: restore when whiteboard mode ships after release (see sidebar toggle below)
   // const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
   //   "whiteboard",
@@ -122,56 +125,51 @@ export function BasePlanClient({
     if (!course) return;
 
     const updated = produce(schedule, (draft) => {
-      const terms = flatTerms(draft);
-      const targetTerm = terms.find((t) => t.id === over.id);
+      // terms + the overrides list; mutate classes in place so immer sees it
+      const containers = courseContainers(draft);
+      const target = containers.find((t) => t.id === over.id);
+      const removeFrom = (container: CourseContainer) => {
+        const index = container.classes.findIndex((c) => c.id === active.id);
+        if (index !== -1) container.classes.splice(index, 1);
+      };
 
       if (over.id === DELETE_ZONE_ID) {
         // Delete: remove from source
-        const sourceTerm = terms.find((t) =>
+        const source = containers.find((t) =>
           t.classes.some((c) => c.id === active.id),
         );
-        if (sourceTerm) {
-          sourceTerm.classes = sourceTerm.classes.filter(
-            (c) => c.id !== active.id,
-          );
-        }
+        if (source) removeFrom(source);
         return;
       }
 
-      if (!targetTerm) return;
+      if (!target) return;
 
       const fromSidebar = isSidebarCourse(active.id as string);
-      const sourceTerm = fromSidebar
+      const source = fromSidebar
         ? null
-        : terms.find((t) => t.classes.some((c) => c.id === active.id));
+        : containers.find((t) => t.classes.some((c) => c.id === active.id));
 
       // No-op: dropped on same term
-      if (!fromSidebar && sourceTerm && sourceTerm.id === targetTerm.id) return;
+      if (!fromSidebar && source && source.id === target.id) return;
 
       // Duplicate check (skip for generic courses)
       if (
         !course.generic &&
-        targetTerm.classes.some(
+        target.classes.some(
           (c) => c.classId === course.classId && c.subject === course.subject,
         )
       ) {
-        toast.error(
-          `${course.subject}${course.classId} already exists in that term.`,
-        );
+        toast.error(`${course.subject}${course.classId} is already there.`);
         return;
       }
 
-      // Remove from source term (if not from sidebar)
-      if (sourceTerm) {
-        sourceTerm.classes = sourceTerm.classes.filter(
-          (c) => c.id !== active.id,
-        );
-      }
+      // Remove from source (if not from sidebar)
+      if (source) removeFrom(source);
 
-      // Add to target term. Sidebar courses only carry a subject and classId,
+      // Add to target. Sidebar courses only carry a subject and classId,
       // so look up their real credits and NUPaths before saving.
       const details = courseDetails[`${course.subject}-${course.classId}`];
-      targetTerm.classes.push({
+      target.classes.push({
         ...applyCourseDetails(course, details),
         id: `moving-${nextId()}`,
       });
@@ -226,6 +224,38 @@ export function BasePlanClient({
     courseIndex: number,
   ) {
     persist(removeCourse(schedule, yearNum, season, courseIndex));
+  }
+
+  function handleAddOverrides(courses: AuditCourse[]) {
+    let skipped = 0;
+    const updated = produce(schedule, (draft) => {
+      draft.overrides ??= [];
+      for (const course of courses) {
+        if (
+          draft.overrides.some(
+            (c) => c.classId === course.classId && c.subject === course.subject,
+          )
+        ) {
+          skipped++;
+          continue;
+        }
+        draft.overrides.push({ ...course, id: null });
+      }
+    });
+    if (skipped > 0) {
+      toast.warning(
+        `${skipped} course${skipped !== 1 ? "s were" : " was"} already overridden.`,
+      );
+    }
+    persist(updated);
+  }
+
+  function handleRemoveOverride(courseIndex: number) {
+    persist(
+      produce(schedule, (draft) => {
+        draft.overrides?.splice(courseIndex, 1);
+      }),
+    );
   }
 
   function handleDeleteYear(yearNum: number) {
@@ -337,6 +367,17 @@ export function BasePlanClient({
                   <Plus className="h-4 w-4 shrink-0" />
                   Add Year
                 </button>
+                <div className="mt-[10px] pb-[10px]">
+                  <AuditOverridesRow
+                    courses={schedule.overrides ?? []}
+                    expanded={overridesExpanded}
+                    majors={majors}
+                    minors={minors}
+                    onToggle={() => setOverridesExpanded((prev) => !prev)}
+                    onRemoveCourse={handleRemoveOverride}
+                    onAddCourses={handleAddOverrides}
+                  />
+                </div>
               </div>
             </div>
           </DeleteDropZone>

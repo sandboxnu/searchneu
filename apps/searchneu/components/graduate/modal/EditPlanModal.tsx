@@ -30,6 +30,7 @@ import {
   useComboboxAnchor,
 } from "@/components/ui/combobox";
 import { cn } from "@/lib/cn";
+import { allAuditCourses } from "@/lib/graduate/auditUtils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -253,16 +254,8 @@ export default function EditPlanModal({
         const courseKeys = new Set<string>();
         const schedule = current.schedule;
         if (schedule?.years) {
-          for (const year of schedule.years) {
-            for (const term of [
-              year.fall,
-              year.spring,
-              year.summer1,
-              year.summer2,
-            ]) {
-              for (const c of term.classes)
-                courseKeys.add(`${c.subject}-${c.classId}`);
-            }
+          for (const c of allAuditCourses(schedule)) {
+            courseKeys.add(`${c.subject}-${c.classId}`);
           }
         }
 

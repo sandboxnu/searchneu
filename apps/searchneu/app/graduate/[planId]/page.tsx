@@ -19,7 +19,10 @@ import {
 } from "@/lib/graduate/types";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
 import { collectCourseKeys } from "@/lib/graduate/requirementUtils";
-import { applyScheduleCourseDetails } from "@/lib/graduate/auditUtils";
+import {
+  allAuditCourses,
+  applyScheduleCourseDetails,
+} from "@/lib/graduate/auditUtils";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
 
@@ -70,11 +73,8 @@ async function hydratePlan(row: AuditPlanRow): Promise<
 
   // Collect schedule course keys once, reused for names and details
   const scheduleKeys = new Set<string>();
-  for (const year of schedule.years ?? []) {
-    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
-      for (const c of term.classes)
-        scheduleKeys.add(`${c.subject}-${c.classId}`);
-    }
+  for (const c of allAuditCourses(schedule)) {
+    scheduleKeys.add(`${c.subject}-${c.classId}`);
   }
 
   // Requirement courses are fetched too, so courses dragged in from the

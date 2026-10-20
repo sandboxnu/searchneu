@@ -30,6 +30,7 @@ import {
   useComboboxAnchor,
 } from "@/components/ui/combobox";
 import { cn } from "@/lib/cn";
+import { allAuditCourses } from "@/lib/graduate/auditUtils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -253,16 +254,8 @@ export default function EditPlanModal({
         const courseKeys = new Set<string>();
         const schedule = current.schedule;
         if (schedule?.years) {
-          for (const year of schedule.years) {
-            for (const term of [
-              year.fall,
-              year.spring,
-              year.summer1,
-              year.summer2,
-            ]) {
-              for (const c of term.classes)
-                courseKeys.add(`${c.subject}-${c.classId}`);
-            }
+          for (const c of allAuditCourses(schedule)) {
+            courseKeys.add(`${c.subject}-${c.classId}`);
           }
         }
 
@@ -327,7 +320,8 @@ export default function EditPlanModal({
           <DialogTitle className="flex justify-center">Edit Plan</DialogTitle>
         </DialogHeader>
 
-        <div className="flex h-full w-full flex-col justify-between gap-4">
+        {/* min-w-0 stops long select values from stretching the dialog grid */}
+        <div className="flex h-full w-full min-w-0 flex-col justify-between gap-4">
           {/* title */}
           <div>
             <Label htmlFor="title" className="text-neu6 text-xs font-bold">

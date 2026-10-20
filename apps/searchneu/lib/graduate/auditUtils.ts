@@ -71,9 +71,9 @@ export function applyCourseDetails(
 }
 
 /**
- * Apply `applyCourseDetails` to every course in a schedule, and fill in
- * course names when `courseNames` is given. Both maps are keyed by
- * "SUBJECT-CLASSID".
+ * Apply `applyCourseDetails` to every course in a schedule (including
+ * overrides), and fill in course names when `courseNames` is given. Both maps
+ * are keyed by "SUBJECT-CLASSID".
  */
 export function applyScheduleCourseDetails(
   schedule: Audit,
@@ -99,18 +99,27 @@ export function applyScheduleCourseDetails(
       summer1: mapTerm(year.summer1),
       summer2: mapTerm(year.summer2),
     })),
+    overrides: (schedule.overrides ?? []).map(mapCourse),
   };
 }
 
-/** Sum of minimum credits across all terms in an audit. */
-export function creditsInAudit(audit: Audit): number {
-  let sum = 0;
-  for (const year of audit.years) {
+/**
+ * Every course that counts toward the audit: all courses in every term, plus
+ * overridden courses. Use this instead of walking years/terms by hand so
+ * overrides are never missed.
+ */
+export function allAuditCourses(audit: Audit): AuditCourse[] {
+  const courses: AuditCourse[] = [];
+  for (const year of audit.years ?? []) {
     for (const term of allTerms(year)) {
-      for (const course of term.classes) {
-        sum += course.numCreditsMin;
-      }
+      courses.push(...term.classes);
     }
   }
-  return sum;
+  courses.push(...(audit.overrides ?? []));
+  return courses;
+}
+
+/** Sum of minimum credits across all terms (and overrides) in an audit. */
+export function creditsInAudit(audit: Audit): number {
+  return allAuditCourses(audit).reduce((sum, c) => sum + c.numCreditsMin, 0);
 }

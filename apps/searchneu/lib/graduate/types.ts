@@ -164,10 +164,14 @@ export interface AuditYear {
  * A clean version of a student's audit as used in of the App with no
  * redundunt year information.
  *
- * @param years A list of the years of this object
+ * @param years     A list of the years of this object
+ * @param overrides Courses the student has credit for without taking them in
+ *   a term (e.g. an overridden coreq). They count toward the audit. Optional
+ *   so plans saved before this existed stay valid.
  */
 export interface Audit {
   years: AuditYear[];
+  overrides?: AuditCourse[];
 }
 
 export interface ParsedCourse {

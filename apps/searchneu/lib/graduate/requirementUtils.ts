@@ -11,33 +11,26 @@ import {
   Whiteboard,
   WhiteboardStatus,
 } from "./types";
+import { allAuditCourses } from "./auditUtils";
 
-/** Collect all "SUBJECT CLASSID" keys present in a schedule. */
+/** Collect all "SUBJECT CLASSID" keys present in a schedule (incl. overrides). */
 export function collectScheduleCourseKeys(schedule: Audit): Set<string> {
   const keys = new Set<string>();
-  for (const year of schedule.years ?? []) {
-    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
-      for (const c of term.classes) {
-        keys.add(`${c.subject} ${c.classId}`);
-      }
-    }
+  for (const c of allAuditCourses(schedule)) {
+    keys.add(`${c.subject} ${c.classId}`);
   }
   return keys;
 }
 
-/** Collect all AuditCourse objects from a schedule. */
+/** Collect all AuditCourse objects from a schedule (incl. overrides). */
 export function collectScheduleCourses(schedule: Audit): AuditCourse[] {
   const seen = new Set<string>();
   const courses: AuditCourse[] = [];
-  for (const year of schedule.years ?? []) {
-    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
-      for (const c of term.classes) {
-        const key = `${c.subject} ${c.classId}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          courses.push(c);
-        }
-      }
+  for (const c of allAuditCourses(schedule)) {
+    const key = `${c.subject} ${c.classId}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      courses.push(c);
     }
   }
   return courses;
@@ -293,15 +286,9 @@ export function pruneWhiteboard(
 /** Collect all NUPath short codes fulfilled by courses in the schedule. */
 export function collectFulfilledNupaths(schedule: Audit): Set<string> {
   const fulfilled = new Set<string>();
-  for (const year of schedule.years ?? []) {
-    for (const term of [year.fall, year.spring, year.summer1, year.summer2]) {
-      for (const course of term.classes) {
-        if (course.nupaths) {
-          for (const np of course.nupaths) {
-            fulfilled.add(np);
-          }
-        }
-      }
+  for (const course of allAuditCourses(schedule)) {
+    for (const np of course.nupaths ?? []) {
+      fulfilled.add(np);
     }
   }
   return fulfilled;

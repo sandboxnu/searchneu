@@ -5,12 +5,13 @@ import {
 } from "@dnd-kit/core";
 import { produce } from "immer";
 import { SeasonEnum, StatusEnum } from "./types";
-import type { Audit, AuditTerm } from "./types";
+import type { Audit, AuditCourse, AuditTerm } from "./types";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
 export const SIDEBAR_COURSE_PREFIX = "sidebar-";
 export const DELETE_ZONE_ID = "delete-zone";
+export const OVERRIDES_ID = "overrides";
 
 // ── ID Counter ───────────────────────────────────────────────────────────────
 
@@ -22,6 +23,7 @@ export function nextId(): number {
 
 // ── DnD ID assignment / stripping ────────────────────────────────────────────
 
+/** Gives every term and course a dnd id. Always returns an `overrides` array. */
 export function assignDndIds(schedule: Audit): Audit {
   return {
     years: (schedule.years ?? []).map((year) => ({
@@ -31,6 +33,7 @@ export function assignDndIds(schedule: Audit): Audit {
       summer1: assignTermIds(year.summer1, year.year),
       summer2: assignTermIds(year.summer2, year.year),
     })),
+    overrides: assignCourseIds(schedule.overrides ?? []),
   };
 }
 
@@ -38,11 +41,15 @@ function assignTermIds(term: AuditTerm, yearNum: number): AuditTerm {
   return {
     ...term,
     id: `${yearNum}-${term.season}`,
-    classes: term.classes.map((c) => ({
-      ...c,
-      id: `${c.subject}-${c.classId}-${nextId()}`,
-    })),
+    classes: assignCourseIds(term.classes),
   };
+}
+
+function assignCourseIds(courses: AuditCourse[]): AuditCourse[] {
+  return courses.map((c) => ({
+    ...c,
+    id: `${c.subject}-${c.classId}-${nextId()}`,
+  }));
 }
 
 export function stripDndIds(schedule: Audit): Audit {
@@ -54,6 +61,7 @@ export function stripDndIds(schedule: Audit): Audit {
       summer1: stripTermIds(year.summer1),
       summer2: stripTermIds(year.summer2),
     })),
+    overrides: (schedule.overrides ?? []).map((c) => ({ ...c, id: null })),
   };
 }
 
@@ -77,6 +85,24 @@ export function flatTerms(schedule: Audit): AuditTerm[] {
     terms.push(y.fall, y.spring, y.summer1, y.summer2);
   }
   return terms;
+}
+
+/** Anything courses can be dragged into or out of: a term, or the overrides list. */
+export interface CourseContainer {
+  id: string | null;
+  classes: AuditCourse[];
+}
+
+/**
+ * Every drop target in the schedule: each term, plus the overrides list.
+ * Mutate `classes` in place (push/splice) so changes reach an immer draft.
+ */
+export function courseContainers(schedule: Audit): CourseContainer[] {
+  const containers: CourseContainer[] = flatTerms(schedule);
+  if (schedule.overrides) {
+    containers.push({ id: OVERRIDES_ID, classes: schedule.overrides });
+  }
+  return containers;
 }
 
 // ── Schedule Mutations ───────────────────────────────────────────────────────

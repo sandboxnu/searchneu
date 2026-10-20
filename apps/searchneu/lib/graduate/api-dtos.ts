@@ -40,6 +40,7 @@ const AuditYearSchema = z.object({
 
 const AuditScheduleSchema = z.object({
   years: z.array(AuditYearSchema),
+  overrides: z.array(AuditCourseSchema).optional(),
 });
 
 const WhiteboardSchema = z.record(

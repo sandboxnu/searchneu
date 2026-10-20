@@ -21,7 +21,8 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { PencilIcon, Trash2Icon, CopyIcon, ShareIcon } from "lucide-react";
+// TODO: re-add ShareIcon here when share plan is implemented
+import { PencilIcon, PlusIcon, Trash2Icon, CopyIcon } from "lucide-react";
 import { deletePlanAction } from "@/lib/graduate/actions";
 
 interface HeaderClientProps {
@@ -62,9 +63,10 @@ export function HeaderClient({
     toast("Copy plan coming soon");
   }
 
-  function handleShare() {
-    toast("Share plan coming soon");
-  }
+  // TODO: implement share plan, then restore this handler and the button below
+  // function handleShare() {
+  //   toast("Share plan coming soon");
+  // }
 
   return (
     <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
@@ -72,6 +74,11 @@ export function HeaderClient({
         <div className="flex flex-col gap-4">
           <Select
             value={String(currentPlan.id)}
+            // maps ids to names so the trigger shows the name before the popup opens
+            items={plans.map((plan) => ({
+              value: String(plan.id),
+              label: plan.name,
+            }))}
             onValueChange={(id) => router.push(`/graduate/${id}`)}
           >
             <SelectTrigger className="w-full min-w-48">
@@ -88,12 +95,11 @@ export function HeaderClient({
 
           <div className="flex items-center gap-1.5">
             <Button
-              variant="destructive"
-              size="sm"
               onClick={() => setShowNewPlan(true)}
-              className="rounded-2xl"
+              className="h-9 gap-1 px-3 text-sm font-semibold"
             >
-              + New Plan
+              <PlusIcon className="size-3" />
+              New Plan
             </Button>
             <Button
               variant="secondary"
@@ -122,7 +128,8 @@ export function HeaderClient({
             >
               <CopyIcon className="size-3.5" />
             </Button>
-            <Button
+            {/* TODO: restore once share plan is implemented */}
+            {/* <Button
               variant="secondary"
               size="sm"
               className="size-8 rounded-full p-0"
@@ -130,7 +137,7 @@ export function HeaderClient({
               title="Share plan"
             >
               <ShareIcon className="size-3.5" />
-            </Button>
+            </Button> */}
           </div>
         </div>
 

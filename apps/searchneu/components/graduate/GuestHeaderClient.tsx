@@ -18,7 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
@@ -50,7 +50,16 @@ export function GuestHeaderClient() {
     <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
       <div className="flex items-start gap-5">
         <div className="flex flex-col gap-4">
-          <Select value={String(1)}>
+          <Select
+            value={String(1)}
+            // maps the value to a name so the trigger shows it before the popup opens
+            items={[
+              {
+                value: String(1),
+                label: guestPlan ? guestPlan.name : "Guest Plan",
+              },
+            ]}
+          >
             <SelectTrigger className="w-full min-w-48">
               <SelectValue placeholder="Select a plan" />
             </SelectTrigger>
@@ -62,13 +71,13 @@ export function GuestHeaderClient() {
           </Select>
 
           <div className="flex items-center gap-1.5">
+            {/* guests get one plan, and this header only renders once it exists */}
             <Button
-              variant="destructive"
-              size="sm"
-              className="rounded-2xl"
+              className="h-9 gap-1 px-3 text-sm font-semibold"
               disabled={true}
             >
-              + New Plan
+              <PlusIcon className="size-3" />
+              New Plan
             </Button>
             <Button
               variant="secondary"

@@ -116,21 +116,18 @@ export function RequirementCard({
     const r = req as IAndCourse;
     const allCourses = r.courses.every((c) => c.type === "COURSE");
     if (allCourses && r.courses.length > 0) {
-      const main = r.courses[0] as IRequiredCourse;
-      const allInPlan = r.courses.every((c) => {
-        const course = c as IRequiredCourse;
-        return scheduleCourses.has(`${course.subject} ${course.classId}`);
-      });
-      const coreqs = r.courses.slice(1).map((c) => {
-        const course = c as IRequiredCourse;
-        return { subject: course.subject, classId: String(course.classId) };
-      });
+      // A course and its coreqs (e.g. CS 1800 + CS 1802): one card each,
+      // stacked tightly so they read as a pair
       return (
-        <AuditCourseCard
-          course={toAuditCourse(main.subject, main.classId)}
-          fulfilled={allInPlan}
-          coreqs={coreqs}
-        />
+        <div className="flex flex-col gap-1">
+          {r.courses.map((c, i) => (
+            <RequirementCard
+              key={i}
+              req={c}
+              scheduleCourses={scheduleCourses}
+            />
+          ))}
+        </div>
       );
     }
     return (

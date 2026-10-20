@@ -1,7 +1,6 @@
 // ── CourseCard ────────────────────────────────────────────────────────────────
 
 import { AuditCourse } from "@/lib/graduate/types";
-import type { Requisite } from "@sneu/scraper/types";
 import { useDraggable } from "@dnd-kit/core";
 import { useCourseName } from "../CourseNameContext";
 import { useCourseDetails } from "../CourseDetailsContext";
@@ -9,39 +8,20 @@ import { NUPATH_DISPLAY } from "@/lib/graduate/requirementUtils";
 import { GripVertical, Check } from "lucide-react";
 import { DeleteIcon } from "@/components/icons/Delete";
 
-/** Extract a flat list of {subject, classId} from a Requisite (coreqs JSON). */
-function extractCoreqCourses(
-  req?: Requisite,
-): { subject: string; classId: string }[] {
-  if (!req || typeof req !== "object") return [];
-  if ("subject" in req && "courseNumber" in req) {
-    return [{ subject: req.subject, classId: req.courseNumber }];
-  }
-  if ("type" in req && "items" in req) {
-    return req.items.flatMap((item) => {
-      if ("subject" in item && "courseNumber" in item) {
-        return [{ subject: item.subject, classId: item.courseNumber }];
-      }
-      return [];
-    });
-  }
-  return [];
-}
-
+/**
+ * One draggable course. Coreqs (e.g. CS 2000 + CS 2001) are separate
+ * courses in the plan, so each one gets its own card.
+ */
 export function AuditCourseCard({
   course,
   onRemove,
   fulfilled,
-  coreqs: coreqsProp,
 }: {
   course: AuditCourse;
   onRemove?: () => void;
   fulfilled?: boolean;
-  coreqs?: { subject: string; classId: string }[];
 }) {
   const details = useCourseDetails(course.subject, course.classId);
-  const coreqs =
-    coreqsProp ?? extractCoreqCourses(course.coreqs ?? details?.coreqs);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: course.id!,
     data: { course },
@@ -91,14 +71,6 @@ export function AuditCourseCard({
               ))}
             </div>
           )}
-          {coreqs.map((c, i) => (
-            <CoreqLine
-              key={i}
-              subject={c.subject}
-              classId={c.classId}
-              fulfilled={fulfilled}
-            />
-          ))}
         </div>
       </div>
       {fulfilled ? (
@@ -116,30 +88,6 @@ export function AuditCourseCard({
           </button>
         )
       )}
-    </div>
-  );
-}
-
-function CoreqLine({
-  subject,
-  classId,
-  fulfilled,
-}: {
-  subject: string;
-  classId: string;
-  fulfilled?: boolean;
-}) {
-  const name = useCourseName(subject, classId);
-  return (
-    <div className="flex min-w-0 items-center gap-1">
-      <span className={fulfilled ? "text-green" : "text-neu6"}>+</span>
-      <span className={`font-bold ${fulfilled ? "text-green" : "text-neu8"}`}>
-        {subject}
-        {classId}
-      </span>
-      <span className={`truncate ${fulfilled ? "text-green" : "text-neu6"}`}>
-        {name}
-      </span>
     </div>
   );
 }

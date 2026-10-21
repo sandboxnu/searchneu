@@ -15,18 +15,18 @@
     "cli": "turbo run cli --filter=@sneu/cli"
   },
   "devDependencies": {
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
-    "turbo": "^2.9.16"
+    "prettier": "^3.9.9",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "turbo": "^2.11.7"
   },
-  "packageManager": "pnpm@11.5.2",
+  "packageManager": "pnpm@11.28.5",
   "engines": {
-    "node": "26.x"
+    "node": "26.10.0"
   },
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "^26.3.0",
+      "version": "^26.10.0",
       "onFail": "download"
     }
   }

@@ -257,7 +257,6 @@ export function BasePlanClient({
       }),
     );
   }
-
   function handleDeleteYear(yearNum: number) {
     const updated = deleteYear(schedule, yearNum);
     setExpandedYears((prev) => {
@@ -367,7 +366,8 @@ export function BasePlanClient({
                   <Plus className="h-4 w-4 shrink-0" />
                   Add Year
                 </button>
-                <div className="mt-[10px] pb-[10px]">
+                <div className="mt-[10px] flex flex-col gap-[10px] pb-[10px]">
+                  <div className="bg-neu4 h-[0.5px] w-full" />
                   <AuditOverridesRow
                     courses={schedule.overrides ?? []}
                     expanded={overridesExpanded}

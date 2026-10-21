@@ -1,6 +1,6 @@
 import "server-only";
 import { db, catalogMajorsT, catalogMinorsT } from "@/lib/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, gte } from "drizzle-orm";
 import { cache } from "react";
 import type {
   Major,
@@ -11,6 +11,7 @@ import type {
   SupportedMinors,
   SupportedConcentrations,
 } from "@/lib/graduate/types";
+import { minSupportedCatalogYear } from "@/lib/graduate/catalogYear";
 
 /**
  * Fetch a single major by catalog year and name.
@@ -76,7 +77,8 @@ export const getMinor = cache(
 );
 
 /**
- * Return all supported majors grouped by year.
+ * Return all supported majors grouped by year, excluding catalog years too
+ * old for any current student.
  */
 export const getSupportedMajors = cache(
   async (): Promise<{ supportedMajors: SupportedMajors }> => {
@@ -87,7 +89,8 @@ export const getSupportedMajors = cache(
         concentrationOptions: catalogMajorsT.concentrationOptions,
         minConcentrationOptions: catalogMajorsT.minConcentrationOptions,
       })
-      .from(catalogMajorsT);
+      .from(catalogMajorsT)
+      .where(gte(catalogMajorsT.yearVersion, minSupportedCatalogYear()));
 
     const supportedMajors: SupportedMajors = {};
 
@@ -110,11 +113,15 @@ export const getSupportedMajors = cache(
 );
 
 /**
- * Return all supported minors grouped by year.
+ * Return all supported minors grouped by year, excluding catalog years too
+ * old for any current student.
  */
 export const getSupportedMinors = cache(
   async (): Promise<{ supportedMinors: SupportedMinors }> => {
-    const rows = await db.select().from(catalogMinorsT);
+    const rows = await db
+      .select()
+      .from(catalogMinorsT)
+      .where(gte(catalogMinorsT.yearVersion, minSupportedCatalogYear()));
 
     const supportedMinors: SupportedMinors = {};
 

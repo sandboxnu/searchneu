@@ -55,6 +55,8 @@ export function MajorsTab({
         {majors.length > 1 ? (
           <Select
             value={String(selectedMajorIdx)}
+            // maps indexes to names so the trigger shows the name before the popup opens
+            items={majors.map((m, i) => ({ value: String(i), label: m.name }))}
             onValueChange={(v) => setSelectedMajorIdx(Number(v))}
           >
             <SelectTrigger className="border-neu3 bg-neu1 mb-2 w-full">

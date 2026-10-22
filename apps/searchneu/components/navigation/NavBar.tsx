@@ -47,14 +47,14 @@ export function NavBar({
   const router = useRouter();
 
   const { data: session, isPending } = authClient.useSession();
-  const signedOut = !isPending && !session;
+  const signedIn = isPending || session;
 
   // send users home if they sign out while on a page that requires an account
   const wasSignedIn = useRef(false);
   useEffect(() => {
     if (session) {
       wasSignedIn.current = true;
-    } else if (signedOut && wasSignedIn.current) {
+    } else if (!signedIn && wasSignedIn.current) {
       wasSignedIn.current = false;
       if (
         pathname.startsWith("/scheduler") ||
@@ -63,7 +63,7 @@ export function NavBar({
         router.replace("/");
       }
     }
-  }, [session, signedOut, pathname, router]);
+  }, [session, signedIn, pathname, router]);
 
   return (
     <nav className="flex gap-2 font-semibold">
@@ -101,12 +101,7 @@ export function NavBar({
         <BookMarkedIcon className="size-4" />
         <span>Catalog</span>
       </Link>
-      {signedOut ? (
-        <DisabledNavItem>
-          <CalendarIcon className="size-4" />
-          <span> Scheduler</span>
-        </DisabledNavItem>
-      ) : (
+      {signedIn ? (
         <Link
           href="/scheduler"
           data-active={pathname.includes("/scheduler")}
@@ -115,13 +110,13 @@ export function NavBar({
           <CalendarIcon className="size-4" />
           <span> Scheduler</span>
         </Link>
-      )}
-      {signedOut ? (
-        <DisabledNavItem>
-          <BellIcon className="size-4" />
-          <span>Notifications</span>
-        </DisabledNavItem>
       ) : (
+        <DisabledNavItem>
+          <CalendarIcon className="size-4" />
+          <span> Scheduler</span>
+        </DisabledNavItem>
+      )}
+      {signedIn ? (
         <Link
           href="/notifications"
           data-active={pathname.includes("/notifications")}
@@ -130,6 +125,11 @@ export function NavBar({
           <BellIcon className="size-4" />
           <span>Notifications</span>
         </Link>
+      ) : (
+        <DisabledNavItem>
+          <BellIcon className="size-4" />
+          <span>Notifications</span>
+        </DisabledNavItem>
       )}
       <Link
         href="/faq"

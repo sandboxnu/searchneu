@@ -86,7 +86,7 @@ export function LinkColumn({
 export function Footer() {
   const isProd = process.env.NODE_ENV == "production" || false;
   const { data: session, isPending } = authClient.useSession();
-  const signedOut = !isPending && !session;
+  const signedIn = isPending || session;
 
   return (
     <footer className="bg-neu1 relative flex flex-col justify-between gap-20 overflow-hidden pt-5 md:flex-row xl:h-[312px]">
@@ -134,7 +134,7 @@ export function Footer() {
               ["Scheduler", "/scheduler"],
               ["Notifications", "/notifications"],
             ]}
-            disabledHrefs={signedOut ? ["/scheduler", "/notifications"] : []}
+            disabledHrefs={signedIn ? [] : ["/scheduler", "/notifications"]}
           />
           <LinkColumn
             name="Resources"

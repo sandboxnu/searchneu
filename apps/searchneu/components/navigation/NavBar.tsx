@@ -7,10 +7,33 @@ import {
   BookMarkedIcon,
   DoorOpenIcon,
 } from "lucide-react";
-import { use } from "react";
+import { use, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FlagValues } from "flags/react";
+import { authClient } from "@/lib/auth/auth-client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+
+function DisabledNavItem({ children }: { children: ReactNode }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        delay={0}
+        render={
+          <span
+            aria-disabled="true"
+            className="bg-neu0 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm opacity-50"
+          >
+            {children}
+          </span>
+        }
+      />
+      <TooltipContent>
+        <p>Please sign in</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
 
 export function NavBar({
   flags,
@@ -21,6 +44,26 @@ export function NavBar({
   const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
+  const signedIn = isPending || session;
+
+  // send users home if they sign out while on a page that requires an account
+  const wasSignedIn = useRef(false);
+  useEffect(() => {
+    if (session) {
+      wasSignedIn.current = true;
+    } else if (!signedIn && wasSignedIn.current) {
+      wasSignedIn.current = false;
+      if (
+        pathname.startsWith("/scheduler") ||
+        pathname.startsWith("/notifications")
+      ) {
+        router.replace("/");
+      }
+    }
+  }, [session, signedIn, pathname, router]);
 
   return (
     <nav className="flex gap-2 font-semibold">
@@ -58,22 +101,36 @@ export function NavBar({
         <BookMarkedIcon className="size-4" />
         <span>Catalog</span>
       </Link>
-      <Link
-        href="/scheduler"
-        data-active={pathname.includes("/scheduler")}
-        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-      >
-        <CalendarIcon className="size-4" />
-        <span> Scheduler</span>
-      </Link>
-      <Link
-        href="/notifications"
-        data-active={pathname.includes("/notifications")}
-        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-      >
-        <BellIcon className="size-4" />
-        <span>Notifications</span>
-      </Link>
+      {signedIn ? (
+        <Link
+          href="/scheduler"
+          data-active={pathname.includes("/scheduler")}
+          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+        >
+          <CalendarIcon className="size-4" />
+          <span> Scheduler</span>
+        </Link>
+      ) : (
+        <DisabledNavItem>
+          <CalendarIcon className="size-4" />
+          <span> Scheduler</span>
+        </DisabledNavItem>
+      )}
+      {signedIn ? (
+        <Link
+          href="/notifications"
+          data-active={pathname.includes("/notifications")}
+          className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+        >
+          <BellIcon className="size-4" />
+          <span>Notifications</span>
+        </Link>
+      ) : (
+        <DisabledNavItem>
+          <BellIcon className="size-4" />
+          <span>Notifications</span>
+        </DisabledNavItem>
+      )}
       <Link
         href="/faq"
         data-active={pathname.includes("/faq")}

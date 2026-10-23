@@ -1,14 +1,35 @@
 ---
 title: Database
-description: Everything about the SearchNEU database!
+description: Everything about the SearchNEU database
 ---
 
-Currently a bit barren... we'll work on getting this more set up.
-
-In the meantime, here are the commands to do a full database scrape/re-seed:
+These are the commands to do a full database scrape/re-seed:
 
 ```
-turbo cli -- generate --terms=all        # scrape Banner -> cache
+turbo cli -- generate --terms=all         # scrape Banner -> cache
 turbo cli -- tools seed-config --seed     # write static config
 turbo cli -- upload --terms=all           # load into the database
 ```
+
+To view the database and the data represented:
+
+```
+turbo setup         # start up the database
+turbo db:studio     # view database
+```
+
+<Diagram
+  src="/images/searchneu-database-diagram.svg"
+  alt="SearchNEU ERD"
+  width={4342}
+  height={3082}
+/>
+
+[Explanation of Data](/search-presentation.pptx)
+
+A key component of our database is using [**Drizzle ORM**](https://orm.drizzle.team/docs/overview). We use the PostgreSQL version.
+
+Drizzle allows us to write the database specifications in TypeScript, which is then converted to SQL to make our database look correct.
+
+When viewing the database through the drizzle studio, it may seem like there are _types_ present.
+However, this is the actual TS types that Drizzle has for the tables and are **not** actually used in our database.

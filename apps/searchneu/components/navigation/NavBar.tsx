@@ -29,7 +29,7 @@ function DisabledNavItem({ children }: { children: ReactNode }) {
         }
       />
       <TooltipContent>
-        <p>Please sign in.</p>
+        <p>Please sign in</p>
       </TooltipContent>
     </Tooltip>
   );

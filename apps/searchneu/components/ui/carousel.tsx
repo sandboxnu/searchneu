@@ -28,16 +28,6 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
 
   const isLast = step === items.length - 1;
 
-  // swipe motion
-  useEffect(() => {
-    if (!open) return;
-    const original = document.body.style.overscrollBehaviorX;
-    document.body.style.overscrollBehaviorX = "none";
-    return () => {
-      document.body.style.overscrollBehaviorX = original;
-    };
-  }, [open]);
-
   function handleOpenChange(val: boolean) {
     if (!val) {
       setTimeout(() => setStep(0), 200);

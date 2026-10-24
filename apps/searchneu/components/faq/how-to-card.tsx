@@ -27,7 +27,7 @@ export function HowToCard({ howto }: { howto: HowTo }) {
           width={700}
           height={700}
           alt="how to image"
-          className="bg-opacity-60 rounded-5 relative h-45.5 w-104.5 bg-gray-100"
+          className="bg-opacity-60 rounded-5 relative h-45.5 w-104.5 bg-gray-100 object-cover"
         />
         <div className="card-container relative flex flex-col items-start gap-4 self-stretch px-4">
           <h4 className="card-title text-r5 h-3.5 pl-1 text-xl leading-6 font-semibold">

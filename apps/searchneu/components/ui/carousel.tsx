@@ -28,6 +28,22 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
 
   const isLast = step === items.length - 1;
 
+  useEffect(() => {
+    if (!open) return;
+
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.overscrollBehaviorX;
+    const prevBody = body.style.overscrollBehaviorX;
+    html.style.overscrollBehaviorX = "none";
+    body.style.overscrollBehaviorX = "none";
+
+    return () => {
+      html.style.overscrollBehaviorX = prevHtml;
+      body.style.overscrollBehaviorX = prevBody;
+    };
+  }, [open]);
+
   function handleOpenChange(val: boolean) {
     if (!val) {
       setTimeout(() => setStep(0), 200);
@@ -36,12 +52,9 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
   }
 
   function handleWheel(e: React.WheelEvent) {
-    // ignoring minor trackpad movements
     if (wheelCooldown.current) return;
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-    if (Math.abs(e.deltaX) < 20) return;
-
-    e.preventDefault();
+    if (Math.abs(e.deltaX) < 30) return;
 
     if (e.deltaX > 0 && !isLast) setStep((s) => s + 1);
     if (e.deltaX < 0 && step > 0) setStep((s) => s - 1);
@@ -49,21 +62,21 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
     wheelCooldown.current = true;
     setTimeout(() => {
       wheelCooldown.current = false;
-    }, 1000);
+    }, 300);
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="bg-neu1 flex h-158 flex-col gap-5 overscroll-x-none rounded-xl sm:max-w-178"
+        className="bg-neu1 flex h-auto w-[375px] flex-col gap-5 overscroll-x-none rounded-2xl pt-6 pr-6 pb-4 pl-6 sm:h-158 sm:w-full sm:max-w-178 sm:gap-5 sm:rounded-xl sm:p-6"
         onWheel={handleWheel}
       >
-        <DialogClose className="bg-neu3 text-neu8 absolute -right-9 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
+        <DialogClose className="bg-neu3 text-neu8 absolute -top-12 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none sm:top-0 sm:-right-9">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
 
-        <div className="border-neu3 aspect-[216/127] w-full shrink-0 overflow-hidden rounded-lg border">
+        <div className="border-neu3 aspect-[1.78] w-full shrink-0 overflow-hidden rounded-lg border sm:aspect-[216/127]">
           <div
             className="flex h-full transition-transform duration-300 ease-out"
             style={{ transform: `translateX(-${step * 100}%)` }}
@@ -93,11 +106,11 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
                 const restOfTitle = item.title.split(" ").slice(1).join(" ");
                 return (
                   <div key={i} className="flex w-full shrink-0 flex-col gap-3">
-                    <DialogTitle className="text-r5 text-3xl leading-6 font-semibold">
+                    <DialogTitle className="text-r5 text-xl leading-6 font-semibold sm:text-3xl">
                       {firstWord}{" "}
                       <span className="text-neu8">{restOfTitle}</span>
                     </DialogTitle>
-                    <DialogDescription className="text-neu7 text-lg leading-tight">
+                    <DialogDescription className="text-neu7 text-sm leading-snug sm:text-lg sm:leading-tight">
                       {item.description}
                     </DialogDescription>
                   </div>
@@ -118,7 +131,7 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
             {step > 0 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="border-neu3 bg-neu2 text-neu6 absolute left-0 flex cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold"
+                className="border-neu3 bg-neu2 text-neu6 absolute top-1/2 left-0 hidden -translate-y-1/2 cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold sm:flex"
               >
                 Back
               </button>
@@ -127,7 +140,7 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
               onClick={() =>
                 isLast ? handleOpenChange(false) : setStep((s) => s + 1)
               }
-              className="bg-r1/30 text-red border-r1 absolute right-0 flex cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold"
+              className="bg-r1/30 text-red border-r1 absolute top-1/2 right-0 hidden -translate-y-1/2 cursor-pointer items-center gap-1.5 rounded-2xl border px-4 py-2 text-sm font-bold sm:flex"
             >
               {isLast ? "Finish" : "Next"} <ArrowRight className="size-4" />
             </button>

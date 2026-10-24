@@ -13,7 +13,7 @@ import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { useMajors, useMinors } from "@/lib/graduate/useGraduateApi";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import { BasePlanClient } from "./BasePlanClient";
-import NewPlanModal from "./modal/NewPlanModal";
+import { NoPlanSelected } from "./NoPlanSelected";
 
 const COURSE_NAMES_KEY = "guest-plan-courseNames";
 const COURSE_DETAILS_KEY = "guest-plan-courseDetails";
@@ -99,7 +99,7 @@ export function GuestPlanClient({
     [setGuestPlan],
   );
 
-  if (!guestPlan) return <NewPlanModal isGuest={true} />;
+  if (!guestPlan) return <NoPlanSelected isGuest={true} />;
 
   return (
     <BasePlanClient

@@ -1,6 +1,6 @@
 import { GuestHeaderClient } from "@/components/graduate/GuestHeaderClient";
 import { GuestPlanClient } from "@/components/graduate/GuestPlanClient";
-import NewPlanModal from "@/components/graduate/modal/NewPlanModal";
+import { NoPlanSelected } from "@/components/graduate/NoPlanSelected";
 import { auth } from "@/lib/auth/auth";
 import { getAuditPlans } from "@/lib/dal/audits";
 import { getMajor, getMinor } from "@/lib/dal/catalog";
@@ -31,8 +31,8 @@ export default async function Page({
       redirect(`/graduate/${lastModified.id}`);
     }
     return (
-      <div>
-        <NewPlanModal isGuest={false} />
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-4 px-6">
+        <NoPlanSelected isGuest={false} />
       </div>
     );
   }

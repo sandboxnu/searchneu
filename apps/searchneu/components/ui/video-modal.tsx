@@ -56,7 +56,7 @@ function VideoModal({
           <DialogTitle className="text-r5 text-xl sm:text-3xl leading-6 font-semibold">
             {firstWord} <span className="text-neu8">{restOfTitle}</span>
           </DialogTitle>
-          <DialogDescription className="text-neu7 text-sm md:text-base leading-tight">
+          <DialogDescription className="text-neu7 text-sm sm:text-lg leading-tight">
             {description}
           </DialogDescription>
         </div>

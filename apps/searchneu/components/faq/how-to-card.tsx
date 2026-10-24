@@ -1,14 +1,9 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Carousel, CarouselItem } from "@/components/ui/carousel";
-
-interface HowTo {
-  img: string;
-  title: string;
-  description: string;
-  carouselItems: CarouselItem[];
-}
+import { Carousel } from "@/components/ui/carousel";
+import { HowTo } from "@/components/faq/types";
+import { VideoModal } from "@/components/ui/video-modal";
 
 export function HowToCard({ howto }: { howto: HowTo }) {
   const [open, setOpen] = useState(false);
@@ -38,11 +33,22 @@ export function HowToCard({ howto }: { howto: HowTo }) {
           </p>
         </div>
       </div>
-      <Carousel
-        items={howto.carouselItems}
-        open={open}
-        onOpenChange={setOpen}
-      />
+      {howto.type === "carousel" && (
+        <Carousel
+          items={howto.carouselItems}
+          open={open}
+          onOpenChange={setOpen}
+        />
+      )}
+      {howto.type === "video" && (
+        <VideoModal
+          videoId={howto.videoId}
+          title={howto.title}
+          description={howto.description}
+          open={open}
+          onOpenChange={setOpen}
+        />
+      )}
     </>
   );
 }

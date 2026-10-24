@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "searchneu",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"$HOME/.nvm/versions/node/v26.10.0/bin:$PATH\" && exec turbo dev --ui=stream"
+      ],
+      "port": 3000
+    }
+  ]
+}

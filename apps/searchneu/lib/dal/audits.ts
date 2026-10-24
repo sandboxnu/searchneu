@@ -14,6 +14,7 @@ import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { Whiteboard } from "../graduate/types";
 import { buildWhiteboardFromSchedule } from "../graduate/requirementUtils";
+import { buildAuditPlanCopy } from "../graduate/auditPlanUtils";
 
 /**
  * Verifies the current user from their JWT token and returns their user data.
@@ -318,6 +319,30 @@ export async function updateAuditPlan(
 
   if (updatedAuditPlan.length === 0) return null;
   return updatedAuditPlan[0];
+}
+
+/**
+ * Copies an existing audit plan into a new plan for the same user. The copy
+ * keeps the schedule, whiteboard, majors, minors, concentration, and catalog
+ * year, and is named "Copy of <original name>"
+ *
+ * @param id the ID of the plan to be copied
+ * @param userId the user requesting the copy
+ *
+ * @returns the new audit plan object, or null if the plan isn't found or
+ * doesn't belong to the user
+ */
+export async function copyAuditPlan(id: number, userId: string) {
+  const sourcePlan = await getAuditPlan(id, userId);
+  if (!sourcePlan) return null;
+
+  const copiedPlan = await db
+    .insert(auditPlansT)
+    .values({ ...buildAuditPlanCopy(sourcePlan), userId })
+    .returning();
+
+  if (copiedPlan.length === 0) return null;
+  return copiedPlan[0];
 }
 
 /**

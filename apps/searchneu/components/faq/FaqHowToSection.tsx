@@ -4,7 +4,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 /**
  * Renders a horizontally scrollable row of "How To" cards, each summarizing
  * a key SearchNEU workflow (searching, filtering, subscribing) with a
- * linked carousel for step-by-step details.
+ * linked carousel or video for step-by-step details.
  */
 export function FaqHowToSection() {
   return (
@@ -27,74 +27,68 @@ const HowTos = [
       "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
     carouselItems: [
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_a.png",
         title: "Search for classes",
         description:
           "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
       },
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_b.png",
         title: "Filter your search",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Narrow results by subject, campus, class type, or NUPath to zero in on exactly the sections that fit your schedule and requirements.",
       },
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_c.png",
         title: "Subscribe to section notifications",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Found a section that's full? Subscribe for a text the moment a seat frees up, so you never have to keep refreshing the page yourself.",
       },
     ],
   },
   {
     img: "/images/faq/how_to1.png",
-    title: "Filter your search",
+    title: "Search for classes",
     description:
       "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
     carouselItems: [
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_a.png",
         title: "Search for classes",
         description:
           "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
       },
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_b.png",
         title: "Filter your search",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Narrow results by subject, campus, class type, or NUPath to zero in on exactly the sections that fit your schedule and requirements.",
       },
       {
-        img: "/images/faq/how_to_carousel1.png",
+        img: "/images/faq/how_to_carousel_search_c.png",
         title: "Subscribe to section notifications",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Found a section that's full? Subscribe for a text the moment a seat frees up, so you never have to keep refreshing the page yourself.",
       },
     ],
   },
   {
-    img: "/images/faq/how_to1.png",
-    title: "Subscribe to section notifications",
+    img: "/images/faq/how_to_plan.png",
+    title: "Plan your class schedule",
     description:
-      "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+      "Decided what classes you need, found the sections, but not sure if you can figure out all the possible time and section combinations? Use our scheduler!",
     carouselItems: [
       {
-        img: "/images/faq/how_to_carousel1.png",
-        title: "Search for classes",
+        img: "/images/faq/how_to_carousel_plan_a.png",
+        title: "Generate all possible class schedules",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Add the courses you know you're going to take, and simply hold the power to generate every possible schedule combination across sections at the press of a button.",
       },
       {
-        img: "/images/faq/how_to_carousel1.png",
-        title: "Filter your search",
+        img: "/images/faq/how_to_carousel_plan_b.png",
+        title: "Choose the one right for you",
         description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
-      },
-      {
-        img: "/images/faq/how_to_carousel1.png",
-        title: "Subscribe to section notifications",
-        description:
-          "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
+          "Filter from sections, narrow down times, favourite plans and approach the perfect plan with ease, one step at a time.",
       },
     ],
   },

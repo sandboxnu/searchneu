@@ -61,7 +61,7 @@ export function FaqHowToSection() {
 const HowTos: HowTo[] = [
   {
     type: "carousel",
-    img: "/images/faq/how_to1.png",
+    img: "/images/faq/how_to_search.png",
     title: "Search for classes",
     description:
       "Don't know the full government name for Orgo or Fundies? SearchNEU does! Use our course catalog to easily find all of the courses you need for the upcoming registration cycle.",
@@ -88,7 +88,7 @@ const HowTos: HowTo[] = [
   },
   {
     type: "video",
-    img: "/images/faq/how_to1.png",
+    img: "/images/faq/how_to_search.png",
     title: "Watch a video tutorial",
     description:
       "Take a quick look at our walkthrough of the site, and understand all the tools we have made to be at your disposal.",

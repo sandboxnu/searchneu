@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, X, ChevronUp, ChevronDown } from "lucide-react";
+import { Check, ChevronUp, ChevronDown } from "lucide-react";
+import { NotFulfilledIcon } from "@/components/icons/NotFulfilled";
 import { Audit } from "@/lib/graduate/types";
 import {
   collectFulfilledNupaths,
@@ -24,16 +25,16 @@ function NUPathCard({
   return (
     <div
       className={`flex items-center gap-3 rounded-lg border px-3 py-2 ${
-        fulfilled ? "border-green/30 bg-green/10" : "border-neu3 bg-neu1"
+        fulfilled ? "border-green/30 bg-green/10" : "border-neu2 bg-neu1"
       }`}
     >
       <span
-        className={`w-7 text-xs font-bold ${fulfilled ? "text-green" : "text-navy"}`}
+        className={`w-7 text-xs font-bold ${fulfilled ? "text-green" : "text-neu8"}`}
       >
         {code}
       </span>
       <span
-        className={`flex-1 text-xs ${fulfilled ? "text-green" : "text-navy"}`}
+        className={`flex-1 text-xs ${fulfilled ? "text-green" : "text-neu6"}`}
       >
         {name}
       </span>
@@ -42,9 +43,7 @@ function NUPathCard({
           <Check className="h-3 w-3" strokeWidth={3} />
         </div>
       ) : (
-        <div className="border-neu4 text-neu4 flex h-5 w-5 items-center justify-center rounded-full border">
-          <X className="h-3 w-3" strokeWidth={2.5} />
-        </div>
+        <NotFulfilledIcon className="h-5 w-5 shrink-0" />
       )}
     </div>
   );
@@ -68,8 +67,8 @@ export function GeneralTab({
   const [nupathOpen, setNupathOpen] = useState(true);
 
   return (
-    <div>
-      <div className="px-4 py-3">
+    <div className="flex flex-col gap-5">
+      <div>
         <CircularProgress current={creditsTaken} total={creditsTotal} />
       </div>
 
@@ -77,11 +76,11 @@ export function GeneralTab({
       <div className="select-none">
         <button
           type="button"
-          className="hover:bg-neu25 flex w-full items-center justify-between px-4 py-3 transition-colors"
+          className="flex w-full items-center justify-between"
           onClick={() => setNupathOpen(!nupathOpen)}
         >
           <div className="flex items-center gap-2">
-            <span className="text-navy text-xs font-bold tracking-wide uppercase">
+            <span className="text-neu7 text-xs font-bold tracking-wide uppercase">
               NUPath
             </span>
             <span className="text-neu5 text-xs">
@@ -95,7 +94,7 @@ export function GeneralTab({
           )}
         </button>
         {nupathOpen && (
-          <div className="flex flex-col gap-2 px-4 pb-4">
+          <div className="mt-2 flex flex-col gap-2">
             {NUPATH_CODES.map((code) => (
               <NUPathCard
                 key={code}

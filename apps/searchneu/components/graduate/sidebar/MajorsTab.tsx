@@ -42,16 +42,16 @@ export function MajorsTab({
 
   if (!currentMajor) {
     return (
-      <div className="px-4 py-8 text-center">
+      <div className="py-8 text-center">
         <span className="text-neu6 text-xs">No major selected</span>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       {/* Major selector + title */}
-      <div className="px-4 pt-3 pb-2">
+      <div>
         {majors.length > 1 ? (
           <Select
             value={String(selectedMajorIdx)}
@@ -59,7 +59,7 @@ export function MajorsTab({
             items={majors.map((m, i) => ({ value: String(i), label: m.name }))}
             onValueChange={(v) => setSelectedMajorIdx(Number(v))}
           >
-            <SelectTrigger className="border-neu3 bg-neu1 mb-2 w-full">
+            <SelectTrigger className="border-neu2 bg-neu1 text-neu8 mb-2 w-full font-bold">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -71,11 +71,13 @@ export function MajorsTab({
             </SelectContent>
           </Select>
         ) : (
-          <div className="border-neu3 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-navy text-sm">{currentMajor.name}</span>
+          <div className="border-neu2 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
+            <span className="text-neu8 text-sm font-bold">
+              {currentMajor.name}
+            </span>
           </div>
         )}
-        <h2 className="text-navy text-lg font-bold">{currentMajor.name}</h2>
+        <h2 className="text-neu8 text-lg font-bold">{currentMajor.name}</h2>
         <p
           className={`text-sm ${isUndecided ? "text-red italic" : "text-neu6"}`}
         >
@@ -83,7 +85,7 @@ export function MajorsTab({
         </p>
       </div>
 
-      <div className="px-4 pb-3">
+      <div>
         <CircularProgress current={creditsTaken} total={creditsTotal} />
       </div>
 
@@ -98,9 +100,7 @@ export function MajorsTab({
       ))}
 
       {currentMajor.requirementSections.length === 0 && (
-        <p className="text-neu6 px-4 py-3 text-sm italic">
-          No requirement sections
-        </p>
+        <p className="text-neu6 text-sm italic">No requirement sections</p>
       )}
     </div>
   );

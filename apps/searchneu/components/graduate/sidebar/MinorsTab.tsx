@@ -33,16 +33,16 @@ export function MinorsTab({
 
   if (!currentMinor) {
     return (
-      <div className="px-4 py-8 text-center">
+      <div className="py-8 text-center">
         <span className="text-neu6 text-xs">No minor selected</span>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       {/* Minor selector + title */}
-      <div className="px-4 pt-3 pb-2">
+      <div>
         {minors.length > 1 ? (
           <Select
             value={String(selectedMinorIdx)}
@@ -50,7 +50,7 @@ export function MinorsTab({
             items={minors.map((m, i) => ({ value: String(i), label: m.name }))}
             onValueChange={(v) => setSelectedMinorIdx(Number(v))}
           >
-            <SelectTrigger className="border-neu3 bg-neu1 mb-2 w-full">
+            <SelectTrigger className="border-neu2 bg-neu1 text-neu8 mb-2 w-full font-bold">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -62,15 +62,17 @@ export function MinorsTab({
             </SelectContent>
           </Select>
         ) : (
-          <div className="border-neu3 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-navy text-sm">{currentMinor.name}</span>
+          <div className="border-neu2 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
+            <span className="text-neu8 text-sm font-bold">
+              {currentMinor.name}
+            </span>
           </div>
         )}
-        <h2 className="text-navy text-lg font-bold">{currentMinor.name}</h2>
+        <h2 className="text-neu8 text-lg font-bold">{currentMinor.name}</h2>
         <p className="text-neu6 text-sm">Minor Requirements</p>
       </div>
 
-      <div className="px-4 pb-3">
+      <div>
         <CircularProgress current={creditsTaken} total={creditsTotal} />
       </div>
 
@@ -85,9 +87,7 @@ export function MinorsTab({
       ))}
 
       {currentMinor.requirementSections.length === 0 && (
-        <p className="text-neu6 px-4 py-3 text-sm italic">
-          No requirement sections
-        </p>
+        <p className="text-neu6 text-sm italic">No requirement sections</p>
       )}
     </div>
   );

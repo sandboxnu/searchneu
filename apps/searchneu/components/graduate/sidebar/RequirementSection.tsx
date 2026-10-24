@@ -50,11 +50,11 @@ export function RequirementSection({
     <div className="select-none">
       <button
         type="button"
-        className="hover:bg-neu25 flex w-full items-center justify-between px-4 py-3 transition-colors"
+        className="flex w-full items-center justify-between"
         onClick={() => setOpened(!opened)}
       >
         <div className="flex items-center gap-2">
-          <span className="text-navy text-xs font-bold tracking-wide uppercase">
+          <span className="text-neu7 text-xs font-bold tracking-wide uppercase">
             {section.title}
           </span>
           {complete ? (
@@ -75,7 +75,7 @@ export function RequirementSection({
       </button>
 
       {opened && (
-        <div className="flex flex-col gap-2 px-4 pb-4">
+        <div className="mt-2 flex flex-col gap-2">
           {section.minRequirementCount < section.requirements.length && (
             <p className="text-neu6 text-xs italic">
               Complete {section.minRequirementCount} of the following:
@@ -188,11 +188,14 @@ export function RequirementCard({
   }
 
   if (req.type === "SECTION") {
+    // indent nested sections under their parent
     return (
-      <RequirementSection
-        section={req as Section}
-        scheduleCourses={scheduleCourses}
-      />
+      <div className="pl-4">
+        <RequirementSection
+          section={req as Section}
+          scheduleCourses={scheduleCourses}
+        />
+      </div>
     );
   }
 

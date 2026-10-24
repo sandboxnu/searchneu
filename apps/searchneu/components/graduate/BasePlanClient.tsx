@@ -285,8 +285,8 @@ export function BasePlanClient({
           collisionDetection={collisionAlgorithm}
         >
           <DeleteDropZone>
-            <div className="flex min-h-0 flex-1 overflow-hidden">
-              <div className="bg-neu25 flex min-h-0 w-[360px] flex-shrink-0 flex-col">
+            <div className="flex min-h-0 flex-1 gap-1 overflow-hidden">
+              <div className="bg-neu25 flex min-h-0 w-[321px] flex-shrink-0 flex-col">
                 {/* TODO: restore the Requirements/Whiteboard toggle when whiteboard
                     mode ships after release */}
                 {/* <div className="flex justify-center gap-1 px-4 pt-2">

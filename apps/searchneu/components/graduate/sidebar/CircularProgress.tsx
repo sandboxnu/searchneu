@@ -54,12 +54,12 @@ export function CircularProgress({
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
           />
         </svg>
-        <span className="text-navy absolute inset-0 flex items-center justify-center text-sm font-bold">
+        <span className="text-neu8 absolute inset-0 flex items-center justify-center text-sm font-bold">
           {displayPct}%
         </span>
       </div>
       <div className="flex flex-col">
-        <span className="text-navy text-lg leading-tight font-bold">
+        <span className="text-neu8 text-lg leading-tight font-bold">
           {current}/{total}
         </span>
         <span className="text-neu6 flex items-center gap-1 text-xs tracking-wide uppercase">

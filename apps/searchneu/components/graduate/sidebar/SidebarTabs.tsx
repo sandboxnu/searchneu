@@ -18,7 +18,7 @@ export function SidebarTabs({
   ];
 
   return (
-    <div className="border-neu25 flex border-b px-4">
+    <div className="border-neu2 flex border-b">
       {tabs.map((tab) => (
         <button
           key={tab.key}
@@ -26,8 +26,8 @@ export function SidebarTabs({
           onClick={() => onTabChange(tab.key)}
           className={`flex-1 px-2 py-2 text-xs font-semibold tracking-wider uppercase transition-colors ${
             activeTab === tab.key
-              ? "text-navy border-navy border-b-2"
-              : "text-neu5 hover:text-neu7 border-b-2 border-transparent"
+              ? "text-neu6 border-neu4 border-b"
+              : "text-neu4 hover:text-neu6 border-b border-transparent"
           }`}
         >
           {tab.label}

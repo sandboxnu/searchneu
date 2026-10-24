@@ -1,5 +1,8 @@
+"use client";
 import { HowToCard } from "@/components/faq/how-to-card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useRef, useState } from "react";
+
+const GAP_PX = 16;
 
 /**
  * Renders a horizontally scrollable row of "How To" cards, each summarizing
@@ -7,15 +10,50 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
  * linked carousel or video for step-by-step details.
  */
 export function FaqHowToSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const firstCardRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  function handleScroll() {
+    const container = scrollRef.current;
+    const card = firstCardRef.current;
+    if (!container || !card) return;
+
+    const cardFullWidth = card.offsetWidth + GAP_PX;
+    const rawIndex = Math.round(container.scrollLeft / cardFullWidth);
+    const clampedIndex = Math.min(Math.max(rawIndex, 0), HowTos.length - 1);
+    setActiveIndex(clampedIndex);
+  }
+
   return (
-    <ScrollArea className="mb-4 w-full whitespace-nowrap">
-      <div className="flex w-max space-x-4 p-4 pt-3">
+    <div className="mb-4 w-full">
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto px-4 pt-3 pb-1 [-ms-overflow-style:none] min-[500px]:snap-none [&::-webkit-scrollbar]:hidden"
+      >
         {HowTos.map((h, i) => (
-          <HowToCard key={i} howto={h} />
+          <div
+            key={i}
+            ref={i === 0 ? firstCardRef : undefined}
+            className="shrink-0 snap-center"
+          >
+            <HowToCard howto={h} />
+          </div>
         ))}
       </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+
+      <div className="mt-2 flex justify-center gap-1.5 min-[500px]:hidden">
+        {HowTos.map((_, i) => (
+          <span
+            key={i}
+            className={`h-2 w-2 rounded-full transition-colors ${
+              i === activeIndex ? "bg-neu8" : "bg-neu4"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 

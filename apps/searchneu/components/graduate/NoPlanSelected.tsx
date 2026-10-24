@@ -19,16 +19,12 @@ interface NoPlanSelectedProps {
 /** Onboarding screen for users (guest or signed in) with no plan created or selected. */
 export function NoPlanSelected({ isGuest }: NoPlanSelectedProps) {
   const [showNewPlan, setShowNewPlan] = useState(false);
-  // Mounting the modal is heavy; a transition lets the click paint first
   const [, startTransition] = useTransition();
 
-  // --sidebar-w is shared by the header's left column and the sidebar below so they stay aligned
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 [--sidebar-w:360px]">
-      {/* The first track is 1px short of --sidebar-w to account for the card's own border */}
       <div className="border-neu25 bg-neu0 mt-3 grid grid-cols-[calc(var(--sidebar-w)-1px)_1fr] rounded-lg border">
         <div className="relative flex flex-col gap-4 p-6">
-          {/* inset divider: sits on the cell's right edge, which is the sidebar edge */}
           <div className="border-neu3 absolute inset-y-6 right-0 border-r" />
           <Select disabled>
             <SelectTrigger className="border-neu4 w-full min-w-48">

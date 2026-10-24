@@ -40,6 +40,7 @@ export function HeaderClient({
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [showEditPlan, setShowEditPlan] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
 
   async function handleDelete() {
     setConfirmDeleteOpen(false);
@@ -59,8 +60,30 @@ export function HeaderClient({
     }
   }
 
-  function handleCopy() {
-    toast("Copy plan coming soon");
+  async function handleCopy() {
+    setIsCopying(true);
+
+    try {
+      const response = await fetch(`/api/audit/plan/${currentPlan.id}/copy`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error ?? "Failed to copy plan");
+      }
+
+      const copiedPlan = await response.json();
+      toast(`Plan "${copiedPlan.name}" created`);
+      router.push(`/graduate/${copiedPlan.id}`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to copy plan",
+      );
+    } finally {
+      setIsCopying(false);
+    }
   }
 
   // TODO: implement share plan, then restore this handler and the button below
@@ -119,15 +142,19 @@ export function HeaderClient({
             >
               <Trash2Icon className="size-3.5" />
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="size-8 rounded-full p-0"
-              onClick={handleCopy}
-              title="Copy plan"
-            >
-              <CopyIcon className="size-3.5" />
-            </Button>
+            {/* guests can only have one plan, so there's nothing to copy into */}
+            {!isGuest && (
+              <Button
+                variant="secondary"
+                size="sm"
+                className="size-8 rounded-full p-0"
+                onClick={handleCopy}
+                disabled={isCopying}
+                title="Copy plan"
+              >
+                <CopyIcon className="size-3.5" />
+              </Button>
+            )}
             {/* TODO: restore once share plan is implemented */}
             {/* <Button
               variant="secondary"

@@ -22,6 +22,8 @@ minimumReleaseAgeExclude:
   - "@better-auth/telemetry@1.6.13"
   - better-auth@1.6.13
   - tsx@4.22.4
+  # Renovate security update: postcss@8.5.23
+  - postcss@8.5.23
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"

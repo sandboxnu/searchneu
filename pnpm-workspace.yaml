@@ -16,11 +16,11 @@ minimumReleaseAge: 5760
 # but better-auth pulls 1.10.0 in transitively. Hold the API at 1.9.x
 # until the OpenTelemetry SDK widens its range (exact pin: ^1.9.1 still floats to 1.10.0).
 overrides:
-  "@opentelemetry/api": "1.9.1"
+  "@opentelemetry/api": "1.10.0"
   # fumadocs-core 16.9.3's markdown stringifier recurses infinitely against
   # mdast-util-to-markdown 2.2.0. Remove together with the deferred fumadocs
   # upgrade (see apps/docs).
-  mdast-util-to-markdown: "2.1.2"
+  mdast-util-to-markdown: "2.2.0"
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"

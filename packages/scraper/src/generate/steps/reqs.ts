@@ -70,8 +70,7 @@ export function parsePrereqs(
     // If the And/Or column has a value, update the current condition type
     if (notEmpty(data[0].innerText)) {
       currentCondition.type = data[0].innerText.trim().toLowerCase() as
-        | "and"
-        | "or";
+        "and" | "or";
     }
 
     // Handle opening parenthesis - create new nested condition

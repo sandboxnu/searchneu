@@ -36,7 +36,9 @@ function CollegeSelectControl(props: { terms: Promise<GroupedTerms> }) {
   const { term } = useParams();
 
   const activeCollege = (Object.keys(terms).find((k) =>
-    terms[k as keyof GroupedTerms].find((t) => t.term  + t.part === term?.toString()),
+    terms[k as keyof GroupedTerms].find(
+      (t) => t.term + t.part === term?.toString(),
+    ),
   ) ?? "neu") as College;
 
   return (

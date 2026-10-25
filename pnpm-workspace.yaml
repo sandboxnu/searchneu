@@ -12,16 +12,15 @@ ignoredBuiltDependencies:
 
 minimumReleaseAge: 5760
 
-minimumReleaseAgeExclude:
-  - "@better-auth/core@1.6.13"
-  - "@better-auth/drizzle-adapter@1.6.13"
-  - "@better-auth/kysely-adapter@1.6.13"
-  - "@better-auth/memory-adapter@1.6.13"
-  - "@better-auth/mongo-adapter@1.6.13"
-  - "@better-auth/prisma-adapter@1.6.13"
-  - "@better-auth/telemetry@1.6.13"
-  - better-auth@1.6.13
-  - tsx@4.22.4
+# @vercel/otel's SDK packages peer-require @opentelemetry/api <1.10.0,
+# but better-auth pulls 1.10.0 in transitively. Hold the API at 1.9.x
+# until the OpenTelemetry SDK widens its range (exact pin: ^1.9.1 still floats to 1.10.0).
+overrides:
+  "@opentelemetry/api": "1.9.1"
+  # fumadocs-core 16.9.3's markdown stringifier recurses infinitely against
+  # mdast-util-to-markdown 2.2.0. Remove together with the deferred fumadocs
+  # upgrade (see apps/docs).
+  mdast-util-to-markdown: "2.1.2"
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"

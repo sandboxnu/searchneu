@@ -213,16 +213,14 @@ export async function updateAuditPlan(
 
   const isScheduleUpdate = !!newSchedule && !isMajorInfoUpdate;
 
-  if (
-    !(
-      isWipeMajorUpdate ||
-      isMajorInfoUpdate ||
-      isMinorInfoUpdate ||
-      isScheduleUpdate ||
-      newName ||
-      isWipeMinorUpdate
-    )
-  ) {
+  if (!(
+    isWipeMajorUpdate ||
+    isMajorInfoUpdate ||
+    isMinorInfoUpdate ||
+    isScheduleUpdate ||
+    newName ||
+    isWipeMinorUpdate
+  )) {
     console.debug({
       message: "Either update all major fields or only the schedule",
       id,

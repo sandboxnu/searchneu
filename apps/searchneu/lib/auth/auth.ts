@@ -12,9 +12,10 @@ export const auth = betterAuth({
     `https://${process.env.VERCEL_URL!}`,
     `https://${process.env.VERCEL_BRANCH_URL!}`,
   ],
-  experimental: { joins: true },
   advanced: {
     cookiePrefix: "sneu",
+    // graduated out of `experimental.joins` in better-auth 1.7
+    database: { joins: true },
   },
   logger: {
     level: process.env.NODE_ENV === "production" ? "info" : "debug",

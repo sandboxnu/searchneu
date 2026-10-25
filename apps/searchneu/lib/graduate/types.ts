@@ -180,9 +180,7 @@ export interface ParsedCourse {
 }
 
 export type INEUReqError =
-  | INEUReqCourseError
-  | INEUReqAndError
-  | INEUReqOrError;
+  INEUReqCourseError | INEUReqAndError | INEUReqOrError;
 
 export enum ReqErrorType {
   COURSE = "course",
@@ -431,8 +429,7 @@ export enum ResultType {
 }
 
 export type Result<T, E> =
-  | { ok: T; type: ResultType.Ok }
-  | { err: E; type: ResultType.Err };
+  { ok: T; type: ResultType.Ok } | { err: E; type: ResultType.Err };
 
 export const Ok = <T, E>(ok: T): Result<T, E> => ({ ok, type: ResultType.Ok });
 

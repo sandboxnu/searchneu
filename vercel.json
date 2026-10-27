@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "web": {
+      "root": "apps/searchneu/",
+      "buildCommand": "if [ \"$VERCEL_ENV\" = preview ]; then pnpm --filter @sneu/db run db:migrate; fi && turbo build",
+      "functions": { "app/api/update/route.ts": { "maxDuration": 800 } }
+    },
+    "docs": { "root": "apps/docs/" }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": { "pre": "docs." } }],
+      "destination": { "service": "docs" }
+    },
+    { "source": "/(.*)", "destination": { "service": "web" } }
+  ],
+  "daemons": {
+    "ingest": {
+      "root": "apps/ingest/",
+      "entrypoint": "Dockerfile",
+      "instances": { "iad1": 1 }
+    }
+  },
+  "crons": [{ "path": "/api/update", "schedule": "*/5 * * * *" }]
+}

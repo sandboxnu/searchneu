@@ -147,6 +147,37 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
+  apps/ingest:
+    dependencies:
+      '@sneu/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@sneu/scraper':
+        specifier: workspace:*
+        version: link:../../packages/scraper
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@neondatabase/serverless@1.2.0)(@opentelemetry/api@1.9.1)(kysely@0.29.7)(pg@8.23.1)
+    devDependencies:
+      '@sneu/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@sneu/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
   apps/searchneu:
     dependencies:
       '@base-ui/react':

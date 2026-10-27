@@ -1,0 +1,8 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": ["DATABASE_URL", "INGEST_INTERVAL_MS"]
+    }
+  }
+}

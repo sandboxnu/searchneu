@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo 'ingest project: daemon only, nothing to build'",
+  "outputDirectory": "apps/ingest/public",
+  "daemons": {
+    "ingest": {
+      "root": "./",
+      "entrypoint": "Dockerfile.ingest",
+      "instances": { "iad1": 1 },
+      "terminationGracePeriodSeconds": 120
+    }
+  }
+}

@@ -1,0 +1,29 @@
+# dependencies
+**/node_modules
+
+# build output
+**/dist
+**/.next
+**/out
+**/.source
+**/*.tsbuildinfo
+
+# tooling caches
+**/.turbo
+.git
+.github
+.vercel
+.claude
+
+# env files, never bake secrets into an image
+**/.env
+**/.env.*
+!**/.env.example
+
+# scraper working data
+apps/cli/cache
+apps/cli/config
+apps/cli/backups
+
+# misc
+**/.DS_Store

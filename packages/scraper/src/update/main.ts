@@ -3,7 +3,8 @@
  */
 
 import { eq } from "drizzle-orm";
-import type { createDbClient } from "@sneu/db/neon";
+import type { createDbClient as createNeonDbClient } from "@sneu/db/neon";
+import type { createDbClient as createPgDbClient } from "@sneu/db/pg";
 import { coursesT, sectionsT, subjectsT, termsT } from "@sneu/db/schema";
 import { scrapeSections } from "../generate/steps/sections";
 import { parseMeetingTimes } from "../generate/marshall";
@@ -40,12 +41,20 @@ export interface UpdateTermResult {
 }
 
 /**
+ * Either database client is accepted here. The web app reaches Postgres over
+ * Neon's HTTP driver, while the ingest daemon is long lived and uses the
+ * direct pg driver. updateTerm only issues plain selects, so both work.
+ */
+type UpdateTermDb =
+  ReturnType<typeof createNeonDbClient> | ReturnType<typeof createPgDbClient>;
+
+/**
  * updateTerm scrapes the banner section information to determine
  * the sections with updated seat counts
  */
 export async function updateTerm(
   term: string,
-  db: ReturnType<typeof createDbClient>,
+  db: UpdateTermDb,
   logger?: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     info: (msg: any, msg2?: string) => void;

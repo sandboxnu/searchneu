@@ -5,12 +5,14 @@ import { useDraggable } from "@dnd-kit/core";
 import { useCourseName } from "../CourseNameContext";
 import { useCourseDetails } from "../CourseDetailsContext";
 import { NUPATH_DISPLAY } from "@/lib/graduate/requirementUtils";
+import { isPlaceholderCourse } from "@/lib/graduate/placeholderUtils";
 import { GripVertical, Check } from "lucide-react";
 import { DeleteIcon } from "@/components/icons/Delete";
 
 /**
  * One draggable course. Coreqs (e.g. CS 2000 + CS 2001) are separate
- * courses in the plan, so each one gets its own card.
+ * courses in the plan, so each one gets its own card. Placeholder courses
+ * get a dashed border and show their name and credits instead of a code.
  */
 export function AuditCourseCard({
   course,
@@ -26,7 +28,14 @@ export function AuditCourseCard({
     id: course.id!,
     data: { course },
   });
-  const name = useCourseName(course.subject, course.classId);
+  const catalogName = useCourseName(course.subject, course.classId);
+  const placeholder = isPlaceholderCourse(course);
+  const title = placeholder
+    ? course.name
+    : `${course.subject}${course.classId}`;
+  const subtitle = placeholder
+    ? creditsLabel(course.numCreditsMin)
+    : catalogName;
   const nupaths = (course.nupaths ?? details?.nupaths ?? []).filter(
     (code) => code in NUPATH_DISPLAY,
   );
@@ -35,7 +44,11 @@ export function AuditCourseCard({
     <div
       ref={setNodeRef}
       className={`group relative flex w-full items-center justify-between rounded-[8px] border-[1px] text-[12px] transition-transform ${
-        fulfilled ? "border-green/30 bg-green/10" : "bg-neu2 border-neu3"
+        fulfilled
+          ? "border-green/30 bg-green/10"
+          : placeholder
+            ? "bg-neu1 border-neu4 border-dashed"
+            : "bg-neu2 border-neu3"
       } ${isDragging ? "invisible" : ""}`}
       {...attributes}
     >
@@ -47,15 +60,14 @@ export function AuditCourseCard({
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-1">
             <span
-              className={`font-bold ${fulfilled ? "text-green" : "text-neu8"}`}
+              className={`font-bold ${placeholder ? "truncate" : ""} ${fulfilled ? "text-green" : "text-neu8"}`}
             >
-              {course.subject}
-              {course.classId}
+              {title}
             </span>
             <span
-              className={`truncate leading-none ${fulfilled ? "text-green" : "text-neu6"}`}
+              className={`leading-none ${placeholder ? "shrink-0" : "truncate"} ${fulfilled ? "text-green" : "text-neu6"}`}
             >
-              {name}
+              {subtitle}
             </span>
           </div>
           {nupaths.length > 0 && (
@@ -82,7 +94,7 @@ export function AuditCourseCard({
           <button
             className="text-neu4 hover:text-neu6 p-3 opacity-0 transition-opacity group-hover:opacity-100"
             onClick={onRemove}
-            title="Remove course"
+            title={placeholder ? "Remove placeholder" : "Remove course"}
           >
             <DeleteIcon className="h-3 w-3" />
           </button>
@@ -93,17 +105,29 @@ export function AuditCourseCard({
 }
 
 export function CourseCardOverlay({ course }: { course: AuditCourse }) {
-  const name = useCourseName(course.subject, course.classId, course.name);
+  const catalogName = useCourseName(
+    course.subject,
+    course.classId,
+    course.name,
+  );
+  const placeholder = isPlaceholderCourse(course);
   return (
     <div className="bg-neu3 flex w-64 items-center rounded-lg px-2 py-2 text-sm shadow-lg">
       <GripVertical className="text-neu4 mr-1.5 h-4 w-4 flex-shrink-0" />
       <div className="flex min-w-0 items-center gap-1">
-        <span className="text-neu8 font-bold">
-          {course.subject}
-          {course.classId}
+        <span
+          className={`text-neu8 font-bold ${placeholder ? "truncate" : ""}`}
+        >
+          {placeholder ? course.name : `${course.subject}${course.classId}`}
         </span>
-        <span className="text-neu6 truncate">{name}</span>
+        <span className={`text-neu6 ${placeholder ? "shrink-0" : "truncate"}`}>
+          {placeholder ? creditsLabel(course.numCreditsMin) : catalogName}
+        </span>
       </div>
     </div>
   );
+}
+
+function creditsLabel(credits: number): string {
+  return `${credits} ${credits === 1 ? "credit" : "credits"}`;
 }

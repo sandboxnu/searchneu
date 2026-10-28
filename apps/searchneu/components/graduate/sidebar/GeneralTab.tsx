@@ -10,6 +10,7 @@ import {
   NUPATH_CODES,
 } from "@/lib/graduate/requirementUtils";
 import { CircularProgress } from "./CircularProgress";
+import { PlaceholdersSection } from "./PlaceholdersSection";
 
 // ── NUPath Card ─────────────────────────────────────────────────────────────
 
@@ -71,6 +72,8 @@ export function GeneralTab({
       <div>
         <CircularProgress current={creditsTaken} total={creditsTotal} />
       </div>
+
+      <PlaceholdersSection />
 
       {/* NUPath Section */}
       <div className="select-none">

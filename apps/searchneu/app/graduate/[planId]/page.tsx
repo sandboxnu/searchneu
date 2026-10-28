@@ -23,6 +23,7 @@ import {
   allAuditCourses,
   applyScheduleCourseDetails,
 } from "@/lib/graduate/auditUtils";
+import { isPlaceholderCourse } from "@/lib/graduate/placeholderUtils";
 import { HeaderClient } from "@/components/graduate/HeaderClient";
 import { PlanClient } from "@/components/graduate/PlanClient";
 
@@ -74,6 +75,8 @@ async function hydratePlan(row: AuditPlanRow): Promise<
   // Collect schedule course keys once, reused for names and details
   const scheduleKeys = new Set<string>();
   for (const c of allAuditCourses(schedule)) {
+    // Placeholders aren't catalog courses, so there's nothing to look up
+    if (isPlaceholderCourse(c)) continue;
     scheduleKeys.add(`${c.subject}-${c.classId}`);
   }
 

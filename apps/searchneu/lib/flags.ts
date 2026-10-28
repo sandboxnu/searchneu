@@ -20,6 +20,6 @@ export const graduateFlag = flag({
   key: "graduate",
   description: "Enable graduate page",
   decide() {
-    return true;
+    return false;
   },
 });

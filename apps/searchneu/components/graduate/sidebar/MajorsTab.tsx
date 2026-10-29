@@ -50,9 +50,9 @@ export function MajorsTab({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Major selector + title */}
+      {/* Major selector (only when there's more than one) + title */}
       <div>
-        {majors.length > 1 ? (
+        {majors.length > 1 && (
           <Select
             value={String(selectedMajorIdx)}
             // maps indexes to names so the trigger shows the name before the popup opens
@@ -70,12 +70,6 @@ export function MajorsTab({
               ))}
             </SelectContent>
           </Select>
-        ) : (
-          <div className="border-neu2 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-neu8 text-sm font-bold">
-              {currentMajor.name}
-            </span>
-          </div>
         )}
         <h2 className="text-neu8 text-lg font-bold">{currentMajor.name}</h2>
         <p

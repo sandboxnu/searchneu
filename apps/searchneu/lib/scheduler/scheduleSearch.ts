@@ -15,35 +15,27 @@ export const EMPTY_SELECTION: MaskedSelection = {
   mask: BigInt(0),
 };
 
-const merge = (a: MaskedSelection, b: MaskedSelection): MaskedSelection => ({
-  sections: [...a.sections, ...b.sections],
-  mask: a.mask | b.mask,
-});
-
 /**
  * Step an odometer of indexes, carrying left when a digit runs out. Returns
- * true on overflow.
+ * the position stepped, or -1 on overflow.
  *
  * Digits right of `position` are left alone: they are always already zero,
  * because a position is only stepped after every position before it was
  * accepted, and a carry zeroes what it passes.
  */
-export const advanceIndexes = (
+export const advanceFrom = (
   indexes: number[],
   sizes: number[],
   position: number,
-): boolean => {
-  indexes[position]++;
-
-  while (position >= 0 && indexes[position] >= sizes[position]) {
+): number => {
+  while (position >= 0) {
+    indexes[position]++;
+    if (indexes[position] < sizes[position]) return position;
     indexes[position] = 0;
     position--;
-    if (position >= 0) {
-      indexes[position]++;
-    }
   }
 
-  return position < 0;
+  return -1;
 };
 
 /**
@@ -64,33 +56,40 @@ export const combineSelections = (
   const ordered = [...slots].sort((a, b) => a.length - b.length);
 
   const results: MaskedSelection[] = [];
+  const slotCount = ordered.length;
   const sizes = ordered.map((options) => options.length);
-  const indexes = new Array<number>(ordered.length).fill(0);
+  const indexes = new Array<number>(slotCount).fill(0);
+
+  // prefixMasks[i] is the time taken by positions 0..i-1, so a position is
+  // tested against one number and the prefix survives when only a later
+  // position moves.
+  const prefixMasks = new Array<bigint>(slotCount + 1).fill(BigInt(0));
+
+  let position = 0;
 
   for (;;) {
-    let combined = EMPTY_SELECTION.mask;
-    let conflictAt = -1;
-
-    for (let slot = 0; slot < indexes.length; slot++) {
-      const option = ordered[slot][indexes[slot]];
-      if (masksConflict(combined, option.mask)) {
-        conflictAt = slot;
-        break;
-      }
-      combined |= option.mask;
-    }
-
-    if (conflictAt === -1) {
+    if (position === slotCount) {
       results.push({
         sections: ordered.flatMap(
           (options, slot) => options[indexes[slot]].sections,
         ),
-        mask: combined,
+        mask: prefixMasks[slotCount],
       });
-      if (advanceIndexes(indexes, sizes, indexes.length - 1)) break;
-    } else {
+
+      position = advanceFrom(indexes, sizes, slotCount - 1);
+      if (position < 0) break;
+      continue;
+    }
+
+    const option = ordered[position][indexes[position]];
+
+    if (masksConflict(prefixMasks[position], option.mask)) {
       // Everything further right is dead for this prefix.
-      if (advanceIndexes(indexes, sizes, conflictAt)) break;
+      position = advanceFrom(indexes, sizes, position);
+      if (position < 0) break;
+    } else {
+      prefixMasks[position + 1] = prefixMasks[position] | option.mask;
+      position++;
     }
   }
 
@@ -110,35 +109,39 @@ export const extendWithOptional = (
 
   if (targetCount !== undefined && targetCount < 0) return results;
 
-  const search = (
-    current: MaskedSelection,
-    slot: number,
-    taken: number,
-  ): void => {
+  // Unwound as the search backs out; copied only when a result is recorded.
+  const chosen: SectionWithCourse[] = [...base.sections];
+
+  const record = (mask: bigint) => {
+    results.push({ sections: [...chosen], mask });
+  };
+
+  const search = (mask: bigint, slot: number, taken: number): void => {
     if (slot === slots.length) {
-      if (targetCount === undefined || taken === targetCount) {
-        results.push(current);
-      }
+      if (targetCount === undefined || taken === targetCount) record(mask);
       return;
     }
 
     if (targetCount !== undefined) {
       if (taken + (slots.length - slot) < targetCount) return;
       if (taken === targetCount) {
-        results.push(current);
+        record(mask);
         return;
       }
     }
 
-    search(current, slot + 1, taken);
+    search(mask, slot + 1, taken);
 
     for (const option of slots[slot]) {
-      if (!masksConflict(current.mask, option.mask)) {
-        search(merge(current, option), slot + 1, taken + 1);
-      }
+      if (masksConflict(mask, option.mask)) continue;
+
+      chosen.push(...option.sections);
+      search(mask | option.mask, slot + 1, taken + 1);
+      // An option can carry several sections, so unwind by its length.
+      chosen.length -= option.sections.length;
     }
   };
 
-  search(base, 0, 0);
+  search(base.mask, 0, 0);
   return results;
 };

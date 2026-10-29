@@ -18,7 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon, XIcon } from "lucide-react";
 import { useLocalStorage } from "@/lib/graduate/useLocalStorage";
 import { CreateAuditPlanInput } from "@/lib/graduate/api-dtos";
 import EditPlanModal from "@/components/graduate/modal/EditPlanModal";
@@ -47,7 +47,7 @@ export function GuestHeaderClient() {
   }
 
   return (
-    <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
+    <div className="border-neu25 bg-neu0 mt-3 rounded-lg border p-6">
       <div className="flex items-start gap-5">
         <div className="flex flex-col gap-4">
           <Select
@@ -159,7 +159,17 @@ export function GuestHeaderClient() {
       )}
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <AlertDialogContent>
-          <AlertDialogTitle>{`Delete "${guestPlan.name}"?`}</AlertDialogTitle>
+          <div className="flex items-start justify-between gap-4">
+            <AlertDialogTitle>{`Delete "${guestPlan.name}"?`}</AlertDialogTitle>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setConfirmDeleteOpen(false)}
+            >
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </Button>
+          </div>
           <AlertDialogDescription>
             This plan and all of its courses will be permanently deleted.
           </AlertDialogDescription>

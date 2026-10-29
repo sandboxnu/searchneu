@@ -22,7 +22,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 // TODO: re-add ShareIcon here when share plan is implemented
-import { PencilIcon, PlusIcon, Trash2Icon, CopyIcon } from "lucide-react";
+import {
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+  CopyIcon,
+  XIcon,
+} from "lucide-react";
 import { deletePlanAction } from "@/lib/graduate/actions";
 
 interface HeaderClientProps {
@@ -92,7 +98,7 @@ export function HeaderClient({
   // }
 
   return (
-    <div className="border-neu25 bg-neu1 mt-3 rounded-lg border p-6">
+    <div className="border-neu25 bg-neu0 mt-3 rounded-lg border p-6">
       <div className="flex items-start gap-5">
         <div className="flex flex-col gap-4">
           <Select
@@ -224,7 +230,17 @@ export function HeaderClient({
       />
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <AlertDialogContent>
-          <AlertDialogTitle>{`Delete "${currentPlan.name}"?`}</AlertDialogTitle>
+          <div className="flex items-start justify-between gap-4">
+            <AlertDialogTitle>{`Delete "${currentPlan.name}"?`}</AlertDialogTitle>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setConfirmDeleteOpen(false)}
+            >
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </Button>
+          </div>
           <AlertDialogDescription>
             This plan and all of its courses will be permanently deleted.
           </AlertDialogDescription>

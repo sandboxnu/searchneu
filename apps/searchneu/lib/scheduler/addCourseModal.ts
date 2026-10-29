@@ -5,6 +5,7 @@ import {
   ModalCourse,
   SelectedCourseGroupData,
 } from "./types";
+import { extractCourseReferences } from "./coreqs";
 
 /**
  * Shallow equality check for two course identifiers.
@@ -34,6 +35,10 @@ export const isAlreadySelected = (
 // Coreq Helpers
 /**
  * Given a corequisite object, extract this coreq's corequisite courses recursively.
+ *
+ * Shares its tree walk with generation so the groups shown in the modal are
+ * the ones the generator schedules together.
+ *
  * @param req corquisite object
  * @param acc accumulator of corequisite courses
  * @returns a flattened array of corequisite courses
@@ -42,12 +47,11 @@ export const extractCoreqReqs = (
   req: CourseReq | null | undefined,
   acc: CourseIdentifier[] = [],
 ): CourseIdentifier[] => {
-  if (!req || typeof req !== "object") return acc;
-
-  if (req.subject && req.courseNumber) {
-    acc.push({ subjectCode: req.subject, courseNumber: req.courseNumber });
-  } else if (req.items && Array.isArray(req.items)) {
-    req.items.forEach((item) => extractCoreqReqs(item, acc));
+  for (const reference of extractCourseReferences(req)) {
+    acc.push({
+      subjectCode: reference.subject,
+      courseNumber: reference.courseNumber,
+    });
   }
   return acc;
 };

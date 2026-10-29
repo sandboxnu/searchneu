@@ -1,4 +1,11 @@
-import { Audit, AuditCourse, AuditYear, SeasonEnum, StatusEnum } from "./types";
+import {
+  Audit,
+  AuditCourse,
+  AuditPlanRow,
+  AuditYear,
+  SeasonEnum,
+  StatusEnum,
+} from "./types";
 
 export function createScheduleFromTemplate(
   planData: Record<string, Record<string, string[]>>,
@@ -150,4 +157,24 @@ export function createEmptyYear(year: number): AuditYear {
 export function generateDefaultPlanTitle() {
   const now = new Date();
   return `Plan ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+}
+
+/**
+ * Builds the values for a new plan that duplicates the given plan. The id,
+ * owner, and timestamps are left out so the database set them for the new plan.
+ *
+ * @param plan the plan being copied
+ *
+ * @returns the copied plan fields, named "Copy of" - original plan anme
+ */
+export function buildAuditPlanCopy(plan: AuditPlanRow) {
+  return {
+    name: `Copy of ${plan.name}`,
+    schedule: plan.schedule,
+    whiteboard: plan.whiteboard,
+    majors: plan.majors,
+    minors: plan.minors,
+    concentration: plan.concentration,
+    catalogYear: plan.catalogYear,
+  };
 }

@@ -170,7 +170,7 @@ export function removeCourse(
 
 export const collisionAlgorithm: CollisionDetection = (args) => {
   const pointer = pointerWithin(args);
-  
+
   const card = pointer.filter((c) =>
     String(c.id).startsWith(COURSE_DROP_PREFIX),
   );

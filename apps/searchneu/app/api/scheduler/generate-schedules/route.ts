@@ -2,6 +2,11 @@ import { generateSchedules } from "@/lib/scheduler/generateSchedules";
 import { getSectionsAndMeetingTimes } from "@/lib/scheduler/courseSections";
 import { resolveCoreqGroups } from "@/lib/scheduler/coreqGroups";
 import { buildCourseGroups } from "@/lib/scheduler/courseGroups";
+import {
+  scheduleHasRequiredNupaths,
+  sectionPassesFilters,
+} from "@/lib/scheduler/filters";
+import { parseFiltersFromParams } from "@/lib/scheduler/filterParams";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -52,6 +57,9 @@ export async function GET(request: NextRequest) {
 
   const { lockedCourseIds, optionalCourseIds, numCourses } = parsed.data;
 
+  // The same parser the filter panel writes with, so the two cannot drift.
+  const filters = parseFiltersFromParams(searchParams);
+
   try {
     const groupings = await resolveCoreqGroups([
       ...lockedCourseIds,
@@ -62,8 +70,17 @@ export async function GET(request: NextRequest) {
     const sections = await Promise.all(
       courseIds.map(getSectionsAndMeetingTimes),
     );
+
+    // Filtering sections before the search, rather than filtering the
+    // schedules it produces, is what keeps a narrowed plan cheap: the search
+    // is multiplicative in how many sections survive.
     const sectionsByCourseId = new Map(
-      courseIds.map((courseId, index) => [courseId, sections[index]]),
+      courseIds.map((courseId, index) => [
+        courseId,
+        sections[index].filter((section) =>
+          sectionPassesFilters(section, filters),
+        ),
+      ]),
     );
 
     const groups = buildCourseGroups(groupings, sectionsByCourseId);
@@ -75,18 +92,29 @@ export async function GET(request: NextRequest) {
     const isLocked = (group: { courseIds: number[] }) =>
       group.courseIds.some((courseId) => locked.has(courseId));
 
-    // Grouping a lecture with its lab can leave a plan with fewer groups than
-    // the saved count asks for. Clamp instead of returning nothing, and leave
-    // the saved setting alone so it recovers if a course is added back.
+    // Grouping and filtering can both leave a plan with fewer groups than the
+    // saved count asks for. Clamp instead of returning nothing, and leave the
+    // saved setting alone so it recovers when filters are relaxed.
+    const schedulable = groups.filter((group) => group.options.length > 0);
     const targetGroupCount =
       numCourses === undefined
         ? undefined
-        : Math.min(numCourses, groups.length);
+        : Math.min(numCourses, schedulable.length);
+
+    const requiredNupaths = filters.nupaths ?? [];
 
     const schedules = generateSchedules(
       groups.filter(isLocked),
       groups.filter((group) => !isLocked(group)),
-      targetGroupCount,
+      {
+        targetGroupCount,
+        // The one requirement that cannot be settled section by section.
+        accept:
+          requiredNupaths.length > 0
+            ? (sections) =>
+                scheduleHasRequiredNupaths(sections, requiredNupaths)
+            : undefined,
+      },
     );
 
     return NextResponse.json(schedules);

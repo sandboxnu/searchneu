@@ -47,10 +47,12 @@ export const advanceFrom = (
  */
 export const combineSelections = (
   slots: MaskedSelection[][],
+  limit = Infinity,
 ): MaskedSelection[] => {
+  if (limit <= 0) return [];
   if (slots.length === 0) return [EMPTY_SELECTION];
   if (slots.some((options) => options.length === 0)) return [];
-  if (slots.length === 1) return slots[0];
+  if (slots.length === 1) return slots[0].slice(0, limit);
 
   // Fewest options first, so conflicts surface where skipping discards most.
   const ordered = [...slots].sort((a, b) => a.length - b.length);
@@ -76,6 +78,8 @@ export const combineSelections = (
         mask: prefixMasks[slotCount],
       });
 
+      if (results.length >= limit) break;
+
       position = advanceFrom(indexes, sizes, slotCount - 1);
       if (position < 0) break;
       continue;
@@ -99,24 +103,34 @@ export const combineSelections = (
 /**
  * Extend a selection by taking some of the optional slots. Each is taken
  * whole or not at all, so a coreq group can never end up half-scheduled.
+ *
+ * `accept` is applied here rather than to the results so that `limit` counts
+ * schedules the caller wants — a limit reached on rejected ones would hand
+ * back a truncated list that then filters down to nothing.
  */
 export const extendWithOptional = (
   base: MaskedSelection,
   slots: MaskedSelection[][],
   targetCount?: number,
+  limit = Infinity,
+  accept?: (sections: SectionWithCourse[]) => boolean,
 ): MaskedSelection[] => {
   const results: MaskedSelection[] = [];
 
+  if (limit <= 0) return results;
   if (targetCount !== undefined && targetCount < 0) return results;
 
   // Unwound as the search backs out; copied only when a result is recorded.
   const chosen: SectionWithCourse[] = [...base.sections];
 
   const record = (mask: bigint) => {
+    if (accept && !accept(chosen)) return;
     results.push({ sections: [...chosen], mask });
   };
 
   const search = (mask: bigint, slot: number, taken: number): void => {
+    if (results.length >= limit) return;
+
     if (slot === slots.length) {
       if (targetCount === undefined || taken === targetCount) record(mask);
       return;
@@ -133,6 +147,7 @@ export const extendWithOptional = (
     search(mask, slot + 1, taken);
 
     for (const option of slots[slot]) {
+      if (results.length >= limit) return;
       if (masksConflict(mask, option.mask)) continue;
 
       chosen.push(...option.sections);

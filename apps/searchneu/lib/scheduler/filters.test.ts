@@ -38,6 +38,44 @@ describe("filters", () => {
     ...overrides,
   });
 
+  describe("sectionPassesFilters — pushed down to sections", () => {
+    // Once schedule-level checks; both only ever looked at one section.
+    test("should reject honors sections when honors are excluded", () => {
+      const honors = createMockSection({ honors: true });
+      const regular = createMockSection({ honors: false });
+
+      assert.strictEqual(
+        sectionPassesFilters(honors, { includeHonors: false }),
+        false,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(regular, { includeHonors: false }),
+        true,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(honors, { includeHonors: true }),
+        true,
+      );
+    });
+
+    test("should reject sections the student has hidden", () => {
+      const section = createMockSection({ id: 42 });
+
+      assert.strictEqual(
+        sectionPassesFilters(section, {
+          hiddenSectionIds: new Set([42]),
+        }),
+        false,
+      );
+      assert.strictEqual(
+        sectionPassesFilters(section, {
+          hiddenSectionIds: new Set([7]),
+        }),
+        true,
+      );
+    });
+  });
+
   describe("sectionPassesFilters", () => {
     test("should return true when no filters provided", () => {
       const section = createMockSection();

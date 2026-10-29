@@ -1,4 +1,4 @@
-import { getSectionsAndMeetingTimes } from "@/lib/scheduler/generateSchedules";
+import { getSectionsAndMeetingTimes } from "@/lib/scheduler/courseSections";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

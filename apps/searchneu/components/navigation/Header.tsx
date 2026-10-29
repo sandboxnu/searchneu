@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { UserIcon } from "./UserMenu";
-import { graduateFlag, roomsFlag } from "@/lib/flags";
+import { roomsFlag } from "@/lib/flags";
 import { Suspense } from "react";
 import { NavBar } from "./NavBar";
 import { MobileNav } from "./MobileNav";
@@ -9,7 +9,6 @@ import { MobileNav } from "./MobileNav";
 export async function Header() {
   const flags = {
     rooms: roomsFlag(),
-    graduate: graduateFlag(),
   };
 
   return (

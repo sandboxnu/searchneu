@@ -111,11 +111,22 @@ export const sectionPassesFilters = (
     }
   }
 
+  // Honors and hidden are section properties, so dropping the section gives
+  // the same answer as discarding the schedules containing it, for less work.
+  if (filters.includeHonors == false && section.honors) {
+    return false;
+  }
+
+  if (filters.hiddenSectionIds?.has(section.id)) {
+    return false;
+  }
+
   return true;
 };
 
-// Check if a schedule fulfills all required NUPaths
-const scheduleHasRequiredNupaths = (
+// The one filter that cannot be decided section by section: it asks what the
+// schedule covers as a whole.
+export const scheduleHasRequiredNupaths = (
   schedule: SectionWithCourse[],
   requiredNupaths: string[],
 ): boolean => {

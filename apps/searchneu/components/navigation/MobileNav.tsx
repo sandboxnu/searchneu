@@ -57,7 +57,6 @@ export function MobileNav({ flags }: MobileNavParams) {
 
 function MobileNavLinks({ flags }: MobileNavParams) {
   const roomsFlag = use(flags["rooms"]);
-  const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
 
@@ -83,21 +82,19 @@ function MobileNavLinks({ flags }: MobileNavParams) {
           }
         />
       )}
-      {graduateFlag && (
-        <SheetClose
-          nativeButton={false}
-          render={
-            <Link
-              href="/graduate"
-              data-active={pathname.includes("/graduate")}
-              className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-            >
-              <GraduationCapIcon className="size-4" />
-              Graduate
-            </Link>
-          }
-        />
-      )}
+      <SheetClose
+        nativeButton={false}
+        render={
+          <Link
+            href="/graduate"
+            data-active={pathname.includes("/graduate")}
+            className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+          >
+            <GraduationCapIcon className="size-4" />
+            <span>Planner</span>
+          </Link>
+        }
+      />
       <SheetClose
         nativeButton={false}
         render={

@@ -15,11 +15,3 @@ export const roomsFlag = flag({
     return false;
   },
 });
-
-export const graduateFlag = flag({
-  key: "graduate",
-  description: "Enable graduate page",
-  decide() {
-    return false;
-  },
-});

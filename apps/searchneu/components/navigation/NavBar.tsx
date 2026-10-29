@@ -41,7 +41,6 @@ export function NavBar({
   flags: { [key: string]: Promise<boolean> };
 }) {
   const roomsFlag = use(flags["rooms"]);
-  const graduateFlag = use(flags["graduate"]);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -82,17 +81,15 @@ export function NavBar({
           <span>Rooms</span>
         </Link>
       )}
-      {graduateFlag && (
-        <Link
-          // NOTE: access control should be on the page, not navigation
-          href="/graduate"
-          data-active={pathname.includes("/graduate")}
-          className="bg-neu0 data-[active=true]:border-neu3 flex w-full items-center gap-2 rounded-full border p-2 text-sm"
-        >
-          <GraduationCapIcon className="size-4" />
-          Graduate
-        </Link>
-      )}
+      <Link
+        // NOTE: access control should be on the page, not navigation
+        href="/graduate"
+        data-active={pathname.includes("/graduate")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+      >
+        <GraduationCapIcon className="size-4" />
+        <span>Planner</span>
+      </Link>
       <Link
         href="/catalog"
         data-active={pathname.includes("/catalog")}

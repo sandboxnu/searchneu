@@ -50,7 +50,7 @@ export function RequirementSection({
     <div className="select-none">
       <button
         type="button"
-        className="flex w-full items-center justify-between"
+        className="flex w-full items-center justify-between text-left"
         onClick={() => setOpened(!opened)}
       >
         <div className="flex items-center gap-2">
@@ -58,11 +58,11 @@ export function RequirementSection({
             {section.title}
           </span>
           {complete ? (
-            <div className="bg-green flex h-5 w-5 items-center justify-center rounded-full text-white">
+            <div className="bg-green flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white">
               <Check className="h-3 w-3" strokeWidth={3} />
             </div>
           ) : (
-            <span className="text-neu5 text-xs">
+            <span className="text-neu5 shrink-0 text-xs whitespace-nowrap">
               ({fulfilled}/{total})
             </span>
           )}
@@ -176,7 +176,7 @@ export function RequirementCard({
         className={`rounded-[8px] border-[1px] px-3 py-2 text-[12px] ${
           fulfilled
             ? "border-green/30 bg-green/10 text-green"
-            : "border-neu3 bg-neu2 text-neu6"
+            : "border-neu3 bg-neu1 text-neu6"
         }`}
       >
         Any {r.subject} {r.idRangeStart}&ndash;{r.idRangeEnd}

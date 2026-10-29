@@ -142,20 +142,33 @@ export function BasePlanClient({
         return;
       }
 
-      if (!target) return;
+      const overCourseId: string | undefined = over.data.current?.courseId;
+      const dropTarget = overCourseId
+        ? containers.find((t) => t.classes.some((c) => c.id === overCourseId))
+        : target;
+      if (!dropTarget) return;
+      if (overCourseId === active.id) return;
 
       const fromSidebar = isSidebarCourse(active.id as string);
       const source = fromSidebar
         ? null
         : containers.find((t) => t.classes.some((c) => c.id === active.id));
 
-      // No-op: dropped on same term
-      if (!fromSidebar && source && source.id === target.id) return;
+      // Reorder within the same term
+      if (source && source.id === dropTarget.id) {
+        const from = source.classes.findIndex((c) => c.id === active.id);
+        const [moved] = source.classes.splice(from, 1);
+        const to = overCourseId
+          ? source.classes.findIndex((c) => c.id === overCourseId)
+          : source.classes.length;
+        source.classes.splice(to, 0, moved);
+        return;
+      }
 
       // Duplicate check (skip for generic courses)
       if (
         !course.generic &&
-        target.classes.some(
+        dropTarget.classes.some(
           (c) => c.classId === course.classId && c.subject === course.subject,
         )
       ) {
@@ -169,7 +182,10 @@ export function BasePlanClient({
       // Add to target. Sidebar courses only carry a subject and classId,
       // so look up their real credits and NUPaths before saving.
       const details = courseDetails[`${course.subject}-${course.classId}`];
-      target.classes.push({
+      const insertAt = overCourseId
+        ? dropTarget.classes.findIndex((c) => c.id === overCourseId)
+        : dropTarget.classes.length;
+      dropTarget.classes.splice(insertAt, 0, {
         ...applyCourseDetails(course, details),
         id: `moving-${nextId()}`,
       });

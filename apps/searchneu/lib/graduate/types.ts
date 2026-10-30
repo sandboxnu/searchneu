@@ -179,6 +179,11 @@ export interface ParsedCourse {
   classId: string;
 }
 
+/**
+ * What's missing from a course's prereqs or coreqs (see reqWarnings.ts). A
+ * COURSE is one missing course, an AND needs every item in `missing`, and an
+ * OR needs any one of them (sorted easiest first).
+ */
 export type INEUReqError =
   INEUReqCourseError | INEUReqAndError | INEUReqOrError;
 
@@ -208,10 +213,12 @@ export interface INEUReqOrError {
   classId?: string;
 }
 
+/** Errors for one term, keyed by "SUBJECT CLASSID" (e.g. "CS 2510"). */
 export interface TermError {
   [key: string]: INEUReqError | undefined;
 }
 
+/** Req warnings for a whole audit: one YearError per year, sorted by year. */
 export interface AuditWarnings {
   type: string;
   years: YearError[];

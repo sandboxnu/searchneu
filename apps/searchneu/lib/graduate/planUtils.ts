@@ -12,6 +12,7 @@ import type { Audit, AuditCourse, AuditTerm } from "./types";
 export const SIDEBAR_COURSE_PREFIX = "sidebar-";
 export const DELETE_ZONE_ID = "delete-zone";
 export const OVERRIDES_ID = "overrides";
+export const COURSE_DROP_PREFIX = "drop-";
 
 // ── ID Counter ───────────────────────────────────────────────────────────────
 
@@ -169,5 +170,10 @@ export function removeCourse(
 
 export const collisionAlgorithm: CollisionDetection = (args) => {
   const pointer = pointerWithin(args);
+
+  const card = pointer.filter((c) =>
+    String(c.id).startsWith(COURSE_DROP_PREFIX),
+  );
+  if (card.length > 0) return card;
   return pointer.length > 0 ? pointer : rectIntersection(args);
 };

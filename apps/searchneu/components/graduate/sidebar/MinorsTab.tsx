@@ -41,9 +41,9 @@ export function MinorsTab({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Minor selector + title */}
+      {/* Minor selector (only when there's more than one) + title */}
       <div>
-        {minors.length > 1 ? (
+        {minors.length > 1 && (
           <Select
             value={String(selectedMinorIdx)}
             // maps indexes to names so the trigger shows the name before the popup opens
@@ -61,12 +61,6 @@ export function MinorsTab({
               ))}
             </SelectContent>
           </Select>
-        ) : (
-          <div className="border-neu2 bg-neu1 mb-2 flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-neu8 text-sm font-bold">
-              {currentMinor.name}
-            </span>
-          </div>
         )}
         <h2 className="text-neu8 text-lg font-bold">{currentMinor.name}</h2>
         <p className="text-neu6 text-sm">Minor Requirements</p>

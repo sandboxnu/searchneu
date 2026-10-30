@@ -39,6 +39,7 @@ export function AuditTermColumn({
           key={course.id}
           course={course}
           onRemove={() => onRemoveCourse(i)}
+          droppable
         />
       ))}
       <button

@@ -1,7 +1,8 @@
 // ── CourseCard ────────────────────────────────────────────────────────────────
 
 import { AuditCourse } from "@/lib/graduate/types";
-import { useDraggable } from "@dnd-kit/core";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { COURSE_DROP_PREFIX } from "@/lib/graduate/planUtils";
 import { useCourseName } from "../CourseNameContext";
 import { useCourseDetails } from "../CourseDetailsContext";
 import { NUPATH_DISPLAY } from "@/lib/graduate/requirementUtils";
@@ -11,21 +12,41 @@ import { DeleteIcon } from "@/components/icons/Delete";
 /**
  * One draggable course. Coreqs (e.g. CS 2000 + CS 2001) are separate
  * courses in the plan, so each one gets its own card.
+ *
+ * Cards in the plan are also drop targets (droppable), dropping another
+ * course on one inserts it right before this card so courses
+ * can be reordered within a term
  */
 export function AuditCourseCard({
   course,
   onRemove,
   fulfilled,
+  droppable = false,
 }: {
   course: AuditCourse;
   onRemove?: () => void;
   fulfilled?: boolean;
+  droppable?: boolean;
 }) {
   const details = useCourseDetails(course.subject, course.classId);
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setDragRef,
+    isDragging,
+  } = useDraggable({
     id: course.id!,
     data: { course },
   });
+  const { setNodeRef: setDropRef, isOver } = useDroppable({
+    id: `${COURSE_DROP_PREFIX}${course.id}`,
+    data: { courseId: course.id },
+    disabled: !droppable,
+  });
+  const setNodeRef = (node: HTMLElement | null) => {
+    setDragRef(node);
+    setDropRef(node);
+  };
   const name = useCourseName(course.subject, course.classId);
   const nupaths = (course.nupaths ?? details?.nupaths ?? []).filter(
     (code) => code in NUPATH_DISPLAY,
@@ -35,10 +56,13 @@ export function AuditCourseCard({
     <div
       ref={setNodeRef}
       className={`group relative flex w-full items-center justify-between rounded-[8px] border-[1px] text-[12px] transition-transform ${
-        fulfilled ? "border-green/30 bg-green/10" : "bg-neu2 border-neu3"
+        fulfilled ? "border-green/30 bg-green/10" : "bg-neu1 border-neu3"
       } ${isDragging ? "invisible" : ""}`}
       {...attributes}
     >
+      {isOver && (
+        <div className="bg-neu4 absolute -top-[5px] right-0 left-0 h-0.5 rounded-full" />
+      )}
       <div
         className="flex min-w-0 flex-grow cursor-grab items-center p-2"
         {...listeners}

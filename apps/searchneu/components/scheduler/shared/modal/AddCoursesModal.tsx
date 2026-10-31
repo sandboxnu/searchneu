@@ -210,11 +210,13 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         newGroups.push({ parent: course, coreqs });
       }
       setSelectedCourseGroups(newGroups);
+      // Counting coreqs for each course
       if (initialExistingPlan?.numCourses !== undefined) {
         const coreqCount = newGroups.reduce(
           (count, group) => count + group.coreqs.length,
           0,
         );
+        // The course count shown in UI (#courses w/ coreqs - coreqs)
         setNumCourses(initialExistingPlan.numCourses - coreqCount);
       }
     };
@@ -352,6 +354,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
                   g.parent.id,
                   ...g.coreqs.map((c) => c.id),
                 ]);
+                // Manually increasing course count for schedule generation to include coreqs
                 handleGenerateSchedules(
                   allCourseIds,
                   numCourses + selectedCoreqCount,

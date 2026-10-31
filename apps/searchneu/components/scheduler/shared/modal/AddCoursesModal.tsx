@@ -70,9 +70,6 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         if (res.ok) {
           const planData = await res.json();
           setInitialExistingPlan(planData);
-          if (planData.numCourses !== undefined) {
-            setNumCourses(planData.numCourses);
-          }
         }
       } catch (error) {
         console.error("Error fetching existing plan:", error);

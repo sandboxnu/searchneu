@@ -19,28 +19,23 @@ function timeToSlotIndex(time: number): number {
 }
 
 /**
- * Get global slot index (0-2015) for a given day and slot within that day.
- */
-function getGlobalSlotIndex(day: number, slot: number): number {
-  return day * SLOTS_PER_DAY + slot;
-}
-
-/**
  * Convert a section's meeting times to a binary mask.
- * Each occupied 5-minute slot gets one bit set.
+ *
+ * A meeting occupies a contiguous run, so `(1 << slotCount) - 1` builds the
+ * run in one expression and shifts it into place.
  */
 export function meetingTimesToBinaryMask(section: SectionWithCourse): bigint {
   let mask = BigInt(0); // Use BigInt constructor to avoid ES2020 literal
   for (const meetingTime of section.meetingTimes) {
     const startSlot = timeToSlotIndex(meetingTime.startTime);
-    const endSlotExclusive = timeToSlotIndex(meetingTime.endTime);
+    const slotCount = timeToSlotIndex(meetingTime.endTime) - startSlot;
 
-    // Set bits for each occupied slot
+    // Ends before it starts, or within one slot: occupies nothing.
+    if (slotCount <= 0) continue;
+
+    const occupied = (BigInt(1) << BigInt(slotCount)) - BigInt(1);
     for (const day of meetingTime.days) {
-      for (let slot = startSlot; slot < endSlotExclusive; slot++) {
-        const globalSlot = getGlobalSlotIndex(day, slot);
-        mask |= BigInt(1) << BigInt(globalSlot);
-      }
+      mask |= occupied << BigInt(day * SLOTS_PER_DAY + startSlot);
     }
   }
   return mask;

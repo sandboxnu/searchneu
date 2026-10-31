@@ -73,23 +73,29 @@ export function parseFiltersFromParams(params: Params): ScheduleFilters {
   return filters;
 }
 
-export function syncToUrl(filters: ScheduleFilters) {
-  const params = new URLSearchParams(window.location.search);
+const FILTER_KEYS = [
+  "startTime",
+  "endTime",
+  "freeDays",
+  "nupaths",
+  "honors",
+  "remote",
+  "minSeats",
+  "hiddenSectionIds",
+  "lockedCourseIds",
+  "campuses",
+  "numCourses",
+];
 
-  const filterKeys = [
-    "startTime",
-    "endTime",
-    "freeDays",
-    "nupaths",
-    "honors",
-    "remote",
-    "minSeats",
-    "hiddenSectionIds",
-    "lockedCourseIds",
-    "campuses",
-    "numCourses",
-  ];
-  filterKeys.forEach((k) => params.delete(k));
+/**
+ * Shared by the address bar and the generation request, so the filters in the
+ * URL are the ones the server generated against.
+ */
+export function applyFiltersToParams(
+  params: URLSearchParams,
+  filters: ScheduleFilters,
+) {
+  FILTER_KEYS.forEach((k) => params.delete(k));
 
   if (filters.startTime != null)
     params.set("startTime", String(filters.startTime));
@@ -114,6 +120,11 @@ export function syncToUrl(filters: ScheduleFilters) {
     params.set("minSeats", String(filters.minSeatsLeft));
   if (filters.numCourses != null)
     params.set("numCourses", String(filters.numCourses));
+}
+
+export function syncToUrl(filters: ScheduleFilters) {
+  const params = new URLSearchParams(window.location.search);
+  applyFiltersToParams(params, filters);
 
   const search = params.toString();
   const url = search

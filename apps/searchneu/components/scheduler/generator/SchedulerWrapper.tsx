@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  filterSchedules,
   type ScheduleFilters,
   type SectionWithCourse,
 } from "@/lib/scheduler/filters";
+import { applyFiltersToParams } from "@/lib/scheduler/filterParams";
 import { getCourseColorMap } from "@/lib/scheduler/courseColors";
 import { getScheduleKey } from "@/lib/scheduler/scheduleKey";
 import { SchedulerView } from "./calendar/SchedulerView";
@@ -69,10 +69,8 @@ export function SchedulerWrapper({
     locked: Set<number>;
     hidden: Set<number>;
   } | null>(null);
-  // Track previous locked course IDs to detect unlocks
-  const prevLockedCourseIdsRef = useRef<Set<number>>(new Set());
-  // Debounce timer for schedule regeneration on unlock
-  const regenerateDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  // Skip one regeneration after a load that already generated its schedules
+  const skipNextRegenerateRef = useRef(false);
   // Debounce timer for favorite/unfavorite requests
   const favoriteDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -200,6 +198,8 @@ export function SchedulerWrapper({
 
         setFilters(newFilters);
         justLoadedFiltersRef.current = true;
+        // The request below already generates against these filters.
+        skipNextRegenerateRef.current = true;
 
         // Fetch sections and generate schedules for the plan
         if (allCourseIds.length > 0) {
@@ -235,19 +235,15 @@ export function SchedulerWrapper({
               (id) => !lockedCourseIdsArray.includes(id),
             );
 
+            // Carries lockedCourseIds and numCourses along with the filters.
             const params = new URLSearchParams();
-            if (lockedCourseIdsArray.length > 0) {
-              params.append("lockedCourseIds", lockedCourseIdsArray.join(","));
-            }
             if (optionalCourseIdsArray.length > 0) {
               params.append(
                 "optionalCourseIds",
                 optionalCourseIdsArray.join(","),
               );
             }
-            if (planData.numCourses !== undefined) {
-              params.append("numCourses", planData.numCourses.toString());
-            }
+            applyFiltersToParams(params, newFilters);
 
             const schedulesResponse = await fetch(
               `/api/scheduler/generate-schedules?${params.toString()}`,
@@ -434,17 +430,12 @@ export function SchedulerWrapper({
           (id) => !lockedCourseIdsArray.includes(id),
         );
 
-        // Build query parameters
+        // Carries lockedCourseIds and numCourses along with the filters.
         const params = new URLSearchParams();
-        if (lockedCourseIdsArray.length > 0) {
-          params.append("lockedCourseIds", lockedCourseIdsArray.join(","));
-        }
         if (optionalCourseIdsArray.length > 0) {
           params.append("optionalCourseIds", optionalCourseIdsArray.join(","));
         }
-        if (filters.numCourses !== undefined) {
-          params.append("numCourses", filters.numCourses.toString());
-        }
+        applyFiltersToParams(params, { ...filters, lockedCourseIds });
 
         // Fetch new schedules
         const response = await fetch(
@@ -464,56 +455,44 @@ export function SchedulerWrapper({
         setIsLoadingSchedules(false);
       }
     },
-    [courseToSections, filters.numCourses],
+    [courseToSections, filters],
   );
 
   const onSchedulesGenerated = useCallback(() => {
     setPlanRefreshTrigger((prev) => prev + 1);
   }, []);
 
-  const filteredSchedules = filterSchedules(schedules, filters);
+  // Filtering happens during generation, so narrowing means asking again.
+  // Debounced because the filter panel emits a change per keystroke.
+  useEffect(() => {
+    if (courseToSections.size === 0) return;
 
-  const handleLockedCourseIdsChange = useCallback(
-    (ids: Set<number>) => {
-      setFilters((prev) => ({
-        ...prev,
-        lockedCourseIds: ids.size > 0 ? ids : undefined,
-      }));
+    if (skipNextRegenerateRef.current) {
+      skipNextRegenerateRef.current = false;
+      return;
+    }
 
-      // Detect if any courses were unlocked
-      const wasUnlocked = Array.from(prevLockedCourseIdsRef.current).some(
-        (id) => !ids.has(id),
-      );
+    const timer = setTimeout(() => {
+      regenerateSchedules(filters.lockedCourseIds ?? new Set());
+    }, 300);
 
-      // Update the previous locked course IDs for next time
-      prevLockedCourseIdsRef.current = new Set(ids);
+    return () => clearTimeout(timer);
+  }, [filters, courseToSections, regenerateSchedules]);
 
-      // If a course was unlocked, debounce schedule regeneration
-      if (wasUnlocked) {
-        // Clear existing debounce timer if any
-        if (regenerateDebounceRef.current) {
-          clearTimeout(regenerateDebounceRef.current);
-        }
-
-        // Set new debounce timer
-        regenerateDebounceRef.current = setTimeout(() => {
-          // Regenerate schedules with the new locked course IDs
-          regenerateSchedules(ids);
-          regenerateDebounceRef.current = null;
-        }, 500);
-      }
-    },
-    [regenerateSchedules],
-  );
+  // Locking is itself a filter, so the effect above handles regeneration.
+  const handleLockedCourseIdsChange = useCallback((ids: Set<number>) => {
+    setFilters((prev) => ({
+      ...prev,
+      lockedCourseIds: ids.size > 0 ? ids : undefined,
+    }));
+  }, []);
 
   // Compute color map from all schedules (stable across filter changes)
   const colorMap = useMemo(() => getCourseColorMap(schedules), [schedules]);
 
   const currentScheduleKey =
     selectedScheduleKey ??
-    (filteredSchedules.length > 0
-      ? getScheduleKey(filteredSchedules[0])
-      : null);
+    (schedules.length > 0 ? getScheduleKey(schedules[0]) : null);
 
   const handleToggleFavorite = (key: string) => {
     const isFavorited = favoritedSchedules.has(key);
@@ -560,7 +539,7 @@ export function SchedulerWrapper({
       } else {
         // Favorite logic
         const schedule =
-          filteredSchedules.find((s) => getScheduleKey(s) === key) ??
+          schedules.find((s) => getScheduleKey(s) === key) ??
           schedules.find((s) => getScheduleKey(s) === key);
 
         if (!schedule) {
@@ -623,9 +602,6 @@ export function SchedulerWrapper({
       if (favoriteDebounceRef.current) {
         clearTimeout(favoriteDebounceRef.current);
       }
-      if (regenerateDebounceRef.current) {
-        clearTimeout(regenerateDebounceRef.current);
-      }
     };
   }, []);
 
@@ -652,7 +628,7 @@ export function SchedulerWrapper({
             {planName}
           </p>
           <SchedulerView
-            schedules={filteredSchedules}
+            schedules={schedules}
             allSchedules={schedules}
             selectedScheduleKey={currentScheduleKey}
             colorMap={colorMap}
@@ -670,7 +646,7 @@ export function SchedulerWrapper({
         </div>
         <ScheduleSidebar
           allSchedules={schedules}
-          filteredSchedules={filteredSchedules}
+          filteredSchedules={schedules}
           favoritedKeys={favoritedSchedules}
           selectedScheduleKey={currentScheduleKey}
           colorMap={colorMap}

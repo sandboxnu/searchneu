@@ -70,6 +70,9 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         if (res.ok) {
           const planData = await res.json();
           setInitialExistingPlan(planData);
+          if (planData.numCourses !== undefined) {
+            setNumCourses(planData.numCourses);
+          }
         }
       } catch (error) {
         console.error("Error fetching existing plan:", error);
@@ -266,11 +269,6 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
     );
   };
 
-  const selectedCoreqCount = selectedCourseGroups.reduce(
-    (count, group) => count + group.coreqs.length,
-    0,
-  );
-
   return (
     <Dialog open={props.open} onOpenChange={(open) => !open && props.closeFn()}>
       <DialogContent className="flex h-[700px] w-8/10 flex-col items-start justify-start overflow-hidden px-6 py-9 md:max-w-[925px] [&_[data-slot=dialog-close]]:cursor-pointer">
@@ -352,10 +350,7 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
                   g.parent.id,
                   ...g.coreqs.map((c) => c.id),
                 ]);
-                handleGenerateSchedules(
-                  allCourseIds,
-                  numCourses + selectedCoreqCount,
-                );
+                handleGenerateSchedules(allCourseIds, numCourses);
               }}
             >
               {isGenerating ? "Generating Schedules..." : "Generate Schedules"}

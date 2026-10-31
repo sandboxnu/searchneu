@@ -90,14 +90,6 @@ export function NavBar({
         <GraduationCapIcon className="size-4" />
         <span>Planner</span>
       </Link>
-      <Link
-        href="/catalog"
-        data-active={pathname.includes("/catalog")}
-        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
-      >
-        <BookMarkedIcon className="size-4" />
-        <span>Catalog</span>
-      </Link>
       {signedIn ? (
         <Link
           href="/scheduler"
@@ -113,6 +105,14 @@ export function NavBar({
           <span> Scheduler</span>
         </DisabledNavItem>
       )}
+      <Link
+        href="/catalog"
+        data-active={pathname.includes("/catalog")}
+        className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
+      >
+        <BookMarkedIcon className="size-4" />
+        <span>Catalog</span>
+      </Link>
       {signedIn ? (
         <Link
           href="/notifications"

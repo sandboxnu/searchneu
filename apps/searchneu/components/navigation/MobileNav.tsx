@@ -99,12 +99,12 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         nativeButton={false}
         render={
           <Link
-            href="/catalog"
-            data-active={pathname.includes("/catalog")}
+            href="/scheduler"
+            data-active={pathname.includes("/scheduler")}
             className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
           >
-            <BookMarkedIcon className="size-4" />
-            <span>Catalog</span>
+            <CalendarIcon className="size-4" />
+            <span>Scheduler</span>
           </Link>
         }
       />
@@ -112,12 +112,12 @@ function MobileNavLinks({ flags }: MobileNavParams) {
         nativeButton={false}
         render={
           <Link
-            href="/scheduler"
-            data-active={pathname.includes("/scheduler")}
+            href="/catalog"
+            data-active={pathname.includes("/catalog")}
             className="bg-neu0 data-[active=true]:border-neu3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm"
           >
-            <CalendarIcon className="size-4" />
-            <span>Scheduler</span>
+            <BookMarkedIcon className="size-4" />
+            <span>Catalog</span>
           </Link>
         }
       />

@@ -70,9 +70,6 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         if (res.ok) {
           const planData = await res.json();
           setInitialExistingPlan(planData);
-          if (planData.numCourses !== undefined) {
-            setNumCourses(planData.numCourses);
-          }
         }
       } catch (error) {
         console.error("Error fetching existing plan:", error);
@@ -213,6 +210,13 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         newGroups.push({ parent: course, coreqs });
       }
       setSelectedCourseGroups(newGroups);
+      if (initialExistingPlan?.numCourses !== undefined) {
+        const coreqCount = newGroups.reduce(
+          (count, group) => count + group.coreqs.length,
+          0,
+        );
+        setNumCourses(initialExistingPlan.numCourses - coreqCount);
+      }
     };
 
     syncInitialCourses();
@@ -261,6 +265,11 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
         : prev.filter((g) => !isCourseMatch(g.parent, course)),
     );
   };
+
+  const selectedCoreqCount = selectedCourseGroups.reduce(
+    (count, group) => count + group.coreqs.length,
+    0,
+  );
 
   return (
     <Dialog open={props.open} onOpenChange={(open) => !open && props.closeFn()}>
@@ -343,7 +352,10 @@ export default function AddCoursesModal(props: AddCoursesModalProps) {
                   g.parent.id,
                   ...g.coreqs.map((c) => c.id),
                 ]);
-                handleGenerateSchedules(allCourseIds, numCourses);
+                handleGenerateSchedules(
+                  allCourseIds,
+                  numCourses + selectedCoreqCount,
+                );
               }}
             >
               {isGenerating ? "Generating Schedules..." : "Generate Schedules"}

@@ -92,7 +92,7 @@ const HowTos: HowTo[] = [
     title: "Watch a video tutorial",
     description:
       "Take a quick look at our walkthrough of the site, and understand all the tools we have made to be at your disposal.",
-    videoId: "hdsGQYYgrbs",
+    videoId: "Ig09BnSnKZg",
   },
   {
     type: "carousel",

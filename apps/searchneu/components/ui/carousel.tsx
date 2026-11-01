@@ -72,7 +72,7 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
         className="bg-neu1 flex h-auto w-[375px] flex-col gap-5 overscroll-x-none rounded-2xl pt-6 pr-6 pb-4 pl-6 sm:h-158 sm:w-full sm:max-w-178 sm:gap-5 sm:rounded-xl sm:p-6"
         onWheel={handleWheel}
       >
-        <DialogClose className="bg-neu3 text-neu8 absolute -top-12 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none sm:top-0 sm:-right-9">
+        <DialogClose className="bg-neu1 text-neu8 absolute -top-12 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none sm:top-0 sm:-right-9">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
 

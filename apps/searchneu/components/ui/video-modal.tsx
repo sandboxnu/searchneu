@@ -38,7 +38,7 @@ function VideoModal({
         showCloseButton={false}
         className="bg-neu1 flex w-[325px] flex-col gap-6 rounded-xl p-6 sm:w-full sm:max-w-178"
       >
-        <DialogClose className="bg-neu3 text-neu8 absolute -top-12 -right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none">
+        <DialogClose className="bg-neu1 text-neu8 absolute -top-12 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none sm:top-0 sm:-right-9">
           <X size={20} strokeWidth={2.3} />
         </DialogClose>
 

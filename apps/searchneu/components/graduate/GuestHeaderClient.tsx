@@ -35,14 +35,15 @@ export function GuestHeaderClient() {
 
   async function handleDelete() {
     setConfirmDeleteOpen(false);
-    window.localStorage.removeItem("guest-plan");
+    const name = guestPlan?.name;
+    setGuestPlan(null);
     window.localStorage.removeItem("guest-plan-courseNames");
 
     if (window.localStorage.getItem("guest-plan") === null) {
-      toast(`Plan "${guestPlan?.name}" deleted`);
+      toast(`Plan "${name}" deleted`);
       router.push("/graduate");
     } else {
-      toast.error(`Failed to delete "${guestPlan?.name}"`);
+      toast.error(`Failed to delete "${name}"`);
     }
   }
 

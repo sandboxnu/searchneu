@@ -11,7 +11,8 @@ function readStorage<T>(key: string, defaultValue: T): T {
 }
 
 /**
- * SSR-safe localStorage hook with cross-component sync.
+ * SSR-safe localStorage hook with cross-component sync. Setting the value to
+ * `null` removes the key, so every component using it sees it's gone.
  */
 export function useLocalStorage<T>(
   key: string,
@@ -34,7 +35,11 @@ export function useLocalStorage<T>(
     (newValue: T) => {
       try {
         setValue(newValue);
-        window.localStorage.setItem(key, JSON.stringify(newValue));
+        if (newValue === null) {
+          window.localStorage.removeItem(key);
+        } else {
+          window.localStorage.setItem(key, JSON.stringify(newValue));
+        }
         window.dispatchEvent(
           new CustomEvent("local-storage-sync", { detail: { key } }),
         );

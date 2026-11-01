@@ -25,6 +25,7 @@ type CarouselProps = {
 function Carousel({ items, open, onOpenChange }: CarouselProps) {
   const [step, setStep] = useState(0);
   const wheelCooldown = useRef(false);
+  const touchStart = useRef<{ x: number, y: number | null }>(null);
 
   const isLast = step === items.length - 1;
 
@@ -65,12 +66,31 @@ function Carousel({ items, open, onOpenChange }: CarouselProps) {
     }, 300);
   }
 
+  function handleTouchStart(e: React.TouchEvent) {
+    const touch = e.touches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (!touchStart.current) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touchStart.current.x - touch.clientX;
+    touchStart.current = null;
+
+    if (Math.abs(deltaX) < 40) return;
+
+    if (deltaX > 0 && !isLast) setStep((s) => s + 1);
+    if (deltaX < 0 && step > 0) setStep((s) => s - 1);
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         className="bg-neu1 flex h-auto w-[375px] flex-col gap-5 overscroll-x-none rounded-2xl pt-6 pr-6 pb-4 pl-6 sm:h-158 sm:w-full sm:max-w-178 sm:gap-5 sm:rounded-xl sm:p-6"
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <DialogClose className="bg-neu1 text-neu8 absolute -top-12 right-2 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full shadow ring-0 outline-none sm:top-0 sm:-right-9">
           <X size={20} strokeWidth={2.3} />

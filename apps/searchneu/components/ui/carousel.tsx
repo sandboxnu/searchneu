@@ -25,7 +25,7 @@ type CarouselProps = {
 function Carousel({ items, open, onOpenChange }: CarouselProps) {
   const [step, setStep] = useState(0);
   const wheelCooldown = useRef(false);
-  const touchStart = useRef<{ x: number, y: number | null }>(null);
+  const touchStart = useRef<{ x: number; y: number | null }>(null);
 
   const isLast = step === items.length - 1;
 

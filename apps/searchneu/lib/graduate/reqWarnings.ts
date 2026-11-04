@@ -5,24 +5,49 @@ import {
   CoReqWarnings,
   INEUReqError,
   PreReqWarnings,
+  AuditYear,
   ReqErrorType,
+  SeasonEnum,
   YearError,
 } from "./types";
 
-/** The term fields of an AuditYear, in the order they happen. */
-const TERM_KEYS = ["fall", "spring", "summer1", "summer2"] as const;
+type TermKey = "fall" | "spring" | "summer1" | "summer2";
 
 /** Key used to compare courses and to index a TermError, e.g. "CS 2510". */
 function courseKey(subject: string, id: string): string {
   return `${subject} ${id}`;
 }
 
-/**
- * Years sorted by academic year (not array order). Summer full needs no
- * special case: its classes live in summer1.
- */
+/** Years sorted by academic year (not array order). */
 function yearsInOrder(schedule: Audit) {
   return [...schedule.years].sort((a, b) => a.year - b.year);
+}
+
+/**
+ * True when the year's summer is one full-length term instead of two halves.
+ * We check the term seasons as well as the flag, since summer full classes are
+ * not guaranteed to be stored in summer1 alone.
+ */
+function isSummerFull(year: AuditYear): boolean {
+  return (
+    year.isSummerFull ||
+    year.summer1.season === SeasonEnum.SM ||
+    year.summer2.season === SeasonEnum.SM
+  );
+}
+
+/**
+ * A year's terms in the order they happen, grouped by what runs at the same
+ * time. Normally each term is its own group. In a summer full year, summer1
+ * and summer2 form one group: a summer full course overlaps both halves, so
+ * nothing in that summer can be a prereq for anything else in it, and coreqs
+ * anywhere in that summer count as taken together.
+ */
+function termGroups(year: AuditYear): TermKey[][] {
+  if (isSummerFull(year)) {
+    return [["fall"], ["spring"], ["summer1", "summer2"]];
+  }
+  return [["fall"], ["spring"], ["summer1"], ["summer2"]];
 }
 
 /** One YearError per year with every term empty, so lookups never miss. */
@@ -139,17 +164,21 @@ export function getPrereqWarnings(schedule: Audit): PreReqWarnings {
   const taken = overrideKeys(schedule);
 
   yearsInOrder(schedule).forEach((year, i) => {
-    for (const termKey of TERM_KEYS) {
-      const term = year[termKey];
-      for (const course of term.classes) {
-        const error = checkReq(course.prereqs, taken);
-        if (error) {
-          years[i][termKey][courseKey(course.subject, course.classId)] = error;
+    for (const group of termGroups(year)) {
+      for (const termKey of group) {
+        for (const course of year[termKey].classes) {
+          const error = checkReq(course.prereqs, taken);
+          if (error) {
+            years[i][termKey][courseKey(course.subject, course.classId)] =
+              error;
+          }
         }
       }
-      // Add this term's courses only after checking, so courses in the same
-      // term can't satisfy each other's prereqs
-      addTermCourses(term, taken);
+      // Add the group's courses only after checking, so courses that run at
+      // the same time can't satisfy each other's prereqs
+      for (const termKey of group) {
+        addTermCourses(year[termKey], taken);
+      }
     }
   });
 
@@ -164,15 +193,19 @@ export function getCoreqWarnings(schedule: Audit): CoReqWarnings {
   const years = emptyYearErrors(schedule);
 
   yearsInOrder(schedule).forEach((year, i) => {
-    for (const termKey of TERM_KEYS) {
-      const term = year[termKey];
+    for (const group of termGroups(year)) {
       const inTerm = overrideKeys(schedule);
-      addTermCourses(term, inTerm);
+      for (const termKey of group) {
+        addTermCourses(year[termKey], inTerm);
+      }
 
-      for (const course of term.classes) {
-        const error = checkReq(course.coreqs, inTerm);
-        if (error) {
-          years[i][termKey][courseKey(course.subject, course.classId)] = error;
+      for (const termKey of group) {
+        for (const course of year[termKey].classes) {
+          const error = checkReq(course.coreqs, inTerm);
+          if (error) {
+            years[i][termKey][courseKey(course.subject, course.classId)] =
+              error;
+          }
         }
       }
     }

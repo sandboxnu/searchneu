@@ -365,6 +365,72 @@ test("multi-year ordering includes summer terms and sorts by year", () => {
   });
 });
 
+test("summer full: courses in either half can't satisfy each other's prereqs", () => {
+  const schedule: Audit = {
+    years: [
+      {
+        ...year(1, {
+          summer1: [CS2500],
+          summer2: [{ ...CS2510, prereqs: req("CS", "2500") }],
+        }),
+        isSummerFull: true,
+      },
+      // Also caught when a summer full course is stored in summer2
+      {
+        ...year(2, {
+          summer1: [
+            { subject: "CS", classId: "3500", prereqs: req("CS", "3000") },
+          ],
+          summer2: [{ subject: "CS", classId: "3000" }],
+        }),
+        isSummerFull: true,
+      },
+    ],
+  };
+  assert.deepEqual(allWarnings(getPrereqWarnings(schedule)), {
+    "1/summer2/CS 2510": missing("CS", "2500"),
+    "2/summer1/CS 3500": missing("CS", "3000"),
+  });
+});
+
+test("summer full: a term with the SM season counts as summer full", () => {
+  const y = year(1, {
+    summer1: [CS2500],
+    summer2: [{ ...CS2510, prereqs: req("CS", "2500") }],
+  });
+  const schedule: Audit = {
+    years: [{ ...y, summer1: { ...y.summer1, season: SeasonEnum.SM } }],
+  };
+  assert.deepEqual(allWarnings(getPrereqWarnings(schedule)), {
+    "1/summer2/CS 2510": missing("CS", "2500"),
+  });
+});
+
+test("summer full: coreqs across the two halves are met", () => {
+  const schedule: Audit = {
+    years: [
+      {
+        ...year(1, {
+          summer1: [{ ...CS2500, coreqs: req("CS", "2501") }],
+          summer2: [{ subject: "CS", classId: "2501" }],
+        }),
+        isSummerFull: true,
+      },
+    ],
+  };
+  assert.deepEqual(allWarnings(getCoreqWarnings(schedule)), {});
+});
+
+test("summer full courses satisfy prereqs in the next year", () => {
+  const schedule: Audit = {
+    years: [
+      { ...year(1, { summer2: [CS2500] }), isSummerFull: true },
+      year(2, { fall: [{ ...CS2510, prereqs: req("CS", "2500") }] }),
+    ],
+  };
+  assert.deepEqual(allWarnings(getPrereqWarnings(schedule)), {});
+});
+
 test("overrides satisfy prereqs and coreqs", () => {
   const schedule: Audit = {
     years: [

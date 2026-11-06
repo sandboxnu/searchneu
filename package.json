@@ -19,14 +19,14 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "turbo": "^2.11.10"
   },
-  "packageManager": "pnpm@11.5.2",
+  "packageManager": "pnpm@11.28.11",
   "engines": {
-    "node": "26.x"
+    "node": "26.13.0"
   },
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "^26.12.1",
+      "version": "^26.13.0",
       "onFail": "download"
     }
   }

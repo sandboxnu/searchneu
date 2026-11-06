@@ -148,7 +148,7 @@ export default async function Page() {
   });
   if (!session) {
     return (
-      <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
+      <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6 hidden sm:block">
         <div className="grid h-full min-h-0 w-full grid-cols-6">
           <div className="col-span-1 min-h-0">
             <div className="flex h-full min-h-0 flex-col gap-2 pb-4">
@@ -209,7 +209,7 @@ export default async function Page() {
   const courses = getTrackedCourses(trackers, trackedSectionIds);
 
   return (
-    <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6">
+    <div className="bg-secondary h-full min-h-0 w-full overflow-hidden p-4 xl:px-6 hidden sm:block">
       <div className="grid h-full min-h-0 w-full grid-cols-6">
         <div className="col-span-1 min-h-0">
           <div className="flex h-full min-h-0 flex-col gap-2 pb-4">

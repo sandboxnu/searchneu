@@ -54,11 +54,12 @@ export function useCatalogSearch(
     if (!courses || courses.length === 0) return null;
 
     const ms = new MiniSearch<CourseSearchResult>({
-      fields: ["name", "register", "courseNumber"],
+      fields: ["name", "register", "faculty", "courseNumber"],
       storeFields: [
         "id",
         "name",
         "courseNumber",
+        "faculty",
         "subjectCode",
         "maxCredits",
         "minCredits",
@@ -74,7 +75,7 @@ export function useCatalogSearch(
         "honors",
       ],
       searchOptions: {
-        boost: { register: 1.5, name: 1 },
+        boost: { register: 1.5, name: 1, faculty: -0.5 }, // Prioritize course names & register over professor name to avoid ambiguity
         prefix: true,
         fuzzy: 0.2,
         combineWith: "AND",
@@ -116,6 +117,7 @@ export function useCatalogSearch(
         id: r.id as number,
         name: r.name as string,
         courseNumber: r.courseNumber as string,
+        faculty: r.faculty as string,
         subjectCode: r.subjectCode as string,
         maxCredits: r.maxCredits as string,
         minCredits: r.minCredits as string,

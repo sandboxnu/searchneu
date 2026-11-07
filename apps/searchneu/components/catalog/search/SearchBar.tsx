@@ -67,7 +67,7 @@ export function SearchBar() {
       <Input
         ref={searchInputRef}
         className="bg-neu0 focus:border-neu3 visible h-10 border pl-10 md:hidden"
-        placeholder="Search by course or phrase..."
+        placeholder="Search by course, professor, or phrase..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
@@ -75,7 +75,7 @@ export function SearchBar() {
       <Input
         ref={searchInputRef}
         className="bg-neu0 focus:border-neu3 hidden h-10 border pl-10 md:block"
-        placeholder="Search by course or phrase..."
+        placeholder="Search by course, professor, or phrase..."
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);

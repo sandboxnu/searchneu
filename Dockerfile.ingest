@@ -1,0 +1,33 @@
+# Builds the SearchNEU course ingest daemon.
+#
+# This file lives at the repository root on purpose. Docker's build context is
+# the directory containing the Dockerfile, and the daemon needs the pnpm
+# lockfile plus the @sneu/db and @sneu/scraper workspace packages to install.
+# A Dockerfile inside apps/ingest could not reach any of them.
+
+# Node 26 images no longer bundle corepack, so pnpm is installed directly.
+# Keep this version in step with "packageManager" in the root package.json.
+FROM node:26-slim AS base
+RUN npm install --global pnpm@11.5.2
+
+FROM base AS build
+WORKDIR /repo
+
+# .dockerignore keeps this to tracked sources, so no node_modules or build
+# output from the host leaks into the image.
+COPY . .
+
+# `@sneu/ingest...` resolves to the daemon plus every workspace package it
+# depends on, so the image never installs or builds the Next.js apps.
+RUN pnpm install --frozen-lockfile --filter @sneu/ingest...
+RUN pnpm --filter @sneu/ingest... run build
+
+FROM build AS runtime
+ENV NODE_ENV=production
+WORKDIR /repo/apps/ingest
+
+# Run through tsx, the same way apps/cli does. @sneu/db and @sneu/scraper
+# compile to ES modules with extensionless relative imports, which plain Node
+# cannot resolve. Next.js bundles around it and tsx rewrites it; nothing in
+# this repo loads their built output under bare Node.
+CMD ["node", "--import", "tsx", "./src/index.ts"]

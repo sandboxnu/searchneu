@@ -200,6 +200,7 @@ export interface CourseSearchResult {
   id: number;
   name: string;
   courseNumber: string;
+  faculty: string;
   /** Human-readable subject code, e.g. `"CS"` */
   subjectCode: string;
   maxCredits: string;

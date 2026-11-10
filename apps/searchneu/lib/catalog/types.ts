@@ -193,7 +193,7 @@ export interface Campus {
 
 /**
  * a single row in the course search results. unlike `Course`, this type
- * aggregates section-level data (seat counts, campus list, class types) so the
+ * aggregates section-level data (faculty, seat counts, campus list, class types) so the
  * search UI can display availability without a second query per course
  */
 export interface CourseSearchResult {

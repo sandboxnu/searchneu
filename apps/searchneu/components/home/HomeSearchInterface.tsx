@@ -113,7 +113,7 @@ export function HomeSearchInterface({
           )}
         />
         <Input
-          placeholder="Search by course, professor, or phrase..."
+          placeholder="Search by course, phrase, or professor..."
           ref={searchInputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

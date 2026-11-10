@@ -45,7 +45,7 @@ export function ModalSearchBar({
       <Input
         ref={searchInputRef}
         className="bg-neu1 focus:border-neu3 border pl-10"
-        placeholder="Search by course, proffesor, or phrase..."
+        placeholder="Search by course, phrase, or professor..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

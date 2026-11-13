@@ -48,6 +48,12 @@ export const coursesT = pgTable(
     prereqs: jsonb().notNull(),
     coreqs: jsonb().notNull(),
     postreqs: jsonb().notNull(),
+    /**
+     * Soft-delete markers for a row Banner stopped listing; both clear if it
+     * comes back. Nothing reaps a tombstoned row automatically.
+     */
+    missingSince: timestamp(),
+    tombstonedAt: timestamp(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()
@@ -79,6 +85,12 @@ export const sectionsT = pgTable(
     campus: integer()
       .notNull()
       .references(() => campusesT.id),
+    /**
+     * Soft-delete markers for a row Banner stopped listing; both clear if it
+     * comes back. Nothing reaps a tombstoned row automatically.
+     */
+    missingSince: timestamp(),
+    tombstonedAt: timestamp(),
     updatedAt: timestamp()
       .notNull()
       .defaultNow()

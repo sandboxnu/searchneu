@@ -158,6 +158,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4(@neondatabase/serverless@1.2.0)(@opentelemetry/api@1.9.1)(kysely@0.29.7)(pg@8.23.1)
+      twilio:
+        specifier: ^6.2.0
+        version: 6.2.0
     devDependencies:
       '@sneu/eslint-config':
         specifier: workspace:*

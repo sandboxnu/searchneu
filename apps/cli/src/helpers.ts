@@ -5,7 +5,8 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
-import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import type { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import { parseSnapshot, toBannerCache } from "@sneu/scraper/schemas/snapshot";
 import { p, pc } from "./ui";
 import type * as z from "zod";
 
@@ -38,10 +39,9 @@ export function loadCacheFiles(
 
   for (const file of files) {
     const content = readFileSync(path.join(cachePath, file), "utf8");
-    const result = ScraperBannerCache.safeParse(JSON.parse(content));
-    if (result.success) {
-      caches.push(result.data);
-    } else {
+    try {
+      caches.push(toBannerCache(parseSnapshot(JSON.parse(content))));
+    } catch {
       p.log.warning(`Skipping invalid cache file: ${pc.dim(file)}`);
     }
   }

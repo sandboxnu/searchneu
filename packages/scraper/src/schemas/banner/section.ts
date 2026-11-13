@@ -85,14 +85,17 @@ export const BannerSectionResponse = z.strictObject({
   pageMaxSize: z.int(),
   sectionsFetchedCount: z.int(),
   pathMode: z.null(),
-  searchResultsConfigs: z.array(
-    z.strictObject({
-      config: z.string(),
-      display: z.string(),
-      title: z.string(),
-      required: z.boolean(),
-      width: z.string(),
-    }),
-  ),
+  /** null on some pages of an otherwise normal sweep */
+  searchResultsConfigs: z
+    .array(
+      z.strictObject({
+        config: z.string(),
+        display: z.string(),
+        title: z.string(),
+        required: z.boolean(),
+        width: z.string(),
+      }),
+    )
+    .nullable(),
   ztcEncodedImage: z.string(),
 });

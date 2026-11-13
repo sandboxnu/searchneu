@@ -2,16 +2,14 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import { defineCommand } from "citty";
-import { scrapeCatalogTerm } from "@sneu/scraper/generate";
+import { BannerClient, buildSnapshot } from "@sneu/scraper/ingest";
 import { infer as zinfer } from "zod";
 import { Config } from "@sneu/scraper/config";
-import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
 import { ScraperEventEmitter } from "@sneu/scraper/events";
 import { brandIntro, p, pc, setVerbosity } from "../ui";
 import { attachLogger } from "../logger";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
-const CACHE_VERSION = 5;
 
 export default defineCommand({
   meta: {
@@ -116,23 +114,20 @@ export default defineCommand({
       }
 
       try {
-        const out = await scrapeCatalogTerm(
+        // a hand-run scrape reads every course, with no budget
+        const { snapshot, details } = await buildSnapshot(
+          new BannerClient({ emitter }),
           termConfig.term.toString(),
-          emitter,
+          { emitter },
         );
 
-        if (!out) {
-          p.log.error(pc.red(`Failed to scrape term ${termConfig.term}`));
-          continue;
+        if (details.failures.length > 0) {
+          p.log.warn(
+            `${details.failures.length} course scrape(s) failed for ${pc.cyan(String(termConfig.term))}`,
+          );
         }
 
-        const cachedData: zinfer<typeof ScraperBannerCache> = {
-          version: CACHE_VERSION,
-          timestamp: new Date().toISOString(),
-          ...out,
-        };
-
-        writeFileSync(cachename, JSON.stringify(cachedData, null, 2));
+        writeFileSync(cachename, JSON.stringify(snapshot, null, 2));
       } catch (e) {
         p.log.error(pc.red(`Failed to scrape term ${termConfig.term}: ${e}`));
         continue;

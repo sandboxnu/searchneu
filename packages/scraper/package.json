@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint .",
-    "test": "node --test --import tsx ./**/*.test.ts"
+    "test": "node --test --import tsx \"src/**/*.test.ts\""
   },
   "exports": {
     "./types": {
@@ -53,6 +53,14 @@
     "./static-config": {
       "types": "./dist/schemas/scraper/static-config.d.ts",
       "default": "./dist/schemas/scraper/static-config.js"
+    },
+    "./ingest": {
+      "types": "./dist/ingest/index.d.ts",
+      "default": "./dist/ingest/index.js"
+    },
+    "./schemas/snapshot": {
+      "types": "./dist/schemas/scraper/snapshot.d.ts",
+      "default": "./dist/schemas/scraper/snapshot.js"
     }
   },
   "dependencies": {

@@ -4,7 +4,8 @@ import { parse } from "yaml";
 import { defineCommand } from "citty";
 import { infer as zinfer } from "zod";
 import { ManifestConfig } from "@sneu/scraper/config";
-import { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import type { ScraperBannerCache } from "@sneu/scraper/schemas/banner-cache";
+import { parseSnapshot, toBannerCache } from "@sneu/scraper/schemas/snapshot";
 import {
   StaticCampusesConfig,
   StaticBuildingsConfig,
@@ -21,7 +22,6 @@ import { brandIntro, p, pc, setVerbosity } from "../ui";
 import { attachLogger } from "../logger";
 
 const CACHE_FORMAT = (term: string) => `term-${term}.json`;
-const CACHE_VERSION = 5;
 
 export default defineCommand({
   meta: {
@@ -192,22 +192,15 @@ export default defineCommand({
       );
 
       const cacheContent = readFileSync(cachename, { encoding: "utf8" });
-      const safeTermData = ScraperBannerCache.safeParse(
-        JSON.parse(cacheContent),
-      );
-      if (!safeTermData.success) {
-        p.log.error(pc.red(String(safeTermData.error)));
+      let termData: zinfer<typeof ScraperBannerCache>;
+      try {
+        termData = toBannerCache(parseSnapshot(JSON.parse(cacheContent)));
+      } catch (e) {
+        p.log.error(pc.red(String(e)));
         return;
       }
-      const termData = safeTermData.data;
 
       try {
-        if (termData.version !== CACHE_VERSION) {
-          throw Error(
-            `Invalid cache version (got ${termData.version}, expected ${CACHE_VERSION})`,
-          );
-        }
-
         // Freshness check
         if (!args.force) {
           const [row] = await db

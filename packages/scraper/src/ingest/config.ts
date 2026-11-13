@@ -41,7 +41,7 @@ export const TOMBSTONE = {
 export type Mode = "shadow" | "apply";
 
 /** "shadow" runs the whole pipeline and writes nothing to the catalog. */
-export const MODE: Mode = "shadow";
+export const MODE: Mode = "apply";
 
 /** Terms the daemon writes once MODE is "apply". Empty means all of them. */
 export const APPLY_TERMS: readonly string[] = [];

@@ -5,11 +5,5 @@
       "maxDuration": 800
     }
   },
-  "crons": [
-    {
-      "path": "/api/update",
-      "schedule": "*/5 * * * *"
-    }
-  ],
   "buildCommand": "if [ \"$VERCEL_ENV\" = preview ]; then pnpm --filter @sneu/db run db:migrate; fi && turbo build"
 }

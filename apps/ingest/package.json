@@ -11,7 +11,8 @@
   "dependencies": {
     "@sneu/db": "workspace:*",
     "@sneu/scraper": "workspace:*",
-    "drizzle-orm": "^0.45.4"
+    "drizzle-orm": "^0.45.4",
+    "twilio": "^6.2.0"
   },
   "devDependencies": {
     "@sneu/eslint-config": "workspace:*",

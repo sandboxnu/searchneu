@@ -1,23 +1,26 @@
 import { getDb } from "@sneu/db/pg";
 import { termsT } from "@sneu/db/schema";
 import { gt } from "drizzle-orm";
+import {
+  APPLY_TERMS,
+  BannerClient,
+  COURSE_TTL_MS,
+  MODE,
+  PASS_EVERY_MS,
+} from "@sneu/scraper/ingest";
+import { ScraperEventEmitter } from "@sneu/scraper/events";
+import { runTermPass } from "./pass";
+import { notify } from "./notify";
+import { attachLogger } from "./log";
 
 /**
- * How long to wait between update passes. Defaults to five minutes, matching
- * the cron schedule this daemon is modelled on.
- */
-const INTERVAL_MS = Number(process.env.INGEST_INTERVAL_MS ?? 5 * 60 * 1000);
-
-/**
- * Vercel sends SIGTERM before replacing or stopping an instance. Aborting this
- * controller stops the loop after the pass that is currently in flight, so a
- * rollout never kills a scrape halfway through a term.
+ * SIGTERM drains in-flight Banner requests and stops the loop after the
+ * current pass, so replacing an instance never truncates a sweep.
  */
 const shutdown = new AbortController();
 process.on("SIGTERM", () => shutdown.abort());
 process.on("SIGINT", () => shutdown.abort());
 
-/** Waits for `ms`, returning early once a shutdown has been requested. */
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
   return new Promise((resolve) => {
     if (signal.aborted) {
@@ -36,39 +39,84 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-/** Scrapes every currently active term once. */
-async function runPass(db: ReturnType<typeof getDb>): Promise<void> {
+async function activeTerms(db: ReturnType<typeof getDb>): Promise<string[]> {
   const rows = await db
     .select({ term: termsT.term })
     .from(termsT)
     .where(gt(termsT.activeUntil, new Date()));
 
-  // a term code may have several partOfTerm rows, so scrape each code once
-  const terms = [...new Set(rows.map((row) => row.term))];
-  console.log({ terms }, "terms to update");
-
-  // for (const term of terms) {
-  //   if (shutdown.signal.aborted) return;
-  //   await updateTerm(term, db, console);
-  // }
+  // a term code may have several partOfTerm rows; each code is swept once
+  return [...new Set(rows.map((row) => row.term))];
 }
 
 async function main(): Promise<void> {
   const db = getDb();
+  const emitter = new ScraperEventEmitter();
+  attachLogger(emitter);
+
+  console.log(
+    JSON.stringify({
+      msg: "ingest daemon starting",
+      mode: MODE,
+      applyTerms: APPLY_TERMS.length > 0 ? APPLY_TERMS : "all",
+      passEveryMs: PASS_EVERY_MS,
+      courseTtlMs: COURSE_TTL_MS,
+    }),
+  );
 
   while (!shutdown.signal.aborted) {
+    const startedAt = Date.now();
+
     try {
-      await runPass(db);
+      const terms = await activeTerms(db);
+
+      for (const term of terms) {
+        if (shutdown.signal.aborted) break;
+
+        const client = new BannerClient({
+          signal: shutdown.signal,
+          emitter,
+        });
+
+        const outcome = await runTermPass({
+          db,
+          client,
+          term,
+          mode: MODE,
+          applyTerms: APPLY_TERMS,
+          emitter,
+          notify: (changeset) => notify(db, changeset),
+        });
+
+        console.log(
+          JSON.stringify({
+            msg: "pass complete",
+            term,
+            pass: outcome.pass,
+            courses: outcome.courses,
+            status: outcome.status,
+            runId: outcome.runId,
+            applied: outcome.applied,
+            stats: outcome.plan?.stats,
+            violations: outcome.check?.violations.map((v) => v.rule),
+            warnings: outcome.check?.warnings.map((v) => v.message),
+          }),
+        );
+      }
     } catch (error) {
-      // a failed pass should not take the daemon down, Vercel would just
-      // restart it into the same failure. log and retry on the next tick.
-      console.error(error, "update pass failed");
+      // the daemon survives a failed pass: a restart would land straight back
+      // in the same failure
+      console.error(
+        JSON.stringify({ msg: "pass loop failed", error: String(error) }),
+      );
     }
 
-    await sleep(INTERVAL_MS, shutdown.signal);
+    // a pass that overran its interval starts the next one immediately
+    const elapsed = Date.now() - startedAt;
+    await sleep(Math.max(0, PASS_EVERY_MS - elapsed), shutdown.signal);
   }
 
-  console.log("shutdown complete");
+  console.log(JSON.stringify({ msg: "shutdown complete" }));
 }
 
 void main();

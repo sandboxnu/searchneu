@@ -234,7 +234,7 @@ async function syncRound(input: {
   let changeset: Changeset | null = null;
   if (mayApply && verdict.ok) {
     changeset = await input.db.transaction((tx) =>
-      apply(tx, termPlan, input.state.lookups),
+      apply(tx, termPlan, input.state.lookups, input.startedAt),
     );
   }
 

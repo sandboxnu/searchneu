@@ -71,6 +71,13 @@
       "when": 1794318402493,
       "tag": "0009_kind_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794586715263,
+      "tag": "0010_section_seat_history",
+      "breakpoints": true
     }
   ]
 }

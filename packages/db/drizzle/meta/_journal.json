@@ -57,6 +57,20 @@
       "when": 1781044991389,
       "tag": "0007_drop_bm25_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794317075240,
+      "tag": "0008_yielding_ultimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794318402493,
+      "tag": "0009_kind_romulus",
+      "breakpoints": true
     }
   ]
 }

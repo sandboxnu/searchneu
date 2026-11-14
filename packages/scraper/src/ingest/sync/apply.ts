@@ -330,12 +330,16 @@ async function upsertTermRow(
     throw new Error(`part ${part.partOfTerm} has no term row to write to`);
   }
 
-  if (part.termRow.op === "update") {
-    await tx
-      .update(termsT)
-      .set({ name: part.termRow.name, activeUntil: part.termRow.activeUntil })
-      .where(eq(termsT.id, part.termRow.termId));
-  }
+  // updatedAt is touched on every pass: the catalog shows it as when the
+  // term's data was last refreshed, even when name and activeUntil are noop
+  const config =
+    part.termRow.op === "update"
+      ? { name: part.termRow.name, activeUntil: part.termRow.activeUntil }
+      : {};
+  await tx
+    .update(termsT)
+    .set({ ...config, updatedAt: new Date() })
+    .where(eq(termsT.id, part.termRow.termId));
 
   return part.termRow.termId;
 }

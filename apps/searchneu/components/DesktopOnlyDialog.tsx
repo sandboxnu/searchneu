@@ -44,7 +44,7 @@ export function DesktopOnlyDialog({ feature }: { feature: string }) {
         <DialogHeader>
           <DialogTitle>Screen too small</DialogTitle>
           <DialogDescription>
-            {feature} isn&apos;t available on small screens yet. Please switch
+            {feature} isn&apos;t available on small screens{feature !== "The graduate planner" ? " yet" : ""}. Please switch
             to a larger device or widen your window to use it.
           </DialogDescription>
         </DialogHeader>

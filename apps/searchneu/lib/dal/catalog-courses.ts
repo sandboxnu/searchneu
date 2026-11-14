@@ -42,6 +42,7 @@ export const getAllCoursesForTerm = cache(
         id: coursesT.id,
         name: coursesT.name,
         courseNumber: coursesT.courseNumber,
+        faculty: sql<string>`array_remove(array_agg(distinct ${sectionsT.faculty}), null)`,
         subjectCode: subjectsT.code,
         maxCredits: coursesT.maxCredits,
         minCredits: coursesT.minCredits,

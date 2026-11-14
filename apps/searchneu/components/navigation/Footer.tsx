@@ -64,6 +64,7 @@ export function LinkColumn({
           <span
             key={index}
             aria-disabled="true"
+            title="Please sign in"
             className="text-neu8 z-10 cursor-not-allowed text-base opacity-50"
           >
             {label}

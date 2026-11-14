@@ -478,7 +478,7 @@ function sectionValuesFromRow(row: SectionRow): SectionValues {
   };
 }
 
-const SEAT_FIELDS = [
+export const SEAT_FIELDS = [
   "seatCapacity",
   "seatRemaining",
   "waitlistCapacity",

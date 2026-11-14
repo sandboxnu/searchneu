@@ -1,10 +1,13 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 
-import { notificationsFrom } from "./apply";
-import type { Plan, SectionUpdate } from "./plan";
+import { notificationsFrom, seatHistoryIds } from "./apply";
+import type { Plan, SectionInsert, SectionUpdate } from "./plan";
 
-function planWith(updates: SectionUpdate[]): Plan {
+function planWith(
+  updates: SectionUpdate[],
+  inserts: SectionInsert[] = [],
+): Plan {
   return {
     term: "202610",
     pass: "light",
@@ -18,7 +21,7 @@ function planWith(updates: SectionUpdate[]): Plan {
           activeUntil: new Date("2026-05-01T00:00:00.000Z"),
         },
         courses: { insert: [], update: [] },
-        sections: { insert: [], update: updates },
+        sections: { insert: inserts, update: updates },
         meetingTimes: { insert: [], delete: [] },
         nupaths: { insert: [], delete: [] },
         tombstones: { courses: [], sections: [] },
@@ -50,6 +53,23 @@ function update(
   before: SectionUpdate["before"],
 ): SectionUpdate {
   return { id: Number(crn), crn, changes, before };
+}
+
+function insert(crn: string): SectionInsert {
+  return {
+    crn,
+    register: "CS2500",
+    values: {
+      faculty: "Lovelace, Ada",
+      seatCapacity: 100,
+      seatRemaining: 100,
+      waitlistCapacity: 0,
+      waitlistRemaining: 0,
+      classType: "Lecture",
+      honors: false,
+      campus: 10,
+    },
+  };
 }
 
 describe("notificationsFrom", () => {
@@ -93,5 +113,70 @@ describe("notificationsFrom", () => {
 
     assert.deepEqual(result.seatOpened, [{ sectionId: 1, crn: "1" }]);
     assert.deepEqual(result.waitlistOpened, []);
+  });
+});
+
+describe("seatHistoryIds", () => {
+  const part = (plan: Plan) => plan.parts[0]!;
+
+  test("includes a section whose seats changed", () => {
+    const ids = seatHistoryIds(
+      part(planWith([update("1", { seatRemaining: 4 }, { seatRemaining: 7 })])),
+      new Map([["1", 1]]),
+    );
+
+    assert.deepEqual(ids, [1]);
+  });
+
+  test("includes a capacity or waitlist change", () => {
+    const ids = seatHistoryIds(
+      part(
+        planWith([
+          update("1", { seatCapacity: 120 }, { seatCapacity: 100 }),
+          update("2", { waitlistRemaining: 1 }, { waitlistRemaining: 2 }),
+        ]),
+      ),
+      new Map([
+        ["1", 1],
+        ["2", 2],
+      ]),
+    );
+
+    assert.deepEqual(ids.sort(), [1, 2]);
+  });
+
+  test("skips an update that only touches non-seat fields", () => {
+    const ids = seatHistoryIds(
+      part(planWith([update("1", { faculty: "Hopper, Grace" }, {})])),
+      new Map([["1", 1]]),
+    );
+
+    assert.deepEqual(ids, []);
+  });
+
+  test("lists a section once when seats and other fields changed", () => {
+    const ids = seatHistoryIds(
+      part(
+        planWith([
+          update(
+            "1",
+            { faculty: "Hopper, Grace", seatRemaining: 3 },
+            { faculty: "Lovelace, Ada", seatRemaining: 5 },
+          ),
+        ]),
+      ),
+      new Map([["1", 1]]),
+    );
+
+    assert.deepEqual(ids, [1]);
+  });
+
+  test("gives an inserted section its first row", () => {
+    const ids = seatHistoryIds(
+      part(planWith([], [insert("70002")])),
+      new Map([["70002", 902]]),
+    );
+
+    assert.deepEqual(ids, [902]);
   });
 });

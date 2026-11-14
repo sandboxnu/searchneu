@@ -12,12 +12,19 @@ import {
   coursesT,
   meetingTimesT,
   roomsT,
+  sectionSeatHistoryT,
   sectionsT,
   termsT,
 } from "@sneu/db/schema";
 import { chunk, type Tx } from "../../upload/types";
 import type { Lookups } from "./state";
-import type { PartPlan, Plan, SectionUpdate, SectionValues } from "./plan";
+import {
+  SEAT_FIELDS,
+  type PartPlan,
+  type Plan,
+  type SectionUpdate,
+  type SectionValues,
+} from "./plan";
 import type { TombstoneChange } from "./tombstone";
 
 export interface NotifiableSection {
@@ -38,6 +45,7 @@ export interface PartChangeset {
   nupathsInserted: number;
   nupathsDeleted: number;
   tombstonesWritten: number;
+  seatHistoryWritten: number;
 }
 
 export interface Changeset {
@@ -48,14 +56,19 @@ export interface Changeset {
   waitlistOpened: NotifiableSection[];
 }
 
+/**
+ * `observedAt` stamps the seat history rows; the daemon passes the pass's
+ * start so they line up with its `ingest_runs` row.
+ */
 export async function apply(
   tx: Tx,
   plan: Plan,
   lookups: Lookups,
+  observedAt: Date,
 ): Promise<Changeset> {
   const parts: PartChangeset[] = [];
   for (const part of plan.parts) {
-    parts.push(await applyPart(tx, plan.term, part, lookups));
+    parts.push(await applyPart(tx, plan.term, part, lookups, observedAt));
   }
 
   const opened = notificationsFrom(plan);
@@ -101,11 +114,75 @@ function opened(
   return previous === 0 && next !== undefined && next > 0;
 }
 
+/**
+ * The sections that get a seat history row this pass. `sectionIds` maps CRN
+ * to id for every section in the part, inserts included.
+ */
+export function seatHistoryIds(
+  part: PartPlan,
+  sectionIds: Map<string, number>,
+): number[] {
+  const ids: number[] = [];
+
+  for (const update of part.sections.update) {
+    if (SEAT_FIELDS.some((field) => field in update.changes)) {
+      ids.push(update.id);
+    }
+  }
+
+  // inserts have no history yet, so this row is where their chart starts
+  for (const section of part.sections.insert) {
+    const id = sectionIds.get(section.crn);
+    if (id === undefined) {
+      throw new Error(`section ${section.crn} was not inserted`);
+    }
+    ids.push(id);
+  }
+
+  return ids;
+}
+
+/**
+ * Copied from the rows this transaction just wrote rather than from the
+ * plan, so history always matches what the catalog served.
+ */
+async function writeSeatHistory(
+  tx: Tx,
+  sectionIds: number[],
+  observedAt: Date,
+): Promise<number> {
+  for (const batch of chunk(sectionIds, 2000)) {
+    await tx
+      .insert(sectionSeatHistoryT)
+      .select(
+        tx
+          .select({
+            sectionId: sectionsT.id,
+            // timestamp columns hold UTC, which is how Drizzle writes a Date
+            observedAt: sql<Date>`${observedAt.toISOString()}::timestamp`.as(
+              "observedAt",
+            ),
+            seatCapacity: sectionsT.seatCapacity,
+            seatRemaining: sectionsT.seatRemaining,
+            waitlistCapacity: sectionsT.waitlistCapacity,
+            waitlistRemaining: sectionsT.waitlistRemaining,
+          })
+          .from(sectionsT)
+          .where(inArray(sectionsT.id, batch)),
+      )
+      // a light and deep round in the same pass share `observedAt`
+      .onConflictDoNothing();
+  }
+
+  return sectionIds.length;
+}
+
 async function applyPart(
   tx: Tx,
   term: string,
   part: PartPlan,
   lookups: Lookups,
+  observedAt: Date,
 ): Promise<PartChangeset> {
   const termId = await upsertTermRow(tx, term, part);
 
@@ -155,6 +232,12 @@ async function applyPart(
 
   const roomsCreated = await ensureRooms(tx, part, lookups);
   const sectionIds = await crnIndex(tx, termId);
+
+  const seatHistoryWritten = await writeSeatHistory(
+    tx,
+    seatHistoryIds(part, sectionIds),
+    observedAt,
+  );
 
   // deletes go first: a room change re-inserts the same days and times,
   // which the unique key would otherwise drop as a conflict
@@ -234,6 +317,7 @@ async function applyPart(
     nupathsInserted: part.nupaths.insert.length,
     nupathsDeleted: part.nupaths.delete.length,
     tombstonesWritten,
+    seatHistoryWritten,
   };
 }
 

@@ -5,6 +5,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   unique,
@@ -101,6 +102,27 @@ export const sectionsT = pgTable(
     index("term_idx").on(table.termId),
     unique("term_crn").on(table.termId, table.crn),
   ],
+);
+
+/**
+ * A section's seats each time an ingest pass saw them change, plus a first
+ * row when the section is inserted. Values are absolute, not deltas, so a
+ * missed pass never skews the rows after it.
+ */
+export const sectionSeatHistoryT = pgTable(
+  "section_seat_history",
+  {
+    sectionId: integer()
+      .notNull()
+      .references(() => sectionsT.id, { onDelete: "cascade" }),
+    /** when the pass that saw the change started, shared by every row it wrote */
+    observedAt: timestamp().notNull(),
+    seatCapacity: integer().notNull(),
+    seatRemaining: integer().notNull(),
+    waitlistCapacity: integer().notNull(),
+    waitlistRemaining: integer().notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.sectionId, table.observedAt] })],
 );
 
 export const subjectsT = pgTable("subjects", {

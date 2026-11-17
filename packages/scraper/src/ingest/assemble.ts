@@ -44,9 +44,8 @@ export function assemble(sweep: SweepResult): TermSnapshot {
       sectionNumber: banner.sequenceNumber,
       description: "",
       partOfTerm: banner.partOfTerm,
-      // crosslisted sections share a seat pool with their siblings
-      seatCapacity: banner.crossListCapacity ?? banner.maximumEnrollment,
-      seatRemaining: banner.crossListAvailable ?? banner.seatsAvailable,
+      seatCapacity: banner.maximumEnrollment,
+      seatRemaining: banner.seatsAvailable,
       waitlistCapacity: banner.waitCapacity,
       waitlistRemaining: banner.waitAvailable,
       classType: banner.scheduleTypeDescription,

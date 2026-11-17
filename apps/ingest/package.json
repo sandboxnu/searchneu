@@ -12,12 +12,12 @@
     "@sneu/db": "workspace:*",
     "@sneu/scraper": "workspace:*",
     "drizzle-orm": "^0.45.4",
-    "twilio": "^6.2.0"
+    "twilio": "^6.3.0"
   },
   "devDependencies": {
     "@sneu/eslint-config": "workspace:*",
     "@sneu/tsconfig": "workspace:*",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "eslint": "^9.39.5",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"

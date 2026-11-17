@@ -85,10 +85,31 @@ describe("assemble", () => {
 
     assert.equal(snapshot.sections["CS2500"][0].honors, true);
   });
+
+  test("uses each crosslisted section's own seats, not the shared pool", () => {
+    const snapshot = assemble(
+      sweepOf([
+        bannerSection({
+          courseReferenceNumber: "70001",
+          crossList: "XP",
+          crossListCapacity: 60,
+          crossListAvailable: 3,
+          maximumEnrollment: 40,
+          seatsAvailable: 2,
+        }),
+      ]),
+    );
+
+    const [section] = snapshot.sections["CS2500"];
+    assert.equal(section.seatCapacity, 40);
+    assert.equal(section.seatRemaining, 2);
+  });
 });
 
 describe("assemble / arrangeCourses parity", () => {
-  // assemble must agree with arrangeCourses on everything both describe
+  // assemble must agree with arrangeCourses on everything both describe, except
+  // crosslisted seat counts: arrangeCourses reports the shared xlist pool while
+  // assemble reports each section's own seats
   const sections = [
     bannerSection({ courseReferenceNumber: "80001", sequenceNumber: "01" }),
     bannerSection({ courseReferenceNumber: "80002", sequenceNumber: "02" }),
@@ -108,8 +129,6 @@ describe("assemble / arrangeCourses parity", () => {
       courseReferenceNumber: "80005",
       courseNumber: "4100",
       crossList: "XP",
-      crossListCapacity: 60,
-      crossListAvailable: 3,
       meetingsFaculty: [
         meetingsFaculty("80005", {
           meetingType: "FNEX",
@@ -124,8 +143,6 @@ describe("assemble / arrangeCourses parity", () => {
       subject: "DS",
       courseNumber: "4100",
       crossList: "XP",
-      crossListCapacity: 60,
-      crossListAvailable: 3,
     }),
     bannerSection({
       courseReferenceNumber: "80007",

@@ -1,13 +1,27 @@
 // ── CourseCard ────────────────────────────────────────────────────────────────
 
-import { AuditCourse } from "@/lib/graduate/types";
+import { useContext } from "react";
+import { AuditCourse, INEUReqError } from "@/lib/graduate/types";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { COURSE_DROP_PREFIX } from "@/lib/graduate/planUtils";
-import { useCourseName } from "../CourseNameContext";
+import { formatReqError } from "@/lib/graduate/reqWarnings";
+import { CourseNameContext, useCourseName } from "../CourseNameContext";
 import { useCourseDetails } from "../CourseDetailsContext";
 import { NUPATH_DISPLAY } from "@/lib/graduate/requirementUtils";
-import { GripVertical, Check } from "lucide-react";
+import { GripVertical, Check, TriangleAlert } from "lucide-react";
 import { DeleteIcon } from "@/components/icons/Delete";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+/** Missing prereqs/coreqs for one course in a term. */
+export interface CourseReqWarning {
+  prereq?: INEUReqError;
+  coreq?: INEUReqError;
+}
 
 /**
  * One draggable course. Coreqs (e.g. CS 2000 + CS 2001) are separate
@@ -16,17 +30,22 @@ import { DeleteIcon } from "@/components/icons/Delete";
  * Cards in the plan are also drop targets (droppable), dropping another
  * course on one inserts it right before this card so courses
  * can be reordered within a term
+ *
+ * `warning` is only passed for cards in term columns; sidebar and override
+ * cards leave it undefined so they never show req warnings.
  */
 export function AuditCourseCard({
   course,
   onRemove,
   fulfilled,
   droppable = false,
+  warning,
 }: {
   course: AuditCourse;
   onRemove?: () => void;
   fulfilled?: boolean;
   droppable?: boolean;
+  warning?: CourseReqWarning;
 }) {
   const details = useCourseDetails(course.subject, course.classId);
   const {
@@ -51,13 +70,16 @@ export function AuditCourseCard({
   const nupaths = (course.nupaths ?? details?.nupaths ?? []).filter(
     (code) => code in NUPATH_DISPLAY,
   );
+  const showWarning = !fulfilled && !!(warning?.prereq || warning?.coreq);
+
+  let cardColors = "bg-neu1 border-neu3";
+  if (fulfilled) cardColors = "border-green/30 bg-green/10";
+  else if (showWarning) cardColors = "border-yellow/50 bg-yellow/10";
 
   return (
     <div
       ref={setNodeRef}
-      className={`group relative flex w-full items-center justify-between rounded-[8px] border-[1px] text-[12px] transition-transform ${
-        fulfilled ? "border-green/30 bg-green/10" : "bg-neu1 border-neu3"
-      } ${isDragging ? "invisible" : ""}`}
+      className={`group relative flex w-full items-center justify-between rounded-[8px] border-[1px] text-[12px] transition-transform ${cardColors} ${isDragging ? "invisible" : ""}`}
       {...attributes}
     >
       {isOver && (
@@ -97,6 +119,7 @@ export function AuditCourseCard({
           )}
         </div>
       </div>
+      {showWarning && warning && <ReqWarningIcon warning={warning} />}
       {fulfilled ? (
         <div className="shrink-0 pr-3">
           <Check className="text-green h-4 w-4" strokeWidth={2.5} />
@@ -113,6 +136,48 @@ export function AuditCourseCard({
         )
       )}
     </div>
+  );
+}
+
+/** Warning icon with a tooltip listing the missing prereqs/coreqs. */
+function ReqWarningIcon({ warning }: { warning: CourseReqWarning }) {
+  const names = useContext(CourseNameContext);
+  // Names are only preloaded for courses in the plan (and their coreqs);
+  // anything else falls back to just "SUBJECT NUMBER".
+  const nameOf = (subject: string, classId: string) =>
+    names[`${subject}-${classId}`];
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <div
+              className="shrink-0 pl-1"
+              aria-label="Missing course requirements"
+            >
+              <TriangleAlert
+                className="text-yellow h-4 w-4"
+                strokeWidth={2.5}
+              />
+            </div>
+          }
+        />
+        <TooltipContent>
+          <div className="flex flex-col gap-1">
+            {warning.prereq && (
+              <p>Missing prereqs: {formatReqError(warning.prereq, nameOf)}</p>
+            )}
+            {warning.coreq && (
+              <p>
+                Missing coreq (same term):{" "}
+                {formatReqError(warning.coreq, nameOf)}
+              </p>
+            )}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

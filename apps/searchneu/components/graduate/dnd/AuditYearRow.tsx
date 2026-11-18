@@ -7,6 +7,7 @@ import {
   Major,
   Minor,
   SeasonEnum,
+  YearError,
 } from "@/lib/graduate/types";
 import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
 import { AuditTermColumn } from "./AuditTermColumn";
@@ -29,6 +30,8 @@ export function AuditYearRow({
   onRemoveCourse,
   onDeleteYear,
   onAddCourses,
+  prereqErrors,
+  coreqErrors,
 }: {
   year: AuditYear;
   expanded: boolean;
@@ -38,6 +41,8 @@ export function AuditYearRow({
   onRemoveCourse: (season: SeasonEnum, courseIndex: number) => void;
   onDeleteYear: () => void;
   onAddCourses: (season: SeasonEnum, courses: AuditCourse[]) => void;
+  prereqErrors?: YearError;
+  coreqErrors?: YearError;
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -100,20 +105,22 @@ export function AuditYearRow({
         <div className="grid min-h-[220px] grid-cols-4">
           {(
             [
-              { term: year.fall, season: SeasonEnum.FL },
-              { term: year.spring, season: SeasonEnum.SP },
-              { term: year.summer1, season: SeasonEnum.S1 },
-              { term: year.summer2, season: SeasonEnum.S2 },
+              { key: "fall", season: SeasonEnum.FL },
+              { key: "spring", season: SeasonEnum.SP },
+              { key: "summer1", season: SeasonEnum.S1 },
+              { key: "summer2", season: SeasonEnum.S2 },
             ] as const
-          ).map(({ term, season }) => (
+          ).map(({ key, season }) => (
             <AuditTermColumn
-              key={term.id}
-              term={term}
+              key={year[key].id}
+              term={year[key]}
               termLabel={`Year ${year.year} ${SEASON_DISPLAY[season]}`}
               majors={majors}
               minors={minors}
               onRemoveCourse={(i) => onRemoveCourse(season, i)}
               onAddCourses={(courses) => onAddCourses(season, courses)}
+              prereqErrors={prereqErrors?.[key]}
+              coreqErrors={coreqErrors?.[key]}
             />
           ))}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -34,6 +34,10 @@ import {
 } from "@/lib/graduate/planUtils";
 import { pruneWhiteboard } from "@/lib/graduate/requirementUtils";
 import { applyCourseDetails } from "@/lib/graduate/auditUtils";
+import {
+  getCoreqWarnings,
+  getPrereqWarnings,
+} from "@/lib/graduate/reqWarnings";
 import { CourseNameContext } from "./CourseNameContext";
 import { CourseDetailsContext } from "./CourseDetailsContext";
 import type { CourseDetails } from "@/lib/graduate/types";
@@ -84,6 +88,11 @@ export function BasePlanClient({
     () => new Set(),
   );
   const [overridesExpanded, setOverridesExpanded] = useState(false);
+
+  // Recomputed whenever the schedule changes (drag, add, remove), so
+  // warnings show up and clear right away without extra state.
+  const prereqWarnings = useMemo(() => getPrereqWarnings(schedule), [schedule]);
+  const coreqWarnings = useMemo(() => getCoreqWarnings(schedule), [schedule]);
   // TODO: restore when whiteboard mode ships after release (see sidebar toggle below)
   // const [sidebarMode, setSidebarMode] = useState<"whiteboard" | "requirements">(
   //   "whiteboard",
@@ -372,6 +381,14 @@ export function BasePlanClient({
                       onAddCourses={(season, courses) =>
                         handleAddCourses(year.year, season, courses)
                       }
+                      // Warnings are sorted by year number, which may not
+                      // match schedule order, so match by year, not index
+                      prereqErrors={prereqWarnings.years.find(
+                        (y) => y.year === year.year,
+                      )}
+                      coreqErrors={coreqWarnings.years.find(
+                        (y) => y.year === year.year,
+                      )}
                     />
                   ))}
                 </div>

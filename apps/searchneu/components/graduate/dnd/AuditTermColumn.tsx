@@ -1,9 +1,32 @@
-import { AuditCourse, AuditTerm, Major, Minor } from "@/lib/graduate/types";
+import {
+  AuditCourse,
+  AuditTerm,
+  Major,
+  Minor,
+  TermError,
+} from "@/lib/graduate/types";
 import { useDroppable } from "@dnd-kit/core";
 import { SEASON_DISPLAY } from "@/lib/graduate/auditUtils";
-import { AuditCourseCard } from "./AuditCourseCard";
+import { AuditCourseCard, CourseReqWarning } from "./AuditCourseCard";
 import { useState } from "react";
 import AuditAddCoursesModal from "../modal/AuditAddCoursesModal";
+
+/**
+ * Look up one course's prereq/coreq problems in this term. Errors are keyed
+ * by "SUBJECT CLASSID" (e.g. "CS 2510"). Returns undefined when the course
+ * has no problems, so its card shows no warning.
+ */
+function warningFor(
+  course: AuditCourse,
+  prereqErrors?: TermError,
+  coreqErrors?: TermError,
+): CourseReqWarning | undefined {
+  const key = `${course.subject} ${course.classId}`;
+  const prereq = prereqErrors?.[key];
+  const coreq = coreqErrors?.[key];
+  if (!prereq && !coreq) return undefined;
+  return { prereq, coreq };
+}
 
 export function AuditTermColumn({
   term,
@@ -12,6 +35,8 @@ export function AuditTermColumn({
   minors,
   onRemoveCourse,
   onAddCourses,
+  prereqErrors,
+  coreqErrors,
 }: {
   term: AuditTerm;
   termLabel: string;
@@ -19,6 +44,10 @@ export function AuditTermColumn({
   minors: Minor[];
   onRemoveCourse: (courseIndex: number) => void;
   onAddCourses: (courses: AuditCourse[]) => void;
+  /** Courses in this term scheduled before their prereqs. */
+  prereqErrors?: TermError;
+  /** Courses in this term missing a same-term coreq. */
+  coreqErrors?: TermError;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: term.id! });
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,6 +69,7 @@ export function AuditTermColumn({
           course={course}
           onRemove={() => onRemoveCourse(i)}
           droppable
+          warning={warningFor(course, prereqErrors, coreqErrors)}
         />
       ))}
       <button

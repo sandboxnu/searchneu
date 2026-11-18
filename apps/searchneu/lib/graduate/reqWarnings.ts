@@ -156,6 +156,31 @@ function checkReq(
 }
 
 /**
+ * Turn a req error into a readable string, e.g. "CS 2500 and (CS 1800 or
+ * CS 1802)". Nested and/or groups are wrapped in parentheses so the meaning
+ * stays clear. `nameOf` can add a course name after its code; when it returns
+ * nothing (e.g. the course isn't in the plan) only the code is shown.
+ */
+export function formatReqError(
+  error: INEUReqError,
+  nameOf?: (subject: string, classId: string) => string | undefined,
+): string {
+  if (error.type === ReqErrorType.COURSE) {
+    const code = courseKey(error.subject, error.classId);
+    const name = nameOf?.(error.subject, error.classId);
+    return name ? `${code} (${name})` : code;
+  }
+
+  const joiner = error.type === ReqErrorType.AND ? " and " : " or ";
+  return error.missing
+    .map((child) => {
+      const text = formatReqError(child, nameOf);
+      return child.type === ReqErrorType.COURSE ? text : `(${text})`;
+    })
+    .join(joiner);
+}
+
+/**
  * Find courses scheduled before their prereqs. A prereq is met only by a
  * course in an earlier term (or an override); the same term doesn't count.
  */

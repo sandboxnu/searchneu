@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Requisite, RequisiteItem } from "@sneu/scraper/types";
-import { getCoreqWarnings, getPrereqWarnings } from "./reqWarnings";
+import {
+  formatReqError,
+  getCoreqWarnings,
+  getPrereqWarnings,
+} from "./reqWarnings";
 import {
   Audit,
   AuditCourse,
@@ -448,4 +452,63 @@ test("overrides satisfy prereqs and coreqs", () => {
   };
   assert.deepEqual(allWarnings(getPrereqWarnings(schedule)), {});
   assert.deepEqual(allWarnings(getCoreqWarnings(schedule)), {});
+});
+
+// ── formatReqError ───────────────────────────────────────────────────────────
+
+const missingCourse = (subject: string, classId: string) => ({
+  type: ReqErrorType.COURSE as const,
+  subject,
+  classId,
+});
+
+test("formatReqError shows a single course", () => {
+  assert.equal(formatReqError(missingCourse("CS", "2500")), "CS 2500");
+});
+
+test("formatReqError joins flat and/or groups", () => {
+  assert.equal(
+    formatReqError({
+      type: ReqErrorType.OR,
+      missing: [missingCourse("CS", "2500"), missingCourse("CS", "2510")],
+    }),
+    "CS 2500 or CS 2510",
+  );
+  assert.equal(
+    formatReqError({
+      type: ReqErrorType.AND,
+      missing: [missingCourse("CS", "2500"), missingCourse("CS", "2501")],
+    }),
+    "CS 2500 and CS 2501",
+  );
+});
+
+test("formatReqError wraps nested groups in parentheses", () => {
+  assert.equal(
+    formatReqError({
+      type: ReqErrorType.AND,
+      missing: [
+        missingCourse("CS", "2500"),
+        {
+          type: ReqErrorType.OR,
+          missing: [missingCourse("CS", "1800"), missingCourse("CS", "1802")],
+        },
+      ],
+    }),
+    "CS 2500 and (CS 1800 or CS 1802)",
+  );
+});
+
+test("formatReqError adds known names and falls back to the code", () => {
+  const names: Record<string, string> = { "CS 2500": "Fundies 1" };
+  assert.equal(
+    formatReqError(
+      {
+        type: ReqErrorType.OR,
+        missing: [missingCourse("CS", "2500"), missingCourse("CS", "2510")],
+      },
+      (subject, classId) => names[`${subject} ${classId}`],
+    ),
+    "CS 2500 (Fundies 1) or CS 2510",
+  );
 });

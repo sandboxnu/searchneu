@@ -122,7 +122,7 @@ export default function FeedbackForm() {
       <Button
         type="submit"
         disabled={submitting || !feedbackType || !message.trim()}
-        className="hover:bg-neu/80 text-neu1 m-auto rounded-full px-6 py-3 font-bold"
+        className="hover:bg-neu/80 text-neu1 m-auto rounded-full px-6 py-3 font-bold cursor-pointer"
       >
         {submitting ? "Submitting..." : "Submit"}
       </Button>

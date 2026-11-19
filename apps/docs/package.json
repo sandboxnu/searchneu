@@ -17,7 +17,7 @@
     "fumadocs-twoslash": "^3.2.0",
     "fumadocs-ui": "16.9.3",
     "lucide-react": "^1.61.0",
-    "next": "16.4.2",
+    "next": "16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "remark-directive": "^4.0.0",

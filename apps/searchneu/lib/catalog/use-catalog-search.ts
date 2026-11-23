@@ -75,7 +75,7 @@ export function useCatalogSearch(
         "honors",
       ],
       searchOptions: {
-        boost: { register: 1.5, name: 1, faculty: -0.5 }, // Prioritize course names & register over professor name to avoid ambiguity
+        boost: { register: 1, name: 0.2, faculty: -0.5 }, // Prioritize course names & register over professor name to avoid ambiguity
         prefix: true,
         fuzzy: 0.2,
         combineWith: "AND",
@@ -83,8 +83,9 @@ export function useCatalogSearch(
       // Synthesize the `register` field for indexing (e.g. "CS 3500")
       extractField: (doc, fieldName) => {
         if (fieldName === "register") {
-          return `${doc.subjectCode} ${doc.courseNumber}`;
+          return `${doc.subjectCode}${doc.courseNumber}`;
         }
+
         return doc[fieldName as keyof CourseSearchResult] as string;
       },
     });

@@ -28,3 +28,6 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - unrs-resolver
+minimumReleaseAgeExclude:
+  # Renovate security update: next@16.4.5
+  - next@16.4.5

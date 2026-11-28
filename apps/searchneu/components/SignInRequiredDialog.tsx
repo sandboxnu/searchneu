@@ -8,31 +8,22 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
-    DialogFooter
-} from "@/components/ui/dialog";
+    DialogFooter,
+} from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Magoskie } from "@/components/icons/Magoskie";
-import { SignIn } from "@/components/SignIn";
+import { SignIn } from "./SignIn";
 import { authClient } from "@/lib/auth/auth-client";
-import { useIsSmallScreen } from "@/components/useIsSmallScreen";
+import { useIsSmallScreen } from "./useIsSmallScreen";
 
-/**
- * This is a dialog box shown to signed-out users on pages that require sign-in. Mirrors the
- * pattern of `DesktopOnlyDialog` but gated on sign-in status instead of screen size. It also does
- * not open on a small screen, so the two dialogs don't stack.
- *
- * It has a field, `redirectOnDismissTo`, for pages with no guest-mode experience, "maybe later"
- * navigates to the redirect. Omitted for pages with an existing guest-mode, where "maybe later"
- * just closes the dialog box.
- */
 export function SignInRequiredDialog({
                                          feature,
+                                         description,
                                          redirectOnDismissTo,
-                                     }:
-                                     {
-                                         feature: string;
-                                         redirectOnDismissTo?: string;
-                                     }) {
+                                     }: {
+    feature: string;
+    description: string;
+    redirectOnDismissTo?: string;
+}) {
     const { data: session, isPending } = authClient.useSession();
     const isSmallScreen = useIsSmallScreen();
     const pathname = usePathname();
@@ -58,22 +49,24 @@ export function SignInRequiredDialog({
 
     return (
         <>
-            <Dialog open={open}>
-                <DialogContent showCloseButton={false} className="sm:max-w-106.25">
+            <Dialog
+                open={open}
+                onOpenChange={(val) => {
+                    if (!val) handleMaybeLater();
+                }}
+            >
+                <DialogContent className="sm:max-w-106.25">
                     <DialogHeader>
                         <DialogTitle>Sign in to use {feature}</DialogTitle>
-                        <DialogDescription>
-                            {feature} requires a signed-in account. Sign in to get started, or come
-                            back later.
+                        <DialogDescription className="whitespace-pre-line">
+                            {description}
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex w-full items-center justify-center">
-                        <Magoskie className="w-32" />
-                    </div>
                     <DialogFooter>
-                        <Button variant="outline" className="w-full" onClick={handleMaybeLater}>
+                        <Button variant="outline" onClick={handleMaybeLater}>
                             Maybe later
                         </Button>
+                        <Button onClick={handleSignInClick}>Sign in</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

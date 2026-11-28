@@ -4,7 +4,6 @@ import { getNupaths } from "@/lib/dal/nupaths";
 import { DashboardClient } from "@/components/scheduler/dashboard/Dashboard";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 
 const cachedCampuses = unstable_cache(getCampuses, [], {
@@ -23,7 +22,7 @@ export default async function Dashboard() {
   });
 
   if (!session) {
-    redirect("/");
+    return <div className="h-full w-full" />;
   }
 
   const terms = getTerms();

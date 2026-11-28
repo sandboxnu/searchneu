@@ -13,23 +13,7 @@ import {
 import { buttonVariants } from "./ui/button";
 import { Magoskie } from "./icons/Magoskie";
 import { cn } from "@/lib/cn";
-
-// Matches Tailwind's `sm` breakpoint (640px)
-const SMALL_SCREEN_QUERY = "(max-width: 639.98px)";
-
-function subscribe(callback: () => void) {
-  const mql = window.matchMedia(SMALL_SCREEN_QUERY);
-  mql.addEventListener("change", callback);
-  return () => mql.removeEventListener("change", callback);
-}
-
-function useIsSmallScreen() {
-  return useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(SMALL_SCREEN_QUERY).matches,
-    () => false,
-  );
-}
+import { useIsSmallScreen } from "@/components/useIsSmallScreen";
 
 /**
  * Non-dismissible dialog shown on small screens for pages that are not

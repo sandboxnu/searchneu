@@ -4,7 +4,6 @@ import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { Logo } from "../icons/logo";
 import { Footskie } from "../icons/Footskie";
-import { authClient } from "@/lib/auth/auth-client";
 
 const HEARTS = ["❤️", "🧡", "💛", "💚", "💙", "💜", "🤎", "🖤"];
 
@@ -49,27 +48,15 @@ function CyclingHeart() {
 
 export function LinkColumn({
   name,
-  labels,
-  disabledHrefs = [],
+  labels
 }: {
   name: string;
   labels: [string, string][];
-  disabledHrefs?: string[];
 }) {
   return (
     <div className="mr-5 mb-6 ml-15 flex w-fit flex-1 flex-col items-start gap-2 md:ml-0 xl:w-45">
       <p className="text-neu5 text-xs font-bold uppercase">{name}</p>
-      {labels.map(([label, href], index) =>
-        disabledHrefs.includes(href) ? (
-          <span
-            key={index}
-            aria-disabled="true"
-            title="Please sign in"
-            className="text-neu8 z-10 cursor-not-allowed text-base opacity-50"
-          >
-            {label}
-          </span>
-        ) : (
+      {labels.map(([label, href], index) => (
           <Link
             key={index}
             href={href}
@@ -78,16 +65,13 @@ export function LinkColumn({
           >
             {label}
           </Link>
-        ),
-      )}
+        ))}
     </div>
   );
 }
 
 export function Footer() {
   const isProd = process.env.NODE_ENV == "production" || false;
-  const { data: session, isPending } = authClient.useSession();
-  const signedIn = isPending || session;
 
   return (
     <footer className="bg-neu1 relative flex flex-col justify-between gap-20 overflow-hidden pt-5 md:flex-row xl:h-[312px]">
@@ -135,7 +119,6 @@ export function Footer() {
               ["Scheduler", "/scheduler"],
               ["Notifications", "/notifications"],
             ]}
-            disabledHrefs={signedIn ? [] : ["/scheduler", "/notifications"]}
           />
           <LinkColumn
             name="Resources"

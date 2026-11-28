@@ -22,8 +22,7 @@ import Link from "next/link";
 import { UserIcon } from "./UserMenu";
 import { FlagValues } from "flags/react";
 import { usePathname } from "next/navigation";
-import { use, type ReactNode } from "react";
-import { authClient } from "@/lib/auth/auth-client";
+import { use } from "react";
 
 interface MobileNavParams {
   flags: { [key: string]: Promise<boolean> };
@@ -56,26 +55,9 @@ export function MobileNav({ flags }: MobileNavParams) {
   );
 }
 
-function DisabledNavItem({ children }: { children: ReactNode }) {
-  // no hover on touch devices, so show the reason inline instead of a tooltip
-  return (
-    <span
-      aria-disabled="true"
-      className="bg-neu0 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border p-2 px-4 text-sm opacity-50"
-    >
-      {children}
-      <span className="text-neu6 text-xs font-normal">(Please sign in)</span>
-    </span>
-  );
-}
-
 function MobileNavLinks({ flags }: MobileNavParams) {
   const roomsFlag = use(flags["rooms"]);
-
   const pathname = usePathname();
-
-  const { data: session, isPending } = authClient.useSession();
-  const signedIn = isPending || session;
 
   return (
     <nav className="flex flex-col gap-2 font-semibold">
@@ -112,8 +94,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
           </Link>
         }
       />
-      {signedIn ? (
-        <SheetClose
+      <SheetClose
           nativeButton={false}
           render={
             <Link
@@ -125,13 +106,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
               <span>Scheduler</span>
             </Link>
           }
-        />
-      ) : (
-        <DisabledNavItem>
-          <CalendarIcon className="size-4" />
-          <span>Scheduler</span>
-        </DisabledNavItem>
-      )}
+      />
       <SheetClose
         nativeButton={false}
         render={
@@ -145,8 +120,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
           </Link>
         }
       />
-      {signedIn ? (
-        <SheetClose
+      <SheetClose
           nativeButton={false}
           render={
             <Link
@@ -158,13 +132,7 @@ function MobileNavLinks({ flags }: MobileNavParams) {
               <span>Notifications</span>
             </Link>
           }
-        />
-      ) : (
-        <DisabledNavItem>
-          <BellIcon className="size-4" />
-          <span>Notifications</span>
-        </DisabledNavItem>
-      )}
+      />
       <SheetClose
         nativeButton={false}
         render={

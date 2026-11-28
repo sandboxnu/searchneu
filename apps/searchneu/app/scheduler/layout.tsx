@@ -8,7 +8,7 @@ export default async function Layout({ children }: LayoutProps<"/rooms">) {
       <Header />
       <DesktopOnlyDialog feature="The scheduler" />
       <SignInRequiredDialog
-          feature="The scheduler"
+          feature="Scheduler"
           description={
             "The SearchNEU Scheduler helps you build your ideal class schedule by automatically " +
               "generating valid schedule combinations based on your course selections and " +

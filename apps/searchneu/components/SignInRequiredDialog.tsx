@@ -55,7 +55,7 @@ export function SignInRequiredDialog({
                     if (!val) handleMaybeLater();
                 }}
             >
-                <DialogContent className="sm:max-w-106.25">
+                <DialogContent className="sm:max-w-[636px] gap-6 rounded-lg px-6 pt-9 pb-6">
                     <DialogHeader>
                         <DialogTitle>Sign in to use {feature}</DialogTitle>
                         <DialogDescription className="whitespace-pre-line">

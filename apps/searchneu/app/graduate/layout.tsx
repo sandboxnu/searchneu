@@ -8,7 +8,7 @@ export default async function Layout({ children }: LayoutProps<"/graduate">) {
       <Header />
       <DesktopOnlyDialog feature="The graduate planner" />
       <SignInRequiredDialog
-          feature="The graduate planner"
+          feature="Graduate"
           description={
             "SearchNEU Graduate makes it easy to build your college schedule year by year. Track " +
               "your completed credits, plan future semesters, and stay on top of your degree " +
